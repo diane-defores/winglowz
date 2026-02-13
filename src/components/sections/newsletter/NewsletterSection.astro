@@ -1,0 +1,58 @@
+---
+import { getLangFromUrl, useTranslations } from '@/utils/i18n'
+
+const lang = getLangFromUrl(Astro.url)
+const t = await useTranslations(lang, 'navigation')
+
+const placeholder = lang === 'fr' ? 'Entrez votre email' : 'Enter your email'
+const buttonText = lang === 'fr' ? "S'abonner" : 'Subscribe'
+---
+
+<section class="w-full py-12 sm:py-16 lg:py-20 dark:bg-neutral-900">
+	<div class="mx-auto w-full max-w-[85rem] px-3 sm:px-6 lg:px-16 2xl:max-w-screen-2xl">
+		<!-- Rainbow border card -->
+		<div class="card-rainbow-border">
+			<div class="bg-white p-8 sm:p-12 lg:p-16 dark:bg-neutral-800">
+				<div class="mx-auto max-w-3xl text-center">
+					<!-- Title -->
+					<h2 class="text-3xl font-bold tracking-tight text-neutral-800 sm:text-4xl lg:text-5xl dark:text-neutral-100">
+						{t.newsletterSection.title}
+					</h2>
+
+					<!-- Description -->
+					<p class="mt-4 text-lg text-neutral-600 sm:text-xl dark:text-neutral-400">
+						{t.newsletterSection.description}
+					</p>
+
+					<!-- Email form -->
+					<form class="mt-8 sm:mt-10">
+						<div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+							<div class="w-full max-w-md">
+								<label for="newsletter-email" class="sr-only">Email</label>
+								<input
+									type="email"
+									id="newsletter-email"
+									name="email"
+									required
+									class="block w-full rounded-xl border-2 border-neutral-300 bg-neutral-50 px-5 py-3.5 text-neutral-700 placeholder:text-neutral-400 focus:border-magenta focus:ring-2 focus:ring-magenta dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-200 dark:placeholder:text-neutral-500 dark:focus:border-magenta"
+									placeholder={placeholder}
+								/>
+							</div>
+							<button
+								type="submit"
+								class="btn-rainbow w-full sm:w-auto !py-3.5 !px-8 !text-base"
+							>
+								{buttonText}
+							</button>
+						</div>
+					</form>
+
+					<!-- Privacy note -->
+					<p class="mt-4 text-sm text-neutral-500 dark:text-neutral-500">
+						{t.newsletterSection.privacy}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

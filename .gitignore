@@ -43,3 +43,6 @@ coverage/
 .vscode/
 *.swp
 *.swo
+
+# BuildFlowz inspector (managed by BuildFlowz CLI)
+public/buildflowz-inspector.js
