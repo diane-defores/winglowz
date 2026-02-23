@@ -1,13 +1,5 @@
-import { ROUTES, getLocalizedPath } from './routing'
+import { getLocalizedPath } from './routing'
 import type { Language } from '@/types'
-
-interface SocialLinks {
-  facebook: string
-  twitter: string
-  github: string
-  linkedin: string
-  instagram: string
-}
 
 interface NavigationLink {
   name: string
@@ -19,47 +11,72 @@ interface FooterSection {
   links: NavigationLink[]
 }
 
-function getNavLinks(lang: Language = 'en'): NavigationLink[] {
+interface SocialLinks {
+  facebook: string
+  twitter: string
+  github: string
+  linkedin: string
+  instagram: string
+}
+
+export function getNavLinks(lang: Language = 'en'): NavigationLink[] {
   return [
-    { name: lang === 'fr' ? 'Accueil' : 'Home', url: getLocalizedPath(lang, 'index') },
     { name: lang === 'fr' ? 'Applications' : 'Apps', url: getLocalizedPath(lang, 'products') },
+    { name: lang === 'fr' ? 'Formations' : 'Courses', url: lang === 'fr' ? '/fr/formations/' : '/en/formations/' },
     { name: 'Roadmap', url: getLocalizedPath(lang, 'roadmap') },
-    { name: lang === 'fr' ? 'Services' : 'Services', url: getLocalizedPath(lang, 'services') },
+    { name: 'Services', url: getLocalizedPath(lang, 'services') },
     { name: 'Blog', url: getLocalizedPath(lang, 'blog') },
     { name: 'Contact', url: getLocalizedPath(lang, 'contact') },
   ]
 }
 
-function getFooterLinks(lang: Language = 'en'): FooterSection[] {
+export function getFooterLinks(lang: Language = 'en'): FooterSection[] {
   return [
     {
       section: lang === 'fr' ? 'Écosystème' : 'Ecosystem',
       links: [
-        { name: lang === 'fr' ? 'Cours' : 'Courses', url: getLocalizedPath(lang, 'welcome') },
-        { name: lang === 'fr' ? 'Applications' : 'Apps', url: getLocalizedPath(lang, 'products') },
+        { name: lang === 'fr' ? 'Formations' : 'Courses', url: lang === 'fr' ? '/fr/formations/' : '/en/formations/' },
+        { name: lang === 'fr' ? 'Apps & Plugins' : 'Apps & Plugins', url: getLocalizedPath(lang, 'products') },
         { name: 'Services', url: getLocalizedPath(lang, 'services') },
+        { name: 'Roadmap', url: getLocalizedPath(lang, 'roadmap') },
+      ],
+    },
+    {
+      section: lang === 'fr' ? 'Produits' : 'Products',
+      links: [
+        { name: 'ObsiFlowz', url: getLocalizedPath(lang, 'products') },
+        { name: 'TubeFlowz', url: getLocalizedPath(lang, 'products') },
+        { name: 'Windows Mastery', url: getLocalizedPath(lang, 'products') },
+        { name: lang === 'fr' ? 'Suite Productivité' : 'Productivity Suite', url: getLocalizedPath(lang, 'products') },
       ],
     },
     {
       section: lang === 'fr' ? 'Entreprise' : 'Company',
       links: [
-        { name: lang === 'fr' ? 'À propos' : 'About us', url: getLocalizedPath(lang, 'about') },
+        { name: lang === 'fr' ? 'À propos' : 'About Us', url: getLocalizedPath(lang, 'about') },
         { name: 'Blog', url: getLocalizedPath(lang, 'blog') },
-        { name: lang === 'fr' ? 'Avertissement' : 'Disclaimer', url: getLocalizedPath(lang, 'disclaimer') },
-        { name: lang === 'fr' ? 'Droits d\'auteur' : 'Copyright policy', url: getLocalizedPath(lang, 'copyright') },
-        { name: lang === 'fr' ? 'Conditions d\'utilisation' : 'Terms of use', url: getLocalizedPath(lang, 'terms') },
-        { name: lang === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', url: getLocalizedPath(lang, 'privacy') },
+        { name: 'Contact', url: getLocalizedPath(lang, 'contact') },
+      ],
+    },
+    {
+      section: lang === 'fr' ? 'Légal' : 'Legal',
+      links: [
+        { name: lang === 'fr' ? 'Politique de confidentialité' : 'Privacy Policy', url: getLocalizedPath(lang, 'privacy') },
+        { name: lang === 'fr' ? 'CGU' : 'Terms of Service', url: getLocalizedPath(lang, 'terms') },
+        { name: lang === 'fr' ? 'Mentions légales' : 'Legal Notice', url: getLocalizedPath(lang, 'legal') },
+        { name: lang === 'fr' ? "Droits d'auteur" : 'Copyright', url: getLocalizedPath(lang, 'copyright') },
+        { name: lang === 'fr' ? 'Clause de non-responsabilité' : 'Disclaimer', url: getLocalizedPath(lang, 'disclaimer') },
       ],
     },
   ]
 }
 
 export const socialLinks: SocialLinks = {
-  facebook: "#",
-  twitter: "#",
-  github: "https://github.com/dianedef/winflowz",
-  linkedin: "#",
-  instagram: "#",
+  facebook: '#',
+  twitter: '#',
+  github: 'https://github.com/dianedef/winflowz',
+  linkedin: '#',
+  instagram: '#',
 }
 
 export default {

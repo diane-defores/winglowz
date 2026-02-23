@@ -1,4 +1,4 @@
-// import { clerkMiddleware } from '@clerk/astro/server'; // Re-enable when real Clerk API keys are configured
+import { clerkMiddleware } from '@clerk/astro/server';
 import { sequence } from 'astro:middleware';
 import type { MiddlewareHandler, APIContext, MiddlewareNext } from 'astro';
 import { corsMiddleware } from './cors';
@@ -15,6 +15,6 @@ const appMiddleware: MiddlewareHandler = async (context: APIContext, next: Middl
 };
 
 export const onRequest = sequence(
-  // clerkMiddleware(), // Re-enable when real Clerk API keys are configured
+  clerkMiddleware(),
   appMiddleware,
 );

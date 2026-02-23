@@ -49,17 +49,17 @@
       {
         "title": "Documentation",
         "description": "Consultez notre documentation complète pour des réponses rapides",
-        "link": "/fr/docs"
+        "link": "/fr/formations/"
       },
       {
-        "title": "FAQ",
-        "description": "Parcourez les questions fréquemment posées",
-        "link": "/fr/faq"
+        "title": "Blog",
+        "description": "Parcourez nos articles pour des conseils et astuces",
+        "link": "/fr/blog"
       },
       {
-        "title": "Communauté",
-        "description": "Rejoignez notre communauté pour des discussions et des conseils",
-        "link": "/fr/communaute"
+        "title": "GitHub",
+        "description": "Signalez des problèmes ou contribuez à nos projets open-source",
+        "link": "https://github.com/dianedef/winflowz"
       }
     ]
   }

@@ -1,44 +1,112 @@
 ---
 import '../assets/styles/global.css';
+import CookieConsent from '@components/ui/banners/CookieConsent.astro';
 
 interface Props {
 	lang?: string;
 	title?: string;
 }
 
-const { lang = 'en', title = 'WinFlowz — Ship faster. Scale smarter.' } = Astro.props;
+const { lang = 'en', title = 'WinFlowz — Productivity Plugins & Windows Training' } = Astro.props;
+
+const description = lang === 'fr'
+	? 'Transformez votre flux de travail numerique avec des extensions Chrome, plugins Obsidian et un guide complet de productivite Windows avec 200+ astuces testees.'
+	: 'Transform your digital workflow with Chrome extensions for YouTube, Obsidian plugins for content management, and a complete Windows productivity guide with 200+ tested tips.';
+
+const ogImage = 'https://winflowz.com/images/WinFlowz.png';
+const siteUrl = lang === 'fr' ? 'https://winflowz.com/fr' : 'https://winflowz.com';
 ---
 
 <html lang={lang} class="dark">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="description" content="The modern platform for teams who ship fast. Built for scale, designed for speed." />
+		<meta name="description" content={description} />
 		<title>{title}</title>
+
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={siteUrl} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="600" />
+		<meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_US'} />
+		<meta property="og:site_name" content="WinFlowz" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
+		<!-- Alternate languages -->
+		<link rel="alternate" hreflang="en" href="https://winflowz.com/" />
+		<link rel="alternate" hreflang="fr" href="https://winflowz.com/fr" />
+		<link rel="canonical" href={siteUrl} />
+
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Manrope:wght@200..800&family=DM+Sans:opsz,wght@9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
 		<link rel="icon" type="image/png" href="/images/WinFlowz.png" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<meta name="theme-color" content="#ff00c8" />
+		<script src="https://checkout.polar.sh/embed.js" defer data-auto-open></script>
 	</head>
-	<body class="landing-page font-sans antialiased bg-black text-white" style="font-family: 'Manrope', sans-serif;">
+	<body class="landing-page font-sans antialiased bg-black text-white">
 		<div class="noise-overlay" aria-hidden="true"></div>
 		<slot />
+		<CookieConsent />
+		{
+			import.meta.env.PROD && (
+				<script async src="https://cdn.onthe.io/io.js/YyAMWtaLLPUi" />
+			)
+		}
 		<script src="/buildflowz-inspector.js" defer></script>
+		<!-- CTA click tracking -->
+		<script>
+			document.addEventListener('click', (e) => {
+				const target = (e.target as HTMLElement).closest('[data-track]') as HTMLElement | null;
+				if (!target) return;
+				const event = target.dataset.track;
+				if (!event) return;
+				// Fire via Vercel Analytics if available
+				if (typeof (window as any).va === 'function') {
+					(window as any).va('event', { name: event });
+				}
+				// Beacon fallback for server-side analytics
+				if (navigator.sendBeacon) {
+					navigator.sendBeacon('/api/track', JSON.stringify({ event, ts: Date.now() }));
+				}
+			});
+		</script>
 		<script>
 			import Lenis from 'lenis';
 
 			const lenis = new Lenis({
 				duration: 1.2,
-				easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+				easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
 				smoothWheel: true,
 			});
 
-			function raf(time) {
+			function raf(time: number) {
 				lenis.raf(time);
 				requestAnimationFrame(raf);
 			}
 
 			requestAnimationFrame(raf);
+
+			// Intersection Observer for .reveal elements
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(e => {
+					if (e.isIntersecting) {
+						e.target.classList.add('revealed');
+						observer.unobserve(e.target);
+					}
+				});
+			}, { rootMargin: '-80px' });
+			document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 		</script>
 	</body>
 </html>

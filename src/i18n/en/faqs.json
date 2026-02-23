@@ -2,28 +2,28 @@
   "subTitle": "Ask us anything about our brand and products, and get factual responses.",
   "faqs": [
     {
-      "question": "What types of tools are included in the Starter Kit?",
-      "answer": "The Starter Kit features essential hand and power tools for diverse DIY projects, including hammers, drills, screwdrivers, and a variety of fasteners. It's a curated selection to help beginners and experienced DIYers alike tackle most home improvement tasks."
+      "question": "What's included in the ObsiFlowz plugin suite?",
+      "answer": "ObsiFlowz includes a collection of Obsidian plugins designed to streamline your note-taking and knowledge management workflow. It features smart organization tools, enhanced search, template systems, and productivity automations. The suite is curated for both beginners and power users."
     },
     {
-      "question": "Can I upgrade from the Starter Kit to the Professional Toolbox?",
-      "answer": "Absolutely! You can upgrade to the Professional Toolbox at any time to access a wider range of high-quality tools, enjoy priority customer support, and receive exclusive content. Contact our support team for a seamless transition."
+      "question": "Can I upgrade from ObsiFlowz to the full Productivity Suite?",
+      "answer": "Absolutely! You can upgrade to the full Productivity Suite at any time to access all our plugins, Windows Mastery courses, and TubeFlowz tools. Contact our support team for a seamless transition and prorated pricing."
     },
     {
-      "question": "What discounts are available for bulk orders through the Professional Toolbox plan?",
-      "answer": "Professional Toolbox members are entitled to exclusive discounts on bulk orders, the percentage of which may vary depending on the order volume. Get in touch with us to discuss your needs, and we'll provide a tailored discount structure."
+      "question": "What discounts are available for team or bulk licenses?",
+      "answer": "Team licenses come with exclusive discounts that scale with the number of seats. Get in touch with us to discuss your team's needs, and we'll provide a tailored pricing structure."
     },
     {
       "question": "What kind of customer support can I expect?",
-      "answer": "All our customers receive dedicated email support. With the Starter Kit, you'll receive our standard support, while the Professional Toolbox plan upgrades you to priority support, meaning faster response times and specialized assistance."
+      "answer": "All our customers receive dedicated email support. With individual plans, you get our standard support, while the Productivity Suite upgrades you to priority support with faster response times and specialized assistance."
     },
     {
-      "question": "How current are the online resources and tutorials?",
-      "answer": "We regularly update our online resources and tutorials to reflect the latest trends in DIY and construction, as well as introductions to new tools and techniques. Our material aims to be comprehensive and user-friendly for all skill levels."
+      "question": "How current are the courses and training materials?",
+      "answer": "We regularly update our courses and training materials to reflect the latest features in Obsidian, Windows, and our plugin ecosystem. Our content aims to be comprehensive and accessible for all skill levels."
     },
     {
-      "question": "Does ScrewFast offer services for large-scale construction projects?",
-      "answer": "Yes, our Enterprise Solutions are designed for larger companies requiring comprehensive services. We provide consultation, planning, and supply of high-grade tools and materials, as well as staffing solutions for substantial construction needs. Contact us for a customized quote."
+      "question": "Does WinFlowz offer services for teams and organizations?",
+      "answer": "Yes, our Enterprise Solutions are designed for teams and organizations requiring comprehensive productivity tooling. We provide consultation, custom workflow setup, team training, and dedicated support. Contact us for a customized quote."
     }
   ]
-} 
+}

@@ -1,0 +1,158 @@
+---
+/* Navbar — Astro wrapper + MobileMenu React island */
+import { MobileMenu } from '@components/react/landing/MobileMenu'
+import ThemePicker from '@/components/ui/ThemePicker.astro'
+import { getLangFromUrl, useTranslations } from '@/utils/i18n'
+
+interface NavItem {
+  label: string
+  href: string
+}
+
+interface Props {
+  navItems?: NavItem[]
+}
+
+const { navItems: propNavItems } = Astro.props
+
+const lang = getLangFromUrl(Astro.url)
+const t = await useTranslations(lang, 'navigation')
+const homeUrl = lang === 'fr' ? '/fr' : '/'
+
+// Use provided navItems or fall back to i18n
+const navItems: NavItem[] = propNavItems || t.navBarLinks?.map((link: { name: string; url: string }) => ({
+  label: link.name,
+  href: link.url,
+})) || []
+
+// Language switch
+const altLang = lang === 'fr' ? 'en' : 'fr'
+const altLangLabel = lang === 'fr' ? 'EN' : 'FR'
+
+const routeMappings: Record<string, string> = {
+  about: 'a-propos',
+  terms: 'cgu',
+  disclaimer: 'non-responsabilite',
+  privacy: 'confidentialite',
+  copyright: 'droits',
+  legal: 'mentions-legales',
+  products: 'produits',
+  'products/obsidian': 'produits/obsidian',
+  'products/chrome': 'produits/chrome',
+  'products/windows': 'produits/windows',
+  'products/pricing': 'produits/tarifs',
+  services: 'services',
+  blog: 'blog',
+  contact: 'contact',
+  roadmap: 'roadmap',
+}
+
+function getTranslatedPath(path: string, targetLang: string): string {
+  if (path === '/' || path === '/fr' || path === '/fr/') {
+    return targetLang === 'fr' ? '/fr' : '/'
+  }
+  const cleanPath = path.replace(/^\/fr\//, '/')
+  if (targetLang === 'fr') {
+    for (const [en, fr] of Object.entries(routeMappings)) {
+      if (cleanPath === `/${en}` || cleanPath.startsWith(`/${en}/`)) {
+        return `/fr/${fr}${cleanPath.substring(en.length + 1)}`
+      }
+    }
+    return `/fr${cleanPath}`
+  } else {
+    for (const [en, fr] of Object.entries(routeMappings)) {
+      if (cleanPath === `/${fr}` || cleanPath.startsWith(`/${fr}/`)) {
+        return `/${en}${cleanPath.substring(fr.length + 1)}`
+      }
+    }
+    return cleanPath
+  }
+}
+
+const altLangUrl = getTranslatedPath(Astro.url.pathname, altLang)
+
+// i18n labels
+const signInLabel = lang === 'fr' ? 'Connexion' : 'Sign In'
+const ctaLabel = lang === 'fr' ? 'Commencer' : 'Get Started'
+const signInUrl = lang === 'fr' ? '/fr/connexion' : '/signin'
+const ctaUrl = lang === 'fr' ? '/fr/produits' : '/products'
+---
+
+<header class="navbar-header fixed top-4 left-0 right-0 mx-auto z-50 w-[calc(100%-2rem)] max-w-4xl">
+  <nav class="relative flex items-center justify-between px-4 py-3 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200/60 shadow-sm dark:bg-zinc-900/80 dark:border-zinc-800 dark:shadow-none">
+    <!-- Logo -->
+    <a href={homeUrl} class="flex items-center gap-2 no-hover-animation">
+      <div class="text-logo" style="font-size: 1.25rem;">
+        <span class="text">WinFlowz</span>
+        <div class="glow-effect"></div>
+      </div>
+    </a>
+
+    <!-- Desktop Nav Items -->
+    <div class="hidden md:flex items-center gap-1">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class="nav-link no-hover-animation relative px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 dark:text-zinc-400 dark:hover:text-white transition-colors rounded-full"
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+
+    <!-- Desktop Controls -->
+    <div class="hidden md:flex items-center gap-1">
+      <!-- Language switch -->
+      <a
+        href={altLangUrl}
+        class="no-hover-animation px-2.5 py-1.5 text-xs font-semibold rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 dark:text-zinc-500 dark:hover:text-white dark:hover:bg-zinc-800 transition-colors"
+      >
+        {altLangLabel}
+      </a>
+      <!-- Theme toggle -->
+      <ThemePicker />
+      <!-- Sign In -->
+      <a href={signInUrl} class="no-hover-animation">
+        <button class="text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 px-3 py-1.5 rounded-full text-sm transition-colors">
+          {signInLabel}
+        </button>
+      </a>
+      <!-- CTA -->
+      <a href={ctaUrl} class="no-hover-animation">
+        <button class="shimmer-btn bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 rounded-full px-4 py-1.5 text-sm font-medium">
+          {ctaLabel}
+        </button>
+      </a>
+    </div>
+
+    <!-- Mobile Menu (React island) -->
+    <MobileMenu
+      client:only="react"
+      items={navItems}
+      signInLabel={signInLabel}
+      ctaLabel={ctaLabel}
+      signInUrl={signInUrl}
+      ctaUrl={ctaUrl}
+      altLangUrl={altLangUrl}
+      altLangLabel={altLangLabel}
+    />
+  </nav>
+</header>
+
+<style>
+  .navbar-header {
+    animation: navbar-slide-down 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .nav-link:hover {
+    background-color: rgb(245 245 245);
+  }
+
+  :global(.dark) .nav-link:hover {
+    background-color: rgb(39 39 42);
+  }
+
+  .nav-link {
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+</style>

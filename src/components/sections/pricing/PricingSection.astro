@@ -35,7 +35,7 @@ interface PricingTranslations {
 
   <!-- Contains two main product blocks -->
   <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-0">
-    <!-- Starter Kit product details -->
+    <!-- Free plan details -->
     <div class="w-full rounded-xl bg-gray-800 p-4 sm:w-1/2 sm:rounded-r-none sm:p-6 lg:w-1/3 lg:p-8">
       <div class="mb-3 sm:mb-4">
         <h3 class="text-neutral-100">
@@ -63,8 +63,9 @@ interface PricingTranslations {
       </ul>
 
       <a
-        href="#"
+        href={lang === "fr" ? "/fr/produits" : "/products"}
         class="block rounded-lg bg-gradient-rainbow px-6 py-2.5 text-center text-sm font-bold text-white outline-none ring-magenta transition duration-100 hover:opacity-90 focus-visible:ring active:opacity-80 sm:px-8 sm:py-3 md:text-base"
+        data-track="pricing-free-cta"
       >
         {t.plans[0].cta}
       </a>
@@ -108,8 +109,10 @@ interface PricingTranslations {
         </ul>
 
         <a
-          href="#"
+          href={lang === "fr" ? "/fr/produits" : "/products"}
           class="block rounded-lg bg-gradient-rainbow px-6 py-2.5 text-center text-sm font-bold text-white outline-none ring-magenta transition duration-100 hover:opacity-90 focus-visible:ring active:opacity-80 sm:px-8 sm:py-3 md:text-base"
+          data-polar-checkout
+          data-track="pricing-pro-cta"
         >
           {t.plans[1].cta}
         </a>
@@ -122,6 +125,6 @@ interface PricingTranslations {
     <p class="text-neutral-600 dark:text-neutral-400">
       {t.plans[2].description}
     </p>
-    <SecondaryCTA title={t.plans[2].cta} url="#" />
+    <SecondaryCTA title={t.plans[2].cta} url={lang === "fr" ? "/fr/contact" : "/contact"} />
   </div>
 </section>

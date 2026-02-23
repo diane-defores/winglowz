@@ -1,16 +1,39 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro'
+
+const auth = Astro.locals.auth()
 ---
 
-<MainLayout title="Achat confirmé">
-	<div class="flex min-h-[60vh] items-center justify-center">
-		<div class="text-center">
-			<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-4">
-				Purchase
+<MainLayout title="Purchase Confirmed">
+	<div class="flex min-h-[60vh] items-center justify-center py-12">
+		<div class="mx-auto max-w-lg text-center">
+			<div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green/10">
+				<svg class="h-8 w-8 text-green" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M20 6 9 17l-5-5"/>
+				</svg>
+			</div>
+
+			<h1 class="mb-4 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+				Purchase Confirmed!
 			</h1>
-			<p class="text-neutral-500 dark:text-neutral-400 text-lg">
-				Coming soon — Auth upgrade in progress.
+			<p class="mb-8 text-lg text-neutral-500 dark:text-neutral-400">
+				Thank you for your purchase. You now have access to all Pro features.
 			</p>
+
+			<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
+				{auth.userId ? (
+					<a href="/dashboard" class="inline-flex items-center justify-center rounded-lg bg-magenta px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity">
+						Go to Dashboard
+					</a>
+				) : (
+					<a href="/signin" class="inline-flex items-center justify-center rounded-lg bg-magenta px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity">
+						Sign In to Access
+					</a>
+				)}
+				<a href="/products" class="inline-flex items-center justify-center rounded-lg border border-neutral-300 px-6 py-3 font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 transition-colors">
+					View Products
+				</a>
+			</div>
 		</div>
 	</div>
 </MainLayout>

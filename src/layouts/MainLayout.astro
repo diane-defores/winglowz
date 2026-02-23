@@ -1,9 +1,9 @@
 ---
 // Importing necessary components
 import Meta from '@/components/Meta.astro'
-import FooterSection from '@/components/sections/navbar&footer/FooterSection.astro'
-import NewsletterSection from '@/components/sections/newsletter/NewsletterSection.astro'
-import Navbar from '@/components/sections/navbar&footer/Navbar.astro'
+import Navbar from '@/components/astro/landing/Navbar.astro'
+import Footer from '@/components/astro/landing/Footer.astro'
+import CookieConsent from '@components/ui/banners/CookieConsent.astro'
 import { SITE } from '@/constants'
 import '../assets/styles/global.css'
 import { ClientRouter } from 'astro:transitions'
@@ -29,17 +29,20 @@ interface Props {
 	<head>
 		<Meta meta={meta} structuredData={structuredData} />
 		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Manrope:wght@200..800&family=DM+Sans:opsz,wght@9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
 		<ClientRouter handleForms />
 	</head>
 	<body class="dark:bg-neutral-900">
-		<div class="mx-auto max-w-screen-2xl px-3 sm:px-6 lg:px-8">
-			<Navbar />
+		<Navbar />
+		<div class="mx-auto max-w-screen-2xl px-3 pt-20 sm:px-6 lg:px-8">
 			<main>
 				<slot />
 			</main>
 		</div>
-		<NewsletterSection />
-		<FooterSection />
+		<Footer />
+		<CookieConsent />
 		{
 			import.meta.env.PROD && (
 				<script async src="https://cdn.onthe.io/io.js/YyAMWtaLLPUi" />

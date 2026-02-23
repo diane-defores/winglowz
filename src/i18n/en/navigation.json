@@ -1,7 +1,8 @@
 {
   "navBarLinks": [
     { "name": "Apps", "url": "/products" },
-    { "name": "Courses", "url": "/courses" },
+    { "name": "Courses", "url": "/en/formations/" },
+    { "name": "Roadmap", "url": "/roadmap" },
     { "name": "Services", "url": "/services" },
     { "name": "Blog", "url": "/blog" },
     { "name": "Contact", "url": "/contact" }
@@ -10,9 +11,19 @@
     {
       "section": "Ecosystem",
       "links": [
-        { "name": "Formations", "url": "/en/formations/" },
-        { "name": "Tools & Equipment", "url": "/products" },
-        { "name": "Construction Services", "url": "/services" }
+        { "name": "Courses", "url": "/en/formations/" },
+        { "name": "Apps & Plugins", "url": "/products" },
+        { "name": "Services", "url": "/services" },
+        { "name": "Roadmap", "url": "/roadmap" }
+      ]
+    },
+    {
+      "section": "Products",
+      "links": [
+        { "name": "ObsiFlowz", "url": "/products" },
+        { "name": "TubeFlowz", "url": "/products" },
+        { "name": "Windows Mastery", "url": "/products" },
+        { "name": "Productivity Suite", "url": "/products" }
       ]
     },
     {
@@ -20,21 +31,23 @@
       "links": [
         { "name": "About Us", "url": "/about" },
         { "name": "Blog", "url": "/blog" },
+        { "name": "Contact", "url": "/contact" }
+      ]
+    },
+    {
+      "section": "Legal",
+      "links": [
+        { "name": "Privacy Policy", "url": "/privacy" },
+        { "name": "Terms of Service", "url": "/terms" },
+        { "name": "Legal Notice", "url": "/legal" },
         { "name": "Copyright", "url": "/copyright" },
         { "name": "Disclaimer", "url": "/disclaimer" },
-        { "name": "Legal Notice", "url": "/legal" },
-        { "name": "Privacy Policy", "url": "/privacy" },
-        { "name": "Terms of Service", "url": "/terms" }
+        { "name": "Terms of Sale", "url": "/cgv" }
       ]
     }
   ],
   "socialLinks": {
-    "facebook": "#",
-    "twitter": "#",
-    "github": "https://github.com/dianedef/winflowz",
-    "linkedin": "#",
-    "instagram": "#",
-    "x": "#"
+    "github": "https://github.com/dianedef/winflowz"
   },
   "newsletterSection": {
     "title": "This Week In Windows Productivity",
@@ -48,4 +61,4 @@
     },
     "crafted": "Crafted by"
   }
-} 
+}

@@ -67,19 +67,23 @@ export const ROUTES: Record<string, RouteDefinition> = {
   },
   disclaimer: {
     en: 'disclaimer',
-    fr: 'avertissement'
+    fr: 'non-responsabilite'
   },
   copyright: {
     en: 'copyright',
-    fr: 'droits-auteur'
+    fr: 'droits'
   },
   terms: {
     en: 'terms',
-    fr: 'conditions-utilisation'
+    fr: 'cgu'
   },
   privacy: {
     en: 'privacy',
     fr: 'confidentialite'
+  },
+  legal: {
+    en: 'legal',
+    fr: 'mentions-legales'
   }
 }
 

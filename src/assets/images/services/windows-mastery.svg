@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" rx="16" fill="#18181b"/>
+  <!-- Windows-style desktop -->
+  <rect x="40" y="40" width="720" height="480" rx="8" fill="#0c0c0c"/>
+  <!-- Taskbar -->
+  <rect x="40" y="480" width="720" height="40" rx="0" fill="#1c1c1e"/>
+  <rect x="340" y="488" width="120" height="24" rx="4" fill="#27272a"/>
+  <!-- Multiple windows showing tips -->
+  <!-- Window 1: Keyboard shortcuts -->
+  <rect x="60" y="60" width="300" height="200" rx="8" fill="#27272a"/>
+  <rect x="60" y="60" width="300" height="28" rx="8" fill="#3f3f46"/>
+  <text x="76" y="79" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">Keyboard Shortcuts</text>
+  <text x="76" y="108" fill="#ff00c8" font-family="monospace" font-size="10">Win + V</text>
+  <text x="160" y="108" fill="#a1a1aa" font-family="sans-serif" font-size="10">Clipboard History</text>
+  <text x="76" y="128" fill="#ff00c8" font-family="monospace" font-size="10">Win + Shift + S</text>
+  <text x="200" y="128" fill="#a1a1aa" font-family="sans-serif" font-size="10">Screenshot</text>
+  <text x="76" y="148" fill="#ff00c8" font-family="monospace" font-size="10">Ctrl + Win + D</text>
+  <text x="200" y="148" fill="#a1a1aa" font-family="sans-serif" font-size="10">New Desktop</text>
+  <text x="76" y="168" fill="#ff00c8" font-family="monospace" font-size="10">Win + .</text>
+  <text x="160" y="168" fill="#a1a1aa" font-family="sans-serif" font-size="10">Emoji Picker</text>
+  <text x="76" y="188" fill="#ff00c8" font-family="monospace" font-size="10">Win + Tab</text>
+  <text x="160" y="188" fill="#a1a1aa" font-family="sans-serif" font-size="10">Task View</text>
+  <!-- Progress bar -->
+  <rect x="76" y="220" width="260" height="6" rx="3" fill="#3f3f46"/>
+  <rect x="76" y="220" width="180" height="6" rx="3" fill="#00ff44"/>
+  <text x="76" y="240" fill="#52525b" font-family="sans-serif" font-size="9">68% mastered</text>
+  <!-- Window 2: System optimization -->
+  <rect x="400" y="100" width="340" height="220" rx="8" fill="#27272a"/>
+  <rect x="400" y="100" width="340" height="28" rx="8" fill="#3f3f46"/>
+  <text x="416" y="119" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">System Optimization</text>
+  <!-- Stats -->
+  <text x="416" y="152" fill="#00c8ff" font-family="sans-serif" font-size="24" font-weight="bold">200+</text>
+  <text x="500" y="152" fill="#a1a1aa" font-family="sans-serif" font-size="12">tested tips</text>
+  <rect x="416" y="168" width="308" height="1" fill="#3f3f46"/>
+  <rect x="416" y="184" width="308" height="24" rx="4" fill="#1c1c1e"/>
+  <text x="428" y="200" fill="#ffe500" font-family="sans-serif" font-size="10">Startup Speed</text>
+  <rect x="560" y="190" width="152" height="8" rx="4" fill="#3f3f46"/>
+  <rect x="560" y="190" width="130" height="8" rx="4" fill="#00ff44"/>
+  <rect x="416" y="216" width="308" height="24" rx="4" fill="#1c1c1e"/>
+  <text x="428" y="232" fill="#ffe500" font-family="sans-serif" font-size="10">Memory Usage</text>
+  <rect x="560" y="222" width="152" height="8" rx="4" fill="#3f3f46"/>
+  <rect x="560" y="222" width="100" height="8" rx="4" fill="#00c8ff"/>
+  <rect x="416" y="248" width="308" height="24" rx="4" fill="#1c1c1e"/>
+  <text x="428" y="264" fill="#ffe500" font-family="sans-serif" font-size="10">Disk Cleanup</text>
+  <rect x="560" y="254" width="152" height="8" rx="4" fill="#3f3f46"/>
+  <rect x="560" y="254" width="145" height="8" rx="4" fill="#ff00c8"/>
+  <!-- Tip count badge -->
+  <rect x="80" y="300" width="260" height="140" rx="8" fill="#27272a"/>
+  <rect x="80" y="300" width="260" height="28" rx="8" fill="#3f3f46"/>
+  <text x="96" y="319" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">Today's Tips</text>
+  <rect x="96" y="340" width="228" height="6" rx="3" fill="#52525b"/>
+  <rect x="96" y="356" width="200" height="6" rx="3" fill="#52525b"/>
+  <rect x="96" y="380" width="100" height="24" rx="12" fill="#ff00c8"/>
+  <text x="116" y="396" fill="#ffffff" font-family="sans-serif" font-size="10">Try It Now</text>
+</svg>

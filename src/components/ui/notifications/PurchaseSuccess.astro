@@ -10,8 +10,8 @@ const { productName, apiKey, price } = Astro.props;
 
 <div class="rounded-lg bg-white p-6 shadow dark:bg-neutral-800">
   <div class="sm:flex sm:items-start">
-    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 sm:mx-0">
-      <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green/10 dark:bg-green/10 sm:mx-0">
+      <svg class="h-6 w-6 text-green" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     </div>
@@ -28,19 +28,19 @@ const { productName, apiKey, price } = Astro.props;
   </div>
 
   <div class="mt-6">
-    <div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/30">
+    <div class="rounded-md bg-yellow/10 p-4 dark:bg-yellow/10">
       <div class="flex">
         <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="h-5 w-5 text-yellow" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
           </svg>
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+          <h3 class="text-sm font-medium text-neutral-800 dark:text-neutral-200">
             Votre clé API
           </h3>
           <div class="mt-2">
-            <p class="text-sm text-yellow-700 dark:text-yellow-300">
+            <p class="text-sm text-neutral-700 dark:text-neutral-300">
               Copiez votre clé API maintenant. Pour des raisons de sécurité, elle ne sera plus jamais affichée.
             </p>
           </div>
@@ -54,7 +54,7 @@ const { productName, apiKey, price } = Astro.props;
               />
               <button
                 type="button"
-                class="inline-flex items-center rounded-md bg-yellow-50 px-3 py-2 text-sm font-semibold text-yellow-800 shadow-sm ring-1 ring-inset ring-yellow-600/20 hover:bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-200 dark:ring-yellow-500/30 dark:hover:bg-yellow-900/40"
+                class="inline-flex items-center rounded-md bg-yellow/10 px-3 py-2 text-sm font-semibold text-neutral-800 shadow-sm ring-1 ring-inset ring-yellow/20 hover:bg-yellow/20 dark:bg-yellow/10 dark:text-neutral-200 dark:ring-yellow/30 dark:hover:bg-yellow/20"
                 data-copy-key={apiKey}
               >
                 <svg class="-ml-0.5 mr-1.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,18 +70,18 @@ const { productName, apiKey, price } = Astro.props;
   </div>
 
   <div class="mt-6">
-    <div class="rounded-md bg-blue-50 p-4 dark:bg-blue-900/30">
+    <div class="rounded-md bg-neutral-100 p-4 dark:bg-neutral-800">
       <div class="flex">
         <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="h-5 w-5 text-cyan" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
           </svg>
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">
+          <h3 class="text-sm font-medium text-cyan dark:text-cyan">
             Prochaines étapes
           </h3>
-          <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+          <div class="mt-2 text-sm text-cyan dark:text-cyan">
             <ul class="list-disc space-y-1 pl-5">
               <li>Consultez la documentation pour intégrer votre clé API</li>
               <li>Gérez vos clés API dans votre tableau de bord</li>

@@ -37,8 +37,8 @@
       "title": "4. Services d'Authentification",
       "intro": "L'authentification des utilisateurs est assurée par :",
       "items": [
-        "Prestataire : Supabase",
-        "Site web : https://supabase.com",
+        "Prestataire : Clerk",
+        "Site web : https://clerk.com",
         "Traitement des données : Conforme au RGPD"
       ]
     },

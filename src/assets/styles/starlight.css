@@ -1,12 +1,12 @@
-/* Dark mode colors - Using rainbow gradient palette */
+/* Dark mode colors - Using brand tokens from global.css */
 :root,
 :root[data-theme="dark"],
 .dark {
     --border: hsla(0, 0%, 25%, .4);
     --backdrop-color: #272727cc;
-    --sl-color-accent: #ff00c8;        /* Magenta from rainbow */
-    --sl-color-accent-high: #ffe500;   /* Yellow from rainbow */
-    --sl-color-accent-low: #ff0033;    /* Red from rainbow */
+    --sl-color-accent: var(--brand-magenta);
+    --sl-color-accent-high: var(--brand-yellow);
+    --sl-color-accent-low: var(--brand-red);
     --sl-color-black: #181818;
     --sl-color-gray-1: #eee;
     --sl-color-gray-2: #c2c2c2;
@@ -15,19 +15,19 @@
     --sl-color-gray-5: #383838;
     --sl-color-gray-6: #272727;
     --sl-color-white: #fff;
-    --list-marker-color: #ff00c8;      /* Magenta from rainbow */
+    --list-marker-color: var(--brand-magenta);
     --border-neutral: 0, 0%, 25.1%;
-    --rainbow-overlay: linear-gradient(45deg, #ff0033, #ff00c8, #ffe500, #00ff44, #00c8ff);
+    --rainbow-overlay: var(--gradient-rainbow);
 }
 
-/* Light mode colors - Using rainbow gradient palette */
+/* Light mode colors - Using brand tokens from global.css */
 :root[data-theme="light"],
 .light {
     --border: hsla(0, 0%, 88%, .4);
     --backdrop-color: #f6f6f699;
-    --sl-color-accent: #ff00c8;        /* Magenta from rainbow */
-    --sl-color-accent-high: #ff0033;   /* Red from rainbow */
-    --sl-color-accent-low: #00c8ff;    /* Cyan from rainbow */
+    --sl-color-accent: var(--brand-magenta);
+    --sl-color-accent-high: var(--brand-red);
+    --sl-color-accent-low: var(--brand-cyan);
     --sl-color-black: #fff;
     --sl-color-gray-1: #272727;
     --sl-color-gray-2: #383838;
@@ -37,15 +37,15 @@
     --sl-color-gray-6: #eee;
     --sl-color-gray-7: #f6f6f6;
     --sl-color-white: #181818;
-    --list-marker-color: #ff00c8;      /* Magenta from rainbow */
-    --rainbow-overlay: linear-gradient(45deg, #ff0033, #ff00c8, #ffe500, #00ff44, #00c8ff);
+    --list-marker-color: var(--brand-magenta);
+    --rainbow-overlay: var(--gradient-rainbow);
 }
 
-/* Page background - using rainbow gradient */
+/* Page background - subtle brand color washes */
 .page {
-    background: linear-gradient(215deg, rgba(255, 0, 200, 0.1), transparent 40%),
-                radial-gradient(rgba(0, 200, 255, 0.1), transparent 40%) no-repeat center center / cover,
-                radial-gradient(rgba(255, 229, 0, 0.1), transparent 65%) no-repeat center center / cover;
+    background: linear-gradient(215deg, color-mix(in srgb, var(--brand-magenta) 10%, transparent), transparent 40%),
+                radial-gradient(color-mix(in srgb, var(--brand-cyan) 10%, transparent), transparent 40%) no-repeat center center / cover,
+                radial-gradient(color-mix(in srgb, var(--brand-yellow) 10%, transparent), transparent 65%) no-repeat center center / cover;
     background-blend-mode: overlay;
 }
 
@@ -131,12 +131,12 @@ article.card {
 }
 
 .starlight-aside--tip {
-    background: linear-gradient(45deg, #ff00c8, #ffe500);
+    background: linear-gradient(45deg, var(--brand-magenta), var(--brand-yellow));
     color: #2d2d2d;
 }
 
 .starlight-aside--note {
-    background: linear-gradient(45deg, #00c8ff, #00ff44);
+    background: linear-gradient(45deg, var(--brand-cyan), var(--brand-green));
     color: #1a1a1a;
 }
 

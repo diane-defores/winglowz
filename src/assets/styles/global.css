@@ -2,17 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Styles globaux pour tout le site */
-
-/* Global Typography System - Mobile-first with responsive scaling */
+/* ==========================================
+   Design Tokens — Single Source of Truth
+   ========================================== */
 @layer base {
+  :root {
+    /* Brand colors (from animated logo gradient) */
+    --brand-red: #ff0033;
+    --brand-magenta: #ff00c8;
+    --brand-yellow: #ffe500;
+    --brand-green: #00ff44;
+    --brand-cyan: #00c8ff;
+
+    /* Gradients */
+    --gradient-rainbow: linear-gradient(45deg, var(--brand-red), var(--brand-magenta), var(--brand-yellow), var(--brand-green), var(--brand-cyan), var(--brand-red));
+    --gradient-rainbow-h: linear-gradient(90deg, var(--brand-red), var(--brand-magenta), var(--brand-yellow), var(--brand-green), var(--brand-cyan), var(--brand-red));
+
+    /* Font families */
+    --font-logo: 'Audiowide', sans-serif;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-heading: 'DM Sans', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+
+    /* Radius */
+    --radius: 1rem;
+  }
+
   /* Base font size */
   html {
     font-size: 16px;
   }
-  
+
   body {
+    font-family: var(--font-body);
     @apply text-xl leading-relaxed text-neutral-700 dark:text-neutral-300;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+  }
+
+  h4, h5, h6 {
+    font-family: var(--font-heading);
   }
   
   /* Headings - Mobile first, larger baseline for readability */
@@ -150,6 +181,191 @@
   .text-rainbow {
     @apply bg-gradient-rainbow bg-clip-text text-transparent;
   }
+
+  /* ==========================================
+     Rainbow text logo — canonical styles
+     Used by TextLogo.astro & SiteTitle.astro
+     ========================================== */
+  .text-logo {
+    font-family: var(--font-logo);
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+  }
+
+  .text-logo .text {
+    position: relative;
+    color: white;
+    transform-style: preserve-3d;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  .text-logo .text::before {
+    content: 'WinFlowz';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(45deg, var(--brand-red), var(--brand-magenta), var(--brand-yellow), var(--brand-green), var(--brand-cyan), var(--brand-red)),
+      radial-gradient(circle at top left, var(--brand-red), #ff3366, var(--brand-magenta), #ff33cc, var(--brand-yellow), #ffcc00, var(--brand-green), #00cc44, var(--brand-cyan), #0099ff, var(--brand-red));
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: logo-gradient 6s ease infinite;
+    transform: translateZ(8px);
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+  }
+
+  .text-logo .text::after {
+    content: 'WinFlowz';
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    color: white;
+    z-index: -1;
+    transform: translateZ(4px);
+    text-shadow:
+      0.5px 0.5px 0 white,
+      1px 1px 0 white,
+      1.5px 1.5px 0 rgba(255, 255, 255, 0.7),
+      0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .text-logo .glow-effect {
+    position: absolute;
+    inset: -6px -10px;
+    background:
+      linear-gradient(45deg, var(--brand-red), var(--brand-magenta), var(--brand-yellow), var(--brand-green), var(--brand-cyan), var(--brand-red)),
+      radial-gradient(circle at top left, var(--brand-red), #ff3366, var(--brand-magenta), #ff33cc, var(--brand-yellow), #ffcc00, var(--brand-green), #00cc44, var(--brand-cyan), #0099ff, var(--brand-red));
+    background-size: 200% 200%;
+    filter: blur(12px);
+    opacity: 0.3;
+    border-radius: 40% / 100%;
+    animation: logo-gradient 6s ease infinite;
+    z-index: -2;
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+    box-shadow:
+      0 0 10px rgba(255, 0, 200, 0.3),
+      0 0 20px rgba(0, 200, 255, 0.2);
+  }
+
+  .text-logo:hover .text {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  }
+
+  .text-logo:hover .glow-effect {
+    opacity: 0.45;
+    filter: blur(15px);
+    animation: logo-gradient 4s ease infinite;
+  }
+
+  .text-logo:hover .text::before {
+    transform: translateZ(12px);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+  }
+
+  .text-logo:hover .text::after {
+    transform: translateZ(6px);
+    left: 1.5px;
+    top: 1.5px;
+    text-shadow:
+      1px 1px 0 white,
+      1.5px 1.5px 0 white,
+      2px 2px 0 rgba(255, 255, 255, 0.7),
+      0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .text-logo:active .text {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  }
+
+  .text-logo:active .glow-effect {
+    opacity: 0.5;
+    transform: rotate(180deg) scale(0.95);
+    animation-play-state: paused;
+  }
+
+  .text-logo:active .text::before {
+    transform: translateZ(6px);
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+  }
+
+  .text-logo:active .text::after {
+    transform: translateZ(3px);
+    left: 0.5px;
+    top: 0.5px;
+    text-shadow:
+      0.5px 0.5px 0 white,
+      0.75px 0.75px 0 white,
+      1px 1px 0 rgba(255, 255, 255, 0.7),
+      0 1px 3px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Responsive logo sizing */
+  @media (max-width: 640px) {
+    .text-logo { font-size: 2rem; }
+    .text-logo .glow-effect { inset: -5px -8px; }
+  }
+
+  @media (max-width: 480px) {
+    .text-logo { font-size: 1.5rem; }
+    .text-logo .glow-effect { inset: -4px -6px; }
+  }
+}
+
+/* Shared animations (navbar, mobile menu, footer status) */
+@keyframes navbar-slide-down {
+  from { opacity: 0; transform: translateY(-100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px currentColor; }
+  50% { opacity: 0.6; box-shadow: 0 0 8px currentColor; }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes logo-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Styles pour la barre de défilement - WebKit (Chrome, Safari, Edge) */

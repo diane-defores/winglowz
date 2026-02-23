@@ -53,8 +53,8 @@ description: Explore WinFlowz's comprehensive documentation for an in-depth look
   }
 </style>
 
-:::tip[Services de Construction]
-Découvrez notre expertise en construction et rénovation. De la planification à l'exécution, nos services professionnels vous accompagnent dans la réalisation de vos projets avec excellence.
+:::tip[Plugins & Outils]
+Découvrez notre écosystème de plugins Obsidian et d'extensions Chrome. De la curation de contenu à la gestion de notes, nos outils vous accompagnent dans l'optimisation de votre productivité numérique.
 :::
 
 :::note[Sujets Avancés]

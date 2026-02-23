@@ -4,7 +4,7 @@
     "description": "Transformez votre flux de travail numérique avec des outils puissants et des formations conçues par une experte neurodivergente passionnée par la productivité."
   },
   "hero": {
-    "title": "Plugins <span class=\"relative inline-flex sm:inline\"><span class=\"relative text-orange-400 dark:text-pink-400\">Obsidian</span><span class=\"absolute inset-0 h-full w-full bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] opacity-30 blur-lg filter\"></span></span> et Formation <span class=\"text-yellow-500 dark:text-yellow-400\">Windows</span>",
+    "title": "Plugins <span class=\"relative inline-flex sm:inline\"><span class=\"relative text-magenta\">Obsidian</span><span class=\"absolute inset-0 h-full w-full bg-gradient-rainbow opacity-30 blur-lg filter\"></span></span> et Formation <span class=\"text-yellow\">Windows</span>",
     "subTitle": "Extensions Chrome pour YouTube, plugins Obsidian (RSS, gestion de plugins) et guide complet de productivité Windows avec 200+ astuces testées.",
     "primaryBtn": "Témoignages",
     "primaryBtnURL": "/fr/produits#testimonials",
@@ -24,7 +24,7 @@
     "subTitle": "En tant que personne atteinte de TDAH et d'autisme, j'ai beaucoup lutté pour être consciente de moi-même et disciplinée. J'ai donc créé des outils qui rendent déraisonnable et impossible de ne pas atteindre nos objectifs👌"
   },
   "workflow": {
-    "title": "Personnalisez <span class=\"text-yellow-500 dark:text-yellow-400\">Vos Workflowz</span> pour correspondre parfaitement à votre personnalité et construire votre meilleure vie",
+    "title": "Personnalisez <span class=\"text-yellow\">Vos Workflowz</span> pour correspondre parfaitement à votre personnalité et construire votre meilleure vie",
     "tabs": [
       {
         "heading": "ObsiFlowz",
@@ -51,7 +51,7 @@
     "statistics": [
       {
         "count": "70k+",
-        "description": "clients équipés — du DIY aux grandes entreprises"
+        "description": "lecons completees — des freelances aux power users"
       },
       {
         "count": "35%",

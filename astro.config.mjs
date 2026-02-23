@@ -4,7 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import starlight from '@astrojs/starlight';
 import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
-// import clerk from '@clerk/astro'; // Re-enable when real Clerk API keys are configured
+import clerk from '@clerk/astro';
 import icon from "astro-icon";
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -54,6 +54,11 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'WinFlowz Docs',
+      head: [
+        { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
+        { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },
+        { tag: 'link', attrs: { href: 'https://fonts.googleapis.com/css2?family=Audiowide&family=Manrope:wght@200..800&family=DM+Sans:opsz,wght@9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap', rel: 'stylesheet' } },
+      ],
       customCss: [
         './src/assets/styles/global.css',
         './src/assets/styles/starlight.css'
@@ -123,6 +128,6 @@ export default defineConfig({
     react({
       include: ['**/components/react/**', '**/components/ui/**'],
     }),
-    // clerk(), // Re-enable when real Clerk API keys are configured
+    clerk(),
   ],
 });

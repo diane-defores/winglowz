@@ -11,12 +11,14 @@ import LeftSection from '@components/ui/blocks/LeftSection.astro'
 import RightSection from '@components/ui/blocks/RightSection.astro'
 import FeaturesStats from '@components/sections/features/FeaturesStats.astro'
 
-// Import des images par défaut
-import defaultImage1 from '@/assets/images/WinFlowz.png'
-import defaultImage2 from '@/assets/images/WinFlowz.png'
+// Import distinct service images
+import chromeExtImg from '@/assets/images/services/chrome-extensions.svg'
+import obsidianPluginsImg from '@/assets/images/services/obsidian-plugins.svg'
+import windowsMasteryImg from '@/assets/images/services/windows-mastery.svg'
+import productivitySuiteImg from '@/assets/images/services/productivity-suite.svg'
 
-// Tableau d'images par défaut pour plus de variété
-const defaultImages = [defaultImage1, defaultImage2]
+// Distinct images per service section
+const defaultImages = [chromeExtImg, obsidianPluginsImg, windowsMasteryImg, productivitySuiteImg]
 
 interface Article {
 	isRightSection: boolean
@@ -80,16 +82,18 @@ const t = await useTranslations(lang, 'services')
 
 // Articles statiques qui donnent plus de contexte
 const staticArticles: Article[] = t.articles.map(
-	(article: TranslatedArticle) => {
+	(article: TranslatedArticle, index: number) => {
+		const imgIndex = index % defaultImages.length
+		const nextImgIndex = (index + 1) % defaultImages.length
 		if (article.isRightSection) {
 			return {
 				isRightSection: article.isRightSection,
 				title: article.title,
 				subTitle: article.subtitle,
 				single: article.single ?? false,
-				imgOne: defaultImage1,
+				imgOne: defaultImages[imgIndex],
 				imgOneAlt: article.imgOneAlt,
-				imgTwo: defaultImage2,
+				imgTwo: defaultImages[nextImgIndex],
 				imgTwoAlt: article.imgTwoAlt,
 				btnExists: article.btnExists,
 				btnTitle: article.btnTitle,
@@ -100,7 +104,7 @@ const staticArticles: Article[] = t.articles.map(
 				isRightSection: article.isRightSection,
 				title: article.title,
 				subTitle: article.subtitle,
-				img: defaultImage1,
+				img: defaultImages[imgIndex],
 				imgAlt: article.imgAlt,
 				btnExists: article.btnExists,
 				btnTitle: article.btnTitle,

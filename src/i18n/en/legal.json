@@ -37,8 +37,8 @@
       "title": "4. Authentication Services",
       "intro": "User authentication is provided by:",
       "items": [
-        "Provider: Supabase",
-        "Website: https://supabase.com",
+        "Provider: Clerk",
+        "Website: https://clerk.com",
         "Data Processing: Compliant with GDPR regulations"
       ]
     },

@@ -1,0 +1,130 @@
+---
+/* Footer — pure Astro with i18n and .reveal scroll animation */
+import { getLangFromUrl, useTranslations } from '@/utils/i18n'
+
+interface FooterLink {
+  name: string
+  url: string
+}
+
+interface FooterSection {
+  section: string
+  links: FooterLink[]
+}
+
+const lang = getLangFromUrl(Astro.url)
+const t = await useTranslations(lang, 'navigation')
+const homeUrl = lang === 'fr' ? '/fr' : '/'
+
+// Use i18n footer links or fall back to hardcoded
+const footerSections: Array<{ title: string; links: Array<{ label: string; href: string }> }> = t.footerLinks?.map((section: FooterSection) => ({
+  title: section.section,
+  links: section.links.map((link: FooterLink) => ({
+    label: link.name,
+    href: link.url,
+  })),
+})) || [
+  {
+    title: "Ecosystem",
+    links: [
+      { label: "Courses", href: "/en/formations/" },
+      { label: "Apps & Plugins", href: "/products" },
+      { label: "Services", href: "/services" },
+      { label: "Roadmap", href: "/roadmap" },
+    ],
+  },
+  {
+    title: "Products",
+    links: [
+      { label: "ObsiFlowz", href: "/products" },
+      { label: "TubeFlowz", href: "/products" },
+      { label: "Windows Mastery", href: "/products" },
+      { label: "Productivity Suite", href: "/products" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About Us", href: "/about" },
+      { label: "Blog", href: "/blog" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Legal Notice", href: "/legal" },
+      { label: "Copyright", href: "/copyright" },
+      { label: "Disclaimer", href: "/disclaimer" },
+      { label: "Terms of Sale", href: "/cgv" },
+    ],
+  },
+]
+
+const newsletterTitle = t.newsletterSection?.title || "This Week In Windows Productivity"
+const newsletterDesc = t.newsletterSection?.description || "Weekly newsletter about Windows tooling and the productivity ecosystem."
+const craftedBy = t.footer?.crafted || "Crafted by"
+const currentYear = new Date().getFullYear()
+---
+
+<footer class="border-t border-neutral-200 bg-neutral-50 dark:border-zinc-800 dark:bg-black">
+  <div class="max-w-6xl mx-auto px-4 py-16">
+    <div class="reveal grid grid-cols-2 md:grid-cols-5 gap-8">
+      <!-- Brand -->
+      <div class="col-span-2 md:col-span-1">
+        <a href={homeUrl} class="flex items-center gap-2 mb-4 no-hover-animation">
+          <div class="text-logo" style="font-size: 1.25rem;">
+            <span class="text">WinFlowz</span>
+            <div class="glow-effect"></div>
+          </div>
+        </a>
+        <p class="text-sm text-neutral-500 dark:text-zinc-500 mb-4">
+          Productivity plugins & Windows training by Diane Defores.
+        </p>
+        <!-- Newsletter -->
+        <div class="mb-4">
+          <p class="text-xs text-neutral-600 dark:text-zinc-400 mb-2">{newsletterTitle}</p>
+          <p class="text-xs text-neutral-500 dark:text-zinc-500">{newsletterDesc}</p>
+        </div>
+        <!-- System Status -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-100 border border-neutral-200 dark:bg-zinc-900 dark:border-zinc-800">
+          <span class="w-2 h-2 rounded-full pulse-glow" style="background-color: var(--brand-green);"></span>
+          <span class="text-xs text-neutral-500 dark:text-zinc-400">All Systems Operational</span>
+        </div>
+      </div>
+
+      <!-- Links -->
+      {footerSections.map((section) => (
+        <div>
+          <h4 class="text-sm font-semibold text-neutral-900 dark:text-white mb-4">{section.title}</h4>
+          <ul class="space-y-3">
+            {section.links.map((link) => (
+              <li>
+                <a href={link.href} class="text-sm text-neutral-500 hover:text-neutral-900 dark:text-zinc-500 dark:hover:text-white transition-colors">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Bottom -->
+    <div class="reveal delay-3 mt-16 pt-8 border-t border-neutral-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-neutral-500 dark:text-zinc-500">
+        &copy; {currentYear} WinFlowz. {craftedBy} Diane Defores.
+      </p>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/dianedef/winflowz" target="_blank" rel="noopener noreferrer" class="text-sm text-neutral-500 hover:text-neutral-900 dark:text-zinc-500 dark:hover:text-white transition-colors">
+          GitHub
+        </a>
+        <a href="mailto:contact@winflowz.com" class="text-sm text-neutral-500 hover:text-neutral-900 dark:text-zinc-500 dark:hover:text-white transition-colors">
+          Contact
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,7 +1,14 @@
 ---
 export const prerender = true
 import LandingLayout from '@layouts/LandingLayout.astro'
-import { LandingPage } from '@components/react/landing/LandingPage'
+import Navbar from '@components/astro/landing/Navbar.astro'
+import Hero from '@components/astro/landing/Hero.astro'
+import LogoMarquee from '@components/astro/landing/LogoMarquee.astro'
+import BentoGrid from '@components/astro/landing/BentoGrid.astro'
+import LeadMagnet from '@components/astro/landing/LeadMagnet.astro'
+import Pricing from '@components/astro/landing/Pricing.astro'
+import FinalCTA from '@components/astro/landing/FinalCTA.astro'
+import Footer from '@components/astro/landing/Footer.astro'
 import type { Language } from '@/types'
 
 export async function getStaticPaths() {
@@ -12,8 +19,25 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.props
+
+const landingNavItems = [
+  { label: "Apps", href: "#features" },
+  { label: lang === 'fr' ? 'Formations' : 'Courses', href: lang === 'fr' ? '/fr/formations/' : '/en/formations/' },
+  { label: lang === 'fr' ? 'Tarifs' : 'Pricing', href: "#pricing" },
+  { label: "Roadmap", href: lang === 'fr' ? '/fr/roadmap' : '/roadmap' },
+  { label: "Blog", href: lang === 'fr' ? '/fr/blog' : '/blog' },
+]
 ---
 
 <LandingLayout lang={lang}>
-	<LandingPage client:only="react" />
+	<main class="min-h-screen bg-black">
+		<Navbar navItems={landingNavItems} />
+		<Hero />
+		<LogoMarquee />
+		<BentoGrid />
+		<LeadMagnet />
+		<Pricing />
+		<FinalCTA />
+		<Footer />
+	</main>
 </LandingLayout>

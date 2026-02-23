@@ -70,10 +70,10 @@ const { apiKeys } = Astro.props;
                         class:list={[
                           "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
                           key.status === 'active'
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                            ? "bg-green/10 text-green dark:bg-green/10 dark:text-green"
                             : key.status === 'suspended'
-                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                            ? "bg-yellow/10 text-yellow dark:bg-yellow/10 dark:text-yellow"
+                            : "bg-red/10 text-red dark:bg-red/10 dark:text-red"
                         ]}
                       >
                         {key.status === 'active' ? 'Active' : key.status === 'suspended' ? 'Suspendue' : 'Expirée'}

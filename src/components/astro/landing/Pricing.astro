@@ -1,0 +1,281 @@
+---
+/* Pricing — pure Astro with vanilla JS billing toggle */
+import { getLangFromUrl } from '@/utils/i18n'
+
+const lang = getLangFromUrl(Astro.url)
+const productsUrl = lang === 'fr' ? '/fr/produits' : '/products'
+const contactUrl = lang === 'fr' ? '/fr/contact' : '/contact'
+
+const plans = lang === 'fr'
+  ? [
+      {
+        name: "Gratuit",
+        description: "Parfait pour decouvrir nos outils",
+        priceMonthly: 0,
+        priceYearly: 0,
+        features: [
+          "Acces aux extensions de base",
+          "Documentation complete",
+          "Support communautaire",
+          "Mises a jour regulieres",
+        ],
+        cta: "Commencer gratuitement",
+        href: productsUrl,
+        highlighted: false,
+      },
+      {
+        name: "Pro",
+        description: "Pour les utilisateurs avances",
+        priceMonthly: 9.99,
+        priceYearly: 7.99,
+        features: [
+          "Toutes les fonctionnalites gratuites",
+          "Extensions premium",
+          "Support prioritaire",
+          "Acces anticipe aux nouveautes",
+          "Formations exclusives",
+          "Guide Maitrise Windows",
+        ],
+        cta: "Essai gratuit",
+        href: productsUrl,
+        highlighted: true,
+      },
+      {
+        name: "Entreprise",
+        description: "Besoin d'une solution sur mesure ?",
+        priceMonthly: -1,
+        priceYearly: -1,
+        features: [
+          "Toutes les fonctionnalites Pro",
+          "Deploiement personnalise",
+          "Support dedie 24/7",
+          "Formation personnalisee",
+          "Integrations specifiques",
+          "Onboarding equipe",
+        ],
+        cta: "Nous contacter",
+        href: contactUrl,
+        highlighted: false,
+      },
+    ]
+  : [
+      {
+        name: "Free",
+        description: "Perfect to discover our tools",
+        priceMonthly: 0,
+        priceYearly: 0,
+        features: [
+          "Access to basic extensions",
+          "Complete documentation",
+          "Community support",
+          "Regular updates",
+        ],
+        cta: "Get Started for Free",
+        href: productsUrl,
+        highlighted: false,
+      },
+      {
+        name: "Pro",
+        description: "For advanced users",
+        priceMonthly: 9.99,
+        priceYearly: 7.99,
+        features: [
+          "All free features",
+          "Premium extensions",
+          "Priority support",
+          "Early access to new features",
+          "Exclusive training",
+          "Windows Mastery guide",
+        ],
+        cta: "Start Free Trial",
+        href: productsUrl,
+        highlighted: true,
+      },
+      {
+        name: "Enterprise",
+        description: "Need a custom solution?",
+        priceMonthly: -1,
+        priceYearly: -1,
+        features: [
+          "All Pro features",
+          "Custom deployment",
+          "24/7 dedicated support",
+          "Custom training",
+          "Specific integrations",
+          "Team onboarding",
+        ],
+        cta: "Contact Us",
+        href: contactUrl,
+        highlighted: false,
+      },
+    ]
+
+const pricingText = lang === 'fr'
+  ? { title: "Tarifs simples et transparents", sub: "Choisissez le plan adapte a vos besoins. Pas de frais caches, pas de surprises.", monthly: "Mensuel", yearly: "Annuel", perMonth: "/mois", popular: "Populaire", billedAnnually: "Facture annuellement" }
+  : { title: "Simple, transparent pricing", sub: "Choose the plan that fits your needs. No hidden fees, no surprises.", monthly: "Monthly", yearly: "Yearly", perMonth: "/month", popular: "Most Popular", billedAnnually: "Billed annually" }
+---
+
+<section id="pricing" class="py-24 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal text-center mb-12">
+      <h2
+        class="text-3xl sm:text-4xl font-bold text-white mb-4"
+        style="font-family: var(--font-instrument-sans);"
+      >
+        {pricingText.title}
+      </h2>
+      <p class="text-zinc-400 max-w-2xl mx-auto mb-8">
+        {pricingText.sub}
+      </p>
+
+      <!-- Billing Toggle -->
+      <div class="inline-flex items-center p-1 rounded-full bg-zinc-900 border border-zinc-800">
+        <button
+          data-billing-toggle
+          data-cycle="monthly"
+          class="billing-btn relative px-4 py-2 text-sm font-medium rounded-full transition-colors text-white"
+        >
+          <span data-toggle-indicator class="absolute inset-0 bg-zinc-800 rounded-full transition-transform duration-300"></span>
+          <span class="relative z-10">{pricingText.monthly}</span>
+        </button>
+        <button
+          data-billing-toggle
+          data-cycle="yearly"
+          class="billing-btn relative px-4 py-2 text-sm font-medium rounded-full transition-colors text-zinc-400"
+        >
+          <span class="relative z-10">{pricingText.yearly}</span>
+          <span class="relative z-10 ml-2 px-2 py-0.5 text-xs rounded-full" style="background-color: rgba(0, 255, 68, 0.15); color: var(--brand-green);">
+            -20%
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="reveal delay-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+      {plans.map((plan, index) => (
+        <div
+          class:list={[
+            "reveal relative p-6 rounded-2xl border transition-all duration-300 hover:scale-[1.02]",
+            `delay-${index + 3}`,
+            plan.highlighted
+              ? "bg-zinc-900 border-zinc-700"
+              : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-600",
+          ]}
+        >
+          {plan.highlighted && (
+            <div class="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+              <div
+                class="absolute w-24 h-24 bg-white/20 blur-xl border-beam"
+                style="offset-path: rect(0 100% 100% 0 round 16px);"
+              ></div>
+            </div>
+          )}
+
+          {plan.highlighted && (
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-white text-zinc-950 text-xs font-medium rounded-full">
+              {pricingText.popular}
+            </div>
+          )}
+
+          <div class="mb-6">
+            <h3 class="text-xl font-semibold text-white mb-2">{plan.name}</h3>
+            <p class="text-zinc-400 text-sm">{plan.description}</p>
+          </div>
+
+          <div class="mb-6">
+            {plan.priceMonthly >= 0 ? (
+              <>
+                <div class="flex items-baseline gap-1">
+                  <span data-price-monthly class="text-4xl font-bold text-white">${plan.priceMonthly}</span>
+                  <span data-price-yearly class="text-4xl font-bold text-white" style="display:none;">${plan.priceYearly}</span>
+                  <span class="text-zinc-400 text-sm">{pricingText.perMonth}</span>
+                </div>
+                {plan.priceYearly > 0 && (
+                  <p data-price-yearly-note class="text-xs text-zinc-500 mt-1" style="display:none;">
+                    {pricingText.billedAnnually} (${(plan.priceYearly * 12).toFixed(2)}/{lang === 'fr' ? 'an' : 'year'})
+                  </p>
+                )}
+              </>
+            ) : (
+              <div class="flex items-baseline gap-1">
+                <span class="text-4xl font-bold text-white">Custom</span>
+              </div>
+            )}
+          </div>
+
+          <ul class="space-y-3 mb-8">
+            {plan.features.map((feature) => (
+              <li class="flex items-center gap-3 text-sm text-zinc-300">
+                <svg class="w-4 h-4 shrink-0" style="color: var(--brand-green);" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+
+          {plan.priceMonthly > 0 ? (
+            <a
+              href={plan.href}
+              data-polar-checkout
+              data-polar-checkout-product-id={plan.highlighted ? "pro" : undefined}
+              data-track={`pricing-${plan.highlighted ? 'pro' : 'paid'}-cta`}
+            >
+              <button
+                class:list={[
+                  "w-full rounded-full px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors",
+                  plan.highlighted
+                    ? "shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200"
+                    : "bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700",
+                ]}
+              >
+                {plan.cta}
+              </button>
+            </a>
+          ) : (
+            <a href={plan.href} data-track={`pricing-${plan.name.toLowerCase()}-cta`}>
+              <button
+                class:list={[
+                  "w-full rounded-full px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors",
+                  "bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700",
+                ]}
+              >
+                {plan.cta}
+              </button>
+            </a>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const monthlyBtn = document.querySelector('[data-cycle="monthly"]') as HTMLButtonElement | null;
+  const yearlyBtn = document.querySelector('[data-cycle="yearly"]') as HTMLButtonElement | null;
+  const indicator = document.querySelector('[data-toggle-indicator]') as HTMLElement | null;
+
+  function setCycle(cycle: 'monthly' | 'yearly') {
+    document.querySelectorAll('[data-price-monthly]').forEach(el => {
+      (el as HTMLElement).style.display = cycle === 'monthly' ? '' : 'none';
+    });
+    document.querySelectorAll('[data-price-yearly]').forEach(el => {
+      (el as HTMLElement).style.display = cycle === 'yearly' ? '' : 'none';
+    });
+    document.querySelectorAll('[data-price-yearly-note]').forEach(el => {
+      (el as HTMLElement).style.display = cycle === 'yearly' ? '' : 'none';
+    });
+
+    if (monthlyBtn && yearlyBtn) {
+      monthlyBtn.classList.toggle('text-white', cycle === 'monthly');
+      monthlyBtn.classList.toggle('text-zinc-400', cycle !== 'monthly');
+      yearlyBtn.classList.toggle('text-white', cycle === 'yearly');
+      yearlyBtn.classList.toggle('text-zinc-400', cycle !== 'yearly');
+    }
+
+    if (indicator) {
+      indicator.style.transform = cycle === 'yearly' ? 'translateX(100%)' : 'translateX(0)';
+    }
+  }
+
+  monthlyBtn?.addEventListener('click', () => setCycle('monthly'));
+  yearlyBtn?.addEventListener('click', () => setCycle('yearly'));
+</script>

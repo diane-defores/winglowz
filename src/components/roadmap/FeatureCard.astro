@@ -1,6 +1,5 @@
 ---
 import type { Feature } from "@/types/roadmap";
-import { Icon } from "astro-icon/components";
 import StatusIcon from "./StatusIcon.astro";
 
 interface Props {
@@ -23,15 +22,15 @@ const { feature, showProjectName = false, translations } = Astro.props;
 function getStatusColor(status: Feature["status"]) {
   switch (status) {
     case "in-development":
-      return "text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400";
+      return "text-cyan bg-neutral-100 dark:bg-neutral-800 dark:text-cyan";
     case "planned":
-      return "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 dark:text-yellow-400";
+      return "text-yellow bg-neutral-100 dark:bg-neutral-800 dark:text-yellow";
     case "considering":
-      return "text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400";
+      return "text-magenta bg-neutral-100 dark:bg-neutral-800 dark:text-magenta";
     case "completed":
-      return "text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-400";
+      return "text-green bg-neutral-100 dark:bg-neutral-800 dark:text-green";
     default:
-      return "text-neutral-600 bg-neutral-50 dark:bg-neutral-900/20 dark:text-neutral-400";
+      return "text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400";
   }
 }
 
@@ -87,7 +86,7 @@ function getStatusTitle(status: Feature["status"]) {
           data-feature-id={feature.id}
           data-vote-button
         >
-          <Icon name="mdi:thumb-up-outline" class="h-5 w-5" />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0H21.75a2.25 2.25 0 0 1 2.25 2.25c0 .702-.32 1.33-.822 1.742a2.25 2.25 0 0 1-.395 3.306c.116.477.053.984-.167 1.415-.265.519-.687.888-1.175 1.043a2.202 2.202 0 0 1-.653 1.893 2.217 2.217 0 0 1-1.338.518H14.25M6.633 10.25H4.5a2.25 2.25 0 0 0-2.25 2.25v5.25A2.25 2.25 0 0 0 4.5 20h1.705a.75.75 0 0 0 .534-.221l.595-.595A2.25 2.25 0 0 1 8.926 18.5h.984" /></svg>
           <span>{translations.vote}</span>
           <span class="ml-0.5 text-neutral-500">({feature.votes})</span>
         </button>

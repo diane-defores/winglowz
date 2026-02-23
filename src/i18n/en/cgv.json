@@ -1,0 +1,80 @@
+{
+  "title": "Terms and Conditions of Sale",
+  "lastUpdated": "Last updated: February 14, 2026",
+  "sections": {
+    "preamble": {
+      "title": "1. Preamble",
+      "content": "These Terms and Conditions of Sale (CGV) govern all purchases of digital products and services sold by WinFlowz (operated by Diane Defores, sole proprietor). By completing a purchase, you accept these terms in their entirety."
+    },
+    "products": {
+      "title": "2. Products and Services",
+      "items": [
+        "WinFlowz offers digital products including Obsidian plugins (RSSFlowz, PluginFlowz, and the FlowzSuite bundle), Chrome extensions (TubeFlowz), and training courses (Windows Mastery guide).",
+        "Product descriptions, features, and pricing are available on the product pages at winflowz.com/products.",
+        "WinFlowz reserves the right to modify its product catalog at any time."
+      ]
+    },
+    "pricing": {
+      "title": "3. Pricing",
+      "items": [
+        "All prices are displayed in USD and include applicable taxes.",
+        "WinFlowz offers a Free tier and paid Pro subscription plans (monthly or yearly billing).",
+        "Prices may be updated at any time. The price applicable is the one displayed at the time of purchase."
+      ]
+    },
+    "ordering": {
+      "title": "4. Ordering Process",
+      "items": [
+        "Orders are placed through our secure checkout powered by Polar.sh.",
+        "A confirmation email is sent upon successful payment.",
+        "Access to digital products is granted immediately after payment confirmation."
+      ]
+    },
+    "payment": {
+      "title": "5. Payment",
+      "items": [
+        "Payments are processed securely by Polar.sh. Accepted methods include credit/debit cards and other methods supported by the payment processor.",
+        "For subscriptions, recurring payments are charged automatically at the start of each billing cycle.",
+        "You may cancel your subscription at any time; cancellation takes effect at the end of the current billing period."
+      ]
+    },
+    "delivery": {
+      "title": "6. Delivery",
+      "items": [
+        "All products are digital and delivered electronically. No physical shipping is involved.",
+        "Access to purchased products is provided immediately upon payment confirmation via download links or account activation.",
+        "In case of technical issues preventing delivery, contact support@winflowz.com."
+      ]
+    },
+    "withdrawal": {
+      "title": "7. Right of Withdrawal",
+      "items": [
+        "In accordance with Article L221-28 of the French Consumer Code, the right of withdrawal does not apply to digital content supplied on a non-tangible medium once performance has begun with your prior express consent.",
+        "However, WinFlowz offers a 30-day satisfaction guarantee on all digital products. If unsatisfied, contact us for a full refund.",
+        "Refund requests must be sent to support@winflowz.com within 30 days of purchase."
+      ]
+    },
+    "liability": {
+      "title": "8. Liability",
+      "items": [
+        "WinFlowz provides its products 'as is' and does not guarantee uninterrupted or error-free operation.",
+        "WinFlowz shall not be liable for indirect damages, including loss of data or revenue, arising from the use of its products.",
+        "Our total liability shall not exceed the amount paid by the customer for the product in question."
+      ]
+    },
+    "personalData": {
+      "title": "9. Personal Data",
+      "content": "Personal data collected during purchases is processed in accordance with our Privacy Policy. Data is used solely for order processing, product delivery, and customer support. See our Privacy Policy at winflowz.com/privacy for full details."
+    },
+    "disputes": {
+      "title": "10. Disputes and Applicable Law",
+      "items": [
+        "These terms are governed by French law.",
+        "In case of dispute, the parties shall first seek amicable resolution by contacting support@winflowz.com.",
+        "If no amicable resolution is reached, the dispute shall be submitted to the competent French courts.",
+        "EU consumers may also use the European Online Dispute Resolution platform: https://ec.europa.eu/consumers/odr"
+      ]
+    }
+  },
+  "contact": "For any questions regarding these terms, please contact us at support@winflowz.com"
+}

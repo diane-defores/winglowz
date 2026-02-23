@@ -4,7 +4,7 @@
     "description": "Transform your digital workflow with powerful tools and training designed by a neurodivergent expert passionate about productivity."
   },
   "hero": {
-    "title": "<span class=\"relative inline-flex sm:inline\"><span class=\"relative text-orange-400 dark:text-pink-400\">Producticity</span><span class=\"absolute inset-0 h-full w-full bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] opacity-30 blur-lg filter\"></span></span> Plugins & <span class=\"text-yellow-500 dark:text-yellow-400\">Windows</span> Training",
+    "title": "<span class=\"relative inline-flex sm:inline\"><span class=\"relative text-magenta\">Productivity</span><span class=\"absolute inset-0 h-full w-full bg-gradient-rainbow opacity-30 blur-lg filter\"></span></span> Plugins & <span class=\"text-yellow\">Windows</span> Training",
     "subTitle": "Your digital workspace is a mess. No structure, no process – just chaos. Chrome extensions for YouTube, Obsidian plugins (RSS, plugin management), and complete Windows productivity guide with 200+ tested tips.",
     "primaryBtn": "Testimonials",
     "primaryBtnURL": "/products#testimonials",
@@ -24,7 +24,7 @@
     "subTitle": "As someone with ADHD and autism, I've struggled a lot with self-awareness and discipline. So I created tools that make it unreasonable and impossible not to achieve our goals👌"
   },
   "workflow": {
-    "title": "Customize <span class=\"text-yellow-500 dark:text-yellow-400\">Your Workflowz</span> to perfectly match your personality and build your best life",
+    "title": "Customize <span class=\"text-yellow\">Your Workflowz</span> to perfectly match your personality and build your best life",
     "tabs": [
       {
         "heading": "ObsiFlowz",
@@ -51,7 +51,7 @@
     "statistics": [
       {
         "count": "70k+",
-        "description": "equipped clients — from DIY to large enterprises"
+        "description": "lessons completed — from freelancers to power users"
       },
       {
         "count": "35%",

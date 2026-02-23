@@ -1,6 +1,7 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro'
 import type { Language } from '@/types'
+import { SignIn } from '@clerk/astro/components'
 
 export const prerender = true
 
@@ -12,17 +13,16 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.props
+const title = lang === 'fr' ? 'Connexion' : 'Sign In'
+const dashboardUrl = '/dashboard'
 ---
 
-<MainLayout title="Sign In" lang={lang}>
-	<div class="flex min-h-[60vh] items-center justify-center">
-		<div class="text-center">
-			<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-4">
-				Sign In
-			</h1>
-			<p class="text-neutral-500 dark:text-neutral-400 text-lg">
-				Coming soon — Auth upgrade in progress.
-			</p>
-		</div>
+<MainLayout title={title} lang={lang}>
+	<div class="flex min-h-[60vh] items-center justify-center py-12">
+		<SignIn
+			routing="hash"
+			afterSignInUrl={dashboardUrl}
+			afterSignUpUrl={dashboardUrl}
+		/>
 	</div>
 </MainLayout>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" rx="16" fill="#18181b"/>
+  <!-- Dashboard layout -->
+  <rect x="40" y="40" width="720" height="52" rx="8" fill="#27272a"/>
+  <text x="60" y="72" fill="#ff00c8" font-family="sans-serif" font-size="16" font-weight="bold">FlowzSuite Dashboard</text>
+  <!-- Cards grid -->
+  <!-- Card 1: TubeFlowz -->
+  <rect x="40" y="112" width="228" height="160" rx="12" fill="#27272a" stroke="#ff0033" stroke-width="2"/>
+  <text x="60" y="142" fill="#ff0033" font-family="sans-serif" font-size="14" font-weight="bold">TubeFlowz</text>
+  <text x="60" y="162" fill="#a1a1aa" font-family="sans-serif" font-size="10">Chrome Extension</text>
+  <text x="60" y="200" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">847</text>
+  <text x="60" y="216" fill="#52525b" font-family="sans-serif" font-size="10">bookmarks saved</text>
+  <rect x="60" y="236" width="100" height="20" rx="10" fill="#ff0033" opacity="0.2"/>
+  <text x="80" y="250" fill="#ff0033" font-family="sans-serif" font-size="9">Active</text>
+  <!-- Card 2: RSSFlowz -->
+  <rect x="286" y="112" width="228" height="160" rx="12" fill="#27272a" stroke="#00c8ff" stroke-width="2"/>
+  <text x="306" y="142" fill="#00c8ff" font-family="sans-serif" font-size="14" font-weight="bold">RSSFlowz</text>
+  <text x="306" y="162" fill="#a1a1aa" font-family="sans-serif" font-size="10">Obsidian Plugin</text>
+  <text x="306" y="200" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">156</text>
+  <text x="306" y="216" fill="#52525b" font-family="sans-serif" font-size="10">feeds synced</text>
+  <rect x="306" y="236" width="100" height="20" rx="10" fill="#00c8ff" opacity="0.2"/>
+  <text x="326" y="250" fill="#00c8ff" font-family="sans-serif" font-size="9">Active</text>
+  <!-- Card 3: PluginFlowz -->
+  <rect x="532" y="112" width="228" height="160" rx="12" fill="#27272a" stroke="#ffe500" stroke-width="2"/>
+  <text x="552" y="142" fill="#ffe500" font-family="sans-serif" font-size="14" font-weight="bold">PluginFlowz</text>
+  <text x="552" y="162" fill="#a1a1aa" font-family="sans-serif" font-size="10">Obsidian Plugin</text>
+  <text x="552" y="200" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">42</text>
+  <text x="552" y="216" fill="#52525b" font-family="sans-serif" font-size="10">plugins managed</text>
+  <rect x="552" y="236" width="100" height="20" rx="10" fill="#ffe500" opacity="0.2"/>
+  <text x="572" y="250" fill="#ffe500" font-family="sans-serif" font-size="9">Active</text>
+  <!-- Activity chart -->
+  <rect x="40" y="292" width="480" height="268" rx="12" fill="#27272a"/>
+  <text x="60" y="322" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="bold">Productivity Score</text>
+  <!-- Chart bars -->
+  <rect x="80" y="420" width="40" height="100" rx="4" fill="#ff00c8" opacity="0.3"/>
+  <rect x="80" y="460" width="40" height="60" rx="4" fill="#ff00c8"/>
+  <rect x="140" y="380" width="40" height="140" rx="4" fill="#ff00c8" opacity="0.3"/>
+  <rect x="140" y="420" width="40" height="100" rx="4" fill="#ff00c8"/>
+  <rect x="200" y="400" width="40" height="120" rx="4" fill="#ff00c8" opacity="0.3"/>
+  <rect x="200" y="440" width="40" height="80" rx="4" fill="#ff00c8"/>
+  <rect x="260" y="360" width="40" height="160" rx="4" fill="#ff00c8" opacity="0.3"/>
+  <rect x="260" y="380" width="40" height="140" rx="4" fill="#ff00c8"/>
+  <rect x="320" y="340" width="40" height="180" rx="4" fill="#00ff44" opacity="0.3"/>
+  <rect x="320" y="360" width="40" height="160" rx="4" fill="#00ff44"/>
+  <rect x="380" y="350" width="40" height="170" rx="4" fill="#00ff44" opacity="0.3"/>
+  <rect x="380" y="370" width="40" height="150" rx="4" fill="#00ff44"/>
+  <rect x="440" y="340" width="40" height="180" rx="4" fill="#00ff44" opacity="0.3"/>
+  <rect x="440" y="350" width="40" height="170" rx="4" fill="#00ff44"/>
+  <!-- Stats panel -->
+  <rect x="540" y="292" width="220" height="268" rx="12" fill="#27272a"/>
+  <text x="560" y="322" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="bold">This Week</text>
+  <text x="560" y="360" fill="#00ff44" font-family="sans-serif" font-size="28" font-weight="bold">+35%</text>
+  <text x="560" y="380" fill="#52525b" font-family="sans-serif" font-size="10">efficiency increase</text>
+  <rect x="560" y="400" width="180" height="1" fill="#3f3f46"/>
+  <text x="560" y="428" fill="#ffffff" font-family="sans-serif" font-size="12">Time saved</text>
+  <text x="700" y="428" fill="#00c8ff" font-family="sans-serif" font-size="12" font-weight="bold">4.2h</text>
+  <text x="560" y="456" fill="#ffffff" font-family="sans-serif" font-size="12">Tasks completed</text>
+  <text x="700" y="456" fill="#ffe500" font-family="sans-serif" font-size="12" font-weight="bold">28</text>
+  <text x="560" y="484" fill="#ffffff" font-family="sans-serif" font-size="12">Streak</text>
+  <text x="700" y="484" fill="#ff00c8" font-family="sans-serif" font-size="12" font-weight="bold">12 days</text>
+</svg>

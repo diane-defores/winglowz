@@ -14,17 +14,24 @@ export default {
       white: "#ffffff",
       gray: colors.gray,
       neutral: colors.neutral,
-      // Rainbow gradient colors from logo - PRIMARY BRAND COLORS
-      red: "#ff0033",       // Rainbow gradient red
-      magenta: "#ff00c8",   // Rainbow gradient magenta  
-      yellow: "#ffe500",    // Rainbow gradient yellow
-      green: "#00ff44",     // Rainbow gradient green
-      cyan: "#00c8ff",      // Rainbow gradient cyan
+      // Brand colors — reference CSS vars from global.css :root
+      red: "var(--brand-red)",
+      magenta: "var(--brand-magenta)",
+      yellow: "var(--brand-yellow)",
+      green: "var(--brand-green)",
+      cyan: "var(--brand-cyan)",
       // Keep zinc for subtle UI elements
       zinc: colors.zinc,
       emerald: colors.emerald,
     },
     extend: {
+      fontFamily: {
+        logo: ['var(--font-logo)'],
+        display: ['var(--font-display)'],
+        heading: ['var(--font-heading)'],
+        body: ['var(--font-body)'],
+        sans: ['var(--font-body)'],
+      },
       colors: {
         border: "hsl(var(--border) / <alpha-value>)",
         input: "hsl(var(--input) / <alpha-value>)",
@@ -82,8 +89,8 @@ export default {
         '9xl': ['8rem', { lineHeight: '1' }],           // 128px
       },
       backgroundImage: {
-        'gradient-rainbow': 'linear-gradient(45deg, #ff0033, #ff00c8, #ffe500, #00ff44, #00c8ff, #ff0033)',
-        'gradient-rainbow-horizontal': 'linear-gradient(90deg, #ff0033, #ff00c8, #ffe500, #00ff44, #00c8ff, #ff0033)',
+        'gradient-rainbow': 'var(--gradient-rainbow)',
+        'gradient-rainbow-horizontal': 'var(--gradient-rainbow-h)',
       },
     },
   },
@@ -93,7 +100,7 @@ export default {
     require("@tailwindcss/forms"),
     function({ addBase }) {
       addBase({
-        'a': { 
+        'a': {
           position: 'relative',
           '&::before, &::after': {
             content: '""',
@@ -102,7 +109,7 @@ export default {
             bottom: 0,
             width: '100%',
             height: '3px',
-            backgroundImage: 'linear-gradient(90deg, #ff0033ff, #ff00c8ff, #ffe500ff, #00ff44ff, #00c8ffff, #ff0033ff)',
+            backgroundImage: 'var(--gradient-rainbow-h)',
           },
           '&::before': {
             width: '0%',

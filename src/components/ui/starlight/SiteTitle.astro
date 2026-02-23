@@ -15,15 +15,8 @@ const docs = "/" + locale + "welcome-to-docs/";
   </a>
 </span>
 
+<!-- text-logo styles from global.css @layer components -->
 <style>
-  @font-face {
-    font-family: 'Audiowide';
-    src: url('/fonts/Audiowide-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
-
   .site-title {
     gap: 1rem;
     margin-right: 1rem;
@@ -32,7 +25,6 @@ const docs = "/" + locale + "welcome-to-docs/";
     display: flex;
     text-decoration: none;
   }
-  
   .flex {
     display: flex;
     align-items: center;
@@ -40,123 +32,11 @@ const docs = "/" + locale + "welcome-to-docs/";
   .site-title a:focus-visible {
     outline: 0;
   }
-
   .text-logo-link {
     text-decoration: none;
   }
-
+  /* Size override for Starlight header */
   .text-logo {
-    font-family: 'Audiowide', sans-serif;
     font-size: 1.5rem;
-    font-weight: bold;
-    display: inline-flex;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-  }
-
-  .text {
-    position: relative;
-    color: white;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  }
-
-  .text::before {
-    content: 'WinFlowz';
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(
-        45deg,
-        #ff0033,
-        #ff00c8,
-        #ffe500,
-        #00ff44,
-        #00c8ff,
-        #ff0033
-      ),
-      radial-gradient(
-        circle at top left,
-        #ff0033,
-        #ff3366,
-        #ff00c8,
-        #ff33cc,
-        #ffe500,
-        #ffcc00,
-        #00ff44,
-        #00cc44,
-        #00c8ff,
-        #0099ff,
-        #ff0033
-      );
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradient 6s ease infinite;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
-  }
-
-  .text::after {
-    content: 'WinFlowz';
-    position: absolute;
-    left: 1px;
-    top: 1px;
-    color: white;
-    z-index: -1;
-    text-shadow:
-      0.5px 0.5px 0 white,
-      1px 1px 0 white,
-      1.5px 1.5px 0 rgba(255, 255, 255, 0.7),
-      0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-
-  .glow-effect {
-    position: absolute;
-    inset: -4px -6px;
-    background: linear-gradient(
-        45deg,
-        #ff0033,
-        #ff00c8,
-        #ffe500,
-        #00ff44,
-        #00c8ff,
-        #ff0033
-      ),
-      radial-gradient(
-        circle at top left,
-        #ff0033,
-        #ff3366,
-        #ff00c8,
-        #ff33cc,
-        #ffe500,
-        #ffcc00,
-        #00ff44,
-        #00cc44,
-        #00c8ff,
-        #0099ff,
-        #ff0033
-      );
-    background-size: 200% 200%;
-    filter: blur(10px);
-    opacity: 0.3;
-    border-radius: 40% / 100%;
-    animation: gradient 6s ease infinite;
-    z-index: -2;
-  }
-
-  .text-logo:hover .glow-effect {
-    opacity: 0.45;
-  }
-
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
   }
 </style>

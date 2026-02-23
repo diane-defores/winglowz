@@ -8,7 +8,11 @@ export default defineSchema({
     name: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     role: v.optional(v.string()),
-  }).index("by_clerkId", ["clerkId"]),
+    polarCustomerId: v.optional(v.string()),
+    subscriptionTier: v.optional(v.string()),
+    subscriptionStatus: v.optional(v.string()),
+  }).index("by_clerkId", ["clerkId"])
+    .index("by_polarCustomerId", ["polarCustomerId"]),
 
   apiKeys: defineTable({
     userId: v.id("users"),

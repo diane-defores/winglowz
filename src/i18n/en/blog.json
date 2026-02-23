@@ -1,9 +1,9 @@
 {
-  "title": "Your Gateway to Construction Excellence",
-  "subtitle": "Explore the latest news, tips, and insights from ScrewFast to enhance your construction projects. From product spotlights to project management strategies, our blog is your go-to resource for all things hardware and construction.",
+  "title": "Your Gateway to Windows Productivity",
+  "subtitle": "Explore the latest news, tips, and insights from WinFlowz to boost your productivity workflow. From plugin spotlights to workflow strategies, our blog is your go-to resource for all things Obsidian, Windows, and digital productivity.",
   "insights": {
     "title": "Insights",
-    "subtitle": "Stay up-to-date with the latest trends and developments in the construction industry with insights from ScrewFast's team of industry experts."
+    "subtitle": "Stay up-to-date with the latest trends and developments in the productivity ecosystem with insights from WinFlowz's team of experts."
   },
   "readTime": "min read",
   "relatedArticles": "Related Articles",
@@ -13,7 +13,7 @@
     "no": "No"
   },
   "meta": {
-    "description": "Stay up-to-date with the latest trends and developments in the construction industry with insights from ScrewFast's team of industry experts.",
-    "siteDescription": "ScrewFast offers top-tier hardware tools and expert construction services to meet all your project needs."
+    "description": "Stay up-to-date with the latest trends and developments in the productivity ecosystem with insights from WinFlowz's team of experts.",
+    "siteDescription": "WinFlowz offers productivity plugins, Obsidian tools, and Windows training to supercharge your digital workflow."
   }
-} 
+}
