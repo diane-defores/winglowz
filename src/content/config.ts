@@ -102,6 +102,7 @@ const blogCollection = defineCollection({
     authorImage: z.string(),
     authorImageAlt: z.string(),
     pubDate: z.date(),
+    draft: z.boolean().optional().default(false),
     cardImage: z.string(),
     cardImageAlt: z.string(),
     readTime: z.number(),

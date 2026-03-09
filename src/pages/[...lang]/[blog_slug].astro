@@ -16,7 +16,10 @@ import type { Language } from '@/types'
 
 // This gets the static paths for all the unique blog posts
 export async function getStaticPaths() {
-	const posts = await getCollection('blog')
+	const now = new Date();
+	const posts = (await getCollection('blog')).filter(
+		(p) => p.data.draft !== true && (!p.data.pubDate || new Date(p.data.pubDate) <= now)
+	)
 	const paths = []
 
 	for (const post of posts) {
