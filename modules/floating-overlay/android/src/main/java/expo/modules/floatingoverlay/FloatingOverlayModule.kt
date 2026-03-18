@@ -44,6 +44,26 @@ class FloatingOverlayModule : Module() {
             context.stopService(Intent(context, FloatingOverlayService::class.java))
         }
 
+        Function("startRecordingService") {
+            val context = appContext.reactContext ?: return@Function
+            val intent = Intent(context, FloatingOverlayService::class.java).apply {
+                action = "START_RECORDING"
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        }
+
+        Function("stopRecordingService") {
+            val context = appContext.reactContext ?: return@Function
+            val intent = Intent(context, FloatingOverlayService::class.java).apply {
+                action = "STOP_RECORDING"
+            }
+            context.startService(intent)
+        }
+
         Function("setOverlayState") { state: String ->
             FloatingOverlayService.instance?.setOverlayState(state)
         }

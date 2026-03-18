@@ -23,9 +23,21 @@ import {
   getPreferredLanguage,
 } from "@/lib/storage";
 import { RECORDING_MAX_DURATION_MS } from "@/lib/constants";
+import { Platform } from "react-native";
 
 // TODO: Replace with Clerk userId when auth is wired up
 const TEMP_USER_ID = "local-user";
+
+// Dynamic import — native module only available in dev builds
+let FloatingOverlay: typeof import("@/modules/floating-overlay/index") | null =
+  null;
+try {
+  if (Platform.OS === "android") {
+    FloatingOverlay = require("@/modules/floating-overlay/index");
+  }
+} catch {
+  // Not available (Expo Go, iOS, web)
+}
 
 export type RecordingMode = "free" | "advanced";
 
@@ -271,6 +283,13 @@ export function useVoiceRecording(
   // --- PUBLIC API ---
 
   const startRecording = useCallback(async () => {
+    // Start foreground service to keep recording alive when screen is off
+    try {
+      FloatingOverlay?.startRecordingService();
+    } catch {
+      // Native module not available — recording will stop if screen turns off
+    }
+
     if (mode === "free") {
       await startFreeRecording();
     } else {
@@ -284,6 +303,13 @@ export function useVoiceRecording(
     } else {
       await stopAdvancedRecording();
     }
+
+    // Stop foreground service after recording ends
+    try {
+      FloatingOverlay?.stopRecordingService();
+    } catch {
+      // Native module not available
+    }
   }, [mode, stopFreeRecording, stopAdvancedRecording]);
 
   const cancelRecording = useCallback(() => {
@@ -293,6 +319,13 @@ export function useVoiceRecording(
       ExpoSpeechRecognitionModule.stop();
     } else if (recorder.isRecording) {
       recorder.stop();
+    }
+
+    // Stop foreground service
+    try {
+      FloatingOverlay?.stopRecordingService();
+    } catch {
+      // Native module not available
     }
 
     setRawText("");

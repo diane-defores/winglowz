@@ -31,6 +31,14 @@ export function destroy(): void {
   NativeOverlay.destroy();
 }
 
+export function startRecordingService(): void {
+  NativeOverlay.startRecordingService();
+}
+
+export function stopRecordingService(): void {
+  NativeOverlay.stopRecordingService();
+}
+
 export function setOverlayState(state: OverlayState): void {
   NativeOverlay.setOverlayState(state);
 }

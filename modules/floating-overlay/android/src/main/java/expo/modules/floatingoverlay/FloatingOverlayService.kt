@@ -45,10 +45,18 @@ class FloatingOverlayService : Service() {
         createNotificationChannel()
     }
 
+    private var isRecordingService = false
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             "SHOW" -> showOverlay()
             "HIDE" -> hideOverlay()
+            "START_RECORDING" -> startRecordingService()
+            "STOP_RECORDING" -> stopRecordingService()
+            "UPDATE_NOTIFICATION" -> {
+                val text = intent.getStringExtra("text") ?: "Recording..."
+                updateNotificationText(text)
+            }
             else -> showOverlay()
         }
         return START_STICKY
@@ -65,7 +73,7 @@ class FloatingOverlayService : Service() {
         if (!Settings.canDrawOverlays(this)) return
 
         // Start as foreground service
-        val notification = createNotification()
+        val notification = createNotification("Tap the floating button to dictate")
         startForeground(NOTIFICATION_ID, notification)
 
         // Create overlay view
@@ -155,7 +163,39 @@ class FloatingOverlayService : Service() {
         } catch (_: Exception) {}
         overlayView = null
         isShowing = false
-        stopForeground(STOP_FOREGROUND_REMOVE)
+        if (!isRecordingService) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        }
+    }
+
+    // Foreground service for recording without overlay — keeps process alive when screen is off
+    private fun startRecordingService() {
+        if (isShowing) {
+            // Overlay already running as foreground, just update notification
+            updateNotificationText("Recording in progress...")
+            isRecordingService = true
+            return
+        }
+        isRecordingService = true
+        val notification = createNotification("Recording in progress...")
+        startForeground(NOTIFICATION_ID, notification)
+    }
+
+    private fun stopRecordingService() {
+        isRecordingService = false
+        if (isShowing) {
+            // Overlay still active, revert notification text
+            updateNotificationText("Tap the floating button to dictate")
+        } else {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf()
+        }
+    }
+
+    private fun updateNotificationText(text: String) {
+        val notification = createNotification(text)
+        val nm = getSystemService(NotificationManager::class.java)
+        nm.notify(NOTIFICATION_ID, notification)
     }
 
     private fun snapToEdge() {
@@ -212,7 +252,7 @@ class FloatingOverlayService : Service() {
         }
     }
 
-    private fun createNotification(): Notification {
+    private fun createNotification(text: String = "Tap the floating button to dictate"): Notification {
         // Launch app when notification tapped
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
         val pendingIntent = PendingIntent.getActivity(
@@ -223,7 +263,7 @@ class FloatingOverlayService : Service() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, CHANNEL_ID)
                 .setContentTitle("VoiceFlowz")
-                .setContentText("Tap the floating button to dictate")
+                .setContentText(text)
                 .setSmallIcon(android.R.drawable.ic_btn_speak_now)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
@@ -232,7 +272,7 @@ class FloatingOverlayService : Service() {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
                 .setContentTitle("VoiceFlowz")
-                .setContentText("Tap the floating button to dictate")
+                .setContentText(text)
                 .setSmallIcon(android.R.drawable.ic_btn_speak_now)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
