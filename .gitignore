@@ -34,8 +34,8 @@ yarn-error.*
 .env
 .env*.local
 
-# Convex generated
-convex/_generated/
+# Convex generated (stubs committed for CI, real files overwrite on `npx convex dev`)
+# convex/_generated/
 
 # typescript
 *.tsbuildinfo
