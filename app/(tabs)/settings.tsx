@@ -7,9 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  Platform,
 } from "react-native";
+import * as Clipboard from "expo-clipboard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors, APP_NAME } from "@/lib/constants";
+import { getLogText, clearLogs, onLogChange } from "@/lib/debug-log";
 import { useOverlayPermissions } from "@/hooks/useOverlayPermissions";
 import {
   getOpenAIKey,
@@ -42,6 +45,15 @@ export default function SettingsScreen() {
   const [saved, setSaved] = useState(false);
 
   const overlay = useOverlayPermissions();
+  const [logText, setLogText] = useState("");
+  const [showLogs, setShowLogs] = useState(false);
+
+  // Subscribe to log changes
+  useEffect(() => {
+    const unsub = onLogChange(() => setLogText(getLogText()));
+    setLogText(getLogText()); // initial load
+    return unsub;
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -288,6 +300,53 @@ export default function SettingsScreen() {
           </Text>
         </Pressable>
 
+        {/* Debug Logs */}
+        <View style={styles.section}>
+          <Pressable
+            onPress={() => setShowLogs(!showLogs)}
+            style={styles.debugToggle}
+          >
+            <Text style={styles.label}>
+              {showLogs ? "Hide Debug Logs" : "Show Debug Logs"}
+            </Text>
+            <Text style={styles.hint}>
+              Android {Platform.Version} — Tap to {showLogs ? "hide" : "see"} what's happening
+            </Text>
+          </Pressable>
+
+          {showLogs && (
+            <View style={{ gap: 8, marginTop: 8 }}>
+              <View style={styles.logBox}>
+                <Text style={styles.logText}>
+                  {logText || "No logs yet. Try enabling the overlay."}
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row", gap: 8 }}>
+                <Pressable
+                  onPress={async () => {
+                    await Clipboard.setStringAsync(
+                      `VoiceFlowz Debug — Android ${Platform.Version}\n\n${logText}`
+                    );
+                    Alert.alert("Copied!", "Logs copied to clipboard.");
+                  }}
+                  style={[styles.stepBtn, { flex: 1 }]}
+                >
+                  <Text style={styles.stepBtnText}>Copy Logs</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    clearLogs();
+                    setLogText("");
+                  }}
+                  style={[styles.stepBtn, styles.stepBtnDanger, { flex: 1 }]}
+                >
+                  <Text style={styles.stepBtnTextDanger}>Clear</Text>
+                </Pressable>
+              </View>
+            </View>
+          )}
+        </View>
+
         {/* About */}
         <View style={styles.about}>
           <Text style={styles.aboutText}>
@@ -450,6 +509,23 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "700",
+  },
+  debugToggle: {
+    paddingVertical: 4,
+  },
+  logBox: {
+    backgroundColor: "#0a0f1a",
+    borderRadius: 8,
+    padding: 12,
+    maxHeight: 300,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  logText: {
+    color: "#a3e635",
+    fontSize: 11,
+    fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
+    lineHeight: 16,
   },
   about: {
     marginTop: 32,
