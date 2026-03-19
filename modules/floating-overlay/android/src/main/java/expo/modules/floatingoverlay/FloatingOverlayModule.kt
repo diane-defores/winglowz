@@ -7,9 +7,12 @@ import android.os.Build
 import android.provider.Settings
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityManager
+import android.util.Log
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.Promise
+
+private const val TAG = "VoiceFlowz"
 
 class FloatingOverlayModule : Module() {
 
@@ -19,15 +22,29 @@ class FloatingOverlayModule : Module() {
         Events("onBubbleTap", "onRecordStop", "onRecordCancel", "onBubbleLongPress")
 
         Function("showBubble") {
-            val context = appContext.reactContext ?: return@Function null
+            val context = appContext.reactContext ?: run {
+                Log.e(TAG, "showBubble: no reactContext")
+                return@Function null
+            }
+            val canDraw = Settings.canDrawOverlays(context)
+            Log.d(TAG, "showBubble: canDrawOverlays=$canDraw, SDK=${Build.VERSION.SDK_INT}")
+            if (!canDraw) {
+                Log.w(TAG, "showBubble: overlay permission not granted, aborting")
+                return@Function null
+            }
             FloatingOverlayService.overlayModule = this@FloatingOverlayModule
             val intent = Intent(context, FloatingOverlayService::class.java).apply {
                 action = "SHOW"
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
+                Log.d(TAG, "showBubble: service started successfully")
+            } catch (e: Exception) {
+                Log.e(TAG, "showBubble: failed to start service", e)
             }
             null
         }

@@ -6,10 +6,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.WindowManager
@@ -68,13 +70,29 @@ class FloatingOverlayService : Service() {
         super.onDestroy()
     }
 
+    private fun startForegroundCompat(notification: Notification) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // Android 14+ requires foregroundServiceType in startForeground call
+            startForeground(
+                NOTIFICATION_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+            )
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
+    }
+
     private fun showOverlay() {
         if (isShowing) return
-        if (!Settings.canDrawOverlays(this)) return
+        if (!Settings.canDrawOverlays(this)) {
+            Log.w("VoiceFlowz", "Cannot draw overlays — permission not granted")
+            return
+        }
 
         // Start as foreground service
         val notification = createNotification("Tap the floating button to dictate")
-        startForeground(NOTIFICATION_ID, notification)
+        startForegroundCompat(notification)
 
         // Create overlay view
         overlayView = OverlayView(this).apply {
@@ -178,7 +196,7 @@ class FloatingOverlayService : Service() {
         }
         isRecordingService = true
         val notification = createNotification("Recording in progress...")
-        startForeground(NOTIFICATION_ID, notification)
+        startForegroundCompat(notification)
     }
 
     private fun stopRecordingService() {
