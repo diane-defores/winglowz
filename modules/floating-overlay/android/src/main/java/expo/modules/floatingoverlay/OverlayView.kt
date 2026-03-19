@@ -8,10 +8,12 @@ import android.graphics.RectF
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import kotlin.math.roundToInt
 
 class OverlayView(context: Context) : FrameLayout(context) {
@@ -40,20 +42,21 @@ class OverlayView(context: Context) : FrameLayout(context) {
     private val surfaceColor = Color.parseColor("#1e293b")    // Dark surface
 
     // Child views
-    private val fabView: View
+    private val fabView: TextView
     private val expandedContainer: LinearLayout
-    private val cancelButton: ImageView
+    private val cancelButton: TextView
     private val waveformView: WaveformView
-    private val doneButton: ImageView
+    private val doneButton: TextView
 
     init {
-        // FAB (collapsed state)
-        fabView = View(context).apply {
+        // FAB (collapsed state) — circle with mic emoji
+        fabView = TextView(context).apply {
             layoutParams = LayoutParams(fabSize, fabSize)
-            setBackgroundResource(android.R.drawable.ic_btn_speak_now)
+            text = "🎙"
+            textSize = 24f
+            gravity = Gravity.CENTER
             visibility = VISIBLE
         }
-        // Custom circle background for FAB
         fabView.setBackgroundDrawable(CircleDrawable(primaryColor))
         addView(fabView)
 
@@ -67,13 +70,15 @@ class OverlayView(context: Context) : FrameLayout(context) {
         expandedContainer.setBackgroundDrawable(RoundRectDrawable(surfaceColor, cornerRadius.toFloat()))
 
         // Cancel button (X)
-        cancelButton = ImageView(context).apply {
+        cancelButton = TextView(context).apply {
             layoutParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply {
                 setMargins(0, 0, dpToPx(8f), 0)
             }
-            setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
-            setColorFilter(dangerColor)
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            text = "✕"
+            textSize = 18f
+            setTextColor(dangerColor)
+            gravity = Gravity.CENTER
+            setBackgroundDrawable(CircleDrawable(Color.parseColor("#7f1d1d")))
             setOnClickListener {
                 onRecordCancel?.invoke()
             }
@@ -87,13 +92,15 @@ class OverlayView(context: Context) : FrameLayout(context) {
         expandedContainer.addView(waveformView)
 
         // Done button (checkmark)
-        doneButton = ImageView(context).apply {
+        doneButton = TextView(context).apply {
             layoutParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply {
                 setMargins(dpToPx(8f), 0, 0, 0)
             }
-            setImageResource(android.R.drawable.ic_menu_send)
-            setColorFilter(successColor)
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            text = "✓"
+            textSize = 18f
+            setTextColor(successColor)
+            gravity = Gravity.CENTER
+            setBackgroundDrawable(CircleDrawable(Color.parseColor("#14532d")))
             setOnClickListener {
                 onRecordStop?.invoke()
             }

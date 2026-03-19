@@ -123,8 +123,8 @@ class FloatingOverlayService : Service() {
             alpha = 0.92f // Android 12+ requires >= 0.8
         }
 
-        // Touch listener for drag
-        overlayView?.setOnTouchListener { view, event ->
+        // Touch listener for drag + tap on the whole overlay
+        overlayView?.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     initialX = layoutParams!!.x
@@ -137,31 +137,31 @@ class FloatingOverlayService : Service() {
                     longPressRunnable = Runnable {
                         overlayModule?.emitBubbleLongPress()
                     }
-                    view.postDelayed(longPressRunnable, 500)
+                    overlayView?.postDelayed(longPressRunnable, 500)
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val dx = event.rawX - initialTouchX
                     val dy = event.rawY - initialTouchY
-                    if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                    if (!isDragging && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
                         isDragging = true
-                        longPressRunnable?.let { view.removeCallbacks(it) }
+                        longPressRunnable?.let { overlayView?.removeCallbacks(it) }
                     }
                     if (isDragging) {
                         layoutParams?.x = initialX + dx.toInt()
                         layoutParams?.y = initialY + dy.toInt()
-                        windowManager?.updateViewLayout(overlayView, layoutParams)
+                        try {
+                            windowManager?.updateViewLayout(overlayView, layoutParams)
+                        } catch (_: Exception) {}
                     }
                     true
                 }
                 MotionEvent.ACTION_UP -> {
-                    longPressRunnable?.let { view.removeCallbacks(it) }
+                    longPressRunnable?.let { overlayView?.removeCallbacks(it) }
                     if (isDragging) {
-                        // Snap to nearest edge
                         snapToEdge()
-                    }
-                    // If not dragging, the click goes to OverlayView's internal handlers
-                    if (!isDragging) {
+                    } else {
+                        // Not a drag = tap. Dispatch to the overlay view.
                         overlayView?.performClick()
                     }
                     true
@@ -170,6 +170,7 @@ class FloatingOverlayService : Service() {
             }
         }
 
+        Log.d("VoiceFlowz", "Overlay view added to WindowManager")
         windowManager?.addView(overlayView, layoutParams)
         isShowing = true
     }
