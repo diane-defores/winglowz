@@ -144,7 +144,9 @@ export default function SettingsScreen() {
                     <Text style={styles.stepHint}>
                       {overlay.hasOverlayPermission
                         ? "Permission granted"
-                        : "Android needs your permission to show the floating button over other apps."}
+                        : Number(Platform.Version) >= 35
+                          ? 'Android 15 blocks this for sideloaded apps.\n\n1. Go to Settings → Apps → VoiceFlowz\n2. Tap the ⋮ menu (top right)\n3. Tap "Allow restricted settings"\n4. Then tap the button below'
+                          : "Android needs your permission to show the floating button over other apps."}
                     </Text>
                   </View>
                 </View>
@@ -154,7 +156,7 @@ export default function SettingsScreen() {
                     style={styles.stepBtn}
                   >
                     <Text style={styles.stepBtnText}>
-                      Open Android Settings
+                      Open Overlay Permission
                     </Text>
                   </Pressable>
                 )}
