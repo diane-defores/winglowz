@@ -6,7 +6,6 @@ import Icon from '@/components/ui/icons/Icon.astro'
 import TextLogo from '@/components/ui/TextLogo.astro'
 import { SITE } from '@/constants'
 import { getLangFromUrl, useTranslations } from '@/utils/i18n'
-import type { Language } from '@/types'
 
 interface FooterLink {
 	name: string
@@ -21,7 +20,6 @@ interface FooterSection {
 // Select the correct translation based on the page's lang prop:
 const lang = getLangFromUrl(Astro.url)
 const t = await useTranslations(lang, 'navigation')
-const homeUrl = lang === 'fr' ? '/fr' : '/'
 ---
 
 <footer class="w-full dark:bg-neutral-900">

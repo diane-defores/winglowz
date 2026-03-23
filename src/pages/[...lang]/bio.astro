@@ -222,7 +222,7 @@ const langPrefix = isEn ? '' : '/fr'
 <body>
 	<script>
 		(() => {
-			const blockEvent = (event) => event.preventDefault();
+			const blockEvent = (event: Event) => event.preventDefault();
 			document.addEventListener("copy", blockEvent);
 			document.addEventListener("cut", blockEvent);
 			document.addEventListener("contextmenu", blockEvent);

@@ -22,7 +22,7 @@ export const GET: APIRoute = async () => {
       .png()
       .toBuffer();
 
-    return new Response(faviconBuffer, {
+    return new Response(new Uint8Array(faviconBuffer), {
       headers: {
         'Content-Type': 'image/x-icon'
       }

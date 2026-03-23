@@ -1,0 +1,148 @@
+---
+import 'virtual:starlight/user-css'
+import '@astrojs/starlight/style/layers.css'
+import '@astrojs/starlight/style/props.css'
+import '@astrojs/starlight/style/reset.css'
+import '@astrojs/starlight/style/asides.css'
+import '@astrojs/starlight/style/util.css'
+import 'virtual:starlight/optional-css'
+
+import Banner from 'virtual:starlight/components/Banner'
+import ContentPanel from 'virtual:starlight/components/ContentPanel'
+import FallbackContentNotice from 'virtual:starlight/components/FallbackContentNotice'
+import DraftContentNotice from 'virtual:starlight/components/DraftContentNotice'
+import Footer from 'virtual:starlight/components/Footer'
+import Head from 'virtual:starlight/components/Head'
+import Header from 'virtual:starlight/components/Header'
+import Hero from 'virtual:starlight/components/Hero'
+import MarkdownContent from 'virtual:starlight/components/MarkdownContent'
+import PageFrame from 'virtual:starlight/components/PageFrame'
+import PageSidebar from 'virtual:starlight/components/PageSidebar'
+import PageTitle from 'virtual:starlight/components/PageTitle'
+import Sidebar from 'virtual:starlight/components/Sidebar'
+import SkipLink from 'virtual:starlight/components/SkipLink'
+import ThemeProvider from 'virtual:starlight/components/ThemeProvider'
+import TwoColumnContent from 'virtual:starlight/components/TwoColumnContent'
+
+import CoursePreviewGate from '@/components/overrides/CoursePreviewGate.astro'
+import { getCourseAccess, isFormationSlug } from '@/utils/courseGating'
+
+import printHref from '@astrojs/starlight/style/print.css?url&no-inline'
+
+const { starlightRoute } = Astro.locals
+
+const pagefindEnabled =
+	starlightRoute.entry.slug !== '404' &&
+	!starlightRoute.entry.slug.endsWith('/404') &&
+	starlightRoute.entry.data.pagefind !== false
+
+const htmlDataAttributes: Record<string, string> = { 'data-theme': 'dark' }
+if (Boolean(starlightRoute.toc)) htmlDataAttributes['data-has-toc'] = ''
+if (starlightRoute.hasSidebar) htmlDataAttributes['data-has-sidebar'] = ''
+if (Boolean(starlightRoute.entry.data.hero)) htmlDataAttributes['data-has-hero'] = ''
+
+const mainDataAttributes: Record<string, string> = {}
+if (pagefindEnabled) mainDataAttributes['data-pagefind-body'] = ''
+
+const isPrivateDocsRoute = Astro.url.pathname.startsWith('/dashboard/docs/')
+const isFormationPage = isFormationSlug(starlightRoute.entry.slug)
+const access = isFormationPage ? await getCourseAccess(Astro) : { isAuthenticated: false, hasAccess: false }
+const shouldShowPreview = isFormationPage && !isPrivateDocsRoute && !access.hasAccess
+---
+
+<html lang={starlightRoute.lang} dir={starlightRoute.dir} {...htmlDataAttributes}>
+	<head>
+		<Head />
+		<style>
+			html:not([data-has-toc]) {
+				--sl-mobile-toc-height: 0rem;
+			}
+			html:not([data-has-sidebar]) {
+				--sl-content-width: 67.5rem;
+			}
+			html {
+				scroll-padding-top: calc(1.5rem + var(--sl-nav-height) + var(--sl-mobile-toc-height));
+			}
+			main {
+				padding: var(--sl-main-pad);
+			}
+			@media (min-width: 50em) {
+				[data-has-sidebar] {
+					--sl-content-inline-start: var(--sl-sidebar-width);
+				}
+			}
+			@media (min-width: 72em) {
+				html {
+					scroll-padding-top: calc(1.5rem + var(--sl-nav-height));
+				}
+			}
+		</style>
+		<ThemeProvider />
+		<link rel="stylesheet" href={printHref} media="print" />
+	</head>
+	<body>
+		<SkipLink />
+		<PageFrame>
+			<Header slot="header" />
+			{starlightRoute.hasSidebar && <Sidebar slot="sidebar" />}
+			<script src="./SidebarPersistState"></script>
+			<TwoColumnContent>
+				<PageSidebar slot="right-sidebar" />
+				<main
+					{...mainDataAttributes}
+					lang={starlightRoute.entryMeta.lang}
+					dir={starlightRoute.entryMeta.dir}
+				>
+					<Banner />
+					{
+						starlightRoute.entry.data.hero ? (
+							<ContentPanel>
+								<Hero />
+								<MarkdownContent>
+									{
+										shouldShowPreview ? (
+											<CoursePreviewGate
+												entry={starlightRoute.entry}
+												headings={starlightRoute.headings}
+												isAuthenticated={access.isAuthenticated}
+												hasAccess={access.hasAccess}
+											/>
+										) : (
+											<slot />
+										)
+									}
+								</MarkdownContent>
+								<Footer />
+							</ContentPanel>
+						) : (
+							<>
+								<ContentPanel>
+									<PageTitle />
+									{starlightRoute.entry.data.draft && <DraftContentNotice />}
+									{starlightRoute.isFallback && <FallbackContentNotice />}
+								</ContentPanel>
+								<ContentPanel>
+									<MarkdownContent>
+										{
+											shouldShowPreview ? (
+												<CoursePreviewGate
+													entry={starlightRoute.entry}
+													headings={starlightRoute.headings}
+													isAuthenticated={access.isAuthenticated}
+													hasAccess={access.hasAccess}
+												/>
+											) : (
+												<slot />
+											)
+										}
+									</MarkdownContent>
+									<Footer />
+								</ContentPanel>
+							</>
+						)
+					}
+				</main>
+			</TwoColumnContent>
+		</PageFrame>
+	</body>
+</html>

@@ -1,7 +1,68 @@
 ---
-import { Image } from 'astro:assets'
 import Icon from '../icons/Icon.astro'
-import { servicesData, successStoriesData } from '@data/mega_link'
+
+type MenuItem = {
+	title: string
+	description: string
+	url: string
+	icon: Parameters<typeof Icon>[0]['name']
+}
+
+type SuccessStory = {
+	learnMoreUrl: string
+	image: string
+	alt: string
+	description: string
+}
+
+const servicesData: MenuItem[] = [
+	{
+		title: 'Productivity Systems',
+		description: 'Workflows, audits, and practical setup guidance.',
+		url: '/services',
+		icon: 'sparkles',
+	},
+	{
+		title: 'Windows Training',
+		description: 'Hands-on training to improve speed and consistency.',
+		url: '/en/formations/',
+		icon: 'bookOpen',
+	},
+	{
+		title: 'Obsidian Plugins',
+		description: 'Tools and templates for a cleaner knowledge workflow.',
+		url: '/products',
+		icon: 'puzzle',
+	},
+	{
+		title: 'Automation',
+		description: 'Reduce repetitive work with reliable automations.',
+		url: '/services',
+		icon: 'cpu',
+	},
+	{
+		title: 'Roadmap',
+		description: 'See what is planned and vote on upcoming features.',
+		url: '/roadmap',
+		icon: 'calendar',
+	},
+	{
+		title: 'Support',
+		description: 'Documentation, updates, and implementation help.',
+		url: '/contact',
+		icon: 'lifeBuoy',
+	},
+]
+
+const successStoriesData: SuccessStory[] = [
+	{
+		learnMoreUrl: '/blog',
+		image: '/images/WinFlowz.png',
+		alt: 'WinFlowz products preview',
+		description:
+			'See how WinFlowz products and training improve everyday digital productivity.',
+	},
+]
 ---
 
 <div

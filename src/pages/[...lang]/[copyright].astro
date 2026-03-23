@@ -2,7 +2,6 @@
 export const prerender = true
 import MainLayout from '@/layouts/MainLayout.astro'
 import { getLangFromUrl, useTranslations } from '@/utils/i18n'
-import type { Language } from '@/types'
 
 export function getStaticPaths() {
 	return [
@@ -13,6 +12,11 @@ export function getStaticPaths() {
 
 const lang = getLangFromUrl(Astro.url)
 const t = await useTranslations(lang, 'copyright')
+const sections = (t.sections ?? {}) as Record<
+	string,
+	{ title?: string; content?: string; items?: string[] }
+>
+const copyrightDescription = sections.protection?.content ?? ''
 ---
 
 <MainLayout
@@ -24,7 +28,7 @@ const t = await useTranslations(lang, 'copyright')
 		'@id': `https://winflowz.com/${lang === 'fr' ? 'fr/droits' : 'copyright'}`,
 		url: `https://winflowz.com/${lang === 'fr' ? 'fr/droits' : 'copyright'}`,
 		name: `${t.title} | WinFlowz`,
-		description: t.sections.protection.content,
+		description: copyrightDescription,
 		inLanguage: lang,
 	}}
 >
@@ -42,42 +46,42 @@ const t = await useTranslations(lang, 'copyright')
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.protection.title}
+				{sections.protection?.title}
 			</h2>
-			<p>{t.sections.protection.content}</p>
+			<p>{sections.protection?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.protection.items.map((item: string) => <li>{item}</li>)}
+				{(sections.protection?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Restrictions de Licence */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.license.title}
+				{sections.license?.title}
 			</h2>
-			<p>{t.sections.license.content}</p>
+			<p>{sections.license?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.license.items.map((item: string) => <li>{item}</li>)}
+				{(sections.license?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Utilisation Commerciale */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.commercial.title}
+				{sections.commercial?.title}
 			</h2>
-			<p>{t.sections.commercial.content}</p>
+			<p>{sections.commercial?.content}</p>
 
 			{/* Section Application */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.enforcement.title}
+				{sections.enforcement?.title}
 			</h2>
-			<p>{t.sections.enforcement.content}</p>
+			<p>{sections.enforcement?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
 				{
-					t.sections.enforcement.items.map((item: string) => (
+					(sections.enforcement?.items ?? []).map((item: string) => (
 						<li>{item}</li>
 					))
 				}
@@ -87,9 +91,9 @@ const t = await useTranslations(lang, 'copyright')
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.fairUse.title}
+				{sections.fairUse?.title}
 			</h2>
-			<p>{t.sections.fairUse.content}</p>
+			<p>{sections.fairUse?.content}</p>
 
 			<p class="mt-8">
 				{t.footer.notice}

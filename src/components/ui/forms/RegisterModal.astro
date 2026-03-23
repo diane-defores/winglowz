@@ -125,8 +125,14 @@ const config = {
 	if (form instanceof HTMLFormElement) {
 		form.addEventListener('submit', async (e) => {
 			// Validation des mots de passe
-			const password = form.querySelector('#register-password')?.value
-			const confirmPassword = form.querySelector('#confirm-password')?.value
+			const passwordInput = form.querySelector('#register-password')
+			const confirmPasswordInput = form.querySelector('#confirm-password')
+			const password =
+				passwordInput instanceof HTMLInputElement ? passwordInput.value : undefined
+			const confirmPassword =
+				confirmPasswordInput instanceof HTMLInputElement
+					? confirmPasswordInput.value
+					: undefined
 
 			if (password !== confirmPassword) {
 				e.preventDefault()

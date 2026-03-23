@@ -11,8 +11,6 @@ import type { Language } from '@/types'
 import ProductsSection from '@/components/sections/products/ProductsSection.astro'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
-import { routes } from '@/i18n/config'
-import { generateStaticPaths } from '@/utils/routing'
 
 export function getStaticPaths() {
 	return [
@@ -45,50 +43,15 @@ const products: CollectionEntry<'products'>[] = (
 		a.data.main.id - b.data.main.id
 )
 
-const testimonials = [
-	{
-		content:
-			lang === 'fr'
-				? "Depuis que j'utilise ObsiFlowz, ma productivité a littéralement explosé. L'organisation intelligente des notes et les automatisations m'ont fait gagner des heures chaque semaine. C'est rafraîchissant de travailler avec des outils conçus par quelqu'un qui comprend vraiment les besoins des utilisateurs d'Obsidian."
-				: "Since I started using ObsiFlowz, my productivity has absolutely skyrocketed. The smart note organization and automations save me hours every week. It's refreshing to work with tools built by someone who truly understands Obsidian users' needs.",
-		author: 'Jason Clark',
-		role:
-			lang === 'fr'
-				? 'Consultant indépendant | ProductivityPro'
-				: 'Independent Consultant | ProductivityPro',
-		avatarSrc:
-			'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80',
-		avatarAlt: lang === 'fr' ? "Description de l'image" : 'Image description',
-	},
-	{
-		content:
-			lang === 'fr'
-				? "En tant que créatrice de contenu, je cherche toujours des outils qui m'aident à structurer mes idées. La suite de plugins WinFlowz a révolutionné mon workflow, offrant le mélange parfait d'organisation et de créativité. Le support client exceptionnel est la cerise sur le gâteau !"
-				: "As a content creator, I'm always looking for tools that help me structure my ideas. WinFlowz's plugin suite has revolutionized my workflow, offering the perfect blend of organization and creativity. The exceptional customer support was the cherry on top!",
-		author: 'Maria Gonzalez',
-		role:
-			lang === 'fr'
-				? 'Créatrice de contenu | Creative Spaces'
-				: 'Content Creator | Creative Spaces',
-		avatarSrc:
-			'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80',
-		avatarAlt: lang === 'fr' ? "Description de l'image" : 'Image description',
-	},
-	{
-		content:
-			lang === 'fr'
-				? "J'utilise Obsidian depuis plus de 3 ans, et je peux sincèrement dire que les plugins WinFlowz sont parmi les meilleurs que j'ai testés. Ils s'intègrent parfaitement et j'ai une confiance totale dans chaque fonctionnalité. De plus, le service est impeccable — ils se soucient vraiment du succès de chaque utilisateur."
-				: "I've been using Obsidian for over 3 years, and I can honestly say that WinFlowz plugins are among the best I've tried. They integrate seamlessly, and I have complete confidence in every feature. Plus, the service is impeccable — they truly care about every user's success.",
-		author: 'Richard Kim',
-		role:
-			lang === 'fr'
-				? 'Développeur Senior | TechFlow'
-				: 'Senior Developer | TechFlow',
-		avatarSrc:
-			'https://images.unsplash.com/photo-1474176857210-7287d38d27c6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80',
-		avatarAlt: lang === 'fr' ? "Description de l'image" : 'Image description',
-	},
-]
+const productPageTranslations = t as {
+	title: string
+	description?: string
+	siteDescription?: string
+	subtitle?: string
+	customerStories: string
+	features: { title: string; subtitle: string; benefits: string[] }
+	testimonials: { title: string; subtitle: string }
+}
 ---
 
 <MainLayout
@@ -108,5 +71,5 @@ const testimonials = [
 		inLanguage: lang,
 	}}
 >
-	<ProductsSection t={t} products={products} productLocale={lang} />
+	<ProductsSection t={productPageTranslations} products={products} productLocale={lang} />
 </MainLayout>

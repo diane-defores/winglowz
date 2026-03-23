@@ -1,0 +1,97 @@
+---
+import { extractCoursePreview, getCourseUnlockPath, getPrivateCoursePath } from '@/utils/courseGating'
+
+interface Props {
+	entry: {
+		slug: string
+		body: string
+	}
+	headings: { text: string; slug: string; depth: number }[]
+	isAuthenticated: boolean
+	hasAccess: boolean
+}
+
+const { entry, headings, isAuthenticated, hasAccess } = Astro.props
+const lang = entry.slug.startsWith('fr/') ? 'fr' : 'en'
+const previewParagraphs = extractCoursePreview(entry.body)
+const unlockUrl = getCourseUnlockPath(entry.slug, lang)
+const privateUrl = getPrivateCoursePath(entry.slug)
+const headingPreview = headings.filter((heading) => heading.depth <= 2).slice(0, 6)
+
+const labels =
+	lang === 'fr'
+		? {
+				privateLabel: 'Lecon privee',
+				previewTitle: 'Apercu public',
+				previewText:
+					'Cette page reste visible pour le SEO et pour te montrer la promesse du module. Le contenu complet est reserve a la version debloquee.',
+				outlineTitle: 'Dans cette lecon',
+				unlockTitle: 'Debloquer la lecon complete',
+				unlockText:
+					'Tu peux acheter l acces puis etre redirigee vers la version privee du module.',
+				unlockCta: 'Voir l offre',
+				openPrivateCta: 'Ouvrir la version privee',
+				signinHint: 'Connecte-toi avec le compte acheteur pour ouvrir la lecon privee apres achat.',
+			}
+		: {
+				privateLabel: 'Private lesson',
+				previewTitle: 'Public preview',
+				previewText:
+					'This page stays public for SEO and discovery. The full lesson is reserved for the unlocked version.',
+				outlineTitle: 'In this lesson',
+				unlockTitle: 'Unlock the full lesson',
+				unlockText:
+					'You can purchase access and then be redirected to the private version of this lesson.',
+				unlockCta: 'View offer',
+				openPrivateCta: 'Open private lesson',
+				signinHint: 'Sign in with the buyer account to open the private lesson after purchase.',
+			}
+---
+
+<div class="course-preview space-y-8">
+	<div class="rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
+		<div class="mb-4 flex flex-wrap items-center gap-3">
+			<span class="inline-flex rounded-full bg-yellow/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-yellow ring-1 ring-yellow/30">
+				{labels.privateLabel}
+			</span>
+			<h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+				{labels.previewTitle}
+			</h2>
+		</div>
+		<p class="mb-6 text-neutral-600 dark:text-neutral-400">{labels.previewText}</p>
+		<div class="space-y-4">
+			{previewParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+		</div>
+	</div>
+
+	{
+		headingPreview.length > 0 && (
+			<div class="rounded-2xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-950">
+				<h3 class="mb-4 text-xl font-bold text-neutral-900 dark:text-neutral-100">
+					{labels.outlineTitle}
+				</h3>
+				<ul class="space-y-3">
+					{headingPreview.map((heading) => (
+						<li class="text-neutral-700 dark:text-neutral-300">{heading.text}</li>
+					))}
+				</ul>
+			</div>
+		)
+	}
+
+	<div class="rounded-2xl border border-magenta/30 bg-magenta/5 p-6 dark:border-magenta/20 dark:bg-magenta/10">
+		<h3 class="mb-3 text-xl font-bold text-neutral-900 dark:text-neutral-100">
+			{labels.unlockTitle}
+		</h3>
+		<p class="mb-6 text-neutral-700 dark:text-neutral-300">{labels.unlockText}</p>
+		<div class="flex flex-wrap gap-3">
+			<a
+				href={hasAccess ? privateUrl : unlockUrl}
+				class="inline-flex items-center justify-center rounded-xl bg-neutral-900 px-6 py-3 font-bold text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200"
+			>
+				{hasAccess ? labels.openPrivateCta : labels.unlockCta}
+			</a>
+			{!isAuthenticated && <p class="self-center text-sm text-neutral-500 dark:text-neutral-400">{labels.signinHint}</p>}
+		</div>
+	</div>
+</div>

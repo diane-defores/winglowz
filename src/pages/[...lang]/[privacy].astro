@@ -2,7 +2,6 @@
 export const prerender = true
 import MainLayout from '@/layouts/MainLayout.astro'
 import { getLangFromUrl, useTranslations } from '@/utils/i18n'
-import type { Language } from '@/types'
 
 export function getStaticPaths() {
 	return [
@@ -13,6 +12,10 @@ export function getStaticPaths() {
 
 const lang = getLangFromUrl(Astro.url)
 const t = await useTranslations(lang, 'privacy')
+const sections = (t.sections ?? {}) as Record<
+	string,
+	{ title?: string; intro?: string; content?: string; items?: string[] }
+>
 ---
 
 <MainLayout
@@ -44,83 +47,83 @@ const t = await useTranslations(lang, 'privacy')
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.collection.title}
+				{sections.collection?.title}
 			</h2>
-			<p>{t.sections.collection.intro}</p>
+			<p>{sections.collection?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.collection.items.map((item: string) => <li>{item}</li>)}
+				{(sections.collection?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Utilisation des Données -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.usage.title}
+				{sections.usage?.title}
 			</h2>
-			<p>{t.sections.usage.intro}</p>
+			<p>{sections.usage?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.usage.items.map((item: string) => <li>{item}</li>)}
+				{(sections.usage?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Protection des Données -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.protection.title}
+				{sections.protection?.title}
 			</h2>
-			<p>{t.sections.protection.intro}</p>
+			<p>{sections.protection?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.protection.items.map((item: string) => <li>{item}</li>)}
+				{(sections.protection?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Services Tiers -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.thirdParty.title}
+				{sections.thirdParty?.title}
 			</h2>
-			<p>{t.sections.thirdParty.intro}</p>
+			<p>{sections.thirdParty?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.thirdParty.items.map((item: string) => <li>{item}</li>)}
+				{(sections.thirdParty?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Vos Droits -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.rights.title}
+				{sections.rights?.title}
 			</h2>
-			<p>{t.sections.rights.intro}</p>
+			<p>{sections.rights?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.rights.items.map((item: string) => <li>{item}</li>)}
+				{(sections.rights?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Cookies -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.cookies.title}
+				{sections.cookies?.title}
 			</h2>
-			<p>{t.sections.cookies.intro}</p>
+			<p>{sections.cookies?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.cookies.items.map((item: string) => <li>{item}</li>)}
+				{(sections.cookies?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Mises à Jour -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.updates.title}
+				{sections.updates?.title}
 			</h2>
-			<p>{t.sections.updates.content}</p>
+			<p>{sections.updates?.content}</p>
 
 			<!-- Section Contact -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.contact.title}
+				{sections.contact?.title}
 			</h2>
-			<p>{t.sections.contact.content}</p>
+			<p>{sections.contact?.content}</p>
 
 			<!-- Section Analytics Opt-out -->
 			<h2 class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200">

@@ -2,6 +2,9 @@
 import MainLayout from '@/layouts/MainLayout.astro'
 
 const auth = Astro.locals.auth()
+const nextUrl = Astro.url.searchParams.get('next')
+const safeNextUrl =
+	nextUrl && nextUrl.startsWith('/dashboard/docs/') ? nextUrl : null
 ---
 
 <MainLayout title="Purchase Confirmed">
@@ -22,11 +25,11 @@ const auth = Astro.locals.auth()
 
 			<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
 				{auth.userId ? (
-					<a href="/dashboard" class="inline-flex items-center justify-center rounded-lg bg-magenta px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity">
-						Go to Dashboard
+					<a href={safeNextUrl || '/dashboard'} class="inline-flex items-center justify-center rounded-lg bg-magenta px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity">
+						{safeNextUrl ? 'Open Lesson' : 'Go to Dashboard'}
 					</a>
 				) : (
-					<a href="/signin" class="inline-flex items-center justify-center rounded-lg bg-magenta px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity">
+					<a href={safeNextUrl ? `/signin?next=${encodeURIComponent(safeNextUrl)}` : '/signin'} class="inline-flex items-center justify-center rounded-lg bg-magenta px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity">
 						Sign In to Access
 					</a>
 				)}

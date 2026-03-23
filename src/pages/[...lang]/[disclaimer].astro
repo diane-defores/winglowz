@@ -2,11 +2,14 @@
 export const prerender = true
 import MainLayout from '@/layouts/MainLayout.astro'
 import { getLangFromUrl, useTranslations, useUI } from '@/utils/i18n'
-import type { Language } from '@/types'
 
 const lang = getLangFromUrl(Astro.url)
 const t = await useTranslations(lang, 'disclaimer')
 const ui = await useUI(lang)
+const sections = (t.sections ?? {}) as Record<
+	string,
+	{ title?: string; content?: string; items?: string[] }
+>
 
 export function getStaticPaths() {
 	return [
@@ -31,20 +34,20 @@ export function getStaticPaths() {
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.general.title}
+				{sections.general?.title}
 			</h2>
-			<p>{t.sections.general.content}</p>
+			<p>{sections.general?.content}</p>
 
 			<!-- Section Absence de Résultats Garantis -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.noGuarantee.title}
+				{sections.noGuarantee?.title}
 			</h2>
-			<p>{t.sections.noGuarantee.content}</p>
+			<p>{sections.noGuarantee?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
 				{
-					t.sections.noGuarantee.items.map((item: string) => (
+					(sections.noGuarantee?.items ?? []).map((item: string) => (
 						<li>{item}</li>
 					))
 				}
@@ -54,23 +57,23 @@ export function getStaticPaths() {
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.technical.title}
+				{sections.technical?.title}
 			</h2>
-			<p>{t.sections.technical.content}</p>
+			<p>{sections.technical?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.technical.items.map((item: string) => <li>{item}</li>)}
+				{(sections.technical?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Conseil Professionnel -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.professional.title}
+				{sections.professional?.title}
 			</h2>
-			<p>{t.sections.professional.content}</p>
+			<p>{sections.professional?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
 				{
-					t.sections.professional.items.map((item: string) => (
+					(sections.professional?.items ?? []).map((item: string) => (
 						<li>{item}</li>
 					))
 				}
@@ -80,33 +83,33 @@ export function getStaticPaths() {
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.thirdParty.title}
+				{sections.thirdParty?.title}
 			</h2>
-			<p>{t.sections.thirdParty.content}</p>
+			<p>{sections.thirdParty?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.thirdParty.items.map((item: string) => <li>{item}</li>)}
+				{(sections.thirdParty?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Limitation de Responsabilité -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.liability.title}
+				{sections.liability?.title}
 			</h2>
-			<p>{t.sections.liability.content}</p>
+			<p>{sections.liability?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.liability.items.map((item: string) => <li>{item}</li>)}
+				{(sections.liability?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			<!-- Section Modifications et Erreurs -->
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.changes.title}
+				{sections.changes?.title}
 			</h2>
-			<p>{t.sections.changes.content}</p>
+			<p>{sections.changes?.content}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.changes.items.map((item: string) => <li>{item}</li>)}
+				{(sections.changes?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 		</div>
 

@@ -61,6 +61,7 @@ const favicon = await getImage({
 <!-- Inject structured data -->{
 	structuredData && (
 		<script
+			is:inline
 			type="application/ld+json"
 			set:html={JSON.stringify(structuredData)}
 		/>

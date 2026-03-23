@@ -1,0 +1,61 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro'
+import { getCollection } from 'astro:content'
+import { getCourseAccess, isFormationSlug } from '@/utils/courseGating'
+
+const requestedSlug = Astro.params.slug?.replace(/\/$/, '')
+const docs = await getCollection('docs')
+const entry = docs.find((doc) => {
+	const normalized = (doc.slug === 'index' ? '' : doc.slug).replace(/\/$/, '')
+	return normalized === requestedSlug
+})
+
+if (!entry || !isFormationSlug(entry.slug)) {
+	return Astro.redirect('/404')
+}
+
+const access = await getCourseAccess(Astro)
+if (!access.hasAccess) {
+	return Astro.redirect(`/${entry.slug}`)
+}
+
+const { Content, headings } = await entry.render()
+const lang = entry.slug.startsWith('fr/') ? 'fr' : 'en'
+const publicPath = `/${entry.slug}`
+---
+
+<MainLayout title={entry.data.title} lang={lang}>
+	<div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+		<div class="mb-6 flex flex-wrap items-center gap-3">
+			<span class="inline-flex rounded-full bg-green/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-green ring-1 ring-green/30">
+				{lang === 'fr' ? 'Lecon debloquee' : 'Unlocked lesson'}
+			</span>
+			<a href={publicPath} class="text-sm text-magenta hover:underline">
+				{lang === 'fr' ? 'Voir la version publique' : 'View public version'}
+			</a>
+		</div>
+
+		<article class="sl-markdown-content rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
+			{Content && <Content />}
+		</article>
+
+		{
+			headings.length > 0 && (
+				<div class="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-950">
+					<h2 class="mb-4 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+						{lang === 'fr' ? 'Navigation rapide' : 'Quick navigation'}
+					</h2>
+					<ul class="space-y-2">
+						{headings.filter((heading) => heading.depth <= 2).map((heading) => (
+							<li>
+								<a href={`#${heading.slug}`} class="text-neutral-700 hover:text-magenta dark:text-neutral-300 dark:hover:text-magenta">
+									{heading.text}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			)
+		}
+	</div>
+</MainLayout>

@@ -22,10 +22,6 @@ import type { MiddlewareHandler } from 'astro'
 import { defaultLocale, locales, routes } from '../i18n/config'
 import type { Language } from '../types'
 
-interface Locals extends App.Locals {
-  lang: Language
-}
-
 /**
  * i18n middleware for locale detection and route translation.
  * 
@@ -41,10 +37,11 @@ interface Locals extends App.Locals {
  */
 export const i18nMiddleware: MiddlewareHandler = async ({ url, locals, redirect }, next) => {
   const pathname = url.pathname
+  const typedLocals = locals as App.Locals & { lang?: Language }
 
   // Root path uses default locale
   if (pathname === '/') {
-    locals.lang = defaultLocale
+    typedLocals.lang = defaultLocale
     return next()
   }
 
@@ -59,7 +56,7 @@ export const i18nMiddleware: MiddlewareHandler = async ({ url, locals, redirect 
   }
 
   // Make locale available to all page components via locals
-  locals.lang = currentLang
+  typedLocals.lang = currentLang
 
   // Handle dynamic routes with parameters (e.g., [...blog_slug].astro)
   if (segments.length > 1) {

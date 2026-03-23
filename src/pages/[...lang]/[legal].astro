@@ -2,7 +2,6 @@
 export const prerender = true
 import MainLayout from '@/layouts/MainLayout.astro'
 import { getLangFromUrl, useTranslations } from '@/utils/i18n'
-import type { Language } from '@/types'
 
 export function getStaticPaths() {
 	return [
@@ -13,6 +12,11 @@ export function getStaticPaths() {
 
 const lang = getLangFromUrl(Astro.url)
 const t = await useTranslations(lang, 'legal')
+const sections = (t.sections ?? {}) as Record<
+	string,
+	{ title?: string; intro?: string; items?: string[] }
+>
+const legalDescription = sections.legalInfo?.intro ?? ''
 ---
 
 <MainLayout
@@ -24,7 +28,7 @@ const t = await useTranslations(lang, 'legal')
 		'@id': `https://winflowz.com/${lang === 'fr' ? 'fr/mentions-legales' : 'legal'}`,
 		url: `https://winflowz.com/${lang === 'fr' ? 'fr/mentions-legales' : 'legal'}`,
 		name: `${t.title} | WinFlowz`,
-		description: t.sections.legalInfo.intro,
+		description: legalDescription,
 		inLanguage: lang,
 	}}
 >
@@ -42,67 +46,67 @@ const t = await useTranslations(lang, 'legal')
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.legalInfo.title}
+				{sections.legalInfo?.title}
 			</h2>
-			<p>{t.sections.legalInfo.intro}</p>
+			<p>{sections.legalInfo?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.legalInfo.items.map((item: string) => <li>{item}</li>)}
+				{(sections.legalInfo?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Activité Professionnelle */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.activity.title}
+				{sections.activity?.title}
 			</h2>
-			<p>{t.sections.activity.intro}</p>
+			<p>{sections.activity?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.activity.items.map((item: string) => <li>{item}</li>)}
+				{(sections.activity?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Hébergement */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.hosting.title}
+				{sections.hosting?.title}
 			</h2>
-			<p>{t.sections.hosting.intro}</p>
+			<p>{sections.hosting?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.hosting.items.map((item: string) => <li>{item}</li>)}
+				{(sections.hosting?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Services d'Authentification */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.auth.title}
+				{sections.auth?.title}
 			</h2>
-			<p>{t.sections.auth.intro}</p>
+			<p>{sections.auth?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.auth.items.map((item: string) => <li>{item}</li>)}
+				{(sections.auth?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Propriété Intellectuelle */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.ip.title}
+				{sections.ip?.title}
 			</h2>
-			<p>{t.sections.ip.intro}</p>
+			<p>{sections.ip?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.ip.items.map((item: string) => <li>{item}</li>)}
+				{(sections.ip?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Protection des Données */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.dataProtection.title}
+				{sections.dataProtection?.title}
 			</h2>
-			<p>{t.sections.dataProtection.intro}</p>
+			<p>{sections.dataProtection?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
 				{
-					t.sections.dataProtection.items.map((item: string) => (
+					(sections.dataProtection?.items ?? []).map((item: string) => (
 						<li>{item}</li>
 					))
 				}
@@ -112,34 +116,34 @@ const t = await useTranslations(lang, 'legal')
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.insurance.title}
+				{sections.insurance?.title}
 			</h2>
-			<p>{t.sections.insurance.intro}</p>
+			<p>{sections.insurance?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.insurance.items.map((item: string) => <li>{item}</li>)}
+				{(sections.insurance?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Litiges */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.disputes.title}
+				{sections.disputes?.title}
 			</h2>
-			<p>{t.sections.disputes.intro}</p>
+			<p>{sections.disputes?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
-				{t.sections.disputes.items.map((item: string) => <li>{item}</li>)}
+				{(sections.disputes?.items ?? []).map((item: string) => <li>{item}</li>)}
 			</ul>
 
 			{/* Section Immatriculation */}
 			<h2
 				class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200"
 			>
-				{t.sections.registration.title}
+				{sections.registration?.title}
 			</h2>
-			<p>{t.sections.registration.intro}</p>
+			<p>{sections.registration?.intro}</p>
 			<ul class="list-disc space-y-2 pl-6">
 				{
-					t.sections.registration.items.map((item: string) => (
+					(sections.registration?.items ?? []).map((item: string) => (
 						<li>{item}</li>
 					))
 				}

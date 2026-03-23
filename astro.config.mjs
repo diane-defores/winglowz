@@ -78,7 +78,8 @@ export default defineConfig({
         './src/assets/styles/starlight.css'
       ],
       components: {
-        SkipLink: '@components/overrides/EmptySkipLink.astro'
+        SkipLink: '@components/overrides/EmptySkipLink.astro',
+        Page: '@components/overrides/StarlightPage.astro'
       },
       logo: {
         src: './src/assets/images/WinFlowz.png',

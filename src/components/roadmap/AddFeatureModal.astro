@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Configuration de la validation personnalisée
     function setupValidation(input, requiredMessage, minLengthMessage) {
-        input.addEventListener('invalid', (e) => {
+        input.addEventListener('invalid', () => {
             if (input.validity.valueMissing) {
                 input.setCustomValidity(requiredMessage);
             } else if (input.validity.tooShort) {
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Configuration de la validation du select
-    projectSelect?.addEventListener('invalid', (e) => {
+    projectSelect?.addEventListener('invalid', () => {
         projectSelect.setCustomValidity(validationMessages.projectRequired);
     });
 
@@ -207,4 +207,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-

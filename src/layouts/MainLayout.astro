@@ -68,12 +68,12 @@ interface Props {
 		<CookieConsent />
 		{
 			import.meta.env.PROD && (
-				<script async src="https://cdn.onthe.io/io.js/YyAMWtaLLPUi" />
+			<script is:inline async src="https://cdn.onthe.io/io.js/YyAMWtaLLPUi" />
 			)
 		}
 		<script>
 		(() => {
-			const blockEvent = (event) => event.preventDefault();
+			const blockEvent = (event: Event) => event.preventDefault();
 			document.addEventListener('copy', blockEvent);
 			document.addEventListener('cut', blockEvent);
 			document.addEventListener('contextmenu', blockEvent);
@@ -91,10 +91,10 @@ interface Props {
 		import '@/assets/scripts/modal'
 		</script>
 	  <!-- buildflowz-inspector -->
-  <script src="/buildflowz-inspector.js" defer></script>
+  <script is:inline src="/buildflowz-inspector.js" defer></script>
   <!-- shipflow-inspector -->
-  <script src="/shipflow-inspector.js" defer></script>
+  <script is:inline src="/shipflow-inspector.js" defer></script>
   <!-- shipflow-eruda -->
-  <script src="/shipflow-eruda.js" defer></script>
+  <script is:inline src="/shipflow-eruda.js" defer></script>
 </body>
 </html>

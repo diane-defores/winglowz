@@ -156,12 +156,6 @@ function TerminalPreview({ theme }: { theme: TermuxTheme }) {
   )
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  popular: "Populaires",
-  dark: "Sombres",
-  light: "Clairs",
-}
-
 export default function TermuxThemePreview() {
   const [selectedId, setSelectedId] = useState("nord")
   const [search, setSearch] = useState("")

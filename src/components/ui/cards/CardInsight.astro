@@ -1,7 +1,5 @@
 ---
-// Import necessary modules and utilities
 import Icon from '@components/ui/icons/Icon.astro'
-import type { CollectionEntry } from 'astro:content'
 
 const {
 	insightEntry,
@@ -10,7 +8,15 @@ const {
 } = Astro.props
 
 interface Props {
-	insightEntry: CollectionEntry<'insights'>
+	insightEntry: {
+		slug: string
+		data: {
+			cardImage: string
+			cardImageAlt: string
+			title: string
+			description: string
+		}
+	}
 	insightLocale?: string
 	label?: string
 }

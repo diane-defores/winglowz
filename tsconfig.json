@@ -19,5 +19,5 @@
     "allowJs": true,
     "strict": true
   },
-  "exclude": ["convex", "idees", "public", "dist", "node_modules"]
+  "exclude": ["convex", "idees", "public", "dist", "node_modules", "tests"]
 }

@@ -14,15 +14,19 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.props
 const title = lang === 'fr' ? 'Connexion' : 'Sign In'
-const dashboardUrl = '/dashboard'
+const nextUrl = Astro.url.searchParams.get('next')
+const safeNextUrl =
+	nextUrl && nextUrl.startsWith('/dashboard/docs/')
+		? nextUrl
+		: '/dashboard'
 ---
 
 <MainLayout title={title} lang={lang}>
 	<div class="flex min-h-[60vh] items-center justify-center py-12">
 		<SignIn
 			routing="hash"
-			afterSignInUrl={dashboardUrl}
-			afterSignUpUrl={dashboardUrl}
+			afterSignInUrl={safeNextUrl}
+			afterSignUpUrl={safeNextUrl}
 		/>
 	</div>
 </MainLayout>
