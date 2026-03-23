@@ -1,587 +1,94 @@
+# WinFlowz
 
-## Table of Contents
+Optimize your Windows workflow. Tools, training, and guides for professionals who use Windows daily.
 
-* [Getting Started](#getting-started)
-  * [Installation](#installation)
-  * [Development Commands](#development-commands)
-* [BMAD Method](#bmad-method)
-  * [AI-Driven Development](#ai-driven-development)
-  * [Quick Start with BMAD](#quick-start-with-bmad)
-* [Project Structure](#project-structure)
-* [Static Assets and Public Resources](#static-assets-and-public-resources)
-* [Customization](#customization)
-  * [Editing Component Variables](#editing-component-variables)
-  * [Props in Component Instances](#props-in-component-instances)
-  * [Customizing Navigation and Footer Links](#customizing-navigation-and-footer-links)
-    * [Navigation Bar Links](#navigation-bar-links)
-    * [Footer Links](#footer-links)
-    * [Social Media Links](#social-media-links)
-* [Integrations and Enhancements](#integrations-and-enhancements)
-  * [Starlight Documentation](#starlight-documentation)
-  * [Lenis for Smooth Scrolling](#lenis-for-smooth-scrolling)
-  * [View Transitions](#view-transitions)
-  * [Hiding Scrollbar](#hiding-scrollbar)
-  * [SEO Configuration](#seo-configuration)
-    * [Using constants.ts](#using-constantsts)
-    * [Applying Metadata in Layouts](#applying-metadata-in-layouts)
-    * [Passing Individual Schema](#passing-individual-schema)
-    * [Extending Metadata for SEO](#extending-metadata-for-seo)
-    * [Structured Data and Rich Snippets](#structured-data-and-rich-snippets)
-    * [Using Astro SEO Integrations](#using-astro-seo-integrations)
-  * [Robots.txt](#robotstxt)
-  * [Markdown/MDX](#markdownmdx)
-    * [Image Integration](#image-integration)
-  * [Astro Integrations](#astro-integrations)
-  * [Flexibility with Integrations](#flexibility-with-integrations)
-  * [HTML Minification](#html-minification)
+https://winflowz.com
 
+---
 
+## Tech Stack
 
-* [x] **Icon Set Component**:
-  * Convenient and reusable Icon component that allows adding icons simply by providing a name prop.
-  * Render any pre-defined icon SVG using `<Icon name="iconName" />` in your Astro components.
-  * The Icon Component offers a centralized location for all SVG Icons across the project in one TypeScript file - allowing unified updates and easy maintenance.
-  * **Note:** Developers have the option to use other community integrations like [astro-icons](https://github.com/natemoo-re/astro-icon). However, the author decided to create a custom icon set component for managing custom icons.
-
-* [x] **Internationalization (i18n) Features**:
-  * Integrates [Astro’s internationalization (i18n) features](https://docs.astro.build/en/guides/internationalization/).
-  * Additionally, a custom LanguagePicker component has been developed to facilitate language selection.
-  * Developers can access the monolingual version directly from [`monolingual-site` branch](https://github.com/mearashadowfax/ScrewFast/tree/monolingual-site).
-
-* [x] **Dynamic Table of Contents (ToC) with Scroll Progress Indicator**:
-  * Enhances ease of navigation in insight posts by highlighting the relevant section in the ToC, and includes a progress indicator to visually represent scroll progress.
-  * Developers seeking alternatives might consider the [remark-toc](https://github.com/remarkjs/remark-toc) plugin.
-
-### Planned Improvements
-
-* Currently, there are no planned improvements. We'll update this section as plans develop.
-
-### Bug Fixes
-
-* Currently, there are no known bugs. If you encounter any issues, please report them on our [issues page](https://github.com/mearashadowfax/ScrewFast/issues).
+- **Framework**: Astro 5.x (SSR mode, deployed on Vercel)
+- **Documentation**: Astro Starlight
+- **Styling**: Tailwind CSS 3.x + Preline UI
+- **Authentication**: Clerk
+- **Payments**: Polar.sh
+- **Backend**: Convex (real-time)
+- **Newsletter**: Resend
+- **Analytics**: PostHog + Vercel Analytics
+- **Interactive Islands**: React
+- **Smooth Scroll**: Lenis
+- **View Transitions**: Astro native + astro-vtbot
+- **i18n**: English (default) + French
+- **Testing**: Vitest (unit) + Playwright (E2E)
+- **Package Manager**: pnpm (required)
 
 ## Getting Started
 
-This guide will provide you with the necessary steps to set up and familiarize yourself with the Astro project on your local development machine.
-
-### Use This Template
-To get started, click the `Use this template` button (the big green one at the top right) to create your own repo from this template in your GitHub account.
-
-### Clone the Repository
-Once your repository is created, you can clone it to your local machine using the following commands:
-
 ```bash
-git clone https://github.com/[YOUR_USERNAME]/[YOUR_REPO_NAME].git
-cd [YOUR_REPO_NAME]
+git clone https://github.com/dianedef/winflowz.git
+cd winflowz
+pnpm install
+pnpm dev
 ```
 
-### Installation
+The dev server runs on port 3011.
 
-Start by installing the project dependencies. Open your terminal, navigate to the project's root directory, and execute:
+## Commands
 
-```bash
-npm install
-```
-
-This command will install all the necessary dependencies defined in the `package.json` file.
-
-### Development Commands
-
-With dependencies installed, you can utilize the following npm scripts to manage your project's development lifecycle:
-
-* `npm run dev`: Starts a local development server with hot reloading enabled.
-* `npm run preview`: Serves your build output locally for preview before deployment.
-* `npm run build`: Bundles your site into static files for production.
-
-For detailed help with Astro CLI commands, visit [Astro's documentation](https://docs.astro.build/en/reference/cli-reference/).
-
-## BMAD Method
-
-WinFlowz uses the **BMAD (Breakthrough Method for Agile AI-Driven Development)** framework to organize development with AI assistance.
-
-### AI-Driven Development
-
-BMAD provides specialized AI agents for different development phases:
-- **Planning Phase**: Analyst, PM, Architect, UX Expert
-- **Development Phase**: Developer, QA, Scrum Master
-
-### Quick Start with BMAD
-
-**First Time Using BMAD?**
-1. Read [`bmad/GETTING_STARTED.md`](bmad/GETTING_STARTED.md) for comprehensive guide
-2. Check [`bmad/NEXT_STEPS.md`](bmad/NEXT_STEPS.md) for immediate actions
-3. Browse [`bmad/INDEX.md`](bmad/INDEX.md) for documentation map
-
-**Using AI Assistants (ChatGPT, Claude, Gemini)?**
-- Upload agent files from `web-bundles/agents/` for specific tasks
-- Use team bundles from `web-bundles/teams/` for complex projects
-- See [BMAD README](bmad/README.md) for detailed instructions
-
-**Documentation Organization:**
-- Business & Product Planning → `bmad/planning/`
-- Technical Specifications → `docs/`
-- Templates & Prompts → `bmad/templates/`
-- Case Studies → `bmad/planning/case-studies/`
-
-**Key Resources:**
-- [BMAD User Guide](.bmad-core/user-guide.md) - Complete method documentation
-- [Agent Definitions](.bmad-core/agents/) - AI agent capabilities
-- [Workflows](.bmad-core/workflows/) - Pre-defined development workflows
-- [Templates](.bmad-core/templates/) - Document templates
-
-## Deployment
-
-### Building Your Site
-
-Before deployment, you need to create a production build:
-
-```bash
-npm run build
-```
-
-This creates a `dist/` directory with your built site (configurable via [outDir in Astro](https://docs.astro.build/en/reference/configuration-reference/#outdir)).
-
-### Deploying to Vercel
-
-Click the button below to start deploying your project on Vercel:  
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmearashadowfax%2FScrewFast)
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start development server |
+| `pnpm build` | Production build |
+| `pnpm preview` | Preview production build locally |
+| `pnpm test:unit` | Run unit tests (Vitest) |
+| `pnpm test:e2e` | Run E2E tests (Playwright) |
+| `pnpm test:coverage` | Generate coverage report |
 
 ## Project Structure
 
-ScrewFast organizes modular components, content, and layouts to streamline development and content management.
-
-```md
-
-src/
-├── assets/               
-│   ├── scripts/          # JS scripts
-│   └── styles/           # CSS styles
-├── components/           # Reusable components
-│   ├── Meta.astro        # Meta component for SEO
-│   ├── sections/         # Components for various sections of the website
-│   ├── ThemeIcon.astro   # Component for toggling light/dark themes
-│   └── ui/               # UI components categorized by functionality
-├── content/              # Markdown files for blog posts, insights, products, and site configuration
-│   ├── blog/
-│   ├── docs/           
-│   ├── insights/         
-│   ├── products/         
-│   └── config.ts         # Contains site-wide configuration options
-├── data_files/           # Strings stored as JSON files
-├── images/               # Static image assets for use across the website
-├── layouts/              # Components defining layout templates
-│   └── MainLayout.astro  # The main wrapping layout for all pages
-├── pages/                # Astro files representing individual pages and website sections
-│   ├── 404.astro         # Custom 404 page
-│   ├── blog/   
-│   ├── fr/               # Localized content
-│   ├── contact.astro     
-│   ├── index.astro       # The landing/home page
-│   ├── insights/         
-│   ├── products/         
-│   ├── robots.txt.ts     # Dynamically generates robots.txt
-│   └── services.astro
-└── utils/                # Shared utility functions and helpers
-
+```
+winflowz/
+├── src/
+│   ├── assets/           # Styles (global.css, starlight.css, lenis.css), scripts, images
+│   ├── components/       # Astro & React components
+│   │   ├── sections/     # Page sections (landing, navbar, footer, pricing)
+│   │   ├── ui/           # Reusable UI (buttons, icons, TextLogo)
+│   │   ├── overrides/    # Starlight component overrides
+│   │   └── react/        # React interactive components
+│   ├── content/          # Markdown/MDX content
+│   │   ├── blog/         # Blog posts (en/, fr/)
+│   │   └── docs/         # Starlight documentation
+│   ├── data_files/       # Constants, JSON data
+│   ├── i18n/             # Translations (en/, fr/)
+│   ├── layouts/          # Layout templates
+│   ├── lib/              # Core libraries (Convex, utils)
+│   ├── middleware/        # CORS, i18n, rate-limit
+│   ├── pages/            # Routes & API endpoints
+│   │   └── api/          # API (clerk/, newsletter/)
+│   ├── types/            # TypeScript definitions
+│   └── utils/            # Utilities (navigation, i18n helpers)
+├── convex/               # Convex backend (schema, functions, webhooks)
+├── public/               # Static assets (fonts, images, OG images)
+├── tests/                # Test setup & mocks
+└── docs/                 # Design specs, component classes
 ```
 
-## Static Assets and Public Resources
+## Documentation
 
-Static files served directly to the browser are within the `public` directory at the root of the project.
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | Claude Code instructions |
+| `BUSINESS.md` | Business model and strategy |
+| `BRANDING.md` | Brand identity specification |
+| `SPEC-gtm.md` | GTM implementation history |
+| `docs/DESIGN_SPECIFICATION.md` | Design system reference |
+| `docs/COMPONENT_CLASSES.md` | CSS component class documentation |
 
-```md
+## Deployment
 
-public/
-└── banner-pattern.svg
-    
+The site is deployed to Vercel in server mode. To build for production:
+
+```bash
+pnpm build
 ```
-
-## Customization
-
-ScrewFast allows for easy customization to suit your specific needs. Here are a couple of ways you can configure components and content:
-
-### Editing Component Variables
-
-Some components have properties defined as TypeScript variables within the component file. Here's an example of customizing the `FeaturesGeneral` component:
-
-```typescript
-// Define the string variables title and subTitle for the main heading and sub-heading text.
-const title: string = "Meeting Industry Demands";
-const subTitle: string =
-  "At ScrewFast, we tackle the unique challenges encountered in the hardware and construction sectors.";
-```
-
-For collections of content like testimonials or statistics, edit the corresponding array of objects:
-
-```typescript
-// An array of testimonials
-const testimonials: Testimonial[] = [...];
-
-// An array of statistics
-const statistics: StatProps[] = [...];
-```
-
-Modify the content within these arrays to reflect your data.
-
-### Props in Component Instances
-
-You can pass values to props directly in the page files for components used across pages. Here's an example of a `HeroSection` and `ClientsSection` component with inline props:
-
-```html
-<HeroSection
-  subTitle="Top-quality hardware tools and expert construction services for every project need."
-  primaryBtn="Start Exploring"
-  primaryBtnURL="/explore"
-/>
-
-<ClientsSection
-  title="Trusted by Industry Leaders"
-  subTitle="Experience the reliability chosen by industry giants."
-/>
-```
-
-Edit the props such as `title`, `subTitle`, `primaryBtn`, etc., to personalize these sections. Ensure that you maintain the structure and data types of the props.
-
-### Customizing Navigation and Footer Links
-
-Edit the `navigation.ts` file within the `utils` directory to manage navigation bar and footer links:
-
-#### Navigation Bar Links
-
-Edit the `navBarLinks` array to adjust navigation bar links:
-
-```typescript
-// An array of links for the navigation bar
-export const navBarLinks: NavLink[] = [
-  { name: "Home", url: "/" },
-  { name: "Products", url: "/products" },
-  { name: "Services", url: "/services" },
-  { name: "Blog", url: "/blog" },
-  { name: "Contact", url: "/contact" },
-];
-```
-
-Replace `name` with the display text and `url` with the appropriate path to pages on your site.
-
-#### Footer Links
-
-Similarly, adjust the links displayed in the footer by editing the `footerLinks` array:
-
-```typescript
-// An array of links for the footer
-export const footerLinks: FooterLinkSection[] = [
-  {
-    section: "Product",
-    links: [
-      { name: "Tools & Equipment", url: "/tools-equipment" },
-      { name: "Construction Services", url: "/construction-services" },
-      { name: "Pricing", url: "/pricing" },
-    ],
-  },
-  {
-    section: "Company",
-    links: [
-      { name: "About us", url: "/about" },
-      { name: "Blog", url: "/blog" },
-      { name: "Careers", url: "/careers" },
-      { name: "Customers", url: "/customers" },
-    ],
-  },
-];
-```
-
-Each section within the `footerLinks` array represents a group of links. Update the `section` value for the group heading and modify each link's `name` and `url` as needed.
-
-#### Social Media Links
-
-Replace the placeholder URLs in the `socialLinks` object with your social media profiles:
-
-```typescript
-// An object of links for social icons
-export const socialLinks: SocialLinks = {
-  facebook: "#",
-  twitter: "#",
-  github: "#",
-  linkedin: "#",
-  instagram: "#",
-};
-```
-
-> [!NOTE]
-> Remember to add complete and valid URLs for the navigation to function properly. These customizations will reflect throughout your Astro site, promoting consistency across all pages.
-
-#### Additional Components
-
-We also have `Navbar.astro` and `NavbarMegaMenu.astro` components located in `src/components/sections/navbar&footer`. Ensure to update these components if additional customization or specific configurations are required for the navigation bar or mega menu.
-
-
-> [!IMPORTANT]  
-> If the sidebar in your Starlight site is not scrolling, and you have to manually drag the scrollbar, remove the script tag related to the Lenis smooth scroll library from `src/components/ui/starlight/Head.astro`.
-
-
-### Lenis for Smooth Scrolling
-
-Experience buttery smooth scrolling with [Lenis](https://lenis.studiofreight.com/). We've integrated Lenis to provide an enhanced scrolling experience that's both fluid and responsive.
-
-Here's how we set up Lenis in `src/assets/scripts/lenisSmoothScroll.js`:
-
-```js
-// src/assets/scripts/lenisSmoothScroll.js
-import "@styles/lenis.css";
-
-import Lenis from "lenis";
-
-const lenis = new Lenis();
-
-function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-}
-
-requestAnimationFrame(raf);
-```
-
-And then add it to `MainLayout.astro`:
-
-```astro
-<script>
-  import "@scripts/lenisSmoothScroll.js";
-</script>
-```
-
-Please note that smooth scrolling can affect accessibility and performance on some devices, so be sure to test it comprehensively across different environments.
-
-> [!NOTE]
-> If you would like to remove Lenis and return to the browser's default scrolling behavior, simply comment out or delete these lines from the `MainLayout.astro` file and `/starlight/Head.astro` if you are using Docs.
-
-### View Transitions
-
-Le projet utilise l'API View Transitions d'Astro pour créer des transitions fluides entre les pages. Cette fonctionnalité native permet :
-
-- Des transitions fluides entre les pages sans JavaScript supplémentaire
-- Des animations personnalisables pour différents éléments
-- Une meilleure expérience utilisateur avec des transitions visuelles cohérentes
-
-Pour personnaliser les transitions, vous pouvez utiliser les attributs `transition:name` et `transition:animate` dans vos composants. Par exemple :
-
-```astro
-<div 
-  transition:name="hero-content"
-  transition:animate="slide"
->
-  <!-- Contenu -->
-</div>
-```
-
-Pour plus d'informations sur les View Transitions dans Astro, consultez la [documentation officielle](https://docs.astro.build/en/guides/view-transitions/).
-
-### Hiding Scrollbar
-
-To achieve a cleaner and more spacious design, the default scrollbar has been visually removed. While this choice fits the aesthetic goals of the project, it's important to consider that hiding scrollbars can sometimes affect accessibility and user experience. We recommend evaluating this design decision within the context of your user base and their needs.
-
-For those who prefer custom-styled scrollbars, we suggest using the [tailwind-scrollbar](https://adoxography.github.io/tailwind-scrollbar/) plugin, which adds Tailwind CSS utilities for scrollbar styles, allowing for more controlled customization that can also meet accessibility standards.
-
-> [!NOTE]
-> If you wish to return the default scrollbar, you can comment out or remove the following CSS from `src/layouts/MainLayout.astro`:
-
-```html
-<style>
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>
-```
-
-Additionally, update the `<html>` tag to remove the `scrollbar-hide` class, resulting in:
-
-```html
-<html lang="en" class="scroll-pt-16">
-```
-
-### SEO Configuration
-
-The SEO Configuration in the ScrewFast template is designed to empower users in optimizing their website's visibility on search engines and social media platforms. This documentation outlines the implementation details and usage instructions for effectively managing SEO settings.
-
-#### Using constants.ts
-
-The SEO configuration has been centralized using the `constants.ts` file. This file manages SEO-related data such as page titles, descriptions, structured data, and Open Graph tags, providing a more structured and manageable approach to SEO management.
-
-To customize SEO settings, modify the values in the `constants.ts` file. Key configurations include SITE, SEO, and OG, allowing developers to define site-wide SEO parameters.
-
-```astro
-// constants.ts
-
-export const SITE = {
-  title: "dddt",
-  // Other SITE properties...
-};
-
-export const SEO = {
-  title: SITE.title,
-  // Other SEO properties...
-};
-
-export const OG = {
-  title: `${SITE.title}: Hardware Tools & Construction Services`,
-  // Other OG properties...
-};
-```
-
-#### Applying Metadata in Layouts
-
-When applying metadata within your layouts, such as `MainLayout.astro`, you can pass the desired metadata values as props to the `Meta` component:
-
-```astro
----
-// In MainLayout.astro file
-const { meta } = Astro.props;
-
-interface Props {
-  meta?: string;
-}
----
-
-<Meta meta={meta} />
-```
-
-#### Passing Individual Schema
-
-For page-specific SEO overrides, developers can pass individual schema properties within specific page files.
-
-```astro
----
-import { SITE } from "@/data_files/constants";
----
-<MainLayout
-  title={`Example Page | ${SITE.title}`}
-  structuredData={{
-    "@type": "WebPage",
-    // Other structured data properties...
-  }}
->
-  <!-- Page content -->
-</MainLayout>
-
-```
-
-With this setup, the Meta component receives the custom meta description and applies it to the page's metadata. If no custom value is passed, the default from `Meta.astro` will be used instead.
-
-#### Extending Metadata for SEO
-
-For a more robust SEO strategy, you can create additional properties in the `Meta.astro` component. For instance, you may want to include specific Open Graph tags for article publishing dates or tags for Twitter-specific metadata.
-
-#### Structured Data and Rich Snippets
-
-Structured data in JSON-LD format can be managed by the `Meta.astro` component, improving how search engines understand your page content and potentially enhancing search results with rich snippets. Modify the `structuredData` property with relevant [schema.org](https://schema.org) types and properties:
-
-```astro
-<MainLayout
-  structuredData={{
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Winflowz",
-    "url": "https://winflowz.com",
-    "description": "Discover top-quality hardware tools and services"
-  }}
->
-```
-
-#### Using Astro SEO Integrations
-
-While the template provides a custom SEO solution, you may choose to utilize an Astro integration such as [Astro SEO](https://github.com/jonasmerlin/astro-seo#readme) for additional SEO features and optimizations. Integrating such a package might provide more automated metadata management and additional SEO-focused functionality.
-
-### Robots.txt
-
-`robots.txt` is dynamically generated using the code found in src/pages/robots.txt.ts. This configuration follows the example from the Astro Docs:
-
-```ts
-import type { APIRoute } from 'astro';
-
-const robotsTxt = `
-User-agent: *
-Allow: /
-
-Sitemap: ${new URL('sitemap-index.xml', import.meta.env.SITE).href}
-`.trim();
-
-export const GET: APIRoute = () => {
-  return new Response(robotsTxt, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-    },
-  });
-};
-```
-
-### Markdown/MDX
-
-#### Image Integration
-
-The addition of `.vscode/settings.json` file in the root directory facilitates image integration directly into content collections within Markdown editors. This feature enables effortless creation of Markdown links with media files and seamless copying into the workspace.
-
-##### Usage
-
-* **Paste/Drop Images**: Activate by pressing <kbd>Shift</kbd> while dropping the file.
-* **Markdown Link**: Image is linked using Markdown syntax `(![alt text](../../images/content/<path>))`.
-* **File Handling**: Images are organized in `src/images/content/<path>`.
-
-##### Example
-
-Pasting `getting-started.png` into `src/content/post-1.md` results in:
-
-* Adding `![alt text](../../images/content/post-1/getting-started.png)` to `post-1.md`.
-* Moving the image file to `src/images/content/post-1/getting-started.png`.
-
-> [!NOTE]
-> Remember to press <kbd>Shift</kbd> while dropping images.
-
-### Astro Integrations
-
-Maximize your website's efficiency with these built-in Astro integrations:
-
-* [Astro Compressor](https://github.com/sondr3/astro-compressor#readme): Automatically compresses Astro-generated site using gzip or brotli, ensuring faster load times.
-Configure the compressor in `astro.config.mjs` file:
-
-```mjs
-   export default defineConfig({
-     // ...other Astro configurations
-    integrations: [...other Astro integrations, compressor({ gzip: false, brotli: true })],
-   });
-```
-
-* [Astro Sitemap](https://docs.astro.build/en/guides/integrations-guide/sitemap/): Automatically generates a sitemap for a website, which is vital for SEO and helping search engine bots crawl pages effectively. To set up the Astro Sitemap, be sure to specify your site's base URL and any additional options in `astro.config.mjs` file:
-
-```mjs
-   export default defineConfig({
-  // ...
-  site: 'https://example.com',
-  integrations: [sitemap()],
-});
-```
-
-* [Bag of Tricks for Astro's View Tran­si­tions](https://github.com/martrapp/astro-vtbot#readme): is a collection of extensions and support aimed at enhancing Astro's view transitions. Whether you're looking to add flair to your website or streamline user experience, this toolkit offers various techniques to elevate your projects. In the template, it was used to add View Transitions to a Starlight docs.
-
-
-### HTML Minification
-
-For optimal site performance, we post-process our HTML files with `process-html.mjs`, a [custom script](https://straffesites.com/en/blog/optimize-astro-html-post-build) that minifies HTML after the build phase to reduce file size and improve load times.
-
-Here is a snippet from our HTML minification script in `process-html.mjs`:
-
-```mjs
-/process-html.mjs
-// Post-build HTML minification script snippet
-// ...
-await Promise.all(
-  files.map(async (file) => {
-    // File processing and minification logic
-  })
-);
-```
-* [html-minifier-terser Documentation](https://github.com/terser/html-minifier-terser)
-

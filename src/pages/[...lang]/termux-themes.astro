@@ -1,0 +1,118 @@
+---
+export const prerender = true
+import MainLayout from '@/layouts/MainLayout.astro'
+import TermuxThemePreview from '@/components/react/TermuxThemePreview.tsx'
+import type { Language } from '@/types'
+
+export async function getStaticPaths() {
+	return [
+		{ params: { lang: undefined }, props: { lang: 'en' as Language } },
+		{ params: { lang: 'fr' }, props: { lang: 'fr' as Language } },
+	]
+}
+
+const { lang } = Astro.props
+
+const t = {
+	en: {
+		title: 'Termux Theme Previewer — 114 Themes with Live Preview',
+		description: 'Browse and preview all 114 color themes for Termux. Interactive terminal simulation, full palette display, and one-click copy.',
+		heading: 'Termux Theme Previewer',
+		subtitle: 'Browse 114 themes from the official Termux:Styling repository. Select a theme to see how it looks in a real terminal, then copy the configuration in one click.',
+		howToInstall: 'How to install',
+		step1: 'Choose a theme above and click "Copy colors.properties"',
+		step2title: 'Create the file in Termux:',
+		step3: 'Apply the changes:',
+		guideLink: 'Complete Termux customization guide',
+		guideCta: 'Want to go further? Read our',
+	},
+	fr: {
+		title: 'Prévisualisateur de thèmes Termux — 114 thèmes avec aperçu',
+		description: 'Parcourez et prévisualisez les 114 thèmes de couleurs pour Termux. Simulation interactive du terminal, palette complète et copie en un clic.',
+		heading: 'Prévisualisateur de thèmes Termux',
+		subtitle: 'Parcourez les 114 thèmes du repo officiel Termux:Styling. Sélectionnez un thème pour voir son rendu dans un vrai terminal, puis copiez la configuration en un clic.',
+		howToInstall: 'Comment installer',
+		step1: 'Choisissez un thème ci-dessus et cliquez "Copier colors.properties"',
+		step2title: 'Créez le fichier dans Termux :',
+		step3: 'Appliquez les changements :',
+		guideLink: 'Guide complet de personnalisation Termux',
+		guideCta: 'Envie d\'aller plus loin ? Lisez notre',
+	},
+}[lang]
+
+const guideUrl = lang === 'fr' ? '/fr/blog/termux-personnalisation' : '/blog/termux-customization'
+---
+
+<MainLayout
+	title={t.title}
+	meta={{
+		title: t.title,
+		description: t.description,
+	}}
+	lang={lang}
+	structuredData={{
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: t.heading,
+		description: t.description,
+		applicationCategory: 'DeveloperApplication',
+		operatingSystem: 'Android',
+	}}
+>
+	<section class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+		<div class="mb-10 text-center">
+			<h1 class="text-3xl font-bold text-neutral-800 dark:text-neutral-200 sm:text-4xl lg:text-5xl">
+				{t.heading}
+			</h1>
+			<p class="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
+				{t.subtitle}
+			</p>
+		</div>
+
+		<TermuxThemePreview client:only="react" />
+
+		{/* Dotfiles promo */}
+		<div class="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-800 dark:bg-indigo-950/30">
+			<div>
+				<p class="font-semibold text-neutral-800 dark:text-neutral-200">
+					{lang === 'fr' ? 'Notre config Termux prête à l\'emploi' : 'Our ready-to-go Termux config'}
+				</p>
+				<p class="text-sm text-neutral-600 dark:text-neutral-400">
+					{lang === 'fr'
+						? 'Dotfiles open source : Termux, Neovim, Starship, Nerd Fonts, AI agents — une commande.'
+						: 'Open source dotfiles: Termux, Neovim, Starship, Nerd Fonts, AI agents — one command.'}
+				</p>
+			</div>
+			<a
+				href="https://github.com/dianedef/dotfiles"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 whitespace-nowrap"
+			>
+				GitHub →
+			</a>
+		</div>
+
+		<div class="mt-12 rounded-xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-800/50">
+			<h2 class="mb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200">
+				{t.howToInstall}
+			</h2>
+			<ol class="list-inside list-decimal space-y-3 text-neutral-600 dark:text-neutral-400">
+				<li>{t.step1}</li>
+				<li>
+					{t.step2title}
+					<pre class="mt-2 rounded-lg bg-neutral-900 p-3 text-sm text-green-400"><code>mkdir -p ~/.termux
+nano ~/.termux/colors.properties
+# Paste content, then Ctrl+X, Y, Enter</code></pre>
+				</li>
+				<li>
+					{t.step3}
+					<pre class="mt-2 rounded-lg bg-neutral-900 p-3 text-sm text-green-400"><code>termux-reload-settings</code></pre>
+				</li>
+			</ol>
+			<p class="mt-6 text-neutral-600 dark:text-neutral-400">
+				{t.guideCta} <a href={guideUrl} class="font-medium text-indigo-500 hover:text-indigo-400">{t.guideLink}</a>.
+			</p>
+		</div>
+	</section>
+</MainLayout>

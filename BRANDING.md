@@ -332,7 +332,7 @@ z-index: 50;
 #### Primary CTA
 ```css
 background: bg-gray-900;
-hover: bg-orange-500;
+hover: bg-magenta, bg-gradient-rainbow;
 color: white;
 border-radius: rounded-xl;
 padding: px-6 py-2.5 (mobile), px-8 py-3 (desktop);
@@ -345,7 +345,7 @@ transition: all 200ms;
 ```css
 background: bg-neutral-100 (light), bg-zinc-700 (dark);
 border: 2px solid gray-400;
-hover: bg-orange-400, border-orange-400;
+hover: bg-magenta, border-magenta;
 border-radius: rounded-xl;
 padding: px-4 py-2.5 (mobile), px-6 py-3 (desktop);
 font-weight: bold;
