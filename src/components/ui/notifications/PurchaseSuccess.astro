@@ -8,7 +8,7 @@ interface Props {
 const { productName, apiKey, price } = Astro.props;
 ---
 
-<div class="rounded-lg bg-white p-6 shadow dark:bg-neutral-800">
+<div class="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
   <div class="sm:flex sm:items-start">
     <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green/10 dark:bg-green/10 sm:mx-0">
       <svg class="h-6 w-6 text-green" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -50,7 +50,7 @@ const { productName, apiKey, price } = Astro.props;
                 type="text"
                 value={apiKey}
                 readonly
-                class="block w-full rounded-md border-neutral-300 bg-white font-mono text-sm shadow-sm dark:border-neutral-600 dark:bg-neutral-800"
+                class="block w-full rounded-md border-neutral-300 bg-neutral-50 font-mono text-sm shadow-sm dark:border-neutral-700 dark:bg-neutral-800"
               />
               <button
                 type="button"
@@ -70,7 +70,7 @@ const { productName, apiKey, price } = Astro.props;
   </div>
 
   <div class="mt-6">
-    <div class="rounded-md bg-neutral-100 p-4 dark:bg-neutral-800">
+    <div class="rounded-md bg-neutral-50 p-4 dark:bg-neutral-800">
       <div class="flex">
         <div class="flex-shrink-0">
           <svg class="h-5 w-5 text-cyan" viewBox="0 0 20 20" fill="currentColor">
@@ -96,7 +96,7 @@ const { productName, apiKey, price } = Astro.props;
   <div class="mt-6 flex justify-end space-x-3">
     <a
       href="/fr/docs"
-      class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-neutral-900 shadow-sm ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:ring-neutral-700 dark:hover:bg-neutral-700"
+      class="rounded-md bg-neutral-50 px-3 py-2 text-sm font-semibold text-neutral-900 shadow-sm ring-1 ring-inset ring-neutral-300 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100 dark:ring-neutral-700 dark:hover:bg-neutral-700"
     >
       Documentation
     </a>
@@ -134,4 +134,4 @@ const { productName, apiKey, price } = Astro.props;
       }
     });
   });
-</script> 
+</script>

@@ -51,14 +51,14 @@ const socialPlatforms: SocialPlatform[] = [
   </button>
 
   <div
-    class="hs-dropdown-menu duration z-10 hidden w-72 divide-y divide-neutral-200 rounded-lg bg-neutral-50 p-2 opacity-0 shadow-md transition-[opacity,margin] hs-dropdown-open:opacity-100 dark:divide-neutral-700 dark:border dark:border-neutral-700 dark:bg-neutral-800"
+    class="hs-dropdown-menu duration z-10 hidden w-72 divide-y divide-neutral-200 rounded-xl border border-neutral-200 bg-white p-2 opacity-0 shadow-lg transition-[opacity,margin] hs-dropdown-open:opacity-100 dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-800"
     aria-labelledby="hs-dropup"
   >
     <div class="py-2 first:pt-0 last:pb-0">
       {
         socialPlatforms.map((platform) => (
           <a
-            class="flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-neutral-700 hover:bg-neutral-200 focus:bg-neutral-100  focus:outline-none dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 "
+            class="flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-neutral-700 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white dark:focus:bg-neutral-700"
             href={platform.url}
           >
             <Icon name={platform.svg} />
@@ -70,7 +70,7 @@ const socialPlatforms: SocialPlatform[] = [
     <div class="py-2 first:pt-0 last:pb-0">
       <button
         type="button"
-        class="js-clipboard hover:text-dark focus-visible:ring-secondary group inline-flex w-full items-center gap-x-3.5 rounded-lg px-3 py-2 text-neutral-700 hover:bg-neutral-200 focus:bg-neutral-100 focus:outline-none focus-visible:outline-none focus-visible:ring-1 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+        class="js-clipboard focus-visible:ring-secondary group inline-flex w-full items-center gap-x-3.5 rounded-lg px-3 py-2 text-neutral-700 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none focus-visible:outline-none focus-visible:ring-1 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white dark:focus:bg-neutral-700"
         data-clipboard-success-text="Copied"
       >
         <svg

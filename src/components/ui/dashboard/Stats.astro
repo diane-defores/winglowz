@@ -33,9 +33,9 @@ const stats = [
 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
   {
     stats.map((item) => (
-      <div class="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow dark:bg-neutral-800 sm:px-6 sm:pt-6">
+      <div class="relative overflow-hidden rounded-lg border border-neutral-200 bg-white px-4 pb-12 pt-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 sm:px-6 sm:pt-6">
         <dt>
-          <div class="absolute rounded-md bg-neutral-100 p-3 dark:bg-neutral-700">
+          <div class="absolute rounded-md bg-neutral-100 p-3 dark:bg-neutral-800">
             <Fragment set:html={item.icon} />
           </div>
           <p class="ml-16 truncate text-sm font-medium text-neutral-500 dark:text-neutral-400">
@@ -60,7 +60,7 @@ const stats = [
               {item.change}
             </p>
           )}
-          <div class="absolute inset-x-0 bottom-0 bg-neutral-50 px-4 py-4 dark:bg-neutral-700/50 sm:px-6">
+          <div class="absolute inset-x-0 bottom-0 border-t border-neutral-200 bg-neutral-50 px-4 py-4 dark:border-neutral-800 dark:bg-neutral-800/60 sm:px-6">
             <div class="text-sm">
               <a
                 href="#"
@@ -75,4 +75,4 @@ const stats = [
       </div>
     ))
   }
-</div> 
+</div>

@@ -17,7 +17,7 @@ const ogImage = 'https://winflowz.com/images/WinFlowz.png';
 const siteUrl = lang === 'fr' ? 'https://winflowz.com/fr' : 'https://winflowz.com';
 ---
 
-<html lang={lang} class="dark scroll-pt-16" data-theme="dark">
+<html lang={lang} class="scroll-pt-16">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -52,11 +52,25 @@ const siteUrl = lang === 'fr' ? 'https://winflowz.com/fr' : 'https://winflowz.co
 		<link rel="icon" type="image/png" href="/images/WinFlowz.png" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		<meta name="theme-color" content="#ff00c8" />
+		<script is:inline>
+			(() => {
+				const storedTheme = localStorage.getItem('hs_theme')
+				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light'
+				const theme = storedTheme || systemTheme
+				const root = document.documentElement
+
+				root.classList.remove('dark', 'light')
+				root.classList.add(theme)
+				root.setAttribute('data-theme', theme)
+			})()
+		</script>
 	</head>
-	<body class="landing-page font-sans antialiased bg-black text-white">
+	<body class="landing-page bg-background text-foreground font-sans antialiased transition-colors duration-300">
 		<div class="noise-overlay" aria-hidden="true"></div>
 		<slot />
-		<CookieConsent forceDark={true} />
+		<CookieConsent />
 		{
 			import.meta.env.PROD && (
 				<script is:inline async src="https://cdn.onthe.io/io.js/YyAMWtaLLPUi" />

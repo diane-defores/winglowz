@@ -30,14 +30,14 @@ const landingNavItems = [
 ---
 
 <LandingLayout lang={lang}>
-	<main class="min-h-screen bg-black">
-		<Navbar navItems={landingNavItems} forceDark={true} showThemePicker={false} />
+	<main class="min-h-screen bg-background transition-colors duration-300">
+		<Navbar navItems={landingNavItems} />
 		<Hero />
 		<LogoMarquee />
 		<BentoGrid />
 		<LeadMagnet />
 		<Pricing />
 		<FinalCTA />
-		<Footer forceDark={true} />
+		<Footer />
 	</main>
 </LandingLayout>

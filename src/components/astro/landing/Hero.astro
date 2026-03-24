@@ -48,23 +48,23 @@ const heroText = lang === 'fr'
     }
 ---
 
-<section class="relative flex flex-col items-center justify-center px-4 pt-32 pb-16 overflow-hidden">
+<section class="relative flex flex-col items-center justify-center overflow-hidden px-4 pb-16 pt-32">
   <!-- Background gradient -->
-  <div class="absolute inset-0 bg-gradient-to-b from-black via-black to-zinc-950 pointer-events-none"></div>
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-50 via-white to-neutral-100 dark:from-black dark:via-black dark:to-zinc-950"></div>
 
   <!-- Subtle radial glow -->
-  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-zinc-800/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="pointer-events-none absolute left-1/2 top-1/4 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-fuchsia-400/10 blur-3xl dark:bg-zinc-800/20"></div>
 
   <div class="relative z-10 max-w-5xl mx-auto text-center">
     <!-- Badge -->
-    <div class="hero-fade inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 mb-8" style="animation-delay: 0.2s;">
+    <div class="hero-fade landing-surface inline-flex items-center gap-2 rounded-full border px-4 py-2 mb-8" style="animation-delay: 0.2s;">
       <span class="w-2 h-2 rounded-full pulse-glow" style="background-color: var(--brand-green);"></span>
-      <span class="text-sm text-zinc-400">{heroText.badge}</span>
+      <span class="text-sm text-neutral-600 dark:text-zinc-400">{heroText.badge}</span>
     </div>
 
     <!-- Headline with text mask animation -->
     <h1
-      class="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-6"
+      class="mb-6 text-6xl font-bold tracking-tight text-neutral-950 dark:text-white sm:text-7xl lg:text-8xl"
       style="font-family: var(--font-cal-sans), sans-serif;"
     >
       <span class="block overflow-hidden">
@@ -73,27 +73,27 @@ const heroText = lang === 'fr'
         </span>
       </span>
       <span class="block overflow-hidden">
-        <span class="hero-text-line block text-zinc-500" style="animation-delay: 0.1s;">
+        <span class="hero-text-line block text-neutral-400 dark:text-zinc-500" style="animation-delay: 0.1s;">
           {heroText.h1Line2}
         </span>
       </span>
     </h1>
 
     <!-- Subheadline -->
-    <p class="hero-fade text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed" style="animation-delay: 0.5s;">
+    <p class="hero-fade mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-zinc-400 sm:text-xl" style="animation-delay: 0.5s;">
       {heroText.sub}
     </p>
 
     <!-- CTAs -->
     <div class="hero-fade flex flex-col sm:flex-row items-center justify-center gap-4 mb-16" style="animation-delay: 0.6s;">
       <a href={productsUrl} data-track="hero-primary-cta">
-        <button class="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-12 text-base font-medium shadow-lg shadow-white/10 inline-flex items-center justify-center gap-2">
+        <button class="shimmer-btn inline-flex h-12 items-center justify-center gap-2 rounded-full bg-neutral-950 px-8 text-base font-medium text-white shadow-lg shadow-neutral-950/10 hover:bg-neutral-800 dark:bg-white dark:text-zinc-950 dark:shadow-white/10 dark:hover:bg-zinc-200">
           {heroText.cta}
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
       </a>
       <a href="#testimonials" data-track="hero-testimonials-cta">
-        <button class="rounded-full px-8 h-12 text-base font-medium border border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-white hover:border-zinc-700 bg-transparent inline-flex items-center justify-center">
+        <button class="inline-flex h-12 items-center justify-center rounded-full border border-neutral-300 bg-transparent px-8 text-base font-medium text-neutral-700 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-950 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-white">
           {heroText.testimonials}
         </button>
       </a>
@@ -107,14 +107,14 @@ const heroText = lang === 'fr'
             <img
               src={avatar}
               alt=""
-              class="w-10 h-10 rounded-full border-2 border-black object-cover"
+              class="h-10 w-10 rounded-full border-2 border-white object-cover dark:border-black"
               loading="eager"
             />
           </div>
         ))}
       </div>
-      <p class="text-sm text-zinc-500">
-        <span class="text-zinc-300 font-medium">5 / 5</span> {heroText.reviews}
+      <p class="text-sm text-neutral-500 dark:text-zinc-500">
+        <span class="font-medium text-neutral-800 dark:text-zinc-300">5 / 5</span> {heroText.reviews}
       </p>
     </div>
 
@@ -122,8 +122,8 @@ const heroText = lang === 'fr'
     <div class="hero-fade grid grid-cols-2 sm:grid-cols-4 gap-8 max-w-2xl mx-auto" style="animation-delay: 0.9s;">
       {stats.map((stat, index) => (
         <div class="hero-stat text-center" style={`animation-delay: ${1.0 + index * 0.1}s;`}>
-          <div class="text-2xl sm:text-3xl font-bold text-white">{stat.value}</div>
-          <div class="text-xs sm:text-sm text-zinc-500 mt-1">{stat.label}</div>
+          <div class="text-2xl font-bold text-neutral-950 dark:text-white sm:text-3xl">{stat.value}</div>
+          <div class="mt-1 text-xs text-neutral-500 dark:text-zinc-500 sm:text-sm">{stat.label}</div>
         </div>
       ))}
     </div>

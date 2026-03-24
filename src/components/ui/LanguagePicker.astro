@@ -76,13 +76,13 @@ function getTranslatedPath(path: string, targetLang: string): string {
 	</button>
 
 	<div
-		class="hs-dropdown-menu duration !right-0 !top-full mt-2 hidden !transform-none rounded-lg bg-neutral-50 p-2 opacity-0 shadow-md transition-[opacity,margin] before:absolute before:-top-4 before:start-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:start-0 after:h-4 after:w-full hs-dropdown-open:opacity-100 dark:divide-neutral-700 dark:border dark:border-neutral-700 dark:bg-neutral-800"
+		class="hs-dropdown-menu duration !right-0 !top-full mt-2 hidden !transform-none rounded-xl border border-neutral-200 bg-white p-2 opacity-0 shadow-lg transition-[opacity,margin] before:absolute before:-top-4 before:start-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:start-0 after:h-4 after:w-full hs-dropdown-open:opacity-100 dark:border-neutral-700 dark:bg-neutral-800"
 		aria-labelledby="hs-dropdown-hover-event"
 	>
 		{
 			Object.entries(languages).map(([lang, label]) => (
 				<a
-					class="flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-neutral-800 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+					class="flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-neutral-800 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white dark:focus:bg-neutral-700"
 					href={getTranslatedPath(pathname, lang)}
 					hreflang={lang}
 					data-lang={lang}

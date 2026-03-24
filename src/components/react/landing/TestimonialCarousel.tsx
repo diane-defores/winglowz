@@ -114,20 +114,20 @@ export function TestimonialCarousel() {
             <StarRating rating={t.rating} />
           </div>
           {t.title && (
-            <h3 className="text-white font-semibold text-base mb-3">
+            <h3 className="mb-3 text-base font-semibold text-neutral-950 dark:text-white">
               &ldquo;{t.title}&rdquo;
             </h3>
           )}
-          <p className="text-zinc-400 text-sm italic mb-4 leading-relaxed">
+          <p className="mb-4 text-sm italic leading-relaxed text-neutral-600 dark:text-zinc-400">
             &ldquo;{t.quote}&rdquo;
           </p>
           <div className="flex items-center justify-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-300">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-bold text-neutral-700 dark:bg-zinc-800 dark:text-zinc-300">
               {t.name[0]}
             </div>
             <div className="text-left">
-              <p className="text-zinc-300 text-sm font-medium">{t.name}</p>
-              <p className="text-zinc-500 text-xs">
+              <p className="text-sm font-medium text-neutral-800 dark:text-zinc-300">{t.name}</p>
+              <p className="text-xs text-neutral-500 dark:text-zinc-500">
                 {t.role}
                 {t.verified && (
                   <span className="ml-1" style={{ color: "var(--brand-green)" }}>Verified Purchaser</span>
@@ -147,7 +147,7 @@ export function TestimonialCarousel() {
             className={`h-2 rounded-full transition-all duration-300 ${
               index === current
                 ? "w-6"
-                : "w-2 bg-zinc-700 hover:bg-zinc-500"
+                : "w-2 bg-neutral-300 hover:bg-neutral-400 dark:bg-zinc-700 dark:hover:bg-zinc-500"
             }`}
             style={index === current ? { background: "var(--brand-cyan)" } : undefined}
             aria-label={`Go to testimonial ${index + 1}`}

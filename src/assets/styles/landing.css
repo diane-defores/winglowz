@@ -3,6 +3,38 @@
 .landing-page {
   --font-cal-sans: var(--font-display);
   --font-instrument-sans: var(--font-heading);
+  --background: 0 0% 98%;
+  --foreground: 240 10% 12%;
+  --primary: 240 10% 12%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 94%;
+  --secondary-foreground: 240 10% 12%;
+  --muted: 0 0% 92%;
+  --muted-foreground: 240 6% 38%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 240 10% 12%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 86%;
+  --input: 0 0% 86%;
+  --ring: 240 8% 55%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 12%;
+  --landing-soft: 0 0% 100%;
+  --landing-soft-foreground: 240 10% 14%;
+  --landing-soft-muted: 240 6% 42%;
+  --landing-strong: 240 10% 12%;
+  --landing-strong-foreground: 0 0% 100%;
+  --landing-edge: 0 0% 84%;
+  --landing-glow: 255 0 200;
+  --landing-shadow: 15 23 42;
+  --landing-marquee-fade: 248 250 252;
+}
+
+.dark .landing-page,
+[data-theme="dark"] .landing-page {
   --background: 0 0% 9%;
   --foreground: 0 0% 100%;
   --primary: 0 0% 100%;
@@ -13,8 +45,6 @@
   --muted-foreground: 0 0% 55%;
   --accent: 0 0% 18%;
   --accent-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
   --border: 0 0% 22%;
   --input: 0 0% 22%;
   --ring: 0 0% 40%;
@@ -22,6 +52,15 @@
   --card-foreground: 0 0% 100%;
   --popover: 0 0% 13%;
   --popover-foreground: 0 0% 100%;
+  --landing-soft: 24 24 27;
+  --landing-soft-foreground: 255 255 255;
+  --landing-soft-muted: 161 161 170;
+  --landing-strong: 9 9 11;
+  --landing-strong-foreground: 255 255 255;
+  --landing-edge: 39 39 42;
+  --landing-glow: 255 255 255;
+  --landing-shadow: 255 255 255;
+  --landing-marquee-fade: 0 0 0;
 }
 
 /* ==========================================
@@ -72,6 +111,37 @@
   z-index: 9999;
   opacity: 0.015;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.landing-surface {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-color: hsl(var(--border));
+  box-shadow: 0 20px 60px rgba(var(--landing-shadow), 0.08);
+}
+
+.landing-surface-strong {
+  background: rgb(var(--landing-strong));
+  color: rgb(var(--landing-strong-foreground));
+  border-color: rgb(var(--landing-edge));
+}
+
+.landing-soft-badge {
+  background: rgb(var(--landing-soft));
+  color: rgb(var(--landing-soft-foreground));
+  border-color: rgb(var(--landing-edge));
+}
+
+.landing-soft-text {
+  color: rgb(var(--landing-soft-muted));
+}
+
+.landing-marquee-fade-left {
+  background: linear-gradient(to right, rgb(var(--landing-marquee-fade)), transparent);
+}
+
+.landing-marquee-fade-right {
+  background: linear-gradient(to left, rgb(var(--landing-marquee-fade)), transparent);
 }
 
 /* Border beam animation for pricing */
