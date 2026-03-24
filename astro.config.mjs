@@ -98,6 +98,7 @@ export default defineConfig({
         }
       },
       disable404Route: true,
+      prerender: false,
       sidebar: [
         {
           label: 'Welcome',

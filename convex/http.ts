@@ -4,6 +4,8 @@ import { internal } from "./_generated/api";
 
 const http = httpRouter();
 
+const COURSE_ENTITLEMENT = "winflowz-training";
+
 http.route({
   path: "/polar/events",
   method: "POST",
@@ -17,6 +19,7 @@ http.route({
 
     try {
       const event = JSON.parse(body);
+      const productId = process.env.POLAR_WINFLOWZ_PRODUCT_ID;
 
       if (event.type === "subscription.created" || event.type === "subscription.updated") {
         const subscription = event.data;
@@ -40,6 +43,23 @@ http.route({
           await ctx.runMutation(internal.polar.linkCustomer, {
             email: customerEmail,
             polarCustomerId: customerId,
+          });
+        }
+      }
+
+      if (event.type === "order.paid") {
+        const order = event.data;
+        const customerEmail = order.customer?.email;
+        const customerId = order.customer_id;
+        const matchesFormation =
+          order.metadata?.entitlement === COURSE_ENTITLEMENT ||
+          (productId ? order.product_id === productId : false);
+
+        if (customerEmail && matchesFormation) {
+          await ctx.runMutation(internal.polar.grantCourseAccess, {
+            email: customerEmail,
+            entitlement: COURSE_ENTITLEMENT,
+            polarCustomerId: customerId || undefined,
           });
         }
       }

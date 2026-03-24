@@ -7,7 +7,6 @@ import CardRelated from '@/components/ui/cards/CardRelated.astro'
 import Bookmark from '@/components/ui/buttons/Bookmark.astro'
 import SocialShare from '@/components/ui/buttons/SocialShare.astro'
 import PostFeedback from '@/components/ui/feedback/PostFeedback.astro'
-import { capitalize, formatDate } from '@/utils/utils'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 import { SITE } from '@/constants'
@@ -65,9 +64,6 @@ interface Props {
 const { post, lang } = Astro.props
 const t = await useTranslations(lang, 'blog')
 
-// Render the markdown content
-const { Content } = await post.render()
-
 // Get related posts
 const allPosts = await getCollection('blog')
 const relatedPosts = allPosts
@@ -76,15 +72,6 @@ const relatedPosts = allPosts
 		return postLang === lang && p.id !== post.id
 	})
 	.slice(0, 3)
-
-// Format the date
-const formattedDate = formatDate(post.data.pubDate)
-
-// Calculate reading time
-const wordsPerMinute = 200
-const readingTime = post.body
-	? Math.ceil(post.body.split(/\s+/).length / wordsPerMinute)
-	: 0
 
 // Get the post URL for sharing
 const postUrl = new URL(Astro.url.pathname, Astro.site).toString()

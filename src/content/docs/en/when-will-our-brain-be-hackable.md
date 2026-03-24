@@ -1,6 +1,5 @@
 ---
 title: When will our brain be hackable?
-image: /images/hacker-pc.gif
 description: Discover the technological advances that could make brain hacking possible.
 ---
 

@@ -1,10 +1,14 @@
 import type { APIContext } from 'astro'
 import { ConvexHttpClient } from 'convex/browser'
 
-const COURSE_PRODUCT_BY_LANG = {
-	en: '/products/winflowz',
-	fr: '/fr/produits/winflowz',
-} as const
+type CourseUser = {
+	role?: string
+	subscriptionTier?: string
+	subscriptionStatus?: string
+	courseEntitlements?: string[]
+}
+
+export const COURSE_ENTITLEMENT = 'winflowz-training'
 
 export function isFormationSlug(slug: string) {
 	return (
@@ -19,9 +23,45 @@ export function getPrivateCoursePath(slug: string) {
 	return `/dashboard/docs/${slug.replace(/^\/+/, '')}`
 }
 
-export function getCourseUnlockPath(slug: string, lang: 'en' | 'fr') {
-	const next = encodeURIComponent(getPrivateCoursePath(slug))
-	return `${COURSE_PRODUCT_BY_LANG[lang]}?next=${next}`
+export function getPublicCoursePath(slug: string) {
+	return `/${slug.replace(/^\/+/, '')}`
+}
+
+export function getCourseCheckoutPath(slug: string, lang: 'en' | 'fr') {
+	const params = new URLSearchParams({
+		lesson: slug.replace(/^\/+/, ''),
+		lang,
+	})
+	return `/api/polar/checkout?${params.toString()}`
+}
+
+export function isSafePrivateCoursePath(pathname: string | null) {
+	return Boolean(pathname && pathname.startsWith('/dashboard/docs/'))
+}
+
+export function isSafeCourseCheckoutPath(pathname: string | null) {
+	if (!pathname) {
+		return false
+	}
+
+	try {
+		const url = new URL(pathname, 'https://winflowz.com')
+		const lesson = url.searchParams.get('lesson')
+		return (
+			url.pathname === '/api/polar/checkout' &&
+			Boolean(lesson && isFormationSlug(lesson))
+		)
+	} catch {
+		return false
+	}
+}
+
+export function getSafeAuthRedirectPath(pathname: string | null) {
+	if (isSafePrivateCoursePath(pathname) || isSafeCourseCheckoutPath(pathname)) {
+		return pathname
+	}
+
+	return '/dashboard'
 }
 
 export function extractCoursePreview(body: string, maxParagraphs = 4) {
@@ -54,15 +94,16 @@ export async function getCourseAccess(context: APIContext) {
 
 	try {
 		const convex = new ConvexHttpClient(convexUrl)
-		const user = await convex.query('users:getByClerkId' as never, {
+		const user = (await convex.query('users:getByClerkId' as never, {
 			clerkId: auth.userId,
-		} as never)
+		} as never)) as CourseUser | null
 
 		const subscriptionStatus = user?.subscriptionStatus
 		const hasActiveSubscription =
 			subscriptionStatus === 'active' || subscriptionStatus === 'trialing'
 		const hasAccess =
 			user?.role === 'admin' ||
+			Boolean(user?.courseEntitlements?.includes(COURSE_ENTITLEMENT)) ||
 			(Boolean(user?.subscriptionTier) && hasActiveSubscription)
 
 		return {

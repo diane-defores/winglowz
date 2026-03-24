@@ -1,10 +1,10 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro'
+import { isSafePrivateCoursePath } from '@/utils/courseGating'
 
 const auth = Astro.locals.auth()
 const nextUrl = Astro.url.searchParams.get('next')
-const safeNextUrl =
-	nextUrl && nextUrl.startsWith('/dashboard/docs/') ? nextUrl : null
+const safeNextUrl = isSafePrivateCoursePath(nextUrl) ? nextUrl : null
 ---
 
 <MainLayout title="Purchase Confirmed">
@@ -20,7 +20,7 @@ const safeNextUrl =
 				Purchase Confirmed!
 			</h1>
 			<p class="mb-8 text-lg text-neutral-500 dark:text-neutral-400">
-				Thank you for your purchase. You now have access to all Pro features.
+				Your training access has been unlocked. You can open the private lesson now.
 			</p>
 
 			<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">

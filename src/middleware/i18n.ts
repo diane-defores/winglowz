@@ -109,7 +109,7 @@ export const i18nMiddleware: MiddlewareHandler = async ({ url, locals, redirect 
     }
 
     // Redirect French route names used without /fr prefix
-    const frRoute = Object.entries(routes.fr).find(([en, fr]) => pathname === `/fr/${fr}`)
+    const frRoute = Object.entries(routes.fr).find(([, fr]) => pathname === `/fr/${fr}`)
     if (frRoute) {
       return redirect(`/${frRoute[0]}`)
     }

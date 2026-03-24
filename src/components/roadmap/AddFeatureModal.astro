@@ -139,7 +139,7 @@ const validationMessages = {
 	</div>
 </div>
 
-<script define:vars={{ validationMessages }}>
+<script is:inline define:vars={{ validationMessages }}>
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('addFeatureModal');
     const backdrop = document.querySelector('.hs-overlay-backdrop');

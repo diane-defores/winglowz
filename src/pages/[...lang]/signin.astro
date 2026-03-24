@@ -1,9 +1,10 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro'
 import type { Language } from '@/types'
+import { getSafeAuthRedirectPath } from '@/utils/courseGating'
 import { SignIn } from '@clerk/astro/components'
 
-export const prerender = true
+export const prerender = false
 
 export async function getStaticPaths() {
 	return [
@@ -15,18 +16,14 @@ export async function getStaticPaths() {
 const { lang } = Astro.props
 const title = lang === 'fr' ? 'Connexion' : 'Sign In'
 const nextUrl = Astro.url.searchParams.get('next')
-const safeNextUrl =
-	nextUrl && nextUrl.startsWith('/dashboard/docs/')
-		? nextUrl
-		: '/dashboard'
+const safeNextUrl = getSafeAuthRedirectPath(nextUrl)
 ---
 
 <MainLayout title={title} lang={lang}>
 	<div class="flex min-h-[60vh] items-center justify-center py-12">
 		<SignIn
 			routing="hash"
-			afterSignInUrl={safeNextUrl}
-			afterSignUpUrl={safeNextUrl}
+			fallbackRedirectUrl={safeNextUrl}
 		/>
 	</div>
 </MainLayout>

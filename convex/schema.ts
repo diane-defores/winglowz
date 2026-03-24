@@ -11,7 +11,9 @@ export default defineSchema({
     polarCustomerId: v.optional(v.string()),
     subscriptionTier: v.optional(v.string()),
     subscriptionStatus: v.optional(v.string()),
+    courseEntitlements: v.optional(v.array(v.string())),
   }).index("by_clerkId", ["clerkId"])
+    .index("by_email", ["email"])
     .index("by_polarCustomerId", ["polarCustomerId"]),
 
   apiKeys: defineTable({

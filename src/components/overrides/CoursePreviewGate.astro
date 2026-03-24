@@ -1,5 +1,5 @@
 ---
-import { extractCoursePreview, getCourseUnlockPath, getPrivateCoursePath } from '@/utils/courseGating'
+import { extractCoursePreview, getCourseCheckoutPath, getPrivateCoursePath } from '@/utils/courseGating'
 
 interface Props {
 	entry: {
@@ -14,7 +14,7 @@ interface Props {
 const { entry, headings, isAuthenticated, hasAccess } = Astro.props
 const lang = entry.slug.startsWith('fr/') ? 'fr' : 'en'
 const previewParagraphs = extractCoursePreview(entry.body)
-const unlockUrl = getCourseUnlockPath(entry.slug, lang)
+const unlockUrl = getCourseCheckoutPath(entry.slug, lang)
 const privateUrl = getPrivateCoursePath(entry.slug)
 const headingPreview = headings.filter((heading) => heading.depth <= 2).slice(0, 6)
 

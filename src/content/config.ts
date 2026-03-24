@@ -1,37 +1,84 @@
 // https://docs.astro.build/en/guides/content-collections/#defining-collections
 
 import { z, defineCollection } from 'astro:content';
-import { docsSchema } from '@astrojs/starlight/schema';
 
-// Extension du schéma Starlight pour les cours
-const courseSchema = docsSchema({
-  extend: z.object({
-    courseData: z.object({
-      translations: z.object({
-        en: z.object({
-          title: z.string(),
-          description: z.string(),
-          objectives: z.array(z.string()).optional(),
-          prerequisites: z.array(z.string()).optional(),
-        }),
-        fr: z.object({
-          title: z.string(),
-          description: z.string(),
-          objectives: z.array(z.string()).optional(),
-          prerequisites: z.array(z.string()).optional(),
-        }),
-      }),
-      duration: z.string().optional(),
-      level: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
-      featured: z.boolean().optional(),
-      order: z.number().optional(),
-      components: z.array(
+const docsCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    editUrl: z.union([z.string().url(), z.boolean()]).optional().default(true),
+    head: z.array(
+      z.object({
+        tag: z.enum(['title', 'base', 'link', 'style', 'meta', 'script', 'noscript', 'template']),
+        attrs: z.record(z.union([z.string(), z.boolean()])).optional(),
+        content: z.string().optional(),
+      }).strict()
+    ).optional().default([]),
+    tableOfContents: z.union([
+      z.object({
+        minHeadingLevel: z.number().int().min(1).max(6).default(2),
+        maxHeadingLevel: z.number().int().min(1).max(6).default(3),
+      }).strict(),
+      z.boolean(),
+    ]).optional(),
+    template: z.enum(['doc', 'splash']).default('doc'),
+    hero: z.object({
+      title: z.string().optional(),
+      tagline: z.string().optional(),
+      image: z.object({
+        alt: z.string().optional(),
+        file: z.string().optional(),
+        dark: z.string().optional(),
+        light: z.string().optional(),
+        html: z.string().optional(),
+      }).partial().optional(),
+      actions: z.array(
         z.object({
-          type: z.enum(['video', 'quiz', 'exercise', 'resources']),
-          data: z.record(z.string(), z.any()),
-        })
-      ).optional(),
+          text: z.string(),
+          link: z.string(),
+          variant: z.enum(['primary', 'secondary', 'minimal']).default('primary'),
+          icon: z.string().optional(),
+          attrs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional(),
+        }).strict()
+      ).optional().default([]),
     }).optional(),
+    lastUpdated: z.union([z.coerce.date(), z.boolean()]).optional(),
+    prev: z.union([
+      z.boolean(),
+      z.string(),
+      z.object({
+        link: z.string().optional(),
+        label: z.string().optional(),
+      }).strict(),
+    ]).optional(),
+    next: z.union([
+      z.boolean(),
+      z.string(),
+      z.object({
+        link: z.string().optional(),
+        label: z.string().optional(),
+      }).strict(),
+    ]).optional(),
+    sidebar: z.object({
+      order: z.number().optional(),
+      label: z.string().optional(),
+      hidden: z.boolean().optional().default(false),
+      badge: z.union([
+        z.string(),
+        z.object({
+          variant: z.enum(['note', 'danger', 'success', 'caution', 'tip', 'default']).default('default'),
+          class: z.string().optional(),
+          text: z.string(),
+        }).strict(),
+      ]).optional(),
+      attrs: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
+    }).optional().default({}),
+    banner: z.object({
+      content: z.string(),
+    }).optional(),
+    pagefind: z.boolean().optional().default(true),
+    draft: z.boolean().optional().default(false),
   }),
 });
 
@@ -124,7 +171,7 @@ const servicesCollection = defineCollection({
 });
 
 export const collections = {
-  docs: defineCollection({ schema: courseSchema }),
+  docs: docsCollection,
   'products': productsCollection,
   'blog': blogCollection,
   'services': servicesCollection,

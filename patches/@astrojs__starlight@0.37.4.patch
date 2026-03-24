@@ -1,0 +1,81 @@
+diff --git a/schemas/badge.ts b/schemas/badge.ts
+index 0000000..0000000 100644
+--- a/schemas/badge.ts
++++ b/schemas/badge.ts
+@@ -9,7 +9,7 @@ const badgeSchema = badgeBaseSchema.extend({
+ });
+ 
+ const i18nBadgeSchema = badgeBaseSchema.extend({
+-	text: z.union([z.string(), z.record(z.string())]),
++	text: z.union([z.string(), z.record(z.string(), z.string())]),
+ });
+ 
+ export const BadgeComponentSchema = badgeSchema
+diff --git a/schemas/head.ts b/schemas/head.ts
+index 0000000..0000000 100644
+--- a/schemas/head.ts
++++ b/schemas/head.ts
+@@ -16,7 +16,7 @@ export const HeadConfigSchema = ({
+ 				.object({
+ 					/** Name of the HTML tag to add to `<head>`, e.g. `'meta'`, `'link'`, or `'script'`. */
+ 					tag: z.enum(['title', 'base', 'link', 'style', 'meta', 'script', 'noscript', 'template']),
+-					/** Attributes to set on the tag, e.g. `{ rel: 'stylesheet', href: '/custom.css' }`. */
+-					attrs: z.record(z.union([z.string(), z.boolean(), z.undefined()])).optional(),
++					/** Attributes to set on the tag, e.g. `{ rel: 'stylesheet', href: '/custom.css' }`. */
++					attrs: z.record(z.string(), z.union([z.string(), z.boolean(), z.undefined()])).optional(),
+ 					/** Content to place inside the tag (optional). */
+ 					content: z.string().optional(),
+ 				})
+diff --git a/schemas/hero.ts b/schemas/hero.ts
+index 0000000..0000000 100644
+--- a/schemas/hero.ts
++++ b/schemas/hero.ts
+@@ -56,7 +56,7 @@ export const HeroSchema = ({ image }: SchemaContext) =>
+ 							? ({ type: 'icon', name: parsedIcon.data } as const)
+ 							: ({ type: 'raw', html: icon } as const);
+ 					})
+-					.optional(),
+-				/** HTML attributes to add to the link */
+-				attrs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional(),
++					.optional(),
++				/** HTML attributes to add to the link */
++				attrs: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).optional(),
+ 			})
+ 			.array()
+ 			.default([]),
+diff --git a/schemas/sidebar.ts b/schemas/sidebar.ts
+index 0000000..0000000 100644
+--- a/schemas/sidebar.ts
++++ b/schemas/sidebar.ts
+@@ -8,7 +8,7 @@ const SidebarBaseSchema = z.object({
+ 	/** The visible label for this item in the sidebar. */
+ 	label: z.string(),
+ 	/** Translations of the `label` for each supported language. */
+-	translations: z.record(z.string()).default({}),
++	translations: z.record(z.string(), z.string()).default({}),
+ 	/** Adds a badge to the item */
+ 	badge: I18nBadgeConfigSchema(),
+ });
+@@ -26,7 +26,7 @@ const SidebarGroupSchema = SidebarBaseSchema.extend({
+ // HTML attributes that can be added to an anchor element, validated as
+ // `Record<string, string | number | boolean | undefined>` but typed as `HTMLAttributes<'a'>`
+ // for user convenience.
+-const linkHTMLAttributesSchema = z.record(
++const linkHTMLAttributesSchema = z.record(z.string(),
+ 	z.union([z.string(), z.number(), z.boolean(), z.undefined(), z.null()])
+ ) as z.Schema<Omit<HTMLAttributes<'a'>, keyof AstroBuiltinAttributes | 'children'>>;
+ export type LinkHTMLAttributes = z.infer<typeof linkHTMLAttributesSchema>;
+diff --git a/schemas/site-title.ts b/schemas/site-title.ts
+index 0000000..0000000 100644
+--- a/schemas/site-title.ts
++++ b/schemas/site-title.ts
+@@ -1,7 +1,7 @@
+ import { z } from 'astro/zod';
+ 
+ export const TitleConfigSchema = () =>
+ 	z
+-		.union([z.string(), z.record(z.string())])
++		.union([z.string(), z.record(z.string(), z.string())])
+ 		.describe('Title for your website. Will be used in metadata and as browser tab title.');
+ 
+ // transform the title for runtime use

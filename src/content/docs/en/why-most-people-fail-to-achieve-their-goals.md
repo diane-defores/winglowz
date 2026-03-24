@@ -1,7 +1,6 @@
 ---
 title: Pourquoi la plupart des gens échouent à atteindre leurs objectifs ?
 description: Une analyse approfondie des facteurs psychologiques, comportementaux et environnementaux qui influencent notre capacité à atteindre nos objectifs.
-image: /images/exploding-head-much-work.gif
 ---
 
 ![Tête qui explose de travail](/images/exploding-head-much-work.gif)

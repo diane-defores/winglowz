@@ -4,22 +4,6 @@ import SecondaryCTA from "@components/ui/buttons/SecondaryCTA.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = await useTranslations(lang, "pricing");
-
-interface Plan {
-  name: string;
-  description: string;
-  price: string;
-  period: string;
-  features: string[];
-  cta: string;
-  popular?: boolean;
-}
-
-interface PricingTranslations {
-  title: string;
-  subtitle: string;
-  plans: Plan[];
-}
 ---
 
 <section class="mx-auto max-w-[85rem] px-3 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
