@@ -17,7 +17,7 @@ const ogImage = 'https://winflowz.com/images/WinFlowz.png';
 const siteUrl = lang === 'fr' ? 'https://winflowz.com/fr' : 'https://winflowz.com';
 ---
 
-<html lang={lang} class="dark">
+<html lang={lang} class="dark scroll-pt-16" data-theme="dark">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,7 +56,7 @@ const siteUrl = lang === 'fr' ? 'https://winflowz.com/fr' : 'https://winflowz.co
 	<body class="landing-page font-sans antialiased bg-black text-white">
 		<div class="noise-overlay" aria-hidden="true"></div>
 		<slot />
-		<CookieConsent />
+		<CookieConsent forceDark={true} />
 		{
 			import.meta.env.PROD && (
 				<script is:inline async src="https://cdn.onthe.io/io.js/YyAMWtaLLPUi" />

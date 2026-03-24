@@ -55,6 +55,9 @@
 	// Définition du type Theme
 	type Theme = 'light' | 'dark'
 
+	const THEME_SELECTOR = '[data-hs-theme-click-value]'
+	let systemThemeListenerBound = false
+
 	// Fonction pour appliquer le thème
 	function applyTheme(theme: Theme) {
 		const root = document.documentElement
@@ -73,7 +76,7 @@
 
 		// Mettre à jour les boutons
 		document
-			.querySelectorAll('[data-hs-theme-click-value]')
+			.querySelectorAll(THEME_SELECTOR)
 			.forEach((button) => {
 				const buttonTheme = button.getAttribute(
 					'data-hs-theme-click-value'
@@ -87,38 +90,42 @@
 
 	}
 
-	// Initialisation au chargement de la page
-	document.addEventListener('astro:page-load', () => {
-		// Récupérer le thème depuis le localStorage ou utiliser le thème système
-		const savedTheme = localStorage.getItem('hs_theme') as Theme
+	function initThemePicker() {
+		const savedTheme = localStorage.getItem('hs_theme') as Theme | null
 		const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
 			.matches
 			? 'dark'
 			: 'light'
 		const theme = savedTheme || systemTheme
 
-		// Appliquer le thème initial
 		applyTheme(theme)
 
-		// Écouteur pour les boutons de thème
-		document
-			.querySelectorAll('[data-hs-theme-click-value]')
-			.forEach((button) => {
-				button.addEventListener('click', () => {
-					const newTheme = button.getAttribute(
-						'data-hs-theme-click-value'
-					) as Theme
-					applyTheme(newTheme)
-				})
+		document.querySelectorAll(THEME_SELECTOR).forEach((button) => {
+			if ((button as HTMLElement).dataset.themeBound === 'true') return
+
+			button.addEventListener('click', () => {
+				const newTheme = button.getAttribute(
+					'data-hs-theme-click-value'
+				) as Theme
+				applyTheme(newTheme)
 			})
 
-		// Écouter les changements de thème système
-		window
-			.matchMedia('(prefers-color-scheme: dark)')
-			.addEventListener('change', (e) => {
-				if (!localStorage.getItem('hs_theme')) {
-					applyTheme(e.matches ? 'dark' : 'light')
-				}
-			})
-	})
+			;(button as HTMLElement).dataset.themeBound = 'true'
+		})
+
+		if (!systemThemeListenerBound) {
+			window
+				.matchMedia('(prefers-color-scheme: dark)')
+				.addEventListener('change', (e) => {
+					if (!localStorage.getItem('hs_theme')) {
+						applyTheme(e.matches ? 'dark' : 'light')
+					}
+				})
+			systemThemeListenerBound = true
+		}
+	}
+
+	// Initialisation au chargement de la page
+	initThemePicker()
+	document.addEventListener('astro:page-load', initThemePicker)
 </script>

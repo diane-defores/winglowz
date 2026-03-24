@@ -1,6 +1,11 @@
 ---
 import { getLangFromUrl } from '@/utils/i18n'
 
+interface Props {
+  forceDark?: boolean
+}
+
+const { forceDark = false } = Astro.props
 const lang = getLangFromUrl(Astro.url)
 
 const text = lang === 'fr'
@@ -18,6 +23,18 @@ const text = lang === 'fr'
       privacy: "Privacy Policy",
       privacyUrl: "/privacy",
     }
+
+const panelClass = forceDark
+  ? 'rounded-xl border border-zinc-800 bg-zinc-950/96 p-4 shadow-2xl backdrop-blur sm:p-6'
+  : 'rounded-xl border border-neutral-200 bg-white p-4 shadow-lg dark:border-zinc-800 dark:bg-zinc-900 sm:p-6'
+
+const messageClass = forceDark
+  ? 'text-sm text-zinc-300'
+  : 'text-sm text-neutral-600 dark:text-zinc-400'
+
+const declineButtonClass = forceDark
+  ? 'rounded-full border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white'
+  : 'rounded-full border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800'
 ---
 
 <div
@@ -27,10 +44,10 @@ const text = lang === 'fr'
   aria-label={lang === 'fr' ? 'Consentement aux cookies' : 'Cookie consent'}
 >
   <div class="mx-auto max-w-4xl px-4 pb-4">
-    <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-lg dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
+    <div class={panelClass}>
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex-1">
-          <p class="text-sm text-neutral-600 dark:text-zinc-400">
+          <p class={messageClass}>
             {text.message}
             <a href={text.privacyUrl} class="ml-1 font-medium text-magenta hover:underline">
               {text.privacy}
@@ -40,7 +57,7 @@ const text = lang === 'fr'
         <div class="flex shrink-0 items-center gap-2">
           <button
             id="cookie-decline"
-            class="rounded-full border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+            class={declineButtonClass}
           >
             {text.decline}
           </button>

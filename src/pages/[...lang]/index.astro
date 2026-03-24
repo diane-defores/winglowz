@@ -31,13 +31,13 @@ const landingNavItems = [
 
 <LandingLayout lang={lang}>
 	<main class="min-h-screen bg-black">
-		<Navbar navItems={landingNavItems} />
+		<Navbar navItems={landingNavItems} forceDark={true} showThemePicker={false} />
 		<Hero />
 		<LogoMarquee />
 		<BentoGrid />
 		<LeadMagnet />
 		<Pricing />
 		<FinalCTA />
-		<Footer />
+		<Footer forceDark={true} />
 	</main>
 </LandingLayout>

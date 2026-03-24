@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface NavItem {
   label: string
@@ -14,6 +14,8 @@ interface MobileMenuProps {
   ctaUrl?: string
   altLangUrl?: string
   altLangLabel?: string
+  forceDark?: boolean
+  showThemeToggle?: boolean
 }
 
 export function MobileMenu({
@@ -24,8 +26,38 @@ export function MobileMenu({
   ctaUrl = "/products",
   altLangUrl,
   altLangLabel,
+  forceDark = false,
+  showThemeToggle = true,
 }: MobileMenuProps) {
   const [open, setOpen] = useState(false)
+  const [theme, setTheme] = useState<"light" | "dark">("dark")
+
+  useEffect(() => {
+    const root = document.documentElement
+    const syncTheme = () => {
+      const nextTheme =
+        root.classList.contains("dark") || root.getAttribute("data-theme") === "dark"
+          ? "dark"
+          : "light"
+      setTheme(nextTheme)
+    }
+
+    syncTheme()
+    document.addEventListener("astro:page-load", syncTheme)
+
+    return () => {
+      document.removeEventListener("astro:page-load", syncTheme)
+    }
+  }, [])
+
+  const applyTheme = (nextTheme: "light" | "dark") => {
+    const root = document.documentElement
+    root.classList.remove("dark", "light")
+    root.classList.add(nextTheme)
+    root.setAttribute("data-theme", nextTheme)
+    window.localStorage.setItem("hs_theme", nextTheme)
+    setTheme(nextTheme)
+  }
 
   const navItems: NavItem[] = items || [
     { label: "Apps", href: "/products" },
@@ -51,7 +83,11 @@ export function MobileMenu({
 
       {open && (
         <div
-          className="absolute top-full left-0 right-0 mt-2 p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-neutral-200/60 shadow-lg dark:bg-zinc-900/95 dark:border-zinc-800 dark:shadow-none"
+          className={
+            forceDark
+              ? "absolute top-full left-0 right-0 mt-2 rounded-2xl border border-zinc-800 bg-zinc-950/96 p-4 shadow-2xl backdrop-blur-md"
+              : "absolute top-full left-0 right-0 mt-2 rounded-2xl border border-neutral-200/60 bg-white/95 p-4 shadow-lg backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/95 dark:shadow-none"
+          }
           style={{ animation: "hero-fade-up 0.2s ease-out forwards" }}
         >
           <div className="flex flex-col gap-2">
@@ -74,6 +110,15 @@ export function MobileMenu({
               >
                 {altLangLabel}
               </a>
+            )}
+            {showThemeToggle && !forceDark && (
+              <button
+                type="button"
+                className="rounded-lg px-4 py-3 text-left text-sm text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                onClick={() => applyTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              </button>
             )}
             <a href={signInUrl} onClick={() => setOpen(false)}>
               <button className="w-full text-left px-4 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 rounded-lg transition-colors">

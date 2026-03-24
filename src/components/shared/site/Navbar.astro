@@ -10,9 +10,15 @@ interface NavItem {
 
 interface Props {
 	navItems?: NavItem[]
+	forceDark?: boolean
+	showThemePicker?: boolean
 }
 
-const { navItems: propNavItems } = Astro.props
+const {
+	navItems: propNavItems,
+	forceDark = false,
+	showThemePicker = true,
+} = Astro.props
 
 const lang = getLangFromUrl(Astro.url)
 const t = await useTranslations(lang, 'navigation')
@@ -78,10 +84,30 @@ const signInLabel = lang === 'fr' ? 'Connexion' : 'Sign In'
 const ctaLabel = lang === 'fr' ? 'Commencer' : 'Get Started'
 const signInUrl = lang === 'fr' ? '/fr/connexion' : '/signin'
 const ctaUrl = lang === 'fr' ? '/fr/produits' : '/products'
+
+const navShellClass = forceDark
+	? 'relative flex items-center justify-between rounded-full border border-zinc-800 bg-zinc-950/88 px-4 py-3 shadow-none backdrop-blur-md'
+	: 'relative flex items-center justify-between rounded-full border border-neutral-200/60 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80 dark:shadow-none'
+
+const navLinkClass = forceDark
+	? 'nav-link no-hover-animation relative rounded-full px-3 py-2 text-sm text-zinc-400 transition-colors hover:text-white'
+	: 'nav-link no-hover-animation relative rounded-full px-3 py-2 text-sm text-neutral-600 transition-colors hover:text-neutral-900 dark:text-zinc-400 dark:hover:text-white'
+
+const langLinkClass = forceDark
+	? 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white'
+	: 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white'
+
+const signInButtonClass = forceDark
+	? 'rounded-full px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white'
+	: 'rounded-full px-3 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white'
+
+const ctaButtonClass = forceDark
+	? 'shimmer-btn rounded-full bg-white px-4 py-1.5 text-sm font-medium text-zinc-950 hover:bg-zinc-200'
+	: 'shimmer-btn rounded-full bg-neutral-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200'
 ---
 
 <header class="navbar-header fixed left-0 right-0 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-4xl">
-	<nav class="relative flex items-center justify-between rounded-full border border-neutral-200/60 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80 dark:shadow-none">
+	<nav class={navShellClass}>
 		<a href={homeUrl} class="flex items-center gap-2 no-hover-animation">
 			<div class="text-logo" style="font-size: 1.25rem;">
 				<span class="text">WinFlowz</span>
@@ -94,7 +120,7 @@ const ctaUrl = lang === 'fr' ? '/fr/produits' : '/products'
 				navItems.map((item) => (
 					<a
 						href={item.href}
-						class="nav-link no-hover-animation relative rounded-full px-3 py-2 text-sm text-neutral-600 transition-colors hover:text-neutral-900 dark:text-zinc-400 dark:hover:text-white"
+						class={navLinkClass}
 					>
 						{item.label}
 					</a>
@@ -105,18 +131,18 @@ const ctaUrl = lang === 'fr' ? '/fr/produits' : '/products'
 		<div class="hidden items-center gap-1 md:flex">
 			<a
 				href={altLangUrl}
-				class="no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white"
+				class={langLinkClass}
 			>
 				{altLangLabel}
 			</a>
-			<ThemePicker />
+			{showThemePicker && !forceDark && <ThemePicker />}
 			<a href={signInUrl} class="no-hover-animation">
-				<button class="rounded-full px-3 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white">
+				<button class={signInButtonClass}>
 					{signInLabel}
 				</button>
 			</a>
 			<a href={ctaUrl} class="no-hover-animation">
-				<button class="shimmer-btn rounded-full bg-neutral-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200">
+				<button class={ctaButtonClass}>
 					{ctaLabel}
 				</button>
 			</a>
@@ -131,6 +157,8 @@ const ctaUrl = lang === 'fr' ? '/fr/produits' : '/products'
 			ctaUrl={ctaUrl}
 			altLangUrl={altLangUrl}
 			altLangLabel={altLangLabel}
+			forceDark={forceDark}
+			showThemeToggle={showThemePicker && !forceDark}
 		/>
 	</nav>
 </header>
