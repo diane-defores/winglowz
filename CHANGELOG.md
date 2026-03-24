@@ -7,11 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Server checkout route for training unlocks at `/api/polar/checkout`
+- Signed Polar webhook route at `/api/polar/webhook`
+- Persistent course entitlements on Convex users via `courseEntitlements`
+
 ### Changed
 - Clean up unused docs and legacy files (AUTH_ANALYSIS, BRANDING_SPECIFICATION, copilot-instructions)
 - Remove Dependabot configuration
 - Simplify README
 - Update BRANDING.md wording
+- Route Starlight lesson previews to the Polar checkout flow instead of the product offer page
+- Update Clerk sign-in flow so `next` can return to checkout or the private lesson
+- Update purchase success page copy and redirect behavior for course unlocks
+- Extend Convex Polar handlers to link customers and grant training access after payment
+
+### Fixed
+- Fix course gating so the unlock flow persists access after payment instead of relying only on subscription state
+- Fix sign-in redirect handling by disabling prerender on the sign-in page
 
 ### Removed
 - Remove GUIDELINES.md

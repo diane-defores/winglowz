@@ -33,25 +33,25 @@ AutoHotkey (AHK) est un langage de scripting concu pour Windows. Il te permet de
 ### Exemples concrets
 
 **Remapper une touche :**
-```ahk
+```txt
 ; Transformer Caps Lock en touche Echap
 CapsLock::Esc
 ```
 
 **Creer un raccourci de texte :**
-```ahk
+```txt
 ; Taper "@@" insere ton adresse mail
 ::@@::ton.email@exemple.com
 ```
 
 **Lancer une app avec un raccourci :**
-```ahk
+```txt
 ; Win + N ouvre le Bloc-notes
 #n::Run, notepad.exe
 ```
 
 **Raccourci pour un texte multiligne :**
-```ahk
+```txt
 ; Ctrl + Shift + S insere une signature
 ^+s::
 SendInput, Cordialement,{Enter}Ton Nom{Enter}Ton Poste

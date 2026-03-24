@@ -1,0 +1,253 @@
+.docs-shell {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+  padding: 1rem 0 4rem;
+}
+
+.docs-sidebar,
+.docs-toc {
+  display: none;
+}
+
+.docs-sidebar__inner,
+.docs-toc__inner,
+.docs-article,
+.docs-main__header,
+.docs-pager {
+  border: 1px solid rgb(229 229 229 / 0.8);
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(16px);
+  border-radius: 1.5rem;
+}
+
+.dark .docs-sidebar__inner,
+.dark .docs-toc__inner,
+.dark .docs-article,
+.dark .docs-main__header,
+.dark .docs-pager {
+  border-color: rgb(38 38 38 / 0.9);
+  background: rgb(23 23 23 / 0.88);
+}
+
+.docs-main__header {
+  margin-bottom: 1rem;
+  padding: 1.75rem;
+}
+
+.docs-main__eyebrow,
+.docs-sidebar__eyebrow,
+.docs-toc__title,
+.docs-pager__label {
+  margin: 0 0 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-magenta);
+}
+
+.docs-main__header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  line-height: 1;
+}
+
+.docs-main__description {
+  margin: 1rem 0 0;
+  max-width: 60ch;
+  color: rgb(82 82 82);
+}
+
+.dark .docs-main__description,
+.dark .docs-toc__empty {
+  color: rgb(163 163 163);
+}
+
+.docs-article {
+  padding: 1.75rem;
+}
+
+.docs-sidebar__inner,
+.docs-toc__inner {
+  position: sticky;
+  top: 6rem;
+  padding: 1.25rem;
+}
+
+.docs-nav__list,
+.docs-toc__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.docs-nav__list--nested {
+  margin-top: 0.35rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid rgb(229 229 229);
+}
+
+.dark .docs-nav__list--nested {
+  border-left-color: rgb(64 64 64);
+}
+
+.docs-nav__summary {
+  list-style: none;
+}
+
+.docs-nav__summary::-webkit-details-marker {
+  display: none;
+}
+
+.docs-nav__summary.is-current .docs-nav__link {
+  color: var(--brand-magenta);
+}
+
+.docs-nav__link,
+.docs-nav__label,
+.docs-toc__list a {
+  display: block;
+  padding: 0.35rem 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.docs-nav__link:hover,
+.docs-toc__list a:hover {
+  color: var(--brand-magenta);
+}
+
+.docs-toc__item.is-nested a {
+  padding-left: 0.85rem;
+}
+
+.docs-pager {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.docs-pager__link {
+  display: block;
+  border-radius: 1rem;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  background: rgb(245 245 245 / 0.8);
+}
+
+.dark .docs-pager__link {
+  background: rgb(10 10 10 / 0.45);
+}
+
+.docs-pager__link--next {
+  text-align: right;
+}
+
+.docs-pager__link strong {
+  display: block;
+}
+
+.sl-markdown-content {
+  color: inherit;
+}
+
+.sl-markdown-content > :first-child {
+  margin-top: 0;
+}
+
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4 {
+  scroll-margin-top: 7rem;
+}
+
+.sl-markdown-content ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.sl-markdown-content ul > li {
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+.sl-markdown-content ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.1rem;
+  top: 0.82rem;
+  width: 0.75rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--brand-magenta);
+}
+
+.sl-markdown-content li + li,
+.sl-markdown-content li > ul,
+.sl-markdown-content li > ol {
+  margin-top: 0.65rem;
+}
+
+.sl-markdown-content a {
+  color: var(--brand-magenta);
+}
+
+.sl-markdown-content blockquote,
+.docs-aside {
+  margin: 1.5rem 0;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.sl-markdown-content blockquote {
+  border-left: 4px solid var(--brand-cyan);
+  background: rgb(245 245 245);
+}
+
+.dark .sl-markdown-content blockquote {
+  background: rgb(24 24 27);
+}
+
+.docs-aside {
+  border: 1px solid transparent;
+}
+
+.docs-aside__title {
+  margin: 0 0 0.65rem;
+  font-weight: 800;
+}
+
+.docs-aside--tip {
+  background: linear-gradient(135deg, rgb(250 204 21 / 0.18), rgb(16 185 129 / 0.12));
+  border-color: rgb(250 204 21 / 0.35);
+}
+
+.docs-aside--note {
+  background: linear-gradient(135deg, rgb(34 211 238 / 0.15), rgb(16 185 129 / 0.08));
+  border-color: rgb(34 211 238 / 0.25);
+}
+
+.docs-aside--caution,
+.docs-aside--danger {
+  background: linear-gradient(135deg, rgb(244 63 94 / 0.16), rgb(249 115 22 / 0.12));
+  border-color: rgb(244 63 94 / 0.28);
+}
+
+.docs-aside--success {
+  background: linear-gradient(135deg, rgb(16 185 129 / 0.15), rgb(34 197 94 / 0.1));
+  border-color: rgb(16 185 129 / 0.25);
+}
+
+@media (min-width: 1100px) {
+  .docs-shell {
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) minmax(200px, 240px);
+  }
+
+  .docs-sidebar,
+  .docs-toc {
+    display: block;
+  }
+}

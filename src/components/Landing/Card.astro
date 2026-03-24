@@ -1,53 +1,58 @@
 ---
-import { Card as StarlightCard } from '@astrojs/starlight/components';
-export type Props = Parameters<typeof StarlightCard>[0];
+interface Props {
+	title?: string;
+	icon?: string;
+	href?: string;
+}
 ---
 
 <div class="landing-card">
-	<StarlightCard {...Astro.props}><slot /></StarlightCard>
+	<article class="card">
+		<slot />
+	</article>
 </div>
 
 <style>
 	.landing-card {
 		--card-bg: rgba(23, 25, 30, 0.8);
 		display: contents;
-		color: var(--sl-color-white);
+		color: rgb(250 250 250);
 	}
 	:global(:root[data-theme='light']) .landing-card {
 		--card-bg: rgba(255, 255, 255, 0.8);
 	}
 
-	.landing-card :global(.card) {
+	.landing-card .card {
 		overflow: hidden;
 		background: var(--card-bg);
 		position: relative;
+		border-radius: 1rem;
+		border: 1px solid rgb(255 255 255 / 0.12);
+		padding: 1.25rem;
+		backdrop-filter: blur(12px);
 	}
 
-	.landing-card :global(.card > *) {
+	.landing-card .card > * {
 		z-index: 1;
 	}
-	.landing-card :global(.card::before) {
+	.landing-card .card::before {
 		content: '';
 		position: absolute;
 		top: 0;
 		inset-inline-end: 0;
 		width: 6.25rem;
 		height: 6.25rem;
-		background: var(--landing-card-accent, var(--sl-color-accent));
+		background: var(--landing-card-accent, var(--brand-magenta));
 		border-radius: 100%;
 		filter: blur(3.25rem);
 		opacity: 0.33;
 	}
 
-	.landing-card :global(.card) {
-		--sl-card-bg: var(--sl-color-blue-low);
-		--sl-card-border: var(--sl-color-blue-high);
+	.landing-card .card {
 		--landing-card-accent: hsl(165, 90%, 46%);
 	}
 
-	.landing-card:nth-child(2n) :global(.card) {
-		--sl-card-bg: var(--sl-color-red-low);
-		--sl-card-border: var(--sl-color-red-high);
-		--landing-card-accent: var(--sl-color-red);
+	.landing-card:nth-child(2n) .card {
+		--landing-card-accent: var(--brand-red);
 	}
 </style>

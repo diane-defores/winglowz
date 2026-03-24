@@ -6,14 +6,7 @@ import { SignIn } from '@clerk/astro/components'
 
 export const prerender = false
 
-export async function getStaticPaths() {
-	return [
-		{ params: { lang: undefined }, props: { lang: 'en' as Language } },
-		{ params: { lang: 'fr' }, props: { lang: 'fr' as Language } },
-	]
-}
-
-const { lang } = Astro.props
+const lang = Astro.params.lang === 'fr' ? ('fr' as Language) : ('en' as Language)
 const title = lang === 'fr' ? 'Connexion' : 'Sign In'
 const nextUrl = Astro.url.searchParams.get('next')
 const safeNextUrl = getSafeAuthRedirectPath(nextUrl)

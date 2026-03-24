@@ -56,7 +56,7 @@
 	type Theme = 'light' | 'dark'
 
 	// Fonction pour appliquer le thème
-	function applyTheme(theme: Theme, skipStarlightSync = false) {
+	function applyTheme(theme: Theme) {
 		const root = document.documentElement
 
 		// Supprimer toutes les classes de thème
@@ -65,7 +65,7 @@
 		// Appliquer le nouveau thème
 		root.classList.add(theme)
 
-		// Mettre à jour l'attribut data-theme pour Starlight
+		// Mettre à jour l'attribut data-theme pour le thème global
 		root.setAttribute('data-theme', theme)
 
 		// Sauvegarder le thème
@@ -85,38 +85,6 @@
 				}
 			})
 
-		// Synchroniser avec le thème Starlight seulement si on ne vient pas déjà d'une synchro Starlight
-		if (!skipStarlightSync) {
-			const starlightTheme = document.querySelector('starlight-theme-select')
-			if (starlightTheme) {
-				// @ts-ignore - Starlight specific
-				starlightTheme.theme = theme
-			}
-		}
-	}
-
-	// Fonction pour écouter les changements de thème Starlight
-	function listenToStarlightTheme() {
-		const starlightTheme = document.querySelector('starlight-theme-select')
-		if (starlightTheme) {
-			const observer = new MutationObserver((mutations) => {
-				mutations.forEach((mutation) => {
-					if (
-						mutation.type === 'attributes' &&
-						mutation.attributeName === 'theme'
-					) {
-						// @ts-ignore - Starlight specific
-						const newTheme = starlightTheme.theme as Theme
-						applyTheme(newTheme, true)
-					}
-				})
-			})
-
-			observer.observe(starlightTheme, {
-				attributes: true,
-				attributeFilter: ['theme'],
-			})
-		}
 	}
 
 	// Initialisation au chargement de la page
@@ -131,9 +99,6 @@
 
 		// Appliquer le thème initial
 		applyTheme(theme)
-
-		// Écouter les changements de thème Starlight
-		listenToStarlightTheme()
 
 		// Écouteur pour les boutons de thème
 		document

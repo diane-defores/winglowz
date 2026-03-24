@@ -1,0 +1,117 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import '@/assets/styles/docs.css';
+import type { DocTreeNode, DocPagerLink } from '@/utils/docs';
+import { isActiveBranch, isCurrentDoc } from '@/utils/docs';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang: 'en' | 'fr';
+  sidebar: DocTreeNode[];
+  headings: { text: string; slug: string; depth: number }[];
+  currentPath: string;
+  pager?: {
+    prev?: DocPagerLink;
+    next?: DocPagerLink;
+  };
+}
+
+const {
+  title,
+  description,
+  lang,
+  sidebar,
+  headings,
+  currentPath,
+  pager,
+} = Astro.props;
+
+const toc = headings.filter((heading) => heading.depth <= 2);
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function renderSidebar(nodes: DocTreeNode[]): string {
+  return nodes
+    .map((node) => {
+      const active = isActiveBranch(node, currentPath);
+      const current = isCurrentDoc(node.href, currentPath);
+      const summaryClass = ['docs-nav__summary', current ? 'is-current' : ''].filter(Boolean).join(' ');
+      const label = escapeHtml(node.label);
+      const link = node.href
+        ? `<a href="${escapeHtml(node.href)}" class="docs-nav__link">${label}</a>`
+        : `<span class="docs-nav__label">${label}</span>`;
+      const children = node.children.length
+        ? `<ul class="docs-nav__list docs-nav__list--nested">${renderSidebar(node.children)}</ul>`
+        : '';
+      return `<li><details${active ? ' open' : ''}><summary class="${summaryClass}">${link}</summary>${children}</details></li>`;
+    })
+    .join('');
+}
+---
+
+<MainLayout title={title} meta={description} lang={lang}>
+  <div class="docs-shell">
+    <aside class="docs-sidebar">
+      <div class="docs-sidebar__inner">
+        <p class="docs-sidebar__eyebrow">{lang === 'fr' ? 'Documentation' : 'Documentation'}</p>
+        <ul class="docs-nav__list" set:html={renderSidebar(sidebar)} />
+      </div>
+    </aside>
+
+    <section class="docs-main">
+      <div class="docs-main__header">
+        <p class="docs-main__eyebrow">{lang === 'fr' ? 'Page publique' : 'Public page'}</p>
+        <h1>{title}</h1>
+        {description && <p class="docs-main__description">{description}</p>}
+      </div>
+      <article class="sl-markdown-content docs-article">
+        <slot />
+      </article>
+      {
+        pager && (pager.prev || pager.next) && (
+          <nav class="docs-pager" aria-label={lang === 'fr' ? 'Pagination des docs' : 'Docs pagination'}>
+            {pager.prev ? (
+              <a class="docs-pager__link" href={pager.prev.href}>
+                <span class="docs-pager__label">{lang === 'fr' ? 'Page précédente' : 'Previous page'}</span>
+                <strong>{pager.prev.title}</strong>
+              </a>
+            ) : (
+              <span />
+            )}
+            {pager.next && (
+              <a class="docs-pager__link docs-pager__link--next" href={pager.next.href}>
+                <span class="docs-pager__label">{lang === 'fr' ? 'Page suivante' : 'Next page'}</span>
+                <strong>{pager.next.title}</strong>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </section>
+
+    <aside class="docs-toc">
+      <div class="docs-toc__inner">
+        <p class="docs-toc__title">{lang === 'fr' ? 'Sur cette page' : 'On this page'}</p>
+        {toc.length > 0 ? (
+          <ul class="docs-toc__list">
+            {toc.map((heading) => (
+              <li class:list={['docs-toc__item', heading.depth > 2 && 'is-nested']}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="docs-toc__empty">{lang === 'fr' ? 'Pas de sections' : 'No sections'}</p>
+        )}
+      </div>
+    </aside>
+  </div>
+</MainLayout>
