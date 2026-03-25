@@ -70,7 +70,7 @@ export function MobileMenu({
   return (
     <>
       <button
-        className="md:hidden p-2 text-neutral-500 hover:text-neutral-900 dark:text-zinc-400 dark:hover:text-white"
+        className="md:hidden p-2 text-neutral-800 hover:text-neutral-950 dark:text-zinc-400 dark:hover:text-white"
         onClick={() => setOpen(!open)}
         aria-label="Toggle menu"
       >
@@ -95,7 +95,7 @@ export function MobileMenu({
               <a
                 key={item.label}
                 href={item.href}
-                className="px-4 py-3 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                className="px-4 py-3 text-sm font-medium text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 rounded-lg transition-colors"
                 onClick={() => setOpen(false)}
               >
                 {item.label}
@@ -105,7 +105,7 @@ export function MobileMenu({
             {altLangUrl && altLangLabel && (
               <a
                 href={altLangUrl}
-                className="px-4 py-2 text-xs font-semibold text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 dark:text-zinc-500 dark:hover:text-white dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                className="px-4 py-2 text-xs font-semibold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100 dark:text-zinc-500 dark:hover:text-white dark:hover:bg-zinc-800 rounded-lg transition-colors"
                 onClick={() => setOpen(false)}
               >
                 {altLangLabel}
@@ -114,14 +114,14 @@ export function MobileMenu({
             {showThemeToggle && !forceDark && (
               <button
                 type="button"
-                className="rounded-lg px-4 py-3 text-left text-sm text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                className="rounded-lg px-4 py-3 text-left text-sm font-medium text-neutral-800 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                 onClick={() => applyTheme(theme === "dark" ? "light" : "dark")}
               >
                 {theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               </button>
             )}
             <a href={signInUrl} onClick={() => setOpen(false)}>
-              <button className="w-full text-left px-4 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 rounded-lg transition-colors">
+              <button className="w-full text-left px-4 py-2 text-sm font-medium text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 rounded-lg transition-colors">
                 {signInLabel}
               </button>
             </a>
