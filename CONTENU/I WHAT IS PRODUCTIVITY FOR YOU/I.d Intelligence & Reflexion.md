@@ -9,13 +9,18 @@ _priorité: ""
 
 ## ✅ MIGRÉ → module-1-productivite/intelligence.md
 
-- ((Fatigue décisionnelle — Oliver Burkeman "Quatre Mille Semaines", systèmes qui décident pour toi))
-- ((Méthode ICE — Impact, Coût, Effort, note 1-10, trier par score))
-- ((Eat the Frog — tâche la plus dure en premier le matin))
-- ((Efficacité = effet cumulé — philosophie efficacité maximale))
-- ((Outils de décision — RICE Framework, Untools, pensée visuelle))
-- ((Intelligence émotionnelle — tracker émotions, 6 émotions universelles, check-in quotidien))
-- ((Journal vocal matinal — 5-10 min en marchant, esprit limpide))
-- ((IA comme multiplicateur — utiliser l'IA partout où pertinent))
+- ((cadre de décision : information ou décision, bonnes comparaisons, trop d'axes, saturation mentale))
+- ((fatigue décisionnelle et réduction des micro-décisions))
+- ((méthode ICE pour comparer vite plusieurs options))
+- ((la vraie grenouille = tâche à plus fort levier et pas simple tâche pénible))
+- ((pensée visuelle quand le texte ne suffit plus))
+- ((outils gardés : Untools, MyMap))
+- ((réflexivité : penser sur sa manière de penser))
+- ((intelligence émotionnelle et check-in quotidien))
+- ((journal vocal matinal))
+- ((outils de réflexivité émotionnelle : Rosebud, Sphēra))
+- ((IA comme multiplicateur de clarté, pas pilote automatique))
 
 ## 🔶 À TRIER
+
+- anciens frameworks ou exemples à ne garder que s'ils servent vraiment la structure premium

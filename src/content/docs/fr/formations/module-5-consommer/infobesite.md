@@ -1,82 +1,220 @@
 ---
 title: "Infobésité & Surcharge de Contenu"
-description: "Apprends à filtrer le bruit, construire un second cerveau et consommer l'information de manière intentionnelle."
+description: "Réduis le bruit, borne ta consommation et traite l'information comme une ressource limitée au lieu d'un flux infini."
 sidebar:
   label: "Infobésité"
   order: 1
 ---
 
-Tu reçois chaque jour plus d'informations que tes arrière-grands-parents en recevaient dans toute une vie. Le problème n'est plus l'accès à l'information — c'est la capacité à la filtrer.
+Le problème moderne n'est pas seulement qu'il y a trop d'information. C'est que ton environnement est conçu pour te faire consommer sans fin, même quand cela ne nourrit ni ton travail, ni ta réflexion, ni ton repos.
 
-> L'infobésité, c'est quand la quantité d'information dépasse ta capacité à la traiter. Le résultat : paralysie décisionnelle, anxiété et perte de focus.
+> L'infobésité n'est pas un manque de discipline morale. C'est un système sans filtres, sans limites, et sans logique de sortie.
 
-## Le problème de la surcharge informationnelle
+## Le vrai sujet : reprendre le contrôle du flux
 
-- **174 journaux** : c'est l'équivalent en volume d'info que tu consommes chaque jour
-- Le cerveau humain n'a pas évolué pour gérer ce flux constant
-- Le scroll infini et les notifications exploitent tes biais cognitifs
-- Sans système, tu subis l'information au lieu de la maîtriser
+Sortir de l'infobésité ne veut pas dire devenir ignorant ou déconnecté. Cela veut dire :
+- réduire les entrées inutiles
+- choisir consciemment les entrées utiles
+- cesser de traiter toute information comme urgente
+- transformer une partie de ce que tu consommes en note, décision ou action
 
----
+Le bon objectif n'est donc pas "lire plus intelligemment". Le bon objectif est :
 
-## Le second cerveau
+**avoir un système qui empêche le bruit de devenir ton régime par défaut.**
 
-L'idée est simple : externalise ta mémoire dans un système fiable. Ton cerveau sert à réfléchir, pas à stocker.
+## Le decision framework Winflowz
 
-### Principes fondamentaux
+Quand un contenu, une source ou un flux arrive dans ta journée, pose-toi quatre questions :
 
-1. **Capture** tout ce qui mérite d'être retenu — ne fais pas confiance à ta mémoire
-2. **Organise** par projet ou par thème, pas par source
-3. **Distille** l'essentiel — résume dans tes propres mots
-4. **Exprime** — utilise tes notes pour créer, décider, agir
+1. **Est-ce que cela sert un projet, une compétence, une décision ou un vrai repos ?**
+2. **Dois-je le consommer maintenant, plus tard, ou jamais ?**
+3. **Est-ce une source que je choisis, ou juste un stimulus qui me capture ?**
+4. **Si je le consomme, qu'est-ce qui doit en sortir ?**
 
----
+Ce cadre permet de traiter l'information avec quatre gestes simples :
+- **ignorer**
+- **sauvegarder**
+- **consommer maintenant**
+- **extraire puis fermer**
 
-## Choisir le bon outil de prise de notes
+## Le vrai coût de l'infobésité
 
-| Outil | Points forts | Idéal pour |
-|-------|-------------|------------|
-| **[Standard Notes](https://standardnotes.com/)** | Chiffrement de bout en bout, open source | Notes privées, journaling sécurisé |
-| **[Nota](https://www.nota-sync.com/)** | Léger, markdown natif, rapide | Prises de notes rapides, développeurs |
-| **[Notable](https://notable.app/)** | Interface claire, tags puissants, markdown | Organisation par tags, gros volumes |
+Le coût n'est pas seulement le temps perdu. C'est aussi :
+- la fragmentation de l'attention
+- une impression de retard permanent
+- la difficulté à distinguer l'utile du séduisant
+- une sensation de fatigue sans vraie progression
 
-### Ce qui compte dans un éditeur markdown
+Tu peux passer des heures à "te nourrir" et finir la journée avec :
+- aucune meilleure décision
+- aucune note solide
+- aucune action plus claire
 
-- **Syntaxe markdown** native (pas de format propriétaire)
-- **Recherche rapide** dans toutes tes notes
-- **Export facile** — tes données doivent rester les tiennes
-- **Sync** entre appareils sans friction
+Dans ce cas, tu n'as pas appris. Tu t'es surtout exposé.
 
----
+## Les 3 types de consommation à distinguer
 
-## Les bases du PKM (Personal Knowledge Management)
+### 1. Consommation active
 
-Le PKM, c'est ta stratégie personnelle pour gérer le flux d'information :
+Tu cherches quelque chose pour :
+- résoudre un problème
+- apprendre une compétence
+- préparer une décision
 
-1. **Définis tes domaines d'intérêt** — 3 à 5 maximum
-2. **Choisis tes sources** avec soin — qualité > quantité
-3. **Planifie ta consommation** — créneau dédié plutôt que flux continu
-4. **Prends des notes actives** — reformule, connecte les idées entre elles
-5. **Revois régulièrement** — une note jamais relue est une note inutile
+C'est la forme la plus rentable.
 
----
+### 2. Consommation de veille
 
-## Filtrer le signal du bruit
+Tu surveilles un domaine pour rester au courant :
+- secteur
+- outils
+- marché
+- sujets d'intérêt professionnel
 
-### Stratégies concrètes
+Elle est utile, mais seulement si elle reste bornée.
 
-- **Désabonne-toi** de tout ce que tu n'as pas lu depuis 30 jours
-- **Regroupe** tes sources dans un agrégateur RSS plutôt que de visiter 20 sites
-- **Applique la règle des 5 secondes** : si le titre ne te parle pas immédiatement, passe
-- **Bloque les créneaux** de consommation (30 min matin, 30 min soir) — pas de grignotage informationnel
-- **Utilise le mode "Read Later"** — sauve l'article, ne le lis pas maintenant
+### 3. Consommation de dérive
 
-### La diète informationnelle
+Tu n'as pas choisi le flux. Le flux t'a choisi :
+- scroll
+- recommandations
+- onglet ouvert "juste pour voir"
+- vidéo qui en entraîne une autre
 
-Comme pour la nourriture, la qualité prime sur la quantité. Pose-toi trois questions avant de consommer un contenu :
+C'est là que l'infobésité se fabrique réellement.
 
-1. *Est-ce que ça m'aide dans un projet concret ?*
-2. *Est-ce que ça change ma façon de penser ?*
-3. *Est-ce que je vais encore m'en souvenir dans une semaine ?*
+## Le bon système : moins de flux, plus de sorties
 
-Si la réponse est non aux trois — ferme l'onglet.
+L'information devient utile quand elle change quelque chose :
+- une note
+- une compréhension
+- une décision
+- une action
+- une ressource retrouvable
+
+Si tout entre et que rien ne sort, ton système devient un entonnoir bouché.
+
+Le bon ratio n'est pas forcément produire en public. C'est au minimum :
+- lire
+- extraire
+- relier ou décider
+
+## Le second cerveau, mais sans folklore
+
+L'idée du "second cerveau" reste utile si on la simplifie.
+
+Ton cerveau n'est pas fait pour :
+- mémoriser chaque détail
+- garder tous les liens ouverts
+- stocker toutes les intuitions
+
+Il est fait pour :
+- comparer
+- relier
+- juger
+- créer
+
+Donc, externalise ce qui mérite de survivre. Mais n'externalise pas tout.
+
+### Ce qui mérite d'être gardé
+
+- une idée réutilisable
+- une ressource vraiment utile
+- une explication claire
+- une référence liée à un projet ou un domaine important
+
+### Ce qui ne mérite souvent pas d'être gardé
+
+- un contenu juste intéressant
+- une opinion vite oubliable
+- un lien "peut-être utile un jour" sans contexte
+- un extrait que tu ne reliras jamais
+
+## Les bons filtres avant même la lecture
+
+Avant d'entrer dans un contenu, pose-toi trois questions :
+
+1. **Pourquoi maintenant ?**
+2. **Qu'est-ce que j'espère en tirer ?**
+3. **Qu'est-ce que je ferai si c'est réellement utile ?**
+
+Si tu n'as pas de réponse, la consommation est probablement impulsive.
+
+## Réduire l'exposition au lieu de compter sur la volonté
+
+Le bon système enlève des occasions de dérive :
+- moins de notifications
+- moins d'onglets permanents
+- moins de newsletters passives
+- moins d'entrées algorithmiques non choisies
+
+Quelques règles utiles :
+- désabonne-toi de ce que tu n'ouvres plus vraiment
+- regroupe la veille au lieu de la subir en continu
+- garde des créneaux dédiés à la consommation
+- sépare clairement lecture de travail et distraction
+
+Le principe reste le même que dans le reste du cours :
+
+**réduire la friction du bon comportement et augmenter celle du mauvais.**
+
+## Quand sauvegarder au lieu de lire
+
+Beaucoup de surcharge vient du mauvais timing.
+
+Tu n'as pas besoin de lire un contenu intéressant au moment où tu le rencontres.
+
+Sauvegarde si :
+- tu es occupé à autre chose
+- le sujet mérite de l'attention
+- tu ne peux pas extraire immédiatement quelque chose d'utile
+
+Lis maintenant si :
+- la réponse est nécessaire tout de suite
+- le coût de report est réel
+- tu peux traiter le contenu proprement
+
+Sinon, ferme.
+
+## Le vrai signe d'une bonne diète informationnelle
+
+Une bonne diète informationnelle se reconnaît à ceci :
+- tu sais pourquoi tu consommes
+- tu t'exposes moins par défaut
+- tu retrouves ce qui mérite de rester
+- tu ressors plus souvent avec une idée exploitable
+
+Tu peux alors consommer moins et pourtant mieux progresser.
+
+## Workflow recommandé
+
+**Minimaliste** :
+- supprimer des entrées
+- limiter les créneaux
+- fermer plus vite
+
+**Pragmatique** :
+- distinguer actif, veille, dérive
+- sauvegarder au lieu de tout lire
+- extraire une idée utile de ce qui compte
+
+**Système personnel** :
+- sources choisies
+- exposition algorithmique réduite
+- capture sobre
+- vraie logique de sortie : note, décision, action ou archive
+
+:::note[Exercice pratique]
+Pendant 3 jours, quand un contenu attire ton attention, force-toi à le classer immédiatement :
+
+1. à ignorer
+2. à sauvegarder
+3. à consommer maintenant
+
+Puis, pour chaque contenu effectivement consommé, écris en une ligne :
+
+- ce que tu en retires
+- ou pourquoi cela n'en valait pas la peine
+
+Si tu n'arrives pas à écrire une sortie, tu viens souvent d'identifier du bruit.
+:::

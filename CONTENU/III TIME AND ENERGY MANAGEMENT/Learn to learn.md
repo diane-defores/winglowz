@@ -9,17 +9,18 @@ _priorité: ""
 
 ## ✅ MIGRÉ → module-3-temps-energie/apprendre-a-apprendre.md
 
-- ((Courbe de l'oubli — Ebbinghaus, 80% oublié en 48h))
-- ((Répétition espacée — intervalles croissants, 5-6 révisions vers mémoire long terme))
-- ((Rappel actif / Active Recall — forcer le cerveau à retrouver l'info))
-- ((Flashcards — KardsAI, Anki, RemNote, Quizlet))
-- ((Habitudes d'apprentissage — enseigner, connecter, appliquer, espacer, dormir))
-- ((Workflow d'apprentissage optimal — Consommer → Capturer → Flashcards → Réviser → Appliquer))
+- ((problème central : traiter toutes les informations comme si elles méritaient la même profondeur))
+- ((cadre de décision : exposition, compréhension, rétention))
+- ((courbe de l'oubli : relire passivement aide peu, rappel actif aide beaucoup))
+- ((rappel actif comme cœur du système))
+- ((répétition espacée pertinente surtout pour vocabulaire, concepts clés, procédures))
+- ((chunking : transformer des éléments isolés en structures mentales))
+- ((Anki = recommandation principale pour rétention durable))
+- ((RemNote = meilleur compromis notes + révision))
+- ((Quizlet = porte d'entrée plus légère))
+- ((KardsAI = couche de commodité, pas cœur de méthode))
+- ((éviter : relire, tout transformer en cartes, mémoriser avant de comprendre))
 
 ## 🔶 À TRIER
 
-Productivity isn't only doing more but mostly doing better, and since we only use 10% of our brain and remember 20% of what we consume, there is always so many more we can do to improve.
-
-Spaced repetition is the best way to improve our learning speed and quality
-
-[KardsAI: Flashcard Maker - Start Learning in Seconds, not Hours! | Product Hunt](https://www.producthunt.com/posts/kardsai-flashcard-maker)
+- ancien angle trop direct "spaced repetition = meilleure méthode pour tout" à ne pas réinjecter tel quel

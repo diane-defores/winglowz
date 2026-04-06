@@ -10,6 +10,31 @@ Without organization, your knowledge base becomes a graveyard of files. Organizi
 
 > The best organization system is the one you actually use. Simplicity beats perfection.
 
+## Minimum viable PKM: do not organize everything in the same place
+
+The classic mistake is trying to put into a single tool:
+- reflective notes
+- saved links
+- heavy files
+- web archives
+- photos and media
+
+In practice, a healthier system separates a few simple layers:
+- **Obsidian or Logseq** for notes, backlinks, and connected ideas
+- **Karakeep** for links, web captures, and fast references
+- **a clean file system** for documents, media, and exports
+
+The goal is not to multiply apps. The goal is to avoid forcing one tool to do everything badly.
+
+### What should live where?
+
+You can keep this simple rule:
+- **idea, note, reflection, conceptual link** -> Obsidian or Logseq
+- **article, video, bookmark, highlight, web reference** -> Karakeep
+- **PDF, image, archive, export, heavy resource** -> folders + clean naming
+
+When that boundary is clear, your PKM becomes much lighter to maintain.
+
 ## Advanced file managers
 
 ### [TUIFIManager](https://github.com/GiorgosXou/TUIFIManager)
@@ -61,6 +86,19 @@ Tags make files retrievable even when you forget where you stored them:
 - **Use consistent tags** - build a taxonomy of 15-20 tags max
 - **Tag categories**: project, type, status, priority
 - **Tools**: [TagSpaces](https://www.tagspaces.org/) (open source, cross-platform) adds tags to any file
+
+### Backlinks beat endless taxonomies
+
+When you organize notes, the real modern gain does not come only from folders or tags. It also comes from **links between notes**.
+
+With tools like **Obsidian**, **backlinks** show which notes already point to the note you are writing. That is where PKM becomes more than filing: it starts helping connections emerge.
+
+In other words:
+- **folders** reduce chaos
+- **tags** help you filter
+- **backlinks** help you think
+
+If you had to under-invest somewhere, I would under-invest in a complicated taxonomy before I under-invest in the ability to connect ideas.
 
 ---
 

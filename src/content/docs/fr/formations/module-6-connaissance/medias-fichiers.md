@@ -1,123 +1,207 @@
 ---
 title: "Opérations sur Médias & Fichiers"
-description: "Outils pour manipuler archives cloud, images, CSV et fichiers en lot — gagne du temps sur les tâches répétitives."
+description: "Choisis les bons outils pour renommer, convertir, compresser, réorganiser ou extraire tes fichiers sans transformer chaque tâche répétitive en corvée."
 sidebar:
   label: "Médias & Fichiers"
   order: 7
 ---
 
-Les opérations sur fichiers et médias sont les tâches ingrates que tout le monde fait manuellement. Avec les bons outils, ce qui prenait 30 minutes se fait en 30 secondes.
+Un bon PKM ne vit pas seulement dans les notes. Il repose aussi sur une couche plus ingrate, mais très réelle :
+- fichiers
+- exports
+- scans
+- images
+- vidéos
+- archives
 
-> Automatise les tâches répétitives ou elles te voleront tes journées, une par une.
+> Si chaque opération sur fichier te coûte 20 clics, ton système finit par se dégrader, même si tes idées sont bien rangées.
 
-## Archives cloud
+## Le vrai sujet : réduire les opérations manuelles répétées
 
-### [Cloudzip](https://cloudzip.net/)
+Cette leçon ne sert pas à collectionner des utilitaires. Elle sert à répondre à une question plus simple :
 
-Cloudzip te permet de manipuler des archives (ZIP, RAR, 7z) directement dans le cloud sans les télécharger entièrement :
+**quelle friction de fichier ou de média revient assez souvent pour mériter un outil ou un script ?**
 
-| Fonction | Avantage |
-|----------|----------|
-| **Exploration en ligne** | Parcours le contenu sans télécharger |
-| **Extraction sélective** | Télécharge uniquement les fichiers dont tu as besoin |
-| **Prévisualisation** | Visualise images et documents avant extraction |
-| **Gain de bande passante** | Pas besoin de télécharger une archive de 2 Go pour un fichier de 5 Mo |
+Les frictions les plus courantes sont :
+- renommer en masse
+- convertir des formats
+- réorganiser des PDF
+- compresser ou nettoyer des médias
+- manipuler des données tabulaires
+- explorer une archive ou un lot de fichiers sans tout ouvrir à la main
 
----
+## Le decision framework Winflowz
 
-## Manipulation d'images
+Avant d'ajouter un outil, pose-toi quatre questions :
 
-### [Magic Copy](https://chromewebstore.google.com/detail/magic-copy/nnifclicibdhgakebbnbfmomniihfmkg)
+1. **Est-ce une tâche ponctuelle ou récurrente ?**
+2. **Est-ce que je manipule 3 fichiers ou 300 ?**
+3. **Ai-je besoin d'une interface visuelle ou d'un script reproductible ?**
+4. **Le vrai problème est-il la conversion, le renommage, la compression, la recherche ou la réorganisation ?**
 
-Magic Copy utilise l'IA pour extraire des éléments d'une image en un clic :
+Ce cadre mène souvent à une règle simple :
+- **ponctuel et visuel** → GUI
+- **récurrent ou volumineux** → CLI ou script
 
-- **Détourage intelligent** — sélectionne un objet et extrais-le du fond
-- **Copier-coller** entre images sans Photoshop
-- **Extension navigateur** — fonctionne directement sur les images du web
-- **Aucune compétence graphique requise**
+## Commence par les opérations les plus rentables
 
-### Autres outils image utiles
+Les tâches qui méritent le plus vite un vrai outil sont souvent :
+- renommer un grand lot
+- convertir des images ou vidéos
+- reconstruire un PDF
+- rendre un scan cherchable
+- traiter un CSV trop gros pour Excel
 
-| Outil | Fonction |
-|-------|----------|
-| [ShareX](https://getsharex.com/) | Capture d'écran avancée + annotation + upload automatique |
-| [GIMP](https://www.gimp.org/) | Édition d'images complète, open source |
-| [Squoosh](https://github.com/GoogleChromeLabs/squoosh) | Compression d'images web (Google, en ligne) |
+Ce ne sont pas des gestes "glamour", mais ce sont eux qui empêchent ton système documentaire de devenir pénible.
+
+## Renommage en lot
+
+Le renommage est souvent le premier vrai gain de productivité côté fichiers.
+
+### Outils crédibles
+
+| Outil | Usage |
+|-------|-------|
+| [PowerRename](https://learn.microsoft.com/en-us/windows/powertoys/powerrename) | Le bon choix par défaut sur Windows si tu veux renommer vite depuis l'Explorateur |
+| [Bulk Rename Utility](https://www.bulkrenameutility.co.uk/) | Pour les cas plus lourds, plus techniques, avec beaucoup d'options |
+
+Le bon choix est souvent :
+- **PowerRename** si tu veux quelque chose de simple et intégré
+- **Bulk Rename Utility** si tu as des règles complexes, beaucoup de variantes, ou un besoin très poussé
+
+## Conversion et compression en lot
+
+Quand un traitement revient souvent, il faut arrêter de le faire fichier par fichier.
+
+### Outils de base solides
+
+| Outil | Rôle |
+|-------|------|
+| [FFmpeg](https://ffmpeg.org/) | Conversion, extraction et compression audio/vidéo |
+| [ImageMagick](https://imagemagick.org/) | Conversion, redimensionnement et traitement d'images en lot |
+| [Pandoc](https://pandoc.org/) | Conversion de documents et formats texte |
+
+Ces outils deviennent pertinents si :
+- tu répètes souvent la même opération
+- tu veux un résultat scriptable
+- tu préfères une commande fiable à 20 manipulations manuelles
+
+Le bon réflexe n'est pas de tout apprendre d'un coup. C'est de sauver 2 ou 3 commandes qui reviennent souvent.
+
+## PDF : nettoyer, réorganiser, rendre cherchable
+
+Les PDF sont souvent le format le plus pénible et le plus fréquent dans un système personnel.
+
+### Outils à garder
+
+| Outil | Usage |
+|-------|-------|
+| [Stirling PDF](https://stirlingpdf.io/) | Boîte à outils large pour fusionner, extraire, convertir, signer ou nettoyer |
+| [PDF Arranger](https://github.com/pdfarranger/pdfarranger) | Réorganisation visuelle de pages |
+| [OCRmyPDF](https://ocrmypdf.readthedocs.io/) | Rendre un scan cherchable |
+
+La bonne logique :
+- **PDF Arranger** si tu veux recomposer rapidement
+- **OCRmyPDF** si tu veux retrouver plus tard
+- **Stirling PDF** si tu veux un atelier PDF plus complet
+
+## CSV et données tabulaires
+
+Quand un CSV devient trop gros ou trop sale pour Excel, il faut changer d'approche.
+
+### Outil à connaître
+
+[qsv](https://github.com/dathere/qsv) est une option très crédible si tu manipules régulièrement des fichiers CSV lourds ou répétitifs.
+
+Il devient utile si tu veux :
+- filtrer
+- trier
+- dédupliquer
+- produire des stats rapides
+- enchaîner des transformations sans casser le fichier à la main
+
+Ce n'est pas un outil grand public. Mais pour quelqu'un qui manipule des exports, des datasets ou des tableaux opérationnels, le gain est réel.
+
+## Images, captures et petits traitements visuels
+
+Toutes les tâches image ne méritent pas Photoshop.
+
+### Outils utiles selon le besoin
+
+| Outil | Usage |
+|-------|-------|
+| [ShareX](https://getsharex.com/) | Captures, annotations, partage rapide |
 | [XnConvert](https://www.xnview.com/en/xnconvert/) | Conversion et traitement d'images en lot |
+| [Magic Copy](https://chromewebstore.google.com/detail/magic-copy/nnifclicibdhgakebbnbfmomniihfmkg) | Extraction rapide d'un sujet depuis une image web quand tu veux aller vite |
 
----
+La bonne question n'est pas "quel éditeur image est le meilleur ?" mais :
+- ai-je besoin d'éditer
+- de capturer
+- ou juste d'extraire / convertir rapidement
 
-## Outils CSV et données tabulaires
+## Archives et accès sélectif
 
-### [Qsv](https://github.com/dathere/qsv)
+Parfois, le problème n'est pas le fichier, mais le conteneur.
 
-Qsv est un outil en ligne de commande ultra-rapide pour manipuler des fichiers CSV :
+[Cloudzip](https://github.com/ozkatz/cloudzip) devient intéressant si tu manipules de grosses archives distantes et que tu veux :
+- lister leur contenu
+- extraire seulement quelques fichiers
+- éviter de télécharger tout le zip
 
-- **Filtrage** par colonnes, valeurs ou expressions régulières
-- **Tri** sur n'importe quelle colonne, même sur des fichiers de plusieurs Go
-- **Statistiques** : moyenne, médiane, min, max en une commande
-- **Jointure** entre fichiers CSV comme une base de données
-- **Dédoublonnage** automatique
+Ce n'est pas un outil pour tout le monde. Mais si tu touches à des archives lourdes sur du stockage distant, le gain est très concret.
 
-### Cas d'usage concrets
+## La bonne progression
 
-```
-# Afficher les 10 premières lignes
-qsv slice -l 10 data.csv
+### Niveau 1 : visuel et simple
 
-# Filtrer les lignes où la colonne "status" vaut "active"
-qsv search -s status "active" data.csv
+- PowerRename
+- PDF Arranger
+- ShareX
 
-# Statistiques sur toutes les colonnes numériques
-qsv stats data.csv
-```
+### Niveau 2 : traitement régulier
 
----
+- XnConvert
+- Stirling PDF
+- quelques commandes FFmpeg ou ImageMagick
 
-## Opérations de fichiers en lot
+### Niveau 3 : travail plus technique
 
-### Renommage en masse
+- qsv
+- OCRmyPDF
+- Cloudzip
+- scripts réutilisables
 
-| Outil | Type | Avantage |
-|-------|------|----------|
-| [PowerRename](https://learn.microsoft.com/en-us/windows/powertoys/powerrename) (PowerToys) | GUI | Intégré à l'explorateur Windows, regex supporté |
-| [Bulk Rename Utility](https://www.bulkrenameutility.co.uk/) | GUI | Le plus complet, des dizaines d'options |
-| **rename** (CLI) | Terminal | Script Perl ultra-flexible |
+## Ce qu'il faut éviter
 
-### Conversion en lot
+- installer 10 outils avant d'avoir identifié une friction récurrente
+- traiter à la main une tâche faite déjà chaque semaine
+- choisir la CLI uniquement pour se sentir plus avancé
+- choisir une GUI quand le vrai besoin est la répétabilité
 
-- **[FFmpeg](https://www.ffmpeg.org/)** pour la vidéo et l'audio (tout format vers tout format)
-- **[ImageMagick](https://imagemagick.org/)** pour les images (`mogrify -format webp *.png`)
-- **[Pandoc](https://pandoc.org/)** pour les documents (markdown → PDF, DOCX → HTML, etc.)
-- **[LibreOffice CLI](https://www.libreoffice.org/)** pour les fichiers Office en lot
+## Workflow recommandé
 
----
+**Minimaliste** :
+- un outil de renommage
+- un outil PDF
+- un outil de capture
 
-## Traitement en lot : la méthode
+**Pragmatique** :
+- GUI pour le ponctuel
+- CLI pour le récurrent
+- quelques scripts ou commandes sauvegardés
 
-### 1. Identifie le pattern
+**Système personnel** :
+- pipeline léger pour PDF, images, audio/vidéo et CSV
+- conventions de nommage stables
+- opérations répétitives progressivement automatisées
 
-Avant d'automatiser, repère la tâche répétitive :
-- "Je convertis 20 images en WebP chaque semaine"
-- "Je renomme mes captures d'écran avec la date"
-- "J'extrais les mêmes colonnes d'un CSV chaque mois"
+:::note[Exercice pratique]
+Repère une opération de fichiers que tu as déjà faite au moins 3 fois ce mois-ci :
 
-### 2. Choisis le bon outil
+1. nomme la friction exacte
+2. décide si elle doit être résolue par GUI ou CLI
+3. choisis un seul outil
+4. sauvegarde la procédure ou la commande
 
-- **Tâche simple et ponctuelle** → outil GUI (PowerRename, XnConvert)
-- **Tâche récurrente** → script CLI (FFmpeg, ImageMagick, qsv)
-- **Tâche complexe multi-étapes** → script PowerShell ou Python
-
-### 3. Sauvegarde le script
-
-Crée un dossier `~/scripts/` et stocke tes commandes récurrentes. Un script de 3 lignes qui t'économise 10 minutes par semaine vaut de l'or.
-
----
-
-## Bonnes pratiques
-
-1. **Teste toujours sur une copie** avant de lancer un traitement en lot sur tes originaux
-2. **Nomme tes scripts clairement** : `convert-png-to-webp.sh`, pas `script3.sh`
-3. **Documente tes commandes** avec un commentaire en première ligne
-4. **Automatise les tâches que tu fais plus de 3 fois** — la 4ème fois devrait être la dernière fois manuelle
-5. **Vérifie les résultats** après chaque batch — un mauvais regex peut renommer 500 fichiers n'importe comment
+Le bon signe n'est pas d'avoir plus d'outils. C'est de ne plus refaire la même corvée à la main.
+:::

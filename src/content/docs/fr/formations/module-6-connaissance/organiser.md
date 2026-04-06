@@ -10,6 +10,31 @@ Sans organisation, ta base de connaissances devient un cimetière de fichiers. O
 
 > Le meilleur système d'organisation est celui que tu utilises réellement. Simplicité > perfection.
 
+## Minimum viable PKM : n'organise pas tout au même endroit
+
+L'erreur classique est de vouloir mettre dans un seul outil :
+- les notes de réflexion
+- les liens sauvegardés
+- les fichiers lourds
+- les archives web
+- les photos et médias
+
+En pratique, un système plus sain sépare quelques couches simples :
+- **Obsidian ou Logseq** pour les notes, les backlinks et les idées reliées
+- **Karakeep** pour les liens, captures web et références rapides
+- **un système de fichiers clair** pour les documents, médias et exports
+
+Le but n'est pas de multiplier les apps. Le but est d'éviter qu'un seul outil doive tout faire mal.
+
+### Où vit quoi ?
+
+Tu peux garder cette règle simple :
+- **idée, note, réflexion, lien conceptuel** → Obsidian ou Logseq
+- **article, vidéo, bookmark, highlight, référence web** → Karakeep
+- **PDF, image, archive, export, ressource lourde** → dossiers + nommage propre
+
+Quand cette frontière est claire, ton PKM devient plus léger à maintenir.
+
 ## Gestionnaires de fichiers avancés
 
 ### [TUIFIManager](https://github.com/GiorgosXou/TUIFIManager)
@@ -61,6 +86,19 @@ Les tags rendent tes fichiers retrouvables même si tu oublies où tu les as ran
 - **Utilise des tags cohérents** — crée une taxonomie de 15-20 tags maximum
 - **Catégories de tags** : projet, type, statut, priorité
 - **Outils** : [TagSpaces](https://www.tagspaces.org/) (open source, multi-plateforme) ajoute des tags à n'importe quel fichier
+
+### Backlinks > taxonomies infinies
+
+Quand tu organises des notes, le vrai gain moderne ne vient pas seulement des dossiers ou des tags. Il vient aussi des **liens entre notes**.
+
+Avec des outils comme **Obsidian**, les **backlinks** te montrent quelles notes pointent déjà vers celle que tu es en train d'écrire. C'est là que le PKM devient plus qu'un simple rangement : il commence à faire émerger des connexions.
+
+Autrement dit :
+- les **dossiers** servent à réduire le chaos
+- les **tags** servent à filtrer
+- les **backlinks** servent à penser
+
+Si tu devais sous-investir quelque part, je sous-investirais plutôt dans la taxonomie compliquée que dans la capacité à relier des idées.
 
 ### Exemple : [Webscape](https://webscape.co.za/)
 

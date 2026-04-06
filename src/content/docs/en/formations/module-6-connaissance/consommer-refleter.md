@@ -10,6 +10,21 @@ Consuming content without reflection is like eating without digesting it - it do
 
 > Reading 100 articles and remembering none of them is entertainment disguised as learning.
 
+## The real loop: consume, extract, connect, create
+
+The real goal is not to "consume better." The real goal is to turn what you consume into something that is:
+- retrievable
+- connected
+- reusable
+
+You can keep the loop simple:
+1. **Consume** with a clear intention
+2. **Extract** one or two useful ideas
+3. **Connect** those ideas to your existing notes
+4. **Create** an output: a decision, note, paragraph, action, or piece of content
+
+If information never passes that stage, it usually stays at the level of entertainment or noise.
+
 ## YouTube optimization
 
 YouTube is an enormous library polluted by clickbait. These extensions make it usable.
@@ -62,6 +77,27 @@ Feedly is the most complete RSS reader for professional monitoring:
 - **Feedly** if you need power, filters, and pro integrations
 - **[Feedboard](https://feedboard.app/)** (from the previous module) if you want a simple visual dashboard
 
+### What level of monitoring do you actually need?
+
+Here too, the trap is choosing a tool that is too heavy for a vague need.
+
+#### Level 1: light and comfortable monitoring
+
+If you mainly want to read cleanly and stop opening 15 sites, **Flipboard** can be enough.
+
+#### Level 2: active professional monitoring
+
+If you want to filter, classify, search, and feed content back into your system, **Feedly** is more coherent.
+
+#### Level 3: connected PKM
+
+As soon as monitoring is supposed to feed your knowledge system, the real question is no longer just "which RSS reader?" The real question becomes:
+- where do the interesting articles go next?
+- which notes do you connect them to?
+- what concrete output comes out of them?
+
+In other words, the reader is only an entry point. The value comes from what you do afterward.
+
 ---
 
 ## News aggregation
@@ -107,6 +143,17 @@ Every Sunday, spend 20 minutes:
 4. **Identify** one topic to deepen next week
 5. **Create** something from your notes (even a paragraph is enough)
 
+### Connect to your PKM instead of stacking isolated summaries
+
+The common trap is producing isolated summaries you will never revisit.
+
+A better practice:
+- send references to **Karakeep**
+- turn important ideas into notes in **Obsidian** or **Logseq**
+- add at least **one link** to an existing note
+
+That simple move changes everything. You are no longer only storing information. You are inserting it into a network.
+
 ---
 
 ## The trap of passive consumption
@@ -126,3 +173,15 @@ You know the feeling: you spent 2 hours reading articles and feel "productive." 
 - **30% max** on consumption and research
 
 Information without action is noise. Informed action is progress.
+
+## Minimum viable intentional consumption
+
+If you want something simple and sustainable:
+
+- **YouTube**: clean the interface with Unhook, SponsorBlock, and DeArrow
+- **RSS**: keep one main reader, often Feedly if you do real monitoring
+- **References**: send what you want to revisit to Karakeep
+- **Ideas**: send what you want to think with to Obsidian or Logseq
+- **Output**: every week, create at least something from your notes
+
+The system does not need to be perfect. It mainly needs to stop you from consuming without transforming.

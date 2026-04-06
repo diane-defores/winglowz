@@ -30,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Update public-facing contact email references to `hello@winflowz.com`
 - Restore the English training hub as a full course index now that all EN lessons exist
 - Gate only premium training lessons while keeping Module I publicly accessible
+- Overhaul FR and EN training content across all 8 modules (expanded lessons, restructured sections)
+- Consolidate and trim CONTENU/ source Markdown files to match published lesson content
+- Update cookie consent to reflect essential-only cookie usage (no analytics)
+- Update privacy policy text to remove analytics references, clarify authentication data collection
 
 ### Fixed
 - Fix course gating so the unlock flow persists access after payment instead of relying only on subscription state
@@ -40,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 - Remove GUIDELINES.md
 - Remove legacy TASKS.md content
+- Remove PostHog analytics script from MainLayout
+- Remove analytics opt-out UI from the privacy page
+- Remove sendBeacon tracking fallback from LandingLayout
 
 ## [0.9.0] — 2026-03-17
 

@@ -10,6 +10,43 @@ Toute ta base de connaissances ne vaut rien si tu ne peux pas retrouver ce dont 
 
 > Le meilleur système de classement ne remplace pas un bon moteur de recherche. Idéalement, tu as les deux.
 
+## Retrouver ne veut pas dire seulement "taper un mot-clé"
+
+Dans un bon PKM, on retrouve l'information de plusieurs façons :
+- par **recherche**
+- par **navigation**
+- par **backlinks**
+- par **contexte de travail**
+
+Autrement dit, si ton système dépend uniquement d'une recherche textuelle parfaite, il reste fragile.
+
+### Les 3 couches de retrieval les plus utiles
+
+#### 1. La recherche directe
+
+Tu sais à peu près ce que tu cherches. Tu tapes quelques mots et tu veux tomber dessus immédiatement.
+
+Là, il te faut :
+- un bon moteur dans tes notes
+- un bon moteur dans tes fichiers
+- un bon moteur dans tes bookmarks
+
+#### 2. La recherche contextuelle
+
+Tu ne te souviens pas du titre exact, mais tu te souviens :
+- du projet
+- de la période
+- de l'outil où tu l'as vu
+- de la personne qui l'a partagé
+
+C'est là que les outils de recherche unifiée deviennent utiles.
+
+#### 3. La récupération par liens
+
+Tu ne cherches pas un fichier précis. Tu repars d'une idée connexe et tu remontes le réseau.
+
+C'est exactement là que les **backlinks**, les notes liées et parfois le **graph view** d'Obsidian deviennent utiles. Pas comme gadget visuel, mais comme aide au raisonnement.
+
 ## Moteurs de recherche personnels
 
 ### [Findr](https://www.usefindr.io/)
@@ -110,5 +147,16 @@ Si tu utilises Vivaldi, tu as déjà un arsenal de recherche intégré :
 2. **Passe à la recherche full-text** (AnyTXT) pour les contenus dans les fichiers
 3. **Utilise la recherche unifiée** (Findr ou équivalent) pour les apps cloud
 4. **En dernier recours** : navigation manuelle dans l'arborescence
+
+## Minimum viable retrieval
+
+Si tu veux un système simple et robuste, tu n'as pas besoin de tout indexer partout. Tu as surtout besoin de couvrir 4 cas :
+
+- **retrouver une note liée** → Obsidian ou Logseq
+- **retrouver un lien ou une référence web** → Karakeep
+- **retrouver un fichier local** → Everything ou AnyTXT
+- **retrouver quelque chose éparpillé entre plusieurs apps** → Findr ou Curiosity
+
+Si ces 4 cas sont couverts, ton PKM devient déjà beaucoup plus fiable.
 
 Si tu ne trouves pas en 30 secondes, ton système d'organisation a besoin d'être amélioré.

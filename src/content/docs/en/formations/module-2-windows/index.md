@@ -1,59 +1,139 @@
 ---
-title: "Windows Setup for Productivity"
-description: "Learn how to configure Windows like a pro to maximize your day-to-day productivity."
+title: "Windows Configuration for Productivity"
+description: "Build a coherent Windows workstation: healthy baseline, intentional browser, clean ergonomics, useful automation, worthwhile terminal use, and the right window management level."
 sidebar:
   label: "Introduction"
   order: 1
 ---
 
-> A well-configured system is like a tidy workshop: you spend less time looking for things and more time creating.
+Configuring Windows is not about tweaking for its own sake. It is about reducing the micro-frictions that drain attention every day.
 
-## Why configure your system?
+> A good Windows setup does not need to look impressive. It needs to be legible, reproducible, and pleasant to use.
 
-Most Windows users accept the default setup. They put up with their OS instead of steering it. Every micro-friction - an unnecessary notification, a messy folder, a missing shortcut - feels insignificant. But add those frictions up over a day, a week, a year: you lose dozens of hours.
+## The real subject of the module
 
-This module will teach you how to reverse that dynamic. Your system should work **for** you, not against you.
+This module is not here to turn you into a collector of utilities. Its goal is simpler:
+- stabilize the baseline
+- remove noise
+- speed up frequent actions
+- adapt Windows to your real way of working
 
-## The philosophy of a custom workstation
+So the right logic is not:
+- install lots of tools
 
-Configuring your OS is a craftsman mindset. Developers call this "dotfiles": a versioned, reproducible set of configuration files that can be deployed on any machine in minutes.
+The right logic is:
+- start from real frictions
+- choose few tools
+- build an environment you can actually keep
 
-Even if you are not a developer, the idea is the same:
+## The Winflowz decision framework
 
-- **Document** your configuration choices
-- **Automate** what can be automated
-- **Reproduce** your ideal environment quickly if you ever reinstall
+When you want to improve your Windows workstation, ask four questions:
 
-## Clean up first
+1. **Which friction actually comes back every day?**
+2. **Is this a settings problem, a tool problem, a habit problem, or a hardware problem?**
+3. **Does a simpler solution already exist inside Windows?**
+4. **Will this change make the workstation clearer, or just more complicated?**
 
-Before optimizing, you have to clean up. A cluttered disk slows everything down: startup, file search, installs. That is the first step in this module.
+This avoids two classic mistakes:
+- tinkering without hierarchy
+- adding another layer to compensate for deeper disorder
 
-### [Czkawka](https://github.com/qarmin/czkawka): the smart cleaner
+## The right order for improving Windows
 
-Czkawka (pronounced "ch-kafka") is an open-source tool that detects duplicate files, similar images, forgotten temporary files, and empty folders. Unlike shady commercial "cleaners", it is transparent, fast, and does nothing without your approval.
+The right order is not to begin with the most “fun” tools. It is to begin with the layers that support everything else.
 
-**What it detects:**
-- Duplicate files (by hash, not by name)
-- Similar images (even at different resolutions)
-- Temporary files and stale caches
-- Empty folders and zero-byte files
-- Duplicate music (by audio fingerprint)
+### 1. System baseline
+
+Before anything else:
+- visible storage
+- credible backup
+- clean installs
+- sufficiently healthy machine
+
+If this layer is weak, everything else sits on sand.
+
+### 2. Browser
+
+The browser is often the most-used application. So it deserves a real choice:
+- main browser
+- tab strategy
+- few extensions, but useful ones
+
+### 3. Ergonomics
+
+Once the baseline is stable, you can make the workstation more comfortable:
+- taskbar
+- windows
+- small friction-reducing tweaks
+- a few targeted tools when needed
+
+### 4. Automation
+
+You do not automate for style. You automate when an action repeats often enough to justify a rule, shortcut, or script.
+
+### 5. Terminal
+
+The command line is not mandatory. It becomes useful when:
+- the work is repetitive
+- the volume grows
+- reproducibility matters
+
+### 6. Tiling and window management
+
+The right level of window management depends on your profile:
+- native snap
+- FancyZones
+- intermediate tools
+- advanced managers only if you truly need them
 
 ## What this module covers
 
-| Chapter | You will learn to... |
-|---------|----------------------|
-| **System Health & Configuration** | Diagnose and optimize your system |
-| **Browsers** | Choose and master your browser |
-| **Ergonomics** | Make your workstation pleasant and efficient |
-| **Automation** | Eliminate repetitive tasks |
-| **Terminal** | Use the command line with confidence |
-| **Tiling** | Organize your windows like a pro |
+- **System health** to make the baseline visible and reliable
+- **Browsers** to choose a real web workstation
+- **Ergonomics** to remove visible friction
+- **Automation** to reduce repeated actions
+- **Terminal** for text-heavy, large-scale, or scriptable work
+- **Tiling** to fit window organization to your real style
 
-## The mindset to adopt
+## The useful mindset
 
-Every time you do something repetitive, ask yourself: **"Can I automate this?"**. Every time a tool slows you down, ask: **"Is there a better alternative?"**
+The wrong reflex is:
+- “what cool tool can I add?”
 
-That reflex is what separates a passive user from a productive one. And the good news: you do not need to be a developer to adopt it.
+The right reflex is:
+- “which friction am I removing?”
 
-Ready to take back control of your machine? Lets go.
+A good productive Windows workstation looks like this:
+- little noise
+- few unnecessary layers
+- a few strong shortcuts
+- tools chosen for clear roles
+- a system you can understand and rebuild
+
+## Recommended workflow
+
+**Minimal**:
+- clean system baseline
+- one good browser
+- restrained ergonomics
+
+**Pragmatic**:
+- a few targeted layers
+- automation for repeated actions
+- terminal only for the tasks that deserve it
+
+**Personal system**:
+- documented workstation
+- reproducible choices
+- window and tool management adapted to your real profile
+
+:::note[Practical exercise]
+Before reading the rest of the module, write down:
+
+1. the 3 Windows frictions that come back most often
+2. which ones belong to system, browser, ergonomics, or automation
+3. which one deserves to be handled first
+
+If you cannot name your frictions, you are likely to stack tools without really improving the workstation.
+:::

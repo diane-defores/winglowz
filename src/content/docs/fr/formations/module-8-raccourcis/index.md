@@ -1,14 +1,45 @@
 ---
 title: "Raccourcis & Cheatsheets"
-description: "Les raccourcis clavier essentiels pour Windows, navigateurs et outils de productivité."
+description: "Apprends les noyaux de raccourcis qui protègent le flux de travail sur Windows, navigateur, Gmail, YouTube et Notion."
 sidebar:
   label: "Raccourcis"
   order: 1
 ---
 
-Les raccourcis clavier, c'est le **superpower silencieux** de tout utilisateur efficace. Chaque seconde gagnée s'accumule, mais le vrai bénéfice n'est pas seulement le temps : c'est la continuité mentale. Moins tu interromps ton geste pour aller chercher la souris, plus ton attention reste dans la tâche.
+Les raccourcis clavier ne servent pas surtout à "aller vite". Ils servent à **protéger le flux**. Chaque fois que tu quittes le clavier pour viser une icône, chercher un bouton ou replacer une fenêtre à la souris, tu paies une petite taxe d'attention.
 
-Le but de ce module n'est donc pas de te faire mémoriser 200 combinaisons. Le but est de te donner quelques **noyaux de pilotage** qui changent réellement ton rapport à Windows, au navigateur, à Gmail, à YouTube et à Notion.
+Le but de ce module n'est donc pas de te faire mémoriser 200 combinaisons. Le but est de t'aider à internaliser quelques **noyaux de pilotage** qui changent réellement ton rapport à Windows, au navigateur, à Gmail, à YouTube et à Notion.
+
+## Le decision framework Winflowz
+
+Si tu veux savoir quel raccourci apprendre, ne pars pas des listes. Pars de la friction.
+
+Pose-toi trois questions :
+
+1. **Quel geste souris est-ce que je répète le plus souvent ?**
+2. **Est-ce que ce geste casse mon attention ou seulement 2 secondes ?**
+3. **Est-ce que ce raccourci m'aide à piloter un contexte entier, ou juste une micro-action ?**
+
+À partir de là, priorise toujours dans cet ordre :
+- **contrôle de fenêtres et navigation système**
+- **navigation navigateur**
+- **triage Gmail**
+- **lecture active sur YouTube**
+- **construction dans Notion**
+
+Autrement dit : apprends d'abord les raccourcis qui pilotent un environnement, pas ceux qui décorent une interface.
+
+## Les 5 noyaux qui comptent
+
+Si tu veux aller à l'essentiel, voici l'ordre recommandé :
+
+1. **Windows** pour déplacer, lancer, changer de contexte
+2. **Navigateur** pour ouvrir, fermer, retrouver, circuler
+3. **Gmail** pour trier au lieu de consulter
+4. **YouTube** pour apprendre sans casser le flux
+5. **Notion** pour construire au clavier
+
+Ce n'est qu'après ça qu'il devient utile d'apprendre des raccourcis plus spécifiques.
 
 ## Raccourcis Windows indispensables
 
@@ -40,10 +71,11 @@ Ce noyau suffit déjà à faire sentir la différence entre "utiliser Windows" e
 
 ### Manipulation de texte
 
+Ces raccourcis ne sont pas universels à 100 %, mais ils reviennent dans énormément d'apps.
+
 | Raccourci | Action |
 |-----------|--------|
 | `Ctrl + A` | Tout sélectionner |
-| `Ctrl + D` | Dupliquer |
 | `Ctrl + Z` / `Ctrl + Y` | Annuler / Rétablir |
 | `Ctrl + B` / `I` / `U` | Gras / Italique / Souligné |
 | `Ctrl + ←/→` | Se déplacer mot par mot |
@@ -108,8 +140,6 @@ Autrement dit, les raccourcis navigateur réduisent surtout la **dette d'onglets
 Gmail a un système de raccourcis complet qu'il faut **activer manuellement** : Paramètres → Général → Raccourcis clavier → Activer.
 
 Tu peux aussi aller plus loin et **personnaliser certains raccourcis** dans les paramètres Gmail, une fois l'option dédiée activée. Le bon réflexe n'est pas de tout réécrire, mais d'ajuster uniquement les actions que tu fais vraiment souvent.
-
-Tu peux aussi **personnaliser une partie des raccourcis** dans les paramètres de Gmail une fois l'option dédiée activée. C'est utile, mais il ne faut pas tout réinventer : modifie surtout les actions que tu fais très souvent, sinon tu perds le bénéfice d'un standard simple à mémoriser.
 
 Ce point compte beaucoup : Gmail devient vraiment plus agréable quand tu sors de la logique "je clique partout". Les raccourcis ne servent pas seulement à aller plus vite. Ils servent aussi à :
 - traiter plus de messages sans casser ton rythme
@@ -304,6 +334,14 @@ N'essaie pas d'apprendre un outil entier d'un coup. Adopte plutôt un **noyau pa
 Le bon test est simple :
 - si tu dois encore réfléchir au raccourci, il n'est pas intégré
 - s'il sort sans effort, il fait déjà partie de ton système
+
+## Ce qu'il faut éviter
+
+- apprendre 30 raccourcis le même jour
+- collectionner des cheatsheets sans rien intégrer
+- mémoriser des actions rares avant les gestes quotidiens
+- personnaliser tout trop tôt
+- croire qu'un raccourci utile compense un mauvais workflow
 
 :::note[Ressources cheatsheets]
 - [UseTheKeyboard](https://usethekeyboard.com/) — raccourcis pour des centaines d'apps (Mac et Windows)

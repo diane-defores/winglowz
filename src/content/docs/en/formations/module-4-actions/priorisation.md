@@ -1,136 +1,174 @@
 ---
 title: "Prioritization"
-description: "Learn to separate urgent from important with the Eisenhower Matrix, RICE scoring, and a weekly task audit process."
+description: "Decide better what to do, what to schedule, and what to eliminate: urgency, importance, scoring, and real commitment."
 sidebar:
   label: "Prioritization"
   order: 2
 ---
 
-Having a long to-do list is not a sign of productivity. It is a sign that you have not yet decided what really matters. Prioritization is **the art of choosing what you will not do**.
+The problem with many to-do lists is not that they are long. It is that they mix:
+- what matters
+- what feels urgent
+- what feels reassuring
+- and what should not exist in the system at all
 
-> "Productivity is largely about deciding what not to do." - Oliver Burkeman
+> Prioritizing is not sorting a list. It is deciding what you protect, what you delay, and what you let die.
+
+## What this is really about
+
+Prioritization is not only about choosing "the first task." It is about doing four different things:
+- **eliminating** noise
+- **protecting** what matters
+- **arbitrating** when several options are good
+- **holding** the choice over time
+
+## The Winflowz decision framework
+
+When you look at a task, project, or opportunity, ask four questions:
+
+1. **Is this truly important, or only urgent?**
+2. **What does this unlock if it gets done?**
+3. **What does it cost if I do not do it now?**
+4. **What am I deliberately choosing not to do instead?**
+
+That logic leads to four actions:
+
+- **do now**
+- **schedule**
+- **delegate / batch**
+- **eliminate**
+
+## The right order: eliminate before you optimize
+
+Many people want to prioritize better while still refusing to delete.
+
+The first win is not arranging 40 tasks more elegantly. It is removing the ones that never deserved a place in the system.
+
+Good elimination signals:
+- low impact
+- no real consequence if it is not done
+- inherited task, not chosen task
+- perfectionism or micro-optimization
 
 ## The Eisenhower Matrix
 
-Sort each task along two axes: **urgency** and **importance**.
+The matrix is still useful, but mainly as a **first-pass filter**.
 
 | | **Urgent** | **Not urgent** |
 |---|---|---|
-| **Important** | **Q1 - Do now** | **Q2 - Schedule** |
-| **Not important** | **Q3 - Delegate** | **Q4 - Eliminate** |
+| **Important** | **Do now** | **Schedule and protect** |
+| **Not important** | **Delegate, batch, or contain** | **Eliminate** |
 
-### The 4 quadrants in detail
+The real point is not to classify tasks neatly. It is to protect the important but non-urgent quadrant, because that is where you build:
+- health
+- learning
+- strategy
+- real progress
 
-**Q1 - Urgent + Important: Crises and deadlines**
-Examples: critical production bug, client deadline tomorrow, health emergency.
-Action: handle immediately. But if you live in Q1, your system is broken.
+If you live only in urgency, your system is already running you.
 
-**Q2 - Not urgent + Important: The growth quadrant**
-Examples: training, exercise, strategic planning, deep relationships.
-Action: **block time every week**. This is where your life is built. Most people ignore Q2 and then wonder why they stall.
+## When to use more analytical scoring
 
-**Q3 - Urgent + Not important: False signals**
-Examples: most emails, some meetings, coworker interruptions.
-Action: delegate, automate, or batch them into a single window.
+Not every decision deserves a formula.
 
-**Q4 - Not urgent + Not important: Noise**
-Examples: social media scrolling, useless notifications, perfectionism over trivial details.
-Action: remove them without guilt.
+But when you need to choose between several serious initiatives, scoring reduces bias.
 
-## The RICE scoring model
+### RICE as an arbitration tool
 
-For more complex decisions - which project should launch, which feature should ship - use the RICE model:
+The **RICE** model is useful mainly when comparing multiple projects, features, or initiatives:
 
-**RICE score = (Reach x Impact x Confidence) / Effort**
+**RICE = (Reach × Impact × Confidence) / Effort**
 
-| Factor | Description | Scale |
-|--------|-------------|-------|
-| **Reach** | How many people are affected? | Number (e.g. 500 users/month) |
-| **Impact** | What effect will it have on the goal? | 0.25 (minimal) -> 3 (massive) |
-| **Confidence** | How certain are you about the estimate? | 50% -> 100% |
-| **Effort** | How many person-weeks will it take? | Number (e.g. 2 weeks) |
+It helps answer one specific question:
+- which of these efforts truly deserves to go first?
 
-Concrete example:
-- Feature A: (1000 x 2 x 80%) / 4 = **400**
-- Feature B: (200 x 3 x 90%) / 1 = **540** -> do this one first
+It is useful when:
+- you are hesitating between multiple plausible options
+- you work in product, project, or initiative prioritization
+- you want to defend a decision with something stronger than intuition
 
-RICE forces you to compare objectively instead of following instinct, which is often biased toward what is fun rather than what has impact.
+It is useless when:
+- your real problem is still excess noise
+- you have not clarified the objective yet
+- you are trying to score tiny daily tasks
 
-## The weekly task audit process
+## One real priority
 
-Every week, review your list with this 5-step process:
+A good day or week does not support five "top priorities" very well.
 
-1. **List** - Empty your head and all your tools into one single list
-2. **Categorize** - Place every task into an Eisenhower quadrant
-3. **Analyze** - Score Q1 and Q2 tasks with RICE when needed
-4. **Adjust** - Eliminate Q4, delegate Q3, schedule Q2, execute Q1
-5. **Review** - Every Friday, 15 minutes: what moved, what is blocked?
+The useful concept is simple:
+- one main priority
+- a few secondary items
+- the rest is optional or deferred
 
-## The concrete benefits
+The best morning question remains:
 
-When you prioritize correctly:
+**Which action makes the rest easier, faster, or unnecessary?**
 
-- **Less waste** - you stop polishing details that do not matter
-- **Better focus** - you know exactly what to do first each morning
-- **Better time management** - saying "no" gets easier, and guilt disappears
-- **Less stress** - uncertainty drops when priorities are clear
+## Weekly audit
 
-## The OneTask concept
+Prioritization is not a one-time decision. It is a regular review.
 
-Instead of juggling five projects, choose **one main objective** per period (week or sprint). Everything else is secondary. This is not limitation - it is strategic focus.
+Simple audit:
+1. empty your open tasks
+2. remove what no longer makes sense
+3. isolate what is truly important
+4. choose one dominant priority
+5. place the rest around it without stealing its space
 
-Your to-do list should answer one question every morning: **"What is the one task that, if done, makes everything else easier or unnecessary?"**
+## Beeminder: after strategy, not before
 
-## [Beeminder](https://www.beeminder.com/): when commitment becomes real
+**[Beeminder](https://www.beeminder.com/)** becomes interesting only after clarification.
 
-Most productivity systems fail at the same point: the moment your present self takes back control from your future self. You decided to work out, write, code, or do outreach. Then the moment arrives, and you start negotiating with yourself.
+It is not a tool for deciding what to do. It is a tool for stopping yourself from backing out once you already know what to do.
 
-Beeminder is interesting because it attacks that problem directly. It is not just a task manager. It is a **commitment device**: you define a path, put money on the line, and pay if you derail.
+It is relevant if:
+- the goal is clear
+- the metric is clean
+- the real problem is behavioral, not strategic
 
-### Why it is powerful
+It is less relevant if:
+- you have not chosen the right priority yet
+- the metric is vague
+- it is likely to add mostly guilt or stress
 
-The concept rests on a strong psychological truth: we are often willing to sacrifice the long term for immediate relief. Beeminder counters that by making the cost of backing out more concrete, more immediate, and harder to rationalize away.
+In other words:
+- **Eisenhower** to filter
+- **RICE** to arbitrate
+- **Beeminder** to hold an already chosen commitment
 
-In practice:
-- you define a measurable goal
-- Beeminder draws a red line you have to stay above
-- if you go below it, you derail
-- a pledge is charged based on your current stake
+## What to avoid
 
-This is especially useful if one of these patterns sounds familiar:
-- you know exactly what to do, but you do not do it consistently
-- you stay on track for a few days and then negotiate an exception with yourself
-- you are very good at inventing intelligent stories about why "this week is different"
-- you need an external consequence to break soft compromises
+- calling everything a priority
+- scoring too early instead of deleting
+- confusing external urgency with real importance
+- keeping lists too broad
+- using financial commitment to compensate for a poorly defined goal
 
-### What makes it smarter than simple punishment
+## Recommended workflow
 
-Beeminder is not just "fail and pay." Its system includes safeguards that make the concept much more interesting:
+**Minimalist**:
+- Eisenhower
+- one major priority
+- aggressive noise deletion
 
-- **Pledge schedule**: the stakes rise gradually instead of throwing you into an absurd penalty immediately
-- **Akrasia horizon**: you cannot make your goal easier right away; many easing changes only take effect 7 days later
-- **Pledge caps**: you can limit how high the stake goes so the tool does not become toxic stress
-- **Automatic integrations**: the concept becomes even stronger when the data is pulled in automatically, for example from RescueTime, Fitbit, Duolingo, and similar sources
+**Pragmatic**:
+- weekly audit
+- one dominant priority per period
+- RICE for serious tradeoffs
 
-The idea of the **akrasia horizon** is especially smart: if you could make the commitment easier at the exact moment you wanted to escape it, the whole system would collapse. Beeminder protects the commitment from your mood in the moment.
+**Strong commitment**:
+- clarified priority
+- clean system
+- Beeminder only on a habit or commitment that is already clearly defined
 
-### When to use it
+:::note[Practical exercise]
+Take your current list and force yourself to do only this:
 
-Beeminder is excellent for:
-- writing every day
-- exercising consistently
-- limiting a distracting behavior
-- maintaining a production rhythm
-- enforcing a minimum standard on a habit that is already clearly defined
+1. eliminate 20% of the tasks without guilt
+2. mark what is important but not urgent
+3. choose one dominant priority for the week
+4. if you are still hesitating between several serious options, score them
 
-It is less useful if:
-- your goal is poorly defined
-- the metric is vague or easy to game
-- your main problem is strategic, not behavioral
-- you are already in a fragile phase where financial punishment would add mostly shame or stress
-
-### The right way to use it
-
-Start small. Do not choose a dramatic amount of money just to prove you are serious. The goal is to find your **credible commitment level**: strong enough to move you, not so strong that it turns your life into a constant tribunal.
-
-Beeminder does not replace clarity, prioritization, or deep motivation. But for some people, it is the tool that finally turns a good intention into a real constraint.
+If everything still looks equally important after that, the problem is not sorting. It is refusal to renounce.
+:::

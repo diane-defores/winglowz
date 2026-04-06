@@ -6,121 +6,135 @@ sidebar:
   order: 4
 ---
 
-Tu recois des messages sur WhatsApp, Teams, Slack, Discord, SMS et Instagram. Tu passes ton temps a switcher entre applications et tu rates regulierement des messages importants. Cette section resout ce probleme une fois pour toutes.
+Le chat est utile pour aller vite. Mais des qu'il devient ton canal par defaut pour tout, il detruit ta concentration.
 
-## Objectifs
+Le probleme n'est pas seulement d'avoir trop d'apps ouvertes. C'est de laisser la **messagerie devenir une couche d'interruption permanente**.
 
-- Centraliser tous tes messages dans une seule interface
-- Acceder a iMessage depuis Windows
-- Reduire les changements d'app a moins de 5 par jour
-- Ne plus manquer de messages importants
+> Une bonne couche de messagerie ne doit pas te rendre plus disponible. Elle doit te rendre plus selectif, plus rapide sur l'essentiel, et moins fragmenté.
 
-## Le probleme : messages eparpilles partout
+## Quand la messagerie est le bon canal
 
-Le constat est brutal : 15 a 20 changements d'application par jour, des notifications de partout, une charge mentale permanente et des messages importants noyes dans le bruit. Chaque switch d'app te coute en moyenne 23 minutes de reconcentration.
+- debloquer rapidement une personne
+- confirmer une information simple
+- coordonner une action a court terme
+- gerer une conversation vivante qui ne merite pas encore un document ou une reunion
 
-## Texts : l'inbox universel
+## Quand il faut sortir du chat
 
-**[Texts](https://texts.com/)** est un client de messagerie unifie qui regroupe toutes tes conversations dans une interface unique, pensee pour le clavier.
+- si la conversation devient une suite de decisions importantes
+- si un sujet vit plusieurs jours ou plusieurs semaines
+- si une action doit etre suivie formellement
+- si cinq messages remplacent un email clair ou une note partagee
+- si le canal devient surtout un distributeur de notifications
 
-### Plateformes supportees
+Le chat doit accelerer. Pas devenir ton disque dur ni ta todo list.
 
-| Plateforme | Support |
-|-----------|---------|
-| iMessage | Oui (depuis Windows) |
-| WhatsApp | Oui |
-| Telegram | Oui |
-| Signal | Oui |
-| Slack | Oui |
-| Discord | Oui |
-| Instagram DMs | Oui |
-| LinkedIn Messages | Oui |
-| Twitter/X DMs | Oui |
+## Le decision framework Winflowz
 
-### Fonctionnalites cles
+Quand un message arrive, pose-toi trois questions :
 
-- **Keyboard-first** : `Ctrl+K` pour nouvelle conversation, `Ctrl+J` pour actions, navigation complete au clavier
-- **Snooze** : fais revenir un message a l'heure que tu choisis
-- **Folders personnalises** : organise par contexte (Urgent, Travail, Perso, Projets)
-- **Recherche globale** : trouve n'importe quel message sur toutes les plateformes
-- **Multi-compte** : plusieurs comptes WhatsApp ou Telegram, switch instantane
-- **Privacy** : chiffrement end-to-end maintenu, donnees locales sur ta machine
+1. **Est-ce qu'il faut repondre maintenant ?**
+2. **Est-ce que ce sujet devrait rester en chat ?**
+3. **Est-ce que cette conversation doit etre escaladee vers email, tache, note partagee ou reunion ?**
 
-### Avant / Apres
+Cela donne quatre sorties utiles :
 
-**Avant** : 8-10 apps ouvertes, 20+ changements par jour, messages manques, notifications chaotiques.
+- **Repondre vite** si le chat est vraiment le bon canal
+- **Reporter / snoozer** si ce n'est pas le bon moment
+- **Sortir vers un autre systeme** si cela doit survivre
+- **Ignorer / archiver** si cela n'a pas de vraie valeur
 
-**Apres** : 1 seule app, navigation clavier instantanee, vue unifiee, notifications centralisees et filtrees.
+## Le vrai objectif
 
-## iMessage sur Windows avec AirMessage
+Le vrai objectif n'est pas d'avoir une "super app" magique. C'est :
+- moins de changements de contexte
+- une hiérarchie claire des canaux
+- peu de notifications sonores
+- aucun message important rate
+- moins de conversations qui trainent sans décision
 
-Si tu as un iPhone et un PC Windows, **[AirMessage](https://airmessage.org/)** te donne acces a iMessage depuis ton ordinateur. Le principe : un vieux Mac sert de serveur relais, et tu accedes a tes messages depuis n'importe quel appareil.
+## La couche de centralisation
 
-### Setup en 30 minutes
+La centralisation reste utile, mais il faut la lire pour ce qu'elle est : une **couche d'acces**, pas une solution complete a elle seule.
 
-1. Installe AirMessage Server sur un Mac (meme ancien)
-2. Configure le port forwarding ou utilise ngrok
-3. Installe le client AirMessage sur Windows
-4. Connecte-toi : iMessage fonctionne sur ton PC
+### Recommandation principale : [Beeper](https://www.beeper.com/)
 
-:::tip[Combo ultime]
-Combine AirMessage + Texts pour avoir iMessage, WhatsApp, Telegram, Slack, Discord et tout le reste dans une seule interface keyboard-first.
-:::
+Beeper est aujourd'hui la recommandation la plus actuelle pour une inbox de messagerie unifiee :
+- app unique sur Windows, macOS, Linux, iOS et Android
+- connexions a de nombreux reseaux
+- rappels, envoi differe et autres "chat superpowers"
+- options on-device pour plusieurs integrations
+- trajectoire produit clairement active
 
-## Solutions a eviter
+Important pour le cours :
+- **Texts** existe encore, mais le produit est en transition vers Beeper
+- le FAQ officiel de Texts indique maintenant que **Texts devient Beeper**
+- le meme FAQ precise que **iMessage dans Texts est reserve a macOS**
+
+Donc, pour un utilisateur Windows en 2026, la recommandation premium doit etre **Beeper d'abord**, pas l'ancien discours "Texts regle tout".
+
+### Texts : a lire comme heritage utile, pas comme recommandation principale
+
+Texts reste interessant si tu es deja dedans et si tu valorises fortement l'approche locale / on-device, mais ce n'est plus le centre du discours produit.
+
+### iMessage sur Windows : cadre realiste
+
+Il faut etre plus prudent ici qu'avant.
+
+- **Beeper** a arrete le support iMessage en décembre 2023 et travaille a un retour cote desktop macOS
+- **Texts** indique iMessage sur **macOS uniquement**
+- si tu veux absolument un pont iMessage hors ecosysteme Apple, **[AirMessage](https://airmessage.org/)** reste une option niche basee sur un Mac relais et un acces web/app
+
+Donc :
+- pour la plupart des gens, **ne promets pas iMessage sur Windows comme solution simple**
+- si ce besoin est critique et que tu as un vieux Mac disponible, AirMessage reste un bricolage valable
+- sinon, il vaut mieux accepter la limite et centraliser le reste
+
+### Option secondaire : [Caprine](https://sindresorhus.com/caprine/)
+
+Caprine peut encore avoir un interet si tu veux isoler Messenger dans une app desktop plus propre. Mais cela reste :
+- un cas specifique
+- une app non officielle
+- un sujet secondaire par rapport a une vraie logique de centralisation
+
+## Ce qu'il faut eviter
 
 | Solution | Pourquoi l'eviter |
-|----------|------------------|
-| Franz / Rambox | Simples wrappers web, consommation RAM excessive |
-| Apps separees ouvertes | Defait completement l'objectif de centralisation |
-| Notifications partout | Chaos garanti, zero concentration |
+|-----------|------------------|
+| Franz / Rambox | Souvent surtout des wrappers lourds, avec peu de vraie valeur systemique |
+| Toutes les apps ouvertes en meme temps | Tu multiplies les notifications, les badges et les changements de contexte |
+| Notifications sonores partout | Tu transformes le chat en generateur de micro-stress |
+| Le chat comme archive | L'information importante devient introuvable ou implicite |
 
-## Alternative secondaire : [Caprine](https://sindresorhus.com/caprine/)
+## Regles simples qui changent tout
 
-Si tu utilises encore beaucoup l'ecosysteme Messenger et que tu veux une application desktop plus legere, plus configurable et plus respectueuse de ta concentration, **Caprine** peut rester interessante.
-
-Contexte important : l'application desktop officielle **Messenger pour Windows et macOS a ete arretee le 15 decembre 2025**. Et a partir d'avril 2026, l'acces web standalone via `messenger.com` semble lui aussi etre progressivement replie vers l'experience de messagerie integree a Facebook. Autrement dit : Messenger existe encore comme service, mais **plus comme client desktop officiel autonome**.
-
-Il faut cependant la lire pour ce qu'elle est :
-- une **app non officielle**
-- utile surtout si tu veux isoler Messenger dans une interface plus propre
-- secondaire par rapport a une vraie logique de centralisation comme Texts
-
-Son interet principal n'est pas de revolutionner ta communication. C'est de te donner un client plus sobre, avec quelques options de privacy et de personnalisation, quand tu veux garder Messenger sans subir tout le bruit du navigateur ou d'un setup plus encombre.
+1. garde **une seule couche de notifications actives**
+2. coupe les sons pour tout ce qui n'est pas vraiment urgent
+3. snooze ou reporte au lieu de laisser trainer dans la liste
+4. fais sortir les actions vers ton gestionnaire de taches
+5. fais sortir les decisions durables vers l'email ou la note partagee
 
 ## Workflow recommande
 
 **Setup initial (30 min)** :
-1. Installe Texts et connecte tes 3-4 plateformes principales
-2. Cree tes folders : Urgent, Travail, Perso, Communautes
-3. Desactive toutes les notifications des apps individuelles
-4. Active uniquement les notifications Texts (Urgent = son, reste = silence)
+1. installe Beeper et connecte tes 3-4 reseaux principaux
+2. definis une logique simple : urgent, travail, perso, communautes
+3. desactive les notifications individuelles des apps que tu centralises
+4. garde une seule couche d'alerte sonore
 
 **Routine quotidienne** :
 
-- **Matin (5 min)** : ouvre Texts, traite le folder Urgent, snooze le reste
-- **Journee (mode focus)** : Texts en arriere-plan, notifs Urgent uniquement, `Ctrl+K` pour reponses rapides
-- **Soir (10 min)** : traite les folders Travail et Perso, archive les conversations terminees
-
-## Raccourcis essentiels
-
-| Raccourci | Action |
-|-----------|--------|
-| `Ctrl + K` | Nouvelle conversation |
-| `Ctrl + J` | Actions sur conversation |
-| `Ctrl + /` | Palette de commandes |
-| `Esc` | Fermer panneau |
-| Fleches haut/bas | Naviguer entre conversations |
-
-## Resultats attendus
-
-Apres un mois d'utilisation :
-
-- **30-45 min gagnees par jour** grace a moins de changements d'app
-- **90 % de messages manques en moins**
-- **Charge mentale reduite** significativement
-- **Meilleur focus** grace a moins d'interruptions
+- **Matin (5 min)** : vide l'urgent, reporte le reste
+- **Journee (mode focus)** : reponse rapide seulement pour les vrais blocages
+- **Soir (10 min)** : traite le non urgent en lot et fais sortir les sujets durables
 
 :::note[Exercice pratique]
-Semaine 1 : liste toutes tes apps de messagerie et compte tes changements d'app quotidiens. Semaine 2 : installe Texts et connecte tes 3 apps principales. Semaine 3 : utilise uniquement Texts, ferme les apps individuelles. Semaine 4 : mesure le gain.
+Pendant une semaine :
+
+1. liste toutes tes apps de messagerie
+2. coupe les notifications de toutes sauf une couche centrale
+3. deplace chaque conversation durable hors du chat
+4. mesure combien de fois tu changes encore d'app
+
+Ensuite seulement, decide si tu as besoin d'un outil plus ambitieux.
 :::

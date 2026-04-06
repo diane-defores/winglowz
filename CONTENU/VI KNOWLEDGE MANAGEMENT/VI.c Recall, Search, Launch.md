@@ -14,6 +14,8 @@ _priorité: ""
 - ((ueli — keystroke launcher))
 - ((Dropbox Dash — recherche universelle IA))
 - ((recherche dans le navigateur — extension Search Bookmarks))
+- ((Retrieval multi-couche — recherche directe, contextuelle, par backlinks))
+- ((Minimum viable retrieval — Obsidian/Logseq, Karakeep, Everything/AnyTXT, Findr/Curiosity))
 
 ## 🔶 À TRIER
 
@@ -131,4 +133,3 @@ Tu peux ajouter un surnom lors de l'édition d'un signet
 Maintenant, si je lance la commande rapide et que je tape pp + entrée, je suis redirigé vers Paypal. Tu peux aussi aller directement sans la touche ENTRÉE :
 
 Sais-tu que tu peux aussi ‣ ?
-

@@ -1,90 +1,157 @@
 ---
 title: "Rendre le Web Accessible"
-description: "Organise tes flux d'information avec les bons outils : RSS, gestion de feeds et configuration du navigateur."
+description: "Reduis la friction du web : navigateur propre, RSS, lecture plus calme et acces rapide au contenu qui compte."
 sidebar:
   label: "Web Accessible"
   order: 2
 ---
 
-Le web est un océan d'information. Sans les bons outils, tu passes plus de temps à chercher qu'à apprendre. L'objectif : rendre le contenu qui compte accessible en un clic.
+Le probleme du web n'est pas seulement la quantite d'information. C'est la friction : pubs, trackers, feeds infinis, onglets ouverts partout, mauvaises interfaces, et trop de chemins inutiles entre toi et le contenu utile.
 
-> Un web bien organisé, c'est un web silencieux — seul ce qui t'intéresse te parvient.
+> Rendre le web accessible, ce n'est pas tout rendre visible. C'est enlever tout ce qui te separe du bon contenu.
 
-## Gestion des flux avec RSS
+## Le vrai sujet
 
-Le RSS est le protocole le plus sous-estimé du web. Il te permet de suivre n'importe quel site sans algorithme, sans pub, sans distraction.
+Un web bien configure doit te permettre de :
+- atteindre vite ce que tu cherches
+- lire dans de bonnes conditions
+- suivre des sources sans subir les plateformes
+- garder peu d'onglets, peu de bruit, peu de detours
 
-### Pourquoi le RSS change tout
+## Le decision framework Winflowz
 
-- **Pas d'algorithme** — tu choisis ce que tu vois, point final
-- **Pas de notifications push** — tu consultes quand tu veux
-- **Format uniforme** — tous les sites dans une seule interface
-- **Aucun compte requis** — pas de tracking, pas de profilage
+Quand tu touches a ton navigateur ou a tes flux web, pose-toi trois questions :
 
----
+1. **Est-ce que cela reduit ou augmente la friction ?**
+2. **Est-ce que cela me rapproche du contenu ou du feed ?**
+3. **Est-ce que cela merite d'etre toujours visible, ou seulement accessible quand j'en ai besoin ?**
 
-## [Feedboard](https://feedboard.app/) : ton tableau de bord de flux
+Cette logique conduit a trois couches utiles :
 
-Feedboard te permet de visualiser tous tes flux RSS sur un tableau de bord unique, organisé par colonnes thématiques.
+- **Couche 1 : nettoyage** — bloquer le bruit, limiter les distractions
+- **Couche 2 : acces** — raccourcis, signets, profils, organisation simple
+- **Couche 3 : suivi** — RSS, lecture differée, flux choisis
 
-### Configuration recommandée
+## Ce qu'il faut eviter
 
-| Colonne | Contenu |
-|---------|---------|
-| **Tech** | Blogs dev, changelogs d'outils, Hacker News |
-| **Veille métier** | Sites spécialisés dans ton domaine |
-| **Inspiration** | Designers, créateurs, penseurs |
-| **Actualité filtrée** | 1-2 sources fiables, pas plus |
+- utiliser la page d'accueil du navigateur comme portail de distraction
+- garder 80 onglets "pour plus tard"
+- suivre des sites importants uniquement via reseaux sociaux
+- empiler des extensions sans logique
+- confondre accessibilite avec surcharge permanente
 
-### Bonnes pratiques
+## La couche nettoyage
 
-1. **Limite à 30-40 flux maximum** — au-delà, tu recréés l'infobésité
-2. **Revois tes abonnements chaque mois** — désabonne-toi sans culpabilité
-3. **Classe par priorité** : flux essentiels vs flux de veille passive
-4. **Lis les titres, ouvre seulement ce qui t'interpelle**
+Commence par enlever le bruit structurel.
 
----
+Extensions qui restent defensables :
+- **[uBlock Origin](https://ublockorigin.com/)** pour pubs et trackers
+- **[Dark Reader](https://darkreader.org/)** si le confort visuel t'aide vraiment
+- **[Bitwarden](https://bitwarden.com/)** pour sortir les mots de passe de ta tete et des notes improvisées
 
-## Configurer ton navigateur pour l'efficacité
+Le bon principe : peu d'extensions, mais des extensions qui retirent de la friction au lieu d'en rajouter.
 
-Ton navigateur est ton outil de travail principal. Configure-le comme un pro.
+## La couche acces
 
-### Extensions indispensables
+Le navigateur doit te donner un acces rapide, pas une surface de stockage chaotique.
 
-| Extension | Fonction |
-|-----------|----------|
-| **[uBlock Origin](https://ublockorigin.com/)** | Bloqueur de pubs et trackers — non négociable |
-| **[Dark Reader](https://darkreader.org/)** | Mode sombre universel — confort visuel |
-| **[Bitwarden](https://bitwarden.com/)** | Gestionnaire de mots de passe open source |
-| **[Tab Stash](https://addons.mozilla.org/en-US/firefox/addon/tab-stash/)** | Sauvegarde groupée d'onglets pour plus tard |
+Regles simples :
+- garde seulement 5 a 8 favoris vraiment utiles
+- separe travail et perso par profils
+- epingle les outils centraux
+- transforme les recherches frequentes en mots-cles ou raccourcis
 
-### Organisation des onglets
+Si tu ouvres toujours les memes choses pour les memes contextes, le probleme n'est pas ta memoire. C'est l'absence de raccourcis.
 
-- **Groupes d'onglets** par projet ou par contexte (travail, perso, veille)
-- **Épingle** les 3-4 sites que tu utilises constamment
-- **Ferme tout le reste** — un navigateur avec 80 onglets, c'est un bureau en désordre
-- **Profils séparés** pour le travail et le perso
+## La couche onglets
 
-### Le choix du navigateur
+Un onglet ouvert n'est pas un systeme fiable.
 
-- **[Vivaldi](https://vivaldi.com/)** : personnalisation extrême, panneaux latéraux, piles d'onglets, lecteur de flux intégré
-- **[Firefox](https://www.mozilla.org/firefox/)** : respect de la vie privée, extensions puissantes, containers
-- **[Brave](https://brave.com/)** : bloqueur intégré, rapide, basé Chromium
+Tu as trois options saines :
+- lire maintenant
+- sauvegarder dans une vraie couche de lecture ou d'archive
+- fermer
 
----
+Pour les utilisateurs Firefox, **[Tab Stash](https://addons.mozilla.org/en-US/firefox/addon/tab-stash/)** reste une option propre pour vider sans perdre.
 
-## Accès rapide au contenu
+## La couche RSS
 
-### Raccourcis et signets intelligents
+Le RSS reste le meilleur moyen de suivre le web sans algorithmes.
 
-- **Barre de favoris** : uniquement les 5-8 sites les plus utilisés
-- **Dossiers de signets** par thème — pas une liste infinie
-- **Mots-clés de recherche** : tape `yt [terme]` pour chercher directement sur YouTube depuis la barre d'adresse
-- **Page de démarrage personnalisée** : un dashboard sobre, pas un flux de news
+Il faut simplement mieux choisir l'outil principal.
 
-### Flux de travail optimal
+### Recommandation principale : [Inoreader](https://www.inoreader.com/)
 
-1. Ouvre ton navigateur → dashboard sobre (pas de news)
-2. Consulte ton agrégateur RSS → 15 min max
-3. Ouvre uniquement les articles pertinents dans des onglets
-4. Lis, prends des notes, ferme — ne laisse pas d'onglets "pour plus tard"
+Inoreader est aujourd'hui la recommandation la plus solide si tu veux un vrai lecteur RSS polyvalent :
+- lecture web propre
+- dossiers, tags et regles
+- newsletters et feeds dans le meme systeme
+- assez simple pour commencer, assez puissant pour durer
+
+### Alternative tres valable : [Feedly](https://feedly.com/news-reader)
+
+Feedly reste excellent si tu veux :
+- une interface tres accessible
+- une experience plus "reader" que "power user"
+- une veille un peu plus professionnelle ensuite
+
+### Feedboard : option secondaire
+
+**[Feedboard](https://feedboard.app/)** existe toujours et peut plaire si tu aimes la logique de dashboard en colonnes. Mais je ne le recommanderais plus comme choix principal pour cette leçon.
+
+## La couche lecture
+
+Quand tu tombes sur un bon contenu, il faut ensuite pouvoir le lire calmement.
+
+Selon ton besoin :
+- **RSS reader** pour suivre les sources
+- **Reader / read-later** pour lire plus tard
+- **bookmark manager** pour archiver
+
+Le mauvais systeme consiste a tout garder dans les onglets.
+
+## Quel navigateur choisir
+
+Le bon navigateur n'est pas le plus "puissant" sur le papier. C'est celui dans lequel ton systeme reste simple.
+
+- **[Firefox](https://www.mozilla.org/firefox/)** si tu privilegies la vie privee, les containers et un environnement plus sobre
+- **[Vivaldi](https://vivaldi.com/)** si tu veux un navigateur tres configurable avec beaucoup d'outils integres
+- **[Brave](https://brave.com/)** si tu veux du Chromium rapide avec blocage integre et peu de setup
+
+La vraie question est : lequel te permet le moins de bricolage pour obtenir un web calme ?
+
+## Workflow recommande
+
+**Minimaliste** :
+- un navigateur bien regle
+- uBlock Origin
+- quelques favoris propres
+- un lecteur RSS
+
+**Pragmatique** :
+- profils separes
+- raccourcis de recherche
+- RSS + outil de lecture
+- discipline stricte sur les onglets
+
+**Power user calme** :
+- Firefox ou Vivaldi
+- Inoreader ou Feedly
+- couche lecture / archive distincte
+- zero feed natif non choisi
+
+## Regles simples
+
+1. ton navigateur doit ouvrir sur quelque chose de neutre
+2. les flux choisis battent les plateformes algorithmiques
+3. un onglet n'est pas une note
+4. ce que tu utilises souvent doit etre a un clic ou une commande
+
+:::note[Exercice pratique]
+Pendant une semaine :
+
+1. nettoie ta page d'accueil et tes favoris
+2. supprime ou desactive les extensions faibles
+3. choisis un lecteur RSS principal
+4. force-toi a fermer ou sauvegarder chaque onglet au lieu de l'accumuler
+:::

@@ -10,6 +10,43 @@ Your entire knowledge base is worthless if you cannot find what you need in unde
 
 > The best filing system does not replace a good search engine. Ideally, you have both.
 
+## Retrieval does not only mean "type a keyword"
+
+In a good PKM system, you retrieve information in several ways:
+- through **search**
+- through **navigation**
+- through **backlinks**
+- through **work context**
+
+In other words, if your system depends only on perfect text search, it is still fragile.
+
+### The 3 most useful retrieval layers
+
+#### 1. Direct search
+
+You more or less know what you are looking for. You type a few words and want to land on it immediately.
+
+Here you need:
+- a good engine in your notes
+- a good engine in your files
+- a good engine in your bookmarks
+
+#### 2. Contextual search
+
+You do not remember the exact title, but you remember:
+- the project
+- the period
+- the tool where you saw it
+- the person who shared it
+
+That is where unified-search tools become useful.
+
+#### 3. Link-based retrieval
+
+You are not looking for one exact file. You start from a related idea and move back through the network.
+
+That is exactly where **backlinks**, linked notes, and sometimes Obsidian's **graph view** become useful. Not as a visual gimmick, but as reasoning support.
+
 ## Personal search engines
 
 ### [Findr](https://www.usefindr.io/)
@@ -110,5 +147,16 @@ If you use Vivaldi, you already have a powerful built-in search stack:
 2. **Move to full-text search** (AnyTXT) for file contents
 3. **Use unified search** (Findr or an equivalent tool) for cloud apps
 4. **As a last resort**: manual navigation through folders
+
+## Minimum viable retrieval
+
+If you want a simple and robust system, you do not need to index everything everywhere. You mainly need to cover 4 cases:
+
+- **retrieve a linked note** -> Obsidian or Logseq
+- **retrieve a link or web reference** -> Karakeep
+- **retrieve a local file** -> Everything or AnyTXT
+- **retrieve something scattered across several apps** -> Findr or Curiosity
+
+If those 4 cases are covered, your PKM is already much more reliable.
 
 If you cannot find it in 30 seconds, your organization system needs improvement.

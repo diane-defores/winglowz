@@ -14,6 +14,8 @@ _priorité: ""
 - ((Q-Dir — explorateur Windows multi-panneaux))
 - ((Convention de nommage — système LATCH))
 - ((Gestion des actifs numériques — MoviePrint, TagSpaces))
+- ((Minimum viable PKM — Obsidian / Logseq pour penser, Karakeep pour collecter, fichiers pour stocker))
+- ((Backlinks > taxonomies infinies — dossiers pour réduire le chaos, backlinks pour penser))
 
 ## 🔶 À TRIER
 

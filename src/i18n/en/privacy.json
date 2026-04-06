@@ -9,7 +9,7 @@
       "items": [
         "Email address (for account management)",
         "Payment information (processed securely by third-party providers)",
-        "Usage analytics (anonymized)"
+        "Authentication and session data required to access your account"
       ]
     },
     "usage": {
@@ -37,7 +37,7 @@
       "intro": "We use trusted third-party services for:",
       "items": [
         "Payment processing",
-        "Analytics",
+        "Authentication",
         "Email communication",
         "Hosting"
       ]

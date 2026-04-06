@@ -1,138 +1,184 @@
 ---
 title: "Terminal & Command Line"
-description: "Discover the Windows terminal and modern CLI tools to work more efficiently."
+description: "Know when CLI is actually worth it on Windows, start from the right base, and keep a simple but high-return terminal stack."
 sidebar:
   label: "Terminal"
   order: 6
 ---
 
-> The terminal is the tool everyone ignores until the day they realize how powerful it is.
+The terminal is not a religion. It is leverage. It becomes useful when it gives you more speed, repeatability, or control.
 
-## Why use the terminal?
+> The right use of the terminal is not doing everything in CLI. It is using it where the mouse becomes slow, repetitive, or fragile.
 
-The graphical interface is intuitive, but it has limits. Some operations take 30 seconds in the command line and 5 minutes with the mouse: renaming 200 files, searching text in a project, installing 10 programs at once.
+## The real issue: cross the right threshold
 
-The terminal is not just for developers. It is a productivity tool for anyone who wants to move faster.
+Many people reject the terminal because they imagine they have to learn everything at once. Others adopt it as a posture and end up complicating tasks that would be perfectly fine in a GUI.
 
-## Windows Terminal: the central hub
+The right logic is simpler:
+- GUI for one-off, visual, obvious tasks
+- CLI for repetitive, large-scale, scriptable, and reproducible work
 
-Windows Terminal is Microsoft's official app that brings all your shells together in a single window with tabs.
+## The Winflowz decision framework
 
-**Why use it:**
-- Tabs and split panes
-- Customizable profiles per shell
-- Configurable themes and fonts
-- Full keyboard shortcut support
-- GPU text rendering support
+Before using the terminal, ask four questions:
 
-**Installation**: available in the Microsoft Store or via `winget install Microsoft.WindowsTerminal`.
+1. **Am I doing this once or often?**
+2. **Am I handling 3 items or 300?**
+3. **Do I need a reproducible result or just a one-off action?**
+4. **Is the mouse saving time here, or forcing me through the same sequence again and again?**
 
-### Essential shortcuts
+If the task is:
+- repetitive
+- high-volume
+- text-heavy
+- or meant to be replayed
 
-| Action | Shortcut |
-|--------|----------|
-| New tab | `Ctrl + Shift + T` |
-| Close tab | `Ctrl + Shift + W` |
-| Split horizontally | `Alt + Shift + -` |
-| Split vertically | `Alt + Shift + =` |
-| Move between panes | `Alt + Arrow keys` |
-| Command palette | `Ctrl + Shift + P` |
+then the terminal often becomes the better tool.
 
-## PowerShell 7 vs CMD
+## The right Windows baseline
 
-CMD is a relic from the 1980s. PowerShell 7 is a modern, cross-platform, object-oriented shell.
+### 1. Windows Terminal
 
-| Criterion | CMD | PowerShell 7 |
-|----------|-----|--------------|
-| **Age** | 1987 | 2020+ |
-| **Output** | Raw text | .NET objects |
-| **Scripts** | .bat | .ps1 |
-| **Cross-platform** | No | Yes (Windows, macOS, Linux) |
-| **Autocomplete** | Basic | Smart (PSReadLine) |
-| **Pipeline** | Text | Structured objects |
+**Windows Terminal** remains the healthiest base for most Windows users.
 
-**Install PowerShell 7**: `winget install Microsoft.PowerShell`. It is different from the preinstalled PowerShell 5.1 that ships with Windows.
+Why:
+- tabs
+- split panes
+- multiple profiles
+- command palette
+- strong Windows integration
 
-### Navigating folders
+I would not recommend starting elsewhere unless you have a specific need.
 
-```powershell
-# Move around
-cd C:\Users\YourName\Documents
-cd ..          # Go up one level
-cd ~           # Go to your user folder
+### 2. PowerShell 7, not CMD
 
-# List contents
-ls             # Simple list
-ls -la         # Detailed list (alias for Get-ChildItem)
+The real shell to start with today is **PowerShell 7**.
 
-# Create and delete
-mkdir MyFolder
-Remove-Item MyFolder -Recurse
-```
+Why:
+- more modern
+- better usability
+- more coherent for scripts
+- better future than `cmd`
 
-## WSL: Linux inside Windows
+`CMD` can still survive for very old habits or a few simple commands, but it is no longer the base worth teaching first.
 
-WSL (Windows Subsystem for Linux) gives you a real Linux environment without a virtual machine. It is essential if you work with Linux tools or web development.
+So:
+- **Windows Terminal** for the container
+- **PowerShell 7** for the main shell
 
-```powershell
-# Install WSL with Ubuntu
-wsl --install
+## When WSL is worth it
 
-# Launch Linux
-wsl
-```
+**WSL** is excellent, but only if you have a real reason.
 
-Once inside WSL, you have access to the full Linux ecosystem: apt, bash, ssh, git, node, python - everything works natively.
+I recommend it if:
+- you regularly use Linux tools
+- you do web or backend development that depends heavily on the Linux ecosystem
+- you want an environment closer to a server or Unix-like machine
 
-## Modern CLI tools
+I would not recommend it as a first step if your needs are only:
+- navigating folders
+- running a few basic commands
+- doing light text or file search
 
-Classic tools have modern alternatives that are faster and easier to read.
+So:
+- **PowerShell 7** first
+- **WSL** when your workflow truly justifies it
 
-| Classic tool | Modern alternative | Advantage |
-|--------------|-------------------|-----------|
-| `find` | **fd** | Intuitive syntax, fast, respects .gitignore |
-| `grep` | **ripgrep (rg)** | 10x faster, respects .gitignore |
-| `cat` | **bat** | Syntax highlighting, line numbers |
-| `ls` | **eza** (formerly exa) | Icons, colors, tree view |
-| `cd` | **zoxide** | Learns your frequent folders, `z proj` instead of `cd C:\long\path\to\project` |
-| Fuzzy search | **fzf** | Interactive filter for files, history, everything |
+## Terminal use cases that pay off fastest
 
-### Install these tools
+You do not need to become an expert to get a real return.
 
-```powershell
-# With Scoop (recommended for CLI tools)
-scoop install ripgrep fd bat eza fzf zoxide
-```
+The first cases where CLI usually pays off are:
+- searching text across many files
+- finding files quickly
+- batch renaming or moving
+- installing or updating multiple tools
+- chaining a few commands you want to reuse
 
-## Alternative terminal emulators
+In other words, CLI becomes worth it as soon as the work has a repeatable structure.
 
-If Windows Terminal is not for you:
+## The small modern stack that really deserves a place
 
-| Emulator | Strengths |
-|----------|-----------|
-| **WezTerm** | Lua-configurable, GPU-accelerated, built-in multiplexer |
-| **Alacritty** | Ultra-fast, minimal, GPU-accelerated |
-| **Tabby** | Modern interface, built-in SSH, plugins |
-| **Hyper** | Electron-based, web themes, extensible |
+You do not need twenty utilities.
 
-**Our recommendation**: stick with Windows Terminal unless you have a specific need. It is solid, well integrated, and actively maintained by Microsoft.
+### Highest-return tools
 
-## Your first terminal reflex
+| Tool | Why it is worth keeping |
+|------|--------------------------|
+| **ripgrep (`rg`)** | Very fast text search |
+| **fd** | Simpler file search than classic commands |
+| **bat** | More readable file viewing |
+| **zoxide** | Faster movement between frequent folders |
+| **fzf** | Interactive fuzzy filtering when you want faster search |
 
-The next time you need to perform an operation on multiple files, resist the urge to reach for the mouse. Look for the command-line equivalent. After a week of practice, you will never go back for those tasks.
+### More optional
 
-## Official resources
+| Tool | When it becomes useful |
+|------|------------------------|
+| **eza** | If you want more readable listings and tree views |
 
-- [Windows Terminal](https://github.com/microsoft/terminal) - the central hub if you stay with Microsoft's app.
-- [PowerShell 7](https://github.com/PowerShell/PowerShell) - the modern shell to prioritize.
-- [WSL](https://learn.microsoft.com/windows/wsl/) - Linux inside Windows.
-- [ripgrep](https://github.com/BurntSushi/ripgrep) - ultra-fast text search.
-- [fd](https://github.com/sharkdp/fd) - simple and fast file search.
-- [bat](https://github.com/sharkdp/bat) - a readable `cat`.
-- [eza](https://github.com/eza-community/eza) - the modern `ls`.
-- [zoxide](https://github.com/ajeetdsouza/zoxide) - smart folder navigation.
-- [fzf](https://github.com/junegunn/fzf) - interactive fuzzy search.
-- [WezTerm](https://wezterm.org/) - the powerful, scriptable terminal.
-- [Alacritty](https://alacritty.org/) - the minimalist fast terminal.
-- [Tabby](https://github.com/Eugeny/tabby) - the full terminal with SSH and serial clients.
-- [Hyper](https://hyper.is/) - the Electron-based, customizable terminal.
+The right adoption order is simple:
+- `rg`
+- `fd`
+- `zoxide`
+- then the rest if you feel the need
+
+## Installation: keep the base simple
+
+If you want to install these tools, **Scoop** remains a good secondary layer for CLI tools.
+
+But keep the broader module hierarchy in mind:
+- `winget` for the general software baseline
+- `Scoop` mainly to enrich the terminal environment
+
+## Alternatives to Windows Terminal
+
+Other emulators do exist:
+- **WezTerm**
+- **Alacritty**
+- **Tabby**
+- **Hyper**
+
+But I do not recommend them as the starting point for most users.
+
+They become interesting if you want:
+- deeper configuration
+- a particular style
+- a specific need around SSH, multiplexing, or aesthetics
+
+Otherwise, staying with **Windows Terminal** avoids unnecessary complexity.
+
+## What to avoid
+
+- adopting CLI as an identity instead of using it as leverage
+- installing too many tools before you have a real use case
+- jumping to WSL without a clear reason
+- forcing a purely visual one-off task into the terminal
+
+## Recommended workflow
+
+**Minimal**:
+- Windows Terminal
+- PowerShell 7
+- a few useful commands
+
+**Pragmatic**:
+- `rg`, `fd`, `zoxide`
+- terminal for search, batch work, and installs
+- saved commands or scripts when a task repeats
+
+**Personal system**:
+- PowerShell 7 as the base
+- WSL when justified
+- a small stable CLI stack you actually master
+
+:::note[Practical exercise]
+Find one task you often do with the mouse:
+
+1. find a file
+2. search text
+3. rename a batch
+4. install several tools
+
+Pick just one and learn the terminal version. If it saves you time twice in a row, it deserves a place in your system. If not, stay in the GUI without guilt.
+:::

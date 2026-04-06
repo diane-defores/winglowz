@@ -1,85 +1,154 @@
 ---
 title: "Theme Scheduling"
-description: "Organize your days by mental state, not by project. Discover time batching, David Kadavy's approach, and the circadian rhythm."
+description: "Organize your days by cognitive mode and energy level: batching, weekly themes, and a more sustainable structure."
 sidebar:
   label: "Theme Scheduling"
   order: 2
 ---
 
-Most people organize their days by **project**: "Monday for Project A, Tuesday for Project B." That is a mistake. Your brain does not work by project - it works by **type of mental effort**.
+Most people organize their days by project or by urgency. Their brain mostly works by **cognitive mode**: creating, exploring, coordinating, administering, recovering.
 
-> Organize by mental state, not by task category.
+> The right calendar is not the one that reflects every task. It is the one that respects the kind of effort your brain can realistically provide at the right moment.
 
-## Time batching
+## What this is really about
 
-Time batching means **grouping similar tasks together** inside the same time block. Instead of checking email 15 times a day, you do it in two 20-minute batches.
+Theme scheduling helps reduce two problems:
+- the cost of constant switching
+- the mismatch between task type and energy level
 
-### Why it works
+The goal is not to make your week look neat. It is to give each period a coherent type of work.
 
-Every time you switch between task types, your brain pays a **switching cost** - often 15 to 25 minutes to fully get back into focus. Grouping similar work removes those unnecessary transitions.
+## The Winflowz decision framework
 
-### Effective batch examples
+When you plan a day or week, ask three questions:
 
-| Batch | Grouped tasks | Best time |
-|------|---------------|-----------|
-| **Creation** | Writing, design, code, brainstorming | Morning (energy peak) |
-| **Communication** | Email, Slack, calls, meetings | Early afternoon |
-| **Admin** | Invoices, planning, files, updates | Late afternoon |
-| **Learning** | Reading, courses, research, notes | Evening or low-energy window |
+1. **Which cognitive mode dominates here?**
+2. **What energy level matches this slot?**
+3. **What should be grouped instead of scattered?**
 
-## David Kadavy's approach: the 6 types of mental work
+That leads to three useful layers:
 
-David Kadavy identifies **6 types of mental work**, ordered from highest cognitive load to lowest:
+- **Batches**: group similar tasks
+- **Themes**: give a half-day or a day a dominant mode
+- **Default week**: build a repeatable but light structure
 
-| Type | Cognitive load | Examples |
-|------|----------------|----------|
-| **Prioritization** | Very high | Deciding what to do, planning the week |
-| **Exploration** | High | Research, brainstorming, problem solving |
-| **Generation** | High | First drafts, coding a feature, creating |
-| **Polishing** | Medium | Editing, refactoring, refining |
-| **Administration** | Low | Email, organization, updates |
-| **Recharge** | None | Breaks, sport, walking, meditation |
+## Batching
 
-### How to use it
+Batching means doing together what is cheaper to do together.
 
-The rule is simple: **put high-cognitive work where your energy is highest**, and do the opposite for low-effort tasks.
+Typical examples:
+- creation
+- communication
+- admin
+- learning
 
-- **Creative mornings** - Your first two or three hours are sacred. No email, no Slack. You generate and explore.
-- **Collaborative afternoons** - Meetings, feedback, conversations. Your energy dips, but you can still stay social.
-- **Administrative Fridays** - Batch the admin work at the end of the week. Invoices, planning, digital cleanup.
+The main gain is not only time. It is the reduction in recontextualization cost.
 
-You do not need to follow this exact pattern. The point is to **respect your cycles** instead of forcing deep work at 4 p.m. when your brain is asking for mercy.
+## Organize by cognitive mode
 
-## Circadian rhythm and Auto Dark Mode
+The most useful idea here is to classify work by mental load.
 
-Your body follows a roughly 24-hour rhythm that affects energy, focus, and even creativity. Work **with** that rhythm, not against it.
+David Kadavy's approach remains useful because it reminds you that a day contains several qualities of attention, not just one.
 
-### Auto Dark Mode
+You can read it as a simple hierarchy:
+- **prioritization** - decide, sort, choose
+- **exploration** - research, think, open possibilities
+- **generation** - produce a first draft, create, code, write
+- **polishing** - edit, correct, improve
+- **administration** - coordinate, organize, reply
+- **recharge** - actually recover
 
-Set your system to switch to dark mode automatically at night. This is not just about comfort - evening blue light:
-- Delays melatonin production
-- Reduces sleep quality
-- Lowers next-day energy
+The point is not to memorize a perfect taxonomy. The point is to stop treating all tasks as if they required the same brain.
 
-On Windows: **Settings > Personalization > Colors > Automatic dark mode** (or use the Auto Dark Mode app). On Mac: this is built into display settings.
+## What goes where
 
-## Task capture
+### High energy
 
-Do not trust memory. Every task that crosses your mind should be **captured immediately** in a single inbox:
+- generation
+- exploration
+- strategy
+- deep work
 
-- A quick note on your phone
-- A keyboard shortcut to your task manager
-- A notebook always within reach
+### Medium energy
 
-The goal is not to organize in the moment - it is to **empty your head** so it can focus on the work at hand. Organization comes later, during your "Prioritization" batch.
+- coordination
+- feedback
+- revision
+- collaboration
 
-## Design your ideal week
+### Low energy
 
-Spend 15 minutes on Sunday evening sketching your ideal week:
+- admin
+- messages
+- organizing
+- maintenance
 
-1. Place your **non-negotiables** (sleep, sport, family)
-2. Identify your **energy peaks** and reserve them for creation
-3. Group **admin and communication** into your low-energy windows
-4. Leave **20% slack** for the unexpected
+When you place admin in your peaks and creation in your troughs, you waste twice: the time and the energy.
 
-This template will evolve, and that is fine. What matters is having an intentional starting point instead of simply being dragged by the week.
+## Build a default week
+
+A simple themed week is often enough:
+
+- mornings oriented toward creation
+- more collaborative afternoons
+- a dedicated admin zone
+- real recovery spaces that count
+
+You can also assign dominant modes to certain days or half-days:
+- production
+- coordination
+- maintenance
+- learning
+
+The goal is not to lock the whole week. It is to stop letting it be shaped only by incoming requests.
+
+## Task capture still matters
+
+Theme scheduling fails if every new thought interrupts the work already in progress.
+
+So keep:
+- immediate capture
+- one inbox
+- sorting later
+
+You do not want to organize while creating. You want to empty your head so you can stay inside the right mode.
+
+## Environment details
+
+Settings like automatic dark mode can help comfort and rhythm, but they should stay secondary.
+
+If **Auto Dark Mode** helps you respect the day/night transition better on Windows, fine. But it is not the core of the method. The core is the alignment between energy, mental mode, and structure.
+
+## What to avoid
+
+- organizing the week only by project
+- over-theming until the week becomes rigid
+- assuming everything can be batched
+- using themes as decoration rather than useful constraint
+- forgetting to leave margin
+
+## Recommended workflow
+
+**Minimalist**:
+- only 3 batches: creation, communication, admin
+- one protected peak zone
+- one weekly prioritization moment
+
+**Pragmatic**:
+- a week with dominant themes
+- tasks assigned by energy level
+- constant capture
+
+**Personal system**:
+- a default week reviewed often
+- flexible themes
+- a real link between peaks, coordination, and recovery
+
+:::note[Practical exercise]
+For one week:
+
+1. note the main types of work you actually do
+2. group them into 3 to 5 cognitive modes
+3. identify where you switch too much
+4. then redesign one default day with cleaner batches and themes
+:::

@@ -1,21 +1,37 @@
 ---
 title: "Discipline & Habits"
-description: "Build durable habits, replace toxic ones, and develop the discipline that makes the difference."
+description: "Build discipline as a system of repetition, environment, and recovery, not a contest of willpower."
 sidebar:
   label: "Discipline"
   order: 6
 ---
 
-Motivation is temporary. Discipline is what remains when motivation fades. And discipline is built through habits.
+Discipline is not just a harder version of motivation. It is the ability to **reduce inner negotiation** so you keep doing what matters even when you do not feel like it.
+
+That capacity is mostly built through:
+- simple habits
+- a supportive environment
+- realistic expectations
+- good recovery after missed days
+
+## The Winflowz decision framework
+
+When a habit does not stick, the issue is rarely moral weakness. Ask five better questions:
+
+1. **Is the habit too ambitious for its current level?**
+2. **Is the cue clear and visible?**
+3. **Is the environment helping or sabotaging?**
+4. **Is the reward too distant or invisible?**
+5. **Do I know what happens after I miss a day?**
+
+This framework helps you avoid confusing lack of willpower with poor design.
 
 ## Why resolutions fail
 
-A British study of 3,000 people found that **only 12% reached their goal 12 months later**. Why?
-
-- No deep reason to act
+- No deep enough reason to keep going
 - No concrete plan
 - Too many changes at once
-- Waiting for the "right time" (which never comes)
+- Waiting for the "right time," which almost never arrives
 
 ### A deep reason changes everything
 
@@ -92,7 +108,7 @@ The trap is choosing a habit whose reward is too distant. The more abstract the 
 
 ---
 
-## 6 toxic habits to replace
+## Replace instead of merely remove
 
 The key point here is not "remove a bad habit" through sheer willpower. In practice, the brain responds better when you **replace** a behavior than when you leave an empty space.
 
@@ -108,7 +124,7 @@ Concrete commitment almost always beats abstract intention. A daily or weekly ch
 |-------------|-------------|
 | **Worrying** | Meditation (10-15 min of mindful breathing) |
 | **Blaming others** | Helping others - everyone makes mistakes |
-| **Social media** (147 min/day on average) | Physical activity, reading, creation |
+| **Compulsive social media** | Physical activity, reading, creation |
 | **Complaining** | Gratitude - a daily list of what is going well |
 | **Overthinking** | Action - start the day with movement |
 | **Fake friends** | Mentors and authentic relationships |
@@ -136,6 +152,13 @@ The more concrete the replacement, the more likely it is to stick.
 | **Habitica** | RPG gamification - your habits become quests |
 | **Polar Habits** | Momentum without the guilt of broken streaks |
 | **Habits Garden** | Gamified grid visualization, for people who like to see progress grow visually |
+
+The right tool mostly depends on your profile:
+- if playfulness keeps you engaged, **Habitica**
+- if you want tracking without self-punishment, **Polar Habits**
+- if visual growth motivates you, **Habits Garden**
+
+But the tool stays secondary. If the cue, location, and minimum action are vague, no tracker will save the habit.
 
 ---
 
@@ -251,4 +274,4 @@ Over time, this helps you see patterns:
 
 This matters because it helps avoid a common mistake: treating every block as a willpower problem. A block may come from lack of clarity, badly named fear, real fatigue, or unresolved inner conflict.
 
-If you want a dedicated tool, there are options like **Sphēra** for tracking emotional states or **Rosebud** for AI-assisted journaling. But the tool matters less than the habit of honestly naming what is happening inside you.
+If you want a dedicated tool, a simple journal or an app like **Rosebud** can help. But the tool matters less than the habit of honestly naming what is happening inside you.

@@ -10,6 +10,21 @@ Consommer du contenu sans réfléchir, c'est comme manger sans digérer — ça 
 
 > Lire 100 articles et n'en retenir aucun, c'est du divertissement déguisé en apprentissage.
 
+## La vraie boucle : consommer, extraire, relier, créer
+
+Le vrai but n'est pas de "mieux consommer". Le vrai but est de transformer ce que tu consommes en quelque chose de :
+- retrouvable
+- relié
+- réutilisable
+
+Tu peux garder cette boucle simple :
+1. **Consommer** avec une intention claire
+2. **Extraire** une ou deux idées utiles
+3. **Relier** ces idées à tes notes existantes
+4. **Créer** une sortie : décision, note, paragraphe, action, contenu
+
+Si une information ne passe jamais ce cap, elle reste souvent au stade du divertissement ou du bruit.
+
 ## Optimisation YouTube
 
 YouTube est une bibliothèque immense polluée par du clickbait. Ces extensions la rendent utilisable.
@@ -62,6 +77,27 @@ Feedly est le lecteur RSS le plus complet pour la veille professionnelle :
 - **Feedly** si tu as besoin de puissance, de filtres et d'intégrations pro
 - **[Feedboard](https://feedboard.app/)** (vu dans le module précédent) si tu veux un tableau de bord visuel simple
 
+### Quel niveau de veille te faut-il vraiment ?
+
+Là aussi, le piège est de choisir un outil trop lourd pour un besoin flou.
+
+#### Niveau 1 : veille légère et confortable
+
+Si tu veux surtout lire proprement et éviter d'ouvrir 15 sites, **Flipboard** peut suffire.
+
+#### Niveau 2 : veille active et professionnelle
+
+Si tu veux filtrer, classer, rechercher, réinjecter les contenus dans ton système, **Feedly** est plus cohérent.
+
+#### Niveau 3 : PKM connecté
+
+Dès que la veille doit nourrir ton système de connaissance, la vraie question n'est plus seulement "quel lecteur RSS ?". La vraie question devient :
+- où vont les articles intéressants ensuite ?
+- dans quelles notes les relies-tu ?
+- qu'est-ce qui en ressort concrètement ?
+
+Autrement dit, le lecteur n'est qu'une porte d'entrée. La valeur vient de ce que tu fais après.
+
 ---
 
 ## Agrégation de news
@@ -107,6 +143,17 @@ Chaque dimanche, 20 minutes :
 4. **Identifie** un sujet à approfondir la semaine suivante
 5. **Crée** quelque chose à partir de tes notes (même un paragraphe suffit)
 
+### Relier à ton PKM au lieu d'empiler des résumés
+
+Le piège courant est de faire des résumés isolés que tu ne reverras jamais.
+
+Une meilleure pratique :
+- envoie les références vers **Karakeep**
+- transforme les idées importantes en notes dans **Obsidian** ou **Logseq**
+- ajoute au moins **un lien** vers une note existante
+
+Ce simple geste change tout. Tu ne stockes plus seulement une information. Tu l'insères dans un réseau.
+
 ---
 
 ## Le piège de la consommation passive
@@ -126,3 +173,15 @@ Tu connais la sensation : tu as passé 2 heures à lire des articles et tu te se
 - **30% maximum** sur la consommation et la veille
 
 L'information sans action, c'est du bruit. L'action informée, c'est du progrès.
+
+## Minimum viable consommation intentionnelle
+
+Si tu veux quelque chose de simple et tenable :
+
+- **YouTube** : nettoie l'interface avec Unhook, SponsorBlock et DeArrow
+- **RSS** : garde un seul lecteur principal, souvent Feedly si tu fais de la vraie veille
+- **Références** : envoie ce que tu veux relire vers Karakeep
+- **Idées** : envoie ce que tu veux penser dans Obsidian ou Logseq
+- **Sortie** : chaque semaine, crée au moins quelque chose à partir de tes notes
+
+Le système n'a pas besoin d'être parfait. Il doit surtout t'empêcher de consommer sans transformer.

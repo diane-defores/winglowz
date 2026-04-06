@@ -1,98 +1,159 @@
 ---
 title: "Time & Energy"
-description: "Learn how to manage your time and energy like a pro: time tracking, timeboxing, Biological Prime Time, and building your own personal system."
+description: "Learn to allocate time and energy better: measure first, detect your peaks, protect focus, and build a sustainable system."
 sidebar:
   label: "Time & Energy"
   order: 1
 ---
 
-Time is your most valuable resource, and unlike money, you cannot earn more of it. The good news: you can **dramatically improve** the way you use it.
+Time is not managed like a neutral resource. What you really manage is the allocation of attention and energy inside the time you actually have.
 
-> You do not manage time. You manage energy and attention within time.
+> The problem with many productivity systems is not that they lack discipline. It is that they demand the same kind of effort at the wrong moment.
 
-## Step 1: Know where your time goes
+## What this module is really about
 
-Before optimizing anything, you need to **measure** it. Most people overestimate their productive time by 40 to 60%. Automatic time tracking fixes that blind spot.
+This module is not here to help you fill your calendar more efficiently. It is here to help you:
+- see where your time really goes
+- understand when your energy rises and falls
+- place the right kind of work at the right moment
+- stop burning your best hours on the wrong tasks
 
-### Time tracking tools
+## The Winflowz decision framework
 
-| Tool | Type | Price | Best for |
-|------|------|------|----------|
-| **ActivityWatch** | Automatic, open source | Free | Passive tracking on PC/Mac/Linux |
-| **Toggl Track** | Manual + reports | Freemium | Freelancers, project-based tracking |
-| **RescueTime** | Automatic | Freemium | Effortless high-level visibility |
-| **Rize** | Automatic + AI | Paid | Automatic tracking plus AI productivity reports |
-| **Clockify** | Manual | Free forever | Teams, freelancers, billing |
+The logic of the module has four steps:
 
-**Recommendation**: install ActivityWatch for one full week without changing your habits. The result will surprise you.
+1. **Measure** before optimizing
+2. **Detect** your peaks and troughs
+3. **Assign** the right work to the right energy level
+4. **Iterate** instead of chasing the perfect schedule
 
-### The daily activity review
+## 1. Measure before you optimize
 
-Each evening, spend five minutes reviewing your day:
-- How much time went into **creation** versus **consumption**?
-- Which tasks took longer than expected?
-- Where did time disappear without you noticing?
+Most people are wrong about how their time is actually used. They overestimate deep work and underestimate fragmentation.
 
-This simple ritual creates a feedback loop that improves your productivity week after week.
+So the right starting point is not a new schedule. It is an audit.
 
-## Timeboxing and Time Blocking
+### Main recommendation: [ActivityWatch](https://activitywatch.net/)
 
-Timeboxing means **assigning a fixed slot to every task**. Not a to-do list, a calendar. Elon Musk and Bill Gates are known for breaking their days into 5- to 15-minute blocks.
+ActivityWatch remains the strongest simple recommendation to start with:
+- open source
+- passive tracking
+- low friction
+- good for seeing reality before telling yourself stories about your day
 
-### The 3 traps of timeboxing
+### Valid alternatives depending on need
 
-1. **What-aboutism** - "What if an emergency comes up?" Build in buffer blocks. Uncertainty is not an excuse not to plan.
-2. **Not iterating** - Your first schedule will be bad. That is normal. Adjust it every week until it matches your rhythm.
-3. **Psychological reactance** - Feeling trapped by your own plan. The fix: leave 20-30% of your time open and remember that **you** are the one in control.
+- **Toggl Track** if you want more manual, project-oriented tracking
+- **Clockify** if you want simple tracking with team or billing logic
+- **RescueTime** or **Rize** if you want a more guided, commercial, or analytics-heavy layer
 
-### Parkinson's Law
+The important point is not the tool. It is watching yourself for a week before changing your habits too early.
 
-> "Work expands so as to fill the time available for its completion."
+## 2. Detect your peaks and troughs
 
-Without a deadline, a 30-minute task will easily become a two-hour task. Timeboxing fights that by forcing a real constraint.
+Timeboxing alone is not enough, because it often assumes every hour is equal.
 
-## Biological Prime Time
+It is not.
 
-Your energy rises and falls in biological cycles. Biological Prime Time is the practice of identifying your peaks and troughs so you can place the right tasks at the right moments.
+Your **Biological Prime Time** is simply the part of the day when your clarity and mental availability are highest. That may be in the morning, afternoon, or later depending on your profile.
 
-- **Energy peak** -> creative work, complex problems, deep work
-- **Medium energy** -> meetings, collaboration, structured tasks
-- **Low energy** -> email, admin, mechanical work
+Map three zones:
+- **peak** - creation, strategy, difficult problems
+- **medium energy** - meetings, coordination, structured tasks
+- **low energy** - admin, email, maintenance, simple execution
 
-To find yours, track your energy level (1-10) every hour for two weeks. The pattern will show up.
+When you ignore this, you use your calendar against your biology.
 
-## Real breaks vs. stimulating breaks
+## 3. Assign the right work to the right energy level
 
-Scrolling Instagram is **not** a break. Your brain is still in consumption mode. A real break restores energy:
+Real optimization comes less from "doing more" than from reducing the mismatch between the task and your mental state.
 
-- Walk outside for 10 minutes
-- Stretch or breathe deeply
-- Look out the window, yes really
-- Talk to someone in person
+Simple questions:
+- what requires my highest clarity?
+- what can be done when I am average?
+- what should go into low-energy periods?
 
-## Reclaim dead time
+That creates a useful hierarchy:
+- **deep work** in peak zones
+- **coordination** in medium zones
+- **maintenance** in low zones
 
-Brian Holiday calls it "turning dead time into living time." Commutes, waiting rooms, lines - these are recoverable blocks for podcasts, audiobooks, or reflection.
+## 4. Iterate instead of chasing the perfect week
 
-## The Pilot / Airplane / Engineer metaphor
+The best system is not the one that looks neat. It is the one you can actually sustain.
 
-Think about your roles during a day:
+Timeboxing is still useful, but only if:
+- you accept that the schedule is iterative
+- you do not confuse structure with rigidity
 
-| Role | % of time | What you do |
-|------|-----------|-------------|
-| **Pilot** | ~10% | Direction, strategic decisions, priorities |
-| **Airplane** | ~80% | Execution, production, deep work |
-| **Engineer** | 5-10% | System maintenance, review, optimization |
+The classic traps remain the same:
+- what-aboutism
+- forgetting that the system should evolve
+- psychological reactance when your own calendar starts to feel like a prison
 
-Most people spend too much time in Pilot mode, planning without doing, or they ignore Engineer mode entirely and never improve the system.
+The right use is experimental, not military.
 
-## Build your personal system
+## What you need to protect
 
-There is no universal perfect system. The best system is the one **you build through iteration**:
+Once you have identified your peaks, you need to defend them.
 
-1. Choose a method (timeboxing, Pomodoro, time blocking...)
-2. Test it for at least two weeks
-3. Note what works and what breaks
-4. Adjust and repeat
+That means:
+- fewer meetings at the wrong time
+- fewer instant replies
+- more interruption-free blocks
+- less thematic fragmentation inside the same day
 
-After three or four iterations, you will have a system tailored to your brain, your pace, and your life.
+A large part of productivity comes from no longer letting the outside world decide the shape of your best hours.
+
+## What to avoid
+
+- optimizing without measuring
+- applying the same rhythm to every day
+- treating your peak energy as available time for everyone else
+- filling every gap without leaving air
+- mistaking a stimulating break for a real break
+
+Scrolling is not recovery. A real break gives energy back to the system.
+
+## The module logic
+
+This module then unfolds around three ideas:
+- **see** the reality of your time
+- **respect** your energy instead of forcing it
+- **organize** your days and weeks around themes, blocks, and sustainable limits
+
+## Recommended workflow
+
+**Minimalist**:
+- 1 week of auditing
+- identify your peaks
+- protect one deep-work block per day
+
+**Pragmatic**:
+- audit plus a short end-of-day review
+- light timeboxing
+- work allocation by energy level
+
+**Personal system**:
+- regular measurement
+- themed weeks
+- protected blocks
+- weekly review and adjustment
+
+## Useful metaphor
+
+You can think of your day in three roles:
+- **Pilot**: direction and priorities
+- **Airplane**: actual execution
+- **Engineer**: maintenance and system improvement
+
+The classic problem is too much planning, not enough doing, and almost no system improvement.
+
+:::note[Practical exercise]
+For two weeks:
+
+1. measure your real time
+2. note your energy several times a day
+3. identify one peak, one medium zone, and one trough
+4. only then change the placement of three task types in your day
+:::

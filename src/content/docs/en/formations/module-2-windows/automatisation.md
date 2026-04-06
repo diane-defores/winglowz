@@ -224,6 +224,17 @@ Opening an app through the Start menu is slow. A launcher lets you type a few le
 
 **Our recommendation**: Flow Launcher for its active community and plugin ecosystem, or PowerToys Run if you already use PowerToys.
 
+### How to choose your launcher
+
+Not every launcher solves the same problem:
+- **Flow Launcher**: the best starting point if you want a modern, extensible, still-living launcher
+- **PowerToys Run**: a very good choice if you want something simple, clean, and already integrated into your Windows setup
+- **Listary**: especially strong if your real bottleneck is not app launching itself, but moving quickly through files and Explorer
+
+You may also come across older tools like **Wox** or **Find and Run Robot**. They are still worth knowing as references or secondary alternatives, but we do not put them at the center of the course:
+- **Wox** mattered historically, but is less compelling today next to Flow Launcher
+- **Find and Run Robot** remains a solid veteran launcher for some power users, but it is more a legacy tool than a modern premium recommendation
+
 ### Universal shortcut
 
 Set your launcher to `Alt + Space`. That is the de facto standard. Press it, type, validate - three gestures to open anything.
@@ -256,6 +267,8 @@ To launch a program or script automatically:
 2. Drop a **shortcut** (not the original file) for your program into that folder
 3. That is it. At the next boot, it will launch automatically.
 
+For a more deliberate review of which apps should launch at boot, also see the [Ergonomics](./ergonomie) chapter, which covers startup management through Task Manager.
+
 ## Introduction to RPA
 
 RPA (Robotic Process Automation) takes automation to the professional level. Instead of automating one task, you automate whole processes.
@@ -275,3 +288,6 @@ It is an advanced topic, but if you work with repetitive processes at scale, it 
 - [PhraseExpress](https://www.phraseexpress.com/) - a more advanced snippet library for heavy use.
 - [Flow Launcher](https://www.flowlauncher.com/) - the launcher we recommend for keyboard-first workflows.
 - [Microsoft PowerToys](https://github.com/microsoft/PowerToys) - useful if you also want PowerToys Run in the same suite.
+- [Listary](https://www.listary.com/) - very strong if you spend a lot of time navigating files and Explorer.
+- [Wox](https://github.com/Wox-launcher/Wox) - a historical alternative that is now more secondary.
+- [Find and Run Robot](https://www.donationcoder.com/Software/Mouser/findrun/index.html) - a veteran launcher still worth knowing for some advanced users.

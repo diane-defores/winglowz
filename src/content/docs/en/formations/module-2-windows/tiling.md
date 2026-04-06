@@ -75,11 +75,60 @@ If FancyZones feels too complex, AquaSnap is a simpler alternative that improves
 | **GlazeWM** | True automatic tiling manager | Users coming from Linux (i3/sway) |
 | **Komorebi** | Scriptable tiling manager | Power users who want an i3-like setup on Windows |
 
+## What level of window management do you actually need?
+
+The classic mistake is looking for "the best tool" too early. In practice, it is better to choose your **complexity level** first.
+
+### Level 1: native Windows snap
+
+If your need is simply to place two or three windows side by side without thinking, stay with the native system:
+- `Win + Left/Right`
+- `Win + Z`
+- virtual desktops
+
+That is enough for many people. If you have not yet hit the limits of those gestures, there is no reason to add another tool layer.
+
+### Level 2: FancyZones as the default recommendation
+
+As soon as you want repeatable zones, a real screen logic, or multiple layouts depending on context, **FancyZones** becomes the best entry point.
+
+It is our central recommendation because:
+- it is stable
+- it is maintained
+- it is part of PowerToys
+- it adds real structure without forcing you to rebuild your entire workstation
+
+### Level 3: intermediate tools for specific needs
+
+If FancyZones does not match your exact need, there are useful alternatives:
+- **AquaSnap** if you mainly want to improve native snapping
+- **WindowGrid** if you want very precise placement without heavy setup
+- **MaxTo** if you want a highly structured multi-monitor workstation
+
+These tools are interesting when your problem is concrete and identified. They are much less interesting if you just want "more power" in the abstract.
+
+### Level 4: real tiling managers for advanced users
+
+If you are coming from Linux, i3, Sway, or Hyprland, you will naturally look at **GlazeWM** or **Komorebi**.
+
+They become relevant if:
+- you want a more automatic tiling logic
+- you accept configuring your environment
+- you can tolerate less-smooth compatibility with some Windows apps
+
+In short:
+- **native** if your need is simple
+- **FancyZones** for most serious users
+- **AquaSnap / WindowGrid / MaxTo** for targeted intermediate cases
+- **GlazeWM / Komorebi** only if you genuinely want to import Linux tiling culture into Windows
+
 ## Automatic vs. manual tiling
 
 On Linux, tiling window managers (i3, Sway, Hyper) **automatically** manage the position of every window. You open an app, it takes its place. You open a second one, the space splits.
 
 On Windows, that level of automation is harder to achieve. **GlazeWM** and **Komorebi** get close, but they require configuration and can conflict with certain apps.
+
+If you are coming from something like **Hyprland**, it is worth stating clearly: there is no perfect equivalent on Windows. You can recover part of the logic with FancyZones, AquaSnap, GlazeWM, or Komorebi, but not the same level of overall control or the same deep system integration.
 
 **Our recommendation**: start with FancyZones. It is the best balance between power and stability. If you want to go further, test GlazeWM.
 

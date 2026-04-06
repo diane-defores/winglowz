@@ -8,10 +8,15 @@ _priorité: ""
 ---
 
 ## ✅ MIGRÉ → `src/content/docs/fr/formations/module-5-consommer/reunions.md`
-- ((réunions efficaces — problème de productivité))
-- ((Hedy AI — assistant IA temps réel en réunion))
-- ((communication asynchrone, fatigue Zoom))
+- ((réunions comme coût cognitif et consommation imposée))
+- ((cadre de décision : async possible ? sortie concrète ? présence requise ? coût sur le focus ?))
+- ((4 sorties : refuser, transformer en async, raccourcir, accepter))
+- ((bon canal : écrit, Loom, commentaires async, stand-up écrit, réunion courte, visio))
+- ((règles minimales avant / pendant / après))
+- ((Otter / tl;dv / Fireflies comme couche IA principale))
+- ((Hedy comme outil plus niche d'assistance live, pas recommandation par défaut))
+- ((objectif : réduire la fatigue, pas seulement mieux supporter trop de réunions))
 
 ## 🔶 À TRIER
 
-[Hedy AI - Get next-level advice in real-time during your meetings | Product Hunt](https://www.producthunt.com/posts/hedy-ai)
+- ancien angle trop centré sur Hedy et la "réunion assistée" à ne pas réinjecter tel quel

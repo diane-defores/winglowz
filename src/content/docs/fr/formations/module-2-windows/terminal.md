@@ -1,138 +1,184 @@
 ---
 title: "Terminal & Ligne de Commande"
-description: "Découvre le terminal Windows et les outils CLI modernes pour gagner en efficacité"
+description: "Sache quand la CLI vaut vraiment le coup sur Windows, pars sur la bonne base, et garde un stack terminal simple mais rentable."
 sidebar:
   label: "Terminal"
   order: 6
 ---
 
-> Le terminal, c'est l'outil que tout le monde ignore jusqu'au jour où il découvre à quel point c'est puissant.
+Le terminal n'est pas une religion. C'est un levier. Il devient utile quand il te fait gagner du temps, de la répétabilité, ou du contrôle.
 
-## Pourquoi le terminal ?
+> Le bon usage du terminal n'est pas de tout faire en CLI. C'est de l'utiliser là où la souris devient lente, répétitive ou fragile.
 
-L'interface graphique est intuitive, mais elle a un plafond. Certaines opérations prennent 30 secondes en ligne de commande et 5 minutes à la souris : renommer 200 fichiers, chercher un texte dans un projet, installer 10 logiciels d'un coup.
+## Le vrai sujet : franchir le bon seuil
 
-Le terminal n'est pas réservé aux développeurs. C'est un outil de productivité pour quiconque veut aller plus vite.
+Beaucoup de gens rejettent le terminal parce qu'ils imaginent qu'il faut tout apprendre d'un coup. À l'inverse, certains l'adoptent comme une posture et compliquent des tâches qui iraient très bien en interface graphique.
 
-## Windows Terminal : le hub central
+La bonne logique est plus simple :
+- GUI pour le ponctuel, le visuel et l'évident
+- CLI pour le répétitif, le massif, le scriptable et le reproductible
 
-Windows Terminal est l'application officielle de Microsoft qui regroupe tous tes shells dans une seule fenêtre avec des onglets.
+## Le decision framework Winflowz
 
-**Pourquoi l'utiliser :**
-- Onglets et panneaux divisés
-- Profils personnalisables par shell
-- Thèmes et polices configurables
-- Raccourcis clavier complets
-- Support GPU pour le rendu du texte
+Avant de passer par le terminal, pose-toi quatre questions :
 
-**Installation** : disponible dans le Microsoft Store ou via `winget install Microsoft.WindowsTerminal`.
+1. **Est-ce que je fais cette opération une fois ou souvent ?**
+2. **Est-ce que je traite 3 éléments ou 300 ?**
+3. **Ai-je besoin d'un résultat reproductible ou juste d'un geste ponctuel ?**
+4. **La souris me fait-elle gagner du temps, ou me force-t-elle à répéter la même suite d'actions ?**
 
-### Raccourcis essentiels
+Si la tâche est :
+- répétitive
+- volumineuse
+- textuelle
+- ou destinée à être rejouée
 
-| Action | Raccourci |
-|--------|-----------|
-| Nouvel onglet | `Ctrl + Shift + T` |
-| Fermer l'onglet | `Ctrl + Shift + W` |
-| Diviser horizontalement | `Alt + Shift + -` |
-| Diviser verticalement | `Alt + Shift + =` |
-| Naviguer entre les panneaux | `Alt + Flèches` |
-| Palette de commandes | `Ctrl + Shift + P` |
+alors le terminal commence souvent à être le meilleur outil.
 
-## PowerShell 7 vs CMD
+## La bonne base Windows
 
-CMD est un vestige des années 80. PowerShell 7 est un shell moderne, cross-platform et orienté objet.
+### 1. Windows Terminal
 
-| Critère | CMD | PowerShell 7 |
-|---------|-----|-------------|
-| **Âge** | 1987 | 2020+ |
-| **Sorties** | Texte brut | Objets .NET |
-| **Scripts** | .bat | .ps1 |
-| **Cross-platform** | Non | Oui (Windows, macOS, Linux) |
-| **Autocomplétion** | Basique | Intelligente (PSReadLine) |
-| **Pipeline** | Texte | Objets structurés |
+**Windows Terminal** reste la base la plus saine pour la majorité des utilisateurs Windows.
 
-**Installe PowerShell 7** : `winget install Microsoft.PowerShell`. C'est différent du PowerShell 5.1 préinstallé avec Windows.
+Pourquoi :
+- onglets
+- panneaux divisés
+- profils multiples
+- palette de commandes
+- bonne intégration Windows
 
-### Naviguer dans les dossiers
+Je ne recommanderais pas de commencer ailleurs sauf besoin spécifique.
 
-```powershell
-# Se déplacer
-cd C:\Users\TonNom\Documents
-cd ..          # Remonter d'un niveau
-cd ~           # Aller au dossier utilisateur
+### 2. PowerShell 7, pas CMD
 
-# Lister le contenu
-ls             # Liste simple
-ls -la         # Liste détaillée (alias de Get-ChildItem)
+Le vrai shell de départ aujourd'hui, c'est **PowerShell 7**.
 
-# Créer et supprimer
-mkdir MonDossier
-Remove-Item MonDossier -Recurse
-```
+Pourquoi :
+- plus moderne
+- meilleur confort
+- plus cohérent pour les scripts
+- meilleur avenir que `cmd`
 
-## WSL : Linux dans Windows
+`CMD` peut encore servir pour de très vieilles habitudes ou quelques commandes simples, mais ce n'est plus la base à enseigner en premier.
 
-WSL (Windows Subsystem for Linux) te donne un vrai environnement Linux sans machine virtuelle. C'est indispensable si tu travailles avec des outils Linux ou du développement web.
+Donc :
+- **Windows Terminal** pour l'enveloppe
+- **PowerShell 7** pour le shell principal
 
-```powershell
-# Installer WSL avec Ubuntu
-wsl --install
+## Quand WSL devient utile
 
-# Lancer Linux
-wsl
-```
+**WSL** est excellent, mais seulement si tu as une vraie raison.
 
-Une fois dans WSL, tu as accès à tout l'écosystème Linux : apt, bash, ssh, git, node, python — tout fonctionne nativement.
+Je le recommande si :
+- tu utilises souvent des outils Linux
+- tu fais du développement web ou backend qui dépend fortement de l'écosystème Linux
+- tu veux retrouver un environnement proche d'un serveur ou d'une machine Unix
 
-## Outils CLI modernes
+Je ne le recommande pas comme premier pas si ton besoin est seulement :
+- naviguer dans des dossiers
+- lancer quelques commandes de base
+- faire un peu de recherche de fichiers ou de texte
 
-Les outils classiques ont des alternatives modernes, plus rapides et plus lisibles.
+Donc :
+- **PowerShell 7** d'abord
+- **WSL** quand ton workflow le justifie vraiment
 
-| Outil classique | Alternative moderne | Avantage |
-|----------------|-------------------|----------|
-| `find` | **fd** | Syntaxe intuitive, rapide, ignore .gitignore |
-| `grep` | **ripgrep (rg)** | 10x plus rapide, respect du .gitignore |
-| `cat` | **bat** | Coloration syntaxique, numéros de ligne |
-| `ls` | **eza** (ex-exa) | Icônes, couleurs, vue arborescente |
-| `cd` | **zoxide** | Apprend tes dossiers fréquents, `z proj` au lieu de `cd C:\long\chemin\projet` |
-| Recherche floue | **fzf** | Filtre interactif pour fichiers, historique, tout |
+## Les usages terminal qui paient le plus vite
 
-### Installer ces outils
+Tu n'as pas besoin de devenir expert pour obtenir un vrai retour.
 
-```powershell
-# Avec Scoop (recommandé pour les outils CLI)
-scoop install ripgrep fd bat eza fzf zoxide
-```
+Les premiers cas où la CLI paie vite sont souvent :
+- chercher du texte dans beaucoup de fichiers
+- trouver rapidement des fichiers
+- renommer ou déplacer en masse
+- installer ou mettre à jour plusieurs outils
+- enchaîner quelques commandes que tu veux rejouer
 
-## Émulateurs de terminal alternatifs
+Autrement dit, la CLI devient rentable dès que le travail a une structure répétable.
 
-Si Windows Terminal ne te convient pas :
+## Le petit stack moderne qui mérite vraiment sa place
 
-| Émulateur | Points forts |
-|-----------|-------------|
-| **WezTerm** | Configuré en Lua, GPU-accéléré, multiplexeur intégré |
-| **Alacritty** | Ultra-rapide, minimaliste, GPU-accéléré |
-| **Tabby** | Interface moderne, SSH intégré, plugins |
-| **Hyper** | Basé sur Electron, thèmes web, extensible |
+Tu n'as pas besoin de vingt utilitaires.
 
-**Notre recommandation** : reste sur Windows Terminal sauf si tu as un besoin spécifique. C'est solide, bien intégré et activement maintenu par Microsoft.
+### Les plus rentables
 
-## Premier réflexe terminal
+| Outil | Pourquoi le garder |
+|-------|--------------------|
+| **ripgrep (`rg`)** | Recherche texte ultra-rapide |
+| **fd** | Recherche de fichiers plus simple que les commandes classiques |
+| **bat** | Lecture de fichiers plus lisible |
+| **zoxide** | Navigation plus rapide entre dossiers fréquents |
+| **fzf** | Filtrage flou interactif quand tu veux chercher plus vite |
 
-La prochaine fois que tu dois faire une opération sur plusieurs fichiers, résiste à l'envie d'utiliser la souris. Cherche la commande équivalente. En une semaine de pratique, tu ne reviendras plus en arrière pour ces tâches-là.
+### Ceux qui sont plus optionnels
 
-## Ressources officielles
+| Outil | Quand il devient pertinent |
+|-------|----------------------------|
+| **eza** | Si tu veux une meilleure lecture de l'arborescence et du listing |
 
-- [Windows Terminal](https://github.com/microsoft/terminal) - le hub central si tu restes sur l'app de Microsoft.
-- [PowerShell 7](https://github.com/PowerShell/PowerShell) - le shell moderne à privilégier.
-- [WSL](https://learn.microsoft.com/windows/wsl/) - Linux dans Windows.
-- [ripgrep](https://github.com/BurntSushi/ripgrep) - la recherche texte ultra-rapide.
-- [fd](https://github.com/sharkdp/fd) - la recherche de fichiers simple et rapide.
-- [bat](https://github.com/sharkdp/bat) - le `cat` lisible.
-- [eza](https://github.com/eza-community/eza) - le `ls` moderne.
-- [zoxide](https://github.com/ajeetdsouza/zoxide) - la navigation intelligente entre dossiers.
-- [fzf](https://github.com/junegunn/fzf) - la recherche floue interactive.
-- [WezTerm](https://wezterm.org/) - le terminal puissant et scriptable.
-- [Alacritty](https://alacritty.org/) - le terminal minimaliste et rapide.
-- [Tabby](https://github.com/Eugeny/tabby) - le terminal complet avec SSH et clients série.
-- [Hyper](https://hyper.is/) - le terminal basé sur Electron et personnalisable.
+Le bon ordre d'adoption est simple :
+- `rg`
+- `fd`
+- `zoxide`
+- puis le reste si tu en sens le besoin
+
+## Installation : garde la base simple
+
+Si tu veux installer ces outils, **Scoop** reste une bonne couche secondaire pour les outils CLI.
+
+Mais n'oublie pas la hiérarchie générale du module :
+- `winget` pour la base logicielle globale
+- `Scoop` surtout pour enrichir l'environnement terminal
+
+## Les alternatives à Windows Terminal
+
+Il existe d'autres émulateurs :
+- **WezTerm**
+- **Alacritty**
+- **Tabby**
+- **Hyper**
+
+Mais je ne les recommande pas comme point de départ pour la majorité.
+
+Ils deviennent intéressants si tu veux :
+- une config plus poussée
+- un style particulier
+- un besoin précis autour du SSH, du multiplexage ou de l'esthétique
+
+Sinon, rester sur **Windows Terminal** évite de complexifier inutilement.
+
+## Ce qu'il faut éviter
+
+- adopter la CLI comme identité au lieu de l'utiliser comme levier
+- installer trop d'outils avant d'avoir un vrai usage
+- passer à WSL sans raison claire
+- compliquer en terminal une tâche purement visuelle faite une fois
+
+## Workflow recommandé
+
+**Minimaliste** :
+- Windows Terminal
+- PowerShell 7
+- quelques commandes utiles
+
+**Pragmatique** :
+- `rg`, `fd`, `zoxide`
+- usage terminal pour la recherche, le batch et les installs
+- scripts ou commandes sauvegardées quand une tâche revient
+
+**Système personnel** :
+- PowerShell 7 comme base
+- WSL si besoin réel
+- petit stack CLI stable et maîtrisé
+
+:::note[Exercice pratique]
+Repère une tâche que tu fais souvent à la souris :
+
+1. chercher un fichier
+2. chercher du texte
+3. renommer un lot
+4. installer plusieurs outils
+
+Choisis-en une seule et apprends la version terminal. Si elle te fait gagner du temps deux fois de suite, elle mérite d'entrer dans ton système. Sinon, reste en GUI sans culpabilité.
+:::

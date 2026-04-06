@@ -1,94 +1,164 @@
 ---
 title: "Finding the Right Content"
-description: "Curation strategies, filtering tools, and building an intentional content diet."
+description: "Build an intentional content diet: choose the right sources, the right depth, and the right curation tools."
 sidebar:
   label: "Finding Content"
   order: 4
 ---
 
-The internet does not lack content - it lacks filters. Your job is not to read everything, but to find the 1% that is worth your time.
+The internet does not lack content. It lacks filters, hierarchy, and criteria for separating what feeds your thinking from what simply captures your attention.
 
-> Curation is the art of saying no to 99% so you can say yes to the 1% that changes the way you think.
+> The real skill is not finding more content. It is building a system that gives you less noise and more signal.
 
-## The problem with infinite content
+## What this is really about
 
-- Algorithms show you what keeps you online, not what helps you grow
-- Doom-scrolling is designed to exploit your dopamine loop
-- Content quality is inversely proportional to its virality
-- Without a strategy, you end up consuming informational junk food
+Finding the right content is not just "following the right people." It means making three choices:
 
----
+- which **sources** deserve to enter your system
+- what **depth level** a topic deserves
+- what is worth **saving, rereading, or connecting**
 
-## Curation strategies
+## The Winflowz decision framework
 
-### 1. Follow people, not platforms
+When you encounter a source or piece of content, ask three questions:
 
-The best content comes from people you trust. Identify 10-15 experts in your areas of interest and follow them directly through RSS, newsletters, or blogs.
+1. **Is this a source or just a feed?**
+2. **Does this serve a real need or only passive curiosity?**
+3. **Does this deserve a glance, a real reading session, or durable capture?**
 
-### 2. Apply the 3R filter
+That creates three useful levels:
 
-Before consuming a piece of content, make sure it satisfies at least one criterion:
+- **Level 1: light monitoring** - quick scan, nothing to save
+- **Level 2: useful reading** - attentive reading, some notes or highlights
+- **Level 3: reference source** - content worth keeping, rereading, and connecting into your system
 
-- **Resolves** a problem you have right now
-- **Reinforces** a skill you are actively developing
-- **Reframes** a belief you took for granted
+## What to avoid
 
-### 3. Favor depth
+- letting algorithms decide what you read
+- mixing monitoring, learning, and distraction
+- consuming short posts as if that were real learning
+- saving faster than you reread
+- following platforms instead of authors, themes, and questions
 
-| Format | Depth | When to use it |
-|--------|-------|----------------|
-| Tweet / post | Very low | Discovery, quick monitoring |
-| Blog article | Medium | Targeted learning |
-| Long video / podcast | High | Deep understanding |
-| Book / course | Very high | Mastery of a subject |
+The goal is not to build a huge reading list. The goal is to build a **defensible information diet**.
 
----
+## The recommended logic
 
-## Curation tools
+### 1. Follow sources, not feeds
 
-### [Antiquoted](https://antiquoted.com/)
+The best inputs usually come from:
+- reference blogs and sites
+- high-quality newsletters
+- deliberately chosen RSS feeds
+- authors you trust
+- a few reliable curators, but not too many
 
-Antiquoted helps you discover high-quality content outside the usual algorithmic channels. The tool aggregates independent sources and surfaces content based on relevance, not engagement.
+### 2. Choose the right depth
 
-### Other useful tools
+| Format | Normal use | Main risk |
+|--------|------------|-----------|
+| Post / thread | weak-signal detection | illusion of learning |
+| Article | targeted learning | accumulation without synthesis |
+| Long podcast / video | immersion and context | passive consumption |
+| Book / course | solid knowledge building | slowness if badly chosen |
 
-| Tool | Function |
-|-------|----------|
-| Pocket | Save articles for later reading |
-| **[Raindrop.io](https://raindrop.io/)** | Visual, organized bookmark manager |
-| **[Refind](https://refind.com/)** | Personalized daily curation by email |
-| **[Readwise](https://readwise.io/)** | Centralize highlights from all your sources |
+The right question is not "which format is best?" but "which format matches the level of effort this topic deserves?"
 
----
+### 3. Capture less, but better
 
-## Building your content diet
+You do not need to save everything.
 
-### The weekly menu
+Keep mainly what:
+- solves a current problem
+- reinforces an active skill
+- challenges or sharpens an important idea
+- deserves to be reread, cited, or connected later
 
-Plan your consumption the same way you plan your meals:
+## The tool layer
 
-- **Monday-Friday morning** (15 min): RSS + essential newsletters
-- **Wednesday evening** (30 min): one long article or one book chapter
-- **Saturday** (1h): a podcast or long-form video
-- **Sunday** (20 min): review your notes from the week
+### Reading / capture recommendation: [Readwise Reader](https://readwise.io/pricing/reader)
 
-### Golden rules
+Readwise Reader is now the strongest recommendation if you want a real reading and capture system:
+- modern read-later layer
+- newsletters, RSS, PDFs, EPUBs, and videos in one place
+- highlights and notes
+- natural connection with Readwise and your note-taking system
 
-1. **No content before 10 a.m.** - protect your morning deep work
-2. **One topic at a time** - do not mix tech watch with political news
-3. **Take notes or do not read** - passive consumption is wasted time
-4. **Review your diet every month** - remove what no longer serves you
+It is the right option if you want to unify reading, capture, and review instead of stacking multiple apps.
 
----
+### Bookmark / light archive recommendation: [Raindrop.io](https://raindrop.io/)
 
-## Avoiding doom-scrolling
+Raindrop is still excellent if your main need is to:
+- save cleanly
+- organize links
+- keep a visual, searchable web archive
 
-Doom-scrolling is the loop where you scroll without purpose, jumping from one mediocre piece of content to another.
+I see it less as a reading system than as a reference layer.
 
-### How to get out of it
+### Discovery / curation recommendation: [Refind](https://refind.com/)
 
-- **Delete social media apps** from your phone - use them only on desktop
-- **Install a feed blocker** ([News Feed Eradicator](https://west.io/news-feed-eradicator/))
-- **Replace the reflex**: when you reach for your phone without a reason, open a reading app (Kindle, Pocket) instead of Twitter
-- **Set a daily limit**: 30 minutes of scrolling max, stopwatch in hand
-- **Ask yourself**: "Am I looking for something specific?" - if not, put the phone down
+Refind still makes sense if you want a filtered daily discovery layer.
+
+It just needs to be framed correctly:
+- it is a **suggestion stream**
+- not your main reading system
+- and definitely not your knowledge system
+
+### Structured monitoring recommendation: [Feedly](https://feedly.com/)
+
+Feedly is still valid if your monitoring needs are more serious:
+- structured RSS
+- filters
+- folders and themes
+- a more professional layer when your monitoring goes beyond basic read-later
+
+I would mainly recommend it if you track a sector, market, or capability continuously.
+
+## What I would no longer recommend as a central pick
+
+**Antiquoted** is not really a general content-curation tool. It is more of an expert-source platform for journalists, podcasters, and event organizers. So it is no longer a strong central recommendation for this lesson.
+
+## Recommended workflows
+
+**Minimalist**: selected RSS or newsletters + Reader or Raindrop + one weekly review. Enough for many users.
+
+**Pragmatic**: Reader + Refind + a few strong sources. Good for independents and curious generalists with limited time.
+
+**Serious monitoring**: Feedly + Reader + your note-taking system. Best for people actively tracking a sector or capability.
+
+## Simple rules
+
+1. follow fewer sources, but better ones
+2. do not enter a deep topic through short posts alone
+3. save less, reread more
+4. separate discovery, reading, and integration
+
+## Example diet
+
+A good week may look like:
+- some light monitoring
+- a few useful readings
+- one or two deep pieces
+- a short review of what is actually worth keeping
+
+## Doom-scrolling
+
+Doom-scrolling often starts when you enter with no clear question.
+
+Simple rule:
+- if you have no topic
+- no source
+- and no reason to search
+
+then you probably do not need to open the platform.
+
+Feed blockers like **[News Feed Eradicator](https://west.io/news-feed-eradicator/)** still help if you know discipline alone will not be enough.
+
+:::note[Practical exercise]
+For one week:
+
+1. list all your usual sources
+2. classify them as light monitoring, useful reading, or reference
+3. cut the ones that serve no clear question
+4. only then choose your real tool pair: reading, curation, or archive
+:::

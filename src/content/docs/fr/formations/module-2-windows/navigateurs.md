@@ -1,319 +1,227 @@
 ---
 title: "Navigateurs & Navigation Web"
-description: "Choisis et maîtrise ton navigateur pour une navigation web rapide et organisée"
+description: "Choisis le bon navigateur, garde tes onglets sous contrôle et transforme le web en environnement de travail au lieu de le subir."
 sidebar:
   label: "Navigateurs"
   order: 3
 ---
 
-> Tu passes probablement plus de temps dans ton navigateur que dans n'importe quelle autre application. Autant en faire un outil redoutable.
+Tu passes probablement plus de temps dans ton navigateur que dans n'importe quelle autre application. Si ce poste de travail est mal choisi ou mal réglé, tu subis du bruit toute la journée.
 
-## Choisir le bon navigateur
+> Le bon navigateur n'est pas celui qui a le plus de fonctions. C'est celui qui réduit le plus de friction pour ton vrai usage.
 
-Le navigateur par défaut n'est pas forcément celui qui te convient. Voici les trois options les plus intéressantes pour un utilisateur avancé.
+## Le vrai sujet : choisir par rôle, pas par hype
 
-### Vivaldi : le couteau suisse
-
-Vivaldi est le choix des power users. Il est basé sur Chromium (donc compatible avec toutes les extensions Chrome) mais pousse la personnalisation à un niveau qu'aucun autre navigateur n'atteint.
-
-**Ce qui le rend unique :**
-
-- **Tab Stacking** : empile des onglets dans des groupes visuels. Tu peux même les afficher en mosaïque pour voir plusieurs pages simultanément.
-- **Quick Commands** (F2) : une barre de commande universelle pour chercher dans tes onglets, ton historique, tes favoris et les paramètres.
-- **Chaînes de commandes** : automatise des séquences d'actions (ouvrir 5 sites, les disposer en grille, activer le mode lecture).
-- **Panneaux latéraux** : affiche tes notes, ton calendrier, tes mails ou une page web dans un panneau permanent.
-- **Personnalisation visuelle** : thèmes, disposition des barres, raccourcis — tout est configurable.
-
-Le vrai intérêt de Vivaldi n'est pas seulement d'avoir "plein d'options". Son intérêt est de pouvoir transformer le navigateur en **centre de contrôle de ton travail web**.
-
-Concrètement, cela veut dire :
-- moins de gestes répétés
-- moins de recherche d'onglets ouverts
-- moins de changements de contexte inutiles
-- plus de navigation pilotée par intention plutôt que par clics dispersés
-
-### Quick Commands : piloter ton navigateur comme un lanceur
-
-Chez beaucoup d'utilisateurs, le navigateur devient un chaos de clics, d'onglets ouverts et d'historique mal exploité. **Quick Commands** réduit ce chaos.
-
-Cette commande centrale permet de :
-- retrouver un onglet ouvert
-- relancer un favori ou un dossier de favoris
-- chercher dans l'historique
-- exécuter des commandes du navigateur
-
-Le gain n'est pas seulement la vitesse. Le gain, c'est de **sortir d'une logique visuelle saturée**. Au lieu de scanner l'écran, tu invoques ce que tu veux avec quelques touches.
-
-C'est particulièrement utile si :
-- tu travailles avec beaucoup d'onglets
-- tu reviens souvent aux mêmes ressources
-- tu veux naviguer plus au clavier et moins à la souris
-
-### Command Chains : automatiser les mini-routines du web
-
-Une bonne partie de la fatigue numérique vient de petites séquences répétées :
-- ouvrir plusieurs sites
-- réorganiser des onglets
-- lancer un contexte de veille ou de publication
-- passer d'un mode de lecture à un mode d'action
-
-Les **Command Chains** servent justement à regrouper plusieurs actions en une seule commande. Ce n'est pas une automatisation "ingénieur". C'est une automatisation pragmatique de micro-workflows web.
-
-Exemples utiles :
-- ouvrir ton dashboard de travail du matin
-- lancer plusieurs outils de notes et les afficher côte à côte
-- préparer un contexte de publication ou de revue
-
-Pour un utilisateur avancé, ça change la relation au navigateur : on ne subit plus une interface, on construit un environnement de travail.
-
-### Panels : garder certains outils visibles sans tout mélanger
-
-Les **panneaux latéraux** sont intéressants quand tu veux garder sous la main :
-- une note
-- une messagerie légère
-- un calendrier
-- une documentation
-- un outil secondaire de consultation
-
-Le bénéfice n'est pas seulement "avoir plus de choses ouvertes". Le bénéfice est de **stabiliser certains appuis visuels** sans les transformer en onglets principaux.
-
-Mais il faut garder une discipline :
-- tout ne mérite pas un panneau
-- trop de panneaux recréent du bruit
-- un panneau doit soutenir un workflow, pas flatter l'envie d'accumuler
-
-La bonne logique avec Vivaldi est donc : moins de friction, plus de contrôle, mais sans transformer le navigateur en cockpit ingérable.
-
-### Arc : l'approche minimaliste
-
-Arc repense l'interface du navigateur. La barre latérale remplace la barre d'onglets traditionnelle, les espaces séparent tes contextes (travail, perso, projets), et les onglets éphémères disparaissent automatiquement.
-
-**Idéal pour** : ceux qui veulent un navigateur épuré et qui sont prêts à changer leurs habitudes.
-
-Arc est intéressant parce qu'il essaie de réduire le bruit structurel du navigateur moderne :
-- moins d'onglets persistants partout
-- plus de contextes séparés
-- plus de décisions visuelles prises à ta place
-
-Cela peut être très puissant si ton problème principal est l'encombrement mental du navigateur.
-
-### Arc Max : quand l'IA enlève de la friction au lieu d'ajouter du bruit
-
-Les fonctions **Arc Max** sont intéressantes seulement si on les lit correctement. Leur intérêt n'est pas de "mettre de l'IA partout". Leur intérêt est de réduire certaines micro-frictions :
-- renommer plus proprement un onglet ou un téléchargement
-- poser une question sur la page sans sortir immédiatement de son contexte
-- accélérer quelques gestes de lecture ou d'organisation
-
-Le bon test à appliquer est simple :
-- est-ce que cela m'évite une étape pénible ?
-- est-ce que cela garde mon attention dans le bon contexte ?
-- ou est-ce que cela ajoute encore une couche d'assistance dont je n'avais pas besoin ?
-
-Utilisée avec discernement, cette couche peut faire gagner du temps. Utilisée sans filtre, elle peut aussi surcharger le navigateur avec une promesse d'intelligence qui ne vaut pas toujours le coût cognitif.
-
-### Brave : la vie privée avant tout
-
-Brave bloque les pubs et les trackers nativement, sans extension. C'est du Chromium avec une couche de protection intégrée. Rapide, respectueux de ta vie privée, et compatible avec l'écosystème Chrome.
-
-### Extension fondamentale : uBlock Origin
-
-Si tu n'utilises pas Brave, **uBlock Origin** est probablement l'extension la plus rentable que tu puisses installer. Elle bloque :
-- publicités
-- trackers
-- popups agressifs
-- une partie du bruit visuel inutile
-
-Son intérêt dépasse le simple confort. Moins de pub, c'est aussi :
-- moins de distraction
-- moins de charge cognitive
-- moins de scripts parasites qui ralentissent les pages
-- une navigation plus propre et plus calme
-
-Pour beaucoup de gens, installer uBlock Origin change immédiatement le ressenti du web. Le navigateur redevient un outil au lieu d'être un environnement publicitaire hostile.
-
-### Nettoyage avancé des réseaux : F.B. Purity
-
-Si tu utilises encore Facebook ou certains réseaux très bruyants, **F.B. Purity** peut aller plus loin qu'un simple bloqueur. L'outil permet de nettoyer l'interface, supprimer une partie des éléments parasites, et rendre le flux beaucoup moins agressif.
-
-Ce n'est pas une extension universelle indispensable. C'est plutôt un outil de power user pour celles et ceux qui veulent garder l'accès à la plateforme sans subir toute sa pollution visuelle et comportementale.
-
-### Tableau comparatif
-
-| Critère | Vivaldi | Arc | Brave |
-|---------|---------|-----|-------|
-| **Base** | Chromium | Chromium | Chromium |
-| **Personnalisation** | Extrême | Modérée | Limitée |
-| **Vie privée** | Bonne | Bonne | Excellente |
-| **Gestion des onglets** | La meilleure | Innovante | Standard |
-| **Courbe d'apprentissage** | Moyenne | Élevée | Faible |
-| **Idéal pour** | Power users | Minimalistes | Soucieux de la vie privée |
-
-## Gérer ses onglets efficacement
-
-Avoir 47 onglets ouverts, ce n'est pas du multitâche — c'est du chaos. Voici comment reprendre le contrôle.
-
-### Stratégies de gestion
-
-- **Règle des 10 onglets** : si tu dépasses 10, c'est le moment de trier. Mets en favoris ce que tu veux garder, ferme le reste.
-- **Groupes thématiques** : crée des groupes par projet ou par contexte (recherche, communication, dev).
-- **Sessions** : sauvegarde des ensembles d'onglets pour les retrouver plus tard sans les garder ouverts.
-- **Extensions utiles** : OneTab (sauvegarde tous les onglets en un clic), Tab Wrangler (ferme les onglets inactifs automatiquement).
-- **Manganum** — extension Chrome qui ajoute une barre latérale avec Gmail, Calendar, Drive, Notes, Tasks et ChatGPT sur chaque onglet. Utile si tu vis dans Google Workspace et veux réduire le changement de contexte, mais à garder sous contrôle pour ne pas transformer ton navigateur en cockpit surchargé.
-
-### Snoozer un onglet au lieu de le subir
-
-Une partie du désordre vient d'onglets que tu ne veux ni lire maintenant, ni vraiment fermer, ni transformer immédiatement en note ou favori.
-
-Dans ce cas, un outil comme **Snooze Tabs** peut être utile. L'idée n'est pas simplement de "cacher" l'onglet. L'idée est de transformer une dette visuelle permanente en **décision temporelle** :
-- pas maintenant
-- plus tard
-- dans un contexte choisi
-
-C'est utile si :
-- tu fais beaucoup de veille
-- tu accumules des lectures "à reprendre"
-- tu veux sortir un onglet du champ sans le perdre
-
-Mais il faut rester lucide :
-- si tu snoozes tout, tu recrées juste un tas invisible
-- l'outil est bon seulement s'il t'aide à décider, pas à éviter
-
-### Quand un navigateur devient aussi un hub d'applications
-
-Il existe une autre approche : au lieu de gérer uniquement des pages web et des onglets, certains outils essaient d'organiser directement tes **applications web**, tes **comptes** et tes **contextes de travail**.
-
-C'est le cas d'outils comme :
-- **Shift**
-- **Sidekick**
-- **Biscuit**
-
-Leur promesse est claire :
-- regrouper plusieurs comptes
-- isoler plus proprement certaines apps web
-- retrouver plus vite mails, messageries, calendriers, docs et outils récurrents
-
-Le vrai intérêt n'est pas d'ajouter "encore un navigateur". Le vrai intérêt est de réduire le désordre quand ton travail passe en grande partie par :
-- Gmail
-- Slack ou messageries équivalentes
-- Notion, Drive, Calendar
-- outils métier ouverts toute la journée
-
-Ce type d'outil peut être pertinent si :
-- tu jongles avec plusieurs comptes pro/perso
-- tu vis dans quelques apps web majeures toute la journée
-- tu veux une structure plus nette qu'une forêt d'onglets
-
-Mais il faut une mise en garde importante :
-- un navigateur-hub ne remplace pas une discipline d'organisation
-- il peut clarifier ton système
-- ou simplement déplacer ton chaos dans une interface plus jolie
-
-Le bon usage, c'est donc :
-- moins d'onglets jetables
-- plus de contextes stables
-- plus d'apps réellement centrales
-- pas une nouvelle couche d'accumulation
-
-## Raccourcis clavier essentiels
-
-Ces raccourcis fonctionnent dans tous les navigateurs Chromium :
-
-| Action | Raccourci |
-|--------|-----------|
-| Nouvel onglet | `Ctrl + T` |
-| Fermer l'onglet actif | `Ctrl + W` |
-| Rouvrir le dernier onglet fermé | `Ctrl + Shift + T` |
-| Onglet suivant / précédent | `Ctrl + Tab` / `Ctrl + Shift + Tab` |
-| Aller à l'onglet N | `Ctrl + 1` à `Ctrl + 8` |
-| Dernier onglet | `Ctrl + 9` |
-| Barre d'adresse | `Ctrl + L` ou `F6` |
-| Recherche dans la page | `Ctrl + F` |
-| Ouvrir le lien dans un nouvel onglet | `Ctrl + Clic` |
-| Navigation privée | `Ctrl + Shift + N` |
-
-**Astuce** : `Ctrl + Shift + T` est probablement le raccourci le plus sous-estimé. Il peut rouvrir plusieurs onglets à la suite.
-
-### Au-delà des touches fixes : connaître les fonctions qui méritent un raccourci
-
-Avec un navigateur comme Vivaldi, le plus important n'est pas de mémoriser une liste arbitraire de combinaisons. Le plus important est de savoir **quelles fonctions valent la peine d'être mises sous raccourci**.
-
-Pourquoi ? Parce que tu peux personnaliser ces touches dans les paramètres. Ce qui compte vraiment, c'est le levier fonctionnel.
-
-Les fonctions qui méritent souvent un raccourci dédié sont :
-- ouvrir la barre de commande / Quick Commands (`F2` par défaut)
-- afficher ou masquer le panneau actif (`F4` ou raccourci panneau personnalisé selon configuration)
-- ouvrir rapidement les signets, l'historique ou la liste de lecture (`Ctrl+B` pour les signets dans beaucoup de navigateurs, panneaux dédiés configurables dans Vivaldi)
-- empiler ou dépiler des onglets (raccourcis personnalisables dans Vivaldi, souvent plus utiles une fois adaptés à ton flux)
-- mettre en hibernation des onglets en arrière-plan (`Ctrl+Alt+H` ou configuration équivalente selon version)
-- rouvrir un onglet fermé (`Ctrl+Shift+T`)
-- basculer entre mode interface visible et interface plus épurée (`F11` pour plein écran, plus raccourcis d'interface configurables dans Vivaldi)
-
-Le bon raisonnement n'est donc pas :
-- "quels raccourcis le navigateur me donne par défaut ?"
-
-Le bon raisonnement est :
-- "quelles actions je répète souvent et que je veux rendre quasi instantanées ?"
-
-Quand tu penses comme ça, le raccourci devient un outil de design de ton navigateur, pas juste un détail de productivité.
-
-## Installer des extensions hors store
-
-Parfois, l'extension dont tu as besoin n'est pas sur le Chrome Web Store. Pour installer un fichier `.crx` ou un dossier décompressé :
-
-1. Ouvre `chrome://extensions/` (ou l'équivalent dans ton navigateur)
-2. Active le **Mode développeur** en haut à droite
-3. Clique sur **Charger l'extension non empaquetée** et sélectionne le dossier
-4. L'extension apparaît dans ta liste
-
-**Attention** : n'installe que des extensions de sources fiables. Une extension malveillante a accès à tout ce que tu fais dans ton navigateur.
-
-## Hygiène des extensions : chaque extension est une permission de plus
-
-Beaucoup de gens traitent les extensions comme de petits bonus sans conséquence. C'est une erreur. Une extension peut lire des pages, injecter du code, suivre ta navigation, ralentir ton navigateur, ou simplement accumuler de la dette silencieuse dans ton environnement.
-
-Le bon réflexe n'est pas seulement "installer les bonnes extensions". C'est aussi :
-- auditer régulièrement celles que tu gardes
-- retirer celles que tu n'utilises plus
-- vérifier si leurs permissions restent cohérentes avec leur rôle
-
-Une bonne hygiène d'extensions ressemble à ça :
+Le mauvais réflexe est de chercher "le meilleur navigateur absolu". En pratique, il faut surtout choisir :
+- un navigateur qui correspond à ton niveau de contrôle voulu
+- une stratégie claire pour les onglets
 - peu d'extensions, mais utiles
-- des rôles clairs
-- une revue périodique
-- aucune extension gardée "au cas où"
 
-Un autre réflexe utile est de **limiter le rayon d'action** d'une extension quand c'est possible. Beaucoup n'ont pas besoin de tourner sur tous les sites, tout le temps.
+Le navigateur devient alors :
+- un espace de lecture
+- un espace d'exécution
+- parfois un hub de travail
 
-Quand un navigateur le permet, pense à :
-- autoriser une extension seulement sur certains sites
-- ou l'activer uniquement au clic
+mais pas un dépotoir visuel.
 
-Tu réduis ainsi :
-- la charge inutile
-- les permissions actives en permanence
-- le risque de transformer ton navigateur en machine lente et opaque
+## Le decision framework Winflowz
 
-### [Extension Auditor](https://chromewebstore.google.com/detail/extension-auditor/gjfdlpdedlbiokokikmhjcelbkaljbep)
+Avant de changer de navigateur ou d'ajouter des extensions, pose-toi quatre questions :
 
-Extension Auditor est utile comme outil secondaire pour cette hygiène. Il peut t'aider à repérer quelles extensions demandent des permissions larges ou présentent un profil plus risqué que prévu.
+1. **Mon vrai problème est-il le chaos d'onglets, la distraction, la lenteur, ou le manque de contrôle ?**
+2. **Est-ce que je veux un navigateur à régler finement, ou un bon défaut avec peu d'entretien ?**
+3. **Est-ce que je vis surtout dans des apps web, ou plutôt dans de la lecture/recherche/navigation ?**
+4. **Est-ce que mon navigateur doit surtout m'aider à organiser, à bloquer le bruit, ou à retrouver vite ?**
 
-Ce n'est pas une solution magique, et ce n'est pas un substitut à ton jugement. Son intérêt est surtout de te rappeler qu'une extension n'est pas neutre. Quand ton navigateur devient ton poste de travail principal, la sécurité de ses extensions devient une question de système, pas un détail.
+## Les 3 recommandations actuelles les plus solides
 
-## Optimiser les performances
+### 1. Vivaldi : pour les power users qui veulent piloter
 
-- **Désactive les extensions inutilisées** : chaque extension consomme de la mémoire
-- **Limite les onglets ouverts** : chaque onglet est un processus à part entière
-- **Active l'accélération matérielle** : `Paramètres > Système > Accélération matérielle`
-- **Vide le cache régulièrement** : `Ctrl + Shift + Suppr`
+**Vivaldi** reste le meilleur choix si ton problème principal est :
+- trop d'onglets
+- trop de routines web répétées
+- besoin de tout piloter au clavier ou par configuration
 
-## Ressources officielles
+Ce qui le rend toujours supérieur dans cette logique :
+- **Quick Commands** pour retrouver onglets, historique, favoris, notes, commandes et même des workspaces
+- **Command Chains** pour regrouper plusieurs actions en une seule
+- **panneaux latéraux** pour garder quelques outils d'appui visibles
+- **personnalisation très poussée** de l'interface et des raccourcis
 
-- [uBlock Origin](https://ublockorigin.com/) - le bloqueur d'annonces et de trackers recommandé.
-- [F.B. Purity](https://www.fbpurity.com/) - utile pour nettoyer Facebook et les flux très bruyants.
-- [Manganum](https://manganum.app/) - la barre latérale Chrome orientée productivité.
-- [Extension Auditor](https://chromewebstore.google.com/detail/extension-auditor/gjfdlpdedlbiokokikmhjcelbkaljbep) - l'outil secondaire pour auditer le risque de tes extensions.
-- [Chrome Extension Performance Lookup](https://www.debugbear.com/chrome-extension-performance-lookup) - utile pour vérifier l'impact potentiel de certaines extensions sur les performances.
+La bonne lecture de Vivaldi n'est pas "plus de fonctions = mieux". C'est :
 
-## Pour aller plus loin
+**si tu veux transformer ton navigateur en poste de travail configurable, Vivaldi reste la meilleure option.**
 
-- [Browser.lol](https://browser.lol/) - utile si tu veux un navigateur isolé dans le cloud pour certains tests, certaines vérifications ou une navigation plus jetable.
+### 2. Brave : pour un Chromium propre, rapide et peu exigeant
+
+**Brave** reste un très bon choix si tu veux :
+- un navigateur Chromium compatible avec l'écosystème habituel
+- moins de bruit publicitaire par défaut
+- une installation simple avec peu de réglages
+
+Il est particulièrement pertinent si tu veux un navigateur qui soit rapidement plus calme que Chrome sans devoir reconstruire tout ton setup.
+
+Autrement dit :
+- moins de configuration que Vivaldi
+- moins de dépendance aux extensions pour nettoyer le web
+- une bonne option par défaut si tu veux quelque chose d'efficace immédiatement
+
+### 3. Firefox : pour plus de contrôle sur les extensions et moins de dépendance Chromium
+
+**Firefox** mérite aujourd'hui d'être dans le trio principal.
+
+Pourquoi :
+- il reste fort sur la personnalisation
+- il a désormais ses **tab groups** natifs
+- il conserve une logique de protection de la vie privée et de blocage intégrée solide
+- il reste un des choix les plus crédibles si tu veux une vraie alternative à l'écosystème Chromium
+
+Il devient particulièrement intéressant si :
+- tu veux un navigateur principal plus indépendant
+- tu tiens à des capacités de blocage plus complètes
+- tu veux une base forte pour lecture, recherche, travail par groupes d'onglets
+
+## Ce que je recommande moins comme choix par défaut
+
+### Arc : intéressant, mais plus niche
+
+**Arc** existe bien sur Windows et reste intéressant si tu aimes :
+- une interface plus radicale
+- les espaces de contexte
+- une logique plus design-first
+- une gestion plus visuelle de l'environnement
+
+Mais je ne le mettrais plus comme choix principal pour la plupart des gens dans le cours.
+
+Pourquoi :
+- sa logique demande plus d'adaptation
+- il est plus spécifique dans sa philosophie
+- les trois choix ci-dessus couvrent mieux les besoins les plus fréquents
+
+Donc :
+- **Arc** si tu veux vraiment expérimenter une autre interface
+- pas comme recommandation par défaut pour la majorité
+
+## Le vrai choix n'est pas seulement le navigateur : c'est aussi la stratégie d'onglets
+
+Avoir 40 onglets ouverts n'est pas une preuve d'intensité. C'est souvent une preuve d'absence de système.
+
+Le bon système d'onglets repose sur trois idées :
+- **le contexte**
+- **la fermeture**
+- **la récupération**
+
+### Ce qui marche bien
+
+- un groupe ou un workspace par vrai contexte
+- peu d'onglets permanents
+- fermeture agressive de ce qui n'a plus de rôle
+- sauvegarde seulement de ce qui mérite de revenir
+
+## Trois niveaux d'organisation des onglets
+
+### Niveau 1 : hygiène de base
+
+- ferme plus vite
+- garde peu d'onglets actifs
+- utilise favoris, liste de lecture ou outil de capture au lieu de garder tout ouvert
+
+### Niveau 2 : organisation native du navigateur
+
+Tu utilises :
+- **tab groups** dans Firefox
+- **workspaces / tab stacking / Quick Commands** dans Vivaldi
+- les fonctions natives de ton navigateur avant d'ajouter des extensions
+
+### Niveau 3 : vrai système de contextes
+
+Si tu as un problème chronique de "tab hell", un outil comme **Workona** devient plus pertinent que beaucoup d'extensions gadget.
+
+Pourquoi :
+- les espaces séparent les projets
+- les sessions sont autosauvegardées
+- tu peux changer de contexte sans garder toute la forêt visible
+
+Je le recommande plus volontiers qu'une pile d'extensions d'onglets si ton problème est structurel.
+
+## Extensions : peu, mais à fort levier
+
+Chaque extension ajoute :
+- des permissions
+- de la charge
+- du risque
+
+La bonne logique est donc :
+- peu d'extensions
+- chacune avec un rôle net
+
+### Celles qui méritent encore leur place
+
+**uBlock Origin** reste fondamental, avec une nuance importante :
+- support complet recommandé sur **Firefox** et **Brave**
+- expérience plus limitée sur Chrome avec **uBlock Origin Lite**
+
+Autrement dit, si ton objectif est de réduire pub, trackers, popups et bruit visuel, le choix du navigateur influence maintenant la qualité réelle du blocage.
+
+### Outils secondaires utiles
+
+- **F.B. Purity** si tu utilises encore Facebook et veux nettoyer fortement l'interface
+- un gestionnaire de contexte comme **Workona** si ton vrai problème est la surcharge d'onglets par projet
+
+Ce que je recommande moins aujourd'hui :
+- accumuler des extensions de confort qui se chevauchent
+- installer un "hub" pour compenser un chaos que tu n'as pas encore structuré
+
+## Les fonctions qui méritent un vrai raccourci
+
+Le plus important n'est pas de mémoriser une longue liste. C'est de savoir quelles actions doivent devenir quasi instantanées.
+
+En pratique :
+- ouvrir la barre de commande
+- rouvrir un onglet fermé
+- passer d'un groupe ou workspace à un autre
+- retrouver un favori ou un onglet
+- ouvrir le mode lecture ou un panneau utile
+
+Le bon raccourci est celui qui enlève une friction répétée, pas celui qui a l'air "power user".
+
+## Hygiène navigateur
+
+Quelques règles simples suffisent :
+- audit régulier des extensions
+- peu d'onglets permanents
+- peu de panneaux latéraux
+- fermeture rapide de ce qui n'a plus de rôle
+- pas de navigateur transformé en cockpit inutile
+
+## Workflow recommandé
+
+**Minimaliste** :
+- Brave ou Firefox
+- très peu d'extensions
+- fermeture rapide
+
+**Pragmatique** :
+- Vivaldi, Brave ou Firefox selon ton besoin dominant
+- stratégie claire de groupes / workspaces
+- blocage du bruit
+
+**Système personnel** :
+- Vivaldi si tu veux piloter
+- Firefox si tu veux plus de contrôle hors Chromium
+- Workona si ton vrai problème est le changement de contexte par projets
+
+:::note[Exercice pratique]
+Réponds honnêtement à ces trois questions :
+
+1. mon vrai problème est-il le bruit, le chaos d'onglets ou le manque de contrôle ?
+2. quelles 3 actions je répète le plus dans mon navigateur ?
+3. quelles extensions gardées aujourd'hui ont un rôle vraiment clair ?
+
+Ensuite :
+- choisis un navigateur principal
+- retire 20% de tes extensions
+- définis une seule stratégie d'onglets
+
+Si ton navigateur te fatigue encore après ça, le problème vient souvent moins du web que de l'absence de système.
+:::

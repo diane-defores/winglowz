@@ -1,85 +1,154 @@
 ---
 title: "Planification Thématique"
-description: "Organise tes journées par état mental, pas par projet. Découvre le time batching, l'approche de David Kadavy et le rythme circadien."
+description: "Organise tes journées par mode cognitif et niveau d'énergie : batching, thèmes de semaine et structure plus soutenable."
 sidebar:
   label: "Planification Thématique"
   order: 2
 ---
 
-La plupart des gens organisent leurs journées par **projet** : "lundi = projet A, mardi = projet B". C'est une erreur. Ton cerveau ne fonctionne pas par projet — il fonctionne par **type d'effort mental**.
+La plupart des gens organisent leurs journées par projet ou par urgence. Leur cerveau, lui, fonctionne surtout par **mode cognitif** : créer, explorer, coordonner, administrer, récupérer.
 
-> Organise par état mental, pas par catégorie de tâche.
+> Le bon agenda n'est pas celui qui reflète toutes tes tâches. C'est celui qui respecte le type d'effort que ton cerveau peut réellement fournir au bon moment.
 
-## Le Time Batching
+## Le vrai sujet
 
-Le time batching consiste à **regrouper les tâches similaires** dans un même créneau. Au lieu de répondre à tes emails 15 fois par jour, tu le fais en 2 blocs de 20 minutes.
+La planification thématique sert à réduire deux problèmes :
+- le coût de switching permanent
+- le mauvais couplage entre tâche et niveau d'énergie
 
-### Pourquoi ça marche
+L'idée n'est pas d'avoir une semaine "jolie". L'idée est de donner à chaque période un type de travail cohérent.
 
-Chaque fois que tu passes d'un type de tâche à un autre, ton cerveau paie un **coût de switching** — entre 15 et 25 minutes pour retrouver ta concentration. En regroupant, tu élimines ces transitions inutiles.
+## Le decision framework Winflowz
 
-### Exemples de batchs efficaces
+Quand tu planifies une journée ou une semaine, pose-toi trois questions :
 
-| Batch | Tâches regroupées | Meilleur moment |
-|-------|-------------------|-----------------|
-| **Création** | Écriture, design, code, brainstorm | Matin (pic d'énergie) |
-| **Communication** | Emails, Slack, appels, réunions | Début d'après-midi |
-| **Admin** | Factures, planning, fichiers, mises à jour | Fin d'après-midi |
-| **Apprentissage** | Lectures, cours, veille, notes | Soir ou creux d'énergie |
+1. **Quel mode cognitif domine ici ?**
+2. **Quel niveau d'énergie correspond à ce créneau ?**
+3. **Qu'est-ce qui devrait être regroupé au lieu d'être dispersé ?**
 
-## L'approche David Kadavy : les 6 types de travail mental
+Cela donne trois couches utiles :
 
-David Kadavy identifie **6 types de travail mental**, classés par charge cognitive décroissante :
+- **Batchs** : regrouper les tâches similaires
+- **Thèmes** : donner une dominante à une demi-journée ou une journée
+- **Semaine type** : créer une structure répétable mais légère
 
-| Type | Charge cognitive | Exemples |
-|------|-----------------|----------|
-| **Prioritization** | Très haute | Décider quoi faire, planifier la semaine |
-| **Exploration** | Haute | Recherche, brainstorm, résolution de problèmes |
-| **Generation** | Haute | Écrire un premier jet, coder une feature, créer |
-| **Polishing** | Moyenne | Relecture, refactoring, peaufinage |
-| **Administration** | Faible | Emails, organisation, mises à jour |
-| **Recharge** | Nulle | Pauses, sport, marche, méditation |
+## Le batching
 
-### Comment l'appliquer
+Le batching consiste à faire ensemble ce qui coûte moins cher ensemble.
 
-Le principe est simple : **place le travail à haute charge cognitive quand ton énergie est haute**, et inversement.
+Exemples typiques :
+- création
+- communication
+- admin
+- apprentissage
 
-- **Matins créatifs** — Tes 2-3 premières heures sont sacrées. Pas d'emails, pas de Slack. Tu génères, tu explores.
-- **Après-midi collaboratifs** — Réunions, feedbacks, discussions. Ton énergie baisse mais tu restes social.
-- **Vendredis admin** — Regroupe l'administratif en fin de semaine. Factures, planning, rangement numérique.
+Le gain principal n'est pas seulement le temps. C'est la diminution du coût de recontextualisation.
 
-Tu n'as pas besoin de suivre ce schéma exactement. L'idée est de **respecter tes cycles** plutôt que de forcer du deep work à 16h quand ton cerveau demande grâce.
+## Organiser par mode cognitif
 
-## Rythme circadien et Auto Dark Mode
+L'idée la plus utile ici est de classer le travail par charge mentale.
 
-Ton corps suit un rythme de ~24 heures qui affecte ton énergie, ta concentration et même ta créativité. Travaille **avec** ce rythme, pas contre lui.
+L'approche popularisée par David Kadavy reste intéressante parce qu'elle rappelle qu'une journée contient plusieurs qualités d'attention, pas une seule.
 
-### Auto Dark Mode
+Tu peux lire cela comme une hiérarchie simple :
+- **priorisation** — décider, trier, choisir
+- **exploration** — chercher, réfléchir, ouvrir des pistes
+- **génération** — produire un premier jet, créer, coder, écrire
+- **polissage** — éditer, corriger, améliorer
+- **administration** — coordonner, ranger, répondre
+- **recharge** — récupérer réellement
 
-Configure ton système pour basculer automatiquement en mode sombre le soir. Ce n'est pas juste du confort — la lumière bleue le soir :
-- Retarde la production de mélatonine
-- Dégrade la qualité du sommeil
-- Réduit ton énergie du lendemain
+Le point n'est pas de mémoriser une taxonomie parfaite. Le point est d'arrêter de traiter toutes les tâches comme si elles demandaient le même cerveau.
 
-Sur Windows : **Paramètres > Personnalisation > Couleurs > Mode sombre automatique** (ou utilise l'app Auto Dark Mode). Sur Mac : c'est natif dans les réglages d'affichage.
+## Ce qu'il faut placer où
 
-## L'enregistrement de tâches
+### Haute énergie
 
-Ne fais pas confiance à ta mémoire. Chaque tâche qui te traverse l'esprit doit être **capturée immédiatement** dans un inbox unique :
+- génération
+- exploration
+- stratégie
+- travail profond
 
-- Une note rapide sur ton téléphone
-- Un raccourci clavier vers ton gestionnaire de tâches
-- Un carnet toujours à portée de main
+### Énergie moyenne
 
-L'objectif n'est pas d'organiser sur le moment — c'est de **vider ton cerveau** pour qu'il puisse se concentrer sur le travail en cours. L'organisation vient plus tard, pendant ton batch "Prioritization".
+- coordination
+- feedback
+- révision
+- collaboration
 
-## Construis ta semaine type
+### Basse énergie
 
-Prends 15 minutes ce dimanche soir pour dessiner ta semaine idéale :
+- admin
+- messages
+- classement
+- maintenance
 
-1. Place tes **blocs non négociables** (sommeil, sport, famille)
-2. Identifie tes **pics d'énergie** et réserve-les pour la création
-3. Regroupe les tâches **admin et communication** dans les creux
-4. Garde **20% de marge** pour l'imprévu
+Quand tu mets l'admin dans tes pics et la création dans tes creux, tu gaspilles deux fois : le temps et l'énergie.
 
-Ce template évoluera — c'est normal. L'important, c'est d'avoir un point de départ intentionnel plutôt que de subir ta semaine.
+## Construire une semaine type
+
+Une semaine thématique simple peut suffire :
+
+- des matinées orientées création
+- des après-midis plus collaboratifs
+- une zone dédiée à l'admin
+- des espaces de recharge qui comptent vraiment
+
+Tu peux aussi donner des dominantes à certains jours ou demi-journées :
+- production
+- coordination
+- maintenance
+- apprentissage
+
+Le but n'est pas d'enfermer toute la semaine. C'est d'éviter qu'elle soit décidée uniquement par le flux entrant.
+
+## La capture des tâches reste essentielle
+
+La planification thématique ne marche pas si chaque pensée interrompt le travail en cours.
+
+Donc :
+- capture immédiate
+- inbox unique
+- tri plus tard
+
+Tu ne veux pas organiser pendant que tu crées. Tu veux vider la tête pour rester dans le bon mode.
+
+## Les détails d'environnement
+
+Des réglages comme le mode sombre automatique peuvent aider le confort et le rythme, mais ils doivent rester secondaires.
+
+Si **Auto Dark Mode** t'aide à mieux respecter la transition jour / soir sur Windows, très bien. Mais ce n'est pas le cœur de la méthode. Le cœur, c'est l'alignement entre énergie, mode mental et structure.
+
+## Ce qu'il faut éviter
+
+- organiser la semaine seulement par projet
+- surthématiser au point de rendre la semaine rigide
+- croire que tout peut être batché
+- utiliser les thèmes comme décoration plutôt que comme contrainte utile
+- oublier de laisser de la marge
+
+## Workflow recommandé
+
+**Minimaliste** :
+- 3 batchs seulement : création, communication, admin
+- une zone de pic protégée
+- un moment hebdo pour prioriser
+
+**Pragmatique** :
+- semaine avec dominantes
+- tâches réparties par énergie
+- capture constante
+
+**Système personnel** :
+- semaine type révisée souvent
+- thèmes souples
+- vraie articulation entre pics, coordination et recharge
+
+:::note[Exercice pratique]
+Pendant une semaine :
+
+1. note les grands types de travail que tu fais réellement
+2. regroupe-les en 3 à 5 modes cognitifs
+3. repère où tu switches trop
+4. redessine ensuite une seule journée type avec des batchs et des thèmes plus propres
+:::

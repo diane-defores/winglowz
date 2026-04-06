@@ -1,151 +1,183 @@
 ---
 title: "Matériel & Environnement"
-description: "Optimise ton espace de travail — plantes, souris, son, écran, clavier — pour une productivité maximale."
+description: "Choisis un environnement de travail qui réduit la friction physique, visuelle et sonore au lieu d'ajouter du gadget."
 sidebar:
   label: "Matériel"
   order: 4
 ---
 
-Ton environnement de travail impacte directement ta concentration, ton énergie et ta performance. Voici comment l'optimiser.
+Le bon matériel ne te rend pas productif par magie. Mais un mauvais environnement peut te faire perdre de l'énergie, de l'attention et du confort tous les jours.
 
-## Ton espace physique
+Le but n'est donc pas d'accumuler du setup. Le but est de construire un espace qui :
+- réduit la fatigue
+- protège l'attention
+- diminue la friction physique
+- reste simple à maintenir
 
-### Plantes
+## Le decision framework Winflowz
 
-Les plantes ne sont pas qu'un élément décoratif. Selon l'American Psychological Association, l'espace le plus "toxique" pour l'humain est celui sans plantes ni photos personnelles. Elles améliorent la qualité de l'air, réduisent le stress et boostent la concentration.
+Avant d'acheter quoi que ce soit, pose-toi ces quatre questions :
 
-**Conseils :**
-- Choisis des plantes à faible entretien : succulentes, sansevières
-- Place-les près de ton bureau ou dans ton champ de vision
-- Utilise des supports suspendus si l'espace est limité
+1. **Quel est le vrai problème : douleur, distraction, bruit, fatigue visuelle, lenteur ?**
+2. **Est-ce qu'un réglage suffit avant d'acheter un objet ?**
+3. **Est-ce que ce matériel réduit une friction quotidienne réelle ?**
+4. **Est-ce que j'ajoute un outil, ou est-ce que j'améliore vraiment un poste de travail ?**
 
-### Lumière naturelle
+Ce cadre évite un classique :
+- transformer l'optimisation du bureau en hobby de consommation
 
-Travailler uniquement sous lumière artificielle dégrade la qualité du sommeil et la santé physique. Expose-toi à la lumière naturelle autant que possible — c'est gratuit et immédiat.
+## L'espace physique d'abord
 
-### Feng Shui & aménagement
+Avant les gadgets, regarde les bases :
+- bureau dégagé
+- lumière correcte
+- position de travail tenable
+- accès simple aux outils que tu utilises vraiment
 
-L'aménagement de ton espace influence ton énergie. Quelques principes :
-- Orientation du bureau face à l'entrée (position de contrôle)
-- Couleurs adaptées à l'activité (bleu/vert pour la concentration, jaune pour la créativité)
-- Désencombrement — un espace clair = un esprit clair
+L'objectif n'est pas d'avoir un bureau Pinterest. L'objectif est d'avoir un espace qui demande moins d'effort pour bien travailler.
 
----
+### Lumière naturelle et lisibilité
 
-## Souris
+La lumière naturelle reste l'un des meilleurs leviers simples :
+- meilleure sensation d'éveil dans la journée
+- moins de fatigue visuelle
+- meilleur ancrage du rythme jour/nuit
 
-Ta souris est l'un de tes outils les plus utilisés. Investir dans une bonne souris et la configurer correctement fait une vraie différence.
+Si tu peux, place ton poste de travail de façon à profiter de la lumière sans subir un reflet permanent.
 
-### Pourquoi une souris gaming ?
+### Désencombrement utile
 
-- **Précision** — mouvements plus fins et réactifs
-- **Boutons personnalisables** — raccourcis programmables par application
-- **Ergonomie** — conçue pour de longues sessions sans fatigue
-- **Durabilité** — matériaux de qualité supérieure
+Le problème du désordre n'est pas moral. C'est qu'il ajoute :
+- du bruit visuel
+- des micro-décisions
+- une sensation de saturation
 
-### Mention spéciale : [Swiftpoint ProPoint](https://www.swiftpoint.com/)
+Un espace propre n'a pas besoin d'être vide. Il doit surtout être lisible.
 
-Si tu veux une souris plus singulière qu'une gaming mouse classique, la **[Swiftpoint ProPoint](https://www.swiftpoint.com/)** mérite une vraie mention. C'est une souris pensée pour le confort, la précision et la polyvalence dans un format beaucoup plus mobile.
+## Souris et pointeur : réduire la friction physique
 
-Pourquoi elle se distingue :
-- **Format compact** — pratique si tu travailles sur plusieurs postes ou en déplacement
-- **Bonne ergonomie** — plus douce pour la main qu'une souris plate standard
-- **Précision fine** — agréable pour les gestes minutieux, la navigation dense et certaines tâches créatives
-- **Position de travail flexible** — intéressante si tu veux réduire un peu la fatigue liée à une posture toujours identique
+La souris est un de tes outils les plus utilisés. Si elle crée de la tension ou un inconfort diffus, le coût cumulé est réel.
 
-Ce n'est pas forcément la souris universelle parfaite pour tout le monde. Mais pour certaines personnes, elle crée un déclic immédiat : moins de friction physique, plus de confort, et une sensation de contrôle très propre.
+### Ce qui compte vraiment
 
-### Paramètres Windows (WIN + "Mouse")
+- bonne prise en main
+- posture supportable
+- précision suffisante
+- boutons utiles si ton travail est répétitif
 
-- Ajuste la sensibilité à ton confort
-- Règle la vitesse de défilement (valeurs 4 à 7 recommandées)
-- Active ou désactive l'amélioration de la précision selon ta préférence
-- Ajuste la vitesse du double-clic
+Tu n'as pas besoin d'une souris "gaming" par principe. Tu as besoin d'une souris qui rend ton geste plus fluide.
 
-### Outils recommandés
+### Mention utile : Swiftpoint ProPoint
 
-| Outil | Description |
-|-------|-------------|
-| **AutoHideMouseCursor** | Cache le curseur après quelques secondes d'inactivité — zéro distraction |
-| **AutoScroll** | Automatise le défilement — idéal pour les longues pages |
-| **SmoothScroll** | Animation de défilement fluide, réduction de la fatigue |
+La **[Swiftpoint ProPoint](https://www.swiftpoint.com/products/ergonomic-mice-propoint)** reste une recommandation valable si tu veux une souris compacte, mobile, et plus singulière qu'une souris de bureau classique.
 
----
+Elle est surtout intéressante si :
+- tu travailles sur plusieurs postes
+- tu bouges souvent
+- tu veux un format plus petit sans tomber dans une souris plate médiocre
 
-## Son & anti-bruit
+Ce n'est pas la souris universelle pour tout le monde. Mais elle reste un vrai choix crédible.
 
-Le bruit de fond est l'un des plus grands tueurs de concentration.
+### Réglages avant achat
 
-### Solutions
+Avant de changer de souris, vérifie déjà :
+- sensibilité du pointeur
+- vitesse de défilement
+- vitesse du double-clic
+- confort de la posture de la main
 
-| Outil | Ce qu'il fait |
-|-------|---------------|
-| [Krisp](https://krisp.ai/) | IA qui supprime le bruit de fond pendant les appels (800+ apps supportées, traitement local, version gratuite limitée puis offres illimitées) |
-| **Casque ANC** (ex: Bose QC) | Annulation active du bruit — indispensable en ville |
-| **Calmer** (Flare Audio) | Réduit la résonance sans bloquer l'environnement — idéal pour l'hypersensibilité sonore |
-| **Panneaux acoustiques** | Traitement physique de l'espace pour réduire la réverbération |
+Parfois, un bon réglage corrige déjà une partie du problème.
 
----
+## Son et bruit : protéger l'attention
 
-## Écrans
+Le bruit de fond détruit la concentration plus vite que beaucoup de gens ne l'admettent.
 
-### Protéger tes yeux
+Tu as plusieurs niveaux de réponse :
 
-- **LightBulb** — app portable gratuite qui adapte luminosité et couleurs selon l'heure et ta localisation (lever/coucher du soleil)
-- **Monitorian** — contrôle la luminosité de plusieurs écrans depuis un seul outil
-- **Twinkle Tray** — slider de luminosité dans la barre système, ajustement par heure ou inactivité
-- **AutoDarkMode** — bascule automatiquement entre thème clair et sombre selon l'heure, utile pour respecter davantage le rythme jour / nuit
-- **[Luciole](https://www.luciole-vision.com/fr/index.html)** — police conçue pour améliorer la lisibilité, utile si tu souffres de fatigue visuelle ou si tu veux un confort de lecture plus accessible
+### Niveau 1 : réduire le bruit logiciel
 
-### Conseils
+Si ton problème principal est l'appel ou la visio, **[Krisp](https://krisp.ai/)** reste une valeur sûre pour réduire le bruit de fond et améliorer la clarté audio.
 
-- Ajuste la luminosité à un niveau confortable
-- Active un filtre de lumière bleue le soir
-- Utilise un écran anti-reflet si tu travailles face à une fenêtre
+### Niveau 2 : réduire le bruit perçu
 
-### Tablette graphique vs souris : le verdict
+Si ton environnement est bruyant :
+- un casque à réduction active de bruit peut avoir un énorme impact
+- des panneaux acoustiques peuvent aider si la pièce résonne
 
-Si tu hésites entre une pen tablet et une souris pour ton workflow quotidien : **la souris gagne pour la productivité générale**. La tablette graphique est moins précise pour les tâches courantes et le montage vidéo, demande plus d'effort physique sur grand écran, et manque de boutons personnalisables sur le stylet. Elle reste imbattable pour le dessin, la peinture digitale et les ajustements fins — mais pour tout le reste, une bonne souris ergonomique est le meilleur choix.
+### Niveau 3 : hypersensibilité et surcharge sonore
 
----
+Les produits **[Calmer](https://www.flareaudio.com/products/calmer-soft)** de Flare Audio restent intéressants pour certains profils sensibles au bruit, surtout si le problème est la résonance et la surcharge plus que le volume pur.
 
-## Clavier & vitesse de frappe
+## Écrans et fatigue visuelle
 
-Taper plus vite = moins de friction entre ta pensée et son exécution.
+Une mauvaise relation à l'écran coûte cher :
+- yeux fatigués
+- maux de tête
+- baisse de lisibilité
+- irritabilité diffuse
 
-### Plateformes d'entraînement
+### Réglages utiles
 
-| Plateforme | Style |
-|------------|-------|
-| **Keybr.com** | Leçons personnalisées, multi-layouts (QWERTY, Dvorak, Colemak) |
-| **TypingClub** | Gratuit, gamifié, 23M+ étudiants |
-| **Monkeytype** | Minimaliste, personnalisable, feedback temps réel |
-| **Ratatype** | Cours structurés, certificats, multi-langues |
-| **Nitro Type** | Course de frappe compétitive — fun et efficace |
+- luminosité cohérente avec la pièce
+- réduction de la lumière agressive le soir
+- limitation des reflets
+- taille de texte réellement confortable
 
-### Conseil pratique
+### Outils encore valides
 
-Pratique 10-15 minutes par jour pendant 30 jours. C'est un investissement unique qui te fait gagner du temps chaque jour pour le reste de ta vie.
+- **[LightBulb](https://github.com/Tyrrrz/LightBulb)** pour adapter la teinte de l'écran selon l'heure
+- **[Monitorian](https://github.com/emoacht/Monitorian)** pour piloter la luminosité de plusieurs écrans
+- **[Twinkle Tray](https://twinkletray.com/)** pour avoir un contrôle simple de la luminosité depuis Windows
+- **[Auto Dark Mode](https://github.com/AutoDarkMode/Windows-Auto-Night-Mode)** pour basculer automatiquement selon le moment de la journée
+- **[Luciole](https://www.luciole-vision.com/fr/index.html)** si tu veux une police plus lisible et plus confortable à lire
 
----
+Là encore, commence par le confort réel, pas par l'esthétique du setup.
 
-## Gadgets utiles
+## Clavier et vitesse de frappe
+
+Si tu travailles beaucoup au clavier, la vitesse et surtout la fluidité de frappe réduisent la friction entre pensée et exécution.
+
+Le bon objectif n'est pas juste "taper vite". C'est :
+- taper sans regarder
+- fatiguer moins
+- transformer plus facilement une idée en texte
+
+### Plateformes encore pertinentes
+
+- **[Keybr](https://www.keybr.com/)** pour un entraînement progressif
+- **[Monkeytype](https://dev.monkeytype.com/)** pour une pratique simple, rapide et personnalisable
+- **[Ratatype](https://www.ratatype.com/fr/)** si tu veux quelque chose de plus structuré
+
+10 à 15 minutes par jour suffisent déjà à produire un gain durable.
+
+## Gadgets : oui, mais seulement si le problème est réel
 
 ### Ticktime Cube
 
-Un chronomètre physique en forme de cube — retourne-le pour lancer un décompte (1 à 60 min). L'intérêt : éviter de toucher ton téléphone pour lancer un timer. Simplicité, zéro distraction.
+Le **[Ticktime Cube](https://ticktime.com/)** reste un gadget défendable si ton vrai besoin est d'avoir un minuteur physique sans reprendre ton téléphone.
 
-### [Supernote Tasks](https://supernote.com/)
+Utile si :
+- ton téléphone te déconcentre
+- tu veux un geste simple pour lancer un bloc de travail
 
-Un appareil e-ink comme le **[Supernote](https://supernote.com/)** peut être intéressant si tu aimes écrire à la main mais que tu veux garder une structure numérique. L'intérêt n'est pas de remplacer tout ton système. L'intérêt est de créer un espace de travail plus calme pour capturer, revoir et clarifier tes tâches.
+### Supernote
 
-Ce type d'outil peut être utile si :
-- tu réfléchis mieux stylet en main que sur clavier
-- tu veux limiter la distraction des apps, notifications et onglets
-- tu cherches un support intermédiaire entre carnet papier et gestionnaire de tâches classique
+Un appareil e-ink comme **[Supernote](https://supernote.com/)** peut être très utile si tu réfléchis mieux en écrivant à la main mais que tu veux garder une structure numérique calme.
 
-Comme toujours, ce n'est pas une solution magique. Si ton système est flou, un support e-ink ne le sauvera pas. Mais si tu as déjà une logique de travail claire, cela peut devenir un bon objet de concentration.
+C'est intéressant si :
+- tu veux moins d'onglets et moins d'apps
+- tu clarifies mieux au stylet qu'au clavier
+- tu cherches un espace de capture plus silencieux
 
-### Cartes de tâches physiques
+Mais ce type d'outil n'a de sens que si ton système de travail est déjà à peu près clair.
 
-Des cartes papier premium pour écrire tes tâches du jour. L'acte d'écrire sur un support "précieux" donne plus de poids à chaque tâche et combat la procrastination.
+## Ce qu'il faut retenir
+
+Un bon setup ne sert pas à impressionner. Il sert à réduire les coûts cachés du travail quotidien.
+
+Priorité :
+- confort physique
+- qualité visuelle
+- contrôle du bruit
+- fluidité d'entrée clavier / souris
+- gadgets seulement en dernier

@@ -240,6 +240,28 @@ The important point is that these tools are not for aesthetics. They are for red
 
 When your screen stops being improvised ground and becomes a structured work surface, your ability to stay focused often rises immediately.
 
+### AltSnap: mainly useful if you are very mouse-driven
+
+**AltSnap** is still a valid and maintained tool today. Its value is straightforward: it lets you move, resize, or manipulate a window with `Alt` + click, without needing precise grabs on the title bar or borders.
+
+It is not a tool I would place at the center of the course for everyone. It becomes especially interesting if:
+- you manipulate many windows with the mouse
+- you like Linux-style or AltDrag-style gestures
+- you want less precision friction when moving windows
+
+By contrast, if you are already very:
+- keyboard-first
+- FancyZones-oriented
+- native-Windows-shortcuts-oriented
+
+then AltSnap is more of a bonus than a real step up.
+
+So the right reading of the tool is:
+- **very relevant** for a mouse-intensive profile
+- **secondary** for a user already structured around the keyboard
+
+I would treat it as a good maintained comfort utility, not as an essential part of the premium setup.
+
 ## Taskbar and Start menu
 
 - **Declutter your taskbar**: keep only the 5-7 apps you use daily
@@ -261,6 +283,129 @@ The principle is simple:
 - more stable anchors
 - fewer visual interruptions
 
+### What level of customization do you actually need?
+
+Here too, the trap is trying to change everything. In practice, it is better to start from your actual problem.
+
+#### Level 1: simple interface hygiene
+
+If your real problem is just visual noise, start with:
+- unpinning useless apps
+- hiding Widgets, Chat, and other distractions
+- cleaning up the Start menu "Recommended" section
+- keeping a stable order for the apps that genuinely matter
+
+For many people, that alone already makes Windows much easier to live with.
+
+#### Level 2: small adjustments with high value
+
+If you work on Windows all day, a few adjustments are clearly worth it:
+- opening **Task Manager** quickly from the right-click Start menu
+- pinning the **classic volume mixer** with `sndvol.exe`
+- showing **seconds** in the clock only if it supports a real workflow
+
+These are small gains, but they are concrete, frequent, and low-risk.
+
+#### Level 3: targeted correction tools
+
+If the native interface genuinely slows you down, you can go one level further with caution:
+- **ExplorerPatcher** if your real issue is taskbar or Start menu behavior
+- **Start11** if you want a cleaner way to take back control of the interface
+
+These tools become useful when the friction is real. They are much less interesting if you just want to "optimize" without a specific pain point.
+
+#### Level 4: hacks and tweaks for advanced users only
+
+You can go further with Registry edits, niche utilities, or deeper modifications. But in a premium course, that is not where I would start.
+
+Our rule:
+- start by removing noise
+- keep the simple settings that help every week
+- only add more invasive tools if the Windows interface genuinely holds you back
+
+### Widgets: hide first, remove only if they are a real friction
+
+For most people, the right decision is simple:
+- **hide Widgets** from the taskbar
+- do not spend more attention on them
+
+Full removal can make sense if:
+- Widgets keep re-entering your attention flow
+- you want a more minimal machine
+- you are comfortable with a slightly more advanced debloat approach
+
+But it is not a high priority. Until you have already solved the real frictions in your setup, it is better not to turn a detail into a project.
+
+### Three useful Windows 11 adjustments to know
+
+These are not dramatic changes. They are just solid small adjustments if you spend all day on Windows:
+
+- **open Task Manager from the Start menu**: right-click the Windows icon, then choose **Task Manager**
+- **pin the classic volume mixer**: `Win + R` → `sndvol.exe` → right-click the icon → **Pin to taskbar**
+- **show seconds in the clock**: useful for some timed workflows, but only if it genuinely helps instead of adding noise
+
+The point is not to stack options. The point is to identify the two or three adjustments you actually use every week.
+
+### About tiny comfort utilities
+
+You will sometimes come across tools like **Preme for Windows**, which add handy taskbar or window gestures.
+
+The real criterion here is not only the feature. It is maintenance too. When a tool has not been updated in years, I would treat it as an experimental bonus, not as a pillar of your premium setup.
+
+Simple rule:
+- if the gain is minor, stay with native or actively maintained tools
+- if the gain is major, test it cautiously and keep rollback simple
+
+### WinDynamicDesktop: good for atmosphere, not a major lever
+
+**WinDynamicDesktop** is still a valid and maintained tool today. It can change your wallpaper throughout the day in a way similar to macOS dynamic desktops.
+
+I would not present it as a productivity tool in the strict sense. Its value is elsewhere:
+- making the workstation more pleasant
+- creating a more coherent atmosphere over the course of the day
+- strengthening your attachment to your work environment
+
+That can matter for some people, but it is important to stay clear-eyed:
+- it does not directly improve your system
+- it does not replace organization, good shortcuts, or interface clarity
+
+So:
+- **yes** if your goal is visual comfort and workstation identity
+- **not a priority** if you have not yet solved the real workflow frictions
+
+### Reading tools: visual support yes, magic promise no
+
+Reading-assistance tools can be useful, but they need to be framed correctly: they are not universal speed boosters. Their real role is to reduce specific reading frictions.
+
+#### Level 1: simple text emphasis
+
+If your need is simply to keep your eyes engaged more easily on web text, **Jiffy Reader** remains a valid option. Its main value is visually emphasizing the beginning of words in a style close to "bionic reading."
+
+I would treat it as:
+- a simple experiment
+- low-friction
+- useful for some people with visual fatigue or attention drift
+
+But not as a general truth about reading speed.
+
+#### Level 2: a real accessibility layer
+
+If your need goes beyond simple emphasis, tools like **LucidRead** or **Helperbird** are often more interesting today because they add:
+- reading rulers
+- typography adjustments
+- focus modes
+- text-to-speech
+- more serious options for dyslexia, ADHD, or long reading sessions
+
+In other words:
+- **Jiffy Reader** if you want to test a light, specific aid
+- **LucidRead / Helperbird** if you want a fuller reading and accessibility toolkit
+
+So the right premium recommendation is not "read faster." It is:
+- see whether a tool genuinely reduces your fatigue
+- keep it only if it improves reading without adding friction
+- do not turn this into an obsession if your real problem lies elsewhere
+
 ### Pinning pages or folders: useful, but only for real entry points
 
 You can also pin:
@@ -273,6 +418,28 @@ Only pin:
 - real work entry points
 - folders you open every day
 - apps or pages that genuinely structure your workflow
+
+### If you want tabs for your applications
+
+The need is real for some profiles: too many open windows, too much `Alt + Tab`, and a desire to group several tools the way you would in a browser.
+
+In 2026, the clearest recommendation is:
+- **Groupy 2** as the main premium option
+- **TidyTabs** as the more discreet, more secondary alternative
+
+Why **Groupy 2** comes first:
+- it is better positioned for a modern Windows 11 workflow
+- it fits well into a premium workstation logic
+- it is more coherent if you genuinely want to organize several apps into durable groups
+
+Why **TidyTabs** stays secondary:
+- it is still valid and maintained
+- it can work well if you only want to add tabs to a few windows
+- but I would not treat it as the central recommendation today
+
+The right choice:
+- **Groupy 2** if you want a real tab-based organization layer
+- **TidyTabs** if you want to test the idea with something lighter or more discreet
 
 ## The Stardock ecosystem: productivity on one side, personalization on the other
 
@@ -320,6 +487,8 @@ Every app that launches on startup lengthens boot time and consumes background r
 3. Disable everything that is not essential
 
 **Rule**: if you do not use an app every day, it has no business launching at startup.
+
+If you want to go further and build real launch sequences or scripts that open a full work context, also see the [Automation](./automatisation) chapter.
 
 ## Basic troubleshooting reflex: Task Manager before rebooting
 
@@ -383,6 +552,8 @@ You just need to know its limits:
 - it is not worth installing if you do not like gesture-based triggers
 
 As often, the point is not to add "one more option." The point is to see whether this gesture style actually reduces your daily friction.
+
+If your goal is not a comfort gesture but the structured launching of apps, folders, or web pages, the real topic is no longer hot corners but the [Automation](./automatisation) chapter.
 
 ## Voluntary friction: Cold Turkey
 

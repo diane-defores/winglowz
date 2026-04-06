@@ -6,79 +6,121 @@ sidebar:
   order: 3
 ---
 
-Les reunions sont le plus gros gouffre de temps en entreprise. Dans cette section, tu vas apprendre a eliminer les reunions inutiles, ameliorer drastiquement celles qui restent et ne plus jamais perdre une decision ou un action item.
+Le probleme des reunions n'est pas seulement leur nombre. C'est qu'elles deviennent souvent le mecanisme par defaut pour reparer une communication mal preparee.
 
-## Objectifs
+Une reunion utile est une **escalade** :
+- quand l'asynchrone ne suffit plus
+- quand une decision bloque
+- quand un alignement collectif doit etre produit maintenant
 
-- Reduire les reunions inutiles de 40 %
-- Automatiser la prise de notes et le suivi post-meeting
-- Ameliorer la qualite technique de tes visioconferences
-- Faciliter la planification multi-fuseaux horaires
+> Une bonne reunion ne sert pas a "faire avancer les choses" en general. Elle sert a debloquer, trancher ou synchroniser ce que l'ecrit ne regle pas assez vite.
 
-## Avant de planifier : est-ce vraiment necessaire ?
+## Quand une reunion est justifiee
 
-Avant chaque reunion, pose-toi trois questions :
+- il faut prendre une decision avec plusieurs parties prenantes
+- il faut arbitrer entre plusieurs options en temps reel
+- il y a une tension ou une ambiguite que l'ecrit aggrave
+- il faut produire un alignement immediat
 
-1. **Le but peut-il etre atteint autrement ?** (document, Loom, message async)
-2. **Tout le monde doit-il etre la ?** (optionnel vs requis)
-3. **Peut-on reduire la duree ?** (25 min au lieu de 30)
+## Quand elle ne l'est probablement pas
+
+- simple partage d'information
+- revue passive d'un document
+- status update sans decision a prendre
+- sujet qui aurait pu etre clarifie par un message, une note ou une video courte
+
+Si la reunion sert surtout a lire ensemble quelque chose qui aurait pu etre envoye avant, ce n'est pas une reunion necessaire. C'est une dette de preparation.
+
+## Le decision framework Winflowz
+
+Avant de planifier, pose-toi quatre questions :
+
+1. **Le but peut-il etre atteint autrement ?** document, Loom, commentaire, email
+2. **Quelle decision ou sortie concrete doit exister a la fin ?**
+3. **Qui est vraiment requis ?**
+4. **Peut-on faire plus court ?** 15 ou 25 minutes au lieu de 30 ou 60
 
 L'outil **[Should It Be a Meeting](https://shoulditbeameeting.com/)** propose un questionnaire interactif pour trancher. Regle Winflowz : si l'objectif peut etre atteint par une video Loom de 2 minutes, ce n'est pas une reunion.
 
-## Planification collaborative
+## Le vrai objectif
 
-**[Rallly](https://rallly.co/)** est l'alternative open source a Doodle : interface epuree, aucune inscription requise pour les participants, votes en temps reel sur les creneaux proposes. Disponible en SaaS ou self-hosted via Docker pour un controle total sur tes donnees.
+Le vrai objectif n'est pas d'avoir des reunions "plus agreables". C'est :
+- moins de reunions par defaut
+- moins de participants inutiles
+- plus de decisions explicites
+- des actions qui sortent vraiment de la reunion
 
-## Plateformes de visioconference
+## La couche planification
+
+Si une reunion est legitime, la planification doit rester legere.
+
+**[Rallly](https://rallly.co/)** est l'alternative open source a Doodle : interface epuree, aucune inscription requise pour les participants, votes en temps reel sur les creneaux proposes. Disponible en SaaS ou self-hosted pour un meilleur controle des donnees.
+
+## La couche plateforme
+
+La plupart du temps, le bon choix n'est pas la plateforme "la plus innovante". C'est la plus simple pour tes interlocuteurs.
 
 | Outil | Point fort | Prix |
 |-------|-----------|------|
 | **Google Meet / Zoom / Teams** | Outils standards, simples a deployer, assez universels | Variable |
 
-Quand tu choisis une plateforme de visio, cherche d'abord la simplicite de deploiement, la compatibilite avec tes interlocuteurs, et la stabilite technique.
+Quand tu choisis une plateforme de visio, cherche d'abord la simplicite de deploiement, la compatibilite avec tes interlocuteurs et la stabilite technique.
 
-## Prise de notes IA : le game-changer
+## La couche notes et suivi
 
-Fini les reunions sans suivi. Les assistants IA rejoignent tes calls, transcrivent et extraient automatiquement les decisions et actions a mener.
+Une reunion sans sortie claire recree du travail plus tard. C'est la que les notetakers IA deviennent utiles.
+
+Les assistants IA rejoignent ou accompagnent tes calls, transcrivent et extraient automatiquement decisions, resumes et actions.
 
 | Outil | Specialite | Privacy | Prix |
 |-------|-----------|---------|------|
-| **[Otter.ai](https://otter.ai/)** | Transcription temps reel, 30+ langues, integrations CRM | Standard | Freemium |
-| **[tl;dv](https://tldv.io/)** | Sales coaching, insights cross-meeting, GDPR compliant | Elevee (EU) | Freemium |
-| **[Fireflies.ai](https://fireflies.ai/)** | AskFred (ChatGPT sur tes meetings), generation de contenu | Standard | Freemium |
-| **[Superpowered](https://superpowered.me/)** | Aucun enregistrement, transcription locale, SOC-2 | Maximale | Payant |
+| **[Otter.ai](https://otter.ai/)** | Transcription temps reel, integrations larges, adoption generaliste | Standard | Freemium |
+| **[tl;dv](https://tldv.io/)** | Sales coaching, insights cross-meeting, posture europeenne | Elevee (EU) | Freemium |
+| **[Fireflies.ai](https://fireflies.ai/)** | Recherche et interrogation de tes meetings en langage naturel | Standard | Freemium |
+| **[Superpowered](https://superpowered.me/)** | Pas de bot, pas d'enregistrement, transcription depuis l'audio de ton appareil | Maximale | Payant |
 
 :::tip[Choisis selon ton besoin]
-- **Generaliste** : Otter.ai (600 min/mois gratuites)
-- **Sales & coaching** : tl;dv (compliance europeenne)
-- **Insights avances** : Fireflies.ai (interroge tes meetings en langage naturel)
-- **Confidentialite critique** : Superpowered (zero recording, zero stockage cloud)
+- **Generaliste** : Otter.ai
+- **Sales & coaching** : tl;dv
+- **Insights avances** : Fireflies.ai
+- **Confidentialite critique** : Superpowered
 :::
 
-## Telephonie professionnelle
+## Ce qu'il faut eviter
 
-**VoIPstudio** offre un systeme telephonique cloud complet : call center, enregistrement, IVR, numeros dans 100+ pays. **PopTox** sert de backup gratuit pour les appels internationaux depuis le navigateur.
+- planifier une reunion sans sortie attendue
+- inviter trop de monde "au cas ou"
+- utiliser 60 minutes comme duree par defaut
+- tenir la reunion pour partager un contexte qui aurait du arriver avant
+- finir sans owner ni prochaine action
 
 ## Coordination multi-fuseaux
 
-**Timezone Checker** permet de visualiser d'un coup d'oeil les heures locales de tous tes collaborateurs et de trouver les creneaux optimaux sans envoyer 15 emails.
+**Timezone Checker** permet de visualiser d'un coup d'oeil les heures locales de tes collaborateurs et de trouver des creneaux corrects sans allers-retours inutiles.
 
-## Workflow par niveau
+## Workflow recommande
 
-**Debutant (0 euros/mois)** : [Should It Be a Meeting](https://shoulditbeameeting.com/) + [Rallly](https://rallly.co/) + Google Meet + [Otter.ai](https://otter.ai/) gratuit. Filtre les reunions inutiles, planifie facilement, obtiens des notes IA sur chaque call.
+**Minimaliste** : Should It Be a Meeting + Google Meet ou Zoom + notes humaines propres. Suffisant si tu as peu de calls mais trop de mauvaises habitudes.
 
-**Intermediaire (20-40 euros/mois)** : [Rallly](https://rallly.co/) + Google Meet ou Zoom + [Otter.ai](https://otter.ai/) Pro ou [tl;dv](https://tldv.io/) + [Timezone Checker](https://www.timezonechecker.app/). Meilleure qualite visio, insights cross-meeting, coordination internationale.
+**Pragmatique** : Rallly + Meet ou Zoom + Otter.ai ou tl;dv + Timezone Checker. Bon compromis pour equipes distribuees.
 
-**Avance (variable)** : [VoIPstudio](https://voipstudio.com/) + Zoom ou Google Meet + [tl;dv](https://tldv.io/) Enterprise + [Superpowered](https://superpowered.me/) + [Rallly](https://rallly.co/) self-hosted. Call center, coaching equipe, confidentialite maximale.
+**Confidentiel / exigeant** : Rallly + Zoom/Meet/Teams + Superpowered. A privilegier quand tu veux limiter les bots et l'enregistrement.
 
 ## Bonnes pratiques
 
-**Avant** : agenda partage 24h a l'avance, objectifs clairs, pre-reads distribues, AI notetaker configure.
+**Avant** : agenda partage, sortie attendue explicite, pre-reads distribues, notetaker configure si besoin.
 
-**Pendant** : commencer a l'heure, suivre l'agenda, prendre des decisions (pas juste discuter), noter les action items avec responsable et deadline.
+**Pendant** : commencer a l'heure, suivre l'agenda, prendre des decisions, noter les action items avec responsable et deadline.
 
-**Apres** : notes partagees dans l'heure, action items dans ton gestionnaire de taches, follow-up owners notifies.
+**Apres** : notes partagees rapidement, actions sorties vers le gestionnaire de taches, owners notifies.
 
 :::note[Exercice pratique]
-Pendant 2 semaines, trace tous tes meetings : temps total, utilite, participants. Identifie ceux qui auraient pu etre un message async. Objectif : reduire de 30-40 % ton temps en reunion.
+Pendant 2 semaines, trace tous tes meetings :
+
+1. pourquoi ils existaient
+2. quelle decision en est sortie
+3. combien de personnes etaient vraiment utiles
+4. lesquels auraient pu etre un message async ou une note
+
+Objectif : reduire le volume, mais surtout augmenter la densite de decision par reunion.
 :::

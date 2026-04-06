@@ -1,20 +1,39 @@
 ---
 title: "La Productivité — Introduction"
-description: "Qu'est-ce que la productivité vraiment ? Découvrez les fondements, les mythes à déconstruire et les piliers de cette formation."
+description: "La productivité comme système de choix, d'attention et d'exécution, pas comme culte de la vitesse."
 sidebar:
   label: "Introduction"
   order: 1
 ---
 
-La productivité, ce n'est pas faire plus en moins de temps. C'est **reprendre le contrôle de ton temps et de ton énergie** pour accomplir ce qui compte vraiment pour toi.
+La productivité, ce n'est pas faire plus en moins de temps. C'est **choisir mieux, protéger ton attention et exécuter plus proprement** ce qui compte vraiment.
 
 > La productivité = Efficacité × Impact. Pas uniquement vitesse.
 
-## Ce que cette formation n'est pas
+## Le vrai sujet
 
-Ce cours n'est pas un manuel pour "bosser plus". C'est une boîte à outils pour **travailler mieux** — et récupérer du temps pour vivre.
+Ce cours n'est pas un manuel pour "bosser plus". C'est une boîte à outils pour **travailler mieux**, récupérer du temps, et éviter de diluer ton énergie dans des fronts inutiles.
 
-La vraie productivité n'est pas du capitalisme déguisé. Elle sert tes rêves, pas ton agenda de réunions.
+La bonne question n'est donc pas : "comment aller plus vite ?"
+
+La bonne question est : **qu'est-ce qui mérite réellement ma bande passante, et dans quel système ?**
+
+## Le decision framework Winflowz
+
+Quand tu te sens "pas productif", le problème vient généralement d'un de ces quatre niveaux :
+
+1. **Tu n'as pas choisi** ce qui compte vraiment
+2. **Ton environnement** crée trop de friction
+3. **Ton énergie** n'est pas respectée
+4. **Ton système d'exécution** reste flou ou trop chargé
+
+Autrement dit, la productivité n'est pas un trait de caractère. C'est une combinaison de :
+- **choix**
+- **attention**
+- **énergie**
+- **exécution**
+
+Ce cours sert à renforcer ces quatre couches.
 
 ## Les mythes à déconstruire
 
@@ -27,7 +46,7 @@ La motivation suit l'action, elle ne la précède pas. Segmente, commence petit,
 **Mythe 3 : "Le multitasking, c'est efficace"**
 Ton cerveau ne fait pas deux choses à la fois — il alterne rapidement. Résultat : plus de temps, plus d'erreurs, moins de qualité.
 
-## Micro vs. Macro productivité
+## Macro, micro, et dilution
 
 | Niveau | Focus | Exemple |
 |--------|-------|---------|
@@ -50,6 +69,19 @@ Si tu demandes à une tâche de sens de performer comme une tâche d'acquisition
 
 Toutes les tâches n'ont pas besoin de maximiser la même chose. Certaines doivent aller vite. D'autres doivent aller juste. Certaines doivent convertir. D'autres doivent clarifier. Savoir cela évite beaucoup de frustration inutile.
 
+## Le modèle du cours
+
+La suite de la formation traite la productivité comme un système complet :
+
+1. **Choisir** ce qui compte
+2. **Configurer** l'environnement de travail
+3. **Respecter** les rythmes d'énergie
+4. **Transformer** les intentions en actions nettes
+5. **Filtrer** ce qui entre dans ton attention
+6. **Organiser** ce qui mérite d'être gardé
+7. **Canaliser** la communication
+8. **Réduire** la friction d'exécution avec des raccourcis
+
 ## Les piliers de cette formation
 
 Cette formation est structurée autour de 8 modules complémentaires :
@@ -63,6 +95,16 @@ Cette formation est structurée autour de 8 modules complémentaires :
 7. **Social** — emails, messages, réseaux — en maître
 8. **Raccourcis** — cheatsheets pour aller 2x plus vite
 
+## Une règle simple : choisir avant d'optimiser
+
+Avant d'ajouter un outil, une routine ou une méthode, vérifie :
+- est-ce que je travaille sur la bonne chose ?
+- est-ce que le prochain geste est clair ?
+- est-ce que mon environnement aide ou gêne ?
+- est-ce que je suis en train d'optimiser un vrai problème ou seulement une gêne secondaire ?
+
+Cette règle évite beaucoup de fausse productivité.
+
 ## La règle du 90/90/1
 
 Recommandée par Robin Sharma : pendant **90 jours**, consacre les **90 premières minutes** de ta journée de travail à **ton projet le plus important**.
@@ -70,7 +112,6 @@ Recommandée par Robin Sharma : pendant **90 jours**, consacre les **90 premièr
 Sans notifications. Sans interruptions. 100% de concentration.
 
 C'est simple, gratuit, et ça change tout.
-
 ## Les 3 types de focus
 
 La productivité repose sur trois axes indépendants — tu peux exceller dans l'un et être médiocre dans l'autre. L'important est d'en prendre conscience pour progresser sur chacun.
@@ -100,8 +141,6 @@ Planifier le pire libère l'énergie mentale. Quand tu as un plan B pour les sit
 - **Réveil** — que se passe-t-il si tu rates ta routine du matin ?
 
 Le paradoxe : plus tu planifies le pire, moins tu stresses — et plus tu performes.
-
----
 
 ## Réduire la charge cognitive
 
@@ -135,8 +174,6 @@ Ce qui compte, ce n'est pas d'avoir le système le plus impressionnant. C'est d'
 
 Expérimente, itère, garde ce qui fonctionne, jette le reste.
 
----
-
 ## Reste disponible
 
 Une productivité mature ne remplit pas chaque minute de tâches utiles. Elle garde aussi de la place pour l'imprévu, l'exploration, l'association d'idées et les détours fertiles.
@@ -146,8 +183,6 @@ Une productivité mature ne remplit pas chaque minute de tâches utiles. Elle ga
 Pour un indépendant, un créatif ou un entrepreneur, cette disponibilité est précieuse. Elle permet de sortir des rails, d'observer autrement, et de rencontrer des idées qu'un planning trop rigide aurait étouffées.
 
 La bonne productivité ne consiste donc pas seulement à éliminer le chaos. Elle consiste aussi à laisser une part d'ouverture.
-
----
 
 ## Ce que la productivité te donne vraiment
 

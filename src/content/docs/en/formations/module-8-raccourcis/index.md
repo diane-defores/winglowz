@@ -1,14 +1,45 @@
 ---
 title: "Shortcuts & Cheatsheets"
-description: "The essential keyboard shortcuts for Windows, browsers, and productivity tools."
+description: "Learn the shortcut cores that protect flow across Windows, the browser, Gmail, YouTube, and Notion."
 sidebar:
   label: "Shortcuts"
   order: 1
 ---
 
-Keyboard shortcuts are the **silent superpower** of every efficient user. Every second saved adds up, but the deeper benefit is not only time: it is mental continuity. The less often you interrupt your gesture to reach for the mouse, the more your attention stays inside the task.
+Keyboard shortcuts are not mainly about "speed." They are about **protecting flow**. Every time you leave the keyboard to aim for an icon, hunt for a button, or rearrange a window with the mouse, you pay a small attention tax.
 
-So the goal of this module is not to make you memorize 200 combinations. The goal is to give you a few **control cores** that materially change the way you operate Windows, the browser, Gmail, YouTube, and Notion.
+So the goal of this module is not to make you memorize 200 combinations. The goal is to help you internalize a few **control cores** that materially change the way you operate Windows, the browser, Gmail, YouTube, and Notion.
+
+## The Winflowz decision framework
+
+If you want to know which shortcut to learn, do not start from lists. Start from friction.
+
+Ask yourself three questions:
+
+1. **Which mouse action do I repeat most often?**
+2. **Does that action break my attention or just cost two seconds?**
+3. **Does this shortcut help me drive a whole context, or only a micro-action?**
+
+From there, always prioritize in this order:
+- **window control and system navigation**
+- **browser navigation**
+- **Gmail triage**
+- **active learning on YouTube**
+- **building in Notion**
+
+In other words: learn the shortcuts that help you drive an environment before the ones that merely decorate an interface.
+
+## The 5 cores that matter
+
+If you want the shortest path to useful gains, this is the recommended order:
+
+1. **Windows** for moving, launching, and switching context
+2. **Browser** for opening, closing, finding, and moving
+3. **Gmail** for triaging instead of merely checking
+4. **YouTube** for learning without breaking flow
+5. **Notion** for building from the keyboard
+
+Only after that does it make sense to learn more specialized shortcuts.
 
 ## Essential Windows shortcuts
 
@@ -40,10 +71,11 @@ That core already makes the difference between "using Windows" and "driving your
 
 ### Text manipulation
 
+These are not 100% universal, but they show up across a large number of apps.
+
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl + A` | Select all |
-| `Ctrl + D` | Duplicate |
 | `Ctrl + Z` / `Ctrl + Y` | Undo / Redo |
 | `Ctrl + B` / `I` / `U` | Bold / Italic / Underline |
 | `Ctrl + ←/→` | Move word by word |
@@ -108,8 +140,6 @@ In other words, browser shortcuts mainly reduce **tab debt** and **search fricti
 Gmail has a complete shortcut system that you need to **enable manually**: Settings -> General -> Keyboard shortcuts -> Enable.
 
 You can also go further and **customize certain shortcuts** in Gmail settings once the dedicated option is enabled. The right move is not to rewrite everything, but to adapt the actions you use most often.
-
-You can also **customize part of the shortcut system** in Gmail settings once the relevant option is enabled. That is useful, but you should not redesign everything: customize mainly the actions you use all the time, otherwise you lose the benefit of a simple standard that is easy to remember.
 
 This matters a lot: Gmail becomes far more pleasant once you stop treating it like a click-heavy interface. Shortcuts are not only about speed. They also help you:
 - process more messages without breaking your rhythm
@@ -304,6 +334,14 @@ Do not try to learn a whole tool at once. Adopt one **core per context**:
 The test is simple:
 - if you still have to think about the shortcut, it is not integrated yet
 - if it comes out effortlessly, it is already part of your system
+
+## What to avoid
+
+- learning 30 shortcuts in one day
+- collecting cheatsheets without integrating anything
+- memorizing rare actions before everyday gestures
+- customizing everything too early
+- assuming a useful shortcut can compensate for a poor workflow
 
 :::note[Cheatsheet resources]
 - [UseTheKeyboard](https://usethekeyboard.com/) - shortcuts for hundreds of apps (Mac and Windows)

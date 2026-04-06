@@ -6,30 +6,59 @@ sidebar:
   order: 3
 ---
 
-Meetings are the biggest time sink in most companies. In this section, you'll learn how to eliminate unnecessary meetings, dramatically improve the ones that remain, and never lose a decision or action item again.
+The problem with meetings is not just the number of them. It is that they often become the default repair mechanism for badly prepared communication.
 
-## Goals
+A useful meeting is an **escalation path**:
+- when async communication is no longer enough
+- when a decision is blocked
+- when a group needs real-time alignment now
 
-- Reduce unnecessary meetings by 40%
-- Automate note-taking and post-meeting follow-up
-- Improve the technical quality of your video calls
-- Make scheduling across time zones easier
+> A good meeting does not exist to "move things forward" in general. It exists to unblock, decide, or synchronize what writing cannot resolve fast enough.
 
-## Before scheduling: is this really necessary?
+## When a meeting is justified
 
-Before every meeting, ask yourself three questions:
+- you need a decision from multiple stakeholders
+- you need to arbitrate between options in real time
+- there is tension or ambiguity that gets worse in writing
+- you need immediate team alignment
 
-1. **Can this be solved another way?** (document, Loom, async message)
-2. **Does everyone need to be there?** (required vs optional)
-3. **Can we shorten it?** (25 minutes instead of 30)
+## When it probably is not
+
+- simple information sharing
+- passive document review
+- a status update with no decision attached
+- something that could have been clarified in a message, note, or short video
+
+If the meeting mostly exists so people can read together what should have been sent earlier, it is not a necessary meeting. It is preparation debt.
+
+## The Winflowz decision framework
+
+Before scheduling, ask four questions:
+
+1. **Can the goal be reached another way?** document, Loom, comment, email
+2. **What concrete output must exist at the end?**
+3. **Who is truly required?**
+4. **Can it be shorter?** 15 or 25 minutes instead of 30 or 60
 
 The **[Should It Be a Meeting](https://shoulditbeameeting.com/)** tool gives you an interactive questionnaire to make the call. The WinFlowz rule: if the goal can be achieved with a 2-minute Loom video, it is not a meeting.
 
-## Collaborative scheduling
+## The real goal
 
-**[Rallly](https://rallly.co/)** is the open-source alternative to Doodle: clean interface, no sign-in required for participants, real-time voting on proposed times. Available as SaaS or self-hosted with Docker for full control over your data.
+The real goal is not to have "nicer" meetings. It is:
+- fewer default meetings
+- fewer unnecessary participants
+- more explicit decisions
+- actions that actually leave the meeting
 
-## Video call platforms
+## The scheduling layer
+
+If a meeting is legitimate, scheduling should stay light.
+
+**[Rallly](https://rallly.co/)** is the open-source alternative to Doodle: clean interface, no sign-in required for participants, real-time voting on proposed times. Available as SaaS or self-hosted for better control over your data.
+
+## The platform layer
+
+Most of the time, the right choice is not the most innovative video platform. It is the one that is simplest for your participants.
 
 | Tool | Strength | Price |
 |------|----------|-------|
@@ -37,48 +66,61 @@ The **[Should It Be a Meeting](https://shoulditbeameeting.com/)** tool gives you
 
 When you choose a video platform, prioritize deployment simplicity, compatibility with the people you talk to, and technical reliability.
 
-## AI note-taking: the game changer
+## The notes and follow-up layer
 
-No more meetings without follow-up. AI assistants join your calls, transcribe them, and automatically extract decisions and actions.
+A meeting with no clear output simply recreates work later. That is where AI notetakers help.
+
+These assistants join or accompany your calls, transcribe them, and extract decisions, summaries, and actions.
 
 | Tool | Specialty | Privacy | Price |
 |------|-----------|---------|-------|
-| **[Otter.ai](https://otter.ai/)** | Real-time transcription, 30+ languages, CRM integrations | Standard | Freemium |
-| **[tl;dv](https://tldv.io/)** | Sales coaching, cross-meeting insights, GDPR compliant | High (EU) | Freemium |
-| **[Fireflies.ai](https://fireflies.ai/)** | AskFred (ChatGPT for your meetings), content generation | Standard | Freemium |
-| **[Superpowered](https://superpowered.me/)** | No recording, local transcription, SOC-2 | Maximum | Paid |
+| **[Otter.ai](https://otter.ai/)** | Real-time transcription, broad integrations, general-purpose adoption | Standard | Freemium |
+| **[tl;dv](https://tldv.io/)** | Sales coaching, cross-meeting insights, European posture | High (EU) | Freemium |
+| **[Fireflies.ai](https://fireflies.ai/)** | Search and query your meetings in natural language | Standard | Freemium |
+| **[Superpowered](https://superpowered.me/)** | No bot, no recording, transcription from your device audio | Maximum | Paid |
 
 :::tip[Choose based on your need]
-- **General use**: Otter.ai (600 free min/month)
-- **Sales and coaching**: tl;dv (European compliance)
-- **Advanced insights**: Fireflies.ai (ask questions in natural language)
-- **Critical confidentiality**: Superpowered (zero recording, zero cloud storage)
+- **General use**: Otter.ai
+- **Sales and coaching**: tl;dv
+- **Advanced insights**: Fireflies.ai
+- **Critical confidentiality**: Superpowered
 :::
 
-## Professional telephony
+## What to avoid
 
-**VoIPstudio** gives you a full cloud phone system: call center, call recording, IVR, numbers in 100+ countries. **PopTox** is a free backup for international calls from the browser.
+- scheduling a meeting with no expected output
+- inviting extra people "just in case"
+- using 60 minutes as the default duration
+- using the meeting to share context that should have arrived earlier
+- ending with no owner and no next action
 
 ## Multi-time-zone coordination
 
-**Timezone Checker** lets you see everyone's local time at a glance and find the best meeting slots without sending 15 emails.
+**Timezone Checker** lets you see everyone's local time at a glance and find reasonable slots without useless back-and-forth.
 
-## Workflow by level
+## Recommended workflow
 
-**Beginner (0 euros/month)**: [Should It Be a Meeting](https://shoulditbeameeting.com/) + [Rallly](https://rallly.co/) + Google Meet + [Otter.ai](https://otter.ai/) free. Filter out bad meetings, schedule easily, and get AI notes on every call.
+**Minimalist**: Should It Be a Meeting + Google Meet or Zoom + clean human notes. Enough if you have few calls but too many bad habits.
 
-**Intermediate (20-40 euros/month)**: [Rallly](https://rallly.co/) + Google Meet or Zoom + [Otter.ai](https://otter.ai/) Pro or [tl;dv](https://tldv.io/) + [Timezone Checker](https://www.timezonechecker.app/). Better video quality, cross-meeting insights, and international coordination.
+**Pragmatic**: Rallly + Meet or Zoom + Otter.ai or tl;dv + Timezone Checker. A good fit for distributed teams.
 
-**Advanced (variable)**: [VoIPstudio](https://voipstudio.com/) + Zoom or Google Meet + [tl;dv](https://tldv.io/) Enterprise + [Superpowered](https://superpowered.me/) + self-hosted [Rallly](https://rallly.co/). Call center, team coaching, maximum confidentiality.
+**Confidential / demanding**: Rallly + Zoom/Meet/Teams + Superpowered. Prefer this when you want to limit bots and recording.
 
 ## Best practices
 
-**Before**: share the agenda 24 hours in advance, define clear goals, distribute pre-reads, configure the AI notetaker.
+**Before**: share the agenda, define the expected output, distribute pre-reads, configure the notetaker if needed.
 
-**During**: start on time, stick to the agenda, make decisions instead of just talking, and record action items with owner and deadline.
+**During**: start on time, stick to the agenda, make decisions, and record action items with owner and deadline.
 
-**After**: share notes within an hour, add action items to your task manager, and notify owners of follow-ups.
+**After**: share notes quickly, move actions into your task manager, and notify owners.
 
 :::note[Practical exercise]
-For two weeks, track every meeting: total time, usefulness, participants. Identify the ones that could have been an async message. Goal: reduce your meeting time by 30-40%.
+For two weeks, track every meeting:
+
+1. why it existed
+2. what decision came out of it
+3. how many people were truly useful
+4. which ones could have been async or a written note
+
+Goal: reduce meeting volume, but more importantly increase decision density per meeting.
 :::

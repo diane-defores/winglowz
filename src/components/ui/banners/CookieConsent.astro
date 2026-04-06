@@ -10,16 +10,16 @@ const lang = getLangFromUrl(Astro.url)
 
 const text = lang === 'fr'
   ? {
-      message: "Ce site utilise des cookies essentiels et des outils d'analyse anonymes pour ameliorer votre experience. En poursuivant votre navigation, vous acceptez leur utilisation.",
-      accept: "Accepter",
-      decline: "Refuser",
+      message: "Ce site utilise des cookies essentiels pour faire fonctionner le compte, la connexion et les preferences d'affichage.",
+      accept: "Compris",
+      decline: "Fermer",
       privacy: "Politique de confidentialite",
       privacyUrl: "/fr/confidentialite",
     }
   : {
-      message: "This site uses essential cookies and anonymous analytics to improve your experience. By continuing to browse, you accept their use.",
-      accept: "Accept",
-      decline: "Decline",
+      message: "This site uses essential cookies to support your account, sign-in flow, and display preferences.",
+      accept: "Understood",
+      decline: "Close",
       privacy: "Privacy Policy",
       privacyUrl: "/privacy",
     }

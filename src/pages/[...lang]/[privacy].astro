@@ -126,59 +126,7 @@ const sections = (t.sections ?? {}) as Record<
 			</h2>
 			<p>{sections.contact?.content}</p>
 
-			<!-- Section Analytics Opt-out -->
-			<h2 class="mb-4 mt-8 text-xl font-semibold text-neutral-800 dark:text-neutral-200">
-				{lang === 'fr' ? 'Préférences analytics' : 'Analytics Preferences'}
-			</h2>
-			<p class="mb-4">
-				{lang === 'fr'
-					? 'Vous pouvez désactiver le suivi analytique à tout moment. Ce choix est sauvegardé dans votre navigateur.'
-					: 'You can disable analytics tracking at any time. This choice is saved in your browser.'}
-			</p>
-			<div id="analytics-opt-out-section" style="margin: 1.5rem 0; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px;">
-				<p id="analytics-status" style="margin: 0 0 1rem;">
-					{lang === 'fr' ? 'Chargement...' : 'Loading...'}
-				</p>
-				<button id="analytics-toggle" style="padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; border: 1px solid currentColor;">
-					{lang === 'fr' ? 'Chargement...' : 'Loading...'}
-				</button>
-			</div>
 		</div>
 	</div>
 </MainLayout>
 
-<script is:inline>
-  var _lang = document.documentElement.lang || 'en';
-  var _isFr = _lang === 'fr';
-
-  function updateUI() {
-    var status = document.getElementById('analytics-status');
-    var btn = document.getElementById('analytics-toggle');
-    if (!status || !btn) return;
-
-    var optedOut = typeof posthog !== 'undefined' && posthog.has_opted_out_capturing();
-
-    if (optedOut) {
-      status.textContent = _isFr ? '🟢 Le suivi analytique est actuellement désactivé.' : '🟢 Analytics tracking is currently disabled.';
-      btn.textContent = _isFr ? 'Réactiver les analytics' : 'Re-enable analytics';
-    } else {
-      status.textContent = _isFr ? '🔵 Le suivi analytique est actuellement activé.' : '🔵 Analytics tracking is currently enabled.';
-      btn.textContent = _isFr ? 'Désactiver les analytics' : 'Disable analytics';
-    }
-  }
-
-  function toggleAnalytics() {
-    if (typeof posthog === 'undefined') return;
-    if (posthog.has_opted_out_capturing()) {
-      posthog.opt_in_capturing();
-    } else {
-      posthog.opt_out_capturing();
-    }
-    updateUI();
-  }
-
-  var btn = document.getElementById('analytics-toggle');
-  if (btn) btn.addEventListener('click', toggleAnalytics);
-  document.addEventListener('DOMContentLoaded', updateUI);
-  setTimeout(updateUI, 500);
-</script>

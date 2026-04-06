@@ -1,124 +1,159 @@
 ---
 title: "Temps & Énergie"
-description: "Apprends à gérer ton temps et ton énergie comme un pro : time tracking, timeboxing, Biological Prime Time et création de ton système personnel."
+description: "Apprends à mieux allouer ton temps et ton énergie : mesurer, repérer tes pics, protéger ton focus et construire un système soutenable."
 sidebar:
   label: "Temps & Énergie"
   order: 1
 ---
 
-Le temps est ta ressource la plus précieuse — et contrairement à l'argent, tu ne peux pas en gagner plus. La bonne nouvelle : tu peux **drastiquement améliorer** la façon dont tu l'utilises.
+Le temps ne se gère pas comme une ressource neutre. Ce que tu gères vraiment, c'est l'allocation de ton attention et de ton énergie à l'intérieur du temps disponible.
 
-> Tu ne gères pas le temps. Tu gères ton énergie et ton attention à l'intérieur du temps.
+> Le problème de beaucoup de systèmes de productivité, ce n'est pas qu'ils manquent de discipline. C'est qu'ils demandent le même type d'effort au mauvais moment.
 
-## Étape 1 : Savoir où part ton temps
+## Le vrai sujet du module
 
-Avant d'optimiser quoi que ce soit, tu dois **mesurer**. La plupart des gens surestiment leur temps productif de 40 à 60%. Un outil de time tracking automatique règle le problème.
+Ce module ne sert pas à remplir mieux ton agenda. Il sert à :
+- voir où ton temps part vraiment
+- comprendre quand ton énergie monte et descend
+- mettre le bon type de travail au bon moment
+- éviter de brûler tes meilleures heures sur les mauvaises tâches
 
-### Outils de time tracking
+## Le decision framework Winflowz
 
-| Outil | Type | Prix | Idéal pour |
-|-------|------|------|------------|
-| **ActivityWatch** | Automatique, open source | Gratuit | Suivi passif sur PC/Mac/Linux |
-| **Toggl Track** | Manuel + rapports | Freemium | Freelances, suivi par projet |
-| **RescueTime** | Automatique | Freemium | Vue d'ensemble sans effort |
-| **Rize** | Automatique + IA | Payant | Suivi automatique + rapports IA sur ta productivité |
-| **Clockify** | Manuel | Gratuit illimité | Équipes, freelances et facturation |
+La logique du module tient en quatre étapes :
 
-**Recommandation** : installe ActivityWatch pendant une semaine complète sans changer tes habitudes. Le résultat va te surprendre.
+1. **Mesurer** avant d'optimiser
+2. **Repérer** tes pics et tes creux
+3. **Affecter** les bonnes tâches au bon niveau d'énergie
+4. **Itérer** au lieu de chercher le planning parfait
 
-### L'audit quotidien d'activité
+## 1. Mesurer avant d'optimiser
 
-Chaque soir, prends 5 minutes pour revoir ta journée :
-- Combien de temps en **création** vs. **consommation** ?
-- Quelles tâches t'ont pris plus longtemps que prévu ?
-- Où as-tu perdu du temps sans t'en rendre compte ?
+La plupart des gens se trompent sur l'usage réel de leur temps. Ils surestiment le travail profond et sous-estiment la fragmentation.
 
-Ce simple rituel crée une boucle de feedback qui améliore ta productivité semaine après semaine.
+Le bon point de départ n'est donc pas un nouveau planning. C'est un audit.
 
-## Timeboxing & Time Blocking
+### Recommandation principale : [ActivityWatch](https://activitywatch.net/)
 
-Le timeboxing consiste à **attribuer un créneau fixe à chaque tâche**. Pas une to-do list — un calendrier. Elon Musk et Bill Gates découpent leurs journées en blocs de 5 à 15 minutes.
+ActivityWatch reste la meilleure recommandation simple pour commencer :
+- open source
+- suivi passif
+- peu de friction
+- bon outil pour voir la réalité avant de raconter une histoire sur sa journée
 
-### Les 3 pièges du timeboxing
+### Alternatives valables selon le besoin
 
-1. **Le what-aboutism** — "Et si une urgence arrive ?" Prévois des blocs tampons. L'imprévu n'est pas une excuse pour ne pas planifier.
-2. **Ne pas itérer** — Ton premier planning sera mauvais. C'est normal. Ajuste chaque semaine jusqu'à trouver ton rythme.
-3. **La réactance psychologique** — Te sentir "enfermé" par ton propre planning. Solution : garde 20-30% de temps libre et rappelle-toi que c'est **toi** qui décides.
+- **Toggl Track** si tu veux un suivi plus manuel et orienté projets
+- **Clockify** si tu veux un suivi simple avec logique équipe ou facturation
+- **RescueTime** ou **Rize** si tu veux une couche plus pilotée, plus commerciale, ou plus analytique
 
-### La loi de Parkinson
+Le point important n'est pas l'outil. C'est de te regarder pendant une semaine sans changer tes habitudes trop tôt.
 
-> "Le travail s'étend de manière à remplir le temps disponible pour son achèvement."
+## 2. Repérer tes pics et tes creux
 
-Sans deadline, une tâche de 30 minutes prend 2 heures. Le timeboxing combat directement ce phénomène en imposant une contrainte.
+Le timeboxing seul ne suffit pas, parce qu'il suppose souvent que toutes les heures se valent.
 
-## Biological Prime Time
+Elles ne se valent pas.
 
-Ton énergie fluctue selon des cycles biologiques. Le **Biological Prime Time**, c'est identifier tes pics et tes creux pour placer les bonnes tâches aux bons moments.
+Le **Biological Prime Time** est simplement ton moment de plus grande clarté et disponibilité mentale. Il peut être le matin, l'après-midi ou même plus tard selon ton profil.
 
-- **Pic d'énergie** → travail créatif, problèmes complexes, deep work
-- **Énergie moyenne** → réunions, collaboration, tâches structurées
-- **Creux d'énergie** → emails, admin, tâches mécaniques
+Repère trois zones :
+- **pic** — création, stratégie, problèmes difficiles
+- **moyenne énergie** — réunions, coordination, tâches structurées
+- **creux** — admin, email, maintenance, exécution simple
 
-Pour le découvrir : note ton niveau d'énergie (1-10) toutes les heures pendant 2 semaines. Le pattern apparaîtra.
+Quand tu ignores cela, tu utilises ton agenda contre ta biologie.
 
-## Travaille par thème et respecte ton énergie
+## 3. Affecter le bon travail au bon niveau d'énergie
 
-Toutes les heures ne se valent pas. Toutes les tâches non plus. Une grosse partie de la productivité vient du fait d'arrêter de demander à ton cerveau de faire le mauvais type d'effort au mauvais moment.
+La vraie optimisation vient moins de "faire plus" que de réduire le mauvais couplage entre tâche et état mental.
 
-Deux questions simples :
-- quelles tâches exigent ton meilleur niveau de clarté mentale ?
-- à quels moments de la journée es-tu naturellement le plus lucide ?
+Questions simples :
+- qu'est-ce qui exige ma meilleure clarté ?
+- qu'est-ce qui peut être fait quand je suis moyen ?
+- qu'est-ce qui doit aller dans les creux ?
 
-Quand tu relies les deux, tu réduis la friction et tu récupères de l'élan. Le travail créatif et stratégique doit aller dans tes pics. L'administratif et la maintenance vont beaucoup mieux dans les creux.
+Cela donne une hiérarchie utile :
+- **travail profond** dans les pics
+- **coordination** dans les zones moyennes
+- **maintenance** dans les creux
 
-Tu peux aussi regrouper ta semaine par grands thèmes : création, production, communication, administration, apprentissage. Cela évite le switch permanent et donne à chaque journée une intention claire.
+## 4. Itérer au lieu de chercher la semaine parfaite
 
-Le but n'est pas de rendre ton agenda rigide. Le but est d'arrêter de gaspiller ton énergie la plus précieuse sur des tâches qui pourraient être faites plus tard.
+Le meilleur système n'est pas celui qui a l'air propre. C'est celui que tu peux tenir.
 
-## Poser des limites pour protéger ton focus
+Le timeboxing reste utile, mais à deux conditions :
+- accepter que le planning soit itératif
+- ne pas confondre structure et rigidité
 
-Si tu dis oui à tout, ton agenda devient celui des autres. Poser des limites n'est pas un luxe, c'est une condition de la concentration durable.
+Les pièges classiques restent les mêmes :
+- le what-aboutism
+- l'oubli que le système doit évoluer
+- la réactance psychologique quand ton propre agenda commence à te donner l'impression d'être une prison
 
-Quelques limites utiles :
-- réserver tes meilleures heures au travail profond
-- ne pas répondre instantanément à tous les messages
-- regrouper les rendez-vous au lieu de les disperser
-- protéger des créneaux sans réunions ni notifications
+Le bon usage est expérimental, pas militaire.
 
-Prendre soin de ton focus n'est pas être égoïste. C'est protéger la ressource qui te permet ensuite d'être utile, créatif et fiable.
+## Ce qu'il faut protéger
 
-## Pauses réelles vs. pauses stimulantes
+Une fois tes pics repérés, il faut les défendre.
 
-Scroller Instagram n'est **pas** une pause. Ton cerveau reste en mode consommation. Une vraie pause restaure ton énergie :
+Cela veut dire :
+- moins de réunions au mauvais moment
+- moins de réponses instantanées
+- plus de blocs sans interruption
+- moins de dispersion thématique dans une même journée
 
-- Marcher dehors 10 minutes
-- S'étirer ou respirer profondément
-- Regarder par la fenêtre (oui, vraiment)
-- Discuter avec quelqu'un en personne
+Une grande partie de la productivité vient du fait de ne plus laisser l'extérieur décider de la forme de tes meilleures heures.
 
-## Éliminer le temps mort
+## Ce qu'il faut éviter
 
-Brian Holiday appelle ça "transformer le temps mort en temps vivant". Les trajets, les files d'attente, les salles d'attente — ce sont des créneaux récupérables pour podcasts, audiobooks ou réflexion.
+- optimiser sans mesurer
+- appliquer le même rythme à chaque jour
+- traiter les pics d'énergie comme un espace disponible pour les autres
+- remplir chaque interstice sans laisser d'air
+- croire qu'une pause stimulante est une vraie pause
 
-## La métaphore Pilote / Avion / Ingénieur
+Scroller n'est pas récupérer. Une vraie pause rend de l'énergie au système.
 
-Pense à tes rôles dans une journée :
+## La logique du module
 
-| Rôle | % du temps | Ce que tu fais |
-|------|-----------|----------------|
-| **Pilote** | ~10% | Direction, décisions stratégiques, priorités |
-| **Avion** | ~80% | Exécution, production, deep work |
-| **Ingénieur** | 5-10% | Maintenance du système, revue, optimisation |
+Ce module s'articule ensuite autour de trois idées :
+- **voir** la réalité de ton temps
+- **respecter** ton énergie au lieu de la forcer
+- **organiser** tes journées et tes semaines autour de thèmes, de blocs et de limites soutenables
 
-La plupart des gens passent trop de temps en mode Pilote (planifier sans agir) ou ignorent complètement le mode Ingénieur (jamais améliorer le système).
+## Workflow recommandé
 
-## Crée ton système personnel
+**Minimaliste** :
+- 1 semaine d'audit
+- repérage des pics
+- protection d'un seul bloc profond par jour
 
-Il n'existe pas de système parfait universel. Le meilleur système est celui que **tu construis par itération** :
+**Pragmatique** :
+- audit + revue courte en fin de journée
+- timeboxing léger
+- répartition du travail par niveau d'énergie
 
-1. Choisis une méthode (timeboxing, Pomodoro, time blocking...)
-2. Teste-la pendant 2 semaines minimum
-3. Note ce qui fonctionne et ce qui coince
-4. Ajuste et recommence
+**Système personnel** :
+- mesure régulière
+- thèmes de semaine
+- blocs protégés
+- revue hebdo d'ajustement
 
-Après 3-4 itérations, tu auras un système taillé pour ton cerveau, ton rythme et ta vie.
+## Métaphore utile
+
+Tu peux penser ta journée avec trois rôles :
+- **Pilote** : direction et priorités
+- **Avion** : exécution réelle
+- **Ingénieur** : maintenance et amélioration du système
+
+Le problème classique est de trop planifier, pas assez exécuter, et presque jamais améliorer le système.
+
+:::note[Exercice pratique]
+Pendant 2 semaines :
+
+1. mesure ton temps réel
+2. note ton énergie plusieurs fois par jour
+3. identifie un pic, une zone moyenne et un creux
+4. change ensuite seulement la place de 3 types de tâches dans ta journée
+:::

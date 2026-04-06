@@ -1,26 +1,16 @@
----
-tags: Rédaction
-u_interne: ""
-u_externe: ""
-datePublié: ""
-imageNameKey: ""
-_priorité: ""
----
+## ✅ MIGRÉ → module-5-consommer/trouver-contenu.md
 
-## ✅ MIGRÉ → `src/content/docs/fr/formations/module-5-consommer/trouver-contenu.md`
-- ((curation — dire non à 99% pour le 1% qui compte))
-- ((suivre les personnes, pas les plateformes))
-- ((filtre des 3R, diète de contenu intentionnelle))
-- ((Antiquoted — trouver des experts divers))
+- ((problème central : manque de filtres, de hiérarchie et de critères de profondeur))
+- ((cadre de décision : source ou simple feed ? besoin réel ou curiosité passive ? regard, lecture ou capture durable ?))
+- ((3 niveaux : veille légère, lecture utile, source de référence))
+- ((logique : suivre les sources, choisir la bonne profondeur, capturer moins mais mieux))
+- ((Readwise Reader = recommandation principale lecture / capture))
+- ((Raindrop = couche bookmark / archive légère))
+- ((Refind = couche de découverte, pas système principal))
+- ((Feedly = veille structurée plus sérieuse))
+- ((Antiquoted n'est plus une recommandation centrale pertinente pour cette leçon))
+- ((workflow : séparer découverte, lecture, intégration))
 
 ## 🔶 À TRIER
 
-it's not about consuming more or the same thing that everyones consume, but consuming what will elevate and profit you more.
-
-
-[Antiquoted](https://antiquoted.com/?ref=producthunt)
-Find new, diverse experts with something to say on a range of business topics. Uncover people with fresh perspectives and subject matter expertise to feature in articles, podcasts, or events
-
-
-Learning on the go
-	
+- anciens blocs trop orientés "outils de curation" sans vraie logique de profondeur à ne pas réinjecter tels quels

@@ -9,15 +9,18 @@ _priorité: ""
 
 ## ✅ MIGRÉ → module-1-productivite/sante-bonheur.md
 
-- ((4 piliers du bien-être — dormir, manger, bouger, méditer))
-- ((Sommeil & dette de sommeil — concept RISE, sleep debt, routine du soir, lumière matinale))
-- ((Repos actif — analogie méduse, 35000 décisions/jour, pauses planifiées))
-- ((Mindfulness — réduction stress/burnout, satisfaction pro, régulation émotionnelle, bénéfices 8 semaines))
-- ((Vipassana — 10 jours, pratique > théorie, loger des heures, dhamma.org, impact bonheur))
-- ((Nutrition — box repas vs fast-food, champignons adaptogènes, alternatives café))
-- ((Alignement valeurs × travail — dissonance créatif/commercial, cycles vente/authenticité))
-- ((Philosophie de vie — épicurisme, bouddhisme, Emerson, philosophie personnelle))
-- ((Relations & amitiés — bloquer du temps, conversations profondes))
-- ((Self-care, sport, mental health — mindfulness au travail))
+- ((cadre de décision : sommeil, énergie biologique, attention/stress, alignement vie-travail-relations))
+- ((4 piliers : dormir, manger/s'hydrater, bouger, réguler attention et stress))
+- ((sommeil comme base sous-estimée ; dette de sommeil ; RISE comme outil secondaire utile))
+- ((repos actif au lieu de fausses pauses saturantes))
+- ((mouvement et sport comme contrepoids au travail mental))
+- ((pleine conscience simple et Vipassana comme version intensive ; dhamma.org))
+- ((nutrition et énergie : hiérarchie saine avant café/suppléments))
+- ((alignement : si le travail te déforme, le système fuira))
+- ((accepter les cycles et l'aléatoire))
+- ((philosophie de vie respirable))
+- ((relations comme infrastructure de productivité humaine))
 
 ## 🔶 À TRIER
+
+- anciens détails trop dispersés ou trop lifestyle à ne garder que s'ils servent vraiment la structure premium

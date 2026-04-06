@@ -224,6 +224,17 @@ Ouvrir une app en passant par le menu Démarrer, c'est lent. Un lanceur te perme
 
 **Notre recommandation** : Flow Launcher pour sa communauté active et ses plugins, ou PowerToys Run si tu utilises déjà PowerToys.
 
+### Comment choisir ton lanceur
+
+Tous les lanceurs ne répondent pas au même besoin :
+- **Flow Launcher** : le meilleur point d'entrée si tu veux un lanceur moderne, extensible et encore vivant
+- **PowerToys Run** : très bon choix si tu veux quelque chose de simple, propre et déjà intégré à ton setup Windows
+- **Listary** : particulièrement intéressant si ton vrai problème est moins le lancement d'apps que la navigation rapide dans les fichiers et l'Explorateur
+
+Tu peux aussi rencontrer des outils plus anciens comme **Wox** ou **Find and Run Robot**. Ils restent intéressants à connaître comme références ou alternatives secondaires, mais nous ne les mettons pas au centre du cours :
+- **Wox** a compté historiquement, mais il est aujourd'hui moins convaincant face à Flow Launcher
+- **Find and Run Robot** reste un bon vieux lanceur pour certains power users, mais c'est davantage un outil vétéran qu'une recommandation premium moderne
+
 ### Raccourci universel
 
 Configure ton lanceur sur `Alt + Espace`. C'est le standard de facto. Tu appuies, tu tapes, tu valides — trois gestes pour ouvrir n'importe quoi.
@@ -256,6 +267,8 @@ Pour qu'un programme ou un script se lance automatiquement :
 2. Colle un **raccourci** (pas le fichier original) de ton programme dans ce dossier
 3. C'est tout. Au prochain démarrage, il sera lancé automatiquement.
 
+Pour la gestion plus fine des applications qui se lancent au démarrage, vois aussi le chapitre [Ergonomie](./ergonomie), qui couvre le tri des apps de boot via le Gestionnaire des tâches.
+
 ## Introduction au RPA
 
 Le RPA (Robotic Process Automation) pousse l'automatisation au niveau professionnel. Au lieu d'automatiser une seule tâche, tu automatises des processus entiers.
@@ -275,3 +288,6 @@ C'est un sujet avancé, mais si tu travailles avec des processus répétitifs à
 - [PhraseExpress](https://www.phraseexpress.com/) - une bibliothèque de snippets plus avancée pour les usages intensifs.
 - [Flow Launcher](https://www.flowlauncher.com/) - le lanceur recommandé pour aller vite au clavier.
 - [Microsoft PowerToys](https://github.com/microsoft/PowerToys) - utile si tu veux aussi PowerToys Run dans le même outil.
+- [Listary](https://www.listary.com/) - très bon si tu navigues beaucoup dans l'Explorateur et les fichiers.
+- [Wox](https://github.com/Wox-launcher/Wox) - alternative historique aujourd'hui plutôt secondaire.
+- [Find and Run Robot](https://www.donationcoder.com/Software/Mouser/findrun/index.html) - lanceur vétéran encore intéressant pour certains profils avancés.

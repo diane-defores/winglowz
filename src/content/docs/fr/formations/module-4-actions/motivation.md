@@ -1,93 +1,198 @@
 ---
 title: "Motivation"
-description: "Comprends la science de la motivation, la différence entre intrinsèque et extrinsèque, et découvre le toolkit des 3 Ms pour rester en mouvement."
+description: "Construis de l'élan sans attendre l'inspiration : friction basse, progrès visible, énergie gérée et engagement crédible."
 sidebar:
   label: "Motivation"
   order: 3
 ---
 
-Tu attends d'être motivé pour commencer ? Mauvaise stratégie. La motivation ne précède pas l'action — **elle en est la conséquence**. Comprendre ce mécanisme change tout.
+Le problème de la motivation n'est pas qu'elle n'existe pas. C'est qu'on lui demande de faire le travail qu'un bon système devrait déjà faire.
 
-> L'élan crée la motivation, pas l'inverse. Commence, et la motivation suivra.
+> Tu n'as pas besoin d'être motivé pour commencer. Tu as besoin que commencer coûte moins cher que repousser.
 
-## La science derrière la motivation
+## Le vrai sujet
 
-Ton cerveau fonctionne à la dopamine — mais pas comme tu le penses. La dopamine n'est pas le "neurotransmetteur du plaisir". C'est le **neurotransmetteur de l'anticipation**.
+La motivation n'est pas un carburant stable. C'est un signal qui monte ou descend selon :
+- la friction de départ
+- la clarté de l'action
+- la visibilité du progrès
+- ton état physique et émotionnel
 
-Ton cerveau libère de la dopamine quand il **prévoit une récompense**, pas quand il la reçoit. C'est pourquoi :
-- Tu es excité par un nouveau projet (anticipation maximale)
-- L'enthousiasme s'effondre après quelques jours (la récompense semble lointaine)
-- Scroller les réseaux est addictif (micro-récompenses constantes et imprévisibles)
+Cette leçon sert donc moins à "retrouver la motivation" qu'à construire les conditions dans lesquelles l'élan apparaît plus facilement.
 
-La clé : **créer des boucles de dopamine courtes** à l'intérieur de tes projets longs.
+## Le decision framework Winflowz
 
-## Motivation intrinsèque vs. extrinsèque
+Quand tu bloques ou que tu repousses une action, pose-toi quatre questions :
 
-| Type | Source | Exemples | Durabilité |
-|------|--------|----------|------------|
-| **Extrinsèque** | Récompense externe | Argent, likes, validation, notes | Fragile — disparaît si la récompense s'arrête |
-| **Intrinsèque** | Satisfaction interne | Curiosité, maîtrise, sens, autonomie | Solide — se renforce avec le temps |
+1. **Est-ce que le problème est la motivation, ou la friction ?**
+2. **Est-ce que l'action suivante est vraiment claire ?**
+3. **Est-ce que je peux créer une victoire plus proche et plus visible ?**
+4. **Est-ce que mon état physique ou émotionnel rend l'exécution inutilement difficile ?**
 
-La motivation extrinsèque peut même **détruire** la motivation intrinsèque. C'est l'effet de surjustification : si on te paie pour un hobby, tu finis par le faire uniquement pour l'argent.
+Cela conduit à quatre leviers :
 
-Objectif : construire un système qui nourrit ta motivation intrinsèque.
+- **réduire la friction**
+- **clarifier la prochaine action**
+- **rendre le progrès visible**
+- **soutenir l'énergie de base**
 
-## Les 3 ingrédients de la motivation durable
+## La motivation suit souvent le progrès
 
-**1. L'auto-efficacité** — "Je suis capable"
-C'est la croyance en ta capacité à réussir. Elle se construit par des petites victoires répétées, pas par des affirmations positives. Chaque tâche cochée renforce cette croyance.
+L'idée la plus utile n'est pas "motive-toi plus". C'est :
 
-**2. La curiosité** — "Je veux comprendre"
-La curiosité est un moteur naturel. Pose-toi des questions sur ce que tu fais. Transforme une tâche ennuyeuse en expérimentation : "Et si j'essayais autrement ?"
+**le mouvement nourrit l'élan**.
 
-**3. La compétence** — "Je progresse"
-Le sentiment de progression est plus motivant que le résultat final. Mesure tes progrès, même minimes. Un développeur qui voit son code s'améliorer n'a pas besoin qu'on le pousse.
+Une fois qu'un projet produit :
+- un début clair
+- une petite victoire
+- un signal de progression
 
-## Le toolkit des 3 Ms
+le cerveau résiste généralement moins.
 
-### Manage — Gère ton humeur
+Le démarrage est souvent le point le plus coûteux. D'où l'intérêt de commencer plus petit, pas plus héroïquement.
 
-Ta motivation est directement liée à ton état physique et émotionnel. Avant de chercher des hacks de productivité :
-- Dors-tu assez ? (7-9h, non négociable)
-- Bouges-tu chaque jour ? (même 20 minutes)
-- Manges-tu correctement ?
-- As-tu des interactions sociales de qualité ?
+## Friction avant inspiration
 
-Si la base est cassée, aucune technique ne compensera.
+La plupart des blocages viennent de là :
+- la tâche est trop grosse
+- le point d'entrée est flou
+- le contexte est mal préparé
+- le coût mental de démarrage est trop élevé
 
-### Measure — Mesure tes progrès
+Donc avant de parler motivation, vérifie :
+- fichier déjà ouvert ?
+- matériel prêt ?
+- prochaine action visible ?
+- durée raisonnable ?
 
-Ce qui ne se mesure pas ne se gère pas. Crée un système de suivi simple :
-- Nombre de sessions de deep work par semaine
-- Tâches complétées vs. planifiées
-- Streak d'habitudes (jours consécutifs)
+Si tout est prêt, l'action devient souvent plus probable que l'évitement.
 
-Le simple fait de cocher une case génère de la dopamine. Utilise ce mécanisme à ton avantage.
+## Intrinsèque vs extrinsèque
 
-### Make it public — Rends-le visible
+La distinction reste utile, mais seulement si elle sert l'action.
 
-L'engagement social est un multiplicateur de motivation :
-- Partage tes objectifs avec un ami ou un groupe
-- Publie tes avancées (build in public)
-- Trouve un partenaire de responsabilité (accountability partner)
-- Rejoins une communauté alignée avec ton projet
+- **motivation intrinsèque** : curiosité, maîtrise, sens, autonomie
+- **motivation extrinsèque** : argent, validation, pression, récompense
 
-La pression sociale positive transforme "je devrais" en "je vais".
+L'objectif n'est pas de supprimer l'extrinsèque. C'est d'éviter qu'elle devienne la seule source d'élan.
 
-## Le momentum crée la motivation
+Une action tient mieux quand elle nourrit au moins un de ces trois moteurs :
+- **je veux comprendre**
+- **je veux progresser**
+- **je veux rester aligné avec quelque chose qui compte**
 
-N'attends pas l'inspiration. Applique la règle des 2 minutes : **commence par la version la plus petite possible de la tâche**. Ouvre le fichier. Écris une ligne. Fais un seul pushup.
+## Les 3 leviers qui restent solides
 
-Le cerveau résiste au démarrage, pas à la continuation. Une fois lancé, l'élan prend le relais. C'est le concept du **Blitzit** : des sprints ultra-courts (5-15 min) pour amorcer le mouvement.
+### 1. Auto-efficacité
 
-## Rester motivé sur les projets longs
+Tu avances mieux quand tu te crois capable d'avancer.
 
-Les projets de plusieurs mois sont les plus difficiles. Voici comment tenir :
+Cette confiance ne vient pas de slogans. Elle vient de micro-preuves répétées :
+- finir quelque chose
+- tenir une routine
+- voir que tu peux reprendre même après un écart
 
-- **Découpe en jalons visibles** — fête chaque étape intermédiaire
-- **Varie les tâches** — alterne créatif et analytique pour éviter la monotonie
-- **Reviens à ton "pourquoi"** — relis régulièrement ta vision (Backwardation)
-- **Accepte les jours sans** — un jour à 30% vaut mieux qu'un jour à 0%
-- **Protège ton énergie** — la discipline sans récupération mène au burnout
+### 2. Curiosité
 
-La motivation n'est pas un trait de caractère. C'est un **système que tu construis**, une compétence que tu développes. Et maintenant, tu as les outils pour le faire.
+Une tâche devient plus légère quand elle redevient questionnante.
+
+Au lieu de :
+- "je dois faire ça"
+
+essaie :
+- "qu'est-ce qui se passe si je le fais de cette manière ?"
+- "qu'est-ce que j'apprends en essayant ?"
+
+### 3. Compétence
+
+Le sentiment de progression motive plus durablement que l'attente d'un grand résultat final.
+
+Si tu ne vois jamais d'amélioration, ton système érode l'envie.
+
+## Les 3 Ms, recentrés
+
+### Manage
+
+Ne demande pas à ton cerveau de performer comme si ton corps allait bien si ce n'est pas le cas.
+
+Base minimale :
+- sommeil
+- mouvement
+- alimentation correcte
+- récupération
+- interactions sociales saines
+
+Sans ça, tu essayes souvent de résoudre avec de la volonté un problème de fondation.
+
+### Measure
+
+Le progrès visible compte.
+
+Tu peux mesurer simplement :
+- sessions tenues
+- jours d'exécution
+- livrables sortis
+- streaks si elles t'aident vraiment
+
+Le but n'est pas le fétichisme du tracking. C'est de rendre le progrès perceptible.
+
+### Make it public
+
+L'engagement social peut aider, mais seulement s'il reste crédible.
+
+Cela peut être :
+- un partenaire de responsabilité
+- une mise à jour hebdomadaire
+- un petit cercle, pas forcément internet entier
+
+La visibilité est utile quand elle soutient l'exécution, pas quand elle devient une performance.
+
+## Projets longs : comment tenir
+
+Sur les projets longs, la motivation baisse souvent non parce que tu es faible, mais parce que :
+- la récompense est loin
+- le feedback est lent
+- l'avancement devient abstrait
+
+Il faut donc recréer des boucles plus courtes :
+- jalons visibles
+- livrables intermédiaires
+- preuves régulières d'avancement
+- alternance entre tâches exigeantes et tâches de consolidation
+
+## Ce qu'il faut éviter
+
+- attendre de se sentir prêt
+- confondre envie et capacité d'exécution
+- rendre héroïque ce qui devrait être simple
+- utiliser la culpabilité comme moteur principal
+- ajouter de l'accountability avant d'avoir clarifié l'action
+
+## Workflow recommandé
+
+**Minimaliste** :
+- réduire la friction
+- clarifier la prochaine action
+- viser une petite victoire
+
+**Pragmatique** :
+- suivre le progrès
+- protéger l'énergie
+- utiliser une forme légère d'engagement externe
+
+**Système personnel** :
+- environnement préparé
+- actions petites mais nettes
+- mesure visible
+- revues régulières quand l'élan baisse
+
+:::note[Exercice pratique]
+Choisis une action que tu repousses depuis plusieurs jours et réponds seulement à cela :
+
+1. quelle est la vraie friction ?
+2. quelle est la plus petite version crédible de l'action ?
+3. quel signe de progrès pourrais-je voir en 10 minutes ?
+4. que dois-je préparer maintenant pour que le démarrage soit presque automatique ?
+
+Si tu réponds clairement à ces quatre questions, la motivation devient souvent beaucoup moins mystérieuse.
+:::

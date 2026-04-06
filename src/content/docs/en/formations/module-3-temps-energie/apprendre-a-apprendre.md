@@ -1,111 +1,190 @@
 ---
 title: "Learning How to Learn"
-description: "Productivity is not about doing more, it is about doing better. Discover spaced repetition, active recall, and the tools that help you retain what you learn."
+description: "Learn better by choosing the right depth of effort: active recall, spaced repetition, chunking, and review tools."
 sidebar:
   label: "Learning How to Learn"
   order: 3
 ---
 
-You consume hours of content every week - articles, videos, podcasts, courses. But how much of it do you actually keep? Studies show that we forget **around 80% of what we learn** within 48 hours if we do not build a retention system.
+The problem with learning is not only forgetting. It is treating all information as if it deserved the same depth, the same method, and the same effort.
 
-> Real productivity is not about consuming faster. It is about **retaining and applying** what you consume.
+> Learning better is not about consuming more. It is about deciding what deserves to be understood, retained, and reused.
 
-## The problem: the forgetting curve
+## What this is really about
 
-Hermann Ebbinghaus showed that memory declines exponentially after learning. Without review, here is what remains:
+This lesson is not here to make you "study more." It is here to help you choose better:
+- what deserves simple exposure
+- what deserves real understanding
+- what deserves durable memory
 
-| Delay | Average retention |
-|-------|-------------------|
-| 20 minutes | ~60% |
-| 1 hour | ~45% |
-| 1 day | ~35% |
-| 1 week | ~20% |
-| 1 month | ~10% |
+## The Winflowz decision framework
 
-The good news: every review at the right moment **flattens the curve**. That is the logic behind spaced repetition.
+When you learn something, ask three questions:
 
-## Spaced repetition
+1. **Does this information only need exposure, or should it actually change me?**
+2. **Do I need to understand it, retain it, or apply it?**
+3. **Which method is proportional: notes, explanation, flashcards, practice?**
 
-This is the most scientifically validated learning technique. The principle: review information just **before** you forget it, at increasing intervals.
+That creates three useful levels:
 
-- 1st review: **1 day** after learning
-- 2nd review: **3 days** later
-- 3rd review: **1 week** later
-- 4th review: **2 weeks** later
-- 5th review: **1 month** later
+- **Level 1: exposure** - see it, notice it, become familiar
+- **Level 2: understanding** - rephrase it, structure it, chunk it
+- **Level 3: retention** - active recall, spaced repetition, application
 
-After five or six well-spaced reviews, the information moves into long-term memory. You no longer need to keep relearning it.
+## The forgetting curve
 
-## Chunking (Barbara Oakley)
+The classic Ebbinghaus lesson still holds: without reactivation, a large part of what you learn disappears quickly.
 
-Barbara Oakley explains a core idea very well: working memory is tiny. You cannot keep many elements active at once, especially if those elements are still unstructured.
-
-**Chunking** is the skill of turning scattered pieces of information into a more stable mental block. That block becomes easier to manipulate, remember, and reuse.
-
-Simple example:
-- remembering `7 4 9 2 1 8 6 3` digit by digit is hard
-- remembering `749 / 218 / 63` is already easier
-- remembering a pattern, a category, or a structure is easier still than memorizing isolated units
-
-The same applies to complex topics:
-- a list of tools stays fuzzy
-- a mind map with 3 categories becomes memorable
-- a concept linked to a concrete example becomes reusable
-
-Chunking is not just about compressing information. It is about **understanding the structure of a subject**.
-
-### How to build real chunks
-
-1. **Look for patterns** - what repeats?
-2. **Group by function** - tools, steps, mistakes, principles
-3. **Attach an example** - abstract ideas stick better when tied to a concrete case
-4. **Explain it in your own words** - if you can rephrase it, the chunk is starting to exist
-5. **Reuse it quickly** - chunks consolidate when you use them, not when you stare at them
-
-The trap is thinking reading alone creates chunks. It does not. Chunks mostly emerge through practice, retrieval, and repetition.
+The important point is not memorizing exact percentages. It is understanding this:
+- reading once is not enough
+- passive rereading helps little
+- active retrieval helps a lot
 
 ## Active recall
 
-Rereading your notes is **almost useless** for memory. What works is forcing your brain to **retrieve the information by itself**.
+Active recall is the core of the system.
 
-Instead of rereading "Parkinson's Law says work expands to fill the time available," ask yourself: **"What is Parkinson's Law?"** and try to answer before checking.
+Instead of rereading:
+- close the source
+- ask yourself a question
+- try to answer from memory
+- then check
 
-That feeling of difficulty is not a bug - it is the signal that your brain is **strengthening the neural connection**.
+That feeling of difficulty is exactly what strengthens learning.
 
-### How to create good flashcards
+## Spaced repetition
 
-- **One idea per card** - no long walls of text
-- **Precise question** - "What is the average switching cost?" instead of "Talk about multitasking"
-- **Short answer** - If your answer takes more than two sentences, split it into multiple cards
-- **Add context** - A concrete example makes memory stick
+Spaced repetition is not magic. It is simply logical: review information right before it disappears.
 
-## Spaced repetition tools
+It becomes especially useful for:
+- vocabulary
+- key concepts
+- procedures
+- facts and structures you want to keep long term
 
-| Tool | Type | Price | Strengths |
-|------|------|------|-----------|
-| **KardsAI** | AI + flashcards | Freemium | Generates cards automatically from your notes |
-| **Anki** | Classic flashcards | Free (desktop) | Highly customizable, proven algorithm |
-| **RemNote** | Notes + flashcards | Freemium | Turns your notes into cards directly |
-| **Quizlet** | Social flashcards | Freemium | Shared decks, easy to start |
+It is less useful when:
+- you do not yet understand the subject
+- you are making cards from still-fuzzy material
+- you turn everything into flashcards by reflex
 
-**Recommendation**: KardsAI if you want speed and AI-generated cards, Anki if you want total control.
+## Chunking
 
-## Learn better, not just more
+Chunking means turning isolated elements into more stable mental units.
 
-These habits change everything:
+You learn better when you can:
+- see patterns
+- group by function
+- connect to an example
+- rephrase in your own words
 
-1. **Teach what you learn** - Explaining forces deep understanding. A post, a note, or a conversation is enough.
-2. **Connect it to what you already know** - Isolated information is forgotten. Connected information sticks.
-3. **Apply it immediately** - Read about timeboxing? Build your first schedule within the next hour.
-4. **Space your sessions** - Four 25-minute sessions beat one 2-hour session for retention.
-5. **Sleep** - Memory consolidation happens during sleep. Sacrificing sleep to "study more" is counterproductive.
+Chunking mainly helps you move from "I recognize this" to "I understand the structure."
 
-## The optimal learning workflow
+## What each method is for
 
-```text
-Consume -> Capture the essentials -> Create flashcards -> Review with spacing -> Apply
-```
+### If you want to understand
 
-Do not skip steps. Most people stop at consumption and then wonder why they are not improving.
+- rephrase
+- explain
+- compare
+- connect to what you already know
 
-Productivity without effective learning is just moving fast in the wrong direction. Invest 15 minutes a day in spaced review, and your future self will thank you.
+### If you want durable retention
+
+- make fewer but better cards
+- practice active recall
+- space your reviews
+
+### If you want to know how to do something
+
+- apply it quickly
+- test it in reality
+- correct through feedback
+
+The biggest trap is trying to memorize what should first be practiced.
+
+## The tool layer
+
+### Main recommendation: [Anki](https://apps.ankiweb.net/)
+
+Anki remains the strongest recommendation if you want a real long-term spaced-repetition system:
+- proven algorithm
+- high control
+- stable ecosystem
+- best fit when long-term retention truly matters
+
+I would mainly recommend it for people who are serious about memory, not for people who only want to "try flashcards."
+
+### Notes plus review recommendation: [RemNote](https://www.remnote.com/)
+
+RemNote stays very strong if you want to combine:
+- notes
+- structure
+- flashcards
+- review in the same environment
+
+It is often the best compromise if you do not want to split note-taking and spaced repetition too aggressively.
+
+### Simpler / social recommendation: [Quizlet](https://quizlet.com/features/flashcards)
+
+Quizlet still makes sense if you want:
+- something easier to start with
+- shared decks
+- a lighter entry point into flashcards
+
+But I see it less as a long-term system than as an entry layer.
+
+### AI / convenience layer: [KardsAI](https://kardsai.app/pricing/)
+
+KardsAI is useful if your real problem is card-creation friction.
+
+I would position it as:
+- a fast-start layer
+- not the heart of the method
+
+AI can speed up card creation, but it does not replace understanding or selection.
+
+## How to make good cards
+
+- one idea per card
+- precise question
+- short answer
+- minimal context if needed
+- no cards on material you still do not understand
+
+The test is simple: if you cannot write the card clearly, you may not understand the idea clearly enough yet.
+
+## Recommended workflow
+
+**Minimalist**:
+- attentive consumption
+- rephrasing
+- immediate application
+
+**Pragmatic**:
+- short notes
+- a few cards for durable ideas
+- light spaced review
+
+**Serious retention**:
+- Anki or RemNote
+- short daily active recall
+- regular application of concepts
+
+## What to avoid
+
+- believing rereading equals learning
+- making flashcards for everything
+- creating vague or overloaded cards
+- memorizing before understanding
+- sacrificing sleep to "study more"
+
+Sleep, application, and recovery remain part of the learning system.
+
+:::note[Practical exercise]
+For one week:
+
+1. choose one subject you actually want to keep
+2. separate what belongs to exposure, understanding, and retention
+3. only then create 5 to 10 good cards
+4. finally explain the topic in your own words or apply it in one concrete case
+:::

@@ -14,6 +14,8 @@ _priorité: ""
 - ((consommation de podcasts — Pocket Casts, Poddycast))
 - ((lecture — Readsy, Otherweb, Modern for Hacker News))
 - ((PotPlayer — lecteur Windows avancé))
+- ((Boucle PKM — consommer, extraire, relier, créer))
+- ((Consommation intentionnelle minimum viable — YouTube nettoyé, RSS, Karakeep, Obsidian/Logseq, sortie hebdo))
 
 ## 🔶 À TRIER
 

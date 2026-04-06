@@ -21,6 +21,48 @@ Le PKM est une discipline personnelle qui couvre tout le cycle de vie de l'infor
 
 Ce n'est pas un outil — c'est un système. L'outil ne fait que le supporter.
 
+## Le piège classique : empiler des outils au lieu de construire un système
+
+Le débutant PKM fait souvent la même erreur :
+- une app pour les liens
+- une app pour les notes
+- une app pour les surlignages
+- une app pour les captures d'écran
+- une app pour les résumés IA
+
+Résultat : plus de collecte, mais pas plus de clarté.
+
+Le but de ce module n'est pas de te donner 20 outils de plus. C'est de te donner une **logique de rôles** :
+- un espace pour **penser**
+- un espace pour **stocker des références**
+- un système simple pour **retrouver**
+- une habitude pour **transformer** ce que tu consommes
+
+Si cette logique est claire, les outils deviennent interchangeables. Si elle est floue, même les meilleurs outils créent du bruit.
+
+## Le stack minimum viable PKM
+
+Pour la plupart des gens, un bon système PKM ne commence pas avec une usine à gaz. Il commence avec un socle minimum :
+
+- **Obsidian** ou **Logseq** pour les notes, les idées et les connexions
+- **Karakeep** pour les liens, extraits et références web
+- un système de **fichiers/dossiers propre** pour les assets, exports et archives
+
+Ce trio couvre déjà l'essentiel :
+- **penser**
+- **collecter**
+- **stocker**
+- **retrouver**
+
+Tu n'as pas besoin de plus au départ. Tu ajoutes une couche seulement quand un vrai problème apparaît.
+
+### Choisir ton outil principal de pensée
+
+- **Obsidian** si tu veux une base très flexible, orientée notes, backlinks et graph local
+- **Logseq** si tu préfères les blocs, les journaux et une logique plus outline-first
+
+L'idée n'est pas de chercher le gagnant absolu. L'idée est de choisir un outil dans lequel tu auras envie de revenir souvent.
+
 ---
 
 ## Pourquoi le PKM est essentiel
@@ -38,6 +80,22 @@ Ce n'est pas un outil — c'est un système. L'outil ne fait que le supporter.
 - **Les connexions émergent** — en reliant tes notes, tu génères des idées nouvelles
 - **Tu crées plus vite** — tu ne pars jamais de zéro
 - **Tu prends de meilleures décisions** — tu t'appuies sur des données, pas sur ta mémoire
+
+### Les backlinks ne sont pas du folklore
+
+Un bon système PKM ne se contente pas de stocker. Il t'aide à **penser**.
+
+Les backlinks, les liens internes et le graph sont utiles non pas parce qu'ils sont jolis, mais parce qu'ils permettent :
+- de revoir une idée dans plusieurs contextes
+- de retrouver des notes sans connaître leur titre exact
+- de faire émerger des connexions que les dossiers seuls montrent mal
+
+En pratique :
+- les **dossiers** réduisent le chaos
+- les **tags** filtrent
+- les **backlinks** aident à réfléchir
+
+Si tu n'as qu'un classement rigide, tu ranges. Si tu as aussi des liens, tu construis un réseau d'idées.
 
 ---
 
@@ -74,10 +132,26 @@ Pour chaque heure de consommation, passe au moins 20 minutes à :
 ### Progressivité
 
 Ne cherche pas à tout mettre en place d'un coup. Commence par :
-1. **Semaine 1** : choisis un seul outil de prise de notes
-2. **Semaine 2** : capture 3 idées par jour
-3. **Semaine 3** : relis tes notes du mois et relie-les entre elles
-4. **Semaine 4** : crée un contenu à partir de tes notes
+1. **Semaine 1** : choisis un seul outil de pensée et un seul outil de collecte
+2. **Semaine 2** : capture 3 idées ou références par jour
+3. **Semaine 3** : relis tes notes et ajoute quelques liens utiles entre elles
+4. **Semaine 4** : transforme une note en contenu, décision ou action concrète
+
+## Le vrai cycle du module
+
+Dans ce module, le PKM n'est pas un simple stockage de notes. C'est une boucle :
+
+1. **Capturer** ce qui mérite de survivre
+2. **Organiser** sans surclasser
+3. **Retrouver** rapidement, même imparfaitement
+4. **Relier** pour faire émerger du sens
+5. **Créer** pour convertir l'information en valeur
+
+Si tu captures sans relire, tu stockes.
+Si tu organises sans relier, tu archives.
+Si tu consommes sans créer, tu accumules.
+
+Le bon système est celui qui t'aide à revenir à l'information et à la réutiliser.
 
 ---
 
@@ -85,10 +159,10 @@ Ne cherche pas à tout mettre en place d'un coup. Commence par :
 
 Ce module couvre chaque étape du cycle PKM en détail :
 
-- **Capturer & Collecter** — outils et méthodes pour ne rien perdre
+- **Capturer & Collecter** — choisir où vont tes références, archives et notes
 - **Créer** — transformer tes notes en contenu grâce à l'IA
-- **Organiser & Gérer** — systèmes de fichiers et gestion d'actifs numériques
-- **Retrouver & Rechercher** — moteurs de recherche personnels et lanceurs
-- **Flow Launcher** — le lanceur qui change ta façon de travailler
-- **Opérations sur Médias & Fichiers** — manipulation et traitement en lot
-- **Consommer & Réfléchir** — stratégies de lecture et réflexion active
+- **Organiser & Gérer** — donner un rôle clair à chaque espace de stockage
+- **Retrouver & Rechercher** — construire un système de recherche à plusieurs couches
+- **Flow Launcher** — accélérer l'accès à ce que tu utilises souvent
+- **Opérations sur Médias & Fichiers** — garder un système léger et durable
+- **Consommer & Réfléchir** — passer de la veille à l'extraction, puis à la création

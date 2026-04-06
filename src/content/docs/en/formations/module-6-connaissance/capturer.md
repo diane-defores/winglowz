@@ -10,6 +10,68 @@ Capture is the first step in PKM. If you do not capture it, you will forget it. 
 
 > Capture first, organize later. The worst enemy of capture is organizational perfectionism.
 
+## The real question: where does what you capture actually go?
+
+The classic PKM trap is stacking capture tools without deciding **where the material will live afterward**.
+
+Before choosing an extension, scraper, or archiving tool, ask yourself:
+- do I mainly want to **store references**
+- **write and connect notes**
+- or build an **advanced memory layer** for my digital activity
+
+### Minimum viable PKM stack
+
+For many people, the best starting point is not a complicated system. It is a simple trio:
+
+- **Obsidian** if you want a real linked-note space, backlinks, a local graph, and a flexible thinking environment
+- **Karakeep** if you want to save links, images, short notes, and web references in a retrievable way
+- **Monolith** if you want to archive certain web pages durably as a single file
+
+That trio already covers the essentials:
+- **reference**
+- **note**
+- **archive**
+
+### If you prefer thinking in blocks rather than pages
+
+**Logseq** remains a very good alternative to Obsidian if you prefer:
+- outlining
+- blocks linked to each other
+- a more daily / journal-driven flow
+- a local, graph-first approach
+
+In other words:
+- **Obsidian** if you want a highly flexible note-and-backlink system
+- **Logseq** if you want a system that naturally thinks in blocks and journals
+
+The important point is not to choose "the absolute best tool." It is to choose a tool you will actually want to return to every day.
+
+### What is advanced, not mandatory
+
+Tools like **Screenpipe** become interesting when you want to go further:
+- recording your screen activity locally
+- retrieving information you saw but did not manually capture
+- creating a deeper contextual memory layer
+
+But that is not a starting point. It is an advanced layer.
+
+So:
+- **Obsidian / Logseq** for thinking and linking
+- **Karakeep** for retrievable collection
+- **Monolith** for durable archiving
+- **Screenpipe** only if you want an augmented work-memory layer
+
+## What beginner PKM systems often miss
+
+Many systems fail not because they capture too little, but because they capture without a destination logic.
+
+If you want to avoid overload:
+- keep **one main notes tool**
+- keep **one main collection tool**
+- only add extra layers when a real problem appears
+
+The goal is not to build a museum of the web. The goal is to keep what can realistically be retrieved, linked, reread, and reused.
+
 ## Web archiving
 
 ### [Monolith](https://github.com/Y2Z/monolith)
@@ -32,14 +94,23 @@ Webscape is a central hub for organizing everything you capture:
 - **Full-text search** across all your saved content
 - **Quick actions** - create a Google Calendar event, send a LinkedIn message, all without leaving the app
 
-### [Hoarder](https://karakeep.app/)
+### [Karakeep](https://karakeep.app/)
 
-Hoarder is a self-hostable bookmarking tool that goes beyond simple bookmarks:
+Karakeep, formerly **Hoarder**, is the more accurate recommendation today if you want a self-hostable bookmarking tool that goes beyond simple bookmarks:
 
 - **Automatic saving** of the full page content
 - **Full-text search** across everything you have saved
 - **Tags and collections** for topic-based organization
 - **Open API** for integrating it into your workflow
+
+### When Karakeep is the right choice
+
+Karakeep makes sense if:
+- you capture lots of links
+- you want to retrieve them without relying on memory
+- you like the idea of a self-hosted or more controllable system
+
+By contrast, if your main need is to **think**, **connect ideas**, and **build durable notes**, the core of your system should remain Obsidian or Logseq. Karakeep plays more of a **reference inbox** role.
 
 ---
 
@@ -53,6 +124,20 @@ Screenpipe continuously records everything happening on your screen and makes it
 - **Built-in OCR** - on-screen text is recognized and indexed
 - **Time-based search** - find what you were doing at any moment
 - **Local only** - your data stays on your machine
+
+### When not to use Screenpipe
+
+Screenpipe is impressive, but it should not be treated as a default tool.
+
+I would mainly recommend it if:
+- you work with lots of fleeting information
+- you often miss details you saw on screen
+- you want a deeper contextual memory layer
+
+I would not recommend it first if:
+- your notes system is still chaotic
+- you do not yet have a simple capture habit
+- you are likely to create another data layer you will never revisit
 
 ---
 

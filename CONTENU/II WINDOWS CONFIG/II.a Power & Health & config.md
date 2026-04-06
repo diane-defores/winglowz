@@ -8,10 +8,17 @@ _priorité: ""
 ---
 
 ## ✅ MIGRÉ → module-2-windows/sante-config.md
-- (SpaceSniffer et TreeSize Free pour analyse de l'espace disque)
-- (DNS : Cloudflare 1.1.1.1, Quad9 9.9.9.9, Google 8.8.8.8 — changement DNS sur Windows)
-- (Gestionnaires de paquets : Chocolatey vs Scoop)
-- (Puter : ordinateur dans le cloud via navigateur)
-- (Checklist sécurité : Windows Update, antivirus, pare-feu, comptes)
+- ((page recadrée autour d'une vraie base Windows saine : stockage visible, sauvegarde, installs propres, réseau cohérent, matériel suffisant))
+- ((cadre de décision : vrai goulet d'étranglement entre stockage, RAM, réseau, bruit logiciel ou matériel))
+- ((WizTree, SpaceSniffer, TreeSize gardés comme outils crédibles de visualisation disque))
+- ((stockage recentré sur la récupération et non juste l'espace libre))
+- ((sauvegarde replacée comme sujet de productivité concret))
+- ((DNS recadré : Cloudflare, Quad9, NextDNS seulement si besoin réel))
+- ((winget promu comme base sérieuse ; Scoop comme couche CLI ; Chocolatey seulement si raison précise))
+- ((portable vs installé relu comme question de contrôle))
+- ((desktop app vs SaaS relu comme arbitrage confort / dépendance))
+- ((évaluation matérielle recentrée sur RAM, SSD, CPU et workflow réel))
 
 ## 🔶 À TRIER
+
+- anciens blocs trop dispersés sur souveraineté, checklist sécurité, outils annexes et cloud exotique à ne pas réinjecter tels quels

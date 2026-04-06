@@ -1,111 +1,190 @@
 ---
 title: "Apprendre à Apprendre"
-description: "La productivité, c'est faire mieux, pas juste plus. Découvre la répétition espacée, le rappel actif et les outils pour retenir ce que tu apprends."
+description: "Apprends mieux en choisissant le bon niveau d'effort : rappel actif, répétition espacée, chunking et outils de révision."
 sidebar:
   label: "Apprendre à Apprendre"
   order: 3
 ---
 
-Tu consommes des heures de contenu chaque semaine — articles, vidéos, podcasts, cours. Mais combien retiens-tu réellement ? Les études montrent qu'on oublie **environ 80% de ce qu'on apprend** dans les 48 heures sans système de rétention.
+Le problème de l'apprentissage n'est pas seulement l'oubli. C'est de traiter toutes les informations comme si elles méritaient la même profondeur, la même méthode et le même effort.
 
-> La vraie productivité, ce n'est pas consommer plus vite. C'est **retenir et appliquer** ce que tu consommes.
+> Apprendre mieux, ce n'est pas consommer plus. C'est décider ce qui mérite d'être compris, retenu et réutilisé.
 
-## Le problème : la courbe de l'oubli
+## Le vrai sujet
 
-Hermann Ebbinghaus a démontré que la mémoire décline de façon exponentielle après l'apprentissage. Sans révision, voici ce qui reste :
+Cette leçon ne sert pas à te faire "étudier plus". Elle sert à mieux choisir :
+- ce qui mérite une simple exposition
+- ce qui mérite une vraie compréhension
+- ce qui mérite une mémorisation durable
 
-| Délai | Rétention moyenne |
-|-------|-------------------|
-| 20 minutes | ~60% |
-| 1 heure | ~45% |
-| 1 jour | ~35% |
-| 1 semaine | ~20% |
-| 1 mois | ~10% |
+## Le decision framework Winflowz
 
-La bonne nouvelle : chaque révision au bon moment **aplatit la courbe**. C'est le principe de la répétition espacée.
+Quand tu apprends quelque chose, pose-toi trois questions :
+
+1. **Est-ce que cette information doit juste m'exposer, ou vraiment me transformer ?**
+2. **Est-ce que j'ai besoin de comprendre, de retenir, ou d'appliquer ?**
+3. **Quelle méthode est proportionnée : notes, explication, flashcards, pratique ?**
+
+Cela crée trois niveaux utiles :
+
+- **Niveau 1 : exposition** — voir, repérer, se familiariser
+- **Niveau 2 : compréhension** — reformuler, structurer, chunker
+- **Niveau 3 : rétention** — rappel actif, répétition espacée, application
+
+## La courbe de l'oubli
+
+La leçon classique d'Ebbinghaus reste valable : sans réactivation, une grande partie de ce que tu apprends disparaît vite.
+
+Le point important n'est pas de mémoriser les pourcentages exacts. C'est de comprendre ceci :
+- lire une fois ne suffit pas
+- relire passivement aide peu
+- récupérer l'information activement aide beaucoup
+
+## Le rappel actif
+
+Le rappel actif est le cœur du système.
+
+Au lieu de relire :
+- ferme la source
+- pose-toi une question
+- essaie de répondre de mémoire
+- vérifie ensuite
+
+Cette difficulté est précisément ce qui consolide l'apprentissage.
 
 ## La répétition espacée
 
-C'est la technique d'apprentissage la plus validée par la science. Le principe : revoir une information juste **avant** de l'oublier, à des intervalles croissants.
+La répétition espacée n'est pas magique. Elle est simplement logique : revoir une information juste avant qu'elle ne disparaisse.
 
-- 1re révision : **1 jour** après l'apprentissage
-- 2e révision : **3 jours** après
-- 3e révision : **1 semaine** après
-- 4e révision : **2 semaines** après
-- 5e révision : **1 mois** après
+Elle devient pertinente surtout pour :
+- vocabulaire
+- concepts clés
+- procédures
+- faits et structures que tu veux garder longtemps
 
-Après 5-6 révisions bien espacées, l'information passe en mémoire à long terme. Tu n'as plus besoin d'y revenir.
+Elle est moins pertinente si :
+- tu n'as pas encore compris le sujet
+- tu crées des cartes sur du contenu encore flou
+- tu transformes tout en flashcards par réflexe
 
-## Le chunking (Barbara Oakley)
+## Le chunking
 
-Barbara Oakley popularise très bien une idée essentielle : la mémoire de travail est minuscule. Tu ne peux pas garder beaucoup d'éléments actifs à la fois, surtout si ces éléments ne sont pas encore organisés.
+Le chunking consiste à transformer des éléments isolés en unités mentales plus stables.
 
-Le **chunking**, c'est précisément l'art de transformer plusieurs informations dispersées en un seul bloc mental plus stable. Ce bloc devient ensuite plus facile à manipuler, à retenir et à réutiliser.
+Tu apprends mieux quand tu peux :
+- voir des patterns
+- regrouper par fonction
+- relier à un exemple
+- reformuler avec tes mots
 
-Exemple simple :
-- retenir `7 4 9 2 1 8 6 3` chiffre par chiffre est pénible
-- retenir `749 / 218 / 63` est déjà plus facile
-- retenir encore mieux une logique, une catégorie ou un pattern devient plus simple que mémoriser des unités isolées
+Le chunking sert surtout à passer de "je reconnais" à "je comprends la structure".
 
-Le même principe vaut pour un sujet complexe :
-- une liste d'outils reste une liste confuse
-- une carte mentale avec 3 catégories devient mémorisable
-- un concept relié à un exemple concret devient réutilisable
+## Ce qu'il faut retenir par méthode
 
-Le chunking ne consiste donc pas seulement à "compacter". Il consiste à **comprendre la structure d'un sujet**.
+### Si tu veux comprendre
 
-### Comment créer de vrais chunks
+- reformule
+- explique
+- compare
+- relie à ce que tu sais déjà
 
-1. **Cherche les patterns** — qu'est-ce qui se répète ?
-2. **Regroupe par fonction** — outils, étapes, erreurs, principes
-3. **Relie à un exemple** — une idée abstraite colle mieux avec un cas concret
-4. **Réexplique avec tes mots** — si tu peux reformuler, le chunk commence à exister
-5. **Réutilise rapidement** — un chunk se consolide quand tu t'en sers, pas quand tu le regardes passivement
+### Si tu veux retenir durablement
 
-Le piège, c'est de croire que lire suffit à créer des chunks. Ce n'est pas vrai. Les chunks naissent surtout de la pratique, du rappel actif et de la répétition.
+- crée peu de cartes mais de bonnes cartes
+- pratique le rappel actif
+- espace les révisions
 
-## Le rappel actif (Active Recall)
+### Si tu veux savoir faire
 
-Relire ses notes est **presque inutile** pour la mémorisation. Ce qui fonctionne, c'est forcer ton cerveau à **retrouver l'information par lui-même**.
+- applique vite
+- teste dans le réel
+- corrige à partir du feedback
 
-Au lieu de relire "La loi de Parkinson dit que le travail s'étend pour remplir le temps disponible", pose-toi la question : **"Qu'est-ce que la loi de Parkinson ?"** et essaie de répondre avant de vérifier.
+Le plus grand piège est de vouloir mémoriser ce qui devrait d'abord être pratiqué.
 
-Cette difficulté ressentie n'est pas un bug — c'est le signal que ton cerveau **renforce la connexion neuronale**.
+## La couche outil
 
-### Comment créer de bonnes flashcards
+### Recommandation principale : [Anki](https://apps.ankiweb.net/)
 
-- **Une seule idée par carte** — pas de pavés de texte
-- **Question précise** — "Quel est le coût de switching moyen ?" plutôt que "Parle du multitasking"
-- **Réponse courte** — Si ta réponse fait plus de 2 phrases, découpe en plusieurs cartes
-- **Ajoute du contexte** — Un exemple concret aide la mémorisation
+Anki reste la recommandation la plus solide si tu veux un vrai système de répétition espacée durable :
+- algorithme éprouvé
+- contrôle fort
+- écosystème stable
+- meilleure option si la rétention à long terme compte vraiment
 
-## Outils de répétition espacée
+Je le recommanderais surtout pour les profils sérieux sur la mémoire, pas pour ceux qui veulent juste "tester des flashcards".
 
-| Outil | Type | Prix | Points forts |
-|-------|------|------|-------------|
-| **KardsAI** | IA + flashcards | Freemium | Génère des cartes automatiquement depuis tes notes |
-| **Anki** | Flashcards classique | Gratuit (desktop) | Ultra personnalisable, algorithme éprouvé |
-| **RemNote** | Notes + flashcards | Freemium | Transforme tes notes en cartes directement |
-| **Quizlet** | Flashcards social | Freemium | Decks partagés, bon pour démarrer |
+### Recommandation notes + révision : [RemNote](https://www.remnote.com/)
 
-**Recommandation** : KardsAI si tu veux aller vite (l'IA crée les cartes pour toi), Anki si tu veux un contrôle total.
+RemNote reste très intéressant si tu veux réunir :
+- notes
+- structuration
+- flashcards
+- révision dans le même environnement
 
-## Apprendre mieux, pas juste plus
+C'est souvent le meilleur compromis si tu veux éviter de séparer trop brutalement la prise de notes et la répétition espacée.
 
-Voici les habitudes qui changent tout :
+### Recommandation simple / sociale : [Quizlet](https://quizlet.com/features/flashcards)
 
-1. **Enseigne ce que tu apprends** — Expliquer force la compréhension profonde. Un post, une note, une conversation suffisent.
-2. **Connecte aux connaissances existantes** — Une info isolée s'oublie. Une info reliée à ce que tu sais déjà s'ancre.
-3. **Applique immédiatement** — Lire un article sur le timeboxing ? Crée ton premier planning dans l'heure qui suit.
-4. **Espace tes sessions** — 4 sessions de 25 minutes battent 1 session de 2 heures pour la rétention.
-5. **Dors** — La consolidation mémorielle se fait pendant le sommeil. Sacrifier une heure de sommeil pour "réviser plus" est contre-productif.
+Quizlet reste valable si tu veux :
+- quelque chose de plus facile à prendre en main
+- des decks partagés
+- une entrée plus légère dans les flashcards
 
-## Le workflow d'apprentissage optimal
+Mais je le vois moins comme un système de long terme que comme une porte d'entrée.
 
-```
-Consommer → Capturer l'essentiel → Créer des flashcards → Réviser (espacé) → Appliquer
-```
+### Couche IA / commodité : [KardsAI](https://kardsai.app/pricing/)
 
-Ne saute pas d'étape. La plupart des gens s'arrêtent à "Consommer" et se demandent pourquoi ils n'avancent pas.
+KardsAI est utile si ton vrai problème est la friction de création des cartes.
 
-La productivité sans apprentissage efficace, c'est courir vite dans la mauvaise direction. Investis 15 minutes par jour en révision espacée — ton futur toi te remerciera.
+Je le positionnerais comme :
+- une couche de démarrage rapide
+- pas le cœur de la méthode
+
+Parce que l'IA peut accélérer la fabrication de cartes, mais elle ne remplace ni la compréhension ni le tri.
+
+## Comment faire de bonnes cartes
+
+- une seule idée par carte
+- question précise
+- réponse courte
+- contexte minimal si nécessaire
+- pas de cartes sur du contenu encore incompris
+
+Le bon test : si tu n'arrives pas à écrire la carte clairement, tu n'as peut-être pas encore assez compris.
+
+## Workflow recommandé
+
+**Minimaliste** :
+- consommation attentive
+- reformulation
+- application immédiate
+
+**Pragmatique** :
+- notes courtes
+- quelques cartes sur les idées durables
+- revue espacée légère
+
+**Rétention sérieuse** :
+- Anki ou RemNote
+- rappel actif quotidien court
+- application régulière des concepts
+
+## Ce qu'il faut éviter
+
+- croire que relire = apprendre
+- faire des flashcards sur tout
+- créer des cartes floues ou trop longues
+- mémoriser avant d'avoir compris
+- sacrifier le sommeil pour "réviser plus"
+
+Le sommeil, l'application et la récupération restent une partie du système d'apprentissage.
+
+:::note[Exercice pratique]
+Pendant une semaine :
+
+1. choisis un seul sujet que tu veux vraiment garder
+2. sépare ce qui relève d'exposition, de compréhension et de rétention
+3. crée ensuite seulement 5 à 10 bonnes cartes
+4. explique enfin le sujet avec tes mots ou applique-le dans un cas concret
+:::

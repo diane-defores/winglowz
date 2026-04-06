@@ -88,10 +88,6 @@ const siteUrl = getLocalizedSiteUrl(lang === 'fr' ? 'fr' : 'en');
 				if (typeof (window as any).va === 'function') {
 					(window as any).va('event', { name: event });
 				}
-				// Beacon fallback for server-side analytics
-				if (navigator.sendBeacon) {
-					navigator.sendBeacon('/api/track', JSON.stringify({ event, ts: Date.now() }));
-				}
 			});
 		</script>
 		<script>

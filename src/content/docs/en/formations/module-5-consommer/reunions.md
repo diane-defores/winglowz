@@ -1,88 +1,123 @@
 ---
 title: "Effective Meetings"
-description: "Reduce meeting fatigue, use AI as an assistant, and master asynchronous communication."
+description: "Reduce meeting fatigue, choose better between async and sync, and use AI only where it actually helps."
 sidebar:
   label: "Meetings"
   order: 3
 ---
 
-Meetings are one of the biggest productivity killers in business. An average manager spends **23 hours per week** in meetings - most of which could have been an email.
+Meetings are a form of imposed consumption. They eat time, attention, and energy, often right in the middle of your best concentration windows.
 
-> The best meeting is the one that never happens. The second-best is the one that lasts 15 minutes.
+> The problem is not only having too many meetings. It is letting other people decide when your attention gets interrupted.
 
-## The meeting problem
+## What this is really about
 
-- **Deep work interruption** - a 30-minute meeting costs more than 30 minutes, because recontextualization takes time too
-- **Bystander effect** - the more participants, the less each person contributes
-- **Decisionless meetings** - "it was good to talk about it" is not an outcome
-- **Zoom fatigue** - video calls are more cognitively draining than in-person meetings
+In this module, a meeting is not first a collaboration tool. It is a **cognitive cost** that has to be justified.
 
----
+A valid meeting should do at least one thing:
+- unblock a decision
+- resolve an ambiguity that keeps surviving in writing
+- create alignment that cannot wait
 
-## AI assistants for meetings
+## The Winflowz decision framework
 
-### Hedy AI
+Before accepting or scheduling a meeting, ask four questions:
 
-Hedy AI is an assistant that supports you in real time during meetings:
+1. **Could the goal be reached asynchronously?**
+2. **What concrete output must exist at the end?**
+3. **Do I actually need to be there?**
+4. **What is the hidden cost on my energy and focus?**
 
-| Function | Description |
-|----------|-------------|
-| **Live transcription** | Everything said is captured automatically |
-| **Automatic summary** | Key points extracted without effort |
-| **Real-time suggestions** | AI suggests responses and arguments |
-| **Action items** | Automatic extraction of assigned tasks |
+That leads to four possible outcomes:
 
-### Other useful tools
+- **Decline** if the meeting has no clear purpose
+- **Convert to async** if a message, document, or Loom is enough
+- **Shorten** if there is a real point but it does not deserve 30 or 60 minutes
+- **Accept** only when the cost is justified
 
-- **Otter.ai** - transcription and meeting summaries
-- **Fireflies.ai** - recording, transcription, and analysis
-- **tl;dv** - records Google Meet/Zoom and marks key moments
+## What to avoid
 
----
+- meetings with no decision attached
+- pure information-sharing meetings
+- status updates that could be written
+- "just in case" invitations
+- days fragmented by scattered calls
 
-## Rules for productive meetings
+The most expensive meeting is not always the longest one. It is the one that breaks a deep-work block for a fuzzy outcome.
 
-### Before the meeting
-
-1. **Ask the question**: "Would a written message be enough?" - if yes, cancel it
-2. **Define a clear goal** - one meeting = one decision to make
-3. **Limit the participants** - only the people who need to decide
-4. **Share an agenda** at least 24 hours in advance
-5. **Default duration: 25 minutes** (not 30, not 60)
-
-### During the meeting
-
-- **One facilitator** to keep the discussion on track
-- **One note-taker** (or an AI tool)
-- **No laptops open** except for the note-taker
-- **Strict timeboxing** - every item gets a time budget
-- **Parking lot**: write down off-topic items for later
-
-### After the meeting
-
-- **Send the recap within 10 minutes** - not tomorrow
-- **Action items** with an owner + deadline for each one
-- **No follow-up in another meeting** - follow-up happens in writing
-
----
-
-## Async vs sync: choosing the right channel
+## Async vs sync: the right channel
 
 | Situation | Recommended channel |
 |-----------|---------------------|
-| Urgent decision involving 2-3 people | Quick call (15 min max) |
-| Information sharing | Written message or Loom video |
-| Creative brainstorming | Short meeting + shared document |
-| Feedback on a document | Asynchronous comments |
-| Status update | Written stand-up (Slack, Teams) |
-| Conflict resolution | Video call or in person |
+| Information sharing | Written message or note |
+| Quick context | Loom or short audio |
+| Feedback on a document | Async comments |
+| Status update | Written stand-up |
+| Blocked multi-person decision | Short meeting |
+| Conflict or interpersonal tension | Video call or in person |
 
----
+## Minimal rules for surviving meetings
+
+### Before
+
+1. ask for a clear objective
+2. ask for the agenda or prep document
+3. verify whether your presence is required or only nice to have
+4. push toward 15 or 25 minutes whenever possible
+
+### During
+
+- look for the decision, not conversation for its own sake
+- capture actions with owner and deadline
+- isolate out-of-scope topics
+- do not let the meeting degrade into a status update
+
+### After
+
+- move actions out of the meeting
+- read or share the recap quickly
+- do not create a second meeting just to follow up on the first
+
+## The AI layer
+
+AI becomes useful when it reduces the administrative fatigue around meetings. It becomes useless when it mostly serves to make too many bad meetings more tolerable.
+
+### Main recommendations
+
+- **[Otter.ai](https://otter.ai/)** for a general transcription and summary layer
+- **[tl;dv](https://tldv.io/)** if you want more cross-meeting insight and a clearer European posture
+- **[Fireflies.ai](https://fireflies.ai/)** if you want to search and query your meetings afterward
+
+### More specific case: [Hedy](https://help.hedy.bot/en/articles/10375715-welcome-to-hedy-your-ai-meeting-coach)
+
+Hedy is still interesting when your need is less "take notes" and more:
+- getting live support during the conversation
+- recovering to-dos and context
+- having a more personal meeting assistant
+
+I would treat it as a more niche and personal tool, not the default recommendation.
 
 ## Reducing meeting fatigue
 
-- **Create meeting-free days** - Tuesday and Thursday for deep work
-- **Block "unavailable" time** in your calendar
-- **Use standing meetings** for daily stand-ups - they naturally stay shorter
-- **Allow camera off** for pure information meetings
-- **Cap meetings at 3 per day** - beyond that, productivity collapses
+- cluster calls instead of scattering them
+- block half-days with no meetings
+- allow camera-off for pure information meetings
+- cap the number of real meetings in a day
+- protect your peak-energy hours from low-value calls
+
+## Recommended workflow
+
+**Minimalist**: strict acceptance rules + agendas + written recap. Enough if your main goal is simply to reduce.
+
+**Pragmatic**: same rules plus Otter or tl;dv to extract decisions and actions faster.
+
+**More personal / coached**: Hedy if you want a live assistance layer during meetings themselves.
+
+:::note[Practical exercise]
+For two weeks:
+
+1. list every meeting you attend
+2. note for each one: purpose, duration, real usefulness, cost to focus
+3. identify which ones could have been async
+4. then choose one simple rule: decline, shorten, or move one whole category
+:::

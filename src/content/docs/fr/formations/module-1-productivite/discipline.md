@@ -1,21 +1,37 @@
 ---
 title: "Discipline & Habitudes"
-description: "Construis des habitudes durables, remplace les toxiques, et développe la discipline qui fait la différence."
+description: "Construis la discipline comme un système de répétition, d'environnement et de récupération, pas comme un concours de volonté."
 sidebar:
   label: "Discipline"
   order: 6
 ---
 
-La motivation est éphémère. La discipline est ce qui reste quand la motivation s'en va. Et la discipline se construit par les habitudes.
+La discipline n'est pas une version plus dure de la motivation. C'est la capacité à **réduire la négociation intérieure** pour refaire ce qui compte, même quand l'envie n'est pas là.
+
+Et cette capacité se construit surtout par :
+- des habitudes simples
+- un environnement qui aide
+- des attentes réalistes
+- une bonne récupération après écart
+
+## Le decision framework Winflowz
+
+Quand une habitude ne tient pas, le problème vient rarement d'un manque moral. Pose-toi plutôt cinq questions :
+
+1. **Est-ce que l'habitude est trop ambitieuse pour son niveau actuel ?**
+2. **Est-ce que le déclencheur est clair et visible ?**
+3. **Est-ce que l'environnement aide ou sabote ?**
+4. **Est-ce que la récompense est trop lointaine ou invisible ?**
+5. **Est-ce que j'ai prévu quoi faire après un écart ?**
+
+Ce cadre évite de confondre manque de volonté et mauvais design.
 
 ## Pourquoi les résolutions échouent
 
-Une étude britannique sur 3 000 personnes : **seulement 12% atteignent leur objectif 12 mois plus tard**. Pourquoi ?
-
-- Pas de raison profonde pour agir
-- Pas de plan concret
-- Trop de changements en même temps
-- Attente du "bon moment" (qui ne vient jamais)
+- pas de raison assez solide pour tenir dans la durée
+- pas de plan concret
+- trop de changements en même temps
+- attente du "bon moment" qui ne vient presque jamais
 
 ### La raison profonde fait toute la différence
 
@@ -92,7 +108,7 @@ Le piège est de choisir une habitude dont la récompense est trop lointaine. Pl
 
 ---
 
-## 6 habitudes toxiques à remplacer
+## Remplacer au lieu de simplement supprimer
 
 Le point important ici n'est pas de "supprimer une mauvaise habitude" par pure volonté. En pratique, le cerveau réagit mieux quand on **remplace** un comportement par un autre que quand on laisse un vide.
 
@@ -108,7 +124,7 @@ L'engagement concret bat presque toujours la bonne intention abstraite. Une chec
 |---------|-------------|
 | **Inquiétude** | Méditation (10-15 min de respiration consciente) |
 | **Blâmer les autres** | Aider les autres — tout le monde fait des erreurs |
-| **Réseaux sociaux** (147 min/jour en moyenne) | Activité physique, lecture, création |
+| **Réseaux sociaux compulsifs** | Activité physique, lecture, création |
 | **Se plaindre** | Gratitude — liste quotidienne de ce qui va bien |
 | **Overthinking** | Action — commencer sa journée par du mouvement |
 | **Faux amis** | Mentors et relations authentiques |
@@ -136,6 +152,13 @@ Plus le remplacement est concret, plus il a des chances de tenir.
 | **Habitica** | Gamification RPG — tes habitudes sont des quêtes |
 | **Polar Habits** | Momentum sans culpabilité des streaks cassés |
 | **Habits Garden** | Gamifié, visualisation en grille, pour celles et ceux qui aiment voir la progression pousser visuellement |
+
+Le bon outil dépend surtout de ton profil :
+- si tu aimes le jeu et l'engagement ludique, **Habitica**
+- si tu veux suivre sans te punir au premier écart, **Polar Habits**
+- si tu veux un retour très visuel, **Habits Garden**
+
+Mais l'outil reste secondaire. Si le déclencheur, le lieu et l'action minimale sont flous, aucun tracker ne sauvera l'habitude.
 
 ---
 
@@ -251,4 +274,4 @@ Avec le temps, cela permet de voir des patterns :
 
 Ce travail est utile parce qu'il évite une erreur fréquente : traiter tous les blocages comme des problèmes de volonté. Or un blocage peut venir d'un manque de clarté, d'une peur mal formulée, d'une fatigue réelle, ou d'un conflit intérieur non résolu.
 
-Si tu veux utiliser un outil dédié, il existe des options comme **Sphēra** pour suivre ses états émotionnels ou **Rosebud** pour un journaling assisté. Mais l'outil compte moins que l'habitude de nommer honnêtement ce qui se passe en toi.
+Si tu veux utiliser un outil dédié, un journal simple ou une app comme **Rosebud** peuvent aider. Mais l'outil compte moins que l'habitude de nommer honnêtement ce qui se passe en toi.

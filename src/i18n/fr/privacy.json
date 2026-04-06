@@ -9,7 +9,7 @@
       "items": [
         "Adresse email (pour la gestion du compte)",
         "Informations de paiement (traitées de manière sécurisée par des prestataires tiers)",
-        "Analyses d'utilisation (anonymisées)"
+        "Donnees d'authentification et de session necessaires pour acceder a ton compte"
       ]
     },
     "usage": {
@@ -37,7 +37,7 @@
       "intro": "Nous utilisons des services tiers de confiance pour :",
       "items": [
         "Traitement des paiements",
-        "Analyses",
+        "Authentification",
         "Communication par email",
         "Hébergement"
       ]

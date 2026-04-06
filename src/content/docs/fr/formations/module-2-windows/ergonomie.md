@@ -240,6 +240,28 @@ Le point important, c'est que ces outils ne servent pas à "faire joli". Ils ser
 
 Quand ton écran cesse d'être un terrain improvisé et devient un espace organisé, ta capacité à rester concentré monte souvent immédiatement.
 
+### AltSnap : utile surtout si tu es très souris
+
+**AltSnap** reste aujourd'hui un outil valide et maintenu. Son intérêt est simple : déplacer, redimensionner ou manipuler une fenêtre avec `Alt` + clic, sans viser précisément la barre de titre ou les bordures.
+
+Ce n'est pas un outil que je mettrais au centre du cours pour tout le monde. Il devient surtout intéressant si :
+- tu manipules beaucoup de fenêtres à la souris
+- tu aimes les gestes façon Linux ou AltDrag
+- tu veux réduire la précision nécessaire pour bouger les fenêtres
+
+En revanche, si tu es déjà très :
+- clavier-first
+- FancyZones
+- raccourcis Windows natifs
+
+alors AltSnap devient davantage un bonus qu'un vrai changement de niveau.
+
+La bonne lecture de l'outil est donc :
+- **très pertinent** pour un profil souris-intensif
+- **secondaire** pour un profil déjà structuré au clavier
+
+Je le traiterais comme un bon utilitaire de confort maintenu, pas comme une brique essentielle du setup premium.
+
 ## Barre des tâches et menu Démarrer
 
 - **Désencombre ta barre des tâches** : ne garde que les 5-7 apps que tu utilises quotidiennement
@@ -261,6 +283,129 @@ Le bon principe est simple :
 - plus de repères stables
 - moins d'interruptions visuelles
 
+### Quel niveau de personnalisation te faut-il vraiment ?
+
+Là aussi, le piège est de vouloir tout modifier. En pratique, il vaut mieux partir de ton problème réel.
+
+#### Niveau 1 : simple hygiène d'interface
+
+Si ton vrai problème est juste le bruit visuel, commence par :
+- désépingler les apps inutiles
+- masquer Widgets, Chat et autres distractions
+- nettoyer la section "Recommandé" du menu Démarrer
+- garder un ordre stable pour les apps vraiment utiles
+
+Pour beaucoup de gens, cela suffit déjà à rendre Windows plus respirable.
+
+#### Niveau 2 : petits réglages à forte valeur
+
+Si tu travailles toute la journée sur Windows, quelques ajustements valent clairement le détour :
+- ouvrir rapidement le **Gestionnaire des tâches** depuis le clic droit sur Démarrer
+- épingler le **mélangeur de volume classique** avec `sndvol.exe`
+- afficher les **secondes** dans l'horloge seulement si cela aide un vrai workflow
+
+Ce sont de petits gains, mais ils sont concrets, fréquents, et peu risqués.
+
+#### Niveau 3 : outils de correction ciblés
+
+Si l'interface native te ralentit vraiment, tu peux monter d'un niveau avec prudence :
+- **ExplorerPatcher** si ton vrai problème est la logique de la barre des tâches ou du menu Démarrer
+- **Start11** si tu veux reprendre plus proprement la main sur l'interface
+
+Ces outils deviennent utiles quand la friction est réelle. Ils sont moins intéressants si tu veux juste "optimiser" sans douleur précise à corriger.
+
+#### Niveau 4 : hacks et tweaks à réserver aux profils avancés
+
+On peut aller plus loin avec le Registre, des utilitaires de niche, ou des modifications plus profondes. Mais dans un cours premium, ce n'est pas là que je commencerais.
+
+Notre règle :
+- commence par retirer le bruit
+- garde les réglages simples qui servent chaque semaine
+- n'ajoute des outils plus invasifs que si l'interface Windows te freine vraiment
+
+### Widgets : masquer d'abord, supprimer seulement si c'est une vraie friction
+
+Pour la plupart des gens, la bonne décision est simple :
+- **masquer Widgets** dans la barre des tâches
+- ne pas y penser davantage
+
+La suppression complète peut se défendre si :
+- Widgets reviennent régulièrement dans ton flux d'attention
+- tu veux un poste plus minimal
+- tu assumes une logique de debloat un peu plus avancée
+
+Mais ce n'est pas une priorité haute. Tant que tu n'as pas déjà réglé les vraies frictions de ton poste, mieux vaut éviter de transformer un détail en chantier.
+
+### Trois réglages Windows 11 utiles à connaître
+
+Ce ne sont pas des changements spectaculaires. Ce sont plutôt de bons petits réglages si tu passes ta journée sur Windows :
+
+- **ouvrir le Gestionnaire des tâches depuis le menu Démarrer** : clic droit sur l'icône Windows puis **Gestionnaire des tâches**
+- **épingler le mélangeur de volume classique** : `Win + R` → `sndvol.exe` → clic droit sur l'icône → **Épingler à la barre des tâches**
+- **afficher les secondes dans l'horloge** : utile pour certains workflows minutés, mais seulement si cela t'aide vraiment au lieu d'ajouter du bruit
+
+L'idée n'est pas d'empiler des options. L'idée est d'identifier les deux ou trois réglages que tu utilises vraiment chaque semaine.
+
+### À propos des petits utilitaires de confort
+
+Tu verras parfois des outils comme **Preme for Windows**, qui ajoutent des gestes pratiques sur la barre des tâches ou les fenêtres.
+
+Le vrai critère ici, ce n'est pas seulement la fonction. C'est aussi la maintenance. Quand un outil n'a pas été mis à jour depuis des années, je le traiterais comme un bonus expérimental, pas comme un pilier de ton setup premium.
+
+Règle simple :
+- si le gain est mineur, reste sur les outils natifs ou activement maintenus
+- si le gain est majeur, teste-le prudemment et garde une marche arrière simple
+
+### WinDynamicDesktop : ambiance oui, levier majeur non
+
+**WinDynamicDesktop** reste aujourd'hui un outil valide et maintenu. Il peut faire évoluer le fond d'écran selon l'heure de la journée, dans une logique proche des bureaux dynamiques de macOS.
+
+Je ne le présenterais pas comme un outil de productivité au sens strict. Son intérêt est ailleurs :
+- rendre le poste plus agréable
+- créer une ambiance plus cohérente au fil de la journée
+- renforcer l'attachement à ton environnement de travail
+
+Cela peut avoir une vraie valeur pour certaines personnes, mais il faut rester lucide :
+- cela n'améliore pas directement ton système
+- cela ne remplace ni l'organisation ni les bons raccourcis ni la clarté de l'interface
+
+Donc :
+- **oui** si ton objectif est le confort visuel et l'identité du poste
+- **non prioritaire** si tu n'as pas encore réglé les vraies frictions de workflow
+
+### Outils de lecture : aide visuelle oui, promesse magique non
+
+Les outils de lecture assistée peuvent être utiles, mais il faut les lire correctement : ce ne sont pas des accélérateurs universels. Ils servent surtout à réduire certaines frictions de lecture.
+
+#### Niveau 1 : mise en forme simple
+
+Si ton besoin est juste de mieux accrocher ton regard sur du texte web, **Jiffy Reader** reste une option valide. Son intérêt principal est la mise en avant visuelle du début des mots, dans une logique proche du "bionic reading".
+
+Je le verrais comme :
+- un test simple
+- peu intrusif
+- utile pour certaines personnes avec fatigue visuelle ou dérive attentionnelle
+
+Mais pas comme une vérité générale sur la vitesse de lecture.
+
+#### Niveau 2 : vraie couche d'accessibilité
+
+Si ton besoin dépasse la simple emphase visuelle, des outils comme **LucidRead** ou **Helperbird** sont souvent plus intéressants aujourd'hui, parce qu'ils ajoutent :
+- règle de lecture
+- ajustements typographiques
+- modes de focus
+- text-to-speech
+- options plus sérieuses pour dyslexie, ADHD ou lecture longue
+
+Autrement dit :
+- **Jiffy Reader** si tu veux tester une aide légère et spécifique
+- **LucidRead / Helperbird** si tu veux une vraie boîte à outils de lecture et d'accessibilité
+
+La bonne recommandation premium n'est donc pas "lis plus vite". C'est plutôt :
+- vois si un outil réduit réellement ta fatigue
+- garde-le seulement s'il améliore la lecture sans ajouter de friction
+- ne transforme pas ce sujet en obsession si ton vrai problème est ailleurs
+
 ### Épingler des pages ou dossiers : utile, mais seulement pour les vrais points d'entrée
 
 Tu peux aussi épingler :
@@ -273,6 +418,28 @@ Mais là encore, la logique doit rester stricte. Si tu épingles tout, tu recré
 - tes vrais points d'entrée de travail
 - les dossiers que tu ouvres tous les jours
 - les apps ou pages qui structurent réellement ton flux
+
+### Si tu veux des onglets pour tes applications
+
+Le besoin est réel chez certains profils : trop de fenêtres ouvertes, trop d'`Alt + Tab`, et l'envie de regrouper plusieurs outils comme dans un navigateur.
+
+En 2026, la recommandation la plus claire est :
+- **Groupy 2** comme option premium principale
+- **TidyTabs** comme alternative plus discrète et plus secondaire
+
+Pourquoi **Groupy 2** passe devant :
+- l'outil est mieux positionné pour un usage Windows 11 moderne
+- il s'intègre bien à une logique de workstation premium
+- il est plus cohérent si tu veux vraiment organiser plusieurs apps en groupes durables
+
+Pourquoi **TidyTabs** reste secondaire :
+- il reste valide et maintenu
+- il peut convenir si tu veux juste ajouter des onglets à quelques fenêtres
+- mais je le verrais moins comme la recommandation centrale aujourd'hui
+
+Le bon choix :
+- **Groupy 2** si tu veux une vraie couche d'organisation par onglets
+- **TidyTabs** si tu veux tester l'idée avec quelque chose de plus léger ou plus discret
 
 ## L'écosystème Stardock : productivité d'un côté, personnalisation de l'autre
 
@@ -320,6 +487,8 @@ Chaque application qui se lance au démarrage rallonge ton temps de boot et cons
 3. Désactive tout ce qui n'est pas essentiel
 
 **Règle** : si tu n'utilises pas une app tous les jours, elle n'a rien à faire dans le démarrage.
+
+Si tu veux aller plus loin et préparer de vraies séquences de lancement ou des scripts qui ouvrent ton contexte de travail complet, vois aussi le chapitre [Automatisation](./automatisation).
 
 ## Réflexe de dépannage : Gestionnaire des tâches avant redémarrage
 
@@ -383,6 +552,8 @@ Il faut simplement connaître ses limites :
 - ce n'est pas un outil à installer si tu n'aimes pas les déclenchements gestuels
 
 Comme souvent, l'intérêt n'est pas d'ajouter "encore une option". L'intérêt est de voir si ce type de geste réduit vraiment ta friction quotidienne.
+
+Si ton objectif n'est pas un geste de confort mais le lancement structuré d'apps, de dossiers ou de pages web, le bon sujet n'est plus vraiment les hot corners mais plutôt le chapitre [Automatisation](./automatisation).
 
 ## Friction volontaire : Cold Turkey
 

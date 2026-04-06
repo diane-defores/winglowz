@@ -10,6 +10,68 @@ La capture est la première étape du PKM. Si tu ne captures pas, tu oublies. Et
 
 > Capture d'abord, organise ensuite. Le pire ennemi de la capture, c'est le perfectionnisme organisationnel.
 
+## Le vrai sujet : où va ce que tu captures ?
+
+Le piège classique du PKM, c'est d'empiler les outils de capture sans décider **où la matière va vivre ensuite**.
+
+Avant même de choisir une extension, un scraper ou un outil d'archivage, pose-toi cette question :
+- est-ce que je veux surtout **stocker des références**
+- **écrire et relier des notes**
+- ou construire une **mémoire avancée** de mon activité numérique
+
+### Stack minimum viable PKM
+
+Pour beaucoup de gens, le meilleur point de départ n'est pas un système compliqué. C'est un trio simple :
+
+- **Obsidian** si tu veux un vrai espace de notes reliées, des backlinks, un graph local, et une base souple pour penser
+- **Karakeep** si tu veux sauvegarder des liens, images, notes courtes et références web de manière retrouvable
+- **Monolith** si tu veux archiver certaines pages web de façon durable, en un seul fichier
+
+Ce trio couvre déjà l'essentiel :
+- la **référence**
+- la **note**
+- l'**archive**
+
+### Si tu préfères penser en blocs plutôt qu'en pages
+
+**Logseq** reste une très bonne alternative à Obsidian si tu préfères :
+- l'outlining
+- les blocs reliés entre eux
+- une logique plus quotidienne / journalière
+- une approche locale et graphe-first
+
+Autrement dit :
+- **Obsidian** si tu veux un système très flexible orienté notes + backlinks
+- **Logseq** si tu veux un système plus naturellement structuré en blocs et journaux
+
+Le point important ici n'est pas de "choisir le meilleur outil absolu". C'est de choisir un outil dans lequel tu auras envie de revenir tous les jours.
+
+### Ce qui est avancé, pas obligatoire
+
+Des outils comme **Screenpipe** deviennent intéressants quand tu veux aller plus loin :
+- enregistrer ton activité écran de manière locale
+- retrouver des informations vues mais non capturées à la main
+- créer une forme de mémoire contextuelle plus profonde
+
+Mais ce n'est pas un point de départ. C'est une couche avancée.
+
+Donc :
+- **Obsidian / Logseq** pour la pensée et les liens
+- **Karakeep** pour la collecte retrouvable
+- **Monolith** pour l'archive durable
+- **Screenpipe** seulement si tu veux une mémoire de travail augmentée
+
+## Ce qui manque souvent dans un PKM débutant
+
+Beaucoup de systèmes échouent non pas parce qu'ils ne capturent pas assez, mais parce qu'ils capturent sans logique de destination.
+
+Si tu veux éviter la surcharge :
+- garde **un outil principal de notes**
+- garde **un outil principal de collecte**
+- n'ajoute des couches supplémentaires que si un vrai problème apparaît
+
+Le but n'est pas de construire un musée du web. Le but est de récupérer ce qui pourra réellement être retrouvé, relié, relu et réutilisé.
+
 ## Archivage web
 
 ### [Monolith](https://github.com/Y2Z/monolith)
@@ -32,14 +94,23 @@ Webscape est un hub central pour organiser tout ce que tu captures :
 - **Recherche full-text** dans tout ton contenu sauvegardé
 - **Commandes rapides** — crée un événement Google, envoie un message LinkedIn, le tout sans quitter l'outil
 
-### [Hoarder](https://karakeep.app/)
+### [Karakeep](https://karakeep.app/)
 
-Hoarder est un outil de bookmarking auto-hébergeable qui va au-delà du simple signet :
+Karakeep, anciennement **Hoarder**, est aujourd'hui la recommandation plus juste si tu veux un outil de bookmarking auto-hébergeable qui va au-delà du simple signet :
 
 - **Sauvegarde automatique** du contenu complet des pages
 - **Recherche full-text** dans tout ce que tu as sauvegardé
 - **Tags et collections** pour organiser par thème
 - **API ouverte** pour intégrer dans ton workflow
+
+### Quand Karakeep devient le bon choix
+
+Karakeep est pertinent si :
+- tu captures beaucoup de liens
+- tu veux les retrouver sans dépendre de ta mémoire
+- tu aimes l'idée d'un système auto-hébergé ou plus contrôlable
+
+En revanche, si ton besoin principal est de **penser**, de **relier des idées** et de **produire des notes durables**, le cœur du système doit rester Obsidian ou Logseq. Karakeep joue plutôt le rôle d'**inbox de référence**.
 
 ---
 
@@ -53,6 +124,20 @@ Screenpipe enregistre en continu tout ce qui se passe sur ton écran et le rend 
 - **OCR intégré** — le texte à l'écran est reconnu et indexé
 - **Recherche temporelle** — retrouve ce que tu faisais à n'importe quel moment
 - **Local uniquement** — tes données restent sur ta machine
+
+### Quand ne pas utiliser Screenpipe
+
+Screenpipe est impressionnant, mais il ne faut pas le traiter comme un outil par défaut.
+
+Je le recommanderais surtout si :
+- tu travailles sur beaucoup d'informations fugitives
+- tu rates souvent des détails vus à l'écran
+- tu veux une mémoire de contexte plus profonde
+
+Je ne le recommanderais pas en premier si :
+- ton système de notes est encore chaotique
+- tu n'as pas encore d'habitude simple de capture
+- tu risques de créer une couche de données supplémentaire que tu ne reliras jamais
 
 ---
 
