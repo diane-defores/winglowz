@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Signed Polar webhook route at `/api/polar/webhook`
 - Persistent course entitlements on Convex users via `courseEntitlements`
 - Full English translation set for the 8 WinFlowz training modules
+- Convex HTTP endpoint for Clerk webhooks with svix signature verification (`/clerk/events`)
+- HMAC signature verification on Polar webhook handler in Convex HTTP
 
 ### Changed
 - Clean up unused docs and legacy files (AUTH_ANALYSIS, BRANDING_SPECIFICATION, copilot-instructions)
@@ -34,12 +36,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Consolidate and trim CONTENU/ source Markdown files to match published lesson content
 - Update cookie consent to reflect essential-only cookie usage (no analytics)
 - Update privacy policy text to remove analytics references, clarify authentication data collection
+- Convert Astro webhook routes to thin proxies that forward to Convex HTTP endpoints
+- Expand Module VI training content (consume & reflect, media & files, recall & search)
 
 ### Fixed
 - Fix course gating so the unlock flow persists access after payment instead of relying only on subscription state
 - Fix sign-in redirect handling by disabling prerender on the sign-in page
 - Remove public inspector/debug script injections and delete unused inspector assets
 - Remove public blog and alert debug logs
+- Fix route translation drift between routing.ts, i18n/config.ts, and fr/routes.json (disclaimer, terms, copyright, roadmap)
+- Fix CORS origin hardcoded to localhost — now environment-aware
+- Fix middleware unnecessary `as any` type casts
+
+### Security
+- Convert public Convex mutations to `internalMutation` (polar.ts, users.ts) — no longer callable from browser clients
+- Remove 3 duplicate public mutations from polar.ts that bypassed internal-only access
+- Replace `Math.random()` with `crypto.getRandomValues()` for API key generation
+- Fix CSP: add connect-src for Convex/Clerk/Polar, remove `unsafe-eval` from script-src, add font-src and img-src
+- Add Clerk webhook signature verification (svix HMAC) — was previously unprotected
 
 ### Removed
 - Remove GUIDELINES.md

@@ -139,6 +139,40 @@ La bonne question n'est pas "quel éditeur image est le meilleur ?" mais :
 - de capturer
 - ou juste d'extraire / convertir rapidement
 
+## Photothèque et actifs visuels
+
+Les photos et vidéos personnelles ou de travail ne relèvent pas de la "capture PKM" au sens strict. Elles relèvent surtout de :
+- l'organisation d'actifs
+- la déduplication
+- la consultation rapide
+- la récupération plus tard
+
+Autrement dit, leur bonne place est ici, comme couche de gestion de fichiers, pas dans `capturer.md`.
+
+### Quand un outil dédié devient utile
+
+Si tu as une vraie photothèque dispersée entre :
+- disque local
+- disques externes
+- NAS
+- smartphone
+
+alors un outil comme [Tonfotos](https://tonfotos.com/) peut devenir pertinent.
+
+Son intérêt moderne est simple :
+- navigation par dates, événements, personnes et lieux
+- détection de doublons
+- logique locale plutôt que cloud imposé
+
+Je ne le recommanderais pas comme outil universel du cours. Je le recommanderais si ton problème est vraiment :
+- retrouver des photos ou vidéos dans un gros volume
+- maintenir un archive personnelle ou familiale consultable
+- éviter qu'une masse de médias se transforme en vrac inutilisable
+
+Le bon réflexe reste le même :
+- si ton problème est ponctuel, reste simple
+- si ton volume devient structurel, prends un outil dédié
+
 ## Archives et accès sélectif
 
 Parfois, le problème n'est pas le fichier, mais le conteneur.

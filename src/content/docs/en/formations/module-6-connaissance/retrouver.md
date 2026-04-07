@@ -1,162 +1,211 @@
 ---
 title: "Retrieve & Search"
-description: "Personal search engines, keyboard launchers, and tools for finding anything in seconds."
+description: "Build a multi-layer retrieval system for notes, files, references, and scattered information without depending only on memory."
 sidebar:
   label: "Retrieve"
   order: 5
 ---
 
-Your entire knowledge base is worthless if you cannot find what you need in under 10 seconds. Search is the return on investment of organization.
+Your knowledge base loses much of its value if you cannot retrieve what you need quickly.
 
-> The best filing system does not replace a good search engine. Ideally, you have both.
+> The best filing system in the world is not enough if retrieving information is still slow, fragile, or dependent on the perfect keyword.
 
-## Retrieval does not only mean "type a keyword"
+## The real issue: retrieval, not just text search
 
-In a good PKM system, you retrieve information in several ways:
-- through **search**
-- through **navigation**
-- through **backlinks**
-- through **work context**
+Retrieval does not only mean typing a word into a box.
 
-In other words, if your system depends only on perfect text search, it is still fragile.
+In a strong PKM system, you retrieve information in several ways:
+- through **direct search**
+- through **context**
+- through **links**
+- through **fast access**
 
-### The 3 most useful retrieval layers
+If your system depends only on perfect text search, it remains fragile.
 
-#### 1. Direct search
+## The Winflowz decision framework
 
-You more or less know what you are looking for. You type a few words and want to land on it immediately.
+When you cannot find something, ask four questions:
 
-Here you need:
-- a good engine in your notes
-- a good engine in your files
-- a good engine in your bookmarks
+1. **Am I looking for a note, a file, a link, or information scattered across apps?**
+2. **Do I know the exact keyword, or only the context?**
+3. **Is the problem search, organization, or the wrong storage location?**
+4. **Do I need a search engine, a launcher, or a network of linked notes?**
 
-#### 2. Contextual search
+This prevents confusing:
+- a retrieval problem
+- with a capture problem
+- or with an organization problem
 
-You do not remember the exact title, but you remember:
-- the project
-- the period
-- the tool where you saw it
-- the person who shared it
+## The 4 retrieval layers that actually matter
 
-That is where unified-search tools become useful.
+### 1. Search inside notes
 
-#### 3. Link-based retrieval
+You want to retrieve:
+- an idea
+- a note
+- a synthesis
+- a conceptual link
 
-You are not looking for one exact file. You start from a related idea and move back through the network.
+The core here remains:
+- **Obsidian** or **Logseq** for notes
+- plus **backlinks** and sometimes the **graph** when you want to restart from a related idea
 
-That is exactly where **backlinks**, linked notes, and sometimes Obsidian's **graph view** become useful. Not as a visual gimmick, but as reasoning support.
+The real PKM gain is not only retrieving by title. It is also climbing back through relationships.
 
-## Personal search engines
+### 2. Search inside web references
 
-### [Findr](https://www.usefindr.io/)
+You want to retrieve:
+- a saved article
+- a video
+- a web resource
+- an important link
 
-Findr is an alternative that indexes your work apps and makes everything searchable:
+The right center here remains:
+- **Karakeep**
 
-- **Chat, docs, emails, files** - one search bar
-- **Semantic search** - understands meaning, not just keywords
-- **Contextual results** - shows where and when information was shared
-- **Privacy** - local processing whenever possible
+Because its whole role is making your references retrievable without depending on memory.
 
-### [Curiosity](https://curiosity.ai/app)
+### 3. Search inside local files
 
-Curiosity is another credible option if you want **unified search** across:
-- local files
-- emails
-- calendars
-- cloud apps
+You want to retrieve:
+- a document
+- a PDF
+- an export
+- a text or office file
 
-Its value is that it brings several layers of your work closer together in one search interface without forcing you to remember exactly where the information lives.
+On Windows, the two most useful layers remain:
+- **Everything** for file names
+- **AnyTXT Searcher** for content search
 
-It becomes interesting if:
-- you work across several tools in parallel
-- you keep wasting time wondering "was that in an email, a doc, Slack, or a folder?"
-- you want to retrieve quickly without mentally rebuilding the whole path
+In other words:
+- **Everything** when you roughly know what you are looking for
+- **AnyTXT** when you remember the content, not the file name
 
-The right use is not to replace all organization with "I'll search later." The right use is:
+### 4. Unified search across apps
+
+You want to retrieve something, but you no longer remember whether it was:
+- in an email
+- in a doc
+- in a cloud app
+- in a browser
+- in a local folder
+
+That is where a unified search tool becomes useful.
+
+## Curiosity: the strongest current recommendation for unified search
+
+Today, **Curiosity** is the most defensible recommendation in this layer.
+
+Why:
+- local and cloud search in one interface
+- search across files, emails, apps, browsers, and other connected sources
+- global shortcut
+- strong focus on fast retrieval
+
+It becomes useful when:
+- your work lives across several apps in parallel
+- you lose time wondering where information lives
+- you want a cross-app search layer without reorganizing everything elsewhere
+
+The right use is not:
+- “I will stop organizing and just search later”
+
+The right use is:
 - decent organization
-- plus genuinely strong cross-tool search
+- plus genuinely strong cross-app search
 
+## What I recommend less here
 
----
+### Findr
 
-## Keyboard launchers
+`Findr` no longer feels like the strongest recommendation for this lesson today. I would not keep it as a primary course recommendation in this layer.
 
-### [ueli](https://ueli.app/)
+### Redundant launchers
 
-ueli is an ultra-fast app and file launcher for Windows:
+Launchers are still useful, but they should not blur this lesson.
 
-- **Launch apps** by typing the first letters
-- **Instant local file search**
-- **Calculations** and conversions directly in the bar
-- **Custom web shortcuts**
-- **Plugins**: translation, colors, custom workflows
+For the “launch quickly” layer, the course already has a dedicated page for **Flow Launcher**. Here, the main subject is:
+- retrieval
+- not only launching
 
-### Why a launcher changes everything
+So I keep the launcher idea as a secondary layer, without making it the center.
 
-Without a launcher: right-click -> search the menu -> navigate -> click. **5-10 seconds.**
-With a launcher: shortcut -> type 3 letters -> Enter. **1 second.**
+## Launchers: secondary, but still useful
 
-Multiply that by 50 actions a day, and you save **10 minutes of friction per day**.
+A launcher still pays off when you want to:
+- open an app quickly
+- access a recent file fast
+- remove a few frequent clicks
 
----
+### Credible option
 
-## File search
+**ueli** remains a valid current option as a simple keyboard launcher.
 
-### [AnyTXT Searcher](https://anytxt.net/)
+But the course hierarchy stays:
+- **Flow Launcher** for the main Windows launcher/workflow layer
+- `ueli` as a credible alternative, not the center of this page
 
-AnyTXT Searcher is a lightning-fast full-text search engine for local files:
+## Browser search
 
-| Function | Detail |
-|----------|--------|
-| **Search inside content** | Not just file names - the text inside the file |
-| **Supported formats** | PDF, Word, Excel, TXT, source code, emails |
-| **Fast indexing** | Results in milliseconds even on large volumes |
-| **Advanced filters** | By date, size, type, folder |
+Part of daily retrieval still happens through:
+- bookmarks
+- history
+- open tabs
 
-### [Everything](https://www.voidtools.com/) (bonus)
+You can already cover a lot with:
+- native browser search functions
+- **Quick Commands** in Vivaldi
+- bookmark/history search
+- connected browser search through a tool like Curiosity
 
-Everything indexes all file names on your PC in real time - instant results from the first letter you type. Essential on Windows.
-
----
-
-## Browser search extensions
-
-| Extension | Function |
-|-----------|----------|
-| [Vimium](https://vimium.github.io/) | Keyboard navigation in the browser - never touch the mouse |
-| [Quick Tabs](https://chromewebstore.google.com/detail/quick-tabs/jnjfeinjfmenlddahdjdmgpbokiacbbb) | Search your open tabs by title |
-| **Native `@history` / `@tabs` search** | Search browsing history and open tabs directly from the address bar |
-
----
-
-## Search in [Vivaldi](https://vivaldi.com/)
-
-If you use Vivaldi, you already have a powerful built-in search stack:
-
-- **Quick Commands** (`F2`): search tabs, bookmarks, history, and commands
-- **Panel search**: notes, bookmarks, history - all filterable
-- **Custom search engines**: add any site as a search engine with a keyword + URL
-- **Search shortcuts**: `g` for Google, `w` for Wikipedia, `yt` for YouTube - customize your own
-
----
-
-## The optimal search strategy
-
-1. **Start with the launcher** (ueli, Flow Launcher) for apps and recent files
-2. **Move to full-text search** (AnyTXT) for file contents
-3. **Use unified search** (Findr or an equivalent tool) for cloud apps
-4. **As a last resort**: manual navigation through folders
+The right reflex is not to install one more extension if the browser or your unified layer already covers the need.
 
 ## Minimum viable retrieval
 
-If you want a simple and robust system, you do not need to index everything everywhere. You mainly need to cover 4 cases:
+If you want a simple and robust system, cover these 4 cases first:
 
 - **retrieve a linked note** -> Obsidian or Logseq
-- **retrieve a link or web reference** -> Karakeep
-- **retrieve a local file** -> Everything or AnyTXT
-- **retrieve something scattered across several apps** -> Findr or Curiosity
+- **retrieve a web reference** -> Karakeep
+- **retrieve a local file** -> Everything + AnyTXT when needed
+- **retrieve information scattered across apps** -> Curiosity
 
-If those 4 cases are covered, your PKM is already much more reliable.
+If those 4 cases are covered, your PKM already becomes much more reliable.
 
-If you cannot find it in 30 seconds, your organization system needs improvement.
+## What to avoid
+
+- relying on the perfect keyword for everything
+- installing several tools that almost do the same thing
+- compensating for poor organization with endless indexing
+- confusing fast access with true retrieval
+
+## Recommended workflow
+
+**Minimal**:
+- searchable notes
+- Everything
+- a clear reference system
+
+**Pragmatic**:
+- backlinks in your note tool
+- Karakeep for references
+- Everything + AnyTXT for files
+
+**Personal system**:
+- multi-layer retrieval
+- Curiosity for cross-app search
+- launcher as a secondary fast-access layer when needed
+
+:::note[Practical exercise]
+Take 4 things you searched for recently:
+
+1. one note
+2. one link
+3. one file
+4. one piece of information you could no longer place
+
+For each one, ask:
+- in which layer should I have retrieved it?
+- what slowed retrieval down?
+
+If you use the same tool for everything, or never know where to search, your problem is not memory. It is retrieval architecture.
+:::

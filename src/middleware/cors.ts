@@ -23,8 +23,14 @@ import type { MiddlewareHandler } from 'astro'
  * - Allow-Headers: Common headers needed for API authentication
  * - Allow-Credentials: Enables cookie-based auth across origins
  */
+function getCorsOrigin(): string {
+  const origin = import.meta.env.SITE ?? import.meta.env.PUBLIC_SITE_URL;
+  if (origin) return origin.replace(/\/$/, '');
+  return import.meta.env.DEV ? 'http://localhost:4321' : '';
+}
+
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'http://localhost:4321',
+  'Access-Control-Allow-Origin': getCorsOrigin(),
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept',
   'Access-Control-Allow-Credentials': 'true',

@@ -98,6 +98,37 @@ Dès que la veille doit nourrir ton système de connaissance, la vraie question 
 
 Autrement dit, le lecteur n'est qu'une porte d'entrée. La valeur vient de ce que tu fais après.
 
+## Lecteurs et formats de lecture : utiles seulement s'ils soutiennent l'extraction
+
+Tous les outils de lecture ne méritent pas une place dans le système. Le bon critère n'est pas "est-ce agréable ?", mais :
+- est-ce que cela rend la lecture plus tenable ?
+- est-ce que cela facilite l'annotation ou l'extraction ?
+- est-ce que cela t'aide à revenir au contenu plus tard ?
+
+### Quand un lecteur dédié vaut la peine
+
+Si tu lis souvent :
+- des EPUB
+- des PDF longs
+- des livres numériques annotables
+- des audiobooks ou formats accessibles
+
+alors un lecteur comme [Thorium Reader](https://thorium.edrlab.org/fr/docs/) devient pertinent.
+
+Pourquoi il mérite une petite place ici :
+- il prend en charge EPUB, PDF, audiobooks et formats accessibles
+- il permet une lecture plus stable que le navigateur pour certains contenus longs
+- il soutient mieux une vraie session de lecture qu'un onglet laissé ouvert parmi vingt autres
+
+Je ne le placerais pas au centre du module. Je le placerais comme outil secondaire de lecture profonde :
+- quand le navigateur n'est plus le bon support
+- quand tu veux lire plus proprement
+- quand l'accessibilité ou les formats comptent vraiment
+
+Le principe reste le même :
+- le lecteur n'est pas la valeur
+- l'extraction, la connexion et la réutilisation le sont
+
 ---
 
 ## Agrégation de news

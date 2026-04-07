@@ -98,6 +98,37 @@ As soon as monitoring is supposed to feed your knowledge system, the real questi
 
 In other words, the reader is only an entry point. The value comes from what you do afterward.
 
+## Reading apps and reading formats: only useful if they support extraction
+
+Not every reading tool deserves a place in the system. The right criterion is not “is this pleasant?” but:
+- does it make reading more sustainable?
+- does it support annotation or extraction?
+- does it help you come back to the content later?
+
+### When a dedicated reader is worth it
+
+If you often read:
+- EPUBs
+- long PDFs
+- annotatable ebooks
+- audiobooks or accessibility-oriented formats
+
+then a reader like [Thorium Reader](https://thorium.edrlab.org/en/docs/) becomes relevant.
+
+Why it deserves a small place here:
+- it supports EPUB, PDF, audiobooks, and accessibility-oriented formats
+- it gives certain long-form content a more stable home than the browser
+- it supports true reading sessions better than leaving one more tab open among twenty others
+
+I would not put it at the center of the module. I would place it as a secondary deep-reading tool:
+- when the browser is no longer the right container
+- when you want cleaner reading
+- when accessibility or format support really matters
+
+The principle stays the same:
+- the reader is not the value
+- extraction, connection, and reuse are
+
 ---
 
 ## News aggregation

@@ -1,4 +1,4 @@
-import { internalMutation, mutation } from "./_generated/server";
+import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 async function findUserByEmail(ctx: { db: any }, email: string) {
@@ -54,62 +54,6 @@ export const linkCustomer = internalMutation({
         polarCustomerId: args.polarCustomerId,
       });
     }
-  },
-});
-
-export const linkCustomerByEmail = mutation({
-  args: {
-    email: v.string(),
-    polarCustomerId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const user = await findUserByEmail(ctx, args.email);
-
-    if (user) {
-      await ctx.db.patch(user._id, {
-        polarCustomerId: args.polarCustomerId,
-      });
-    }
-  },
-});
-
-export const updateSubscriptionByCustomerId = mutation({
-  args: {
-    polarCustomerId: v.string(),
-    subscriptionStatus: v.string(),
-    subscriptionTier: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const user = await findUserByPolarCustomerId(ctx, args.polarCustomerId);
-
-    if (user) {
-      await ctx.db.patch(user._id, {
-        subscriptionStatus: args.subscriptionStatus,
-        subscriptionTier: args.subscriptionTier,
-      });
-    }
-  },
-});
-
-export const grantCourseAccessByEmail = mutation({
-  args: {
-    email: v.string(),
-    entitlement: v.string(),
-    polarCustomerId: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const user = await findUserByEmail(ctx, args.email);
-
-    if (!user) {
-      return { granted: false };
-    }
-
-    await ctx.db.patch(user._id, {
-      polarCustomerId: args.polarCustomerId ?? user.polarCustomerId,
-      courseEntitlements: mergeEntitlements(user.courseEntitlements, args.entitlement),
-    });
-
-    return { granted: true };
   },
 });
 

@@ -139,6 +139,40 @@ The key question is not “what is the best image editor?” but:
 - capturing
 - or just fast extraction / conversion
 
+## Photo libraries and visual assets
+
+Personal or work photo/video collections do not really belong to PKM “capture” in the strict sense. They mostly belong to:
+- asset organization
+- deduplication
+- fast consultation
+- later retrieval
+
+In other words, their correct home is here, as part of file management, not in `capturer.md`.
+
+### When a dedicated tool becomes useful
+
+If you have a real photo library scattered across:
+- local storage
+- external drives
+- NAS
+- smartphone imports
+
+then a tool like [Tonfotos](https://tonfotos.com/) can become relevant.
+
+Its modern value is straightforward:
+- browse by dates, events, people, and places
+- detect duplicates
+- keep a more local logic instead of a forced cloud workflow
+
+I would not recommend it as a universal tool in the course. I would recommend it when the real problem is:
+- retrieving photos or videos inside a large volume
+- maintaining a usable personal or family archive
+- stopping a large media library from turning into unusable clutter
+
+The same reflex still applies:
+- if the problem is occasional, stay simple
+- if the volume becomes structural, use a dedicated tool
+
 ## Archives and selective access
 
 Sometimes the problem is not the file, but the container around it.

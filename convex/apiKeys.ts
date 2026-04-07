@@ -17,11 +17,10 @@ export const generate = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    const key = `wf_${Array.from({ length: 32 }, () =>
-      "abcdefghijklmnopqrstuvwxyz0123456789".charAt(
-        Math.floor(Math.random() * 36)
-      )
-    ).join("")}`;
+    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    const randomBytes = new Uint8Array(32);
+    crypto.getRandomValues(randomBytes);
+    const key = `wf_${Array.from(randomBytes, (b) => chars[b % chars.length]).join("")}`;
 
     return await ctx.db.insert("apiKeys", {
       userId: args.userId,

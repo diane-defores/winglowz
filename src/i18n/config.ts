@@ -75,11 +75,11 @@ export const routes: {
     'roadmap': 'roadmap',        // Same in both languages
     'services': 'services',      // Same in both languages
     'privacy': 'confidentialite',
-    'terms': 'conditions-utilisation',
-    'disclaimer': 'avertissement',
-    'copyright': 'droits-auteur',
+    'terms': 'cgu',
+    'disclaimer': 'non-responsabilite',
+    'copyright': 'droits',
     'legal': 'mentions-legales',
     'landing': 'landing',
     'cgv': 'cgv'
   }
-} 
+}

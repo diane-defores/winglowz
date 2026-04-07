@@ -1,162 +1,211 @@
 ---
 title: "Retrouver & Rechercher"
-description: "Moteurs de recherche personnels, lanceurs de clavier et outils pour retrouver n'importe quoi en quelques secondes."
+description: "Construis une recherche multi-couche pour retrouver notes, fichiers, références et informations dispersées sans dépendre uniquement de ta mémoire."
 sidebar:
   label: "Retrouver"
   order: 5
 ---
 
-Toute ta base de connaissances ne vaut rien si tu ne peux pas retrouver ce dont tu as besoin en moins de 10 secondes. La recherche, c'est le retour sur investissement de ton organisation.
+Toute ta base de connaissances perd une grande partie de sa valeur si tu ne peux pas retrouver ce dont tu as besoin rapidement.
 
-> Le meilleur système de classement ne remplace pas un bon moteur de recherche. Idéalement, tu as les deux.
+> Le meilleur classement du monde ne suffit pas si récupérer une information reste lent, fragile ou dépend d'un mot-clé parfait.
 
-## Retrouver ne veut pas dire seulement "taper un mot-clé"
+## Le vrai sujet : retrieval, pas seulement recherche texte
 
-Dans un bon PKM, on retrouve l'information de plusieurs façons :
-- par **recherche**
-- par **navigation**
-- par **backlinks**
-- par **contexte de travail**
+Retrouver ne veut pas dire seulement taper un mot dans une boîte.
 
-Autrement dit, si ton système dépend uniquement d'une recherche textuelle parfaite, il reste fragile.
+Dans un système PKM solide, on retrouve de plusieurs manières :
+- par **recherche directe**
+- par **contexte**
+- par **liens**
+- par **accès rapide**
 
-### Les 3 couches de retrieval les plus utiles
+Si ton système dépend uniquement d'une recherche textuelle parfaite, il reste fragile.
 
-#### 1. La recherche directe
+## Le decision framework Winflowz
 
-Tu sais à peu près ce que tu cherches. Tu tapes quelques mots et tu veux tomber dessus immédiatement.
+Quand tu ne retrouves pas quelque chose, pose-toi quatre questions :
 
-Là, il te faut :
-- un bon moteur dans tes notes
-- un bon moteur dans tes fichiers
-- un bon moteur dans tes bookmarks
+1. **Est-ce que je cherche une note, un fichier, un lien, ou une information dispersée entre plusieurs apps ?**
+2. **Est-ce que je connais le mot-clé exact, ou seulement le contexte ?**
+3. **Le problème vient-il de la recherche, de l'organisation, ou du mauvais endroit de stockage ?**
+4. **Ai-je besoin d'un moteur de recherche, d'un lanceur, ou d'un réseau de notes liées ?**
 
-#### 2. La recherche contextuelle
+Ce cadre évite de confondre :
+- un problème de retrieval
+- avec un problème de capture
+- ou avec un problème d'organisation
 
-Tu ne te souviens pas du titre exact, mais tu te souviens :
-- du projet
-- de la période
-- de l'outil où tu l'as vu
-- de la personne qui l'a partagé
+## Les 4 couches de retrieval qui comptent vraiment
 
-C'est là que les outils de recherche unifiée deviennent utiles.
+### 1. Recherche dans les notes
 
-#### 3. La récupération par liens
+Tu veux retrouver :
+- une idée
+- une note
+- une synthèse
+- un lien conceptuel
 
-Tu ne cherches pas un fichier précis. Tu repars d'une idée connexe et tu remontes le réseau.
+Le cœur ici reste :
+- **Obsidian** ou **Logseq** pour les notes
+- plus les **backlinks** et parfois le **graph** pour repartir d'une idée connexe
 
-C'est exactement là que les **backlinks**, les notes liées et parfois le **graph view** d'Obsidian deviennent utiles. Pas comme gadget visuel, mais comme aide au raisonnement.
+Le vrai gain du PKM n'est pas seulement de retrouver par titre. C'est aussi de remonter par relations.
 
-## Moteurs de recherche personnels
+### 2. Recherche dans les références web
 
-### [Findr](https://www.usefindr.io/)
+Tu veux retrouver :
+- un article sauvegardé
+- une vidéo
+- une ressource web
+- un lien important
 
-Findr est une alternative qui indexe tes apps de travail et rend tout cherchable :
+Le bon centre ici reste :
+- **Karakeep**
 
-- **Chat, docs, emails, fichiers** — une seule barre de recherche
-- **Recherche sémantique** — comprend le sens, pas juste les mots-clés
-- **Résultats contextuels** — montre où et quand l'information a été partagée
-- **Vie privée** — traitement local quand possible
+Parce que son rôle est justement de rendre tes références retrouvables sans dépendre de ta mémoire.
 
-### [Curiosity](https://curiosity.ai/app)
+### 3. Recherche dans les fichiers locaux
 
-Curiosity est une autre option crédible si tu veux une **recherche unifiée** entre :
-- fichiers locaux
-- emails
-- calendriers
-- apps cloud
+Tu veux retrouver :
+- un document
+- un PDF
+- un export
+- un fichier texte ou bureautique
 
-Son intérêt est de rapprocher plusieurs couches de ton travail dans une seule interface de recherche, sans te forcer à te souvenir où l'information vit exactement.
+Sur Windows, les deux couches les plus utiles restent :
+- **Everything** pour les noms de fichiers
+- **AnyTXT Searcher** pour la recherche dans le contenu
 
-Il devient intéressant si :
-- tu travailles dans plusieurs outils en parallèle
-- tu perds du temps à te demander "c'était dans un mail, un doc, Slack, ou un dossier ?"
-- tu veux retrouver vite sans reconstituer mentalement tout le chemin
+Autrement dit :
+- **Everything** quand tu sais à peu près ce que tu cherches
+- **AnyTXT** quand tu te souviens du contenu, pas du nom du fichier
 
-Le bon usage n'est pas de remplacer toute ton organisation par "je chercherai plus tard". Le bon usage est :
-- une organisation correcte
+### 4. Recherche unifiée entre apps
+
+Tu veux retrouver quelque chose mais tu ne sais plus si c'était :
+- dans un mail
+- dans un doc
+- dans une app cloud
+- dans un navigateur
+- dans un dossier local
+
+C'est là qu'un outil de recherche unifiée devient pertinent.
+
+## Curiosity : la recommandation actuelle la plus solide pour la recherche unifiée
+
+Aujourd'hui, **Curiosity** est la recommandation la plus défendable dans cette couche.
+
+Pourquoi :
+- recherche locale et cloud dans une seule interface
+- recherche dans fichiers, emails, apps, navigateurs et autres sources connectées
+- raccourci global
+- approche orientée retrieval rapide
+
+Il devient utile si :
+- ton travail vit dans plusieurs apps en parallèle
+- tu perds du temps à te demander où l'information se trouve
+- tu veux une couche de recherche transversale sans tout réorganiser ailleurs
+
+Le bon usage n'est pas :
+- "je n'organise plus rien, je chercherai plus tard"
+
+Le bon usage est :
+- organisation correcte
 - plus une recherche transversale vraiment bonne
 
+## Ce que je recommande moins ici
 
----
+### Findr
 
-## Lanceurs de clavier
+`Findr` ne me paraît plus être la recommandation la plus solide pour cette leçon aujourd'hui. Je ne le garderais plus comme outil principal du cours sur cette couche.
 
-### [ueli](https://ueli.app/)
+### Les lanceurs redondants
 
-ueli est un lanceur d'applications et de fichiers ultra-rapide pour Windows :
+Les lanceurs restent utiles, mais ils ne doivent pas brouiller cette leçon.
 
-- **Lancement d'apps** en tapant les premières lettres
-- **Recherche de fichiers** locale instantanée
-- **Calculs** et conversions directement dans la barre
-- **Raccourcis web** personnalisables
-- **Plugins** : traduction, couleurs, workflows personnalisés
+Pour la couche "lancer vite", le cours a déjà une page dédiée à **Flow Launcher**. Ici, le sujet principal est plutôt :
+- retrouver
+- pas seulement lancer
 
-### Pourquoi un lanceur change tout
+Donc je garde l'idée du lanceur comme couche secondaire, mais sans en faire le centre.
 
-Sans lanceur : clic droit → chercher dans le menu → naviguer → cliquer. **5-10 secondes.**
-Avec lanceur : raccourci → tape 3 lettres → Entrée. **1 seconde.**
+## Lanceurs : couche secondaire, mais utile
 
-Multiplie ça par 50 actions par jour, et tu gagnes **10 minutes quotidiennes** de friction en moins.
+Un lanceur reste rentable si tu veux :
+- ouvrir vite une app
+- accéder rapidement à un fichier récent
+- réduire quelques clics fréquents
 
----
+### Option crédible
 
-## Recherche de fichiers
+**ueli** reste une option valable comme lanceur clavier simple et actuel.
 
-### [AnyTXT Searcher](https://anytxt.net/)
+Mais la hiérarchie du cours reste :
+- **Flow Launcher** pour la couche lanceur/workflow Windows
+- `ueli` comme alternative crédible, pas comme centre de cette page
 
-AnyTXT Searcher est un moteur de recherche full-text pour tes fichiers locaux :
+## Recherche dans le navigateur
 
-| Fonction | Détail |
-|----------|--------|
-| **Recherche dans le contenu** | Pas seulement le nom — le texte à l'intérieur des fichiers |
-| **Formats supportés** | PDF, Word, Excel, TXT, code source, emails |
-| **Indexation rapide** | Résultats en millisecondes même sur de gros volumes |
-| **Filtres avancés** | Par date, taille, type, dossier |
+Une partie du retrieval quotidien passe encore par :
+- les favoris
+- l'historique
+- les onglets ouverts
 
-### [Everything](https://www.voidtools.com/) (bonus)
+Tu peux déjà couvrir beaucoup de besoins avec :
+- les fonctions natives du navigateur
+- **Quick Commands** dans Vivaldi
+- la recherche d'historique / signets
+- les capacités connectées d'un outil comme Curiosity
 
-Everything indexe tous les noms de fichiers de ton PC en temps réel — résultats instantanés dès la première lettre tapée. Indispensable sur Windows.
-
----
-
-## Extensions navigateur pour la recherche
-
-| Extension | Fonction |
-|-----------|----------|
-| [Vimium](https://vimium.github.io/) | Navigation au clavier dans le navigateur — jamais toucher la souris |
-| [Quick Tabs](https://chromewebstore.google.com/detail/quick-tabs/jnjfeinjfmenlddahdjdmgpbokiacbbb) | Recherche dans tes onglets ouverts par titre |
-| **Recherche native `@history` / `@tabs`** | Cherche rapidement dans ton historique et tes onglets depuis la barre d'adresse |
-
----
-
-## Recherche dans [Vivaldi](https://vivaldi.com/)
-
-Si tu utilises Vivaldi, tu as déjà un arsenal de recherche intégré :
-
-- **Quick Commands** (`F2`) : cherche dans les onglets, signets, historique et commandes
-- **Recherche dans les panneaux** : notes, signets, historique — tout filtrable
-- **Moteurs de recherche personnalisés** : ajoute n'importe quel site comme moteur (mot-clé + URL)
-- **Raccourcis de recherche** : `g` pour Google, `w` pour Wikipedia, `yt` pour YouTube — personnalise les tiens
-
----
-
-## Stratégie de recherche optimale
-
-1. **Commence par le lanceur** (ueli, Flow Launcher) pour les apps et fichiers récents
-2. **Passe à la recherche full-text** (AnyTXT) pour les contenus dans les fichiers
-3. **Utilise la recherche unifiée** (Findr ou équivalent) pour les apps cloud
-4. **En dernier recours** : navigation manuelle dans l'arborescence
+Le bon réflexe est de ne pas installer une extension de plus si le navigateur ou ta couche unifiée sait déjà couvrir le besoin.
 
 ## Minimum viable retrieval
 
-Si tu veux un système simple et robuste, tu n'as pas besoin de tout indexer partout. Tu as surtout besoin de couvrir 4 cas :
+Si tu veux un système simple et robuste, couvre d'abord ces 4 cas :
 
 - **retrouver une note liée** → Obsidian ou Logseq
-- **retrouver un lien ou une référence web** → Karakeep
-- **retrouver un fichier local** → Everything ou AnyTXT
-- **retrouver quelque chose éparpillé entre plusieurs apps** → Findr ou Curiosity
+- **retrouver une référence web** → Karakeep
+- **retrouver un fichier local** → Everything + AnyTXT si besoin
+- **retrouver une information dispersée entre apps** → Curiosity
 
 Si ces 4 cas sont couverts, ton PKM devient déjà beaucoup plus fiable.
 
-Si tu ne trouves pas en 30 secondes, ton système d'organisation a besoin d'être amélioré.
+## Ce qu'il faut éviter
+
+- tout miser sur un mot-clé parfait
+- installer plusieurs outils qui font presque la même chose
+- compenser une mauvaise organisation par toujours plus d'indexation
+- confondre accès rapide et vrai retrieval
+
+## Workflow recommandé
+
+**Minimaliste** :
+- notes recherchables
+- Everything
+- un système de références clair
+
+**Pragmatique** :
+- backlinks dans l'outil de notes
+- Karakeep pour les références
+- Everything + AnyTXT pour les fichiers
+
+**Système personnel** :
+- retrieval multi-couche
+- Curiosity pour la recherche transversale
+- lanceur secondaire si besoin d'accès rapide
+
+:::note[Exercice pratique]
+Prends 4 choses que tu as cherchées récemment :
+
+1. une note
+2. un lien
+3. un fichier
+4. une information que tu ne savais plus situer
+
+Pour chacune, demande-toi :
+- dans quelle couche aurais-je dû la retrouver ?
+- qu'est-ce qui a ralenti la récupération ?
+
+Si tu utilises le même outil pour tout, ou si tu ne sais jamais où chercher, ton problème n'est pas la mémoire. C'est l'architecture de retrieval.
+:::
