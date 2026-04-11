@@ -39,16 +39,16 @@ const PRODUCTS = [
     name: "WinFlowz — Full Training",
     description: "All 8 Windows productivity training modules. Lifetime access, FR + EN content, progress dashboard, priority support.",
     prices: [
-      { type: "one_time", amount_type: "fixed", price_amount: 4900, price_currency: "usd" },
+      { type: "one_time", amountType: "fixed", priceAmount: 4900, priceCurrency: "usd" },
     ],
-    metadata: { entitlement: "winflowz_training", launch_price: true },
+    metadata: { entitlement: "winflowz_training", launch_price: "true" },
   },
   {
     group: "WinFlowz",
     name: "WinFlowz — Bundle",
     description: "Full Training + SocialFlow Lifetime + 1 year TubeFlow Pro. Best value for the complete Flowz ecosystem.",
     prices: [
-      { type: "one_time", amount_type: "fixed", price_amount: 14900, price_currency: "usd" },
+      { type: "one_time", amountType: "fixed", priceAmount: 14900, priceCurrency: "usd" },
     ],
     metadata: { entitlement: "bundle_full", includes: "winflowz_training,socialflow_lifetime,tubeflow_pro_1yr" },
   },
@@ -59,7 +59,8 @@ const PRODUCTS = [
     name: "SocialFlow Pro — Monthly",
     description: "Unlimited profiles, 18+ social networks, full anti-distraction suite, Kanban board, backup & restore, priority support.",
     prices: [
-      { type: "recurring", amount_type: "fixed", price_amount: 900, price_currency: "eur", recurring_interval: "month" },
+      { type: "recurring", amountType: "fixed", priceAmount: 900, priceCurrency: "usd", recurringInterval: "month" },
+      { type: "recurring", amountType: "fixed", priceAmount: 900, priceCurrency: "eur", recurringInterval: "month" },
     ],
     metadata: { entitlement: "socialflow_pro" },
   },
@@ -68,7 +69,8 @@ const PRODUCTS = [
     name: "SocialFlow Pro — Annual",
     description: "Unlimited profiles, 18+ social networks, full anti-distraction suite, Kanban board, backup & restore, priority support. Billed annually (save 33%).",
     prices: [
-      { type: "recurring", amount_type: "fixed", price_amount: 7200, price_currency: "eur", recurring_interval: "year" },
+      { type: "recurring", amountType: "fixed", priceAmount: 7200, priceCurrency: "usd", recurringInterval: "year" },
+      { type: "recurring", amountType: "fixed", priceAmount: 7200, priceCurrency: "eur", recurringInterval: "year" },
     ],
     metadata: { entitlement: "socialflow_pro" },
   },
@@ -77,9 +79,10 @@ const PRODUCTS = [
     name: "SocialFlow — Lifetime Deal",
     description: "All Pro features forever. One-time payment. Lifetime updates and priority support. No subscription ever.",
     prices: [
-      { type: "one_time", amount_type: "fixed", price_amount: 9900, price_currency: "eur" },
+      { type: "one_time", amountType: "fixed", priceAmount: 9900, priceCurrency: "usd" },
+      { type: "one_time", amountType: "fixed", priceAmount: 9900, priceCurrency: "eur" },
     ],
-    metadata: { entitlement: "socialflow_lifetime", launch_price: true },
+    metadata: { entitlement: "socialflow_lifetime", launch_price: "true" },
   },
 
   // ── TubeFlow ──────────────────────────────────────────────
@@ -88,7 +91,7 @@ const PRODUCTS = [
     name: "TubeFlow Pro — Monthly",
     description: "AI transcription (50 videos/mo), unlimited playlists & videos, AI-powered summaries, export to Obsidian & Notion, cross-device sync, advanced search, priority support.",
     prices: [
-      { type: "recurring", amount_type: "fixed", price_amount: 700, price_currency: "usd", recurring_interval: "month" },
+      { type: "recurring", amountType: "fixed", priceAmount: 700, priceCurrency: "usd", recurringInterval: "month" },
     ],
     metadata: { entitlement: "tubeflow_pro" },
   },
@@ -97,7 +100,7 @@ const PRODUCTS = [
     name: "TubeFlow Pro — Annual",
     description: "AI transcription (50 videos/mo), unlimited playlists & videos, AI-powered summaries, export to Obsidian & Notion, cross-device sync, advanced search, priority support. Billed annually ($56/yr).",
     prices: [
-      { type: "recurring", amount_type: "fixed", price_amount: 5600, price_currency: "usd", recurring_interval: "year" },
+      { type: "recurring", amountType: "fixed", priceAmount: 5600, priceCurrency: "usd", recurringInterval: "year" },
     ],
     metadata: { entitlement: "tubeflow_pro" },
   },
@@ -106,7 +109,7 @@ const PRODUCTS = [
     name: "TubeFlow Power — Monthly",
     description: "AI transcription (200 videos/mo), everything in Pro, early access to new features, priority support.",
     prices: [
-      { type: "recurring", amount_type: "fixed", price_amount: 1500, price_currency: "usd", recurring_interval: "month" },
+      { type: "recurring", amountType: "fixed", priceAmount: 1500, priceCurrency: "usd", recurringInterval: "month" },
     ],
     metadata: { entitlement: "tubeflow_power" },
   },
@@ -115,7 +118,7 @@ const PRODUCTS = [
     name: "TubeFlow Power — Annual",
     description: "AI transcription (200 videos/mo), everything in Pro, early access to new features, priority support. Billed annually ($120/yr).",
     prices: [
-      { type: "recurring", amount_type: "fixed", price_amount: 12000, price_currency: "usd", recurring_interval: "year" },
+      { type: "recurring", amountType: "fixed", priceAmount: 12000, priceCurrency: "usd", recurringInterval: "year" },
     ],
     metadata: { entitlement: "tubeflow_power" },
   },
@@ -134,8 +137,8 @@ async function getOrganizationId() {
 }
 
 async function createProduct(orgId, product) {
+  // orgId is only used for display; org tokens imply the org — do not pass organizationId
   const payload = {
-    organizationId: orgId,
     name: product.name,
     description: product.description,
     prices: product.prices,
@@ -169,9 +172,9 @@ async function main() {
     try {
       const created = await createProduct(orgId, product);
       const priceLabel = product.prices.map((p) => {
-        const amount = (p.price_amount / 100).toFixed(0);
-        const currency = (p.price_currency ?? "usd").toUpperCase();
-        const interval = p.recurring_interval ? `/${p.recurring_interval}` : " one-time";
+        const amount = (p.priceAmount / 100).toFixed(0);
+        const currency = (p.priceCurrency ?? "usd").toUpperCase();
+        const interval = p.recurringInterval ? `/${p.recurringInterval}` : " one-time";
         return `${amount} ${currency}${interval}`;
       }).join(", ");
 
