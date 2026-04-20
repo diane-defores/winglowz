@@ -41,6 +41,7 @@ That leads to four levers:
 The most useful idea here is not "motivate yourself more." It is:
 
 **movement feeds momentum**.
+Short feedback loops and clear targets make that movement much more likely<sup>[3](#concept-goal-setting)</sup>.
 
 Once a project produces:
 - a clear beginning
@@ -66,6 +67,7 @@ So before talking about motivation, check:
 - is the duration reasonable?
 
 If those things are in place, action often becomes more likely than avoidance.
+And if you want starting to become almost automatic, write an "IF X, THEN Y" plan (ex: "if it's 9:00, then I open the file and write 5 lines")<sup>[2](#concept-implementation-intentions)</sup>.
 
 ## Intrinsic vs extrinsic
 
@@ -73,6 +75,7 @@ The distinction is still useful, but only if it serves execution.
 
 - **intrinsic motivation**: curiosity, mastery, meaning, autonomy
 - **extrinsic motivation**: money, validation, pressure, reward
+In Self-Determination Theory (SDT), autonomy, competence, and relatedness explain a large share of durable motivation<sup>[1](#concept-sdt)</sup>.
 
 The goal is not to remove the extrinsic. It is to stop it from becoming the only source of movement.
 
@@ -167,6 +170,7 @@ So you need to rebuild shorter loops:
 - making heroic what should be simple
 - using guilt as the main engine
 - adding accountability before clarifying the action
+- treating procrastination as a moral defect instead of a feedback and emotion regulation problem<sup>[4](#concept-procrastination)</sup>
 
 ## Recommended workflow
 
@@ -196,3 +200,31 @@ Choose one action you have been postponing for several days and answer only this
 
 If you answer those four questions clearly, motivation often becomes much less mysterious.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits: Human Needs and the Self-Determination of Behavior* — [Psychological Inquiry](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-implementation-intentions"></a>2) **Implementation intentions (if-then plans)** — Gollwitzer (1999), *Implementation Intentions: Strong Effects of Simple Plans* — [American Psychologist](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-goal-setting"></a>3) **Goal Setting Theory** — Locke & Latham (2002), *Building a Practically Useful Theory of Goal Setting and Task Motivation* — [American Psychologist](https://doi.org/10.1037/0003-066X.57.9.705)
+
+<a id="ref-procrastination"></a>4) **Procrastination (synthesis)** — Steel (2007), *The nature of procrastination: a meta-analytic and theoretical review of quintessential self-regulatory failure* — [Psychological Bulletin](https://doi.org/10.1037/0033-2909.133.1.65)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-sdt"></a>#### SDT: autonomy, competence, relatedness
+The more an action supports autonomy (choice), competence (progress), and relatedness (connection), the less you need external pressure to keep going.
+Scientific source: [1](#ref-sdt)
+
+<a id="concept-implementation-intentions"></a>#### Implementation intentions: "IF X, THEN Y"
+If-then planning reduces internal negotiation: the decision is made in advance, so you only execute when the trigger happens.
+Scientific source: [2](#ref-implementation-intentions)
+
+<a id="concept-goal-setting"></a>#### Goal setting: clarity, difficulty, feedback
+Feedback brings the reward closer and increases repetition. That is one of the simplest ways to "manufacture momentum."
+Scientific source: [3](#ref-goal-setting)
+
+<a id="concept-procrastination"></a>#### Procrastination: immediate relief vs future cost
+When a task triggers negative emotions (boredom, anxiety, uncertainty), avoidance provides quick relief. Action design (smaller starts, closer feedback, lower friction) reduces that pull.
+Scientific source: [4](#ref-procrastination)

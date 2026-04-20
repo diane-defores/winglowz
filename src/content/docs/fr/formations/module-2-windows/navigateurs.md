@@ -6,7 +6,7 @@ sidebar:
   order: 3
 ---
 
-Tu passes probablement plus de temps dans ton navigateur que dans n'importe quelle autre application. Si ce poste de travail est mal choisi ou mal réglé, tu subis du bruit toute la journée.
+Tu passes probablement plus de temps dans ton navigateur que dans n'importe quelle autre application. Si ce poste de travail est mal choisi ou mal réglé, tu subis du bruit<sup>[3](#concept-visual-clutter)</sup> toute la journée.
 
 > Le bon navigateur n'est pas celui qui a le plus de fonctions. C'est celui qui réduit le plus de friction pour ton vrai usage.
 
@@ -28,7 +28,7 @@ mais pas un dépotoir visuel.
 
 Avant de changer de navigateur ou d'ajouter des extensions, pose-toi quatre questions :
 
-1. **Mon vrai problème est-il le chaos d'onglets, la distraction, la lenteur, ou le manque de contrôle ?**
+1. **Mon vrai problème est-il le chaos d'onglets<sup>[1](#concept-task-switching-cost)</sup>, la distraction, la lenteur, ou le manque de contrôle ?**
 2. **Est-ce que je veux un navigateur à régler finement, ou un bon défaut avec peu d'entretien ?**
 3. **Est-ce que je vis surtout dans des apps web, ou plutôt dans de la lecture/recherche/navigation ?**
 4. **Est-ce que mon navigateur doit surtout m'aider à organiser, à bloquer le bruit, ou à retrouver vite ?**
@@ -107,7 +107,7 @@ Donc :
 Avoir 40 onglets ouverts n'est pas une preuve d'intensité. C'est souvent une preuve d'absence de système.
 
 Le bon système d'onglets repose sur trois idées :
-- **le contexte**
+- **le contexte**<sup>[2](#concept-attention-residue)</sup>
 - **la fermeture**
 - **la récupération**
 
@@ -225,3 +225,29 @@ Ensuite :
 
 Si ton navigateur te fatigue encore après ça, le problème vient souvent moins du web que de l'absence de système.
 :::
+
+## Références du chapitre (pour aller plus loin)
+
+<a id="ref-task-switching"></a>1) **Coûts du changement de tâche (task switching)** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive Control of Cognitive Processes in Task Switching* — [Journal of Experimental Psychology: Human Perception and Performance, APA](https://psycnet.apa.org/record/2001-06771-013)
+
+<a id="ref-attention-residue"></a>2) **Résidu d'attention (attention residue)** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-visual-clutter"></a>3) **Clutter visuel (mesure et impact sur l’attention)** — Ruth Rosenholtz, Yuanzhen Li, Joanna Mansfield & Zhenlan Jin (2007), *Measuring visual clutter* — [Journal of Vision](https://jov.arvojournals.org/article.aspx?articleid=2121507)
+
+<a id="ref-mdn-webextensions-permissions"></a>4) **Permissions d’extensions (WebExtensions)** — MDN — [permissions (manifest.json)](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions)
+
+<a id="ref-chrome-extension-permissions"></a>5) **Permissions d’extensions (Chrome)** — Chrome for Developers — [Declare permissions](https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions/)
+
+## Approfondissement des concepts techniques
+
+<a id="concept-task-switching-cost"></a>#### Coûts du changement de tâche (tab chaos)
+Plus tu alternes entre contextes et micro-objets (onglets, apps web, docs), plus tu paies des coûts de reprise. Un système d’onglets vise surtout à réduire ces redémarrages.
+Source scientifique : [1](#ref-task-switching)
+
+<a id="concept-attention-residue"></a>#### Résidu d’attention (contexte)
+Quand tu quittes un sujet, une partie de ton attention reste “accrochée” au contexte précédent. Structurer les contextes (groupes/workspaces) limite la dispersion quand tu changes de projet.
+Source scientifique : [2](#ref-attention-residue)
+
+<a id="concept-visual-clutter"></a>#### Clutter visuel (bruit)
+Un excès d’éléments visibles augmente la difficulté de sélection et de recherche visuelle. Réduire le nombre d’onglets et d’extensions visibles est aussi une hygiène d’attention.
+Source scientifique : [3](#ref-visual-clutter)

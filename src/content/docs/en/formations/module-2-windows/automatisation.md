@@ -17,7 +17,7 @@ Start by looking for tasks that have several of these traits:
 - they usually follow the same steps
 - they consume attention more than judgment
 - they create errors when you do them tired or too fast
-- they feel like work even though you are mostly executing a routine
+- they feel like work even though you are mostly executing a routine<sup>[2](#concept-habit-formation)</sup>
 
 The best quick wins are often simple:
 - opening the same apps every morning
@@ -36,7 +36,7 @@ Not every problem needs the same tool:
 - a simple visual routine can start with a macro recorder
 - durable personal logic often justifies AutoHotkey
 - repetitive web workflows can go through Automa
-- heavier business processes may belong in RPA
+- heavier business processes may belong in RPA<sup>[3](#concept-automation-bias)</sup>
 
 The goal is not to "do automation." The goal is to remove mechanical work from your system so your attention stays available for what actually requires judgment.
 
@@ -85,7 +85,7 @@ If you feel like you spend more time repairing a macro than gaining time from it
 
 ## AutoHotkey: automation without limits
 
-AutoHotkey (AHK) is a scripting language built for Windows. It lets you create shortcuts, remap keys, automate tasks, and even build graphical interfaces.
+AutoHotkey (AHK) is a scripting language built for Windows. It lets you create shortcuts<sup>[1](#concept-implementation-intentions)</sup>, remap keys, automate tasks, and even build graphical interfaces.
 
 This point matters: **AutoHotkey is not just a text expander**. It is a real Windows automation toolbox. If you want to turn your system into a custom-built workshop, it is probably one of the highest-leverage tools you can learn.
 
@@ -291,3 +291,29 @@ It is an advanced topic, but if you work with repetitive processes at scale, it 
 - [Listary](https://www.listary.com/) - very strong if you spend a lot of time navigating files and Explorer.
 - [Wox](https://github.com/Wox-launcher/Wox) - a historical alternative that is now more secondary.
 - [Find and Run Robot](https://www.donationcoder.com/Software/Mouser/findrun/index.html) - a veteran launcher still worth knowing for some advanced users.
+
+## Chapter References (Go Further)
+
+<a id="ref-implementation-intentions"></a>1) **Implementation intentions (“if-then” plans)** — Peter M. Gollwitzer (1999), *Implementation intentions: Strong effects of simple plans* — [American Psychologist, APA](https://psycnet.apa.org/record/1999-10179-001)
+
+<a id="ref-habit-formation"></a>2) **Habit formation** — Phillippa Lally et al. (2010), *How are habits formed: Modelling habit formation in the real world* — [European Journal of Social Psychology, Wiley](https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674)
+
+<a id="ref-automation-misuse"></a>3) **Automation: misuse / disuse / complacency** — Raja Parasuraman & Victor Riley (1997), *Humans and Automation: Use, Misuse, Disuse, Abuse* — [Human Factors](https://journals.sagepub.com/doi/10.1518/001872097778543886)
+
+<a id="ref-autohotkey-docs"></a>4) **AutoHotkey (official documentation)** — [AutoHotkey Documentation](https://www.autohotkey.com/docs/)
+
+<a id="ref-windows-startup-folder"></a>5) **Startup folder / run at startup (official guidance)** — Microsoft Support — [Add an app to run automatically at startup in Windows](https://support.microsoft.com/windows/add-an-app-to-run-automatically-at-startup-in-windows-0f7b75b5-62c5-4a4f-a8c4-1c8f24321d86)
+
+## Technical Concept Deep Dives
+
+<a id="concept-implementation-intentions"></a>#### Implementation intentions (hotkeys, rules, triggers)
+“If-then” plans (for example: “if I open a project, then I launch this exact app set”) turn a vague intention into a concrete trigger. This maps well to hotkeys, hotstrings, startup routines, and lightweight automation.
+Scientific source: [1](#ref-implementation-intentions)
+
+<a id="concept-habit-formation"></a>#### Habit formation (routines)
+When a sequence is stable and repeated, it becomes more automatic and requires less deliberate effort. Automation tends to pay off most when it stabilizes a routine that truly comes back.
+Scientific source: [2](#ref-habit-formation)
+
+<a id="concept-automation-bias"></a>#### Automation bias / complacency (RPA)
+The more reliable an automation seems, the easier it is to loosen monitoring (missed errors, later detection). For RPA, keep guardrails: logging, checks, and clear stop points.
+Scientific source: [3](#ref-automation-misuse)

@@ -37,6 +37,87 @@ Le vrai gain du focus n'est pas seulement d'aller plus vite. C'est de :
 
 Le multitâche ne crée pas de puissance. Il crée surtout des micro-redémarrages.
 
+## Diluer la tension : garder l'énergie juste suffisante
+
+En anglais, la littérature parle souvent de **“attention residue”** (résidu d'attention)<sup>[1](#concept-attention-residue)</sup> : quand tu bascules entre tâches, une partie de ton’attention reste sur la tâche précédente et réduit ta capacité sur la suivante.
+Le modèle classique de la charge cognitive<sup>[2](#concept-cognitive-load)</sup> rappelle la même idée : l'énergie mentale utile est limitée, donc on a intérêt à réduire les charges inutiles.
+
+Dans notre langue, on peut appeler ça la **dilution de la tension**:
+- trop peu de tension = démarrage mou, procrastination passive, inertie
+- trop de tension = fragmentation, anxiété, erreur, surcharge mentale
+- tension bien calibrée = concentration stable et travail plus dense
+
+Le bon réglage n'est donc pas “moins de tension”, mais **moins de tension parasite**.
+
+Tu la dissous en 3 gestes opérationnels :
+1. **Fermer le cycle précédent**
+   - note la prochaine action exacte
+   - décide ce qui peut attendre
+   - coupe le signal de la tâche interrompue (timer, onglet, statut)
+2. **Créer une zone neutre**
+   - 3 à 5 minutes de transition avant la nouvelle tâche
+   - eau, respiration, marche courte, une ligne de plan
+3. **Transformer le stress diffuseur en structure**
+   - règles simples d'entrée
+   - environnement préparé
+   - micro-bloqueurs uniquement sur les fuites évidentes
+
+Quand cette mécanique marche, tu gardes l'élan sans monter ta tension au point qu'elle te bloque.
+
+### Pourquoi ça marche (version pédagogie rapide)
+
+La tension utile agit comme une **dose d'activation**<sup>[3](#concept-activation)</sup> qui rend le cerveau disponible.
+Les études sur le changement de tâche montrent qu'un cerveau qui ne peut pas “se détacher” d'une activité précédente garde des traces actives qui ralentissent la suivante<sup>[4](#concept-traces)</sup>.
+La charge cognitive ajoute une seconde contrainte : si tu ajoutes des frictions inutiles (interruptions, décisions superficielles, interfaces bruitées), ta mémoire de travail sert à gérer le chaos au lieu de soutenir la tâche réelle.
+
+La conséquence pratique :
+- moins de repos mental entre tâches = moins de redémarrages
+- moins d'ambiguïté sur la prochaine action = moins d'effort de pilotage
+- moins de fuites attentionnelles = plus de profondeur durable
+
+Tu ne gagnes pas en “force de volonté”, tu gagnes en **qualité d'entrée cognitive**.
+
+### Mini-protocole “Dilution : de 10 en 10”
+
+Pendant 10 jours, applique ce protocole à chaque passage d'une tâche à l'autre :
+
+- **0:00** → écris la prochaine action dans une ligne
+- **0:30** → indique ce que tu laisses de côté
+- **1:00** → ferme les déclencheurs de la tâche précédente
+- **3:00** → fais une transition neutre (respiration, mouvement, eau)
+- **7:00** → lance la nouvelle tâche avec un premier geste déjà préparé
+- **10:00** → vérifie : est-ce que l'élan est là ou est-ce que la tension te bloque ?
+
+Tu ne cherches pas à être parfait. Tu cherches à supprimer la variation extrême : ni trop calme, ni trop en alerte.
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-attention-residue"></a>1) **Résidu d'attention (attention residue)** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-cognitive-load"></a>2) **Charge cognitive (working memory / charge mentale)** — Fred Paas & Jeroen J. G. van Merriënboer (2020), *Cognitive-Load Theory: Methods to Manage Working Memory Load in the Learning of Complex Tasks* — [Current Directions in Psychological Science, SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-activation"></a>3) **Dose d'activation / activation-performance** — principe Yerkes-Dodson (courbe en U). — [Simply Psychology](https://www.simplypsychology.org/what-is-the-yerkes-dodson-law.html)
+
+<a id="ref-traces"></a>4) **Traces actives / coût de transition** — synthèses de littérature sur l’effet de résidu d’attention — [Emergent Mind](https://www.emergentmind.com/topics/attention-residue)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-attention-residue"></a>#### Résidu d'attention (attention residue)
+Quand tu changes de tâche, le système cognitif peut conserver une partie du contexte précédent au lieu de “zéroter” l’attention. C’est pour ça que l’on observe un temps de reprise avant de retrouver le vrai niveau d’efficacité sur la tâche suivante.
+Source scientifique : [1](#ref-attention-residue)
+
+<a id="concept-cognitive-load"></a>#### Charge cognitive et friction mentale
+La charge cognitive utile soutient la tâche importante; la charge parasite consume des ressources pour gérer du bruit, des décisions inutiles ou de la complexité artificielle de l’interface.
+Source scientifique : [2](#ref-cognitive-load)
+
+<a id="concept-activation"></a>#### Dose d’activation (zone utile de tension)
+La tension n’est pas binaire. Trop peu freine l’action, trop de bloque. Le point performant est une zone intermédiaire où le cerveau reste mobilisé sans être saturé.
+Source scientifique : [3](#ref-activation)
+
+<a id="concept-traces"></a>#### Traces actives
+Ce sont les pensées résiduelles qui restent “ouvertes” après une interruption. Les noter avant de switcher réduit leur coût de reprise.
+Source scientifique : [4](#ref-traces)
+
 ## Deep Work : rétrécir le front d'action
 
 Cal Newport a popularisé une idée toujours juste : le travail cognitivement exigeant a besoin de temps protégé.

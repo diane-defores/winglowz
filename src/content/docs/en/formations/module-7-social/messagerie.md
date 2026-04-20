@@ -8,7 +8,7 @@ sidebar:
 
 Chat is useful because it is fast. But the moment it becomes your default channel for everything, it starts destroying your focus.
 
-The problem is not just having too many apps open. It is letting **messaging become a permanent interruption layer**.
+The problem is not just having too many apps open. It is letting **messaging become a permanent interruption layer**.<sup>[1](#concept-interruptions)</sup>
 
 > A good messaging layer should not make you more available. It should make you more selective, faster on what matters, and less fragmented.
 
@@ -25,7 +25,7 @@ The problem is not just having too many apps open. It is letting **messaging bec
 - when the topic lasts for days or weeks
 - when an action needs formal follow-up
 - when five messages are replacing one clear email or shared note
-- when the channel is mostly acting as a notification distributor
+- when the channel is mostly acting as a notification distributor<sup>[2](#concept-communication-overload)</sup>
 
 Chat should accelerate work. It should not become your hard drive or your task manager.
 
@@ -47,7 +47,7 @@ That creates four useful outcomes:
 ## The real goal
 
 The real goal is not a magical "super app." It is:
-- fewer context switches
+- fewer context switches<sup>[3](#concept-media-multitasking)</sup>
 - a clearer channel hierarchy
 - very few sound notifications
 - no important messages missed
@@ -138,3 +138,25 @@ For one week:
 
 Only after that should you decide whether you need a more ambitious tool.
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-interruptions"></a>1) **Interruptions and resumption cost** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [UCI PDF](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+<a id="ref-communication-overload"></a>2) **Communication overload (alerts, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+<a id="ref-media-multitasking"></a>3) **Media multitasking** — Eyal Ophir, Clifford Nass, Anthony D. Wagner (2009), *Cognitive control in media multitaskers* — [PNAS (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC2747164/)
+
+### Technical concept deep dive
+
+<a id="concept-interruptions"></a>#### Interruptions and resumption cost
+The more often messaging cuts you off, the more you pay a resumption cost (reloading context, losing the thread, shifting into reaction mode). The systems takeaway: reduce interruption frequency and batch checks.
+Scientific source: [1](#ref-interruptions)
+
+<a id="concept-communication-overload"></a>#### Communication overload (alerts, notifications)
+When chat becomes a notification distributor, you end up in constant standby mode. The systems takeaway: one active alert layer and simple rules (snooze, batches, fixed windows).
+Scientific source: [2](#ref-communication-overload)
+
+<a id="concept-media-multitasking"></a>#### Media multitasking
+"Multitasking" often means rapid switching between streams. More switching means more fragmented attention and weaker goal maintenance. The systems takeaway: fewer open channels, more processing windows.
+Scientific source: [3](#ref-media-multitasking)

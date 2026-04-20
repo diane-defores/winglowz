@@ -47,6 +47,7 @@ When sleep degrades, many "productivity" problems appear:
 - worse decisions
 - more craving for easy stimulation
 - less capacity for demanding work
+<sup>[1](#concept-sleep)</sup>
 
 ### What actually helps
 
@@ -72,6 +73,7 @@ Simple examples:
 - going outside into daylight
 
 The important point is not to take a "perfect" break. It is to avoid fake breaks that keep saturating the brain.
+<sup>[2](#concept-restoration)</sup>
 
 ## Movement, exercise, and mental clarity
 
@@ -86,6 +88,7 @@ You do not need to turn this course into a cult of physical performance. But com
 
 Simple rule:
 - if your work is highly mental, your body needs a counterweight
+<sup>[3](#concept-exercise)</sup>
 
 ## Mindfulness and stress regulation
 
@@ -96,6 +99,7 @@ It helps you:
 - stop obeying every impulse automatically
 - return more easily to important work
 - reduce emotional reactivity
+<sup>[4](#concept-mindfulness)</sup>
 
 A simple regular practice is already enough. The goal is not to become mystical. The goal is to improve attention quality.
 
@@ -175,6 +179,7 @@ Relationships are not "off-topic." They directly influence:
 - emotional stability
 - decision quality
 - the sense that your life remains human
+<sup>[5](#concept-social)</sup>
 
 In practice:
 - block time for the people who matter
@@ -194,3 +199,47 @@ If productivity drops, first check:
 - relationships
 
 Many execution problems are really human-infrastructure problems.
+
+### Chapter references (go further)
+
+<a id="ref-sleep"></a>1) **Sleep (accessible synthesis)** — Matthew Walker (2017), *Why We Sleep* — [Google Books](https://books.google.com/books?id=7r5MDgAAQBAJ)
+
+<a id="ref-restoration"></a>2) **Attentional restoration** — Berman, Jonides & Kaplan (2008), *The cognitive benefits of interacting with nature* — [Google Scholar](https://scholar.google.com/scholar?q=The+cognitive+benefits+of+interacting+with+nature+Berman+Jonides+Kaplan+2008)
+
+<a id="ref-exercise"></a>3) **Exercise and cognition** — Ratey & Loehr (2011), *The positive impact of physical activity on cognition during adulthood* — [Google Scholar](https://scholar.google.com/scholar?q=positive+impact+of+physical+activity+on+cognition+during+adulthood+Ratey+Loehr+2011)
+
+<a id="ref-mindfulness"></a>4) **Neuroscience of mindfulness** — Tang, Holzel & Posner (2015), *The neuroscience of mindfulness meditation* — [DOI](https://doi.org/10.1038/nrn3916)
+
+<a id="ref-social"></a>5) **Social relationships and mortality (meta-analysis)** — Holt-Lunstad, Smith & Layton (2010), *Social relationships and mortality risk* — [DOI](https://doi.org/10.1371/journal.pmed.1000316)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-sleep"></a>#### Sleep (memory, mood, regulation)
+
+Sleep supports memory, emotion regulation, and decision-making. When it drops, many “productivity problems” follow.
+
+Scientific source: [1](#ref-sleep)
+
+<a id="concept-restoration"></a>#### Attentional restoration (restorative breaks)
+
+Some breaks restore attention better (walking, daylight, nature) than stimulating breaks (scrolling, content).
+
+Scientific source: [2](#ref-restoration)
+
+<a id="concept-exercise"></a>#### Movement (stress, cognition, sleep)
+
+Physical activity influences stress, cognition, and sleep quality, which supports productive consistency.
+
+Scientific source: [3](#ref-exercise)
+
+<a id="concept-mindfulness"></a>#### Mindfulness (stress regulation)
+
+Mindfulness practice can improve attention regulation and reduce stress reactivity.
+
+Scientific source: [4](#ref-mindfulness)
+
+<a id="concept-social"></a>#### Relationships (social infrastructure)
+
+Higher-quality social relationships are associated with better health outcomes and lower mortality risk; they stabilize your human system.
+
+Scientific source: [5](#ref-social)

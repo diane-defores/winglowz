@@ -32,7 +32,7 @@ Beaucoup de gens n'avancent pas moins par manque de travail que par surcharge de
 - est-ce le bon moment ?
 - est-ce assez important ?
 
-Chaque choix a un coût cognitif. Quand ce coût s'accumule :
+Chaque choix a un coût cognitif<sup>[1](#concept-mental-fatigue)</sup>. Quand ce coût s'accumule :
 - tu repousses les vraies décisions
 - tu remplis la journée de tâches secondaires
 - tu surconsommes de l'information pour retarder le moment de trancher
@@ -77,7 +77,7 @@ Un bon test :
 - quelle tâche ferait le plus avancer la situation si elle était vraiment bien faite ?
 - quelle tâche suis-je en train d'éviter avec des occupations secondaires ?
 
-## Penser visuellement quand le texte ne suffit plus
+## Penser visuellement quand le texte ne suffit plus<sup>[3](#concept-external-cognition)</sup>
 
 Tout ne se clarifie pas bien en texte linéaire.
 
@@ -109,7 +109,7 @@ Quelques questions simples suffisent souvent :
 - à quel moment ai-je commencé à me disperser ?
 - quel choix suis-je en train de différer inutilement ?
 
-Le but n'est pas l'introspection infinie. Le but est de récupérer du discernement.
+Le but n'est pas l'introspection infinie. Le but est de récupérer du discernement, et de corriger tes biais quand ils apparaissent<sup>[4](#concept-biases)</sup>.
 
 ## Intelligence émotionnelle
 
@@ -121,7 +121,7 @@ Quand tu ignores complètement ton état intérieur, tu prends souvent de moins 
 - tu sur-réagis
 - tu interprètes une fatigue ou une peur comme une vérité stratégique
 
-Un check-in quotidien simple peut déjà aider :
+Un check-in quotidien simple peut déjà aider<sup>[5](#concept-emotion-regulation)</sup> :
 - qu'est-ce que je ressens ?
 - qu'est-ce qui a déclenché cela ?
 - qu'est-ce que cela me pousse à faire ou à éviter ?
@@ -173,3 +173,47 @@ Si tu veux agir avec plus d'intelligence :
 - rends la pensée visible quand elle devient floue
 - utilise la réflexivité pour corriger tes biais
 - emploie l'IA comme multiplicateur de clarté, pas comme pilote automatique
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-mental-fatigue"></a>1) **Fatigue mentale** — Boksem & Tops (2008), *Mental fatigue: Costs and benefits* — [Google Scholar](https://scholar.google.com/scholar?q=Mental+fatigue%3A+Costs+and+benefits+Boksem+Tops+2008)
+
+<a id="ref-cognitive-load"></a>2) **Charge cognitive** — John Sweller (1988), *Cognitive load during problem solving* — [DOI](https://doi.org/10.1207/s15516709cog1202_4)
+
+<a id="ref-external-cognition"></a>3) **Pourquoi les diagrammes aident** — Larkin & Simon (1987), *Why a diagram is (sometimes) worth ten thousand words* — [Google Scholar](https://scholar.google.com/scholar?q=Why+a+diagram+is+%28sometimes%29+worth+ten+thousand+words+Larkin+Simon+1987)
+
+<a id="ref-biases"></a>4) **Heuristiques et biais** — Tversky & Kahneman (1974), *Judgment under uncertainty* — [DOI](https://doi.org/10.1126/science.185.4157.1124)
+
+<a id="ref-emotion-regulation"></a>5) **Régulation émotionnelle** — James J. Gross (1998), *The emerging field of emotion regulation* — [DOI](https://doi.org/10.1037/1089-2680.2.3.271)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-mental-fatigue"></a>#### Fatigue décisionnelle (fatigue mentale)
+
+Quand la fatigue mentale monte, la qualité de jugement baisse et les micro-décisions deviennent plus coûteuses.
+
+Source scientifique : [1](#ref-mental-fatigue)
+
+<a id="concept-cognitive-load"></a>#### Charge cognitive (bande passante limitée)
+
+La mémoire de travail est limitée. Réduire la charge inutile augmente la clarté et la qualité de comparaison.
+
+Source scientifique : [2](#ref-cognitive-load)
+
+<a id="concept-external-cognition"></a>#### Pensée visuelle (externaliser le raisonnement)
+
+Un schéma ou un tableau peut rendre des dépendances visibles et réduire l'ambiguïté par rapport au texte linéaire.
+
+Source scientifique : [3](#ref-external-cognition)
+
+<a id="concept-biases"></a>#### Biais cognitifs (heuristiques)
+
+Le cerveau utilise des raccourcis utiles, mais ils créent aussi des erreurs prévisibles. La réflexivité aide à les détecter.
+
+Source scientifique : [4](#ref-biases)
+
+<a id="concept-emotion-regulation"></a>#### Régulation émotionnelle (clarté sous stress)
+
+Une partie de l'intelligence productive consiste à réguler la réactivité pour retrouver du discernement avant d'agir.
+
+Source scientifique : [5](#ref-emotion-regulation)

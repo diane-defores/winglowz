@@ -7,6 +7,7 @@ sidebar:
 ---
 
 The problem is not that you do not know enough people. The problem is forgetting the context, failing to follow up at the right time, and treating everyone as if they deserve the same level of tracking.
+Once you add message volume and alert pressure, you end up procrastinating follow-up or replying in permanent reaction mode.<sup>[1](#concept-communication-overload)</sup>
 
 > A good relationship system is not there to turn people into pipeline stages. It is there to remind you who matters, why, and how to stay present without becoming artificial.
 
@@ -49,7 +50,7 @@ The real goal is not to "manage your network" like a machine. It is:
 - to stop forgetting why you know someone
 - to stop losing important follow-ups
 - to recover relationship context before reaching out
-- to show up more reliably without overload
+- to show up more reliably without overload<sup>[2](#concept-interruptions)</sup>
 
 ## The tool layer: which family to choose
 
@@ -143,3 +144,19 @@ For one week:
 3. decide whether they belong to level 1, 2, or 3
 4. only then choose the tool that fits your real need
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-communication-overload"></a>1) **Communication overload (alerts, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+<a id="ref-interruptions"></a>2) **Interruptions and resumption cost** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [UCI PDF](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+### Technical concept deep dive
+
+<a id="concept-communication-overload"></a>#### Communication overload (alerts, notifications)
+When alerts and volume go up, you drift into constant reaction mode and lose room for intentional follow-up. The systems takeaway: limit alerts and reserve follow-up windows (weekly) instead of living in micro-replies all day.
+Scientific source: [1](#ref-communication-overload)
+
+<a id="concept-interruptions"></a>#### Interruptions and resumption cost
+Unstructured pings create micro-interruptions that break your thread and make "staying in touch" feel like constant noise. The systems takeaway: batch follow-up and move actions into a system (notes plus reminders) instead of living in DMs.
+Scientific source: [2](#ref-interruptions)

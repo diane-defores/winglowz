@@ -6,7 +6,7 @@ sidebar:
   order: 4
 ---
 
-> Digital ergonomics is not a luxury. It is what makes the difference between ending your day exhausted and ending it with energy left.
+> Digital ergonomics<sup>[3](#concept-workstation-ergonomics)</sup> is not a luxury. It is what makes the difference between ending your day exhausted and ending it with energy left.
 
 ## Your workspace matters as much as your software
 
@@ -236,7 +236,7 @@ The right choice depends on your actual problem:
 The important point is that these tools are not for aesthetics. They are for reducing:
 - repeated placement gestures
 - hesitation about where each app belongs
-- visual fatigue caused by a workstation that is constantly disorganized
+- visual fatigue<sup>[1](#concept-digital-eye-strain)</sup> caused by a workstation that is constantly disorganized
 
 When your screen stops being improvised ground and becomes a structured work surface, your ability to stay focused often rises immediately.
 
@@ -523,7 +523,7 @@ Automatically switch between a light theme during the day and a dark theme at ni
 
 ### f.lux
 
-Reduces blue light on your screen in the evening. Your eyes will thank you. Windows has a built-in "Night light" feature, but f.lux offers finer control.
+Reduces blue light<sup>[2](#concept-circadian-light)</sup> on your screen in the evening. Your eyes will thank you. Windows has a built-in "Night light" feature, but f.lux offers finer control.
 
 ### Jiffy Reader
 
@@ -603,3 +603,27 @@ Used well, Cold Turkey does not make you weaker. It helps you build an environme
 - [RocketDock](https://punklabs.com/) - a more visual option if you want a macOS-like dock for fast access to apps.
 - [DesktopOK](https://www.softwareok.com/?seite=Freeware/DesktopOK) - useful if you care about restoring desktop icon positions precisely.
 - [AutoHideDesktopIcons](https://www.softwareok.com/?seite=Microsoft/AutoHideDesktopIcons) - useful if you want a visually cleaner desktop without deleting your icons.
+
+## Chapter References (Go Further)
+
+<a id="ref-digital-eye-strain"></a>1) **Computer Vision Syndrome (digital eye strain)** — Mark Rosenfield (2011), *Computer vision syndrome: a review of ocular causes and potential treatments* — [PubMed](https://pubmed.ncbi.nlm.nih.gov/21480937/)
+
+<a id="ref-circadian-light"></a>2) **Evening light exposure and circadian timing** — Anne-Marie Chang et al. (2015), *Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness* — [PNAS](https://www.pnas.org/doi/10.1073/pnas.1418490112)
+
+<a id="ref-workstation-ergonomics"></a>3) **Computer workstation ergonomics (guidelines)** — NIOSH (1997), *Ergonomic Guidelines for Computer Workstations* — [CDC/NIOSH](https://www.cdc.gov/niosh/docs/97-117/default.html)
+
+<a id="ref-windows-night-light"></a>4) **Night light (official documentation)** — Microsoft Support — [Use night light in Windows](https://support.microsoft.com/windows/use-night-light-in-windows-793f8f48-30b9-40e2-9e3e-0f0a147bb7c7)
+
+## Technical Concept Deep Dives
+
+<a id="concept-digital-eye-strain"></a>#### Digital eye strain (CVS)
+Screen fatigue is not only “light”: it is also accommodation and blink behavior, plus viewing conditions (contrast, size, distance). That is why a legible workstation and coherent visual settings matter.
+Scientific source: [1](#ref-digital-eye-strain)
+
+<a id="concept-circadian-light"></a>#### Evening light (circadian rhythm)
+Blue-enriched light exposure in the evening can delay circadian timing and harm sleep. Tools like Night light or f.lux help when they support a real schedule discipline.
+Scientific source: [2](#ref-circadian-light)
+
+<a id="concept-workstation-ergonomics"></a>#### Workstation ergonomics (prevention and comfort)
+Ergonomics reduces unnecessary constraints (posture, height, placement, repeated gestures) and makes frequent actions less costly. A “comfortable” workstation is often a more sustainable workstation.
+Scientific source: [3](#ref-workstation-ergonomics)

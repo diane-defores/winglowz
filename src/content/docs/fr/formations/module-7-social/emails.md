@@ -14,6 +14,7 @@ L'email n'est pas le probleme. Le probleme, c'est d'en faire a la fois :
 - un flux de notifications
 
 Quand tout reste melange, la boite de reception devient un endroit ou rien n'est vraiment decide.
+La recherche est assez claire: des interruptions frequentes ont un cout de reprise,<sup>[1](#concept-interruptions)</sup> et les alertes de messagerie (email en particulier) renforcent la reactivite et la sensation de surcharge.<sup>[2](#concept-communication-overload)</sup>
 
 > Le bon usage de l'email n'est pas de repondre le plus vite possible. C'est de traiter proprement ce qui merite de rester asynchrone, puis d'extraire le reste vers le bon systeme.
 
@@ -163,3 +164,19 @@ Pendant une semaine :
 
 Ensuite seulement, decide si tu as besoin d'un outil supplementaire.
 :::
+
+### References du chapitre (pour aller plus loin)
+
+<a id="ref-interruptions"></a>1) **Interruptions et cout de reprise** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [PDF UCI](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+<a id="ref-communication-overload"></a>2) **Surcharge de communication (alertes, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-interruptions"></a>#### Interruptions et cout de reprise
+Les interruptions ne sont pas neutres: elles ajoutent un temps de reprise, une perte de fil, et un cout cognitif. Le point systeme: reduire la frequence, et regrouper la consultation en blocs.
+Source scientifique : [1](#ref-interruptions)
+
+<a id="concept-communication-overload"></a>#### Surcharge de communication (alertes, notifications)
+La surcharge vient autant du volume que des micro-signaux (badges, alerts) qui maintiennent l'attention en mode vigilance. Le point systeme: limiter les alerts, et separer clairement temps de production vs temps de reponse.
+Source scientifique : [2](#ref-communication-overload)

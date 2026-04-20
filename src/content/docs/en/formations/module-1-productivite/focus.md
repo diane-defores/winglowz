@@ -37,6 +37,87 @@ The real gain from focus is not only speed. It is the ability to:
 
 Multitasking does not create power. It mostly creates micro-restarts.
 
+## Diluting Tension: Keep Energy at the Right Level
+
+In the literature, you’ll see this idea as **“attention residue”**<sup>[1](#concept-attention-residue)</sup>: when switching tasks, part of your attention stays on Task A while you begin Task B, reducing performance.
+This is closely related to cognitive load research<sup>[2](#concept-cognitive-load)</sup>, which emphasizes that working memory is finite and should not be consumed by non-productive mental load.
+
+Translated into our framework: **don’t try to remove all tension**.
+- too little tension = low activation, drift, passive procrastination
+- too much tension = fragmentation, stress, mistakes, mental fatigue
+- just-enough tension = stable concentration and denser output
+
+The goal is to reduce the tension that creates residue, while keeping enough challenge to move forward.
+
+Three practical moves:
+1. **Close the previous loop**
+   - write the exact next action
+   - decide what can wait
+   - remove active cues from the interrupted task (timer, tab, status marker)
+2. **Create a neutral switch window**
+   - 3 to 5 minutes before starting the next task
+   - water, breathing, short walk, one-line plan reset
+3. **Convert diffuse stress into structure**
+   - simple entry rules
+   - prepared environment
+   - blockers only on clearly identified escape routes
+
+When this works, you keep momentum without pushing your system into a tension level that shuts it down.
+
+### Why this works (quick teaching framework)
+
+Useful tension is a form of **activation energy**<sup>[3](#concept-activation)</sup> that keeps the brain engaged.
+Task-switching research shows that when the mind has not fully disengaged from a prior task, it carries residue that slows what comes next<sup>[4](#concept-traces)</sup>.
+Cognitive load research adds a second layer: unnecessary friction (interruptions, micro-decisions, noisy interfaces) consumes working memory that should stay available for actual reasoning or creation.
+
+Practical impact:
+- better task transitions, fewer cognitive restarts
+- fewer ambiguous first steps, less executive effort
+- fewer attentional leaks and more sustained depth
+
+You are not “building stronger willpower.” You are improving **cognitive entry quality**.
+
+### Mini protocol: “Dilute in 10”
+
+For 10 days, apply this protocol every time you switch tasks:
+
+- **0:00** → write the exact next action
+- **0:30** → define what can wait
+- **1:00** → shut down cues from the previous task
+- **3:00** → use a neutral transition (breathing, movement, water)
+- **7:00** → start with a pre-decided first action
+- **10:00** → check: is momentum carrying, or is tension creating friction?
+
+You are not aiming for perfection. You are removing extremes: not too flat, not too alarmed.
+
+### Chapter references (go further)
+
+<a id="ref-attention-residue"></a>1) **Attention residue / task switching effects** — Sophie Leroy (2009), *Why Is It So Hard to Do My Work? The Challenge of Attention Residue When Switching Between Work Tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-cognitive-load"></a>2) **Cognitive load (working memory)** — Fred Paas & Jeroen J. G. van Merriënboer (2020), *Cognitive-Load Theory: Methods to Manage Working Memory Load in the Learning of Complex Tasks* — [Current Directions in Psychological Science, SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-activation"></a>3) **Activation and performance zone (Yerkes-Dodson)** — performance/arousal relationship in a U-shaped model. — [Simply Psychology](https://www.simplypsychology.org/what-is-the-yerkes-dodson-law.html)
+
+<a id="ref-traces"></a>4) **Active traces / switch-cost research summaries** — practical synthesis of attentional residue literature. — [Emergent Mind](https://www.emergentmind.com/topics/attention-residue)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-attention-residue"></a>#### Attention residue
+When switching tasks, the mind can keep part of the previous task active, creating a carry-over load before full re-entry into the next task.
+Scientific source: [1](#ref-attention-residue)
+
+<a id="concept-cognitive-load"></a>#### Cognitive load and mental friction
+Cognitive load has a useful part for building knowledge and a parasitic part caused by noise, avoidable micro-decisions, and interface friction that drains focus.
+Scientific source: [2](#ref-cognitive-load)
+
+<a id="concept-activation"></a>#### Activation dose (performance zone)
+Tension is not all good or bad. Too little tension lowers initiative; too much tension increases errors and cognitive saturation.
+Scientific source: [3](#ref-activation)
+
+<a id="concept-traces"></a>#### Active traces
+They are unresolved thought fragments that stay open after interruptions. Capturing the last action before switching lowers the re-entry cost.
+Scientific source: [4](#ref-traces)
+
 ## Deep Work: narrow the front
 
 Cal Newport popularized an idea that still holds: cognitively demanding work needs protected time.

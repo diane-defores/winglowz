@@ -7,6 +7,7 @@ sidebar:
 ---
 
 Le probleme n'est pas de ne pas connaitre assez de monde. Le probleme, c'est d'oublier le contexte, de ne pas relancer au bon moment, et de traiter tout le monde comme s'il fallait le suivre pareil.
+Quand tu ajoutes a ca une surcharge de messages et d'alertes, tu finis par procrastiner le suivi ou repondre en reaction permanente.<sup>[1](#concept-communication-overload)</sup>
 
 > Un bon systeme relationnel n'est pas la pour transformer tes liens en pipeline. Il sert a te rappeler qui compte, pourquoi, et comment rester present sans theatre ni artificialite.
 
@@ -49,7 +50,7 @@ Le vrai objectif n'est pas de "gerer ton reseau" comme une machine. C'est :
 - ne plus oublier pourquoi tu connais quelqu'un
 - ne plus perdre les follow-ups importants
 - garder un contexte relationnel avant de recontacter
-- etre present de maniere plus fiable, sans surcharge
+- etre present de maniere plus fiable, sans surcharge<sup>[2](#concept-interruptions)</sup>
 
 ## La couche outil : quelle famille choisir
 
@@ -143,3 +144,19 @@ Pendant une semaine :
 3. decide si elle releve du niveau 1, 2 ou 3
 4. installe ensuite seulement l'outil adapte a ton vrai besoin
 :::
+
+### References du chapitre (pour aller plus loin)
+
+<a id="ref-communication-overload"></a>1) **Surcharge de communication (alertes, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+<a id="ref-interruptions"></a>2) **Interruptions et cout de reprise** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [PDF UCI](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-communication-overload"></a>#### Surcharge de communication (alertes, notifications)
+Quand les alerts et le volume montent, tu bascules vite en mode "reaction" et tu perds la place pour un suivi intentionnel. Le point systeme: limiter les alerts, et reserver des fenetres de suivi (hebdo) plutot que des micro-relances toute la journee.
+Source scientifique : [1](#ref-communication-overload)
+
+<a id="concept-interruptions"></a>#### Interruptions et cout de reprise
+Des relances et pings non structures creent des micro-interruptions qui te font perdre le fil, et te donnent l'impression que "tenir le contact" est un bruit constant. Le point systeme: regrouper le suivi et sortir les actions dans un systeme (notes + rappels) au lieu de vivre dans les DM.
+Source scientifique : [2](#ref-interruptions)

@@ -6,7 +6,7 @@ sidebar:
   order: 1
 ---
 
-Les raccourcis clavier ne servent pas surtout à "aller vite". Ils servent à **protéger le flux**. Chaque fois que tu quittes le clavier pour viser une icône, chercher un bouton ou replacer une fenêtre à la souris, tu paies une petite taxe d'attention.
+Les raccourcis clavier ne servent pas surtout à "aller vite". Ils servent à **protéger le flux**. Chaque fois que tu quittes le clavier pour viser une icône, chercher un bouton ou replacer une fenêtre à la souris, tu paies une petite taxe d'attention<sup>[1](#concept-task-switch)</sup>.
 
 Le but de ce module n'est donc pas de te faire mémoriser 200 combinaisons. Le but est d'intégrer quelques **noyaux de pilotage** qui changent réellement ton rapport à Windows, au navigateur, à Gmail, à YouTube et à Notion.
 
@@ -69,6 +69,7 @@ Le vrai gain navigateur n'est pas une vitesse abstraite. C'est :
 - naviguer entre les onglets sans te perdre
 
 Autrement dit, les raccourcis navigateur réduisent surtout la **dette d'onglets** et la **friction de recherche**.
+<sup>[2](#concept-cognitive-load)</sup>
 
 ## 3. Gmail : traiter au lieu de consulter
 
@@ -124,7 +125,7 @@ Tu n'as pas besoin de relâcher `Ctrl` entre deux raccourcis enchaînés. Par ex
 
 ## Apprendre ses raccourcis efficacement
 
-La clé n'est pas de tout mémoriser d'un coup, mais d'**intégrer 2 à 3 raccourcis par semaine** :
+La clé n'est pas de tout mémoriser d'un coup, mais d'**intégrer 2 à 3 raccourcis par semaine**<sup>[3](#concept-habit-formation)</sup> :
 
 1. identifie une action que tu fais souvent à la souris
 2. cherche le raccourci correspondant
@@ -145,15 +146,44 @@ Le bon test est simple :
 
 ## Aller plus loin
 
-Les cheatsheets servent à une chose : te rappeler ce que tu n'as pas encore intégré. Elles ne remplacent pas la mémoire musculaire.
-
-Ressources utiles :
-- [Google Chrome Help - Chrome keyboard shortcuts](https://support.google.com/chrome/answer/157179?hl=en&co=GENIE.Platform%3DDesktop)
-- [Google Help - Keyboard shortcuts for Gmail](https://support.google.com/mail/answer/6594?hl=en)
-- [Notion Help Center - Keyboard shortcuts](https://www.notion.com/help/keyboard-shortcuts)
-- [AutoHotkey](https://www.autohotkey.com/) si tu veux créer tes propres raccourcis, remappings ou expansions de texte
+Les cheatsheets servent à une chose : te rappeler ce que tu n'as pas encore intégré. Elles ne remplacent pas la mémoire musculaire<sup>[4](#concept-automaticity)</sup>.
 
 La bonne philosophie reste simple : **ne mémorise pas tout, sache où chercher**. Garde tes références à portée de main, et concentre ta mémoire musculaire sur les 20 raccourcis que tu utilises le plus souvent.
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-task-switch"></a>1) **Task switching (coût de changement de tâche)** — Monsell (2003), *Task switching* — [Google Scholar](https://scholar.google.com/scholar?q=Monsell+2003+task+switching)
+
+<a id="ref-cognitive-load"></a>2) **Charge cognitive** — Paas & van Merriënboer (2020), *Cognitive-Load Theory...* — [SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-habit-formation"></a>3) **Formation d’habitudes** — Lally et al. (2010), *How are habits formed...* — [Wiley](https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674)
+
+<a id="ref-automaticity"></a>4) **Automatisation (controlled vs automatic processing)** — Schneider & Shiffrin (1977), *Controlled and automatic human information processing* — [Google Scholar](https://scholar.google.com/scholar?q=Schneider+Shiffrin+1977+controlled+automatic+human+information+processing)
+
+<a id="ref-gmail-shortcuts"></a>5) **Raccourcis Gmail (officiel)** — Google Help, *Keyboard shortcuts for Gmail* — [Google Help](https://support.google.com/mail/answer/6594?hl=en)
+
+<a id="ref-notion-shortcuts"></a>6) **Raccourcis Notion (officiel)** — Notion Help Center, *Keyboard shortcuts* — [Notion](https://www.notion.com/help/keyboard-shortcuts)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-task-switch"></a>#### Coût de switch (taxe d'attention)
+Quand tu passes souris -> clavier -> souris, tu payes souvent un coût de reconfiguration: retrouver le contexte, décider, viser, puis revenir. Les raccourcis réduisent ces micro-transitions.
+Source scientifique : [1](#ref-task-switch)
+
+<a id="concept-cognitive-load"></a>#### Dette d'onglets (charge cognitive)
+Une dette d'onglets correspond souvent à trop de contexte ouvert et trop d'options concurrentes. Les raccourcis aident surtout à fermer, retrouver, et naviguer sans fouiller.
+Source scientifique : [2](#ref-cognitive-load)
+
+<a id="concept-habit-formation"></a>#### Intégration (habitude et répétition)
+Un raccourci devient utile quand il sort sans effort. La répétition en contexte (3 jours) et l'usage d'un seul noyau à la fois rendent l'automatisation beaucoup plus probable.
+Source scientifique : [3](#ref-habit-formation)
+
+<a id="concept-automaticity"></a>#### Automatisation (mémoire procédurale)
+Plus tu répètes une séquence stable, plus elle bascule d'un contrôle conscient vers une exécution automatique. C'est le cœur de la "mémoire musculaire".
+Source scientifique : [4](#ref-automaticity)
+
+Ressources pratiques :
+- [AutoHotkey](https://www.autohotkey.com/) si tu veux créer tes propres raccourcis, remappings ou expansions de texte
 
 :::note[Exercice pratique]
 Choisis un seul contexte cette semaine :

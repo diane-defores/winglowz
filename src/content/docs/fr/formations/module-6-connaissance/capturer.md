@@ -10,6 +10,8 @@ La capture est la première étape du PKM. Si tu ne captures pas, tu oublies. Et
 
 > Capture d'abord, organise ensuite. Le pire ennemi de la capture, c'est le perfectionnisme organisationnel.
 
+Capturer, c'est mettre en place une **mémoire externe** : tu déplaces l'information hors de ta tête pour la rendre retrouvable et réutilisable<sup>[1](#concept-cognitive-offloading)</sup>. Mais capture ≠ apprentissage : si tu veux retenir, il faudra revenir et pratiquer le **rappel actif** (retrieval practice)<sup>[2](#concept-retrieval-practice)</sup>.
+
 ## Le vrai sujet : où va ce que tu captures ?
 
 Le piège classique du PKM, c'est d'empiler les outils de capture sans décider **où la matière va vivre ensuite**.
@@ -197,3 +199,25 @@ Pour les créatifs et les collectionneurs d'information :
 - **Versionne tes fichiers importants** — `_v1`, `_v2` ou mieux, un dépôt Git
 - **Tagge les métadonnées** quand c'est possible — ça facilite la recherche future
 - **Sauvegarde 3-2-1** : 3 copies, 2 supports différents, 1 hors-site
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / mémoire externe** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-extended-mind"></a>2) **Extended mind / cognition étendue** — Clark & Chalmers (1998), *The Extended Mind* — [paper (consc.net)](https://consc.net/papers/extended.html)
+
+<a id="ref-retrieval-practice"></a>3) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-cognitive-offloading"></a>#### Cognitive offloading (mémoire externe opérationnelle)
+Tu “offloades” quand tu poses une information dans un support fiable (note, capture, fichier, lien) pour ne plus avoir à la maintenir activement en mémoire. La valeur vient quand cet artefact est **retrouvable** et **réinjectable** dans un travail futur.
+Source scientifique : [1](#ref-cognitive-offloading)
+
+<a id="concept-extended-mind"></a>#### Extended mind (cognition étendue)
+Certains outils jouent le rôle de composant cognitif externe : ils ne font pas que stocker, ils participent à ta capacité à raisonner et à agir (à condition que l'accès soit fluide et fiable).
+Source scientifique : [2](#ref-extended-mind)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice (rappel actif)
+Capturer ne suffit pas à apprendre. Pour consolider, tu dois te forcer à retrouver l'idée, la reformuler, l'appliquer ou l'expliquer, puis corriger avec la source.
+Source scientifique : [3](#ref-retrieval-practice)

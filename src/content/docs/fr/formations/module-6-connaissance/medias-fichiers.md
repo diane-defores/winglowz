@@ -16,6 +16,8 @@ Un bon PKM ne vit pas seulement dans les notes. Il repose aussi sur une couche p
 
 > Si chaque opération sur fichier te coûte 20 clics, ton système finit par se dégrader, même si tes idées sont bien rangées.
 
+Cette couche “fichiers” est une partie de ta **mémoire externe** : si elle est trop coûteuse à maintenir, tu éviteras d'y revenir<sup>[1](#concept-cognitive-offloading)</sup>. Bien gérée, elle devient un actif de **gestion des connaissances** (réutilisable, transmissible, retrouvable)<sup>[2](#concept-knowledge-management)</sup>.
+
 ## Le vrai sujet : réduire les opérations manuelles répétées
 
 Cette leçon ne sert pas à collectionner des utilitaires. Elle sert à répondre à une question plus simple :
@@ -239,3 +241,19 @@ Repère une opération de fichiers que tu as déjà faite au moins 3 fois ce moi
 
 Le bon signe n'est pas d'avoir plus d'outils. C'est de ne plus refaire la même corvée à la main.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / mémoire externe** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-knowledge-management"></a>2) **Knowledge management (tacite -> explicite)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-cognitive-offloading"></a>#### Mémoire externe (cognitive offloading) et friction d'accès
+Plus le coût d'accès (clics, conversion, renommage, recherche) est élevé, plus tu repousses l'usage de ta mémoire externe. Réduire la friction rend le système utilisable au quotidien.
+Source scientifique : [1](#ref-cognitive-offloading)
+
+<a id="concept-knowledge-management"></a>#### Gestion des connaissances par les fichiers
+Une convention de nommage, une structure simple et des exports propres transforment des “fichiers” en artefacts de connaissance (réutilisables, partageables, auditables).
+Source scientifique : [2](#ref-knowledge-management)

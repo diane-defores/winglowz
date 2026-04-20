@@ -19,7 +19,7 @@ When you feel scattered or unmotivated despite having "good" systems, check thes
 1. **Is my definition of success actually mine?**
 2. **Do I know which problem I want to solve?**
 3. **Do I know why that problem matters to me?**
-4. **Is my process still compatible with the person I want to become?**
+4. **Is my process still compatible with the person I want to become?**<sup>[2](#concept-self-concordance)</sup>
 
 This framework helps avoid a common mistake:
 - improving execution in the wrong direction
@@ -131,7 +131,7 @@ A credible purpose usually follows one of these patterns:
 
 A recurring tension appears here:
 
-**should you pursue meaning or performance?**
+**should you pursue meaning or performance?**<sup>[3](#concept-meaning)</sup>
 
 The wrong answer is assuming everything must do both at the same time.
 
@@ -156,7 +156,7 @@ When that happens, the issue is not only organizational. It is often deeper:
 - you are creating in a direction that no longer feels like you
 - you are pursuing a form of success you do not truly want
 
-No productivity system can sustainably compensate for deep internal dissonance.
+No productivity system can sustainably compensate for deep internal dissonance.<sup>[4](#concept-dissonance)</sup>
 
 ## Fall in love with the process
 
@@ -208,3 +208,39 @@ If you want sustainable productivity:
 - keep checking that your process stays aligned
 
 Your why is not a spiritual bonus. It is a steering layer.
+
+### Chapter references (go further)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits* — [DOI](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-self-concordance"></a>2) **Self-concordant goals** — Sheldon & Elliot (1999), *Goal striving... the self-concordance model* — [Google Scholar](https://scholar.google.com/scholar?q=self-concordance+model+Sheldon+Elliot+1999)
+
+<a id="ref-meaning"></a>3) **Meaning in life (MLQ)** — Steger et al. (2006), *Meaning in Life Questionnaire* — [Google Scholar](https://scholar.google.com/scholar?q=Meaning+in+Life+Questionnaire+Steger+Frazier+Oishi+Kaler+2006)
+
+<a id="ref-dissonance"></a>4) **Cognitive dissonance** — Leon Festinger (1957), *A Theory of Cognitive Dissonance* — [Google Books](https://books.google.com/books?id=voeQzgEACAAJ)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-sdt"></a>#### Intrinsic/extrinsic motivation (autonomy, competence, relatedness)
+
+More durable motivation often comes from satisfied psychological needs (autonomy, competence, relatedness), not only external rewards.
+
+Scientific source: [1](#ref-sdt)
+
+<a id="concept-self-concordance"></a>#### Self-concordant goals (aligned with self)
+
+Goals that match your values and identity tend to sustain better, with less inner negotiation.
+
+Scientific source: [2](#ref-self-concordance)
+
+<a id="concept-meaning"></a>#### Meaning (presence and search)
+
+Clarifying what feels meaningful helps you select projects and commit to long-term effort.
+
+Scientific source: [3](#ref-meaning)
+
+<a id="concept-dissonance"></a>#### Cognitive dissonance (internal tension)
+
+When your actions contradict your values or direction, internal tension appears and erodes consistency over time.
+
+Scientific source: [4](#ref-dissonance)

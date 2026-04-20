@@ -8,7 +8,7 @@ sidebar:
 
 Avant d'ajouter des outils de productivité, il faut un système qui ne te ralentit pas déjà par en dessous.
 
-> Un poste Windows productif ne commence pas avec des tweaks. Il commence avec une base saine, visible, sauvegardée et suffisamment cohérente pour ton vrai usage.
+> Un poste Windows productif ne commence pas avec des tweaks. Il commence avec une base saine, visible, sauvegardée<sup>[1](#concept-backup-recovery)</sup> et suffisamment cohérente pour ton vrai usage.
 
 ## Le vrai sujet : stabiliser la fondation
 
@@ -25,8 +25,8 @@ Quand une machine paraît lente, instable ou pénible, pose-toi quatre questions
 
 1. **Est-ce un vrai problème matériel, ou surtout un problème d'encombrement, de désordre ou de maintenance ?**
 2. **Est-ce que je sais où vivent mes fichiers importants et comment les récupérer ?**
-3. **Est-ce que mes installations et réglages sont rejouables, ou tout repose-t-il sur ma mémoire ?**
-4. **Quel est le vrai goulet d'étranglement : stockage, RAM, réseau, bruit logiciel, ou matériel insuffisant ?**
+3. **Est-ce que mes installations et réglages sont rejouables<sup>[2](#concept-configuration-management)</sup>, ou tout repose-t-il sur ma mémoire ?**
+4. **Quel est le vrai goulet d'étranglement : stockage, RAM<sup>[3](#concept-working-set)</sup>, réseau, bruit logiciel, ou matériel insuffisant ?**
 
 ## 1. Voir avant de nettoyer
 
@@ -233,3 +233,29 @@ Fais un audit simple de ta machine :
 
 Si tu ne peux pas répondre clairement à ces 4 points, le problème n'est pas encore "optimiser Windows". Le problème est d'abord de rendre ton poste lisible.
 :::
+
+## Références du chapitre (pour aller plus loin)
+
+<a id="ref-nist-contingency"></a>1) **Sauvegarde et reprise (contingency planning)** — NIST (2010), *SP 800-34 Rev. 1: Contingency Planning Guide for Federal Information Systems* — [NIST](https://csrc.nist.gov/publications/detail/sp/800-34/rev-1/final)
+
+<a id="ref-nist-config-mgmt"></a>2) **Gestion de configuration (configuration management)** — NIST (2011), *SP 800-128: Guide for Security-Focused Configuration Management of Information Systems* — [NIST](https://csrc.nist.gov/publications/detail/sp/800-128/final)
+
+<a id="ref-working-set"></a>3) **Working set (mémoire, RAM et paging)** — Peter J. Denning (1968), *The Working Set Model for Program Behavior* — [DOI](https://doi.org/10.1145/363095.363141)
+
+<a id="ref-winget"></a>4) **Windows Package Manager (winget)** — Microsoft Learn — [winget](https://learn.microsoft.com/windows/package-manager/winget/)
+
+<a id="ref-storage-sense"></a>5) **Storage Sense (Nettoyage automatique)** — Microsoft Support — [Storage Sense in Windows](https://support.microsoft.com/windows/storage-sense-in-windows-5f6753f0-4b99-42a7-8f6e-5a9a0b8dfc8e)
+
+## Approfondissement des concepts techniques
+
+<a id="concept-backup-recovery"></a>#### Sauvegarde et reprise (continuité)
+Une stratégie de sauvegarde est un levier de productivité parce qu'elle détermine ton temps de reprise après incident (panne, vol, erreur). Le but n'est pas “zéro risque”, mais une récupération claire et rapide.
+Source scientifique : [1](#ref-nist-contingency)
+
+<a id="concept-configuration-management"></a>#### Configuration rejouable (gestion de configuration)
+Rendre une installation “rejouable” revient à gérer explicitement la configuration (ce qui est installé, comment, et dans quel ordre). Tu réduis la dépendance à ta mémoire et la dérive au fil du temps.
+Source scientifique : [2](#ref-nist-config-mgmt)
+
+<a id="concept-working-set"></a>#### Working set (RAM, onglets, multitâche)
+Quand ton working set dépasse la RAM disponible, le système compense via des accès disque (paging), ce qui dégrade fortement la fluidité. C'est pour ça que “trop d'onglets” et “pas assez de RAM” se traduisent vite en friction réelle.
+Source scientifique : [3](#ref-working-set)

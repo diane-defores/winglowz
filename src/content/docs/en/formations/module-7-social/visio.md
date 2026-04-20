@@ -7,6 +7,7 @@ sidebar:
 ---
 
 The problem with meetings is not just the number of them. It is that they often become the default repair mechanism for badly prepared communication.
+On video calls, there is also a specific fatigue component (nonverbal overload) that accumulates quickly.<sup>[1](#concept-video-meeting-fatigue)</sup> And every reactive meeting creates a structural interruption in your day.<sup>[2](#concept-interruptions)</sup>
 
 A useful meeting is an **escalation path**:
 - when async communication is no longer enough
@@ -124,3 +125,19 @@ For two weeks, track every meeting:
 
 Goal: reduce meeting volume, but more importantly increase decision density per meeting.
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-video-meeting-fatigue"></a>1) **Video-meeting fatigue (Zoom fatigue)** — Jeremy N. Bailenson (2021), *Nonverbal Overload: A Theoretical Argument for the Causes of Zoom Fatigue* — [APA TMB](https://tmb.apaopen.org/pub/nonverbal-overload)
+
+<a id="ref-interruptions"></a>2) **Interruptions and resumption cost** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [UCI PDF](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+### Technical concept deep dive
+
+<a id="concept-video-meeting-fatigue"></a>#### Video-meeting fatigue (nonverbal overload)
+Video calls add nonverbal overload (gaze, self-view, framing, constrained movement), which can make calls more draining than in-person conversations. The systems takeaway: reduce duration/frequency, allow camera-off when appropriate, and make outcomes explicit.
+Scientific source: [1](#ref-video-meeting-fatigue)
+
+<a id="concept-interruptions"></a>#### Interruptions and resumption cost
+A badly placed meeting does not only cost its duration: it cuts a work session and imposes resumption cost. The systems takeaway: treat meetings as escalation and protect interruption-free blocks.
+Scientific source: [2](#ref-interruptions)

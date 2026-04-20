@@ -40,8 +40,8 @@ The goal is not a Pinterest desk. The goal is a workspace that asks less effort 
 
 Natural light remains one of the best simple levers:
 - better alertness during the day
-- less visual fatigue
-- better anchoring of the day/night rhythm
+- less visual fatigue<sup>[3](#concept-computer-vision)</sup>
+- better anchoring of the day/night rhythm<sup>[1](#concept-circadian)</sup>
 
 If possible, position your workspace to benefit from light without suffering constant glare.
 
@@ -49,14 +49,14 @@ If possible, position your workspace to benefit from light without suffering con
 
 The problem with clutter is not moral. It is that it adds:
 - visual noise
-- micro-decisions
+- micro-decisions<sup>[2](#concept-decision-load)</sup>
 - a sense of saturation
 
 A clean space does not need to be empty. It needs to be legible.
 
 ## Mouse and pointer: reduce physical friction
 
-Your mouse is one of your most-used tools. If it creates tension or diffuse discomfort, the cumulative cost is real.
+Your mouse is one of your most-used tools. If it creates tension or diffuse discomfort, the cumulative cost is real<sup>[5](#concept-ergonomics)</sup>.
 
 ### What actually matters
 
@@ -90,7 +90,7 @@ Sometimes the right settings already solve part of the problem.
 
 ## Sound and noise: protect attention
 
-Background noise kills concentration faster than many people admit.
+Background noise kills concentration faster than many people admit<sup>[4](#concept-auditory-distraction)</sup>.
 
 You have several response levels:
 
@@ -181,3 +181,47 @@ Priority order:
 - noise control
 - smooth keyboard and mouse input
 - gadgets only last
+
+### Chapter references (go further)
+
+<a id="ref-circadian"></a>1) **Light and alertness** — Cajochen (2007), *Alerting effects of light* — [Google Scholar](https://scholar.google.com/scholar?q=Alerting+effects+of+light+Cajochen+2007)
+
+<a id="ref-decision-load"></a>2) **Working memory (capacity)** — Cowan (2001), *The magical number 4 in short-term memory* — [Cambridge](https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/magical-number-4-in-shortterm-memory-a-reconsideration-of-mental-storage-capacity/7C80E8B9A12A1C1A4E23A8FD6CFA9A0C)
+
+<a id="ref-cvs"></a>3) **Computer vision syndrome** — Rosenfield (2011), *Computer vision syndrome* — [Google Scholar](https://scholar.google.com/scholar?q=Computer+vision+syndrome+Rosenfield+2011+Ophthalmic+and+Physiological+Optics)
+
+<a id="ref-noise"></a>4) **Noise and performance (meta-analysis)** — Szalma & Hancock (2011), *Noise effects on human performance* — [Google Scholar](https://scholar.google.com/scholar?q=Noise+effects+on+human+performance+meta-analytic+synthesis+Szalma+Hancock+2011)
+
+<a id="ref-ergonomics"></a>5) **Ergonomics primer (NIOSH)** — NIOSH (1997), *Elements of Ergonomics Programs* — [CDC/NIOSH](https://www.cdc.gov/niosh/docs/97-117/default.html)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-circadian"></a>#### Circadian rhythm (light and alertness)
+
+Light is a primary signal that sets the internal clock. Using it well (morning, day, evening) influences alertness and sleep quality.
+
+Scientific source: [1](#ref-circadian)
+
+<a id="concept-decision-load"></a>#### Decision load (micro-decisions)
+
+Each micro-decision consumes bandwidth. A more legible workspace reduces background mental load.
+
+Scientific source: [2](#ref-decision-load)
+
+<a id="concept-computer-vision"></a>#### Visual fatigue (computer vision syndrome)
+
+Screen-related visual fatigue often combines dry eye, accommodation effort, and environment factors (lighting, glare, text size).
+
+Scientific source: [3](#ref-cvs)
+
+<a id="concept-auditory-distraction"></a>#### Noise and performance (auditory distraction)
+
+Noise, especially when it contains intelligible speech, can reduce concentration and performance on certain tasks.
+
+Scientific source: [4](#ref-noise)
+
+<a id="concept-ergonomics"></a>#### Ergonomics (comfort and MSD risk)
+
+A sustainable posture and a better-adjusted workstation reduce musculoskeletal strain and cumulative fatigue.
+
+Scientific source: [5](#ref-ergonomics)

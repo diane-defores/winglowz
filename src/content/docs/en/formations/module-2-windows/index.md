@@ -6,9 +6,9 @@ sidebar:
   order: 1
 ---
 
-Configuring Windows is not about tweaking for its own sake. It is about reducing the micro-frictions that drain attention every day.
+Configuring Windows is not about tweaking for its own sake. It is about reducing the micro-frictions<sup>[1](#concept-cognitive-load)</sup> that drain attention every day.
 
-> A good Windows setup does not need to look impressive. It needs to be legible, reproducible, and pleasant to use.
+> A good Windows setup does not need to look impressive. It needs to be legible, reproducible<sup>[3](#concept-cognitive-offloading)</sup>, and pleasant to use.
 
 ## The real subject of the module
 
@@ -31,7 +31,7 @@ The right logic is:
 When you want to improve your Windows workstation, ask four questions:
 
 1. **Which friction actually comes back every day?**
-2. **Is this a settings problem, a tool problem, a habit problem, or a hardware problem?**
+2. **Is this a settings problem, a tool problem, a habit problem<sup>[2](#concept-habit-formation)</sup>, or a hardware problem?**
 3. **Does a simpler solution already exist inside Windows?**
 4. **Will this change make the workstation clearer, or just more complicated?**
 
@@ -137,3 +137,25 @@ Before reading the rest of the module, write down:
 
 If you cannot name your frictions, you are likely to stack tools without really improving the workstation.
 :::
+
+### Chapter References (Go Further)
+
+<a id="ref-cognitive-load"></a>1) **Cognitive load (working memory load)** — Fred Paas & Jeroen J. G. van Merriënboer (2020), *Cognitive-Load Theory: Methods to Manage Working Memory Load in the Learning of Complex Tasks* — [Current Directions in Psychological Science, SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-habit-formation"></a>2) **Habit formation** — Phillippa Lally et al. (2010), *How are habits formed: Modelling habit formation in the real world* — [European Journal of Social Psychology, Wiley](https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674)
+
+<a id="ref-cognitive-offloading"></a>3) **Cognitive offloading** — Evan F. Risko & Sam J. Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences, Cell Press](https://www.sciencedirect.com/science/article/pii/S1364661316300468)
+
+### Technical Concept Deep Dives
+
+<a id="concept-cognitive-load"></a>#### Cognitive load and micro-frictions
+Micro-frictions (small decisions, small detours, cluttered interfaces) consume working memory. When this resource is saturated, you lose speed, judgment quality, and consistency.
+Scientific source: [1](#ref-cognitive-load)
+
+<a id="concept-habit-formation"></a>#### Habit formation (system stability)
+A Windows setup that “holds” often depends on simple repeatable routines. The more stable a sequence is, the more automatic it becomes, and the less deliberate effort it requires.
+Scientific source: [2](#ref-habit-formation)
+
+<a id="concept-cognitive-offloading"></a>#### Cognitive offloading (legible, reproducible)
+Making a workstation “reproducible” is partly about offloading mental work: checklists, conventions, procedures, entry points. You reduce what your brain has to actively keep online.
+Scientific source: [3](#ref-cognitive-offloading)

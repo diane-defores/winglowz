@@ -17,7 +17,7 @@ Cherche d'abord les tâches qui ont au moins plusieurs de ces caractéristiques 
 - elles suivent presque toujours les mêmes étapes
 - elles te font perdre de l'attention plus que de l'intelligence
 - elles génèrent des erreurs quand tu les fais fatigué ou trop vite
-- elles te donnent la sensation de faire du travail, alors que tu exécutes surtout une routine
+- elles te donnent la sensation de faire du travail, alors que tu exécutes surtout une routine<sup>[2](#concept-habit-formation)</sup>
 
 Les meilleurs quick wins sont souvent très simples :
 - ouvrir toujours les mêmes apps au début de la journée
@@ -36,7 +36,7 @@ Tous les problèmes ne demandent pas le même outil :
 - une routine visuelle simple peut commencer avec un enregistreur de macros
 - une logique personnelle et durable justifie AutoHotkey
 - un workflow web répétitif peut passer par Automa
-- un processus métier plus lourd peut relever du RPA
+- un processus métier plus lourd peut relever du RPA<sup>[3](#concept-automation-bias)</sup>
 
 L'objectif n'est pas de "faire de l'automatisation". L'objectif est de retirer du travail mécanique de ton système pour garder ton attention sur ce qui demande vraiment ton jugement.
 
@@ -85,7 +85,7 @@ Si tu sens que tu passes ton temps à "réparer" une macro plutôt qu'à gagner 
 
 ## AutoHotkey : l'automatisation sans limites
 
-AutoHotkey (AHK) est un langage de scripting conçu pour Windows. Il te permet de créer des raccourcis, remapper des touches, automatiser des tâches et même créer des interfaces graphiques.
+AutoHotkey (AHK) est un langage de scripting conçu pour Windows. Il te permet de créer des raccourcis<sup>[1](#concept-implementation-intentions)</sup>, remapper des touches, automatiser des tâches et même créer des interfaces graphiques.
 
 Ce point est important : **AutoHotkey n'est pas seulement un text expander**. C'est un véritable couteau suisse d'automatisation pour Windows. Si tu veux transformer ton système en atelier sur mesure, c'est probablement l'un des outils les plus puissants à apprendre.
 
@@ -291,3 +291,29 @@ C'est un sujet avancé, mais si tu travailles avec des processus répétitifs à
 - [Listary](https://www.listary.com/) - très bon si tu navigues beaucoup dans l'Explorateur et les fichiers.
 - [Wox](https://github.com/Wox-launcher/Wox) - alternative historique aujourd'hui plutôt secondaire.
 - [Find and Run Robot](https://www.donationcoder.com/Software/Mouser/findrun/index.html) - lanceur vétéran encore intéressant pour certains profils avancés.
+
+## Références du chapitre (pour aller plus loin)
+
+<a id="ref-implementation-intentions"></a>1) **Implementation intentions (plans “si-alors”)** — Peter M. Gollwitzer (1999), *Implementation intentions: Strong effects of simple plans* — [American Psychologist, APA](https://psycnet.apa.org/record/1999-10179-001)
+
+<a id="ref-habit-formation"></a>2) **Formation d’habitudes (habit formation)** — Phillippa Lally et al. (2010), *How are habits formed: Modelling habit formation in the real world* — [European Journal of Social Psychology, Wiley](https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674)
+
+<a id="ref-automation-misuse"></a>3) **Automatisation: misuse / disuse / complacency** — Raja Parasuraman & Victor Riley (1997), *Humans and Automation: Use, Misuse, Disuse, Abuse* — [Human Factors](https://journals.sagepub.com/doi/10.1518/001872097778543886)
+
+<a id="ref-autohotkey-docs"></a>4) **AutoHotkey (documentation officielle)** — [AutoHotkey Documentation](https://www.autohotkey.com/docs/)
+
+<a id="ref-windows-startup-folder"></a>5) **Démarrage automatique (Startup folder)** — Microsoft Support — [Add an app to run automatically at startup in Windows](https://support.microsoft.com/windows/add-an-app-to-run-automatically-at-startup-in-windows-0f7b75b5-62c5-4a4f-a8c4-1c8f24321d86)
+
+## Approfondissement des concepts techniques
+
+<a id="concept-implementation-intentions"></a>#### Implementation intentions (hotkeys, règles, déclencheurs)
+Les plans “si-alors” (ex: “si j’ouvre un projet, alors je lance tel set d’apps”) transforment une intention vague en déclencheur concret. C’est exactement la logique des raccourcis, hotstrings, routines de démarrage et automatisations légères.
+Source scientifique : [1](#ref-implementation-intentions)
+
+<a id="concept-habit-formation"></a>#### Formation d’habitudes (routines)
+Quand une séquence est stable et répétée, elle devient plus automatique et coûte moins d’effort. L’automatisation a souvent le plus d’impact quand elle “stabilise” une routine qui revient réellement.
+Source scientifique : [2](#ref-habit-formation)
+
+<a id="concept-automation-bias"></a>#### Automation bias / complacency (RPA)
+Plus une automatisation paraît fiable, plus on peut relâcher sa vigilance (surveillance moindre, détection d’erreur plus tardive). En RPA, la bonne pratique est de garder des garde-fous: logs, contrôles, et points d’arrêt.
+Source scientifique : [3](#ref-automation-misuse)

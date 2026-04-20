@@ -6,7 +6,7 @@ sidebar:
   order: 6
 ---
 
-La discipline n'est pas une version plus dure de la motivation. C'est la capacité à **réduire la négociation intérieure** pour refaire ce qui compte, même quand l'envie n'est pas là.
+La discipline n'est pas une version plus dure de la motivation. C'est la capacité à **réduire la négociation intérieure**<sup>[1](#concept-self-control)</sup> pour refaire ce qui compte, même quand l'envie n'est pas là.
 
 En pratique, elle repose surtout sur :
 - une action assez petite pour être relancée souvent
@@ -52,6 +52,7 @@ Exemples :
 - 5 minutes d'écriture avant 45 minutes d'écriture
 - 10 pompes avant un programme complet
 - 1 page lue avant 30 pages
+<sup>[2](#concept-habit)</sup>
 
 Le but n'est pas de rester petit. Le but est de rendre le redémarrage facile.
 
@@ -69,6 +70,7 @@ L'empilage d'habitudes fonctionne bien ici :
 - après avoir ouvert mon ordinateur, je planifie mes 3 priorités
 
 Plus le déclencheur est visible, moins tu comptes sur la mémoire ou l'humeur.
+<sup>[4](#concept-implementation-intentions)</sup>
 
 ### 3. Modifier l'environnement
 
@@ -134,6 +136,7 @@ Quand tu rates un jour :
 La bonne question n'est pas "pourquoi suis-je nul ?". C'est :
 
 **qu'est-ce qui rendrait la reprise plus facile demain ?**
+<sup>[3](#concept-self-compassion)</sup>
 
 ## Outils : utiles seulement après le design
 
@@ -202,3 +205,47 @@ Choisis une seule habitude que tu veux rendre plus stable et écris :
 
 Si ces cinq éléments sont clairs, ta discipline devient beaucoup moins mystérieuse.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-self-control"></a>1) **Auto-contrôle (théories modernes)** — Inzlicht, Schmeichel & Macrae (2014), *Why self-control seems (but may not be) limited* — [Google Scholar](https://scholar.google.com/scholar?q=Why+self-control+seems+%28but+may+not+be%29+limited+Inzlicht+Schmeichel+Macrae+2014)
+
+<a id="ref-habit-loop"></a>2) **Habitudes (interface habitude-objectif)** — Wood & Neal (2007), *A new look at habits and the habit-goal interface* — [Google Scholar](https://scholar.google.com/scholar?q=A+new+look+at+habits+and+the+habit-goal+interface+Wood+Neal+2007)
+
+<a id="ref-self-compassion"></a>3) **Auto-compassion** — Kristin Neff (2003), *Self-compassion: An alternative conceptualization...* — [Google Scholar](https://scholar.google.com/scholar?q=Self-compassion%3A+An+alternative+conceptualization+Neff+2003)
+
+<a id="ref-implementation-intentions"></a>4) **Intentions d'implémentation (si-alors)** — Peter Gollwitzer (1999), *Implementation intentions: Strong effects of simple plans* — [DOI](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-behavior-change"></a>5) **Behaviour Change Wheel** — Michie, van Stralen & West (2011), *The behaviour change wheel* — [DOI](https://doi.org/10.1186/1748-5908-6-42)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-self-control"></a>#### Auto-contrôle (négociation intérieure)
+
+L'auto-contrôle n'est pas seulement une “réserve” à conserver. Il dépend aussi de l'environnement, de l'identité, et de la valeur perçue de l'action.
+
+Source scientifique : [1](#ref-self-control)
+
+<a id="concept-habit"></a>#### Habitude (cue, action, contexte)
+
+Une habitude tient mieux quand le déclencheur (cue) est stable, visible, et relié à un contexte répétable.
+
+Source scientifique : [2](#ref-habit-loop)
+
+<a id="concept-self-compassion"></a>#### Auto-compassion (reprise après écart)
+
+Une reprise rapide passe souvent mieux par une approche non-culpabilisante et structurée que par la dureté morale.
+
+Source scientifique : [3](#ref-self-compassion)
+
+<a id="concept-implementation-intentions"></a>#### Intentions d'implementation (si-alors)
+
+Les plans “si-alors” réduisent l'ambiguïté au moment d'agir et rendent la répétition plus probable.
+
+Source scientifique : [4](#ref-implementation-intentions)
+
+<a id="concept-behavior-change"></a>#### Design de comportement (comportement = contexte)
+
+Changer un comportement est souvent un problème de design: capacités, opportunités, motivation, et boucles de feedback.
+
+Source scientifique : [5](#ref-behavior-change)

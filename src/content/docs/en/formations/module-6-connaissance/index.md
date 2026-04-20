@@ -103,6 +103,8 @@ If all you have is rigid classification, you are filing. If you also have links,
 
 Popularized by Tiago Forte, the second brain concept is simple: your brain is made for thinking, not for storage. Offload your memory into a reliable system.
 
+Three ideas support the entire module: **external memory** (cognitive offloading)<sup>[1](#concept-external-memory)</sup>, **retrieval practice** (active recall)<sup>[2](#concept-retrieval-practice)</sup>, and a **knowledge management** logic (turning knowledge into reusable assets)<sup>[3](#concept-knowledge-management)</sup>.
+
 ### The PARA method
 
 Organize everything into four categories:
@@ -166,3 +168,25 @@ This module covers each step of the PKM cycle in detail:
 - **Flow Launcher** - speed up access to what you use often
 - **Media & File Operations** - keep the system light and durable
 - **Consume & Reflect** - move from monitoring to extraction, then creation
+
+### Chapter references (go further)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / external memory** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-retrieval-practice"></a>2) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+<a id="ref-knowledge-management"></a>3) **Knowledge management (tacit to explicit)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+### Deep dive: Technical concepts
+
+<a id="concept-external-memory"></a>#### External memory (cognitive offloading)
+Externalizing information (a note, capture, file, link) is not only about “storage.” It reduces what you must actively hold in mind and makes the information **retrievable** in a future context.
+Scientific source: [1](#ref-cognitive-offloading)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice
+Testing yourself, forcing recall, and producing an output (summary, example, explanation) improves long-term retention more than passive rereading. A useful PKM therefore turns consumption into **active recall**.
+Scientific source: [2](#ref-retrieval-practice)
+
+<a id="concept-knowledge-management"></a>#### Knowledge management
+Knowledge management is not only tools. It is the ability to turn diffuse, tacit knowledge into artifacts (notes, docs, procedures) that are reusable and transferable.
+Scientific source: [3](#ref-knowledge-management)

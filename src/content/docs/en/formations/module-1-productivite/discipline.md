@@ -6,7 +6,7 @@ sidebar:
   order: 6
 ---
 
-Discipline is not just a harder version of motivation. It is the ability to **reduce inner negotiation** so you keep doing what matters even when you do not feel like it.
+Discipline is not just a harder version of motivation. It is the ability to **reduce inner negotiation**<sup>[1](#concept-self-control)</sup> so you keep doing what matters even when you do not feel like it.
 
 In practice, it mostly depends on:
 - an action small enough to restart often
@@ -52,6 +52,7 @@ Examples:
 - 5 minutes of writing before 45 minutes of writing
 - 10 push-ups before a full program
 - 1 page read before 30 pages
+<sup>[2](#concept-habit)</sup>
 
 The goal is not to stay small. The goal is to make restarting easy.
 
@@ -69,6 +70,7 @@ Habit stacking works well here:
 - after opening my computer, I plan my 3 priorities
 
 The more visible the cue, the less you depend on memory or mood.
+<sup>[4](#concept-implementation-intentions)</sup>
 
 ### 3. Change the environment
 
@@ -134,6 +136,7 @@ When you miss a day:
 The right question is not "what is wrong with me?" It is:
 
 **what would make restarting easier tomorrow?**
+<sup>[3](#concept-self-compassion)</sup>
 
 ## Tools: useful only after the design is clear
 
@@ -202,3 +205,47 @@ Choose one habit you want to make more stable and write down:
 
 If those five elements are clear, discipline becomes much less mysterious.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-self-control"></a>1) **Self-control (modern theories)** — Inzlicht, Schmeichel & Macrae (2014), *Why self-control seems (but may not be) limited* — [Google Scholar](https://scholar.google.com/scholar?q=Why+self-control+seems+%28but+may+not+be%29+limited+Inzlicht+Schmeichel+Macrae+2014)
+
+<a id="ref-habit-loop"></a>2) **Habits (habit-goal interface)** — Wood & Neal (2007), *A new look at habits and the habit-goal interface* — [Google Scholar](https://scholar.google.com/scholar?q=A+new+look+at+habits+and+the+habit-goal+interface+Wood+Neal+2007)
+
+<a id="ref-self-compassion"></a>3) **Self-compassion** — Kristin Neff (2003), *Self-compassion: An alternative conceptualization...* — [Google Scholar](https://scholar.google.com/scholar?q=Self-compassion%3A+An+alternative+conceptualization+Neff+2003)
+
+<a id="ref-implementation-intentions"></a>4) **Implementation intentions (if-then plans)** — Peter Gollwitzer (1999), *Implementation intentions: Strong effects of simple plans* — [DOI](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-behavior-change"></a>5) **Behaviour Change Wheel** — Michie, van Stralen & West (2011), *The behaviour change wheel* — [DOI](https://doi.org/10.1186/1748-5908-6-42)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-self-control"></a>#### Self-control (inner negotiation)
+
+Self-control is not only a “reserve” to preserve. It also depends on environment design, identity, and perceived value.
+
+Scientific source: [1](#ref-self-control)
+
+<a id="concept-habit"></a>#### Habits (cue, action, context)
+
+Habits stick better when the cue is stable, visible, and tied to a repeatable context.
+
+Scientific source: [2](#ref-habit-loop)
+
+<a id="concept-self-compassion"></a>#### Self-compassion (restarting after a slip)
+
+Fast recovery often works better with a non-shaming, structured approach than with moral harshness.
+
+Scientific source: [3](#ref-self-compassion)
+
+<a id="concept-implementation-intentions"></a>#### Implementation intentions (if-then plans)
+
+If-then plans reduce ambiguity at the moment of action and make repetition more likely.
+
+Scientific source: [4](#ref-implementation-intentions)
+
+<a id="concept-behavior-change"></a>#### Behavior design (behavior = context)
+
+Behavior change is often a design problem: capability, opportunity, motivation, and feedback loops.
+
+Scientific source: [5](#ref-behavior-change)

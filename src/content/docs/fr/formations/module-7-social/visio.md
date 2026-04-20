@@ -7,6 +7,7 @@ sidebar:
 ---
 
 Le probleme des reunions n'est pas seulement leur nombre. C'est qu'elles deviennent souvent le mecanisme par defaut pour reparer une communication mal preparee.
+En visio, il y a aussi une fatigue specifique (nonverbal overload) qui s'accumule vite.<sup>[1](#concept-video-meeting-fatigue)</sup> Et chaque reunion placee en reaction cree une interruption structurelle dans la journee.<sup>[2](#concept-interruptions)</sup>
 
 Une reunion utile est une **escalade** :
 - quand l'asynchrone ne suffit plus
@@ -124,3 +125,19 @@ Pendant 2 semaines, trace tous tes meetings :
 
 Objectif : reduire le volume, mais surtout augmenter la densite de decision par reunion.
 :::
+
+### References du chapitre (pour aller plus loin)
+
+<a id="ref-video-meeting-fatigue"></a>1) **Fatigue en visioconference (Zoom fatigue)** — Jeremy N. Bailenson (2021), *Nonverbal Overload: A Theoretical Argument for the Causes of Zoom Fatigue* — [APA TMB](https://tmb.apaopen.org/pub/nonverbal-overload)
+
+<a id="ref-interruptions"></a>2) **Interruptions et cout de reprise** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [PDF UCI](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-video-meeting-fatigue"></a>#### Fatigue en visioconference (nonverbal overload)
+La visio ajoute une surcharge de signaux non verbaux (regard, self-view, cadrage, immobilite) qui peut rendre les calls plus epuisants qu'en presentiel. Le point systeme: reduire duree/frequence, couper la camera quand c'est OK, et clarifier la sortie attendue.
+Source scientifique : [1](#ref-video-meeting-fatigue)
+
+<a id="concept-interruptions"></a>#### Interruptions et cout de reprise
+Une reunion mal placee ne coute pas seulement sa duree: elle coupe une session de travail et impose un cout de reprise. Le point systeme: faire des reunions une "escalade", et proteger des blocs sans calls.
+Source scientifique : [2](#ref-interruptions)

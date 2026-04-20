@@ -33,7 +33,7 @@ That creates three useful levels:
 
 ## The forgetting curve
 
-The classic Ebbinghaus lesson still holds: without reactivation, a large part of what you learn disappears quickly.
+The classic Ebbinghaus lesson<sup>[1](#concept-forgetting-curve)</sup> still holds: without reactivation, a large part of what you learn disappears quickly.
 
 The important point is not memorizing exact percentages. It is understanding this:
 - reading once is not enough
@@ -42,7 +42,7 @@ The important point is not memorizing exact percentages. It is understanding thi
 
 ## Active recall
 
-Active recall is the core of the system.
+Active recall<sup>[2](#concept-retrieval-practice)</sup> is the core of the system.
 
 Instead of rereading:
 - close the source
@@ -54,7 +54,7 @@ That feeling of difficulty is exactly what strengthens learning.
 
 ## Spaced repetition
 
-Spaced repetition is not magic. It is simply logical: review information right before it disappears.
+Spaced repetition<sup>[3](#concept-spaced-repetition)</sup> is not magic. It is simply logical: review information right before it disappears.
 
 It becomes especially useful for:
 - vocabulary
@@ -69,7 +69,7 @@ It is less useful when:
 
 ## Chunking
 
-Chunking means turning isolated elements into more stable mental units.
+Chunking<sup>[4](#concept-chunking)</sup> means turning isolated elements into more stable mental units.
 
 You learn better when you can:
 - see patterns
@@ -188,3 +188,33 @@ For one week:
 3. only then create 5 to 10 good cards
 4. finally explain the topic in your own words or apply it in one concrete case
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-forgetting-curve"></a>1) **Forgetting curve** — John T. Murre & Joeri Dros (2015), *Replication and Analysis of Ebbinghaus' Forgetting Curve* — [PLOS ONE](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0120644)
+
+<a id="ref-testing-effect"></a>2) **Testing effect / retrieval practice** — Henry L. Roediger III & Jeffrey D. Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (DOI)](https://doi.org/10.1111/j.1467-9280.2006.01693.x)
+
+<a id="ref-spaced-repetition"></a>3) **Spaced repetition (distributed practice)** — Nicholas J. Cepeda et al. (2006), *Distributed Practice in Verbal Recall Tasks: A Review and Quantitative Synthesis* — [Psychological Bulletin (DOI)](https://doi.org/10.1037/0033-2909.132.3.354)
+
+<a id="ref-learning-techniques"></a>4) **Effective learning techniques (review)** — John Dunlosky et al. (2013), *Improving Students' Learning With Effective Learning Techniques: Promising Directions From Cognitive and Educational Psychology* — [Psychological Science in the Public Interest (DOI)](https://doi.org/10.1177/1529100612453266)
+
+<a id="ref-chunking-wm"></a>5) **Chunking / working-memory limits** — George A. Miller (1956), *The Magical Number Seven, Plus or Minus Two: Some Limits on Our Capacity for Processing Information* — [APA PsycNet](https://psycnet.apa.org/record/1956-01522-000)
+
+### Deepening the technical concepts
+
+<a id="concept-forgetting-curve"></a>#### Forgetting curve
+Without reactivation, recall probability declines rapidly after initial exposure. Operationally: if you want to keep it, you must schedule returns.
+Source scientifique : [1](#ref-forgetting-curve)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice (active recall)
+Testing yourself (retrieving from memory) strengthens long-term retention more than passive rereading. It is one of the most consistently supported techniques in cognitive psychology for durable memory.
+Source scientifique : [2](#ref-testing-effect)
+
+<a id="concept-spaced-repetition"></a>#### Spaced repetition
+Spacing reviews supports durable recall because each retrieval happens with a manageable effort at the right time. What matters is not volume of rereads but timing of retrieval.
+Source scientifique : [3](#ref-spaced-repetition)
+
+<a id="concept-chunking"></a>#### Chunking
+Chunking groups elements into more stable units, reducing working-memory load and improving understanding. In practice: patterns, categories, examples, and rephrasing build chunks.
+Source scientifique : [5](#ref-chunking-wm)

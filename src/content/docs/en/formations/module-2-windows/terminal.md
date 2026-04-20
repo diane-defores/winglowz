@@ -6,7 +6,7 @@ sidebar:
   order: 6
 ---
 
-The terminal is not a religion. It is leverage. It becomes useful when it gives you more speed, repeatability, or control.
+The terminal is not a religion. It is leverage. It becomes useful when it gives you more speed, repeatability<sup>[1](#concept-cognitive-offloading)</sup>, or control.
 
 > The right use of the terminal is not doing everything in CLI. It is using it where the mouse becomes slow, repetitive, or fragile.
 
@@ -14,7 +14,7 @@ The terminal is not a religion. It is leverage. It becomes useful when it gives 
 
 Many people reject the terminal because they imagine they have to learn everything at once. Others adopt it as a posture and end up complicating tasks that would be perfectly fine in a GUI.
 
-The right logic is simpler:
+The right logic is simpler<sup>[2](#concept-cognitive-load)</sup>:
 - GUI for one-off, visual, obvious tasks
 - CLI for repetitive, large-scale, scriptable, and reproducible work
 
@@ -27,7 +27,7 @@ Before using the terminal, ask four questions:
 3. **Do I need a reproducible result or just a one-off action?**
 4. **Is the mouse saving time here, or forcing me through the same sequence again and again?**
 
-If the task is:
+If the task is<sup>[3](#concept-task-switching-cost)</sup>:
 - repetitive
 - high-volume
 - text-heavy
@@ -182,3 +182,27 @@ Find one task you often do with the mouse:
 
 Pick just one and learn the terminal version. If it saves you time twice in a row, it deserves a place in your system. If not, stay in the GUI without guilt.
 :::
+
+### Chapter References (Go Further)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading** — Evan F. Risko & Sam J. Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences, Cell Press](https://www.sciencedirect.com/science/article/pii/S1364661316300468)
+
+<a id="ref-cognitive-load"></a>2) **Cognitive load (working memory load)** — Fred Paas & Jeroen J. G. van Merriënboer (2020), *Cognitive-Load Theory: Methods to Manage Working Memory Load in the Learning of Complex Tasks* — [Current Directions in Psychological Science, SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-task-switching"></a>3) **Task switching costs** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive Control of Cognitive Processes in Task Switching* — [Journal of Experimental Psychology: Human Perception and Performance, APA](https://psycnet.apa.org/record/2001-06771-013)
+
+<a id="ref-windows-terminal"></a>4) **Windows Terminal (official documentation)** — Microsoft Learn — [Windows Terminal](https://learn.microsoft.com/windows/terminal/)
+
+### Technical Concept Deep Dives
+
+<a id="concept-cognitive-offloading"></a>#### Cognitive offloading (repeatability)
+A saved command, script, or reusable procedure offloads part of the control problem: you no longer have to keep the full sequence “in mind” each time.
+Scientific source: [1](#ref-cognitive-offloading)
+
+<a id="concept-cognitive-load"></a>#### Cognitive load (when GUI becomes slow)
+When a task requires too many small decisions, clicks, and exceptions, working memory gets consumed by “piloting” instead of the outcome. A good CLI often reduces this extraneous load.
+Scientific source: [2](#ref-cognitive-load)
+
+<a id="concept-task-switching-cost"></a>#### Task switching costs (repeating a sequence)
+The more you chain micro-steps and back-and-forth moves, the more you pay resumption costs (where was I, what is next). Reproducible workflows reduce those restarts.
+Scientific source: [3](#ref-task-switching)

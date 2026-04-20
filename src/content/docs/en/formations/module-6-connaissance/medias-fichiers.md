@@ -16,6 +16,8 @@ A good PKM system does not live only in notes. It also depends on a less glamoro
 
 > If every file operation costs you 20 clicks, your system degrades over time even when your ideas are well organized.
 
+This “files” layer is part of your **external memory**: if it is too costly to maintain, you will avoid returning to it<sup>[1](#concept-cognitive-offloading)</sup>. When managed well, it becomes a **knowledge management** asset (reusable, transferable, retrievable)<sup>[2](#concept-knowledge-management)</sup>.
+
 ## The real issue: reduce repeated manual operations
 
 This lesson is not here to make you collect utilities. It is here to answer a simpler question:
@@ -239,3 +241,19 @@ Find one file operation you have already done at least 3 times this month:
 
 The right outcome is not more tools. It is no longer doing the same chore by hand.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / external memory** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-knowledge-management"></a>2) **Knowledge management (tacit to explicit)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+### Deep dive: Technical concepts
+
+<a id="concept-cognitive-offloading"></a>#### External memory (cognitive offloading) and access friction
+The higher the access cost (clicks, conversion, renaming, searching), the more you postpone using your external memory. Lower friction makes the system usable every day.
+Scientific source: [1](#ref-cognitive-offloading)
+
+<a id="concept-knowledge-management"></a>#### Knowledge management through files
+Naming conventions, a simple structure, and clean exports turn “files” into knowledge artifacts (reusable, shareable, auditable).
+Scientific source: [2](#ref-knowledge-management)

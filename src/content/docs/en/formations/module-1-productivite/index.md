@@ -35,7 +35,7 @@ When you feel "unproductive," the problem usually comes from one of four layers:
 
 In other words, productivity is not a personality trait. It is a combination of:
 - **choice**
-- **attention**
+- **attention**<sup>[1](#concept-attention)</sup>
 - **energy**
 - **execution**
 
@@ -84,7 +84,7 @@ Before adding a tool, routine, or method, check:
 - am I working on the right thing?
 - is the next move clear?
 - is my environment helping or interfering?
-- am I optimizing a real problem or just a secondary irritation?
+- am I optimizing a real problem or just a secondary irritation?<sup>[2](#concept-friction)</sup>
 
 This rule prevents a large share of fake productivity.
 
@@ -107,3 +107,39 @@ Before continuing the course, write down in one sentence:
 
 If you can answer those three points clearly, the rest of the course will land much more precisely.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-attention"></a>1) **Attention (bandwidth)** — Daniel Kahneman (1973), *Attention and Effort* — [Google Books](https://books.google.com/books?id=qPc9AAAAMAAJ)
+
+<a id="ref-friction"></a>2) **Friction and choice design (nudges)** — Thaler & Sunstein (2008), *Nudge: Improving Decisions About Health, Wealth, and Happiness* — [Yale University Press](https://yalebooks.yale.edu/book/9780300122237/nudge/)
+
+<a id="ref-working-memory"></a>3) **Working memory (capacity)** — Nelson Cowan (2001), *The magical number 4 in short-term memory* — [Cambridge](https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/magical-number-4-in-shortterm-memory-a-reconsideration-of-mental-storage-capacity/7C80E8B9A12A1C1A4E23A8FD6CFA9A0C)
+
+<a id="ref-cognitive-load"></a>4) **Cognitive load** — John Sweller (1988), *Cognitive load during problem solving* — [DOI](https://doi.org/10.1207/s15516709cog1202_4)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-attention"></a>#### Attention (bandwidth)
+
+Attention is limited: when it is fragmented, execution quality drops even if you still “have time” on paper.
+
+Scientific source: [1](#ref-attention)
+
+<a id="concept-friction"></a>#### Friction (activation costs)
+
+Friction is not only psychological. It is also concrete costs (effort, clicks, micro-decisions) that make an action less likely.
+
+Scientific source: [2](#ref-friction)
+
+<a id="concept-working-memory"></a>#### Working memory (limited capacity)
+
+Working memory is limited. When you overload it, clarity and decision quality drop.
+
+Scientific source: [3](#ref-working-memory)
+
+<a id="concept-cognitive-load"></a>#### Cognitive load (execute without saturating)
+
+A good system reduces unnecessary load to preserve what actually serves the task.
+
+Scientific source: [4](#ref-cognitive-load)

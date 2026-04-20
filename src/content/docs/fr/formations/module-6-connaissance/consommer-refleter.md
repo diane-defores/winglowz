@@ -156,6 +156,8 @@ Après chaque contenu consommé (article, vidéo, podcast), pose-toi :
 
 Si tu ne peux pas répondre à ces 3 questions, le contenu ne valait pas ton temps.
 
+Ces 3 questions forcent un **rappel actif** : tu récupères l'idée depuis ta mémoire au lieu de la relire passivement. C'est exactement le mécanisme de la *retrieval practice* (test-enhanced learning)<sup>[1](#concept-retrieval-practice)</sup>, et c'est une des manières les plus fiables de transformer la consommation en apprentissage durable<sup>[2](#concept-retrieval-vs-restudy)</sup>.
+
 ### Le journal de réflexion
 
 Consacre 10 minutes chaque soir à :
@@ -216,3 +218,19 @@ Si tu veux quelque chose de simple et tenable :
 - **Sortie** : chaque semaine, crée au moins quelque chose à partir de tes notes
 
 Le système n'a pas besoin d'être parfait. Il doit surtout t'empêcher de consommer sans transformer.
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-test-enhanced-learning"></a>1) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+<a id="ref-retrieval-better-than-restudy"></a>2) **Retrieval > restudy (active recall vs re-reading)** — Karpicke & Blunt (2011), *Retrieval Practice Produces More Learning than Elaborative Studying with Concept Mapping* — [Science](https://www.science.org/doi/10.1126/science.1199327)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice (rappel actif)
+Le rappel actif consiste à produire une réponse (même imparfaite) sans regarder la source. Ce “test” crée un effort de récupération qui renforce les chemins de rappel et améliore la rétention à long terme.
+Source scientifique : [1](#ref-test-enhanced-learning)
+
+<a id="concept-retrieval-vs-restudy"></a>#### Rappel actif vs relecture (restudy)
+Relire donne une impression de familiarité, mais produit souvent peu de consolidation. À l'inverse, tenter de rappeler, puis corriger, est plus efficace pour stabiliser l'apprentissage, même si c'est plus inconfortable.
+Source scientifique : [2](#ref-retrieval-better-than-restudy)

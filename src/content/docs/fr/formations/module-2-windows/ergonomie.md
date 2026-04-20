@@ -6,7 +6,7 @@ sidebar:
   order: 4
 ---
 
-> L'ergonomie numérique, ce n'est pas du luxe. C'est ce qui fait la différence entre finir ta journée fatigué ou finir ta journée en forme.
+> L'ergonomie numérique<sup>[3](#concept-workstation-ergonomics)</sup>, ce n'est pas du luxe. C'est ce qui fait la différence entre finir ta journée fatigué ou finir ta journée en forme.
 
 ## L'espace de travail compte autant que les logiciels
 
@@ -236,7 +236,7 @@ Le bon choix dépend de ton problème réel :
 Le point important, c'est que ces outils ne servent pas à "faire joli". Ils servent à réduire :
 - les gestes répétitifs de placement
 - les hésitations sur où mettre quoi
-- la fatigue visuelle causée par un poste constamment en désordre
+- la fatigue visuelle<sup>[1](#concept-digital-eye-strain)</sup> causée par un poste constamment en désordre
 
 Quand ton écran cesse d'être un terrain improvisé et devient un espace organisé, ta capacité à rester concentré monte souvent immédiatement.
 
@@ -523,7 +523,7 @@ Bascule automatiquement entre le thème clair le jour et le thème sombre la nui
 
 ### f.lux
 
-Réduit la lumière bleue de ton écran le soir. Tes yeux te remercieront. Windows a une fonction "Éclairage nocturne" intégrée, mais f.lux offre un contrôle plus fin.
+Réduit la lumière bleue<sup>[2](#concept-circadian-light)</sup> de ton écran le soir. Tes yeux te remercieront. Windows a une fonction "Éclairage nocturne" intégrée, mais f.lux offre un contrôle plus fin.
 
 ### Jiffy Reader
 
@@ -603,3 +603,27 @@ Bien utilisé, Cold Turkey ne te rend pas plus faible. Il te permet au contraire
 - [RocketDock](https://punklabs.com/) - option plus visuelle si tu veux un dock façon macOS pour accéder à tes apps rapidement.
 - [DesktopOK](https://www.softwareok.com/?seite=Freeware/DesktopOK) - utile si tu tiens à restaurer précisément la position de tes icônes de bureau.
 - [AutoHideDesktopIcons](https://www.softwareok.com/?seite=Microsoft/AutoHideDesktopIcons) - utile si tu veux garder un bureau visuellement propre sans supprimer tes icônes.
+
+## Références du chapitre (pour aller plus loin)
+
+<a id="ref-digital-eye-strain"></a>1) **Computer Vision Syndrome (fatigue visuelle)** — Mark Rosenfield (2011), *Computer vision syndrome: a review of ocular causes and potential treatments* — [PubMed](https://pubmed.ncbi.nlm.nih.gov/21480937/)
+
+<a id="ref-circadian-light"></a>2) **Lumière le soir et rythme circadien** — Anne-Marie Chang et al. (2015), *Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness* — [PNAS](https://www.pnas.org/doi/10.1073/pnas.1418490112)
+
+<a id="ref-workstation-ergonomics"></a>3) **Ergonomie des postes informatiques (guidelines)** — NIOSH (1997), *Ergonomic Guidelines for Computer Workstations* — [CDC/NIOSH](https://www.cdc.gov/niosh/docs/97-117/default.html)
+
+<a id="ref-windows-night-light"></a>4) **Éclairage nocturne (Night light) (doc officielle)** — Microsoft Support — [Use night light in Windows](https://support.microsoft.com/windows/use-night-light-in-windows-793f8f48-30b9-40e2-9e3e-0f0a147bb7c7)
+
+## Approfondissement des concepts techniques
+
+<a id="concept-digital-eye-strain"></a>#### Fatigue visuelle (digital eye strain / CVS)
+Sur écran, la fatigue ne vient pas seulement de la “lumière”: elle vient aussi des contraintes de focalisation, de clignement, et de conditions de vision (contraste, taille, distance). D’où l’intérêt d’un poste lisible et de réglages cohérents.
+Source scientifique : [1](#ref-digital-eye-strain)
+
+<a id="concept-circadian-light"></a>#### Lumière le soir (rythme circadien)
+L’exposition à une lumière riche en bleu le soir peut retarder le rythme circadien et dégrader le sommeil. Les outils type Night light / f.lux sont utiles quand ils soutiennent une vraie discipline d’horaire.
+Source scientifique : [2](#ref-circadian-light)
+
+<a id="concept-workstation-ergonomics"></a>#### Ergonomie du poste (prévention et confort)
+L’ergonomie vise à réduire les contraintes inutiles (posture, hauteur, placement, gestes répétés) et à rendre les actions fréquentes moins coûteuses. Un poste “confortable” est souvent un poste plus stable et plus soutenable.
+Source scientifique : [3](#ref-workstation-ergonomics)

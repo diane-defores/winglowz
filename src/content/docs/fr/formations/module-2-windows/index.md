@@ -6,9 +6,9 @@ sidebar:
   order: 1
 ---
 
-Configurer Windows ne sert pas à "tweaker pour tweaker". Cela sert à réduire les micro-frictions qui grignotent ton attention toute la journée.
+Configurer Windows ne sert pas à "tweaker pour tweaker". Cela sert à réduire les micro-frictions<sup>[1](#concept-cognitive-load)</sup> qui grignotent ton attention toute la journée.
 
-> Un bon setup Windows ne doit pas être impressionnant. Il doit être lisible, reproductible et agréable à utiliser.
+> Un bon setup Windows ne doit pas être impressionnant. Il doit être lisible, reproductible<sup>[3](#concept-cognitive-offloading)</sup> et agréable à utiliser.
 
 ## Le vrai sujet du module
 
@@ -31,7 +31,7 @@ La bonne logique est :
 Quand tu veux améliorer ton poste Windows, pose-toi quatre questions :
 
 1. **Quelle friction revient vraiment tous les jours ?**
-2. **Est-ce un problème de réglage, d'outil, d'habitude, ou de matériel ?**
+2. **Est-ce un problème de réglage, d'outil, d'habitude<sup>[2](#concept-habit-formation)</sup>, ou de matériel ?**
 3. **Est-ce qu'une solution plus simple existe déjà dans Windows ?**
 4. **Est-ce que ce changement rendra mon poste plus clair, ou seulement plus compliqué ?**
 
@@ -137,3 +137,25 @@ Avant de lire le reste du module, note :
 
 Si tu n'arrives pas à nommer tes frictions, tu risques surtout d'empiler des outils sans améliorer ton poste.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-cognitive-load"></a>1) **Charge cognitive (working memory / charge mentale)** — Fred Paas & Jeroen J. G. van Merriënboer (2020), *Cognitive-Load Theory: Methods to Manage Working Memory Load in the Learning of Complex Tasks* — [Current Directions in Psychological Science, SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-habit-formation"></a>2) **Formation d’habitudes (habit formation)** — Phillippa Lally et al. (2010), *How are habits formed: Modelling habit formation in the real world* — [European Journal of Social Psychology, Wiley](https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674)
+
+<a id="ref-cognitive-offloading"></a>3) **Cognitive offloading (externaliser pour mieux penser)** — Evan F. Risko & Sam J. Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences, Cell Press](https://www.sciencedirect.com/science/article/pii/S1364661316300468)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-cognitive-load"></a>#### Charge cognitive et micro-frictions
+Les micro-frictions (petites décisions, petits détours, interfaces chargées) consomment de la mémoire de travail. Quand cette ressource est saturée, tu perds en vitesse, en qualité de jugement et en constance.
+Source scientifique : [1](#ref-cognitive-load)
+
+<a id="concept-habit-formation"></a>#### Formation d’habitudes (stabilité du système)
+Un système Windows “qui tient” repose souvent sur des routines simples et répétables. Plus une séquence est stable, plus elle devient automatique et coûte moins d’effort conscient.
+Source scientifique : [2](#ref-habit-formation)
+
+<a id="concept-cognitive-offloading"></a>#### Cognitive offloading (lisible, reproductible)
+Rendre un poste “reproductible”, c’est externaliser une partie du travail mental: listes, procédures, conventions, points d’entrée. Tu réduis ce que ton cerveau doit maintenir activement.
+Source scientifique : [3](#ref-cognitive-offloading)

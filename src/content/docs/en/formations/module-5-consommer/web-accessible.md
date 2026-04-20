@@ -10,6 +10,8 @@ The problem with the web is not only the amount of information. It is the fricti
 
 > Making the web accessible does not mean making everything visible. It means removing what stands between you and the right content.
 
+And “accessible” should not only mean “more comfortable for you.” If you publish or share content, web accessibility is also a baseline requirement (structure, navigation, contrast, keyboard focus). WCAG gives a concrete framework<sup>[1](#concept-wcag)</sup>.
+
 ## What this is really about
 
 A well-configured web setup should let you:
@@ -39,6 +41,18 @@ That leads to three useful layers:
 - following important sites only through social media
 - stacking extensions with no logic
 - confusing accessibility with permanent overload
+
+## Accessibility (WCAG): invisible friction
+
+When a page is poorly structured, low-contrast, or impossible to navigate with a keyboard, you add cognitive friction that is easy to miss but expensive across every reading session.
+
+The right mental model is the same as for building a “calm web”:
+- make content **perceivable**
+- make interfaces **operable** (keyboard, focus, navigation)
+- make flows **understandable**
+- make things **robust** (compatible with assistive tech)
+
+These are WCAG’s POUR principles<sup>[2](#concept-pour)</sup>.
 
 ## The cleanup layer
 
@@ -119,6 +133,24 @@ The right browser is not the one with the longest feature list. It is the one in
 - **[Brave](https://brave.com/)** if you want fast Chromium plus built-in blocking with minimal setup
 
 The real question is: which one requires the least extra tinkering to get you a calm web?
+
+### Chapter references (to go further)
+
+<a id="ref-wcag-22"></a>1) **WCAG 2.2 (standard)** — W3C (2023), *Web Content Accessibility Guidelines (WCAG) 2.2* — [W3C TR](https://www.w3.org/TR/WCAG22/)
+
+<a id="ref-wai-understanding-intro"></a>2) **Understanding WCAG (intro)** — W3C WAI, *Introduction to Understanding WCAG 2.2* — [W3C WAI](https://www.w3.org/WAI/WCAG22/Understanding/intro)
+
+<a id="ref-mdn-understanding-wcag"></a>3) **Practical guide** — MDN, *Understanding the Web Content Accessibility Guidelines (WCAG)* — [MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Understanding_WCAG)
+
+### Deeper technical concepts
+
+<a id="concept-wcag"></a>#### WCAG (Web Content Accessibility Guidelines)
+WCAG provides a testable standard for web accessibility. Even without a compliance goal, following WCAG reduces reading/navigation friction and improves overall quality.
+Sources: [1](#ref-wcag-22), [2](#ref-wai-understanding-intro)
+
+<a id="concept-pour"></a>#### POUR (Perceivable, Operable, Understandable, Robust)
+POUR is a compact framing of WCAG’s intent: make content perceivable, interfaces operable, flows understandable, and implementations robust across devices and assistive tech.
+Source: [1](#ref-wcag-22)
 
 ## Recommended workflow
 

@@ -10,6 +10,8 @@ Internet ne manque pas de contenu. Il manque de filtres, de hiérarchie, et de c
 
 > Le vrai skill n'est pas de trouver plus de contenu. C'est de construire un systeme qui te donne moins de bruit et plus de signal.
 
+Quand l’information est abondante, l’attention devient rare<sup>[1](#concept-attention-scarcity)</sup>. Et quand l’attention est rare, une partie du web optimise la capture d’attention (feeds, recommandations, formats courts) plutôt que la compréhension<sup>[2](#concept-attention-economy)</sup>.
+
 ## Le vrai sujet
 
 Trouver le bon contenu, ce n'est pas "suivre les bonnes personnes" au hasard. C'est faire trois choix :
@@ -41,6 +43,8 @@ Cela cree trois niveaux utiles :
 - suivre des plateformes au lieu de suivre des auteurs, des themes et des questions
 
 Le but n'est pas d'avoir une grande liste de lecture. Le but est d'avoir une **diete informationnelle defendable**.
+
+Le bon test est simple : est-ce que ton information augmente ta capacité d’action, ou seulement ton exposition ?<sup>[3](#concept-information-action-ratio)</sup>
 
 ## La logique recommandee
 
@@ -113,6 +117,34 @@ Feedly est toujours valable si tu fais une veille plus serieuse :
 - couche plus professionnelle quand ta veille depasse le simple read-later
 
 Je le recommanderais surtout si tu suis un secteur, un marche ou un domaine de maniere recurrente.
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-simon-attention"></a>1) **Rareté de l’attention (attention scarcity)** — Herbert A. Simon (1971), *Designing Organizations for an Information-Rich World* — [PDF](https://veryinteractive.net/pdfs/simon_designing-organizations-for-an-information-rich-world.pdf)
+
+<a id="ref-goldhaber-attention-economy"></a>2) **Économie de l’attention (attention economy)** — Michael H. Goldhaber (1997), *The attention economy and the Net* — [First Monday](https://firstmonday.org/ojs/index.php/fm/article/view/519)
+
+<a id="ref-eppler-mengis-overload"></a>3) **Surcharge informationnelle (filtrage / priorisation)** — Martin J. Eppler & Jeanne Mengis (2004), *The Concept of Information Overload* — [Taylor & Francis Online](https://www.tandfonline.com/doi/abs/10.1080/01972240490507974)
+
+<a id="ref-postman-info-action"></a>4) **Information-action ratio** — Neil Postman (1990), *Informing Ourselves to Death* (speech, Oct 11, 1990) — [Elon University](https://www.elon.edu/u/imagining/expert_predictions/informing-ourselves-to-death-4/)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-attention-scarcity"></a>#### Rareté de l’attention
+Plus l’information est abondante, plus l’attention devient le goulot d’étranglement. Une bonne “diete” commence par protéger ce goulot : moins d’entrées par défaut, plus de choix intentionnels.
+Source : [1](#ref-simon-attention)
+
+<a id="concept-attention-economy"></a>#### Économie de l’attention
+Dans une économie de l’attention, les systèmes qui gagnent sont ceux qui retiennent l’attention. D’où le biais structurel vers des formats courts, des feeds et des recommandations qui maximisent le temps passé.
+Source : [2](#ref-goldhaber-attention-economy)
+
+<a id="concept-information-overload"></a>#### Surcharge informationnelle (filtre et hiérarchie)
+La surcharge n’est pas juste “trop de sources”. C’est l’absence de hiérarchie et de filtres adaptés au contexte, ce qui rend la sélection et la décision coûteuses.
+Source : [3](#ref-eppler-mengis-overload)
+
+<a id="concept-information-action-ratio"></a>#### Information-action ratio (information -> action)
+Un bon système de consommation relie ce que tu lis à ce que tu fais. Si ta consommation n’améliore jamais une décision, une note, une action ou une compétence, ton ratio info->action est trop bas.
+Source : [4](#ref-postman-info-action)
 
 ## Ce que je ne recommanderais plus comme axe central
 

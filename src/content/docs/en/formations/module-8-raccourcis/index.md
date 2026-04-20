@@ -6,7 +6,7 @@ sidebar:
   order: 1
 ---
 
-Keyboard shortcuts are not mainly about "speed." They are about **protecting flow**. Every time you leave the keyboard to aim for an icon, hunt for a button, or rearrange a window with the mouse, you pay a small attention tax.
+Keyboard shortcuts are not mainly about "speed." They are about **protecting flow**. Every time you leave the keyboard to aim for an icon, hunt for a button, or rearrange a window with the mouse, you pay a small attention tax<sup>[1](#concept-task-switch)</sup>.
 
 So the goal of this module is not to make you memorize 200 combinations. The goal is to internalize a few **control cores** that materially change the way you operate Windows, the browser, Gmail, YouTube, and Notion.
 
@@ -69,6 +69,7 @@ The real browser gain is not abstract speed. It is the ability to:
 - move between tabs without getting lost
 
 In other words, browser shortcuts mainly reduce **tab debt** and **search friction**.
+<sup>[2](#concept-cognitive-load)</sup>
 
 ## 3. Gmail: process instead of merely checking
 
@@ -124,7 +125,7 @@ You do not need to release `Ctrl` between consecutive shortcuts. For example, to
 
 ## How to learn shortcuts effectively
 
-The key is not to memorize everything at once. It is to **integrate 2 to 3 shortcuts per week**:
+The key is not to memorize everything at once. It is to **integrate 2 to 3 shortcuts per week**<sup>[3](#concept-habit-formation)</sup>:
 
 1. identify one action you often do with the mouse
 2. find the matching shortcut
@@ -145,15 +146,44 @@ The test is simple:
 
 ## Go further
 
-Cheatsheets serve one purpose: reminding you of what you have not internalized yet. They do not replace muscle memory.
-
-Useful references:
-- [Google Chrome Help - Chrome keyboard shortcuts](https://support.google.com/chrome/answer/157179?hl=en&co=GENIE.Platform%3DDesktop)
-- [Google Help - Keyboard shortcuts for Gmail](https://support.google.com/mail/answer/6594?hl=en)
-- [Notion Help Center - Keyboard shortcuts](https://www.notion.com/help/keyboard-shortcuts)
-- [AutoHotkey](https://www.autohotkey.com/) if you want your own shortcuts, remappings, or text expansions
+Cheatsheets serve one purpose: reminding you of what you have not internalized yet. They do not replace muscle memory<sup>[4](#concept-automaticity)</sup>.
 
 The right philosophy stays simple: **do not memorize everything, know where to look**. Keep references close, and reserve muscle memory for the 20 shortcuts you actually use most.
+
+### Chapter references (go further)
+
+<a id="ref-task-switch"></a>1) **Task switching (switch cost)** — Monsell (2003), *Task switching* — [Google Scholar](https://scholar.google.com/scholar?q=Monsell+2003+task+switching)
+
+<a id="ref-cognitive-load"></a>2) **Cognitive load** — Paas & van Merriënboer (2020), *Cognitive-Load Theory...* — [SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-habit-formation"></a>3) **Habit formation** — Lally et al. (2010), *How are habits formed...* — [Wiley](https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674)
+
+<a id="ref-automaticity"></a>4) **Automaticity (controlled vs automatic processing)** — Schneider & Shiffrin (1977), *Controlled and automatic human information processing* — [Google Scholar](https://scholar.google.com/scholar?q=Schneider+Shiffrin+1977+controlled+automatic+human+information+processing)
+
+<a id="ref-gmail-shortcuts"></a>5) **Gmail shortcuts (official)** — Google Help, *Keyboard shortcuts for Gmail* — [Google Help](https://support.google.com/mail/answer/6594?hl=en)
+
+<a id="ref-notion-shortcuts"></a>6) **Notion shortcuts (official)** — Notion Help Center, *Keyboard shortcuts* — [Notion](https://www.notion.com/help/keyboard-shortcuts)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-task-switch"></a>#### Switch cost (attention tax)
+When you go mouse -> keyboard -> mouse, you often pay a reconfiguration cost: reload context, decide, aim, then come back. Shortcuts reduce those micro-transitions.
+Scientific source: [1](#ref-task-switch)
+
+<a id="concept-cognitive-load"></a>#### Tab debt (cognitive load)
+Tab debt often means too much context left open and too many competing options. Shortcuts help you close, find, and navigate without digging.
+Scientific source: [2](#ref-cognitive-load)
+
+<a id="concept-habit-formation"></a>#### Integration (habits and repetition)
+A shortcut becomes valuable when it comes out automatically. Context repetition (3 days) and learning one core at a time make automation more likely.
+Scientific source: [3](#ref-habit-formation)
+
+<a id="concept-automaticity"></a>#### Automaticity (procedural memory)
+The more you repeat a stable sequence, the more it shifts from conscious control to automatic execution. That is the core of "muscle memory".
+Scientific source: [4](#ref-automaticity)
+
+Practical resource:
+- [AutoHotkey](https://www.autohotkey.com/) if you want your own shortcuts, remappings, or text expansions
 
 :::note[Practical exercise]
 Choose one context this week:

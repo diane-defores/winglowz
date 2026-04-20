@@ -21,6 +21,7 @@ Prioriser ne consiste pas seulement à choisir "la première tâche". Cela consi
 - **protéger** l'important
 - **arbitrer** quand plusieurs options sont bonnes
 - **tenir** ce choix dans le temps
+Le but caché : réduire l'espace mental disponible pour l'évitement et la procrastination en rendant l'engagement explicite<sup>[4](#concept-procrastination)</sup>.
 
 ## Le decision framework Winflowz
 
@@ -43,6 +44,7 @@ Cette logique mène à quatre actions :
 Beaucoup de gens veulent mieux prioriser alors qu'ils refusent encore de supprimer.
 
 La première victoire n'est pas de mieux ordonner 40 tâches. C'est de supprimer celles qui ne méritent pas d'entrer dans le système.
+Et de garder ce qui nourrit vraiment ton autonomie et ton sentiment de compétence, pas juste ce qui fait "occupé"<sup>[1](#concept-sdt)</sup>.
 
 Les bons signaux d'élimination :
 - faible impact
@@ -95,6 +97,7 @@ Il est inutile si :
 ## Une seule vraie priorité
 
 Une bonne journée ou une bonne semaine supporte mal cinq "top priorités".
+Les objectifs performants sont peu nombreux, clairs, et soutenus par du feedback : c'est souvent l'inverse d'une to-do list sans fin<sup>[3](#concept-goal-setting)</sup>.
 
 Le concept utile ici est simple :
 - une priorité principale
@@ -108,6 +111,7 @@ La bonne question du matin reste :
 ## Audit hebdomadaire
 
 La priorisation n'est pas une décision unique. C'est une révision régulière.
+Et si tu veux qu'elle arrive vraiment, fixe un déclencheur "si-alors" : "si c'est dimanche 17:00, alors je fais l'audit 20 minutes"<sup>[2](#concept-implementation-intentions)</sup>.
 
 Audit simple :
 1. vide les tâches ouvertes
@@ -172,3 +176,31 @@ Prends ta liste actuelle et force-toi à faire seulement ceci :
 
 Si tout reste prioritaire après ça, ton problème n'est pas le classement. C'est le refus de renoncer.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits: Human Needs and the Self-Determination of Behavior* — [Psychological Inquiry](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-implementation-intentions"></a>2) **Intentions d'implémentation (plans "si-alors")** — Gollwitzer (1999), *Implementation Intentions: Strong Effects of Simple Plans* — [American Psychologist](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-goal-setting"></a>3) **Goal Setting Theory** — Locke & Latham (2002), *Building a Practically Useful Theory of Goal Setting and Task Motivation* — [American Psychologist](https://doi.org/10.1037/0003-066X.57.9.705)
+
+<a id="ref-procrastination"></a>4) **Procrastination (synthèse)** — Steel (2007), *The nature of procrastination: a meta-analytic and theoretical review of quintessential self-regulatory failure* — [Psychological Bulletin](https://doi.org/10.1037/0033-2909.133.1.65)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-sdt"></a>#### SDT : objectifs auto-concordants
+Quand tu priorises des actions alignées avec tes valeurs (autonomie) et où tu peux constater une progression (compétence), tu réduis le coût psychologique de "tenir la priorité" dans le temps.
+Source scientifique : [1](#ref-sdt)
+
+<a id="concept-implementation-intentions"></a>#### Intentions d'implémentation : rendre les revues inévitables
+Les routines de priorisation fonctionnent surtout quand elles sont déclenchées par un signal fixe (jour/heure/lieu). Le "si-alors" protège la revue contre la fatigue décisionnelle.
+Source scientifique : [2](#ref-implementation-intentions)
+
+<a id="concept-goal-setting"></a>#### Goal setting : moins d'objectifs, plus de feedback
+Moins tu as de priorités concurrentes, plus tes boucles de feedback sont nettes. C'est un avantage direct sur la clarté et la persistance.
+Source scientifique : [3](#ref-goal-setting)
+
+<a id="concept-procrastination"></a>#### Procrastination : bruit, ambiguïté, et coûts de décision
+Une liste trop large augmente l'ambiguïté et le coût de décision, ce qui rend l'évitement plus attractif. Prioriser, c'est aussi réduire ce terrain de fuite.
+Source scientifique : [4](#ref-procrastination)

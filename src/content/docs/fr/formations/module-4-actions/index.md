@@ -13,6 +13,7 @@ Beaucoup de gens n'ont pas un problème d'idées. Ils ont un problème de traduc
 ## Le vrai sujet du module
 
 Ce module ne sert pas à te donner plus d'outils de productivité. Il sert à rendre l'action plus simple que l'évitement.
+Il vise aussi à transformer tes objectifs en comportements soutenables, pas seulement en intentions vagues<sup>[1](#concept-sdt)</sup>.
 
 La logique tient en quatre verbes :
 - **choisir** ce qui compte
@@ -52,6 +53,7 @@ Tu n'as pas besoin de penser à cinq ans pour que cela fonctionne. Tu as besoin 
 ## Un bon objectif reste un filtre
 
 Les objectifs SMART restent utiles s'ils servent à clarifier, pas à remplir un template.
+Ce que la recherche montre surtout, c'est que des objectifs clairs, exigeants mais réalistes, et reliés à du feedback soutiennent mieux l'exécution<sup>[3](#concept-goal-setting)</sup>.
 
 Leur vraie fonction est de forcer quelques questions simples :
 - est-ce assez clair ?
@@ -78,6 +80,7 @@ Le bon principe :
 - assez claire pour être terminée
 
 Le rétroplanning reste utile à une condition : ne pas s'arrêter aux étapes, descendre jusqu'aux vraies actions.
+Et quand tu ajoutes une règle "SI X, ALORS Y", tu verrouilles davantage le passage à l'acte<sup>[2](#concept-implementation-intentions)</sup>.
 
 ## Séquencer avant d'empiler
 
@@ -106,6 +109,7 @@ Tu avances mieux quand :
 - le projet n'est pas porté uniquement par l'humeur du jour
 
 Le bon système réduit le besoin de négocier avec toi-même.
+Il réduit aussi la place de la procrastination, qui est souvent moins un manque de discipline qu'une régulation émotionnelle à court terme<sup>[4](#concept-procrastination)</sup>.
 
 ## Ce qu'il faut éviter
 
@@ -160,3 +164,31 @@ Choisis un seul projet en cours et force-toi à écrire :
 
 Si tu n'arrives pas à écrire l'étape 4, ton projet est encore trop gros.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits: Human Needs and the Self-Determination of Behavior* — [Psychological Inquiry](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-implementation-intentions"></a>2) **Intentions d'implémentation (plans "si-alors")** — Gollwitzer (1999), *Implementation Intentions: Strong Effects of Simple Plans* — [American Psychologist](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-goal-setting"></a>3) **Goal Setting Theory** — Locke & Latham (2002), *Building a Practically Useful Theory of Goal Setting and Task Motivation* — [American Psychologist](https://doi.org/10.1037/0003-066X.57.9.705)
+
+<a id="ref-procrastination"></a>4) **Procrastination (synthèse)** — Steel (2007), *The nature of procrastination: a meta-analytic and theoretical review of quintessential self-regulatory failure* — [Psychological Bulletin](https://doi.org/10.1037/0033-2909.133.1.65)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-sdt"></a>#### SDT : autonomie, compétence, appartenance
+Quand un objectif nourrit l'autonomie (choisi), la compétence (progression visible), et l'appartenance (lien social), l'action tient mieux sans dépendre d'un pic de motivation.
+Source scientifique : [1](#ref-sdt)
+
+<a id="concept-implementation-intentions"></a>#### Intentions d'implémentation : "SI X, ALORS Y"
+Un plan "si-alors" transforme une intention en déclencheur opérationnel : tu réduis le besoin de délibérer au moment critique, donc tu diminues la friction de démarrage.
+Source scientifique : [2](#ref-implementation-intentions)
+
+<a id="concept-goal-setting"></a>#### Goal setting : clarté, difficulté, feedback
+Les objectifs efficaces sont clairs, assez exigeants pour mobiliser, et reliés à un feedback fréquent. Sans feedback, tu perds l'étalonnage et donc l'élan.
+Source scientifique : [3](#ref-goal-setting)
+
+<a id="concept-procrastination"></a>#### Procrastination : régulation émotionnelle à court terme
+La procrastination est souvent un arbitrage implicite : soulagement immédiat contre coût futur. Réduire l'ambiguïté, abaisser la friction, et rapprocher le feedback diminue ce besoin de fuite.
+Source scientifique : [4](#ref-procrastination)

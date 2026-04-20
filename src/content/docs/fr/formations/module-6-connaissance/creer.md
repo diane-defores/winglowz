@@ -10,6 +10,8 @@ Capturer et organiser ne suffisent pas. Un PKM commence à produire de la valeur
 
 > Le but du PKM n'est pas de stocker plus. C'est de repartir plus souvent de ce que tu sais déjà.
 
+Créer, c'est à la fois de la **gestion des connaissances** (tu externalises du savoir en artefacts réutilisables)<sup>[1](#concept-knowledge-management)</sup> et une forme de **rappel actif** : tu forces la récupération et la reformulation plutôt que la relecture passive<sup>[2](#concept-retrieval-practice)</sup>.
+
 ## Le vrai sujet : convertir, pas accumuler
 
 Le piège classique consiste à capturer beaucoup, relier un peu, puis ne jamais rien sortir.
@@ -190,3 +192,19 @@ Choisis une note ou un petit cluster de notes et force-toi à produire une sorti
 
 Si tu bloques avant l'étape 4, le problème vient souvent d'un manque d'angle, pas d'un manque d'outil.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-knowledge-management"></a>1) **Knowledge management (tacite -> explicite)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+<a id="ref-retrieval-practice"></a>2) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-knowledge-management"></a>#### Externalisation du savoir (knowledge management)
+Quand une idée devient une note claire, un mémo, une doc ou une procédure, elle cesse d'être “dans ta tête”. Elle devient un objet transmissible, réutilisable et améliorable.
+Source scientifique : [1](#ref-knowledge-management)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice (rappel actif) par la production
+Créer une sortie (expliquer, écrire, synthétiser, décider) oblige à récupérer l'information sans support immédiat. C'est ce coût de récupération qui solidifie l'apprentissage.
+Source scientifique : [2](#ref-retrieval-practice)

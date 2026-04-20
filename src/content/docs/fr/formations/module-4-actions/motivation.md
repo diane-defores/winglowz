@@ -41,6 +41,7 @@ Cela conduit à quatre leviers :
 L'idée la plus utile n'est pas "motive-toi plus". C'est :
 
 **le mouvement nourrit l'élan**.
+Les objectifs avec feedback rapproché (petites boucles) rendent ce mouvement beaucoup plus probable<sup>[3](#concept-goal-setting)</sup>.
 
 Une fois qu'un projet produit :
 - un début clair
@@ -66,6 +67,7 @@ Donc avant de parler motivation, vérifie :
 - durée raisonnable ?
 
 Si tout est prêt, l'action devient souvent plus probable que l'évitement.
+Et si tu veux rendre ce démarrage quasi-automatique, formalise un plan "SI X, ALORS Y" (ex : "si il est 9:00, alors j'ouvre le fichier et j'écris 5 lignes")<sup>[2](#concept-implementation-intentions)</sup>.
 
 ## Intrinsèque vs extrinsèque
 
@@ -73,6 +75,7 @@ La distinction reste utile, mais seulement si elle sert l'action.
 
 - **motivation intrinsèque** : curiosité, maîtrise, sens, autonomie
 - **motivation extrinsèque** : argent, validation, pression, récompense
+Dans la Self-Determination Theory (SDT), les besoins d'autonomie, de compétence et de lien social expliquent une bonne partie de la motivation durable<sup>[1](#concept-sdt)</sup>.
 
 L'objectif n'est pas de supprimer l'extrinsèque. C'est d'éviter qu'elle devienne la seule source d'élan.
 
@@ -167,6 +170,7 @@ Il faut donc recréer des boucles plus courtes :
 - rendre héroïque ce qui devrait être simple
 - utiliser la culpabilité comme moteur principal
 - ajouter de l'accountability avant d'avoir clarifié l'action
+- traiter la procrastination comme un défaut moral au lieu de la traiter comme un problème de régulation émotionnelle et de design de feedback<sup>[4](#concept-procrastination)</sup>
 
 ## Workflow recommandé
 
@@ -196,3 +200,31 @@ Choisis une action que tu repousses depuis plusieurs jours et réponds seulement
 
 Si tu réponds clairement à ces quatre questions, la motivation devient souvent beaucoup moins mystérieuse.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits: Human Needs and the Self-Determination of Behavior* — [Psychological Inquiry](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-implementation-intentions"></a>2) **Intentions d'implémentation (plans "si-alors")** — Gollwitzer (1999), *Implementation Intentions: Strong Effects of Simple Plans* — [American Psychologist](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-goal-setting"></a>3) **Goal Setting Theory** — Locke & Latham (2002), *Building a Practically Useful Theory of Goal Setting and Task Motivation* — [American Psychologist](https://doi.org/10.1037/0003-066X.57.9.705)
+
+<a id="ref-procrastination"></a>4) **Procrastination (synthèse)** — Steel (2007), *The nature of procrastination: a meta-analytic and theoretical review of quintessential self-regulatory failure* — [Psychological Bulletin](https://doi.org/10.1037/0033-2909.133.1.65)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-sdt"></a>#### SDT : autonomie, compétence, appartenance
+Plus une action nourrit autonomie (choix), compétence (progrès), et appartenance (lien), plus elle tient sans pression externe constante.
+Source scientifique : [1](#ref-sdt)
+
+<a id="concept-implementation-intentions"></a>#### Intentions d'implémentation : "SI X, ALORS Y"
+Le plan "si-alors" réduit la négociation interne : la décision est prise à l'avance, et tu n'as plus qu'à exécuter au déclencheur.
+Source scientifique : [2](#ref-implementation-intentions)
+
+<a id="concept-goal-setting"></a>#### Goal setting : clarté, difficulté, feedback
+Le feedback rapproche la récompense et augmente la probabilité de répéter l'effort. C'est l'un des moyens les plus simples de "fabriquer de l'élan".
+Source scientifique : [3](#ref-goal-setting)
+
+<a id="concept-procrastination"></a>#### Procrastination : soulagement immédiat vs coût futur
+Quand la tâche déclenche une émotion négative (ennui, anxiété, doute), l'évitement apporte un soulagement rapide. Le design d'action (petit départ, feedback proche, friction basse) réduit ce besoin.
+Source scientifique : [4](#ref-procrastination)

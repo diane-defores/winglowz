@@ -10,6 +10,8 @@ sidebar:
 
 > Un bon système de connaissance ne vaut pas grand-chose si chaque accès te force à repasser par la souris, l'Explorateur ou le menu Démarrer.
 
+En pratique, un lanceur devient une extension de ta **mémoire externe** : il réduit le coût d'accès, donc tu réutilises plus souvent ce que tu as déjà (notes, fichiers, signets)<sup>[1](#concept-cognitive-offloading)</sup>. Et il augmente tes chances de retrouver via le bon **indice** (nom approximatif, contexte, app)<sup>[2](#concept-retrieval-cues)</sup>.
+
 ## Le vrai sujet : réduire la friction d'accès
 
 Après capture, organisation et recherche, il reste un dernier problème :
@@ -203,3 +205,19 @@ Choisis 5 éléments que tu ouvres plusieurs fois par jour :
 
 Configure Flow Launcher pour pouvoir ouvrir les 5 depuis le clavier. Si tu ne gagnes pas de fluidité réelle après quelques jours, c'est que ton problème principal n'était pas l'accès rapide.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / mémoire externe** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-encoding-specificity"></a>2) **Indices de rappel / encoding specificity** — Tulving & Thomson (1973), *Encoding specificity and retrieval processes in episodic memory* — [Psychological Review (APA)](https://doi.org/10.1037/h0020071)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-cognitive-offloading"></a>#### Mémoire externe (cognitive offloading) et coût d'accès
+Quand l'accès est rapide, tu relies plus souvent tes actions présentes à des artefacts passés (notes, fichiers, signets). Cette réutilisation régulière est une condition clé pour que la mémoire externe serve réellement.
+Source scientifique : [1](#ref-cognitive-offloading)
+
+<a id="concept-retrieval-cues"></a>#### Indices de rappel (retrieval cues)
+Un lanceur te permet de tester plusieurs indices rapidement (quelques lettres, un contexte, une app). Multiplier les points d'entrée augmente la probabilité de retrouver même si ton souvenir est flou.
+Source scientifique : [2](#ref-encoding-specificity)

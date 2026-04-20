@@ -19,7 +19,7 @@ Quand tu te sens dispersé ou démotivé malgré de "bons" systèmes, vérifie c
 1. **Est-ce que ma définition du succès est vraiment la mienne ?**
 2. **Est-ce que je sais quel problème je veux résoudre ?**
 3. **Est-ce que je sais pourquoi ce problème compte pour moi ?**
-4. **Est-ce que mon process reste compatible avec la personne que je veux devenir ?**
+4. **Est-ce que mon process reste compatible avec la personne que je veux devenir ?**<sup>[2](#concept-self-concordance)</sup>
 
 Ce cadre évite une erreur fréquente :
 - améliorer l'exécution d'une direction mal choisie
@@ -131,7 +131,7 @@ Un but crédible répond souvent à une de ces logiques :
 
 Une tension revient souvent :
 
-**faut-il chercher le sens ou la performance ?**
+**faut-il chercher le sens ou la performance ?**<sup>[3](#concept-meaning)</sup>
 
 La mauvaise réponse consiste à croire que tout doit faire les deux en même temps.
 
@@ -157,6 +157,7 @@ Quand cela arrive, le problème n'est pas seulement organisationnel. Il est souv
 - tu poursuis une forme de réussite qui ne t'intéresse pas vraiment
 
 Aucun système de productivité ne compense durablement une dissonance intérieure trop forte.
+<sup>[4](#concept-dissonance)</sup>
 
 ## Tomber amoureux du process
 
@@ -208,3 +209,39 @@ Si tu veux une productivité durable :
 - vérifie régulièrement que ton process reste aligné
 
 Le pourquoi n'est pas un supplément spirituel. C'est une couche de pilotage.
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits* — [DOI](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-self-concordance"></a>2) **Objectifs auto-concordants** — Sheldon & Elliot (1999), *Goal striving... the self-concordance model* — [Google Scholar](https://scholar.google.com/scholar?q=self-concordance+model+Sheldon+Elliot+1999)
+
+<a id="ref-meaning"></a>3) **Sens de la vie (questionnaire MLQ)** — Steger et al. (2006), *Meaning in Life Questionnaire* — [Google Scholar](https://scholar.google.com/scholar?q=Meaning+in+Life+Questionnaire+Steger+Frazier+Oishi+Kaler+2006)
+
+<a id="ref-dissonance"></a>4) **Dissonance cognitive** — Leon Festinger (1957), *A Theory of Cognitive Dissonance* — [Google Books](https://books.google.com/books?id=voeQzgEACAAJ)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-sdt"></a>#### Motivation intrinsèque/extrinsèque (autonomie, compétence, lien)
+
+Une motivation durable vient souvent de besoins psychologiques satisfaits (autonomie, compétence, lien), pas seulement de récompenses externes.
+
+Source scientifique : [1](#ref-sdt)
+
+<a id="concept-self-concordance"></a>#### Objectifs auto-concordants (cohérence avec soi)
+
+Un objectif “cohérent” avec tes valeurs et ton identité se maintient mieux, avec moins de négociation intérieure.
+
+Source scientifique : [2](#ref-self-concordance)
+
+<a id="concept-meaning"></a>#### Sens (présence et recherche de sens)
+
+Clarifier ce qui a du sens pour toi rend plus facile la sélection des projets et des efforts à long terme.
+
+Source scientifique : [3](#ref-meaning)
+
+<a id="concept-dissonance"></a>#### Dissonance cognitive (tension interne)
+
+Quand tes actions contredisent tes valeurs ou ta direction, une tension interne apparaît et finit par éroder la constance.
+
+Source scientifique : [4](#ref-dissonance)

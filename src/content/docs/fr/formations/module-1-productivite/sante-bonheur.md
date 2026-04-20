@@ -47,6 +47,7 @@ Quand il se dégrade, beaucoup de problèmes "de productivité" apparaissent :
 - moins bonne prise de décision
 - envie accrue de stimulation facile
 - incapacité à tenir une tâche exigeante
+<sup>[1](#concept-sleep)</sup>
 
 ### Ce qui aide vraiment
 
@@ -72,6 +73,7 @@ Exemples simples :
 - sortir à la lumière
 
 Le point important n'est pas de "faire une pause parfaite". C'est d'éviter les fausses pauses qui continuent à saturer le cerveau.
+<sup>[2](#concept-restoration)</sup>
 
 ## Mouvement, sport et clarté mentale
 
@@ -86,6 +88,7 @@ Tu n'as pas besoin de transformer ce module en culte de la performance physique.
 
 Règle simple :
 - si ton travail est très mental, ton corps a besoin de contrepoids
+<sup>[3](#concept-exercise)</sup>
 
 ## Pleine conscience et régulation du stress
 
@@ -96,6 +99,7 @@ Cela aide à :
 - ne pas obéir automatiquement à chaque impulsion
 - mieux revenir à la tâche importante
 - réduire la réactivité émotionnelle
+<sup>[4](#concept-mindfulness)</sup>
 
 Une pratique simple et régulière suffit déjà. Le but n'est pas de devenir mystique. Le but est d'augmenter la qualité d'attention.
 
@@ -175,6 +179,7 @@ Les relations ne sont pas "hors sujet". Elles jouent directement sur :
 - la stabilité émotionnelle
 - la qualité des décisions
 - la sensation que ta vie reste humaine
+<sup>[5](#concept-social)</sup>
 
 En pratique :
 - bloque du temps pour voir les personnes importantes
@@ -194,3 +199,47 @@ Si ta productivité baisse, vérifie d'abord :
 - relations
 
 Beaucoup de problèmes d'exécution sont en réalité des problèmes d'infrastructure humaine.
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-sleep"></a>1) **Sommeil (synthèse grand public)** — Matthew Walker (2017), *Why We Sleep* — [Google Books](https://books.google.com/books?id=7r5MDgAAQBAJ)
+
+<a id="ref-restoration"></a>2) **Restoration attentionnelle** — Berman, Jonides & Kaplan (2008), *The cognitive benefits of interacting with nature* — [Google Scholar](https://scholar.google.com/scholar?q=The+cognitive+benefits+of+interacting+with+nature+Berman+Jonides+Kaplan+2008)
+
+<a id="ref-exercise"></a>3) **Activité physique et cognition** — Ratey & Loehr (2011), *The positive impact of physical activity on cognition during adulthood* — [Google Scholar](https://scholar.google.com/scholar?q=positive+impact+of+physical+activity+on+cognition+during+adulthood+Ratey+Loehr+2011)
+
+<a id="ref-mindfulness"></a>4) **Neurosciences de la pleine conscience** — Tang, Holzel & Posner (2015), *The neuroscience of mindfulness meditation* — [DOI](https://doi.org/10.1038/nrn3916)
+
+<a id="ref-social"></a>5) **Relations sociales et mortalité (meta-analyse)** — Holt-Lunstad, Smith & Layton (2010), *Social relationships and mortality risk* — [DOI](https://doi.org/10.1371/journal.pmed.1000316)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-sleep"></a>#### Sommeil (mémoire, humeur, régulation)
+
+Le sommeil soutient la mémoire, la régulation émotionnelle et la prise de décision. Quand il baisse, beaucoup de “problèmes de productivité” apparaissent.
+
+Source scientifique : [1](#ref-sleep)
+
+<a id="concept-restoration"></a>#### Récupération attentionnelle (restauration)
+
+Certaines pauses restaurent mieux l'attention (marche, lumière, nature) que des pauses “stimulantes” (scroll, contenu).
+
+Source scientifique : [2](#ref-restoration)
+
+<a id="concept-exercise"></a>#### Mouvement (stress, cognition, sommeil)
+
+L'activité physique influence le stress, la cognition et la qualité du sommeil, donc indirectement la constance productive.
+
+Source scientifique : [3](#ref-exercise)
+
+<a id="concept-mindfulness"></a>#### Pleine conscience (régulation du stress)
+
+La pleine conscience peut améliorer la régulation attentionnelle et réduire la réactivité au stress.
+
+Source scientifique : [4](#ref-mindfulness)
+
+<a id="concept-social"></a>#### Relations (infrastructure sociale)
+
+Les relations de qualité sont associées à une meilleure santé et à une mortalité plus faible; elles participent à la stabilité du système humain.
+
+Source scientifique : [5](#ref-social)

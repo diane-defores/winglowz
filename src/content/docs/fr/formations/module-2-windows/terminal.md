@@ -6,7 +6,7 @@ sidebar:
   order: 6
 ---
 
-Le terminal n'est pas une religion. C'est un levier. Il devient utile quand il te fait gagner du temps, de la répétabilité, ou du contrôle.
+Le terminal n'est pas une religion. C'est un levier. Il devient utile quand il te fait gagner du temps, de la répétabilité<sup>[1](#concept-cognitive-offloading)</sup>, ou du contrôle.
 
 > Le bon usage du terminal n'est pas de tout faire en CLI. C'est de l'utiliser là où la souris devient lente, répétitive ou fragile.
 
@@ -14,7 +14,7 @@ Le terminal n'est pas une religion. C'est un levier. Il devient utile quand il t
 
 Beaucoup de gens rejettent le terminal parce qu'ils imaginent qu'il faut tout apprendre d'un coup. À l'inverse, certains l'adoptent comme une posture et compliquent des tâches qui iraient très bien en interface graphique.
 
-La bonne logique est plus simple :
+La bonne logique est plus simple<sup>[2](#concept-cognitive-load)</sup> :
 - GUI pour le ponctuel, le visuel et l'évident
 - CLI pour le répétitif, le massif, le scriptable et le reproductible
 
@@ -27,7 +27,7 @@ Avant de passer par le terminal, pose-toi quatre questions :
 3. **Ai-je besoin d'un résultat reproductible ou juste d'un geste ponctuel ?**
 4. **La souris me fait-elle gagner du temps, ou me force-t-elle à répéter la même suite d'actions ?**
 
-Si la tâche est :
+Si la tâche est<sup>[3](#concept-task-switching-cost)</sup> :
 - répétitive
 - volumineuse
 - textuelle
@@ -182,3 +182,27 @@ Repère une tâche que tu fais souvent à la souris :
 
 Choisis-en une seule et apprends la version terminal. Si elle te fait gagner du temps deux fois de suite, elle mérite d'entrer dans ton système. Sinon, reste en GUI sans culpabilité.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading (externaliser pour mieux penser)** — Evan F. Risko & Sam J. Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences, Cell Press](https://www.sciencedirect.com/science/article/pii/S1364661316300468)
+
+<a id="ref-cognitive-load"></a>2) **Charge cognitive (working memory / charge mentale)** — Fred Paas & Jeroen J. G. van Merriënboer (2020), *Cognitive-Load Theory: Methods to Manage Working Memory Load in the Learning of Complex Tasks* — [Current Directions in Psychological Science, SAGE](https://journals.sagepub.com/doi/10.1177/0963721420922183)
+
+<a id="ref-task-switching"></a>3) **Coûts du changement de tâche (task switching)** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive Control of Cognitive Processes in Task Switching* — [Journal of Experimental Psychology: Human Perception and Performance, APA](https://psycnet.apa.org/record/2001-06771-013)
+
+<a id="ref-windows-terminal"></a>4) **Windows Terminal (documentation officielle)** — Microsoft Learn — [Windows Terminal](https://learn.microsoft.com/windows/terminal/)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-cognitive-offloading"></a>#### Cognitive offloading (répétabilité)
+Une commande sauvegardée, un script, ou une procédure réutilisable externalise une partie du pilotage: tu n'as plus à “tenir” la séquence complète en mémoire à chaque fois.
+Source scientifique : [1](#ref-cognitive-offloading)
+
+<a id="concept-cognitive-load"></a>#### Charge cognitive (quand la GUI devient lente)
+Quand une tâche implique trop de petites décisions, clics et exceptions, ta mémoire de travail se retrouve mobilisée par le “pilotage” au lieu du résultat. Une bonne CLI réduit souvent cette charge parasite.
+Source scientifique : [2](#ref-cognitive-load)
+
+<a id="concept-task-switching-cost"></a>#### Coûts du changement de tâche (répéter une séquence)
+Plus tu enchaînes des micro-étapes et des allers-retours, plus tu paies des coûts de reprise (où en étais-je, quel est le prochain pas). Les workflows reproductibles limitent ces redémarrages.
+Source scientifique : [3](#ref-task-switching)

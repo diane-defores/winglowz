@@ -20,6 +20,8 @@ Dans un système PKM solide, on retrouve de plusieurs manières :
 - par **liens**
 - par **accès rapide**
 
+En cognition, la récupération dépend fortement des **indices de rappel** (cues) disponibles au moment où tu cherches<sup>[1](#concept-retrieval-cues)</sup>. Un bon PKM fabrique ces indices (liens, noms, tags, contexte) et réduit le coût d'accès, ce qui rend la réutilisation plus fréquente et plus robuste<sup>[2](#concept-cognitive-offloading)</sup>.
+
 Si ton système dépend uniquement d'une recherche textuelle parfaite, il reste fragile.
 
 ## Le decision framework Winflowz
@@ -209,3 +211,25 @@ Pour chacune, demande-toi :
 
 Si tu utilises le même outil pour tout, ou si tu ne sais jamais où chercher, ton problème n'est pas la mémoire. C'est l'architecture de retrieval.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-encoding-specificity"></a>1) **Indices de rappel / encoding specificity** — Tulving & Thomson (1973), *Encoding specificity and retrieval processes in episodic memory* — [Psychological Review (APA)](https://doi.org/10.1037/h0020071)
+
+<a id="ref-cognitive-offloading"></a>2) **Cognitive offloading / mémoire externe** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-retrieval-practice"></a>3) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-retrieval-cues"></a>#### Indices de rappel (retrieval cues) et “encoding specificity”
+On retrouve mieux quand les indices disponibles au moment de la recherche ressemblent à ceux présents au moment de l'encodage. D'où l'intérêt des liens, du contexte, des titres stables et des métadonnées : ils créent des points d'entrée multiples.
+Source scientifique : [1](#ref-encoding-specificity)
+
+<a id="concept-cognitive-offloading"></a>#### Mémoire externe (cognitive offloading)
+Un PKM réduit la charge de “garder en tête” en externalisant l'information dans des artefacts recherchables (notes, liens, fichiers). Moins tu dépends d'un mot-clé parfait dans ta mémoire, plus la récupération devient fiable.
+Source scientifique : [2](#ref-cognitive-offloading)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice (rappel actif)
+Quand tu réutilises tes notes (écrire, expliquer, décider), tu fais une forme de rappel actif. Plus ton système rend cette réutilisation facile, plus tu convertis de l'information stockée en connaissance utilisable.
+Source scientifique : [3](#ref-retrieval-practice)

@@ -10,6 +10,8 @@ The internet does not lack content. It lacks filters, hierarchy, and criteria fo
 
 > The real skill is not finding more content. It is building a system that gives you less noise and more signal.
 
+When information is abundant, attention becomes scarce<sup>[1](#concept-attention-scarcity)</sup>. And when attention is scarce, part of the web optimizes for attention capture (feeds, recommendations, short formats) rather than understanding<sup>[2](#concept-attention-economy)</sup>.
+
 ## What this is really about
 
 Finding the right content is not just "following the right people." It means making three choices:
@@ -41,6 +43,8 @@ That creates three useful levels:
 - following platforms instead of authors, themes, and questions
 
 The goal is not to build a huge reading list. The goal is to build a **defensible information diet**.
+
+Simple test: does the information increase your ability to act, or only your exposure?<sup>[3](#concept-information-action-ratio)</sup>
 
 ## The recommended logic
 
@@ -113,6 +117,34 @@ Feedly is still valid if your monitoring needs are more serious:
 - a more professional layer when your monitoring goes beyond basic read-later
 
 I would mainly recommend it if you track a sector, market, or capability continuously.
+
+### Chapter references (to go further)
+
+<a id="ref-simon-attention"></a>1) **Attention scarcity** — Herbert A. Simon (1971), *Designing Organizations for an Information-Rich World* — [PDF](https://veryinteractive.net/pdfs/simon_designing-organizations-for-an-information-rich-world.pdf)
+
+<a id="ref-goldhaber-attention-economy"></a>2) **Attention economy** — Michael H. Goldhaber (1997), *The attention economy and the Net* — [First Monday](https://firstmonday.org/ojs/index.php/fm/article/view/519)
+
+<a id="ref-eppler-mengis-overload"></a>3) **Information overload (filtering / prioritization)** — Martin J. Eppler & Jeanne Mengis (2004), *The Concept of Information Overload* — [Taylor & Francis Online](https://www.tandfonline.com/doi/abs/10.1080/01972240490507974)
+
+<a id="ref-postman-info-action"></a>4) **Information-action ratio** — Neil Postman (1990), *Informing Ourselves to Death* (speech, Oct 11, 1990) — [Elon University](https://www.elon.edu/u/imagining/expert_predictions/informing-ourselves-to-death-4/)
+
+### Deeper technical concepts
+
+<a id="concept-attention-scarcity"></a>#### Attention scarcity
+The more information becomes abundant, the more attention becomes the bottleneck. A good “diet” starts by protecting that bottleneck: fewer default inputs, more intentional choices.
+Source: [1](#ref-simon-attention)
+
+<a id="concept-attention-economy"></a>#### Attention economy
+In an attention economy, the systems that win are the ones that retain attention. That creates a structural pull toward short formats, feeds, and recommendations that maximize time-on-platform.
+Source: [2](#ref-goldhaber-attention-economy)
+
+<a id="concept-information-overload"></a>#### Information overload (filter and hierarchy)
+Overload is not only “too many sources.” It is also the absence of context-aware hierarchy and filters, which makes selection and decision-making expensive.
+Source: [3](#ref-eppler-mengis-overload)
+
+<a id="concept-information-action-ratio"></a>#### Information-action ratio (information -> action)
+A good consumption system connects what you read to what you do. If your consumption never improves a decision, a note, an action, or a skill, your info->action ratio is too low.
+Source: [4](#ref-postman-info-action)
 
 ## What I would no longer recommend as a central pick
 

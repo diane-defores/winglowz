@@ -21,6 +21,7 @@ Prioritization is not only about choosing "the first task." It is about doing fo
 - **protecting** what matters
 - **arbitrating** when several options are good
 - **holding** the choice over time
+The hidden goal: shrink the space for avoidance by making commitment explicit<sup>[4](#concept-procrastination)</sup>.
 
 ## The Winflowz decision framework
 
@@ -43,6 +44,7 @@ That logic leads to four actions:
 Many people want to prioritize better while still refusing to delete.
 
 The first win is not arranging 40 tasks more elegantly. It is removing the ones that never deserved a place in the system.
+And keeping what supports autonomy and competence, not just what makes you feel busy<sup>[1](#concept-sdt)</sup>.
 
 Good elimination signals:
 - low impact
@@ -95,6 +97,7 @@ It is useless when:
 ## One real priority
 
 A good day or week does not support five "top priorities" very well.
+High-performing goal systems are small, clear, and feedback-driven. That is often the opposite of an endless list<sup>[3](#concept-goal-setting)</sup>.
 
 The useful concept is simple:
 - one main priority
@@ -108,6 +111,7 @@ The best morning question remains:
 ## Weekly audit
 
 Prioritization is not a one-time decision. It is a regular review.
+If you want it to actually happen, add an if-then trigger: "if it's Sunday 5pm, then I run the audit for 20 minutes"<sup>[2](#concept-implementation-intentions)</sup>.
 
 Simple audit:
 1. empty your open tasks
@@ -172,3 +176,31 @@ Take your current list and force yourself to do only this:
 
 If everything still looks equally important after that, the problem is not sorting. It is refusal to renounce.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits: Human Needs and the Self-Determination of Behavior* — [Psychological Inquiry](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-implementation-intentions"></a>2) **Implementation intentions (if-then plans)** — Gollwitzer (1999), *Implementation Intentions: Strong Effects of Simple Plans* — [American Psychologist](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-goal-setting"></a>3) **Goal Setting Theory** — Locke & Latham (2002), *Building a Practically Useful Theory of Goal Setting and Task Motivation* — [American Psychologist](https://doi.org/10.1037/0003-066X.57.9.705)
+
+<a id="ref-procrastination"></a>4) **Procrastination (synthesis)** — Steel (2007), *The nature of procrastination: a meta-analytic and theoretical review of quintessential self-regulatory failure* — [Psychological Bulletin](https://doi.org/10.1037/0033-2909.133.1.65)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-sdt"></a>#### SDT: self-concordant priorities
+When your priorities align with your values (autonomy) and offer visible progress (competence), it is easier to hold the line over time.
+Scientific source: [1](#ref-sdt)
+
+<a id="concept-implementation-intentions"></a>#### Implementation intentions: make reviews inevitable
+Review habits work best when anchored to a fixed cue (day/time/place). If-then planning protects your audit against decision fatigue.
+Scientific source: [2](#ref-implementation-intentions)
+
+<a id="concept-goal-setting"></a>#### Goal setting: fewer targets, clearer feedback
+The fewer competing priorities you keep active, the clearer your feedback loops become. That clarity improves persistence.
+Scientific source: [3](#ref-goal-setting)
+
+<a id="concept-procrastination"></a>#### Procrastination: noise, ambiguity, decision costs
+Overloaded lists increase ambiguity and decision cost, which makes avoidance more attractive. Prioritization reduces the escape terrain.
+Scientific source: [4](#ref-procrastination)

@@ -29,7 +29,7 @@ The logic of the module has four steps:
 
 ## 1. Measure before you optimize
 
-Most people are wrong about how their time is actually used. They overestimate deep work and underestimate fragmentation.
+Most people are wrong about how their time is actually used. They overestimate deep work and underestimate fragmentation<sup>[1](#concept-task-switching)</sup>.
 
 So the right starting point is not a new schedule. It is an audit.
 
@@ -55,7 +55,7 @@ Timeboxing alone is not enough, because it often assumes every hour is equal.
 
 It is not.
 
-Your **Biological Prime Time** is simply the part of the day when your clarity and mental availability are highest. That may be in the morning, afternoon, or later depending on your profile.
+Your **Biological Prime Time**<sup>[2](#concept-chronotype)</sup> is simply the part of the day when your clarity and mental availability are highest. That may be in the morning, afternoon, or later depending on your profile.
 
 Map three zones:
 - **peak** - creation, strategy, difficult problems
@@ -89,7 +89,7 @@ Timeboxing is still useful, but only if:
 The classic traps remain the same:
 - what-aboutism
 - forgetting that the system should evolve
-- psychological reactance when your own calendar starts to feel like a prison
+- psychological reactance<sup>[4](#concept-reactance)</sup> when your own calendar starts to feel like a prison
 
 The right use is experimental, not military.
 
@@ -113,7 +113,7 @@ A large part of productivity comes from no longer letting the outside world deci
 - filling every gap without leaving air
 - mistaking a stimulating break for a real break
 
-Scrolling is not recovery. A real break gives energy back to the system.
+Scrolling is not recovery<sup>[3](#concept-mental-fatigue)</sup>. A real break gives energy back to the system.
 
 ## The module logic
 
@@ -157,3 +157,33 @@ For two weeks:
 3. identify one peak, one medium zone, and one trough
 4. only then change the placement of three task types in your day
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-task-switching"></a>1) **Task-switching costs** — J. Monsell (2003), *Task switching* — [Trends in Cognitive Sciences (DOI)](https://doi.org/10.1016/S1364-6613(03)00028-7)
+
+<a id="ref-attention-residue"></a>2) **Attention residue** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-chronotype"></a>3) **Chronotype (morningness/eveningness)** — J. Taillard et al. (2004), *Validation of Horne and Ostberg Morningness-Eveningness Questionnaire in a Middle-Aged Population of French Workers* — [Journal of Biological Rhythms (DOI)](https://doi.org/10.1177/0748730403259849)
+
+<a id="ref-mental-fatigue"></a>4) **Mental fatigue and performance** — Maarten A. S. Boksem & Mattie Tops (2008), *Mental fatigue: costs and benefits* — [Brain Research Reviews (DOI)](https://doi.org/10.1016/j.brainresrev.2008.07.001)
+
+<a id="ref-reactance"></a>5) **Psychological reactance** — Jack W. Brehm (1966), *A Theory of Psychological Reactance* — [APA PsycNet](https://psycnet.apa.org/record/1966-10800-000)
+
+### Deepening the technical concepts
+
+<a id="concept-task-switching"></a>#### Fragmentation and switching costs
+Fragmentation increases the number of transitions (decide, reload context, restart). Even if each switch feels small, the accumulation costs restart time and increases errors.
+Source scientifique : [1](#ref-task-switching), [2](#ref-attention-residue)
+
+<a id="concept-chronotype"></a>#### Chronotype (Biological Prime Time)
+Chronotype affects when your alertness and cognitive performance are most available. The “prime time” idea is to protect those windows for high-demand work.
+Source scientifique : [3](#ref-chronotype)
+
+<a id="concept-mental-fatigue"></a>#### Mental fatigue and recovery
+Mental fatigue reduces control capacity and performance quality even if you “have time”. This is why a stimulating break (distraction) is not the same as a restorative break (recovery).
+Source scientifique : [4](#ref-mental-fatigue)
+
+<a id="concept-reactance"></a>#### Psychological reactance
+When a system feels imposed, it can trigger a drive to restore freedom, sometimes by sabotaging the schedule. A good system aims for sustainability and choice, not rigidity.
+Source scientifique : [5](#ref-reactance)

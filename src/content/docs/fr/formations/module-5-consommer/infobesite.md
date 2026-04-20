@@ -10,6 +10,8 @@ Le problème moderne n'est pas seulement qu'il y a trop d'information. C'est que
 
 > L'infobésité n'est pas un manque de discipline morale. C'est un système sans filtres, sans limites, et sans logique de sortie.
 
+Dans un monde riche en information, l'attention devient la ressource rare<sup>[1](#concept-attention-scarcity)</sup>. Et quand l'attention est rare, beaucoup de systèmes optimisent la capture plutôt que l'utilité<sup>[2](#concept-attention-economy)</sup> : c'est exactement comme ça que l'infobésité se fabrique.
+
 ## Le vrai sujet : reprendre le contrôle du flux
 
 Sortir de l'infobésité ne veut pas dire devenir ignorant ou déconnecté. Cela veut dire :
@@ -148,6 +150,8 @@ Le bon système enlève des occasions de dérive :
 - moins de newsletters passives
 - moins d'entrées algorithmiques non choisies
 
+Ce que tu cherches au fond, ce n'est pas une “discipline” abstraite. C'est un meilleur design de filtres et de limites, parce que l'infobésité est aussi un problème de traitement et de priorisation<sup>[3](#concept-information-overload)</sup>.
+
 Quelques règles utiles :
 - désabonne-toi de ce que tu n'ouvres plus vraiment
 - regroupe la veille au lieu de la subir en continu
@@ -185,6 +189,30 @@ Une bonne diète informationnelle se reconnaît à ceci :
 - tu ressors plus souvent avec une idée exploitable
 
 Tu peux alors consommer moins et pourtant mieux progresser.
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-simon-attention"></a>1) **Rareté de l’attention (attention scarcity)** — Herbert A. Simon (1971), *Designing Organizations for an Information-Rich World* — [PDF](https://veryinteractive.net/pdfs/simon_designing-organizations-for-an-information-rich-world.pdf)
+
+<a id="ref-goldhaber-attention-economy"></a>2) **Économie de l’attention (attention economy)** — Michael H. Goldhaber (1997), *The attention economy and the Net* — [First Monday](https://firstmonday.org/ojs/index.php/fm/article/view/519)
+
+<a id="ref-eppler-mengis-overload"></a>3) **Concept de surcharge informationnelle** — Martin J. Eppler & Jeanne Mengis (2004), *The Concept of Information Overload* — [Taylor & Francis Online](https://www.tandfonline.com/doi/abs/10.1080/01972240490507974)
+
+<a id="ref-bawden-robinson-overload"></a>4) **Surcharge, anxiété et paradoxes de l’information** — David Bawden & Lyn Robinson (2009), *The dark side of information: overload, anxiety and other paradoxes and pathologies* — [SAGE Journals](https://journals.sagepub.com/doi/10.1177/0165551508095781)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-attention-scarcity"></a>#### Rareté de l’attention
+Quand l’information devient abondante, l’attention devient le goulot d’étranglement. Tu n’as pas un problème de “quantité de contenus”; tu as un problème d’allocation d’attention.
+Source : [1](#ref-simon-attention)
+
+<a id="concept-attention-economy"></a>#### Économie de l’attention
+Si l’attention est la ressource rare, beaucoup de produits numériques cherchent à la capter, la retenir, puis la monétiser. Ça pousse mécaniquement vers des feeds, des recommandations et des boucles sans fin.
+Source : [2](#ref-goldhaber-attention-economy)
+
+<a id="concept-information-overload"></a>#### Surcharge informationnelle (information overload)
+La surcharge apparaît quand l’entrée (volume, complexité, vitesse) dépasse la capacité de traitement (temps, mémoire de travail, contexte). Résultat : fatigue, erreurs de jugement, et sentiment d’être “en retard”.
+Sources : [3](#ref-eppler-mengis-overload), [4](#ref-bawden-robinson-overload)
 
 ## Workflow recommandé
 

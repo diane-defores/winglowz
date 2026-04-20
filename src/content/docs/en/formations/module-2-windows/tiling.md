@@ -10,9 +10,9 @@ sidebar:
 
 ## Why window management matters
 
-How many times a day do you use Alt+Tab to find a lost window? How many times do you resize two windows side by side by hand? Those micro-interruptions break your concentration.
+How many times a day do you use Alt+Tab<sup>[2](#concept-task-switching-cost)</sup> to find a lost window? How many times do you resize two windows side by side by hand? Those micro-interruptions<sup>[1](#concept-attention-residue)</sup> break your concentration.
 
-**Tiling** (automatic window layout) solves that problem. Every window has its place, visible and reachable, without overlap.
+**Tiling** (automatic window layout) solves that problem. Every window has its place, visible and reachable, without overlap<sup>[3](#concept-visual-clutter)</sup>.
 
 ## FancyZones: the reference on Windows
 
@@ -170,3 +170,29 @@ The ultimate goal: never touch the mouse to organize your windows. Here is a typ
 - [Divvy](https://mizage.com/divvy/) - grid-based window placement.
 - [GlazeWM](https://glazewm.com/) - automatic tiling on Windows, i3-style.
 - [Komorebi](https://github.com/LGUG2Z/komorebi) - the scriptable tiling manager for Windows.
+
+## Chapter References (Go Further)
+
+<a id="ref-attention-residue"></a>1) **Attention residue** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-task-switching"></a>2) **Task switching costs** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive Control of Cognitive Processes in Task Switching* — [Journal of Experimental Psychology: Human Perception and Performance, APA](https://psycnet.apa.org/record/2001-06771-013)
+
+<a id="ref-visual-clutter"></a>3) **Visual clutter (measurement and attention impact)** — Ruth Rosenholtz, Yuanzhen Li, Joanna Mansfield & Zhenlan Jin (2007), *Measuring visual clutter* — [Journal of Vision](https://jov.arvojournals.org/article.aspx?articleid=2121507)
+
+<a id="ref-powertoys-fancyzones"></a>4) **FancyZones (official documentation)** — Microsoft PowerToys — [FancyZones utility](https://learn.microsoft.com/windows/powertoys/fancyzones)
+
+<a id="ref-windows-snap"></a>5) **Snap (native shortcuts)** — Microsoft Support — [Snap your windows](https://support.microsoft.com/windows/snap-your-windows-9acb0e3a-9dcd-48c6-9a69-b62e6f209aa1)
+
+## Technical Concept Deep Dives
+
+<a id="concept-attention-residue"></a>#### Attention residue (micro-interruptions)
+Each interruption often leaves a mental “trace” of the previous context. A structured workspace reduces the resumption work needed when you return to the task.
+Scientific source: [1](#ref-attention-residue)
+
+<a id="concept-task-switching-cost"></a>#### Task switching costs (Alt+Tab)
+Switching between windows and contexts has a cost: you have to recover state, the next action, and the thread. Fewer switches and more repeatable placement reduces that cost.
+Scientific source: [2](#ref-task-switching)
+
+<a id="concept-visual-clutter"></a>#### Visual clutter (overlap, “lost windows”)
+Visual clutter increases the difficulty of selection and visual search. Tiling reduces overlap and makes the scene more legible, which helps you find the right window faster.
+Scientific source: [3](#ref-visual-clutter)

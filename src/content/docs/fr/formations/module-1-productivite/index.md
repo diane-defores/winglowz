@@ -35,7 +35,7 @@ Quand tu te sens "pas productif", le problème vient généralement d'un de ces 
 
 Autrement dit, la productivité n'est pas un trait de caractère. C'est une combinaison de :
 - **choix**
-- **attention**
+- **attention**<sup>[1](#concept-attention)</sup>
 - **énergie**
 - **exécution**
 
@@ -84,7 +84,7 @@ Avant d'ajouter un outil, une routine ou une méthode, vérifie :
 - est-ce que je travaille sur la bonne chose ?
 - est-ce que le prochain geste est clair ?
 - est-ce que mon environnement aide ou gêne ?
-- est-ce que j'optimise un vrai problème ou seulement une gêne secondaire ?
+- est-ce que j'optimise un vrai problème ou seulement une gêne secondaire ?<sup>[2](#concept-friction)</sup>
 
 Cette règle évite une grande partie de la fausse productivité.
 
@@ -107,3 +107,39 @@ Avant de continuer la formation, écris en une phrase :
 
 Si tu peux répondre clairement à ces trois points, tu suivras le reste du cours avec beaucoup plus de précision.
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-attention"></a>1) **Attention (bande passante)** — Daniel Kahneman (1973), *Attention and Effort* — [Google Books](https://books.google.com/books?id=qPc9AAAAMAAJ)
+
+<a id="ref-friction"></a>2) **Friction et design de choix (nudges)** — Thaler & Sunstein (2008), *Nudge: Improving Decisions About Health, Wealth, and Happiness* — [Yale University Press](https://yalebooks.yale.edu/book/9780300122237/nudge/)
+
+<a id="ref-working-memory"></a>3) **Mémoire de travail (capacité)** — Nelson Cowan (2001), *The magical number 4 in short-term memory* — [Cambridge](https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/magical-number-4-in-shortterm-memory-a-reconsideration-of-mental-storage-capacity/7C80E8B9A12A1C1A4E23A8FD6CFA9A0C)
+
+<a id="ref-cognitive-load"></a>4) **Charge cognitive** — John Sweller (1988), *Cognitive load during problem solving* — [DOI](https://doi.org/10.1207/s15516709cog1202_4)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-attention"></a>#### Attention (bande passante)
+
+L'attention est une ressource limitée : quand elle est dispersée, la qualité d'exécution baisse, même si le temps “sur le papier” existe.
+
+Source scientifique : [1](#ref-attention)
+
+<a id="concept-friction"></a>#### Friction (coûts de passage à l'action)
+
+La friction n'est pas seulement “psychologique”. Ce sont aussi des coûts concrets (effort, clics, micro-décisions) qui rendent une action moins probable.
+
+Source scientifique : [2](#ref-friction)
+
+<a id="concept-working-memory"></a>#### Mémoire de travail (capacité limitée)
+
+La mémoire de travail est limitée. Quand tu la surcharge, tu perds en clarté et en capacité de choix.
+
+Source scientifique : [3](#ref-working-memory)
+
+<a id="concept-cognitive-load"></a>#### Charge cognitive (apprendre/exécuter sans saturer)
+
+Un système efficace réduit la charge inutile pour préserver ce qui sert vraiment la tâche.
+
+Source scientifique : [4](#ref-cognitive-load)

@@ -8,7 +8,7 @@ sidebar:
 
 Before adding productivity tools, you need a system that is not already slowing you down underneath.
 
-> A productive Windows workstation does not begin with tweaks. It begins with a base that is healthy, visible, backed up, and coherent enough for your real work.
+> A productive Windows workstation does not begin with tweaks. It begins with a base that is healthy, visible, backed up<sup>[1](#concept-backup-recovery)</sup>, and coherent enough for your real work.
 
 ## The real issue: stabilize the foundation
 
@@ -25,8 +25,8 @@ When a machine feels slow, unstable, or painful, ask four questions:
 
 1. **Is this a real hardware problem, or mainly clutter, disorder, and maintenance debt?**
 2. **Do I actually know where my important files live and how to recover them?**
-3. **Are my installs and settings replayable, or is everything stored only in my memory?**
-4. **What is the real bottleneck: storage, RAM, network, software noise, or insufficient hardware?**
+3. **Are my installs and settings replayable<sup>[2](#concept-configuration-management)</sup>, or is everything stored only in my memory?**
+4. **What is the real bottleneck: storage, RAM<sup>[3](#concept-working-set)</sup>, network, software noise, or insufficient hardware?**
 
 ## 1. See before you clean
 
@@ -233,3 +233,29 @@ Do a simple machine audit:
 
 If you cannot answer those 4 points clearly, the problem is not yet “optimize Windows.” The problem is first to make the workstation legible.
 :::
+
+## Chapter References (Go Further)
+
+<a id="ref-nist-contingency"></a>1) **Backup and recovery (contingency planning)** — NIST (2010), *SP 800-34 Rev. 1: Contingency Planning Guide for Federal Information Systems* — [NIST](https://csrc.nist.gov/publications/detail/sp/800-34/rev-1/final)
+
+<a id="ref-nist-config-mgmt"></a>2) **Configuration management** — NIST (2011), *SP 800-128: Guide for Security-Focused Configuration Management of Information Systems* — [NIST](https://csrc.nist.gov/publications/detail/sp/800-128/final)
+
+<a id="ref-working-set"></a>3) **Working set (memory, RAM, paging)** — Peter J. Denning (1968), *The Working Set Model for Program Behavior* — [DOI](https://doi.org/10.1145/363095.363141)
+
+<a id="ref-winget"></a>4) **Windows Package Manager (winget)** — Microsoft Learn — [winget](https://learn.microsoft.com/windows/package-manager/winget/)
+
+<a id="ref-storage-sense"></a>5) **Storage Sense (automatic cleanup)** — Microsoft Support — [Storage Sense in Windows](https://support.microsoft.com/windows/storage-sense-in-windows-5f6753f0-4b99-42a7-8f6e-5a9a0b8dfc8e)
+
+## Technical Concept Deep Dives
+
+<a id="concept-backup-recovery"></a>#### Backup and recovery (continuity)
+A backup strategy is a productivity lever because it determines your resumption time after an incident (failure, theft, mistake). The goal is not “zero risk”, but clear, fast recovery.
+Scientific source: [1](#ref-nist-contingency)
+
+<a id="concept-configuration-management"></a>#### Replayable setup (configuration management)
+Making an install “replayable” is about explicitly managing configuration (what is installed, how, and in what order). You reduce reliance on memory and reduce drift over time.
+Scientific source: [2](#ref-nist-config-mgmt)
+
+<a id="concept-working-set"></a>#### Working set (RAM, tabs, multitasking)
+When your working set exceeds available RAM, the system compensates with disk activity (paging), which severely hurts responsiveness. That is why “too many tabs” plus “not enough RAM” quickly becomes real friction.
+Scientific source: [3](#ref-working-set)

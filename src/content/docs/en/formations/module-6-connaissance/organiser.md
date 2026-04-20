@@ -10,6 +10,8 @@ Without organization, your knowledge base becomes a graveyard of files. Organizi
 
 > The best organization system is the one you actually use. Simplicity beats perfection.
 
+At this level, you are already doing **knowledge management**: turning scattered know-how into reusable artifacts (notes, files, procedures)<sup>[1](#concept-knowledge-management)</sup>. You also reduce cognitive load by externalizing decisions and cues (names, tags, locations) into the system<sup>[2](#concept-cognitive-offloading)</sup>.
+
 ## Minimum viable PKM: do not organize everything in the same place
 
 The classic mistake is trying to put into a single tool:
@@ -167,3 +169,19 @@ MoviePrint generates contact sheets from videos - ideal for visually cataloging 
 3. **Archive instead of deleting** - storage is cheap, your data is not
 4. **Automate what can be automated** - batch renaming, date sorting, automatic moves
 5. **Review your structure every 3 months** - adapt it to your current projects
+
+### Chapter references (go further)
+
+<a id="ref-knowledge-management"></a>1) **Knowledge management (tacit to explicit)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+<a id="ref-cognitive-offloading"></a>2) **Cognitive offloading / external memory** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+### Deep dive: Technical concepts
+
+<a id="concept-knowledge-management"></a>#### Knowledge management
+The goal is not “nice folders.” The goal is making knowledge transferable and actionable through stable naming, stable locations, metadata, and maintenance routines.
+Scientific source: [1](#ref-knowledge-management)
+
+<a id="concept-cognitive-offloading"></a>#### Cognitive offloading and externalized decisions
+Good organization prevents you from repeatedly “recomputing” where things live. You externalize micro-decisions (where to store, how to name, how to find) into stable conventions.
+Scientific source: [2](#ref-cognitive-offloading)

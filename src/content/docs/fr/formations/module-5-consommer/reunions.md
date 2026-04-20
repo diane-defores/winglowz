@@ -10,6 +10,8 @@ Les réunions sont une forme de consommation imposée. Elles mangent du temps, d
 
 > Le problème n'est pas seulement d'avoir trop de réunions. C'est de laisser les autres décider quand ton attention doit être interrompue.
 
+La fatigue n'est pas qu'une impression : la visioconférence peut ajouter une surcharge non verbale (hyper-gaze, auto-vision, effort de décodage) qui augmente le coût cognitif<sup>[1](#concept-nonverbal-overload)</sup>.
+
 ## Le vrai sujet
 
 Dans ce module, une réunion n'est pas d'abord un outil de collaboration. C'est un **coût cognitif** qu'il faut justifier.
@@ -43,7 +45,7 @@ Cela donne quatre sorties possibles :
 - les invitations "au cas où"
 - les journées fragmentées par des appels dispersés
 
-La réunion la plus chère n'est pas forcément la plus longue. C'est celle qui casse une période de travail profond pour un résultat flou.
+La réunion la plus chère n'est pas forcément la plus longue. C'est celle qui casse une période de travail profond pour un résultat flou, et laisse un résidu d'attention avant même ton retour au travail<sup>[2](#concept-attention-residue)</sup>.
 
 ## Async vs sync : le bon canal
 
@@ -101,9 +103,31 @@ Je le traiterais comme un outil plus niche et plus personnel, pas comme la recom
 
 - regroupe les appels plutôt que de les disperser
 - bloque des demi-journées sans réunions
-- autorise caméra off pour les réunions purement informatives
+- autorise caméra off pour les réunions purement informatives (réduit la surcharge non verbale)<sup>[1](#concept-nonverbal-overload)</sup>
 - limite le nombre de vraies réunions dans une journée
 - protège tes heures de pic d'énergie contre les appels de faible valeur
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-bailenson-nonverbal-overload"></a>1) **Zoom fatigue / surcharge non verbale** — Jeremy N. Bailenson (2021), *Nonverbal Overload: A Theoretical Argument for the Causes of Zoom Fatigue* — [APA Open](https://tmb.apaopen.org/pub/nonverbal-overload)
+
+<a id="ref-fauville-zef-scale"></a>2) **Mesurer la fatigue (ZEF Scale)** — Guillaume Fauville et al. (2021), *Zoom Exhaustion & Fatigue Scale* — [ScienceDirect](https://www.sciencedirect.com/science/article/am/pii/S2451958821000671)
+
+<a id="ref-leroy-attention-residue"></a>3) **Résidu d'attention (attention residue)** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-nonverbal-overload"></a>#### Surcharge non verbale (Zoom fatigue)
+En visio, tu peux subir davantage de signaux à gérer (regard de groupe, auto-vision, attention soutenue sur visages proches) et moins d’indices naturels (micro-déplacements, pauses, spatialisation). Résultat : un coût cognitif plus élevé et une fatigue plus rapide.
+Source : [1](#ref-bailenson-nonverbal-overload)
+
+<a id="concept-zef-scale"></a>#### ZEF Scale (Zoom Exhaustion & Fatigue Scale)
+Un outil de mesure (questionnaire) pour quantifier plusieurs dimensions de fatigue liées à la visioconférence (générale, sociale, émotionnelle, visuelle, motivationnelle). Utile pour objectiver “on a trop de calls” et tester des changements (durée, regroupement, caméra, pauses).
+Source : [2](#ref-fauville-zef-scale)
+
+<a id="concept-attention-residue"></a>#### Résidu d’attention (après une réunion)
+Une réunion peut laisser du contexte ouvert (décisions, tensions, to-dos) qui continue à occuper une partie de l’attention lorsque tu reviens à la tâche suivante. D’où l’intérêt de clôturer (actions, next steps) et de regrouper les réunions.
+Source : [3](#ref-leroy-attention-residue)
 
 ## Workflow recommandé
 

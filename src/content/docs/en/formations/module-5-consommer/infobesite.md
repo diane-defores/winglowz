@@ -10,6 +10,8 @@ The modern problem is not only that there is too much information. It is that yo
 
 > Information overload is not a moral failure or a lack of willpower. It is what happens when there are no filters, no limits, and no output logic.
 
+In an information-rich world, attention becomes the scarce resource<sup>[1](#concept-attention-scarcity)</sup>. And when attention is scarce, many systems optimize capture before usefulness<sup>[2](#concept-attention-economy)</sup>: that is how overload gets manufactured.
+
 ## The real issue: regain control of the flow
 
 Escaping information overload does not mean becoming uninformed or disconnected. It means:
@@ -148,6 +150,8 @@ The right system removes opportunities for drift:
 - fewer passive newsletters
 - fewer algorithmic inputs you did not choose
 
+What you really want is not abstract “discipline.” It is better filter and boundary design, because overload is also a processing and prioritization problem<sup>[3](#concept-information-overload)</sup>.
+
 Useful rules:
 - unsubscribe from what you no longer genuinely open
 - batch monitoring instead of receiving it continuously
@@ -185,6 +189,30 @@ A good information diet looks like this:
 - you come out more often with something usable
 
 That is how you consume less and still progress more.
+
+### Chapter references (to go further)
+
+<a id="ref-simon-attention"></a>1) **Attention scarcity** — Herbert A. Simon (1971), *Designing Organizations for an Information-Rich World* — [PDF](https://veryinteractive.net/pdfs/simon_designing-organizations-for-an-information-rich-world.pdf)
+
+<a id="ref-goldhaber-attention-economy"></a>2) **Attention economy** — Michael H. Goldhaber (1997), *The attention economy and the Net* — [First Monday](https://firstmonday.org/ojs/index.php/fm/article/view/519)
+
+<a id="ref-eppler-mengis-overload"></a>3) **Information overload concept review** — Martin J. Eppler & Jeanne Mengis (2004), *The Concept of Information Overload* — [Taylor & Francis Online](https://www.tandfonline.com/doi/abs/10.1080/01972240490507974)
+
+<a id="ref-bawden-robinson-overload"></a>4) **Overload, anxiety, and information pathologies** — David Bawden & Lyn Robinson (2009), *The dark side of information: overload, anxiety and other paradoxes and pathologies* — [SAGE Journals](https://journals.sagepub.com/doi/10.1177/0165551508095781)
+
+### Deeper technical concepts
+
+<a id="concept-attention-scarcity"></a>#### Attention scarcity
+When information becomes abundant, attention becomes the bottleneck. Your real constraint is not “how much content exists,” but how you allocate attention.
+Source: [1](#ref-simon-attention)
+
+<a id="concept-attention-economy"></a>#### Attention economy
+If attention is the scarce resource, many digital products try to capture, retain, and monetize it. That mechanically pushes toward feeds, recommendations, and endless loops.
+Source: [2](#ref-goldhaber-attention-economy)
+
+<a id="concept-information-overload"></a>#### Information overload
+Overload emerges when inputs (volume, complexity, speed) exceed processing capacity (time, working memory, context). The output is fatigue, poorer judgment, and a “always behind” feeling.
+Sources: [3](#ref-eppler-mengis-overload), [4](#ref-bawden-robinson-overload)
 
 ## Recommended workflow
 

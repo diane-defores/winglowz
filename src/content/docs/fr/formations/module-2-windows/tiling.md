@@ -10,9 +10,9 @@ sidebar:
 
 ## Pourquoi la gestion des fenêtres compte
 
-Combien de fois par jour fais-tu Alt+Tab pour retrouver une fenêtre perdue ? Combien de fois redimensionnes-tu manuellement deux fenêtres côte à côte ? Ces micro-interruptions cassent ta concentration.
+Combien de fois par jour fais-tu Alt+Tab<sup>[2](#concept-task-switching-cost)</sup> pour retrouver une fenêtre perdue ? Combien de fois redimensionnes-tu manuellement deux fenêtres côte à côte ? Ces micro-interruptions<sup>[1](#concept-attention-residue)</sup> cassent ta concentration.
 
-Le **tiling** (disposition automatique des fenêtres) résout ce problème. Chaque fenêtre a sa place, visible et accessible, sans chevauchement.
+Le **tiling** (disposition automatique des fenêtres) résout ce problème. Chaque fenêtre a sa place, visible et accessible, sans chevauchement<sup>[3](#concept-visual-clutter)</sup>.
 
 ## FancyZones : la référence sur Windows
 
@@ -170,3 +170,29 @@ L'objectif ultime : ne jamais toucher la souris pour organiser tes fenêtres. Vo
 - [Divvy](https://mizage.com/divvy/) - la gestion de fenêtres par grille.
 - [GlazeWM](https://glazewm.com/) - le tiling automatique façon i3 sur Windows.
 - [Komorebi](https://github.com/LGUG2Z/komorebi) - l'autre gestionnaire de tiling scriptable pour Windows.
+
+## Références du chapitre (pour aller plus loin)
+
+<a id="ref-attention-residue"></a>1) **Résidu d'attention (attention residue)** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-task-switching"></a>2) **Coûts du changement de tâche (task switching)** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive Control of Cognitive Processes in Task Switching* — [Journal of Experimental Psychology: Human Perception and Performance, APA](https://psycnet.apa.org/record/2001-06771-013)
+
+<a id="ref-visual-clutter"></a>3) **Clutter visuel (mesure et impact sur l’attention)** — Ruth Rosenholtz, Yuanzhen Li, Joanna Mansfield & Zhenlan Jin (2007), *Measuring visual clutter* — [Journal of Vision](https://jov.arvojournals.org/article.aspx?articleid=2121507)
+
+<a id="ref-powertoys-fancyzones"></a>4) **FancyZones (documentation officielle)** — Microsoft PowerToys — [FancyZones utility](https://learn.microsoft.com/windows/powertoys/fancyzones)
+
+<a id="ref-windows-snap"></a>5) **Snap (raccourcis natifs)** — Microsoft Support — [Snap your windows](https://support.microsoft.com/windows/snap-your-windows-9acb0e3a-9dcd-48c6-9a69-b62e6f209aa1)
+
+## Approfondissement des concepts techniques
+
+<a id="concept-attention-residue"></a>#### Résidu d’attention (micro-interruptions)
+Chaque interruption te laisse souvent avec un “reste” mental du contexte précédent. Structurer l’espace de travail réduit la part de reprise nécessaire quand tu reviens à la tâche.
+Source scientifique : [1](#ref-attention-residue)
+
+<a id="concept-task-switching-cost"></a>#### Coûts du changement de tâche (Alt+Tab)
+Basculer entre fenêtres et contextes a un coût: il faut retrouver l’état, la prochaine action, et reconstituer le fil. Moins de bascules et plus de placements reproductibles diminuent ce coût.
+Source scientifique : [2](#ref-task-switching)
+
+<a id="concept-visual-clutter"></a>#### Clutter visuel (chevauchement, “fenêtres perdues”)
+Le désordre visuel augmente la difficulté de recherche et de sélection. Le tiling réduit le chevauchement et rend la scène plus “lisible”, ce qui aide à retrouver vite la bonne fenêtre.
+Source scientifique : [3](#ref-visual-clutter)

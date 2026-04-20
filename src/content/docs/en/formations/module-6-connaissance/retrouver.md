@@ -20,6 +20,8 @@ In a strong PKM system, you retrieve information in several ways:
 - through **links**
 - through **fast access**
 
+In cognitive science, retrieval is heavily dependent on the **cues** available when you search<sup>[1](#concept-retrieval-cues)</sup>. A strong PKM manufactures those cues (links, naming, tags, context) and lowers access cost, which makes reuse more frequent and more reliable<sup>[2](#concept-cognitive-offloading)</sup>.
+
 If your system depends only on perfect text search, it remains fragile.
 
 ## The Winflowz decision framework
@@ -209,3 +211,25 @@ For each one, ask:
 
 If you use the same tool for everything, or never know where to search, your problem is not memory. It is retrieval architecture.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-encoding-specificity"></a>1) **Retrieval cues / encoding specificity** — Tulving & Thomson (1973), *Encoding specificity and retrieval processes in episodic memory* — [Psychological Review (APA)](https://doi.org/10.1037/h0020071)
+
+<a id="ref-cognitive-offloading"></a>2) **Cognitive offloading / external memory** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-retrieval-practice"></a>3) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+### Deep dive: Technical concepts
+
+<a id="concept-retrieval-cues"></a>#### Retrieval cues and encoding specificity
+You retrieve better when the cues available at search time resemble those present at encoding time. That is why links, stable titles, context, and metadata matter: they create multiple entry points.
+Scientific source: [1](#ref-encoding-specificity)
+
+<a id="concept-cognitive-offloading"></a>#### External memory (cognitive offloading)
+A PKM reduces the need to “hold everything in mind” by externalizing information into searchable artifacts (notes, links, files). The less you depend on a perfect keyword in biological memory, the more reliable retrieval becomes.
+Scientific source: [2](#ref-cognitive-offloading)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice
+When you reuse your notes (write, explain, decide), you are doing a form of active recall. The more your system makes that reuse easy, the more you convert stored information into usable knowledge.
+Scientific source: [3](#ref-retrieval-practice)

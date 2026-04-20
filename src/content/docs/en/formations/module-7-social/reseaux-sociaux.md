@@ -49,7 +49,7 @@ The goal is not to optimize your addiction. The goal is to control the channel.
 ## The real goal
 
 The real goal is not only to save time. It is:
-- less daily fragmentation
+- less daily fragmentation<sup>[1](#concept-media-multitasking)</sup>
 - a more coherent presence
 - a repeatable publishing system
 - monitoring that stays proportional
@@ -154,8 +154,8 @@ Engagement should not turn into continuous presence.
 Simple rule:
 - 10 to 20 minutes
 - once or twice a day max
-- limited notifications
-- no infinite feed "just checking"
+- limited notifications<sup>[2](#concept-interruptions)</sup>
+- no infinite feed "just checking"<sup>[3](#concept-communication-overload)</sup>
 
 ### 4. Explicit monitoring
 
@@ -193,3 +193,25 @@ For one week:
 3. remove or freeze the ones with no clear reason
 4. only then choose the tool that fits your actual level of presence
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-media-multitasking"></a>1) **Media multitasking** — Eyal Ophir, Clifford Nass, Anthony D. Wagner (2009), *Cognitive control in media multitaskers* — [PNAS (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC2747164/)
+
+<a id="ref-interruptions"></a>2) **Interruptions and resumption cost** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [UCI PDF](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+<a id="ref-communication-overload"></a>3) **Communication overload (alerts, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+### Technical concept deep dive
+
+<a id="concept-media-multitasking"></a>#### Media multitasking
+Social platforms push rapid alternation between content, notifications, and messages. More switching means more fragmented attention. The systems takeaway: separate creation, engagement, and monitoring into distinct windows.
+Scientific source: [1](#ref-media-multitasking)
+
+<a id="concept-interruptions"></a>#### Interruptions and resumption cost
+A notification does not only interrupt your time: it interrupts your thread. The systems takeaway: reduce interruption frequency and keep engagement windows short and bounded.
+Scientific source: [2](#ref-interruptions)
+
+<a id="concept-communication-overload"></a>#### Communication overload (alerts, notifications)
+Overload often comes from micro-signals (badges, alerts) that keep you on standby. The systems takeaway: cut non-essential alerts and avoid feeds as a "default state".
+Scientific source: [3](#ref-communication-overload)

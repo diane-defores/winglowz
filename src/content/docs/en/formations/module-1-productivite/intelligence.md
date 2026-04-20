@@ -32,7 +32,7 @@ Many people stall not because they do too little work, but because they carry to
 - is this the right time?
 - is this important enough?
 
-Every choice has a cognitive cost. When that cost accumulates:
+Every choice has a cognitive cost<sup>[1](#concept-mental-fatigue)</sup>. When that cost accumulates:
 - you postpone the real decisions
 - you fill the day with secondary tasks
 - you consume more information to delay commitment
@@ -77,7 +77,7 @@ A good test:
 - which task would move the situation forward the most if it were really done well?
 - which task am I avoiding through secondary occupations?
 
-## Think visually when text stops being enough
+## Think visually when text stops being enough<sup>[3](#concept-external-cognition)</sup>
 
 Not everything becomes clearer through linear text.
 
@@ -109,7 +109,7 @@ Often, a few simple questions are enough:
 - when exactly did I start scattering?
 - which choice am I delaying unnecessarily?
 
-The goal is not endless introspection. The goal is recovered discernment.
+The goal is not endless introspection. The goal is recovered discernment, and catching your biases when they show up<sup>[4](#concept-biases)</sup>.
 
 ## Emotional intelligence
 
@@ -124,7 +124,7 @@ When you completely ignore your inner state, you often make worse decisions:
 A simple daily check-in already helps:
 - what am I feeling?
 - what triggered it?
-- what is it pushing me to do or avoid?
+- what is it pushing me to do or avoid?<sup>[5](#concept-emotion-regulation)</sup>
 
 ## Morning voice journal
 
@@ -173,3 +173,47 @@ If you want to act more intelligently:
 - make thinking visible when it gets fuzzy
 - use self-reflection to correct your biases
 - use AI as a clarity multiplier, not as an autopilot
+
+### Chapter references (go further)
+
+<a id="ref-mental-fatigue"></a>1) **Mental fatigue** — Boksem & Tops (2008), *Mental fatigue: Costs and benefits* — [Google Scholar](https://scholar.google.com/scholar?q=Mental+fatigue%3A+Costs+and+benefits+Boksem+Tops+2008)
+
+<a id="ref-cognitive-load"></a>2) **Cognitive load** — John Sweller (1988), *Cognitive load during problem solving* — [DOI](https://doi.org/10.1207/s15516709cog1202_4)
+
+<a id="ref-external-cognition"></a>3) **Why diagrams help** — Larkin & Simon (1987), *Why a diagram is (sometimes) worth ten thousand words* — [Google Scholar](https://scholar.google.com/scholar?q=Why+a+diagram+is+%28sometimes%29+worth+ten+thousand+words+Larkin+Simon+1987)
+
+<a id="ref-biases"></a>4) **Heuristics and biases** — Tversky & Kahneman (1974), *Judgment under uncertainty* — [DOI](https://doi.org/10.1126/science.185.4157.1124)
+
+<a id="ref-emotion-regulation"></a>5) **Emotion regulation** — James J. Gross (1998), *The emerging field of emotion regulation* — [DOI](https://doi.org/10.1037/1089-2680.2.3.271)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-mental-fatigue"></a>#### Decision fatigue (mental fatigue)
+
+As mental fatigue rises, judgment quality drops and micro-decisions become more expensive.
+
+Scientific source: [1](#ref-mental-fatigue)
+
+<a id="concept-cognitive-load"></a>#### Cognitive load (limited bandwidth)
+
+Working memory is limited. Reducing non-essential load improves clarity and comparison quality.
+
+Scientific source: [2](#ref-cognitive-load)
+
+<a id="concept-external-cognition"></a>#### Visual thinking (externalize reasoning)
+
+Diagrams and tables can make dependencies visible and reduce ambiguity compared to linear text.
+
+Scientific source: [3](#ref-external-cognition)
+
+<a id="concept-biases"></a>#### Cognitive biases (heuristics)
+
+The mind uses useful shortcuts, but they also create predictable errors. Self-reflection helps catch them.
+
+Scientific source: [4](#ref-biases)
+
+<a id="concept-emotion-regulation"></a>#### Emotion regulation (clarity under stress)
+
+Productive intelligence includes regulating reactivity so you can regain discernment before acting.
+
+Scientific source: [5](#ref-emotion-regulation)

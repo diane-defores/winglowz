@@ -8,7 +8,7 @@ sidebar:
 
 Le chat est utile pour aller vite. Mais des qu'il devient ton canal par defaut pour tout, il detruit ta concentration.
 
-Le probleme n'est pas seulement d'avoir trop d'apps ouvertes. C'est de laisser la **messagerie devenir une couche d'interruption permanente**.
+Le probleme n'est pas seulement d'avoir trop d'apps ouvertes. C'est de laisser la **messagerie devenir une couche d'interruption permanente**.<sup>[1](#concept-interruptions)</sup>
 
 > Une bonne couche de messagerie ne doit pas te rendre plus disponible. Elle doit te rendre plus selectif, plus rapide sur l'essentiel, et moins fragmenté.
 
@@ -25,7 +25,7 @@ Le probleme n'est pas seulement d'avoir trop d'apps ouvertes. C'est de laisser l
 - si un sujet vit plusieurs jours ou plusieurs semaines
 - si une action doit etre suivie formellement
 - si cinq messages remplacent un email clair ou une note partagee
-- si le canal devient surtout un distributeur de notifications
+- si le canal devient surtout un distributeur de notifications<sup>[2](#concept-communication-overload)</sup>
 
 Le chat doit accelerer. Pas devenir ton disque dur ni ta todo list.
 
@@ -47,7 +47,7 @@ Cela donne quatre sorties utiles :
 ## Le vrai objectif
 
 Le vrai objectif n'est pas d'avoir une "super app" magique. C'est :
-- moins de changements de contexte
+- moins de changements de contexte<sup>[3](#concept-media-multitasking)</sup>
 - une hiérarchie claire des canaux
 - peu de notifications sonores
 - aucun message important rate
@@ -138,3 +138,25 @@ Pendant une semaine :
 
 Ensuite seulement, decide si tu as besoin d'un outil plus ambitieux.
 :::
+
+### References du chapitre (pour aller plus loin)
+
+<a id="ref-interruptions"></a>1) **Interruptions et cout de reprise** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [PDF UCI](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+<a id="ref-communication-overload"></a>2) **Surcharge de communication (alertes, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+<a id="ref-media-multitasking"></a>3) **Multitache media** — Eyal Ophir, Clifford Nass, Anthony D. Wagner (2009), *Cognitive control in media multitaskers* — [PNAS (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC2747164/)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-interruptions"></a>#### Interruptions et cout de reprise
+Plus une messagerie te coupe souvent, plus tu payes un cout de reprise (tu relances le contexte, tu perds le fil, tu remets ton cerveau en mode "reaction"). Le point systeme: reduire la frequence des interruptions et batcher les consultations.
+Source scientifique : [1](#ref-interruptions)
+
+<a id="concept-communication-overload"></a>#### Surcharge de communication (alertes, notifications)
+Quand le chat devient un distributeur de notifications, tu entres en mode vigilance permanente. Le point systeme: une seule couche d'alertes actives, et des regles simples (snooze, lots, heures fixes).
+Source scientifique : [2](#ref-communication-overload)
+
+<a id="concept-media-multitasking"></a>#### Multitache media
+Le "multitache" est souvent une alternance rapide entre flux. Plus tu switches, plus tu fragmente ton attention et tes objectifs. Le point systeme: moins de canaux ouverts, plus de plages de traitement.
+Source scientifique : [3](#ref-media-multitasking)

@@ -13,6 +13,7 @@ Many people do not have an idea problem. They have a translation problem. They k
 ## What this module is really about
 
 This module is not here to give you more productivity tools. It is here to make action simpler than avoidance.
+It also aims to turn goals into sustainable behaviors, not just vague intentions<sup>[1](#concept-sdt)</sup>.
 
 Its logic fits into four verbs:
 - **choose** what matters
@@ -52,6 +53,7 @@ You do not need a five-year plan for this to work. You need a clear chain betwee
 ## A good goal is still a filter
 
 SMART goals remain useful if they clarify instead of becoming a template ritual.
+What research highlights most is that clear goals, challenging-but-realistic targets, and regular feedback increase follow-through<sup>[3](#concept-goal-setting)</sup>.
 
 Their real function is to force a few simple questions:
 - is it clear enough?
@@ -78,6 +80,7 @@ The right principle:
 - clear enough to finish
 
 Reverse planning stays useful on one condition: do not stop at milestones, go all the way down to real actions.
+And when you add an "IF X, THEN Y" rule, you reduce last-minute negotiation and make action more automatic<sup>[2](#concept-implementation-intentions)</sup>.
 
 ## Sequence before you stack
 
@@ -106,6 +109,7 @@ You move better when:
 - the project is not carried only by today's mood
 
 The right system reduces the need to negotiate with yourself.
+It also reduces procrastination, which is often less a character flaw and more a short-term emotion regulation pattern<sup>[4](#concept-procrastination)</sup>.
 
 ## What to avoid
 
@@ -160,3 +164,31 @@ Pick one active project and force yourself to write:
 
 If you cannot write step 4 clearly, the project is still too big.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-sdt"></a>1) **Self-Determination Theory (SDT)** — Deci & Ryan (2000), *The "What" and "Why" of Goal Pursuits: Human Needs and the Self-Determination of Behavior* — [Psychological Inquiry](https://doi.org/10.1207/S15327965PLI1104_01)
+
+<a id="ref-implementation-intentions"></a>2) **Implementation intentions (if-then plans)** — Gollwitzer (1999), *Implementation Intentions: Strong Effects of Simple Plans* — [American Psychologist](https://doi.org/10.1037/0003-066X.54.7.493)
+
+<a id="ref-goal-setting"></a>3) **Goal Setting Theory** — Locke & Latham (2002), *Building a Practically Useful Theory of Goal Setting and Task Motivation* — [American Psychologist](https://doi.org/10.1037/0003-066X.57.9.705)
+
+<a id="ref-procrastination"></a>4) **Procrastination (synthesis)** — Steel (2007), *The nature of procrastination: a meta-analytic and theoretical review of quintessential self-regulatory failure* — [Psychological Bulletin](https://doi.org/10.1037/0033-2909.133.1.65)
+
+### Deep Dive: Technical concepts
+
+<a id="concept-sdt"></a>#### SDT: autonomy, competence, relatedness
+When a goal supports autonomy (chosen), competence (visible progress), and relatedness (social connection), it is more likely to hold without relying on motivation spikes.
+Scientific source: [1](#ref-sdt)
+
+<a id="concept-implementation-intentions"></a>#### Implementation intentions: "IF X, THEN Y"
+An if-then plan turns intention into an operational trigger: you decide in advance and reduce decision load at the moment of action.
+Scientific source: [2](#ref-implementation-intentions)
+
+<a id="concept-goal-setting"></a>#### Goal setting: clarity, difficulty, feedback
+Effective goals are clear, sufficiently challenging, and tied to frequent feedback. Without feedback, momentum becomes vague and easy to drop.
+Scientific source: [3](#ref-goal-setting)
+
+<a id="concept-procrastination"></a>#### Procrastination: short-term relief vs long-term cost
+Procrastination often reflects an implicit trade: immediate relief against future cost. Reducing ambiguity, lowering friction, and bringing feedback closer reduces the need to escape.
+Scientific source: [4](#ref-procrastination)

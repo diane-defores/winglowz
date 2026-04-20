@@ -49,7 +49,7 @@ Le but n'est pas d'optimiser ton addiction. Le but est de controler ton canal.
 ## Le vrai objectif
 
 Le vrai objectif n'est pas seulement de gagner du temps. C'est :
-- moins de fragmentation quotidienne
+- moins de fragmentation quotidienne<sup>[1](#concept-media-multitasking)</sup>
 - une presence plus coherente
 - un systeme de publication reproductible
 - une veille qui reste proportionnee
@@ -154,8 +154,8 @@ L'engagement ne doit pas devenir de la presence continue.
 Regle simple :
 - 10 a 20 minutes
 - 1 ou 2 fois par jour maximum
-- notifications limitees
-- pas de feed infini "pour voir"
+- notifications limitees<sup>[2](#concept-interruptions)</sup>
+- pas de feed infini "pour voir"<sup>[3](#concept-communication-overload)</sup>
 
 ### 4. Veille explicite
 
@@ -193,3 +193,25 @@ Pendant une semaine :
 3. supprime ou gele celles sans raison claire
 4. choisis ensuite seulement l'outil adapte a ton vrai niveau de presence
 :::
+
+### References du chapitre (pour aller plus loin)
+
+<a id="ref-media-multitasking"></a>1) **Multitache media** — Eyal Ophir, Clifford Nass, Anthony D. Wagner (2009), *Cognitive control in media multitaskers* — [PNAS (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC2747164/)
+
+<a id="ref-interruptions"></a>2) **Interruptions et cout de reprise** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [PDF UCI](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+<a id="ref-communication-overload"></a>3) **Surcharge de communication (alertes, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-media-multitasking"></a>#### Multitache media
+Les reseaux poussent a alterner tres vite entre contenu, notifications et messages. Plus tu switches, plus tu fragmentes ton attention. Le point systeme: separer creation, engagement et veille en plages distinctes.
+Source scientifique : [1](#ref-media-multitasking)
+
+<a id="concept-interruptions"></a>#### Interruptions et cout de reprise
+Une notification n'interrompt pas seulement ton temps: elle interrompt ton fil. Le point systeme: limiter les interruptions, et definir des fenetres d'engagement courtes et bornees.
+Source scientifique : [2](#ref-interruptions)
+
+<a id="concept-communication-overload"></a>#### Surcharge de communication (alertes, notifications)
+L'overload vient souvent des micro-signaux (badges, alerts) qui te maintiennent en vigilance. Le point systeme: couper les alerts inutiles et eviter les feeds infinis comme "par defaut".
+Source scientifique : [3](#ref-communication-overload)

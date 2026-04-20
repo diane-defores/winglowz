@@ -10,6 +10,8 @@ Capturing and organizing are not enough. A PKM system starts generating value wh
 
 > The goal of PKM is not to store more. It is to restart more often from what you already know.
 
+Creating is both **knowledge management** (you externalize know-how into reusable artifacts)<sup>[1](#concept-knowledge-management)</sup> and a form of **active recall**: you force retrieval and reformulation instead of passive rereading<sup>[2](#concept-retrieval-practice)</sup>.
+
 ## The real issue: convert, do not just accumulate
 
 The classic trap is to capture a lot, connect a little, and never produce anything from it.
@@ -190,3 +192,19 @@ Choose one note or a small note cluster and force yourself to produce one output
 
 If you get stuck before step 4, the problem is usually a missing angle, not a missing tool.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-knowledge-management"></a>1) **Knowledge management (tacit to explicit)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+<a id="ref-retrieval-practice"></a>2) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+### Deep dive: Technical concepts
+
+<a id="concept-knowledge-management"></a>#### Externalizing knowledge (knowledge management)
+When an idea becomes a clear note, memo, doc, or procedure, it stops living only “in your head.” It becomes transferable, reusable, and improvable.
+Scientific source: [1](#ref-knowledge-management)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice through production
+Producing an output (explaining, writing, synthesizing, deciding) forces retrieval without immediate support. That retrieval cost is what strengthens learning.
+Scientific source: [2](#ref-retrieval-practice)

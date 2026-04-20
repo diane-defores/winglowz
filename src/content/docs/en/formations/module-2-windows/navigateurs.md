@@ -22,13 +22,13 @@ That way, the browser becomes:
 - an execution space
 - sometimes a work hub
 
-but not a visual junk drawer.
+but not a visual junk drawer<sup>[3](#concept-visual-clutter)</sup>.
 
 ## The Winflowz decision framework
 
 Before switching browsers or adding extensions, ask four questions:
 
-1. **Is my real problem tab chaos, distraction, slowness, or lack of control?**
+1. **Is my real problem tab chaos<sup>[1](#concept-task-switching-cost)</sup>, distraction, slowness, or lack of control?**
 2. **Do I want a browser I can tune deeply, or a strong default with little upkeep?**
 3. **Do I mostly live in web apps, or in reading/research/navigation?**
 4. **Does my browser mainly need to help me organize, block noise, or retrieve things fast?**
@@ -107,7 +107,7 @@ So:
 Having 40 tabs open is not a sign of intensity. It is often a sign that there is no system.
 
 Good tab management depends on three ideas:
-- **context**
+- **context**<sup>[2](#concept-attention-residue)</sup>
 - **closure**
 - **recovery**
 
@@ -225,3 +225,29 @@ Then:
 
 If your browser still feels exhausting after that, the problem is often less “the web” than the absence of a system.
 :::
+
+## Chapter References (Go Further)
+
+<a id="ref-task-switching"></a>1) **Task switching costs** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive Control of Cognitive Processes in Task Switching* — [Journal of Experimental Psychology: Human Perception and Performance, APA](https://psycnet.apa.org/record/2001-06771-013)
+
+<a id="ref-attention-residue"></a>2) **Attention residue** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-visual-clutter"></a>3) **Visual clutter (measurement and attention impact)** — Ruth Rosenholtz, Yuanzhen Li, Joanna Mansfield & Zhenlan Jin (2007), *Measuring visual clutter* — [Journal of Vision](https://jov.arvojournals.org/article.aspx?articleid=2121507)
+
+<a id="ref-mdn-webextensions-permissions"></a>4) **Extension permissions (WebExtensions)** — MDN — [permissions (manifest.json)](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions)
+
+<a id="ref-chrome-extension-permissions"></a>5) **Extension permissions (Chrome)** — Chrome for Developers — [Declare permissions](https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions/)
+
+## Technical Concept Deep Dives
+
+<a id="concept-task-switching-cost"></a>#### Task switching costs (tab chaos)
+The more you alternate between contexts and micro-objects (tabs, web apps, docs), the more you pay resumption costs. A tab system mainly aims to reduce those restarts.
+Scientific source: [1](#ref-task-switching)
+
+<a id="concept-attention-residue"></a>#### Attention residue (context)
+When you leave a topic, part of your attention can stay attached to the previous context. Structuring contexts (groups/workspaces) reduces dispersion when you switch projects.
+Scientific source: [2](#ref-attention-residue)
+
+<a id="concept-visual-clutter"></a>#### Visual clutter (noise)
+Too many visible elements increase the difficulty of selection and visual search. Reducing active tabs and visible extensions is also attention hygiene.
+Scientific source: [3](#ref-visual-clutter)

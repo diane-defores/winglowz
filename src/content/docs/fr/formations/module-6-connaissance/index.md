@@ -103,6 +103,8 @@ Si tu n'as qu'un classement rigide, tu ranges. Si tu as aussi des liens, tu cons
 
 Concept popularisé par Tiago Forte : ton cerveau est fait pour avoir des idées, pas pour les stocker. Externalise ta mémoire dans un système fiable.
 
+Trois idées soutiennent tout le module : la **mémoire externe** (cognitive offloading)<sup>[1](#concept-external-memory)</sup>, la **pratique du rappel** (retrieval practice)<sup>[2](#concept-retrieval-practice)</sup>, et une logique de **gestion des connaissances** (knowledge management)<sup>[3](#concept-knowledge-management)</sup>.
+
 ### La méthode PARA
 
 Organise tout en 4 catégories :
@@ -166,3 +168,25 @@ Ce module couvre chaque étape du cycle PKM en détail :
 - **Flow Launcher** — accélérer l'accès à ce que tu utilises souvent
 - **Opérations sur Médias & Fichiers** — garder un système léger et durable
 - **Consommer & Réfléchir** — passer de la veille à l'extraction, puis à la création
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / mémoire externe** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-retrieval-practice"></a>2) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+<a id="ref-knowledge-management"></a>3) **Knowledge management (tacite -> explicite)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-external-memory"></a>#### Mémoire externe (cognitive offloading)
+Externaliser une information (note, capture, fichier, lien) ne sert pas seulement à “stocker”. Ça sert à réduire la charge de maintien en mémoire et à rendre l'information **retrouvable** dans un contexte futur.
+Source scientifique : [1](#ref-cognitive-offloading)
+
+<a id="concept-retrieval-practice"></a>#### Pratique du rappel (retrieval practice)
+Se tester, se forcer à rappeler une idée, et produire une sortie (résumé, exemple, explication) renforce la rétention davantage que relire passivement. Un PKM utile transforme donc la consommation en **rappel actif**.
+Source scientifique : [2](#ref-retrieval-practice)
+
+<a id="concept-knowledge-management"></a>#### Gestion des connaissances (knowledge management)
+La gestion des connaissances n'est pas qu'une question d'outils. C'est la capacité à transformer du savoir diffus (tacite) en artefacts (notes, documents, procédures) réutilisables et transmissibles.
+Source scientifique : [3](#ref-knowledge-management)

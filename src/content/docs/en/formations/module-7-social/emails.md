@@ -14,6 +14,7 @@ Email is not the problem. The problem is trying to make it act as:
 - a notification feed
 
 When everything stays mixed together, the inbox becomes a place where nothing is really decided.
+Research is fairly clear: frequent interruptions have a real resumption cost,<sup>[1](#concept-interruptions)</sup> and messaging alerts (especially email) can reinforce reactivity and the feeling of overload.<sup>[2](#concept-communication-overload)</sup>
 
 > The right use of email is not replying as fast as possible. It is handling what deserves to stay async, then extracting the rest into the right system.
 
@@ -163,3 +164,19 @@ For one week:
 
 Only after that should you decide whether you actually need another tool.
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-interruptions"></a>1) **Interruptions and resumption cost** — Gloria Mark, Daniela Gudith, Ulrich Klocke (2008), *The Cost of Interrupted Work: More Speed and Stress* — [UCI PDF](https://www.ics.uci.edu/~gmark/chi08-mark.pdf)
+
+<a id="ref-communication-overload"></a>2) **Communication overload (alerts, notifications)** — M. Uther, M. Cleveland, R. Jones (2018), *Email Overload? Brain and Behavioral Responses to Common Messaging Alerts Are Heightened for Email Alerts and Are Associated With Job Involvement* — [Frontiers in Psychology](https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01206/full)
+
+### Technical concept deep dive
+
+<a id="concept-interruptions"></a>#### Interruptions and resumption cost
+Interruptions are not neutral: they add resumption time, break the thread, and impose a cognitive cost. The systems takeaway: reduce frequency and batch checks.
+Scientific source: [1](#ref-interruptions)
+
+<a id="concept-communication-overload"></a>#### Communication overload (alerts, notifications)
+Overload is as much about micro-signals (badges, alerts) as it is about total volume: they keep attention on standby. The systems takeaway: limit alerts and separate production time from response time.
+Scientific source: [2](#ref-communication-overload)

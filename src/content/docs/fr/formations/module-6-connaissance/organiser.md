@@ -10,6 +10,8 @@ Sans organisation, ta base de connaissances devient un cimetière de fichiers. O
 
 > Le meilleur système d'organisation est celui que tu utilises réellement. Simplicité > perfection.
 
+À ce niveau, tu fais déjà de la **gestion des connaissances** : tu transformes du savoir dispersé en artefacts (notes, fichiers, procédures) réutilisables<sup>[1](#concept-knowledge-management)</sup>. Et tu réduis la charge mentale en externalisant des décisions et des indices (noms, tags, emplacements) dans le système<sup>[2](#concept-cognitive-offloading)</sup>.
+
 ## Minimum viable PKM : n'organise pas tout au même endroit
 
 L'erreur classique est de vouloir mettre dans un seul outil :
@@ -178,3 +180,19 @@ MoviePrint génère des planches contact à partir de vidéos — idéal pour ca
 3. **Archive plutôt que supprimer** — le stockage est bon marché, tes données non
 4. **Automatise ce qui peut l'être** — renommage en lot, tri par date, déplacement automatique
 5. **Revois ta structure tous les 3 mois** — adapte-la à tes projets actuels
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-knowledge-management"></a>1) **Knowledge management (tacite -> explicite)** — Nonaka (1994), *A Dynamic Theory of Organizational Knowledge Creation* — [Organization Science (INFORMS)](https://doi.org/10.1287/orsc.5.1.14)
+
+<a id="ref-cognitive-offloading"></a>2) **Cognitive offloading / mémoire externe** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-knowledge-management"></a>#### Gestion des connaissances (knowledge management)
+L'objectif n'est pas “des dossiers propres”. L'objectif est de rendre le savoir transmissible et actionnable : standards de nommage, lieux stables, métadonnées et routines d'entretien.
+Source scientifique : [1](#ref-knowledge-management)
+
+<a id="concept-cognitive-offloading"></a>#### Mémoire externe (cognitive offloading) et décisions externalisées
+Une bonne organisation te permet de ne plus “recalculer” où vivent les choses. Tu externalises des micro-décisions (où ranger, comment nommer, comment retrouver) dans des conventions stables.
+Source scientifique : [2](#ref-cognitive-offloading)

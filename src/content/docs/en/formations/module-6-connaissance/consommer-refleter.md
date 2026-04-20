@@ -156,6 +156,8 @@ After every piece of content you consume (article, video, podcast), ask yourself
 
 If you cannot answer these 3 questions, the content was not worth your time.
 
+Those 3 questions force **active recall**: you retrieve the idea from memory instead of rereading it. That is the core mechanism of *retrieval practice* (test-enhanced learning)<sup>[1](#concept-retrieval-practice)</sup>, and it is one of the most reliable ways to turn consumption into durable learning<sup>[2](#concept-retrieval-vs-restudy)</sup>.
+
 ### The reflection journal
 
 Spend 10 minutes every evening to:
@@ -216,3 +218,19 @@ If you want something simple and sustainable:
 - **Output**: every week, create at least something from your notes
 
 The system does not need to be perfect. It mainly needs to stop you from consuming without transforming.
+
+### Chapter references (go further)
+
+<a id="ref-test-enhanced-learning"></a>1) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+<a id="ref-retrieval-better-than-restudy"></a>2) **Retrieval > restudy (active recall vs rereading)** — Karpicke & Blunt (2011), *Retrieval Practice Produces More Learning than Elaborative Studying with Concept Mapping* — [Science](https://www.science.org/doi/10.1126/science.1199327)
+
+### Deep dive: Technical concepts
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice (active recall)
+Retrieval practice means producing an answer (even an imperfect one) without looking at the source. That retrieval effort strengthens access routes and improves long-term retention.
+Scientific source: [1](#ref-test-enhanced-learning)
+
+<a id="concept-retrieval-vs-restudy"></a>#### Active recall vs restudy (rereading)
+Rereading creates familiarity, which often feels like learning but consolidates less. By contrast, trying to recall first, then correcting, is more effective even if it feels harder.
+Scientific source: [2](#ref-retrieval-better-than-restudy)

@@ -40,8 +40,8 @@ L'objectif n'est pas d'avoir un bureau Pinterest. L'objectif est d'avoir un espa
 
 La lumière naturelle reste l'un des meilleurs leviers simples :
 - meilleure sensation d'éveil dans la journée
-- moins de fatigue visuelle
-- meilleur ancrage du rythme jour/nuit
+- moins de fatigue visuelle<sup>[3](#concept-computer-vision)</sup>
+- meilleur ancrage du rythme jour/nuit<sup>[1](#concept-circadian)</sup>
 
 Si tu peux, place ton poste de travail de façon à profiter de la lumière sans subir un reflet permanent.
 
@@ -49,14 +49,14 @@ Si tu peux, place ton poste de travail de façon à profiter de la lumière sans
 
 Le problème du désordre n'est pas moral. C'est qu'il ajoute :
 - du bruit visuel
-- des micro-décisions
+- des micro-décisions<sup>[2](#concept-decision-load)</sup>
 - une sensation de saturation
 
 Un espace propre n'a pas besoin d'être vide. Il doit surtout être lisible.
 
 ## Souris et pointeur : réduire la friction physique
 
-La souris est un de tes outils les plus utilisés. Si elle crée de la tension ou un inconfort diffus, le coût cumulé est réel.
+La souris est un de tes outils les plus utilisés. Si elle crée de la tension ou un inconfort diffus, le coût cumulé est réel<sup>[5](#concept-ergonomics)</sup>.
 
 ### Ce qui compte vraiment
 
@@ -90,7 +90,7 @@ Parfois, un bon réglage corrige déjà une partie du problème.
 
 ## Son et bruit : protéger l'attention
 
-Le bruit de fond détruit la concentration plus vite que beaucoup de gens ne l'admettent.
+Le bruit de fond détruit la concentration plus vite que beaucoup de gens ne l'admettent<sup>[4](#concept-auditory-distraction)</sup>.
 
 Tu as plusieurs niveaux de réponse :
 
@@ -181,3 +181,47 @@ Priorité :
 - contrôle du bruit
 - fluidité d'entrée clavier / souris
 - gadgets seulement en dernier
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-circadian"></a>1) **Lumière et vigilance** — Cajochen (2007), *Alerting effects of light* — [Google Scholar](https://scholar.google.com/scholar?q=Alerting+effects+of+light+Cajochen+2007)
+
+<a id="ref-decision-load"></a>2) **Mémoire de travail (capacité)** — Cowan (2001), *The magical number 4 in short-term memory* — [Cambridge](https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/magical-number-4-in-shortterm-memory-a-reconsideration-of-mental-storage-capacity/7C80E8B9A12A1C1A4E23A8FD6CFA9A0C)
+
+<a id="ref-cvs"></a>3) **Fatigue visuelle (ordinateur)** — Rosenfield (2011), *Computer vision syndrome* — [Google Scholar](https://scholar.google.com/scholar?q=Computer+vision+syndrome+Rosenfield+2011+Ophthalmic+and+Physiological+Optics)
+
+<a id="ref-noise"></a>4) **Bruit et performance (meta-analyse)** — Szalma & Hancock (2011), *Noise effects on human performance* — [Google Scholar](https://scholar.google.com/scholar?q=Noise+effects+on+human+performance+meta-analytic+synthesis+Szalma+Hancock+2011)
+
+<a id="ref-ergonomics"></a>5) **Ergonomie (guide NIOSH)** — NIOSH (1997), *Elements of Ergonomics Programs* — [CDC/NIOSH](https://www.cdc.gov/niosh/docs/97-117/default.html)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-circadian"></a>#### Rythme circadien (lumière et vigilance)
+
+La lumière est un des signaux principaux qui règle l'horloge interne. Bien l'utiliser (matin, jour, soir) influence l'éveil et la qualité du sommeil.
+
+Source scientifique : [1](#ref-circadian)
+
+<a id="concept-decision-load"></a>#### Charge de décisions (micro-décisions)
+
+Chaque micro-décision consomme de la bande passante. Un espace plus lisible réduit la charge mentale de fond.
+
+Source scientifique : [2](#ref-decision-load)
+
+<a id="concept-computer-vision"></a>#### Fatigue visuelle (computer vision syndrome)
+
+La fatigue visuelle liée aux écrans combine souvent sécheresse oculaire, effort d'accommodation et facteurs d'environnement (lumière, reflets, taille du texte).
+
+Source scientifique : [3](#ref-cvs)
+
+<a id="concept-auditory-distraction"></a>#### Bruit et performance (distraction auditive)
+
+Le bruit, surtout lorsqu'il contient de la parole intelligible, dégrade la concentration et la performance sur certaines tâches.
+
+Source scientifique : [4](#ref-noise)
+
+<a id="concept-ergonomics"></a>#### Ergonomie (confort et TMS)
+
+Une posture durable et un poste ajusté réduisent le risque de troubles musculosquelettiques et la fatigue cumulative.
+
+Source scientifique : [5](#ref-ergonomics)

@@ -10,6 +10,8 @@ Capture is the first step in PKM. If you do not capture it, you will forget it. 
 
 > Capture first, organize later. The worst enemy of capture is organizational perfectionism.
 
+Capturing is building **external memory**: you move information out of your head so it becomes retrievable and reusable<sup>[1](#concept-cognitive-offloading)</sup>. But capture is not learning: if you want to retain, you need to return to it and practice **active recall** (retrieval practice)<sup>[2](#concept-retrieval-practice)</sup>.
+
 ## The real question: where does what you capture actually go?
 
 The classic PKM trap is stacking capture tools without deciding **where the material will live afterward**.
@@ -197,3 +199,25 @@ For creatives and information collectors:
 - **Version important files** - `_v1`, `_v2`, or better yet, a Git repository
 - **Tag metadata** whenever possible - it makes future retrieval easier
 - **Use 3-2-1 backups**: 3 copies, 2 different media, 1 off-site
+
+### Chapter references (go further)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / external memory** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-extended-mind"></a>2) **Extended mind / extended cognition** — Clark & Chalmers (1998), *The Extended Mind* — [paper (consc.net)](https://consc.net/papers/extended.html)
+
+<a id="ref-retrieval-practice"></a>3) **Retrieval practice / test-enhanced learning** — Roediger & Karpicke (2006), *Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention* — [Psychological Science (SAGE)](https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x)
+
+### Deep dive: Technical concepts
+
+<a id="concept-cognitive-offloading"></a>#### Cognitive offloading (operational external memory)
+You “offload” when you place information into a reliable artifact (note, capture, file, link) so you no longer have to actively maintain it in working memory. The value appears when that artifact is **retrievable** and **reinjectable** into future work.
+Scientific source: [1](#ref-cognitive-offloading)
+
+<a id="concept-extended-mind"></a>#### The extended mind (extended cognition)
+Some tools function as external cognitive components: they do not only store, they support reasoning and action (as long as access stays fluid and reliable).
+Scientific source: [2](#ref-extended-mind)
+
+<a id="concept-retrieval-practice"></a>#### Retrieval practice (active recall)
+Capturing is not enough to learn. To consolidate, you must force retrieval: recall the idea, rephrase it, apply it, or explain it, then correct against the source.
+Scientific source: [3](#ref-retrieval-practice)

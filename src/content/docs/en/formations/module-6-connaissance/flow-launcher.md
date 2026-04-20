@@ -10,6 +10,8 @@ sidebar:
 
 > A good knowledge system is worth much less if every access still sends you back through the mouse, File Explorer, or the Start menu.
 
+In practice, a launcher becomes an extension of your **external memory**: it lowers access cost, so you reuse what you already have (notes, files, bookmarks) more often<sup>[1](#concept-cognitive-offloading)</sup>. It also increases the chance you hit the right **cue** (approximate name, context, app)<sup>[2](#concept-retrieval-cues)</sup>.
+
 ## The real issue: reduce access friction
 
 After capture, organization, and search, one more problem remains:
@@ -203,3 +205,19 @@ Choose 5 things you open several times per day:
 
 Configure Flow Launcher so you can open all 5 from the keyboard. If it does not create real fluidity after a few days, your main problem was probably not access speed.
 :::
+
+### Chapter references (go further)
+
+<a id="ref-cognitive-offloading"></a>1) **Cognitive offloading / external memory** — Risko & Gilbert (2016), *Cognitive Offloading* — [Trends in Cognitive Sciences (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S1364661316300714)
+
+<a id="ref-encoding-specificity"></a>2) **Retrieval cues / encoding specificity** — Tulving & Thomson (1973), *Encoding specificity and retrieval processes in episodic memory* — [Psychological Review (APA)](https://doi.org/10.1037/h0020071)
+
+### Deep dive: Technical concepts
+
+<a id="concept-cognitive-offloading"></a>#### External memory (cognitive offloading) and access cost
+When access is fast, you reconnect present actions to past artifacts (notes, files, bookmarks) more often. That regular reuse is a key condition for external memory to actually pay off.
+Scientific source: [1](#ref-cognitive-offloading)
+
+<a id="concept-retrieval-cues"></a>#### Retrieval cues
+A launcher lets you quickly try multiple cues (a few letters, a context, an app). More entry points increases the odds of retrieval even when your memory is fuzzy.
+Scientific source: [2](#ref-encoding-specificity)

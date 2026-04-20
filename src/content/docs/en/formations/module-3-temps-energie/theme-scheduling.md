@@ -6,14 +6,14 @@ sidebar:
   order: 2
 ---
 
-Most people organize their days by project or by urgency. Their brain mostly works by **cognitive mode**: creating, exploring, coordinating, administering, recovering.
+Most people organize their days by project or by urgency. Their brain mostly works by **cognitive mode**<sup>[1](#concept-task-set)</sup>: creating, exploring, coordinating, administering, recovering.
 
 > The right calendar is not the one that reflects every task. It is the one that respects the kind of effort your brain can realistically provide at the right moment.
 
 ## What this is really about
 
 Theme scheduling helps reduce two problems:
-- the cost of constant switching
+- the cost of constant switching<sup>[2](#concept-task-switching)</sup>
 - the mismatch between task type and energy level
 
 The goal is not to make your week look neat. It is to give each period a coherent type of work.
@@ -34,7 +34,7 @@ That leads to three useful layers:
 
 ## Batching
 
-Batching means doing together what is cheaper to do together.
+Batching<sup>[3](#concept-batching)</sup> means doing together what is cheaper to do together.
 
 Typical examples:
 - creation
@@ -42,7 +42,7 @@ Typical examples:
 - admin
 - learning
 
-The main gain is not only time. It is the reduction in recontextualization cost.
+The main gain is not only time. It is the reduction in recontextualization cost<sup>[4](#concept-recontextualization)</sup>.
 
 ## Organize by cognitive mode
 
@@ -152,3 +152,31 @@ For one week:
 3. identify where you switch too much
 4. then redesign one default day with cleaner batches and themes
 :::
+
+### Chapter references (to go further)
+
+<a id="ref-task-switching-monsell"></a>1) **Task switching** — J. Monsell (2003), *Task switching* — [Trends in Cognitive Sciences (DOI)](https://doi.org/10.1016/S1364-6613(03)00028-7)
+
+<a id="ref-task-switching-rubinstein"></a>2) **Multitasking costs and executive control** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive control of cognitive processes in task switching* — [Journal of Experimental Psychology: Human Perception and Performance (DOI)](https://doi.org/10.1037/0096-1523.27.4.763)
+
+<a id="ref-attention-residue-leroy"></a>3) **Attention residue** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-dual-task-pashler"></a>4) **Dual-task interference** — Harold Pashler (1994), *Dual-task interference in simple tasks: data and theory* — [Psychological Bulletin (DOI)](https://doi.org/10.1037/0033-2909.116.2.220)
+
+### Deepening the technical concepts
+
+<a id="concept-task-set"></a>#### Cognitive mode / task set
+You do not only switch “tasks”, you also switch a mental configuration: rules, goals, and active context. That reconfiguration has a cost, which is why grouping modes (create, coordinate, admin) is often more sustainable than constantly alternating them.
+Source scientifique : [2](#ref-task-switching-rubinstein)
+
+<a id="concept-task-switching"></a>#### Task-switching cost
+Even when you “switch fast”, there are measurable costs: restart time, more errors, and less flow. Those costs compound when a day becomes a chain of micro-transitions.
+Source scientifique : [1](#ref-task-switching-monsell)
+
+<a id="concept-batching"></a>#### Batching
+Batching reduces unnecessary reconfiguration by grouping tasks that share the same cognitive mode. The gain is often more cognitive (less restart) than purely clock-time.
+Source scientifique : [1](#ref-task-switching-monsell)
+
+<a id="concept-recontextualization"></a>#### Recontextualization and attention residue
+When you leave a task, part of your attention remains attached to the prior context. Themed blocks help by keeping fewer contexts open in parallel, and by reducing the number of active traces you must carry.
+Source scientifique : [3](#ref-attention-residue-leroy)

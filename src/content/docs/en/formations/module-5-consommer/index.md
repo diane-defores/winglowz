@@ -21,6 +21,8 @@ The right logic is:
 - limit imposed consumption
 - turn part of useful content into a note, decision, or action
 
+The problem is not only the amount of information. It is that your attention is a scarce resource that gets engineered for capture<sup>[1](#concept-attention-economy)</sup>, which makes overload easy to manufacture<sup>[2](#concept-information-overload)</sup>.
+
 ## The Winflowz decision framework
 
 When a piece of content, a source, or a stream enters your environment, ask four questions:
@@ -66,7 +68,7 @@ Then you shape the environment:
 - reading
 - light capture
 
-The goal is to make the web cleaner and easier to recover from.
+The goal is to make the web cleaner and easier to recover from, with a real accessibility mindset (less friction, more readability, better navigation)<sup>[3](#concept-wcag)</sup>.
 
 ### 3. Choose the right sources
 
@@ -77,6 +79,8 @@ It is not the quantity of content that helps you. It is the quality and coherenc
 Part of overload does not come from the open web. It comes from meetings, interruptions, and streams imposed by other people.
 
 This module also helps reduce that layer.
+
+Meeting and videoconferencing fatigue is real: the more you fragment your days, the higher the cognitive cost becomes<sup>[4](#concept-videoconferencing-fatigue)</sup>.
 
 ## The guiding principle
 
@@ -112,6 +116,34 @@ By the end of the module, you should not just have “better sources.” You sho
 - consciously chosen sources
 - reduced algorithmic exposure
 - real output logic: note, decision, action, or archive
+
+### Chapter references (to go further)
+
+<a id="ref-goldhaber-attention-economy"></a>1) **Attention economy** — Michael H. Goldhaber (1997), *The attention economy and the Net* — [First Monday](https://firstmonday.org/ojs/index.php/fm/article/view/519)
+
+<a id="ref-bawden-robinson-overload"></a>2) **Information overload** — David Bawden & Lyn Robinson (2009), *The dark side of information: overload, anxiety and other paradoxes and pathologies* — [SAGE Journals](https://journals.sagepub.com/doi/10.1177/0165551508095781)
+
+<a id="ref-wcag-22"></a>3) **Accessibility (WCAG 2.2)** — W3C (2023), *Web Content Accessibility Guidelines (WCAG) 2.2* — [W3C TR](https://www.w3.org/TR/WCAG22/)
+
+<a id="ref-bailenson-zoom-fatigue"></a>4) **Videoconferencing fatigue (Zoom fatigue)** — Jeremy N. Bailenson (2021), *Nonverbal Overload: A Theoretical Argument for the Causes of Zoom Fatigue* — [APA Open](https://tmb.apaopen.org/pub/nonverbal-overload)
+
+### Deeper technical concepts
+
+<a id="concept-attention-economy"></a>#### Attention economy
+In an information-rich environment, attention becomes the scarce resource. Many platforms optimize for attention capture before real usefulness.
+Source: [1](#ref-goldhaber-attention-economy)
+
+<a id="concept-information-overload"></a>#### Information overload
+Overload is not just “a lot of info.” It is the moment inputs exceed processing capacity, degrading decision quality, working memory, and energy.
+Source: [2](#ref-bawden-robinson-overload)
+
+<a id="concept-wcag"></a>#### WCAG (accessibility) as friction reduction
+WCAG is a web accessibility standard. Even if your goal is “a calmer web,” accessibility principles (structure, navigation, readability, focus) reduce friction and increase clarity.
+Source: [3](#ref-wcag-22)
+
+<a id="concept-videoconferencing-fatigue"></a>#### Videoconferencing fatigue (nonverbal overload)
+Video calls can be more fatiguing than in-person interaction due to nonverbal overload (hyper-gaze, self-view, interpretive effort, etc.). That is why reducing, clustering, and framing meetings matters.
+Source: [4](#ref-bailenson-zoom-fatigue)
 
 :::note[Practical exercise]
 Before starting the module, write down:

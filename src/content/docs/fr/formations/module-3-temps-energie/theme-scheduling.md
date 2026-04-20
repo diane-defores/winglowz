@@ -6,14 +6,14 @@ sidebar:
   order: 2
 ---
 
-La plupart des gens organisent leurs journées par projet ou par urgence. Leur cerveau, lui, fonctionne surtout par **mode cognitif** : créer, explorer, coordonner, administrer, récupérer.
+La plupart des gens organisent leurs journées par projet ou par urgence. Leur cerveau, lui, fonctionne surtout par **mode cognitif**<sup>[1](#concept-task-set)</sup> : créer, explorer, coordonner, administrer, récupérer.
 
 > Le bon agenda n'est pas celui qui reflète toutes tes tâches. C'est celui qui respecte le type d'effort que ton cerveau peut réellement fournir au bon moment.
 
 ## Le vrai sujet
 
 La planification thématique sert à réduire deux problèmes :
-- le coût de switching permanent
+- le coût de switching permanent<sup>[2](#concept-task-switching)</sup>
 - le mauvais couplage entre tâche et niveau d'énergie
 
 L'idée n'est pas d'avoir une semaine "jolie". L'idée est de donner à chaque période un type de travail cohérent.
@@ -34,7 +34,7 @@ Cela donne trois couches utiles :
 
 ## Le batching
 
-Le batching consiste à faire ensemble ce qui coûte moins cher ensemble.
+Le batching<sup>[3](#concept-batching)</sup> consiste à faire ensemble ce qui coûte moins cher ensemble.
 
 Exemples typiques :
 - création
@@ -42,7 +42,7 @@ Exemples typiques :
 - admin
 - apprentissage
 
-Le gain principal n'est pas seulement le temps. C'est la diminution du coût de recontextualisation.
+Le gain principal n'est pas seulement le temps. C'est la diminution du coût de recontextualisation<sup>[4](#concept-recontextualization)</sup>.
 
 ## Organiser par mode cognitif
 
@@ -152,3 +152,31 @@ Pendant une semaine :
 3. repère où tu switches trop
 4. redessine ensuite une seule journée type avec des batchs et des thèmes plus propres
 :::
+
+### Références du chapitre (pour aller plus loin)
+
+<a id="ref-task-switching-monsell"></a>1) **Changement de tâche (task switching)** — J. Monsell (2003), *Task switching* — [Trends in Cognitive Sciences (DOI)](https://doi.org/10.1016/S1364-6613(03)00028-7)
+
+<a id="ref-task-switching-rubinstein"></a>2) **Coûts du multitâche et contrôle exécutif** — Joshua S. Rubinstein, David E. Meyer & Jeffrey E. Evans (2001), *Executive control of cognitive processes in task switching* — [Journal of Experimental Psychology: Human Perception and Performance (DOI)](https://doi.org/10.1037/0096-1523.27.4.763)
+
+<a id="ref-attention-residue-leroy"></a>3) **Résidu d'attention (attention residue)** — Sophie Leroy (2009), *Why is it so hard to do my work? The challenge of attention residue when switching between work tasks* — [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0749597809000399)
+
+<a id="ref-dual-task-pashler"></a>4) **Interférence en double tâche** — Harold Pashler (1994), *Dual-task interference in simple tasks: data and theory* — [Psychological Bulletin (DOI)](https://doi.org/10.1037/0033-2909.116.2.220)
+
+### Approfondissement des concepts techniques
+
+<a id="concept-task-set"></a>#### Mode cognitif / configuration de tâche (task set)
+Le cerveau ne change pas seulement de “tâche”, il change aussi de configuration mentale : règles, objectifs, contexte actif. Cette reconfiguration a un coût, ce qui explique pourquoi regrouper des modes (créer, coordonner, admin) est souvent plus soutenable que les alterner.
+Source scientifique : [2](#ref-task-switching-rubinstein)
+
+<a id="concept-task-switching"></a>#### Coût de switching (task-switching cost)
+Même quand tu “switches vite”, il existe des coûts mesurables : temps de reprise, erreurs, perte de fluidité. Ces coûts s'accumulent quand la journée devient une suite de micro-transitions.
+Source scientifique : [1](#ref-task-switching-monsell)
+
+<a id="concept-batching"></a>#### Batching
+Batcher, c'est réduire le nombre de reconfigurations inutiles en regroupant des tâches qui partagent le même mode cognitif. Le gain est souvent plus cognitif (moins de reprise) que purement horaire.
+Source scientifique : [1](#ref-task-switching-monsell)
+
+<a id="concept-recontextualization"></a>#### Recontextualisation et résidu d'attention
+Quand tu quittes une tâche, une partie de ton attention reste “accrochée” au contexte précédent. D'où l'intérêt des blocs thématiques : moins de contextes ouverts en parallèle, moins de traces actives à gérer.
+Source scientifique : [3](#ref-attention-residue-leroy)
