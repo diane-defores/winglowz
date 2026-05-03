@@ -21,7 +21,7 @@ tags: ["collaboration", "partage", "équipe"]
 https://elest.io/open-source/getateam
 
 2026 is the year of AI at Elestio. We're doubling down on artificial intelligence to help you work smarter, faster, and more efficiently than ever before.
-What if you could build an entire team that works 24/7, never forgets, and scales instantly with your business needs?
+What if you could build a focused AI-assisted team that reduces repetitive work and supports your business needs?
 Meet Get A Team - the AI employee platform that's changing how businesses operate. And now, it's available on Elestio.
  
 🚀 Introducing Get A Team
@@ -32,7 +32,7 @@ Think of them as real team members - but they never sleep, never forget, and can
 
 Why businesses are adopting AI employees:
 
-✓ 24/7 availability - Work never stops, even across time zones
+✓ Extended availability - Routine work can continue across time zones
 ✓ Perfect memory - Every conversation, document, and preference retained
 ✓ Instant scaling - Deploy new team members in 5 minutes
 ✓ Consistent quality - Same high standards on every task, every time
@@ -43,7 +43,7 @@ Marcus Chen
 
 DevOps Engineer
 
-Marcus monitors your infrastructure, automates deployments, and troubleshoots issues before they impact users. He manages CI/CD pipelines, security patches, and keeps your systems running 24/7.
+Marcus monitors your infrastructure, automates deployments, and troubleshoots issues before they impact users. He manages CI/CD pipelines, security patches, and helps keep your systems running reliably.
 
 Result: 99.9% uptime maintained
 

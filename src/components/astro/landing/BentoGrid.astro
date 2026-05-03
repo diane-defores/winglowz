@@ -10,33 +10,33 @@ const lang = getLangFromUrl(Astro.url)
 const bentoText = lang === 'fr'
   ? {
       sectionTitle: "Tout ce dont vous avez besoin pour etre productif",
-      sectionSub: "En tant que personne atteinte de TDAH et d'autisme, j'ai cree des outils qui rendent deraisonnable et impossible de ne pas atteindre nos objectifs.",
+      sectionSub: "En tant que personne atteinte de TDAH et d'autisme, j'ai cree des outils qui rendent deraisonnable de laisser la friction gagner.",
       obsiTitle: "ObsiFlowz -- Plugins Obsidian",
       obsiDesc: "Transformez votre curation de contenu avec RSSFlowz et optimisez votre gestion de plugins avec PluginFlowz. Des plugins puissants pour la productivite et la gestion de contenu.",
       tubeTitle: "TubeFlowz",
       tubeDesc: "Revolutionnez vos recherches YouTube avec une puissante extension Chrome d'annotation et de mise en favoris.",
       winTitle: "Maitrise Windows",
       winDesc: "Debloquez tout le potentiel de Windows avec plus de 200 conseils et outils de productivite testes et approuves.",
-      blazingTitle: "Resultats Fulgurants",
-      blazingDesc: "35% d'augmentation d'efficacite rapportee par les utilisateurs. Des outils qui vous font vraiment gagner du temps.",
+      blazingTitle: "Formation structuree",
+      blazingDesc: "8 modules, 40 lecons et 200+ conseils et outils testes pour construire un systeme Windows plus fluide.",
       smartTitle: "Organisation Intelligente",
       smartDesc: "Categorisez, decouvrez et sauvegardez -- un flux de travail structure pour dompter le chaos numerique.",
-      avgEfficiency: "efficacite moyenne",
+      avgEfficiency: "modules de formation",
     }
   : {
       sectionTitle: "Everything you need to be productive",
-      sectionSub: "As someone with ADHD and autism, I created tools that make it unreasonable and impossible not to achieve our goals.",
+      sectionSub: "As someone with ADHD and autism, I created tools that make it unreasonable to let friction win.",
       obsiTitle: "ObsiFlowz -- Obsidian Plugins",
       obsiDesc: "Transform your content curation with RSSFlowz and optimize your plugin management with PluginFlowz. Powerful plugins designed for productivity and content management.",
       tubeTitle: "TubeFlowz",
       tubeDesc: "Revolutionize your YouTube searches with a powerful Chrome extension for annotation and bookmarking.",
       winTitle: "Windows Mastery",
       winDesc: "Unlock the full potential of Windows with over 200 tested and approved productivity tips and tools.",
-      blazingTitle: "Blazing Fast Results",
-      blazingDesc: "35% efficiency increase reported by users. Tools that actually save you time, not just look good.",
+      blazingTitle: "Structured training",
+      blazingDesc: "8 modules, 40 lessons, and 200+ tested tips and tools for building a smoother Windows system.",
       smartTitle: "Smart Organization",
       smartDesc: "Categorize, discover and save -- a structured workflow to tame digital chaos and find anything instantly.",
-      avgEfficiency: "avg efficiency",
+      avgEfficiency: "training modules",
     }
 ---
 
@@ -123,7 +123,7 @@ const bentoText = lang === 'fr'
           {bentoText.blazingDesc}
         </p>
         <div class="flex items-center gap-2 text-sm" style="color: var(--brand-green);">
-          <span class="font-mono">+35%</span>
+          <span class="font-mono">8</span>
           <span class="text-neutral-500 dark:text-zinc-500">{bentoText.avgEfficiency}</span>
         </div>
       </div>

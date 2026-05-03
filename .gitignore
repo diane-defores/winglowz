@@ -46,3 +46,6 @@ coverage/
 
 # BuildFlowz inspector (managed by BuildFlowz CLI)
 public/buildflowz-inspector.js
+
+# clerk configuration (can include secrets)
+/.clerk/

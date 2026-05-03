@@ -12,7 +12,7 @@
     "review": {
       "rating": "<span class=\"font-bold\">5</span> / 5",
       "starCount": 5,
-      "text": "From <span class=\"font-bold\">6</span> Reviews"
+      "text": "Dozens of 5-star AppSumo reviews"
     }
   },
   "clients": {
@@ -36,7 +36,7 @@
       },
       {
         "heading": "Windows Mastery",
-        "content": "A Windows productivity course with 8 modules, 39 French lessons, and practical guidance for focus, time, actions, and shortcuts."
+        "content": "A Windows productivity course with 8 modules, 40 French lessons, and practical guidance for focus, time, actions, and shortcuts."
       }
     ]
   },
@@ -54,7 +54,7 @@
         "description": "training modules in the Windows course"
       },
       {
-        "count": "39",
+        "count": "40",
         "description": "French lessons currently published"
       },
       {

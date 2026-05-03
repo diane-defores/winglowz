@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2026-05-03]
+
+### Changed
+- Reframed homepage and SEO copy around verifiable WinFlowz training metrics: 8 modules, 40 lessons, 2 languages, and 200+ tested tips/tools.
+- Updated AppSumo social proof wording to reflect dozens of 5-star reviews while keeping the existing testimonial block intact.
+- Aligned public FAQ, lead magnet, and pricing copy to avoid unsupported free-trial, user-volume, performance, and 24/7 support claims.
+
 ## [2026-04-13]
 
 ### Added

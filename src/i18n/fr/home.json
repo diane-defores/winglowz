@@ -12,7 +12,7 @@
     "review": {
       "rating": "<span class=\"font-bold\">5</span> / 5",
       "starCount": 5,
-      "text": "Sur <span class=\"font-bold\">6</span> Avis"
+      "text": "Des dizaines d'avis 5 etoiles AppSumo"
     }
   },
   "clients": {
@@ -36,7 +36,7 @@
       },
       {
         "heading": "Maîtrise Windows",
-        "content": "Une formation Windows en 8 modules, 39 lecons francaises, avec des conseils pratiques sur le focus, le temps, les actions et les raccourcis."
+        "content": "Une formation Windows en 8 modules, 40 lecons francaises, avec des conseils pratiques sur le focus, le temps, les actions et les raccourcis."
       }
     ]
   },
@@ -54,7 +54,7 @@
         "description": "modules de formation dans le parcours Windows"
       },
       {
-        "count": "39",
+        "count": "40",
         "description": "lecons francaises actuellement publiees"
       },
       {
