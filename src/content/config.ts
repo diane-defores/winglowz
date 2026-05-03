@@ -1,17 +1,18 @@
 // https://docs.astro.build/en/guides/content-collections/#defining-collections
 
-import { z, defineCollection } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 
 const docsCollection = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    editUrl: z.union([z.string().url(), z.boolean()]).optional().default(true),
+    editUrl: z.union([z.url(), z.boolean()]).optional().default(true),
     head: z.array(
       z.object({
         tag: z.enum(['title', 'base', 'link', 'style', 'meta', 'script', 'noscript', 'template']),
-        attrs: z.record(z.union([z.string(), z.boolean()])).optional(),
+        attrs: z.record(z.string(), z.union([z.string(), z.boolean()])).optional(),
         content: z.string().optional(),
       }).strict()
     ).optional().default([]),
@@ -39,7 +40,7 @@ const docsCollection = defineCollection({
           link: z.string(),
           variant: z.enum(['primary', 'secondary', 'minimal']).default('primary'),
           icon: z.string().optional(),
-          attrs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional(),
+          attrs: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).optional(),
         }).strict()
       ).optional().default([]),
     }).optional(),
@@ -72,8 +73,8 @@ const docsCollection = defineCollection({
           text: z.string(),
         }).strict(),
       ]).optional(),
-      attrs: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
-    }).optional().default({}),
+      attrs: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
+    }).optional().default({ hidden: false, attrs: {} }),
     banner: z.object({
       content: z.string(),
     }).optional(),

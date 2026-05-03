@@ -1,27 +1,30 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro'
-import { getCollection } from 'astro:content'
+import { getCollection, render } from 'astro:content'
 import { getCourseAccess, isFormationSlug } from '@/utils/courseGating'
+import { getEntrySlug } from '@/utils/docs'
 
 const requestedSlug = Astro.params.slug?.replace(/\/$/, '')
 const docs = await getCollection('docs')
 const entry = docs.find((doc) => {
-	const normalized = (doc.slug === 'index' ? '' : doc.slug).replace(/\/$/, '')
+	const slug = getEntrySlug(doc)
+	const normalized = (slug === 'index' ? '' : slug).replace(/\/$/, '')
 	return normalized === requestedSlug
 })
 
-if (!entry || !isFormationSlug(entry.slug)) {
+if (!entry || !isFormationSlug(getEntrySlug(entry))) {
 	return Astro.redirect('/404')
 }
 
 const access = await getCourseAccess(Astro)
+const entrySlug = getEntrySlug(entry)
 if (!access.hasAccess) {
-	return Astro.redirect(`/${entry.slug}`)
+	return Astro.redirect(`/${entrySlug}`)
 }
 
-const { Content, headings } = await entry.render()
-const lang = entry.slug.startsWith('fr/') ? 'fr' : 'en'
-const publicPath = `/${entry.slug}`
+const { Content, headings } = await render(entry)
+const lang = entrySlug.startsWith('fr/') ? 'fr' : 'en'
+const publicPath = `/${entrySlug}`
 ---
 
 <MainLayout title={entry.data.title} lang={lang}>

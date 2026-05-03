@@ -1,6 +1,5 @@
 import { defineConfig } from "astro/config";
 import mdx from '@astrojs/mdx';
-import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
@@ -29,6 +28,9 @@ export default defineConfig({
   },
   build: {
     inlineStylesheets: "auto"
+  },
+  legacy: {
+    collectionsBackwardsCompat: true
   },
   markdown: {
     remarkPlugins: [remarkDirective, remarkDocAsides],
@@ -60,9 +62,6 @@ export default defineConfig({
         heroicons: ["*"],
         "phosphor-icons": ["*"]
       }
-    }),
-    tailwind({
-      applyBaseStyles: false,
     }),
     sitemap({
       i18n: {

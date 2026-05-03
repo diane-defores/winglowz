@@ -1,15 +1,17 @@
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 import vue from '@astrojs/vue';
-import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
+  legacy: {
+    collectionsBackwardsCompat: true
+  },
   output: 'server',
   adapter: node({
     mode: 'standalone'
   }),
-  integrations: [vue(), tailwind()],
+  integrations: [vue()],
   server: {
     port: 4327,
     host: 'localhost',

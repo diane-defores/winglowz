@@ -2,6 +2,10 @@
   "name": "winflowz",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@10.33.2",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -24,10 +28,9 @@
   "dependencies": {
     "@astrojs/check": "^0.9.6",
     "@astrojs/sitemap": "^3.7.0",
-    "@astrojs/vercel": "^9.0.4",
-    "@clerk/astro": "^2.17.1",
+    "@astrojs/vercel": "^10.0.6",
+    "@clerk/astro": "^3.1.0",
     "@heroicons/react": "^2.2.0",
-    "@polar-sh/astro": "^0.7.3",
     "@polar-sh/sdk": "^0.43.1",
     "@preline/accordion": "^2.6.0",
     "@preline/collapse": "^2.6.0",
@@ -59,11 +62,10 @@
     "tailwindcss": "^3.4.19"
   },
   "devDependencies": {
-    "@astrojs/mdx": "^4.3.5",
-    "@astrojs/node": "9.5.2",
-    "@astrojs/react": "^4.4.2",
-    "@astrojs/tailwind": "^6.0.2",
-    "@astrojs/vue": "^5.1.4",
+    "@astrojs/mdx": "^5.0.4",
+    "@astrojs/node": "10.0.6",
+    "@astrojs/react": "^5.0.4",
+    "@astrojs/vue": "^6.0.1",
     "@phosphor-icons/web": "^2.1.2",
     "@playwright/test": "^1.58.0",
     "@tailwindcss/forms": "^0.5.11",
@@ -71,8 +73,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.18",
-    "astro": "5.16.15",
+    "astro": "6.2.1",
     "astro-icon": "^1.1.5",
+    "autoprefixer": "^10.5.0",
     "dotenv": "^17.2.3",
     "jsdom": "^27.4.0",
     "msw": "^2.12.7",
@@ -87,6 +90,11 @@
     "vitest": "^4.0.18"
   },
   "pnpm": {
+    "overrides": {
+      "path-to-regexp": "6.3.0",
+      "svix": "1.92.2",
+      "yaml": "2.8.4"
+    },
     "onlyBuiltDependencies": [
       "esbuild"
     ]

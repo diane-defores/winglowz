@@ -46,6 +46,10 @@ export function getDocLang(slug: string) {
   return slug.startsWith('fr/') ? 'fr' : 'en';
 }
 
+export function getEntrySlug(entry: Pick<DocEntry, 'id'>) {
+  return entry.id;
+}
+
 export function getDocHref(slug: string) {
   return `/${slug}/`;
 }
@@ -59,11 +63,12 @@ export function buildDocTree(entries: DocEntry[], lang: 'en' | 'fr') {
   };
 
   const localeEntries = entries
-    .filter((entry) => getDocLang(entry.slug) === lang && !entry.data.draft && !entry.data.sidebar?.hidden)
-    .sort((a, b) => a.slug.localeCompare(b.slug, 'fr'));
+    .filter((entry) => getDocLang(getEntrySlug(entry)) === lang && !entry.data.draft && !entry.data.sidebar?.hidden)
+    .sort((a, b) => getEntrySlug(a).localeCompare(getEntrySlug(b), 'fr'));
 
   for (const entry of localeEntries) {
-    const segments = entry.slug.split('/').slice(1);
+    const entrySlug = getEntrySlug(entry);
+    const segments = entrySlug.split('/').slice(1);
     let current = root;
     let currentPath: string = lang;
 
@@ -83,7 +88,7 @@ export function buildDocTree(entries: DocEntry[], lang: 'en' | 'fr') {
     }
 
     current.entry = entry;
-    current.href = getDocHref(entry.slug);
+    current.href = getDocHref(entrySlug);
     current.label = sidebarLabel(entry, current.segment);
   }
 
@@ -107,12 +112,12 @@ function flattenNodes(nodes: DocTreeNode[], result: DocEntry[] = []) {
 export function getDocPager(entries: DocEntry[], lang: 'en' | 'fr', currentSlug: string) {
   const tree = buildDocTree(entries, lang);
   const flat = flattenNodes(tree).filter((entry) => !entry.data.sidebar?.hidden);
-  const currentIndex = flat.findIndex((entry) => entry.slug === currentSlug);
+  const currentIndex = flat.findIndex((entry) => getEntrySlug(entry) === currentSlug);
 
   const toLink = (entry: DocEntry | undefined, fallback: 'Previous' | 'Next'): DocPagerLink | undefined =>
     entry
       ? {
-          href: getDocHref(entry.slug),
+          href: getDocHref(getEntrySlug(entry)),
           label: fallback,
           title: entry.data.title,
         }
