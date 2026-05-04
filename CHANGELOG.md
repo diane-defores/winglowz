@@ -27,6 +27,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Repaired the local Flox Flutter environment and pinned it to an executable Flutter SDK variant.
+- Protected direct app routes behind Supabase auth state instead of allowing private screens to load before sign-in.
+- Updated `.env.example` to document Supabase runtime defines instead of legacy Convex/Clerk variables.
+
+### Security
+- Converted the RLS smoke script into a pgTAP-style test covering own-user access, forged user denial, anonymous denial, tombstone preservation and sensitive client-event metadata keys.
+- Added database guardrails for tombstone preservation, client event metadata size, sensitive metadata keys and user-scoped query indexes.
+
 ## [2026-04-26]
 
 ### Added

@@ -10,6 +10,18 @@ begin
 end;
 $$;
 
+create or replace function public.prevent_deleted_at_restore()
+returns trigger
+language plpgsql
+as $$
+begin
+  if old.deleted_at is not null and new.deleted_at is null then
+    new.deleted_at = old.deleted_at;
+  end if;
+  return new;
+end;
+$$;
+
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   display_name text,
@@ -110,8 +122,45 @@ create table if not exists public.client_events (
   constraint client_events_type_non_empty check (length(trim(event_type)) > 0),
   constraint client_events_severity_allowlist check (
     severity in ('debug', 'info', 'warning', 'error')
+  ),
+  constraint client_events_metadata_max check (
+    pg_column_size(metadata) <= 8192
+  ),
+  constraint client_events_metadata_no_sensitive_top_level_keys check (
+    not (
+      metadata ?| array[
+        'api_key',
+        'secret',
+        'token',
+        'audio',
+        'raw_text',
+        'transcript',
+        'provider_payload'
+      ]
+    )
   )
 );
+
+create index if not exists user_settings_user_id_idx
+on public.user_settings (user_id);
+
+create index if not exists transcriptions_user_created_idx
+on public.transcriptions (user_id, created_at desc);
+
+create index if not exists clipboard_items_user_created_idx
+on public.clipboard_items (user_id, created_at desc)
+where deleted_at is null;
+
+create index if not exists snippets_user_created_idx
+on public.snippets (user_id, created_at desc)
+where deleted_at is null;
+
+create index if not exists dictionary_terms_user_created_idx
+on public.dictionary_terms (user_id, created_at desc)
+where deleted_at is null;
+
+create index if not exists client_events_user_created_idx
+on public.client_events (user_id, created_at desc);
 
 create trigger set_updated_at_profiles
 before update on public.profiles
@@ -140,6 +189,18 @@ for each row execute function public.set_updated_at();
 create trigger set_updated_at_client_events
 before update on public.client_events
 for each row execute function public.set_updated_at();
+
+create trigger prevent_deleted_at_restore_clipboard_items
+before update on public.clipboard_items
+for each row execute function public.prevent_deleted_at_restore();
+
+create trigger prevent_deleted_at_restore_snippets
+before update on public.snippets
+for each row execute function public.prevent_deleted_at_restore();
+
+create trigger prevent_deleted_at_restore_dictionary_terms
+before update on public.dictionary_terms
+for each row execute function public.prevent_deleted_at_restore();
 
 alter table public.profiles enable row level security;
 alter table public.user_settings enable row level security;

@@ -41,11 +41,11 @@ depends_on:
 
 - Flutter multi-platform project scaffold is created for Android, iOS, macOS, Windows, Linux and web.
 - Supabase baseline migration is created with user-scoped tables, constraints and RLS policies.
-- Legacy Expo/Convex code is still present and intentionally not purged yet.
+- Legacy Expo/Convex application code has been removed from source; legacy references remain in docs only for parity and migration context.
 
 ## Next Execution Slice
 
-1. Implement Supabase repositories for CRUD across transcriptions, clipboard, snippets, dictionary and settings.
+1. Validate Supabase repositories against a real Auth/RLS environment.
 2. Implement real voice pipeline services (local speech, recording, Whisper, Claude fallback).
 3. Port Android native overlay to Flutter platform channel.
 4. Execute verification matrix from `docs/VERIFICATION.md`.

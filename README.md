@@ -34,7 +34,7 @@ This repository now contains:
 - A Flutter multi-platform project scaffold.
 - Supabase SQL migrations with RLS-first contracts.
 - Migration docs and verification gates.
-- Legacy Expo/Convex code still present until parity validation and explicit purge gate.
+- Legacy Expo/Convex contracts preserved in docs for parity validation; no app-level JS/TS implementation remains in the repo.
 
 ## Go-to-Market Posture
 

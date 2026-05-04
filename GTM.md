@@ -16,7 +16,7 @@ security_impact: "none"
 evidence:
   - "BUSINESS.md"
   - "PRODUCT.md"
-  - "app/(tabs)/settings.tsx"
+  - "lib/features/settings/presentation/settings_screen.dart"
 target_segment:
   - "Mobile professionals dictating notes and messages"
   - "Android power users needing overlay-driven text capture"
@@ -26,9 +26,9 @@ channels:
   - "Cross-promotion to adjacent WinFlowz users"
   - "Workflow-led product content and demos"
 proof_points:
-  - "On-device transcription path exists"
-  - "Advanced Whisper and Claude cleanup paths are implemented"
-  - "Convex-backed history and clipboard sync are present in code"
+  - "Flutter multi-platform shell exists"
+  - "Supabase Auth/Postgres/RLS baseline exists"
+  - "Android overlay bridge baseline exists"
 depends_on:
   - "BUSINESS.md@0.1.0"
   - "BRANDING.md@0.1.0"
@@ -58,7 +58,7 @@ Utilisateurs mobiles orientés productivité, en priorité :
 
 ## Promesses à éviter
 
-- "Synchronisation sécurisée par compte" tant que Clerk n'est pas branché.
+- "Synchronisation sécurisée par compte" tant que Supabase Auth/RLS n'a pas été validé end-to-end sur un vrai environnement.
 - "Freemium avec quotas" tant que les droits et le billing n'existent pas.
 - "Premium illimité" sans infrastructure de quota.
 - "Données vocales jamais stockées" sans audit complet du flux audio, des caches natifs et des fournisseurs externes.
@@ -75,15 +75,15 @@ Utilisateurs mobiles orientés productivité, en priorité :
 
 | Objection | Réponse actuelle |
 |---|---|
-| "Mes données vocales sont-elles privées ?" | Mode local disponible ; mode avancé envoie l'audio à OpenAI et le texte à Anthropic si activé. |
-| "Est-ce synchronisé entre mes appareils ?" | Oui via Convex dans l'implémentation, mais l'isolation par compte réel attend Clerk. |
+| "Mes données vocales sont-elles privées ?" | Le stockage des clés est local. Les flux audio/IA avancés doivent encore être validés avant promesse publique. |
+| "Est-ce synchronisé entre mes appareils ?" | Le schéma Supabase et les écrans CRUD existent, mais la validation end-to-end avec vrais comptes reste à faire. |
 | "Faut-il payer ?" | Pas de billing implémenté. Les modes cloud utilisent les clés API de l'utilisateur. |
 | "Est-ce utilisable dans d'autres apps ?" | Oui sur Android via overlay si les permissions système sont accordées. |
 
 ## Preconditions avant lancement public large
 
-- Test end-to-end Convex avec vraie URL de déploiement.
-- Intégration Clerk et suppression de `TEMP_USER_ID`.
+- Test end-to-end Supabase avec vraie URL de déploiement et RLS smoke automatisé.
+- Validation Supabase Auth réelle et absence de raccourci `TEMP_USER_ID` / `local-user`.
 - Politique claire de données et fournisseurs.
 - Mesures de latence et fiabilité sur appareils Android réels.
 - Positionnement `LTD + abonnement` implémente avec droits/quotas.

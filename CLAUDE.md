@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: "VoiceFlowz"
 created: "2026-03-18"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "runtime-baseline"
@@ -18,6 +18,7 @@ linked_systems:
   - "Supabase Auth"
   - "Supabase Postgres + RLS"
   - "Android Overlay Bridge"
+evidence: []
 depends_on:
   - "BUSINESS.md@0.1.0"
   - "PRODUCT.md@0.1.0"
@@ -67,6 +68,10 @@ For Supabase:
 ```bash
 supabase db push
 ```
+
+## ARM64 Android Release Guardrail
+
+On Linux ARM64 (`aarch64`/`arm64`), do not run Android release builds locally: no `flutter build apk --release`, `flutter build appbundle --release`, `./gradlew assembleRelease`, or `./gradlew bundleRelease`. Route APK/AAB release builds to Blacksmith or another Linux x64 CI runner. Local Flutter work is limited to `flutter analyze`, `flutter test`, and `flutter build web --release`.
 
 ## Architecture
 

@@ -16,17 +16,16 @@ docs_impact: "yes"
 linked_systems:
   - "OpenAI"
   - "Anthropic"
-  - "Expo"
-  - "Clerk"
-  - "Convex"
+  - "Flutter"
+  - "Supabase"
 depends_on:
   - "BUSINESS.md@0.1.0"
   - "PRODUCT.md@0.1.0"
 supersedes: []
 evidence:
-  - "package.json"
-  - "lib/whisper.ts"
-  - "lib/ai-cleanup.ts"
+  - "pubspec.yaml"
+  - "lib/core/bootstrap/supabase_bootstrap.dart"
+  - "supabase/migrations/20260427084000_init_voiceflowz.sql"
   - "PRODUCT.md"
 next_step: "$sf-docs update"
 ---
@@ -35,21 +34,18 @@ next_step: "$sf-docs update"
 
 ## APIs et services (observés dans le repo)
 
-- **OpenAI Whisper API** — [platform.openai.com](https://platform.openai.com/docs/guides/speech-to-text) : moteur de transcription principal, modèles multilingues
-- **Anthropic Claude Haiku API** — [docs.anthropic.com](https://docs.anthropic.com) : nettoyage et reformulation du texte transcrit
+- **Supabase Auth/Postgres/RLS** — backend cible pour comptes, données utilisateur et isolation multi-utilisateur.
+- **Flutter** — runtime applicatif cible multi-plateforme.
+- **OpenAI Whisper API** — cible prévue pour la transcription avancée BYOK.
+- **Anthropic Messages API** — cible prévue pour le nettoyage et la reformulation BYOK.
 
 ## Standards et documentation technique de référence
 
-- **Web Speech API** — Standard W3C pour la reconnaissance vocale dans le navigateur
-- **MediaRecorder API** — Capture audio standard pour les applications web et hybrides
-
-- **Expo Audio** — [docs.expo.dev/versions/latest/sdk/audio](https://docs.expo.dev/versions/latest/sdk/audio/) : capture et lecture audio
-- **expo-speech-recognition** — Reconnaissance vocale on-device
-- **expo-clipboard** — Accès au clipboard système
-- **expo-secure-store** — Stockage sécurisé des données sensibles
-- **Expo SDK 55** — [docs.expo.dev](https://docs.expo.dev) : framework et outils de build
-- **Clerk** — [clerk.com/docs](https://clerk.com/docs) : authentification prévue avec WinFlowz, dépendance présente mais intégration applicative non branchée
-- **Convex** — [docs.convex.dev](https://docs.convex.dev) : backend temps réel et synchronisation
+- **speech_to_text** — reconnaissance vocale locale quand la plateforme la supporte.
+- **record** — capture audio pour le mode avancé.
+- **flutter_secure_storage** — stockage local des clés utilisateur, avec garanties variables selon plateforme.
+- **permission_handler** — permissions runtime prises en charge par Flutter.
+- **Android platform channels** — pont natif pour overlay et accessibilité Android.
 
 ## Recherche externe à confirmer
 

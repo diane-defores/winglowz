@@ -10,7 +10,8 @@ on:
 jobs:
   build:
     name: Analyze, Test, Build APK
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -48,8 +49,9 @@ jobs:
           retention-days: 14
 
   supabase:
-    name: Supabase Migration Lint
+    name: Supabase Migration Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -60,11 +62,14 @@ jobs:
         with:
           version: 2.90.0
 
-      - name: Start local Postgres and apply migrations
-        run: supabase db start
+      - name: Start local Supabase and apply migrations
+        run: supabase start
 
       - name: Lint local database
         run: supabase db lint --local
+
+      - name: Run RLS smoke tests
+        run: supabase test db supabase/tests/rls_smoke.sql
 
       - name: Stop local Supabase services
         if: always()

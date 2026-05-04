@@ -1,4 +1,4 @@
-schema-version = "1.11.0"
+version = 1
 
 
 ## Install Packages --------------------------------------------------
@@ -8,6 +8,8 @@ schema-version = "1.11.0"
 ## -------------------------------------------------------------------
 [install]
 nodejs.pkg-path = "nodejs"
+flutter.pkg-path = "flutter"
+flutter.version = "3.41.5-sdk-links"
 # gum.pkg-path = "gum"
 # gum.version = "^0.14.5"
 
