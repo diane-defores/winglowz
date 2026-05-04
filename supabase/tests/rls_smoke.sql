@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(15);
+select plan(20);
 
 create or replace function public.test_statement_throws(statement text)
 returns boolean
@@ -47,6 +47,20 @@ select results_eq(
   $$select count(*) from public.transcriptions where user_id = '00000000-0000-0000-0000-000000000001'::uuid$$,
   $$values (1::bigint)$$,
   'own insert is scoped to auth.uid'
+);
+
+select lives_ok(
+  $$insert into public.transcriptions (raw_text, cleaned_text, source, duration_ms)
+    values ('keyboard hello', 'Keyboard hello.', 'keyboard', 500)$$,
+  'keyboard transcription source is allowed'
+);
+
+select ok(
+  public.test_statement_throws(
+    $$insert into public.transcriptions (raw_text, cleaned_text, source, duration_ms)
+      values ('bad', 'bad', 'global_keyboard_capture', 1)$$
+  ),
+  'unknown transcription source is denied'
 );
 
 select ok(
@@ -119,6 +133,50 @@ select lives_ok(
   'user can insert clipboard item'
 );
 
+select lives_ok(
+  $$insert into public.clipboard_items (
+      id,
+      content,
+      source,
+      content_hash,
+      origin_surface,
+      capture_method,
+      sync_state
+    )
+    values (
+      '10000000-0000-0000-0000-000000000003',
+      'keyboard item',
+      'keyboard_clipboard',
+      'hash-keyboard-item',
+      'keyboard',
+      'keyboard_clipboard',
+      'pending'
+    )$$,
+  'keyboard clipboard metadata is allowed'
+);
+
+select ok(
+  public.test_statement_throws(
+    $$insert into public.clipboard_items (
+        content,
+        source,
+        content_hash,
+        origin_surface,
+        capture_method,
+        sync_state
+      )
+      values (
+        'keyboard item duplicate',
+        'keyboard_clipboard',
+        'hash-keyboard-item',
+        'keyboard',
+        'keyboard_clipboard',
+        'pending'
+      )$$
+  ),
+  'keyboard clipboard hash dedupe is enforced per user and surface'
+);
+
 update public.clipboard_items
 set deleted_at = now()
 where id = '10000000-0000-0000-0000-000000000002';
@@ -144,6 +202,14 @@ select ok(
       values ('debug', 'info', '{"token":"secret"}'::jsonb)$$
   ),
   'client event metadata rejects sensitive top-level keys'
+);
+
+select ok(
+  public.test_statement_throws(
+    $$insert into public.client_events (event_type, severity, metadata)
+      values ('debug', 'info', '{"raw_text":"secret"}'::jsonb)$$
+  ),
+  'client event metadata rejects keyboard raw text'
 );
 
 set local role anon;

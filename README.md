@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "readme"
@@ -19,9 +19,16 @@ linked_systems:
   - "OpenAI Whisper"
   - "Anthropic Messages API"
   - "Android overlay services"
+  - "Android IME keyboard"
 depends_on:
   - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md@0.1.0"
-  - "docs/API_SUPABASE.md@0.1.0"
+  - "docs/API_SUPABASE.md@1.0.0"
+supersedes: []
+evidence:
+  - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md"
+  - "specs/android-ime-voiceflowz-keyboard.md"
+  - "android/app/src/main/AndroidManifest.xml"
+next_step: "$sf-docs update"
 ---
 
 # VoiceFlowz
@@ -33,6 +40,7 @@ VoiceFlowz is positioned as a sibling product of WinFlowz in the same ecosystem,
 This repository now contains:
 - A Flutter multi-platform project scaffold.
 - Supabase SQL migrations with RLS-first contracts.
+- Android native overlay and a first native VoiceFlowz Keyboard IME foundation.
 - Migration docs and verification gates.
 - Legacy Expo/Convex contracts preserved in docs for parity validation; no app-level JS/TS implementation remains in the repo.
 
@@ -66,6 +74,7 @@ Never use `SUPABASE_SERVICE_ROLE_KEY` in Flutter/web/desktop/mobile clients.
 - Data: Supabase Postgres + RLS replaces Convex target path.
 - UI: Flutter shell + auth gate + settings key storage baseline is in place.
 - Security: SQL constraints + RLS policies are in migration files.
+- Android IME: VoiceFlowz can be enabled as a native Android keyboard. The current foundation provides text entry, private-field gating, explicit clipboard actions, local Android speech recognition, play/pause media key dispatch, and Settings status/preferences. Cloud sync from the keyboard still requires Supabase environment validation and real-device QA before it should be treated as production-ready.
 
 ## Project Structure (target)
 
@@ -84,4 +93,9 @@ docs/                        migration, API, platform, overlay, verification con
 flutter analyze
 flutter test
 flutter build web
+flutter build apk --debug
 ```
+
+On Linux ARM64 hosts, Android resource tooling can fail because Google-distributed
+AAPT2 binaries are x86_64. Use an x64 Android runner for APK/AAB proof if local
+debug builds fail at AAPT2 startup.

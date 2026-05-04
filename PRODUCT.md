@@ -1,10 +1,10 @@
 ---
 artifact: product_context
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "product"
@@ -25,6 +25,7 @@ user_problem: "Typing is slow or disruptive in contexts where quick dictation, c
 desired_outcomes:
   - "Capture speech quickly in local or advanced modes"
   - "Reuse transcripts through copy, edit, shared clipboard, snippets, and dictionary workflows"
+  - "Use a native Android keyboard entrypoint for typing, dictation, clipboard actions, snippets entry points, and play/pause media"
   - "Access Android overlay capture on Android while keeping parity workflows elsewhere"
 non_goals:
   - "Not a billing-enabled premium product in migration scope"
@@ -53,6 +54,7 @@ Les utilisateurs produisent souvent du texte dans des contextes où taper est le
 - Professionnels qui rédigent notes, emails ou comptes-rendus sur mobile et desktop.
 - Power users qui acceptent de configurer leurs propres clés API pour obtenir une meilleure transcription.
 - Utilisateurs Android qui veulent déclencher la dictée hors application via overlay.
+- Utilisateurs Android qui veulent écrire et dicter depuis un clavier VoiceFlowz dans n'importe quel champ compatible.
 
 ## Workflows cœur
 
@@ -86,6 +88,13 @@ Les utilisateurs produisent souvent du texte dans des contextes où taper est le
 3. Le résultat est injecté si possible, sinon fallback clipboard.
 4. Les plateformes non Android n'affichent pas de contrôle overlay trompeur.
 
+### Clavier Android VoiceFlowz
+
+1. L'utilisateur active VoiceFlowz Keyboard dans les réglages de méthode de saisie Android.
+2. Il bascule sur ce clavier depuis un champ texte compatible.
+3. Il peut taper, dicter localement, coller/copier explicitement, ouvrir les snippets, et envoyer play/pause au média courant.
+4. Les champs password, OTP ou privés désactivent dictée, capture clipboard, snippets enrichis et sync.
+
 ## Surface target-reviewed
 
 - Flutter app Android/iOS/macOS/Windows/Linux/web.
@@ -95,6 +104,7 @@ Les utilisateurs produisent souvent du texte dans des contextes où taper est le
 - Snippets: liste, création, édition, suppression, recherche trigger.
 - Dictionnaire: liste, création, édition, suppression, application nettoyage.
 - Settings: clés BYO locales, permissions, langue, session auth.
+- Clavier Android natif via `InputMethodService` et bridge Flutter/Kotlin.
 - Overlay Android natif via bridge Flutter/Kotlin.
 
 ## Legacy-current (pré-migration, non cible)
@@ -116,10 +126,12 @@ Mitigations obligatoires:
 5. Refus explicite des sauvegardes de texte vide.
 6. États erreurs récupérables pour permissions, API IA, sync Supabase.
 7. Overlay Android conditionné par permissions et fallback clipboard.
+8. Clavier Android conditionné par activation utilisateur, private mode pour champs sensibles et sync clipboard opt-in.
 
 ## Non-goals actuels
 
 - Pas de billing/entitlements dans la migration.
 - Pas d'overlay système hors Android.
+- Pas de clavier système VoiceFlowz hors Android dans cette phase.
 - Pas de promesse de chiffrement bout-en-bout.
 - Pas de code applicatif JS/TS dans le repo final.

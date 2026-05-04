@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "VoiceFlowz"
 created: "2026-03-18"
-updated: "2026-04-26"
+updated: "2026-05-04"
 status: "draft"
 source_skill: "sf-docs"
 scope: "update"
@@ -29,14 +29,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Added the Android VoiceFlowz Keyboard IME foundation with native input service declaration, minimal keyboard UI, Settings bridge, Android speech recognition trigger, explicit clipboard actions and generic media play/pause.
+- Added keyboard-origin Supabase schema fields, source allowlists, clipboard hash dedupe metadata, RLS smoke coverage and Dart model/bridge tests.
+- Added project technical governance docs and a content map for future ShipFlow code/doc update gates.
+
 ### Changed
 - Repaired the local Flox Flutter environment and pinned it to an executable Flutter SDK variant.
 - Protected direct app routes behind Supabase auth state instead of allowing private screens to load before sign-in.
 - Updated `.env.example` to document Supabase runtime defines instead of legacy Convex/Clerk variables.
+- Updated README, platform, overlay, component, API and verification docs to describe Android IME scope and proof gaps.
 
 ### Security
 - Converted the RLS smoke script into a pgTAP-style test covering own-user access, forged user denial, anonymous denial, tombstone preservation and sensitive client-event metadata keys.
 - Added database guardrails for tombstone preservation, client event metadata size, sensitive metadata keys and user-scoped query indexes.
+- Added IME private-field gating for password, OTP, no-personalized-learning and host-marked sensitive fields so dictation, snippets and clipboard capture are disabled there.
 
 ## [2026-04-26]
 

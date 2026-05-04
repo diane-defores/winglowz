@@ -396,6 +396,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
             DropdownMenuItem(value: 'free', child: Text('free')),
             DropdownMenuItem(value: 'advanced', child: Text('advanced')),
             DropdownMenuItem(value: 'overlay', child: Text('overlay')),
+            DropdownMenuItem(value: 'keyboard', child: Text('keyboard')),
           ],
           onChanged: _busy
               ? null

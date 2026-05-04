@@ -55,6 +55,20 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/overlay_accessibility_service" />
         </service>
+
+        <service
+            android:name=".ime.VoiceFlowzInputMethodService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/keyboard_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/voiceflowz_input_method" />
+        </service>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

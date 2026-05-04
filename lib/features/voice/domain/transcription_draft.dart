@@ -17,5 +17,5 @@ class TranscriptionDraft {
       rawText.trim().isNotEmpty &&
       cleanedText.trim().isNotEmpty &&
       durationMs >= 0 &&
-      {'free', 'advanced', 'overlay'}.contains(source);
+      {'free', 'advanced', 'overlay', 'keyboard'}.contains(source);
 }

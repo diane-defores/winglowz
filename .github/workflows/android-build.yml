@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Analyze, Test, Build APK
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 45
 
     steps:
@@ -50,7 +50,7 @@ jobs:
 
   supabase:
     name: Supabase Migration Tests
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 20
 
     steps:

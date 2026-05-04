@@ -1,0 +1,48 @@
+---
+artifact: technical_module_context
+metadata_schema_version: "1.0"
+artifact_version: "0.1.0"
+project: "VoiceFlowz"
+created: "2026-05-04"
+updated: "2026-05-04"
+status: draft
+source_skill: sf-docs
+scope: "technical-governance-index"
+owner: "Diane"
+confidence: medium
+risk_level: medium
+security_impact: yes
+docs_impact: yes
+linked_systems:
+  - "Flutter"
+  - "Android native"
+  - "Supabase"
+depends_on:
+  - "CLAUDE.md@1.2.0"
+  - "GUIDELINES.md@0.1.0"
+supersedes: []
+evidence:
+  - "Bootstrapped for specs/android-ime-voiceflowz-keyboard.md execution."
+next_review: "2026-06-04"
+next_step: "/sf-docs technical audit"
+---
+
+# Technical Docs — VoiceFlowz
+
+This internal layer maps code areas to the technical context an agent must read
+before editing. It is not public product documentation.
+
+## Current Coverage
+
+- `docs/technical/flutter-app.md`: Flutter app shell, platform bridges, settings,
+  and repository boundaries.
+- `docs/technical/android-native.md`: Android native overlay and keyboard/IME
+  services.
+- `docs/technical/supabase-data.md`: Supabase schema, RLS, repositories, and
+  smoke tests.
+
+## Maintenance Rule
+
+Update `docs/technical/code-docs-map.md` and the relevant subsystem doc when
+owned files, entrypoints, validation commands, security constraints, or docs
+update triggers change.

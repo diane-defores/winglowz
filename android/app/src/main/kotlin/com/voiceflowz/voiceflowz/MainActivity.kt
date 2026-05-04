@@ -1,17 +1,21 @@
 package com.voiceflowz.voiceflowz
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
+import android.view.inputmethod.InputMethodManager
+import com.voiceflowz.voiceflowz.ime.KeyboardStateStore
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val channelName = "voiceflowz/overlay"
+    private val keyboardChannelName = "voiceflowz/keyboard"
     private val preferencesName = "voiceflowz_overlay_prefs"
     private val keyOverlayEnabled = "overlay_enabled"
 
@@ -83,6 +87,40 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, keyboardChannelName)
+            .setMethodCallHandler { call, result ->
+                val keyboardState = KeyboardStateStore(this)
+                when (call.method) {
+                    "getKeyboardStatus" -> {
+                        result.success(keyboardState.buildStatusMap())
+                    }
+                    "openInputMethodSettings" -> {
+                        openInputMethodSettings()
+                        result.success(true)
+                    }
+                    "showInputMethodPicker" -> {
+                        showInputMethodPicker()
+                        result.success(true)
+                    }
+                    "setKeyboardPreferences" -> {
+                        call.argument<Boolean>("voiceEnabled")?.let {
+                            keyboardState.voiceEnabled = it
+                        }
+                        call.argument<Boolean>("clipboardSyncDesired")?.let {
+                            keyboardState.clipboardSyncDesired = it
+                        }
+                        call.argument<Boolean>("mediaControlsEnabled")?.let {
+                            keyboardState.mediaControlsEnabled = it
+                        }
+                        call.argument<String>("privacyMode")?.let {
+                            keyboardState.privacyMode = it
+                        }
+                        result.success(keyboardState.buildStatusMap())
+                    }
+                    else -> result.notImplemented()
+                }
+            }
     }
 
     private fun isOverlayPermissionGranted(): Boolean {
@@ -110,6 +148,17 @@ class MainActivity : FlutterActivity() {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    private fun openInputMethodSettings() {
+        val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+
+    private fun showInputMethodPicker() {
+        val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        manager.showInputMethodPicker()
     }
 
     private fun isAccessibilityPermissionGranted(): Boolean {

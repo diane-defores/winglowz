@@ -1,10 +1,10 @@
 ---
 artifact: business_context
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-03-18"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "business"
@@ -23,7 +23,7 @@ evidence:
 business_model: "Freemium voice productivity app with bring-your-own-key advanced features"
 market: "Cross-platform dictation, transcript cleanup, snippets, dictionary, and clipboard productivity tools"
 target_audience: "Professionals and power users who produce text from speech across Android, iOS, desktop, and web"
-value_proposition: "Capture speech quickly, clean it when needed, and reuse it across apps with account-based sync and Android overlay where available"
+value_proposition: "Capture speech quickly, clean it when needed, and reuse it across apps with account-based sync, Android keyboard entry, and Android overlay where available"
 depends_on: []
 supersedes: []
 next_review: "2026-05-26"
@@ -46,7 +46,7 @@ Libérer les mains des professionnels grâce à la dictée vocale intelligente, 
 
 ## Proposition de valeur
 
-VoiceFlowz cible une application Flutter multi-plateforme avec authentification Supabase et synchronisation Postgres/RLS/Realtime. Le produit combine dictée locale quand disponible, transcription avancée Whisper avec clé OpenAI locale BYO, nettoyage IA Claude optionnel avec clé Anthropic locale BYO, historique synchronisé, snippets, dictionnaire personnel, et overlay Android natif avec fallback clipboard.
+VoiceFlowz cible une application Flutter multi-plateforme avec authentification Supabase et synchronisation Postgres/RLS/Realtime. Le produit combine dictée locale quand disponible, transcription avancée Whisper avec clé OpenAI locale BYO, nettoyage IA Claude optionnel avec clé Anthropic locale BYO, historique synchronisé, snippets, dictionnaire personnel, clavier Android natif, et overlay Android natif avec fallback clipboard.
 
 ## Capacités business de référence
 
@@ -56,6 +56,7 @@ VoiceFlowz cible une application Flutter multi-plateforme avec authentification 
 | Auth Supabase + Postgres + RLS + Realtime | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md`, `docs/API.md` |
 | Clés OpenAI/Anthropic BYO stockées localement | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md` |
 | Snippets + dictionnaire comme fonctionnalités produit | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md` |
+| Clavier Android natif VoiceFlowz | target-reviewed | `specs/android-ime-voiceflowz-keyboard.md` |
 | Overlay Android natif uniquement | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md` |
 | Expo/Convex/Clerk comme implémentation cible | out-of-scope | explicitement exclu de la cible finale |
 | Quotas gratuits / premium / billing | out-of-scope | non inclus dans le scope migration |
@@ -70,6 +71,7 @@ Le modèle reste freemium BYO pour la migration. Les plans payants restent hors 
 - Les données utilisateur sont isolées via RLS `auth.uid()` sur Postgres.
 - Les clés OpenAI/Anthropic restent locales à l'appareil et ne sont pas stockées dans Supabase.
 - L'utilisateur gère transcriptions, clipboard, snippets et dictionnaire depuis son compte.
+- Le clavier Android VoiceFlowz reste disponible uniquement sur Android et sert de surface prioritaire dans les champs texte.
 - L'overlay Android reste disponible uniquement sur Android avec fallback clipboard.
 
 ### État legacy-current (pré-migration, à ne pas présenter comme cible)
@@ -89,7 +91,7 @@ Mitigations obligatoires pour readiness migration:
 3. Clés OpenAI/Anthropic en stockage local sécurisé seulement; interdiction de sync Supabase et de logs en clair.
 4. Redaction systématique des secrets dans logs/erreurs/analytics.
 5. Interdiction de sauvegarder des textes vides; fallback texte brut si nettoyage IA échoue.
-6. Overlay Android derrière permissions explicites et fallback clipboard si injection inaccessible.
+6. Clavier Android et overlay derrière actions utilisateur explicites, avec private mode pour champs sensibles.
 
 ## Persona principal
 
@@ -109,7 +111,7 @@ Mitigations obligatoires pour readiness migration:
 ## Avantage concurrentiel
 
 1. **Pipeline hybride BYO**: local + Whisper + nettoyage IA optionnel.
-2. **Overlay Android natif**: capture hors app avec fallback robuste.
+2. **Entrées Android natives**: clavier IME pour écrire dans les champs, overlay pour capture flottante avec fallback robuste.
 3. **Données structurées utiles**: transcriptions + clipboard + snippets + dictionnaire synchronisés par compte.
 
 ## Stratégie Go-to-Market

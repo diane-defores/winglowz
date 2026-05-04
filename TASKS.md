@@ -12,6 +12,7 @@
 | ✅ | Run the verification gate end-to-end: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`, `flutter build web` | ✅ done |
 | 🔴 | Apply the Supabase schema on a dev/test project and execute `supabase/tests/rls_smoke.sql` against real auth users | ⛔ blocked — Docker/CI or linked Supabase project required |
 | 🟠 | Validate auth, transcriptions, snippets, dictionary, clipboard sync, and settings against a real Supabase environment (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) | 📋 todo |
+| 🟠 | Build Android IME VoiceFlowz Keyboard end-to-end: native keyboard, Settings bridge, privacy gate, clipboard, media, schema, docs, Android device QA | 🔄 in progress — foundation implemented; Android x64/device and Supabase linked-project proof still required |
 | 🟠 | Run the required manual platform pass for Android overlay, iOS microphone/speech, desktop launch, and web permission limits | 📋 todo |
 
 ---

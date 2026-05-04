@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "api"
@@ -66,6 +66,10 @@ This document defines the target backend contract for migration:
 | `user_id` | `uuid` | FK to `auth.users(id)`, unique per user |
 | `preferred_language` | `text` | BCP-47 style language tag |
 | `overlay_enabled` | `boolean` | android UI preference only |
+| `keyboard_voice_enabled` | `boolean` | Android keyboard dictation preference |
+| `keyboard_clipboard_sync_enabled` | `boolean` | opt-in keyboard clipboard sync intent |
+| `keyboard_media_controls_enabled` | `boolean` | Android keyboard play/pause preference |
+| `keyboard_privacy_mode` | `text` | `auto`, `strict`, or `standard` |
 | `created_at` | `timestamptz` | default `now()` |
 | `updated_at` | `timestamptz` | managed by trigger |
 
@@ -79,7 +83,7 @@ This document defines the target backend contract for migration:
 | `cleaned_text` | `text` | non-empty final text |
 | `language` | `text` | selected or detected language |
 | `duration_ms` | `integer` | non-negative |
-| `source` | `text` | `in_app` or `overlay` |
+| `source` | `text` | `free`, `advanced`, `overlay`, or `keyboard` |
 | `created_at` | `timestamptz` | default `now()` |
 | `updated_at` | `timestamptz` | managed by trigger |
 
@@ -95,9 +99,17 @@ Contract constraints:
 | `id` | `uuid` | PK |
 | `user_id` | `uuid` | FK to `auth.users(id)` |
 | `content` | `text` | non-empty |
-| `content_type` | `text` | `text`, `url`, or `code` |
+| `content_type` | `text` | `text` or `code` |
 | `source` | `text` | source descriptor |
+| `content_hash` | `text` nullable | normalized client hash for dedupe |
+| `origin_surface` | `text` | `app`, `overlay`, `keyboard`, or `system` |
+| `origin_device_id` | `text` nullable | non-secret device origin identifier |
+| `capture_method` | `text` | manual, voice, overlay, keyboard, system clipboard, or snippet method |
+| `sync_state` | `text` | `local`, `pending`, `synced`, `error`, or `deleted` |
+| `sync_error` | `text` nullable | recoverable sync error summary |
+| `device_local_id` | `text` nullable | client-side queue identifier |
 | `pinned` | `boolean` | default `false` |
+| `deleted_at` | `timestamptz` nullable | tombstone; delete wins over stale sync |
 | `created_at` | `timestamptz` | default `now()` |
 | `updated_at` | `timestamptz` | managed by trigger |
 

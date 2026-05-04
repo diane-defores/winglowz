@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "components"
@@ -16,6 +16,7 @@ docs_impact: "yes"
 linked_systems:
   - "Flutter"
   - "Android native overlay"
+  - "Android native IME"
 depends_on:
   - "../ARCHITECTURE.md@0.1.0"
   - "../docs/MIGRATION_FLUTTER.md@0.1.0"
@@ -25,6 +26,7 @@ evidence:
   - "../components/AudioWaveform.tsx"
   - "../components/RecordingControls.tsx"
   - "../modules/floating-overlay/android/src/main/java/expo/modules/floatingoverlay/FloatingOverlayModule.kt"
+  - "../android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/VoiceFlowzInputMethodService.kt"
 next_step: "$sf-docs components"
 ---
 
@@ -58,7 +60,8 @@ This inventory separates:
 ### Settings flow
 
 - `SettingsScreen`:
-  language, permissions, key management status, auth session visibility.
+  language, permissions, key management status, auth session visibility,
+  Android overlay status, and Android keyboard IME status/preferences.
 - `PermissionCards`:
   platform-specific permission status + recovery actions.
 
@@ -73,6 +76,20 @@ This inventory separates:
   bridge to native plugin for show/hide/state/event operations.
 - `OverlayStatusBanner` (UI):
   user-visible status of overlay/accessibility readiness.
+
+### Keyboard integration (Android)
+
+- `VoiceFlowzInputMethodService`:
+  native Android `InputMethodService` for system keyboard entry.
+- `VoiceFlowzKeyboardView`:
+  native minimal QWERTY keyboard with action row for dictation, clipboard,
+  snippets entry point, Settings, and media play/pause.
+- `KeyboardSecurityPolicy`:
+  detects password, OTP, no-personalized-learning and host private fields to
+  force private mode.
+- `AndroidKeyboardBridge`:
+  Dart MethodChannel wrapper for IME enabled/active status, input-method
+  settings, keyboard picker, and non-sensitive preferences.
 
 Native event contract to preserve from Kotlin module:
 

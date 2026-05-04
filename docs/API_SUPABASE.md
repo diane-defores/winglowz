@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-spec"
 scope: "supabase_api"
@@ -17,6 +17,10 @@ depends_on:
   - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md@0.1.0"
 supersedes:
   - "docs/API.md as target Supabase contract"
+evidence:
+  - "supabase/migrations/20260427084000_init_voiceflowz.sql"
+  - "supabase/migrations/20260504210000_android_keyboard_ime.sql"
+  - "supabase/tests/rls_smoke.sql"
 next_step: "/sf-ready Migration totale VoiceFlowz vers Flutter + Supabase"
 ---
 
@@ -40,9 +44,9 @@ All user tables use UUID primary keys, `created_at timestamptz default now()`, a
 | Table | Required columns | Required constraints |
 |---|---|---|
 | `profiles` | `id uuid primary key references auth.users(id)`, `display_name text` | `id = auth.uid()` through RLS |
-| `user_settings` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `preferred_language text`, `clipboard_sync_enabled boolean default false`, `overlay_enabled boolean default false` | `unique(user_id)`, language non-empty |
-| `transcriptions` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `raw_text text`, `cleaned_text text`, `language text`, `duration_ms integer`, `source text` | `trim(raw_text) <> ''`, `trim(cleaned_text) <> ''`, `duration_ms >= 0`, source allowlist |
-| `clipboard_items` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `content text`, `content_type text`, `source text`, `pinned boolean default false`, `deleted_at timestamptz` | `trim(content) <> ''`, max length enforced in app and DB, content type allowlist |
+| `user_settings` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `preferred_language text`, `clipboard_sync_enabled boolean default false`, `overlay_enabled boolean default false`, `keyboard_voice_enabled boolean default true`, `keyboard_clipboard_sync_enabled boolean default false`, `keyboard_media_controls_enabled boolean default true`, `keyboard_privacy_mode text default 'auto'` | `unique(user_id)`, language non-empty, keyboard privacy mode in `auto`, `strict`, `standard` |
+| `transcriptions` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `raw_text text`, `cleaned_text text`, `language text`, `duration_ms integer`, `source text` | `trim(raw_text) <> ''`, `trim(cleaned_text) <> ''`, `duration_ms >= 0`, source allowlist: `free`, `advanced`, `overlay`, `keyboard` |
+| `clipboard_items` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `content text`, `content_type text`, `source text`, `pinned boolean default false`, `deleted_at timestamptz`, `content_hash text`, `origin_surface text`, `origin_device_id text`, `capture_method text`, `sync_state text`, `sync_error text`, `device_local_id text` | `trim(content) <> ''`, max length enforced in app and DB, content type allowlist, keyboard source/surface/capture/sync allowlists, unique `(user_id, content_hash, origin_surface)` for non-deleted hashed items |
 | `snippets` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `trigger text`, `content text`, `label text`, `deleted_at timestamptz` | `trim(trigger) <> ''`, `trim(content) <> ''`, unique lower trigger per user |
 | `dictionary_terms` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `term text`, `replacement text`, `case_sensitive boolean default false`, `deleted_at timestamptz` | `trim(term) <> ''`, term/replacement cannot create an empty-loop replacement |
 | `client_events` | `id uuid`, `user_id uuid not null default auth.uid() references auth.users(id)`, `event_type text`, `severity text`, `metadata jsonb` | metadata must be redacted; no keys, audio, raw transcript, provider payloads |
@@ -74,9 +78,10 @@ Events are idempotent by `id` + `updated_at`. Out-of-order events older than the
 ## Sync Semantics
 
 - Delete wins over stale edit.
-- Duplicate clipboard inserts are de-duplicated by normalized content hash per user when practical.
+- Duplicate clipboard inserts are de-duplicated by normalized content hash per user and origin surface when the client provides `content_hash`.
 - Offline writes use client-generated UUIDs and retry with bounded attempts.
 - Failed mutations remain visible with a retry/error state; text is not discarded.
+- Keyboard clipboard sync is opt-in. Keyboard-origin rows must identify source/surface/capture method and must not include sensitive/private-field content.
 
 ## Required SQL Tests
 
@@ -85,5 +90,6 @@ Events are idempotent by `id` + `updated_at`. Out-of-order events older than the
 - Unauthenticated user cannot read or write user rows.
 - Insert with forged `user_id` for another user is denied.
 - Empty transcription, empty clipboard item, empty snippet trigger/content, and empty dictionary term are rejected.
+- Keyboard transcription source, keyboard clipboard metadata, per-user hash dedupe, and unknown source rejection are covered.
+- `client_events.metadata` rejects sensitive top-level keys including `token`, `raw_text`, `audio`, `transcript`, and provider payload keys.
 - Realtime subscription for User A does not deliver User B rows.
-

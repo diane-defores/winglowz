@@ -1,17 +1,18 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-29"
 created_at: "2026-04-29 16:48:07 UTC"
-updated: "2026-04-30"
-updated_at: "2026-04-30 09:12:44 UTC"
-status: reviewed
+updated: "2026-05-04"
+updated_at: "2026-05-04 21:15:11 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "android-ime-keyboard"
 owner: "Diane"
+confidence: high
 user_story: "En tant qu'utilisateur Android de VoiceFlowz, je veux remplacer ou completer mon clavier par un IME VoiceFlowz avec dictee, presse-papiers synchronise et controles media, afin de produire, reutiliser et piloter du texte sans quitter l'application active."
 risk_level: "high"
 security_impact: "yes"
@@ -29,13 +30,13 @@ linked_systems:
   - "record"
 depends_on:
   - artifact: "BUSINESS.md"
-    artifact_version: "0.1.0"
+    artifact_version: "1.0.0"
     required_status: "reviewed"
   - artifact: "PRODUCT.md"
-    artifact_version: "0.1.0"
+    artifact_version: "1.0.0"
     required_status: "reviewed"
   - artifact: "BRANDING.md"
-    artifact_version: "0.1.0"
+    artifact_version: "1.0.0"
     required_status: "reviewed"
   - artifact: "GUIDELINES.md"
     artifact_version: "0.1.0"
@@ -44,13 +45,13 @@ depends_on:
     artifact_version: "0.1.0"
     required_status: "ready"
   - artifact: "docs/API_SUPABASE.md"
-    artifact_version: "0.1.0"
+    artifact_version: "1.0.0"
     required_status: "reviewed"
   - artifact: "docs/OVERLAY_ANDROID.md"
-    artifact_version: "0.1.0"
+    artifact_version: "1.0.0"
     required_status: "reviewed"
   - artifact: "docs/PLATFORM_BEHAVIOR.md"
-    artifact_version: "0.1.0"
+    artifact_version: "1.0.0"
     required_status: "reviewed"
 supersedes: []
 evidence:
@@ -63,7 +64,7 @@ evidence:
   - "Android Developers: Copy and paste, https://developer.android.com/guide/topics/text/copy-paste"
   - "Android Developers: MediaSessionManager, https://developer.android.com/reference/android/media/session/MediaSessionManager"
   - "Android Developers: AudioManager dispatchMediaKeyEvent, https://developer.android.com/reference/android/media/AudioManager"
-next_step: "/sf-spec Android IME VoiceFlowz Keyboard"
+next_step: "/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase"
 ---
 
 # Title
@@ -72,7 +73,7 @@ Android IME VoiceFlowz Keyboard
 
 # Status
 
-Reviewed by sf-ready on 2026-04-30: not ready. This is a product and platform foundation chantier, not an implementation patch. Return to sf-spec before implementation.
+Ready for staged implementation as of 2026-05-04. The prior sf-ready blockers have been resolved in the spec: keyboard queue ownership is account-scoped, dedupe/hash contracts are explicit, base media scope is play/pause only, and dictation implementation can start with native Android local speech while richer pipeline reuse remains a post-prototype decision.
 
 # User Story
 
@@ -247,7 +248,7 @@ Update or create:
 
 # Implementation Tasks
 
-- [ ] Tache 1 : Creer le contrat technique IME local
+- [x] Tache 1 : Creer le contrat technique IME local
   - Fichier : `docs/PLATFORM_BEHAVIOR.md`
   - Action : Ajouter la capacite Android IME, ses permissions, ses limites et son rapport avec overlay/clipboard/media.
   - User story link : clarifie ce que l'utilisateur peut attendre du clavier.
@@ -255,7 +256,7 @@ Update or create:
   - Validate with : revue documentaire, absence de promesse IME hors Android.
   - Notes : garder les autres plateformes explicitement hors scope.
 
-- [ ] Tache 2 : Ajouter la declaration Android IME
+- [x] Tache 2 : Ajouter la declaration Android IME
   - Fichier : `android/app/src/main/AndroidManifest.xml`
   - Action : Declarer `VoiceFlowzInputMethodService` avec `android.permission.BIND_INPUT_METHOD`, intent `android.view.InputMethod`, exported true selon contrat Android IME, et metadata `@xml/voiceflowz_input_method`.
   - User story link : rendre VoiceFlowz selectable comme clavier Android.
@@ -263,7 +264,7 @@ Update or create:
   - Validate with : build Android et verification que VoiceFlowz apparait dans les reglages clavier.
   - Notes : ne pas casser les declarations overlay/accessibility existantes.
 
-- [ ] Tache 3 : Ajouter metadata et libelles IME
+- [x] Tache 3 : Ajouter metadata et libelles IME
   - Fichier : `android/app/src/main/res/xml/voiceflowz_input_method.xml`, `android/app/src/main/res/values/strings.xml`
   - Action : Definir le label, settings activity, subtype(s) initiales et description utilisateur.
   - User story link : permettre a Android d'exposer proprement le clavier.
@@ -271,7 +272,7 @@ Update or create:
   - Validate with : inspection APK/manifest merger et test appareil.
   - Notes : commencer avec une subtype generique multilangue plutot que promettre des layouts complets.
 
-- [ ] Tache 4 : Creer le service IME natif
+- [x] Tache 4 : Creer le service IME natif
   - Fichier : `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/VoiceFlowzInputMethodService.kt`
   - Action : Etendre `InputMethodService`, gerer lifecycle, `onCreateInputView`, `onStartInputView`, `onFinishInputView`, et exposer un `InputConnection` controller.
   - User story link : afficher le clavier dans les apps.
@@ -279,7 +280,7 @@ Update or create:
   - Validate with : Android build + test manuel dans Messages/Notes/browser.
   - Notes : ne pas demarrer Flutter depuis l'IME pour le rendu initial.
 
-- [ ] Tache 5 : Implementer UI clavier minimale native
+- [x] Tache 5 : Implementer UI clavier minimale native
   - Fichier : `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/VoiceFlowzKeyboardView.kt`
   - Action : Construire layout QWERTY minimal, espace, entree, backspace, shift/case, ponctuation de base, action row VoiceFlowz.
   - User story link : permettre la saisie de base sans dependance IA.
@@ -287,7 +288,7 @@ Update or create:
   - Validate with : saisie dans plusieurs champs, latence acceptable, touches accessibles.
   - Notes : garder les dimensions stables et eviter une UI marketing.
 
-- [ ] Tache 6 : Ajouter policy de champ sensible
+- [x] Tache 6 : Ajouter policy de champ sensible
   - Fichier : `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/KeyboardSecurityPolicy.kt`
   - Action : Detecter password/visible password/web password/number password/OTP-like/noPersonalizedLearning/private flags quand disponibles et desactiver capture, sync, suggestions et dictee persistante.
   - User story link : proteger l'utilisateur dans les champs sensibles.
@@ -295,7 +296,7 @@ Update or create:
   - Validate with : tests unitaires Kotlin + test manuel password/OTP.
   - Notes : preferer faux negatif securise: si doute fort, mode prive.
 
-- [ ] Tache 7 : Centraliser l'etat clavier local
+- [x] Tache 7 : Centraliser l'etat clavier local
   - Fichier : `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/KeyboardStateStore.kt`
   - Action : Stocker preferences locales non sensibles: enable voice row, clipboard sync desired, media controls enabled, pending queue counters, last error.
   - User story link : garder le clavier coherent entre sessions.
@@ -303,7 +304,7 @@ Update or create:
   - Validate with : restart app/process, settings visibles.
   - Notes : ne pas stocker texte sensible dans SharedPreferences non chiffrees.
 
-- [ ] Tache 8 : Creer pont Flutter pour statut IME
+- [x] Tache 8 : Creer pont Flutter pour statut IME
   - Fichier : `lib/core/platform/android_keyboard_bridge.dart`, `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/MainActivity.kt`
   - Action : Ajouter un `MethodChannel` `voiceflowz/keyboard` pour lire statut IME, ouvrir settings input method, lire/ecrire preferences clavier.
   - User story link : permettre a Settings d'accompagner l'activation.
@@ -311,7 +312,7 @@ Update or create:
   - Validate with : tests Dart de parsing + test manuel Settings.
   - Notes : separer clairement overlay bridge et keyboard bridge.
 
-- [ ] Tache 9 : Ajouter Settings clavier
+- [x] Tache 9 : Ajouter Settings clavier
   - Fichier : `lib/features/settings/presentation/settings_screen.dart`
   - Action : Afficher statut clavier actif, boutons ouvrir reglages Android, toggles dictee, clipboard sync clavier, media controls, privacy mode, queue sync.
   - User story link : rendre les permissions et limites recuperables.
@@ -319,7 +320,7 @@ Update or create:
   - Validate with : widget tests + manuel Android.
   - Notes : ne pas afficher ces controles comme disponibles hors Android.
 
-- [ ] Tache 10 : Ajouter controle media play/pause de base
+- [x] Tache 10 : Ajouter controle media play/pause de base
   - Fichier : `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/KeyboardMediaController.kt`
   - Action : Envoyer `KEYCODE_MEDIA_PLAY_PAUSE` press/release via `AudioManager.dispatchMediaKeyEvent` depuis le bouton clavier.
   - User story link : permettre play/pause depuis le clavier.
@@ -335,7 +336,7 @@ Update or create:
   - Validate with : permission absente = aucune metadata lue; permission active = active sessions accessibles.
   - Notes : peut etre differe si la premiere release ne veut que play/pause.
 
-- [ ] Tache 12 : Definir modeles clavier dans le domaine Dart
+- [x] Tache 12 : Definir modeles clavier dans le domaine Dart
   - Fichier : `lib/features/keyboard/domain/keyboard_models.dart`
   - Action : Modeliser status, privacy mode, sync mode, media controls, voice state, queue state.
   - User story link : rendre le clavier pilotable depuis app et tests.
@@ -343,7 +344,7 @@ Update or create:
   - Validate with : `flutter test`.
   - Notes : domaine Dart, pas UI.
 
-- [ ] Tache 13 : Etendre les sources transcription
+- [x] Tache 13 : Etendre les sources transcription
   - Fichier : `lib/features/voice/domain/transcription_draft.dart`, `supabase/migrations/*`
   - Action : Ajouter source `keyboard` ou `keyboard_voice` selon convention finale et contrainte SQL correspondante.
   - User story link : distinguer la dictee lancee depuis le clavier.
@@ -351,7 +352,7 @@ Update or create:
   - Validate with : test Dart existant adapte + SQL constraint test.
   - Notes : garder `overlay` pour l'ancien flux.
 
-- [ ] Tache 14 : Etendre schema clipboard pour origine clavier et dedupe
+- [x] Tache 14 : Etendre schema clipboard pour origine clavier et dedupe
   - Fichier : `supabase/migrations/YYYYMMDDHHMMSS_keyboard_ime.sql`
   - Action : Ajouter champs compatibles: `content_hash`, `origin_surface`, `origin_device_id`, `capture_method`, indexes uniques partiels par user/hash/source si approprie, settings clavier dans `user_settings`.
   - User story link : creer un registre fiable des copies/colles via clavier.
@@ -359,7 +360,7 @@ Update or create:
   - Validate with : migration apply + RLS smoke.
   - Notes : ne pas casser les rows existantes.
 
-- [ ] Tache 15 : Mettre a jour API Supabase docs
+- [x] Tache 15 : Mettre a jour API Supabase docs
   - Fichier : `docs/API_SUPABASE.md`
   - Action : Documenter nouveaux champs, allowlists, limites, RLS, realtime, dedupe et delete-wins.
   - User story link : rendre la sync implementable sans ambiguite.
@@ -367,7 +368,7 @@ Update or create:
   - Validate with : coherence migration/docs.
   - Notes : inclure client mobile user-context uniquement.
 
-- [ ] Tache 16 : Implementer repository clipboard source-aware
+- [x] Tache 16 : Implementer repository clipboard source-aware
   - Fichier : `lib/data/supabase/clipboard_repository.dart`
   - Action : Ajouter insert avec metadata clavier, hash normalise, content type, origin, dedupe et erreurs recuperables.
   - User story link : synchroniser seulement ce que l'utilisateur autorise.
@@ -423,7 +424,7 @@ Update or create:
   - Validate with : SQL metadata rejects sensitive keys.
   - Notes : aucun raw text/audio/provider payload.
 
-- [ ] Tache 23 : Tests SQL/RLS clavier
+- [x] Tache 23 : Tests SQL/RLS clavier
   - Fichier : `supabase/tests/rls_smoke.sql`
   - Action : Ajouter tests own-user/cross-user/unauth/dedupe/source allowlist/delete-wins pour keyboard clipboard et transcription.
   - User story link : proteger le registre synchronise.
@@ -431,7 +432,7 @@ Update or create:
   - Validate with : pgTAP/local Supabase ou CI.
   - Notes : garder le test idempotent.
 
-- [ ] Tache 24 : Tests Flutter
+- [x] Tache 24 : Tests Flutter
   - Fichier : `test/keyboard_models_test.dart`, `test/widget_test.dart`
   - Action : Tester modeles, parsing bridge, settings visibility Android/non-Android, validation sources transcription.
   - User story link : eviter regressions UI/config.
@@ -560,14 +561,18 @@ Update or create:
 |----------|-------|-------|--------|--------|-----------|
 | 2026-04-29 16:48:07 UTC | sf-spec | GPT-5 Codex | Created Android IME VoiceFlowz Keyboard chantier spec from user request and repo investigation. | Draft saved in `specs/android-ime-voiceflowz-keyboard.md`. | `/sf-ready Android IME VoiceFlowz Keyboard` |
 | 2026-04-30 09:12:44 UTC | sf-ready | GPT-5 Codex | Checked readiness gate for Android IME spec, including structure, metadata, user story alignment, adversarial review, security review, and documentation freshness. | Not ready: core IME dictation/media scope decisions and secure local queue/hash contract need to be fixed in spec. | `/sf-spec Android IME VoiceFlowz Keyboard` |
+| 2026-05-04 00:00:00 UTC | sf-ready | GPT-5 Codex | Rechecked readiness inside sf-build after confirming the spec now contains the missing queue, hash/dedupe, media scope, privacy and implementation-order contracts. | Ready for staged implementation. | `/sf-start Android IME VoiceFlowz Keyboard` |
+| 2026-05-04 21:15:11 UTC | sf-start | GPT-5 Codex | Implemented the native Android IME foundation, Flutter keyboard bridge/Settings card, keyboard schema metadata, source-aware repository hashing, docs and tests. | Partial: local Dart/web/docs checks pass; Android APK proof is blocked by ARM64 AAPT2 tooling and Supabase RLS smoke needs a running/linked database. | `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase` |
+| 2026-05-04 21:15:11 UTC | sf-verify | GPT-5 Codex | Verified the implemented foundation against the spec with format, analyze, Flutter tests, web build, metadata lint, diff check, Android debug build attempt and Supabase lint attempt. | Partial: Android device/IME visibility, native APK build on x64, and SQL/RLS execution remain unproven. | `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase` |
+| 2026-05-04 21:15:11 UTC | sf-build | GPT-5 Codex | Orchestrated readiness recovery, governance bootstrap, implementation, docs alignment and verification for the Android IME chantier. | Partial: stopped before sf-end/sf-ship because required Android/Supabase/manual proof is incomplete. | `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase` |
 
 # Current Chantier Flow
 
-- sf-spec: done, draft saved.
-- sf-ready: not ready on 2026-04-30.
-- sf-start: not launched.
-- sf-verify: not launched.
-- sf-end: not launched.
-- sf-ship: not launched.
+- sf-spec: done, readiness blockers resolved.
+- sf-ready: ready on 2026-05-04.
+- sf-start: partial foundation implemented on 2026-05-04.
+- sf-verify: partial on 2026-05-04; local Dart/web/docs checks passed, Android/Supabase/manual proof pending.
+- sf-end: not launched; blocked by partial proof.
+- sf-ship: not launched; blocked by partial proof.
 
-Next lifecycle command: `/sf-spec Android IME VoiceFlowz Keyboard`.
+Next lifecycle command: `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase`.

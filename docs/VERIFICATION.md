@@ -1,10 +1,10 @@
 ---
 artifact: verification_plan
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-spec"
 scope: "flutter_supabase_migration"
@@ -15,6 +15,11 @@ security_impact: "yes"
 docs_impact: "yes"
 depends_on:
   - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md@0.1.0"
+supersedes: []
+evidence:
+  - "specs/android-ime-voiceflowz-keyboard.md"
+  - "test/widget_test.dart"
+  - "supabase/tests/rls_smoke.sql"
 next_step: "/sf-start Migration totale VoiceFlowz vers Flutter + Supabase"
 ---
 
@@ -27,13 +32,14 @@ next_step: "/sf-start Migration totale VoiceFlowz vers Flutter + Supabase"
 - `flutter test`
 - `flutter build web`
 - Android build on a machine with Android toolchain.
+- Android IME build/resource proof on an x64 Android runner when the local host is ARM64 and AAPT2 is unavailable.
 - Android overlay sanity (without full build when toolchain is heavy): verify `flutter analyze`, then run on Android and check start/stop/cancel/status from Settings and Voice screens.
 - Supabase migration apply on local or test project.
 - SQL/RLS tests from `docs/API_SUPABASE.md`.
 
 ## Required Manual Checks
 
-- Android: local speech, advanced recording, overlay permission, accessibility fallback, clipboard fallback.
+- Android: local speech, advanced recording, VoiceFlowz Keyboard enable/switch/type/private-field behavior, keyboard dictation permission denied/allowed, keyboard clipboard actions, keyboard media play/pause, overlay permission, accessibility fallback, clipboard fallback.
 - iOS: microphone/speech permissions, advanced recording, secure key storage, sync.
 - macOS/Windows/Linux: launch, auth, advanced recording, secure storage state, clipboard limits.
 - Web: auth, microphone/clipboard permission behavior, advanced mode enabled only if direct/proxy contract is satisfied.
@@ -46,7 +52,24 @@ next_step: "/sf-start Migration totale VoiceFlowz vers Flutter + Supabase"
 - Clipboard sync is opt-in and visibly pausable.
 - RLS denies cross-user CRUD for every table.
 - Overlay cannot silently start recording or inject without user action.
+- IME cannot silently capture, sync, log, or enrich text in password/OTP/private fields.
 - AI and sync retries are bounded and time out visibly.
+
+## Android IME Manual Matrix
+
+Run on at least one emulator or real Android device before closing the IME chantier:
+
+| Case | Expected result |
+|---|---|
+| Enable VoiceFlowz in Android input method settings | VoiceFlowz Keyboard appears as an available keyboard. |
+| Switch to VoiceFlowz from a normal text field | Native keyboard opens without launching a Flutter view inside the IME. |
+| Type letters, space, backspace, enter | Focused field receives expected `InputConnection` updates. |
+| Focus password/OTP/no-personalized-learning field | Private mode is visible; dictation, clipboard capture, snippets and learning/sync are disabled. |
+| Tap Mic without microphone permission | No recording starts; keyboard shows recoverable permission state. |
+| Tap Mic with permission and speech recognition available | Recognized text is inserted into the active field. |
+| Clipboard copy/paste actions | Copy is explicit from selected text; paste uses current system clipboard text only. |
+| Tap Media while a media app is active | Android receives a play/pause media key; no metadata permission is requested. |
+| Use Settings keyboard card | Input settings, switch keyboard, voice, clipboard sync intent, media controls and privacy mode round-trip through `voiceflowz/keyboard`. |
 
 ## Purge Gate
 

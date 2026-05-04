@@ -9,5 +9,6 @@ class PlatformCapabilities {
 
   static bool get localSpeechSupported => !isLinux;
   static bool get overlaySupported => isAndroid;
+  static bool get keyboardImeSupported => isAndroid;
   static bool get secureStorageDegraded => isWeb || isLinux;
 }

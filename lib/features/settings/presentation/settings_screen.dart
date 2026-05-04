@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../data/supabase/supabase_client_provider.dart';
+import '../../keyboard/domain/keyboard_models.dart';
 import '../data/secure_secret_store.dart';
 
 final _secretStoreProvider = Provider<SecureSecretStore>(
@@ -27,6 +29,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _saving = false;
   AndroidOverlayStatus? _overlayStatus;
   bool _overlayBusy = false;
+  AndroidKeyboardStatus? _keyboardStatus;
+  bool _keyboardBusy = false;
   String? _message;
 
   @override
@@ -36,6 +40,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _anthropicController = TextEditingController();
     _loadSecrets();
     _loadOverlayState();
+    _loadKeyboardState();
   }
 
   @override
@@ -102,6 +107,92 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     } finally {
       if (mounted) {
         setState(() => _overlayBusy = false);
+      }
+    }
+  }
+
+  Future<void> _loadKeyboardState() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    setState(() => _keyboardBusy = true);
+    try {
+      final status = await AndroidKeyboardBridge.getStatus();
+      if (!mounted) {
+        return;
+      }
+      setState(() => _keyboardStatus = status);
+    } on AndroidKeyboardBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Keyboard status error (${error.code}): ${error.message}',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _keyboardBusy = false);
+      }
+    }
+  }
+
+  Future<void> _openKeyboardSettings() async {
+    try {
+      await AndroidKeyboardBridge.openInputMethodSettings();
+      await _loadKeyboardState();
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _message = 'Unable to open keyboard settings: $error');
+    }
+  }
+
+  Future<void> _showKeyboardPicker() async {
+    try {
+      await AndroidKeyboardBridge.showInputMethodPicker();
+      await _loadKeyboardState();
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _message = 'Unable to show keyboard picker: $error');
+    }
+  }
+
+  Future<void> _setKeyboardPreferences({
+    bool? voiceEnabled,
+    bool? clipboardSyncDesired,
+    bool? mediaControlsEnabled,
+    KeyboardPrivacyMode? privacyMode,
+  }) async {
+    final current = _keyboardStatus ?? AndroidKeyboardStatus.unsupported();
+    setState(() => _keyboardBusy = true);
+    try {
+      final status = await AndroidKeyboardBridge.setPreferences(
+        voiceEnabled: voiceEnabled ?? current.voiceEnabled,
+        clipboardSyncDesired:
+            clipboardSyncDesired ?? current.clipboardSyncDesired,
+        mediaControlsEnabled:
+            mediaControlsEnabled ?? current.mediaControlsEnabled,
+        privacyMode: privacyMode ?? current.privacyMode,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() => _keyboardStatus = status);
+    } on AndroidKeyboardBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Unable to update keyboard settings (${error.code}): ${error.message}',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _keyboardBusy = false);
       }
     }
   }
@@ -252,6 +343,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
 
     final overlayStatus = _overlayStatus;
+    final keyboardStatus = _keyboardStatus;
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
@@ -335,6 +427,138 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 : 'Android overlay unavailable on this platform',
           ),
         ),
+        ListTile(
+          leading: const Icon(Icons.keyboard_outlined),
+          title: Text(
+            PlatformCapabilities.keyboardImeSupported
+                ? 'Android keyboard IME supported'
+                : 'Android keyboard IME unavailable on this platform',
+          ),
+          subtitle: const Text(
+            'VoiceFlowz Keyboard is Android-only and runs as a native input method.',
+          ),
+        ),
+        if (PlatformCapabilities.keyboardImeSupported)
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  title: const Text('VoiceFlowz Keyboard status'),
+                  subtitle: Text(
+                    'enabled=${keyboardStatus?.enabled ?? false} | '
+                    'active=${keyboardStatus?.active ?? false} | '
+                    'privacy=${keyboardStatus?.privacyMode.name ?? 'auto'}',
+                  ),
+                  trailing: _keyboardBusy
+                      ? const SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : IconButton(
+                          tooltip: 'Refresh keyboard status',
+                          onPressed: _loadKeyboardState,
+                          icon: const Icon(Icons.refresh),
+                        ),
+                ),
+                if (keyboardStatus?.enabled == false)
+                  const ListTile(
+                    leading: Icon(Icons.info_outline),
+                    title: Text('Keyboard not enabled'),
+                    subtitle: Text(
+                      'Enable VoiceFlowz in Android input method settings, then switch to it from any text field.',
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _keyboardBusy
+                              ? null
+                              : _openKeyboardSettings,
+                          icon: const Icon(Icons.open_in_new),
+                          label: const Text('Input settings'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: _keyboardBusy ? null : _showKeyboardPicker,
+                          icon: const Icon(Icons.keyboard),
+                          label: const Text('Switch keyboard'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.voiceEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(voiceEnabled: value),
+                  title: const Text('Keyboard dictation'),
+                  subtitle: const Text(
+                    'Uses Android speech recognition from the IME when microphone permission is available.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.clipboardSyncDesired ?? false,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          clipboardSyncDesired: value,
+                        ),
+                  title: const Text('Keyboard clipboard sync intent'),
+                  subtitle: const Text(
+                    'Opt-in flag for eligible keyboard clipboard items. Sensitive/private fields still disable capture.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.mediaControlsEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          mediaControlsEnabled: value,
+                        ),
+                  title: const Text('Keyboard media play/pause'),
+                  subtitle: const Text(
+                    'Sends a generic Android media key without reading media metadata.',
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: DropdownButtonFormField<KeyboardPrivacyMode>(
+                    initialValue:
+                        keyboardStatus?.privacyMode ?? KeyboardPrivacyMode.auto,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Keyboard privacy mode',
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: KeyboardPrivacyMode.auto,
+                        child: Text('Auto: detect sensitive fields'),
+                      ),
+                      DropdownMenuItem(
+                        value: KeyboardPrivacyMode.strict,
+                        child: Text('Strict: private mode everywhere'),
+                      ),
+                      DropdownMenuItem(
+                        value: KeyboardPrivacyMode.standard,
+                        child: Text('Standard: normal fields only'),
+                      ),
+                    ],
+                    onChanged: _keyboardBusy
+                        ? null
+                        : (value) => _setKeyboardPreferences(
+                            privacyMode: value ?? KeyboardPrivacyMode.auto,
+                          ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         if (PlatformCapabilities.overlaySupported)
           Card(
             child: Column(

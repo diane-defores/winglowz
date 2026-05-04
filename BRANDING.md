@@ -1,10 +1,10 @@
 ---
 artifact: brand_context
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-03-18"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "branding"
@@ -69,8 +69,8 @@ VoiceFlowz peut rester visuellement relié à WinFlowz, avec une identité orien
 
 - Direct, productif, sans jargon.
 - Orienté action : enregistrer, transcrire, copier, synchroniser.
-- Les messages de configuration doivent rester honnêtes sur les prérequis : compte Supabase, clé OpenAI BYO locale, clé Anthropic locale optionnelle, permissions Android overlay/accessibilité.
-- Les plateformes non Android ne doivent pas recevoir de promesse d'overlay système.
+- Les messages de configuration doivent rester honnêtes sur les prérequis : compte Supabase, clé OpenAI BYO locale, clé Anthropic locale optionnelle, activation clavier Android, permissions Android overlay/accessibilité.
+- Les plateformes non Android ne doivent pas recevoir de promesse d'overlay système ou de clavier système VoiceFlowz.
 
 ## Valeurs de marque
 
@@ -89,6 +89,7 @@ VoiceFlowz peut rester visuellement relié à WinFlowz, avec une identité orien
 - "Connexion et synchronisation de données via Supabase."
 - "Clés OpenAI/Anthropic BYO conservées localement."
 - "Overlay disponible uniquement sur Android."
+- "Clavier VoiceFlowz disponible uniquement sur Android."
 - "Snippets et dictionnaire personnel synchronisés par compte."
 
 ### Claims interdits tant que non implémentés
