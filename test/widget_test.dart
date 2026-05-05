@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
+import 'package:voiceflowz/core/bootstrap/supabase_bootstrap.dart';
 import 'package:voiceflowz/core/platform/android_keyboard_bridge.dart';
 import 'package:voiceflowz/data/supabase/clipboard_repository.dart';
 import 'package:voiceflowz/features/keyboard/domain/keyboard_models.dart';
@@ -80,5 +81,43 @@ void main() {
 
     expect(status.supported, isFalse);
     expect(status.enabled, isFalse);
+  });
+
+  test('supabase config prefers publishable key', () {
+    final config = SupabaseBootstrap.resolveConfig(
+      url: ' https://example.supabase.co ',
+      publishableKey: ' sb_publishable_current ',
+      legacyAnonKey: 'legacy-anon-key',
+    );
+
+    expect(config.isComplete, isTrue);
+    expect(config.url, 'https://example.supabase.co');
+    expect(config.publishableKey, 'sb_publishable_current');
+    expect(config.missingEnvironmentNames, isEmpty);
+  });
+
+  test('supabase config accepts legacy anon key as compatibility fallback', () {
+    final config = SupabaseBootstrap.resolveConfig(
+      url: 'https://example.supabase.co',
+      publishableKey: '',
+      legacyAnonKey: 'legacy-anon-key',
+    );
+
+    expect(config.isComplete, isTrue);
+    expect(config.publishableKey, 'legacy-anon-key');
+  });
+
+  test('supabase config reports current missing variable names', () {
+    final config = SupabaseBootstrap.resolveConfig(
+      url: '',
+      publishableKey: '',
+      legacyAnonKey: '',
+    );
+
+    expect(config.isComplete, isFalse);
+    expect(config.missingEnvironmentNames, [
+      SupabaseBootstrap.urlEnvironmentName,
+      SupabaseBootstrap.publishableKeyEnvironmentName,
+    ]);
   });
 }

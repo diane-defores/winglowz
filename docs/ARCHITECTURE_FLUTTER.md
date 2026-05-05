@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-05-04"
 status: "reviewed"
 source_skill: "sf-start"
 scope: "flutter_architecture"
@@ -16,6 +16,11 @@ docs_impact: "yes"
 depends_on:
   - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md@0.1.0"
   - "docs/API_SUPABASE.md@0.1.0"
+supersedes: []
+evidence:
+  - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md"
+  - "lib/core/bootstrap/supabase_bootstrap.dart"
+next_step: "$sf-docs update"
 ---
 
 # Architecture Flutter — VoiceFlowz
@@ -32,7 +37,7 @@ depends_on:
 ## Security Rules in Code
 
 - No service role key in client code.
-- Supabase starts only with anon key + project URL from runtime defines.
+- Supabase starts only with publishable key + project URL from runtime defines.
 - BYOK keys are written to local secure storage facade and never synced.
 - Linux and web are treated as secure-storage degraded contexts.
 - Platform behavior and overlay availability are shown in UI as explicit capability state.

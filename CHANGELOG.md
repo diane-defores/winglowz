@@ -10,6 +10,7 @@ source_skill: "sf-docs"
 scope: "update"
 owner: "unknown"
 confidence: "medium"
+risk_level: "medium"
 security_impact: "unknown"
 docs_impact: "yes"
 linked_systems: []
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Repaired the local Flox Flutter environment and pinned it to an executable Flutter SDK variant.
 - Protected direct app routes behind Supabase auth state instead of allowing private screens to load before sign-in.
 - Updated `.env.example` to document Supabase runtime defines instead of legacy Convex/Clerk variables.
+- Renamed Supabase runtime configuration to `SUPABASE_PUBLISHABLE_KEY` in app bootstrap and docs, while keeping the old key name as an internal compatibility fallback.
 - Updated README, platform, overlay, component, API and verification docs to describe Android IME scope and proof gaps.
 
 ### Security

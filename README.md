@@ -56,7 +56,7 @@ This repository now contains:
 flutter pub get
 flutter run \
   --dart-define=SUPABASE_URL=https://<project-ref>.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=<anon-key>
+  --dart-define=SUPABASE_PUBLISHABLE_KEY=<publishable-key>
 ```
 
 ## Required Runtime Defines
@@ -64,9 +64,22 @@ flutter run \
 | Variable | Required | Purpose |
 |---|---:|---|
 | `SUPABASE_URL` | Yes | Supabase project URL |
-| `SUPABASE_ANON_KEY` | Yes | Supabase anon key for client auth/data paths |
+| `SUPABASE_PUBLISHABLE_KEY` | Yes | Supabase publishable key for client auth/data paths |
 
 Never use `SUPABASE_SERVICE_ROLE_KEY` in Flutter/web/desktop/mobile clients.
+
+## GitHub Actions / Blacksmith APK
+
+The Android CI workflow runs on Blacksmith and injects Supabase config at build time.
+
+Add these repository secrets in GitHub: **Settings -> Secrets and variables -> Actions -> Repository secrets**.
+
+| Secret | Purpose |
+|---|---|
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key |
+
+The generated APK will show the missing configuration screen if these secrets are absent.
 
 ## Current Migration Scope
 

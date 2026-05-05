@@ -107,7 +107,7 @@ supabase/
 
 ## Runtime Rules
 
-- Supabase URL and anon key must be injected via `--dart-define`.
+- Supabase URL and publishable key must be injected via `--dart-define`.
 - No service-role key is allowed in Flutter client code.
 - Data access is controlled by Supabase RLS policies; client code must never bypass tenant/user filters.
 - Clipboard, snippets, dictionary, and transcriptions are user-scoped CRUD resources.

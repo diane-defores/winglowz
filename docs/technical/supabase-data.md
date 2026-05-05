@@ -49,13 +49,13 @@ not authorization authorities.
 ## Entrypoints
 
 - Supabase migration apply: creates or evolves database contracts.
-- Flutter repositories: insert/read/update/delete user data through the anon client and RLS.
+- Flutter repositories: insert/read/update/delete user data through the publishable-key client and RLS.
 
 ## Control Flow
 
 ```text
 Flutter repository
-  -> Supabase anon client with auth session
+  -> Supabase publishable-key client with auth session
   -> Postgres table constraint + RLS policy
   -> realtime/user-scoped query result
 ```
