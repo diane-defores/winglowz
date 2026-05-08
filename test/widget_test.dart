@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
 import 'package:voiceflowz/core/bootstrap/supabase_bootstrap.dart';
 import 'package:voiceflowz/core/platform/android_keyboard_bridge.dart';
-import 'package:voiceflowz/data/supabase/clipboard_repository.dart';
 import 'package:voiceflowz/features/keyboard/domain/keyboard_models.dart';
+import 'package:voiceflowz/features/clipboard/domain/clipboard_normalizer.dart';
 import 'package:voiceflowz/features/voice/domain/transcription_draft.dart';
 
 void main() {
@@ -62,11 +62,27 @@ void main() {
     );
   });
 
+  test('android keyboard clipboard event parses native bridge maps', () {
+    final event = AndroidKeyboardClipboardEvent.fromMap({
+      'content': ' copied text ',
+      'source': 'keyboard_clipboard',
+      'deviceId': 'android:abc',
+      'capturedAtEpochMillis': 1778263200000,
+      'sourceMetadata': {'action': 'copy_selection', 'ignored': <String>[]},
+    });
+
+    expect(event, isNotNull);
+    expect(event?.content, ' copied text ');
+    expect(event?.source.databaseValue, 'keyboard_clipboard');
+    expect(event?.deviceId, 'android:abc');
+    expect(event?.capturedAtUtc.isUtc, isTrue);
+    expect(event?.sourceMetadata, containsPair('action', 'copy_selection'));
+    expect(event?.sourceMetadata, isNot(contains('ignored')));
+  });
+
   test('clipboard normalized hash is stable across whitespace', () {
-    final first = ClipboardRepository.normalizedClipboardHash(
-      ' hello   world ',
-    );
-    final second = ClipboardRepository.normalizedClipboardHash('hello world');
+    final first = sha256Hex(normalizeClipboardText(' hello   world '));
+    final second = sha256Hex(normalizeClipboardText('hello world'));
 
     expect(first, second);
     expect(first, hasLength(64));

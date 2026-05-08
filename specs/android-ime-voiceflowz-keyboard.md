@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-29"
 created_at: "2026-04-29 16:48:07 UTC"
-updated: "2026-05-04"
-updated_at: "2026-05-04 21:15:11 UTC"
+updated: "2026-05-08"
+updated_at: "2026-05-08 17:57:25 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -24,8 +24,10 @@ linked_systems:
   - "Android AudioManager media keys"
   - "Android MediaSessionManager optional active sessions"
   - "Android overlay/accessibility services"
+  - "ClipboardHistoryApi"
+  - "ClipboardHistoryStore"
   - "Supabase Auth"
-  - "Supabase Postgres/RLS/Realtime"
+  - "Supabase Postgres/RLS/Realtime as current cloud adapter"
   - "speech_to_text"
   - "record"
 depends_on:
@@ -60,11 +62,12 @@ evidence:
   - "Existing Android service is overlay foreground recording state only in android/app/src/main/kotlin/com/voiceflowz/voiceflowz/OverlayForegroundService.kt."
   - "Legacy Expo overlay contains reusable concepts for bubble UI, waveform, accessibility injection, and clipboard fallback in modules/floating-overlay/android/src/main/java/expo/modules/floatingoverlay/."
   - "Supabase already has user-scoped transcriptions, clipboard_items, snippets, dictionary_terms, user_settings, client_events with RLS and realtime in supabase/migrations/20260427084000_init_voiceflowz.sql."
+  - "specs/clipboard-backend-agnostic-api.md records the 2026-05-08 decision that clipboard behavior must go through ClipboardHistoryApi/ClipboardHistoryStore and keep Supabase as a replaceable adapter."
   - "Android Developers: Create an input method, https://developer.android.com/develop/ui/views/touch-and-input/creating-input-method"
   - "Android Developers: Copy and paste, https://developer.android.com/guide/topics/text/copy-paste"
   - "Android Developers: MediaSessionManager, https://developer.android.com/reference/android/media/session/MediaSessionManager"
   - "Android Developers: AudioManager dispatchMediaKeyEvent, https://developer.android.com/reference/android/media/AudioManager"
-next_step: "/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase"
+next_step: "/sf-start specs/clipboard-backend-agnostic-api.md task 6"
 ---
 
 # Title
@@ -73,7 +76,7 @@ Android IME VoiceFlowz Keyboard
 
 # Status
 
-Ready for staged implementation as of 2026-05-04. The prior sf-ready blockers have been resolved in the spec: keyboard queue ownership is account-scoped, dedupe/hash contracts are explicit, base media scope is play/pause only, and dictation implementation can start with native Android local speech while richer pipeline reuse remains a post-prototype decision.
+Ready for staged implementation as of 2026-05-04, with clipboard sync alignment updated on 2026-05-08. The prior sf-ready blockers have been resolved in the spec: keyboard queue ownership is account-scoped, dedupe/hash contracts are explicit, base media scope is play/pause only, and dictation implementation can start with native Android local speech while richer pipeline reuse remains a post-prototype decision. Clipboard work now defers to `specs/clipboard-backend-agnostic-api.md`: Supabase is the current cloud adapter, not the IME or UI contract.
 
 # User Story
 
@@ -87,11 +90,11 @@ Declencheurs principaux:
 - L'utilisateur tape, dicte, colle, copie une selection, insere un snippet ou lance une action depuis la barre d'outils du clavier.
 - L'utilisateur appuie sur play/pause media depuis le clavier.
 
-Resultat observable attendu: le champ actif recoit le texte demande, l'utilisateur voit l'etat exact de dictee/sync/permissions, les elements clipboard autorises sont conserves localement puis synchronises par compte quand la session Supabase est disponible, et les controles media agissent sur la session media courante sans lire de contenu inutile.
+Resultat observable attendu: le champ actif recoit le texte demande, l'utilisateur voit l'etat exact de dictee/sync/permissions, les elements clipboard autorises sont conserves localement puis synchronises par compte quand un backend configure est disponible, et les controles media agissent sur la session media courante sans lire de contenu inutile.
 
 # Minimal Behavior Contract
 
-Quand VoiceFlowz est selectionne comme clavier Android, il affiche un clavier utilisable dans tout champ texte compatible avec une barre d'actions VoiceFlowz; l'utilisateur peut saisir du texte, lancer/arreter/annuler une dictee, inserer le resultat dans le champ actif, enregistrer ce resultat dans l'historique et le clipboard synchronise si l'option est activee, ouvrir un panneau clipboard/snippets, et envoyer play/pause au media courant. Si une permission, une session Supabase, le micro, le presse-papiers, la session media ou le champ actif n'est pas disponible, le clavier doit afficher une action de recuperation ou tomber sur un mode degrade sans perte du texte deja produit. L'edge case facile a rater est que l'IME fonctionne dans des champs sensibles ou limites: il ne doit jamais capturer, synchroniser, journaliser ou injecter silencieusement du texte dans un champ password/OTP/sensible detecte ou dans un contexte ou Android refuse l'acces.
+Quand VoiceFlowz est selectionne comme clavier Android, il affiche un clavier utilisable dans tout champ texte compatible avec une barre d'actions VoiceFlowz; l'utilisateur peut saisir du texte, lancer/arreter/annuler une dictee, inserer le resultat dans le champ actif, enregistrer ce resultat dans l'historique et le clipboard synchronise si l'option est activee, ouvrir un panneau clipboard/snippets, et envoyer play/pause au media courant. Si une permission, un backend de sync, le micro, le presse-papiers, la session media ou le champ actif n'est pas disponible, le clavier doit afficher une action de recuperation ou tomber sur un mode degrade sans perte du texte deja produit. L'edge case facile a rater est que l'IME fonctionne dans des champs sensibles ou limites: il ne doit jamais capturer, synchroniser, journaliser ou injecter silencieusement du texte dans un champ password/OTP/sensible detecte ou dans un contexte ou Android refuse l'acces.
 
 # Success Behavior
 
@@ -99,10 +102,10 @@ Quand VoiceFlowz est selectionne comme clavier Android, il affiche un clavier ut
 - Given un champ texte standard est focalise, when l'utilisateur tape, then le texte est insere via `InputConnection.commitText` et les actions retour/arriere/espace/entree suivent le comportement attendu du champ.
 - Given le micro est autorise et aucun enregistrement n'est actif, when l'utilisateur appuie sur dictee, then le clavier affiche un etat recording, une action stop, une action cancel, et une notification foreground si Android l'exige.
 - Given une dictee se termine avec du texte, when le resultat est accepte, then le texte est insere dans le champ actif, cree une transcription source `keyboard`, et cree un item clipboard source `keyboard_voice` seulement si la sync clipboard clavier est activee.
-- Given clipboard sync clavier est activee et l'utilisateur colle depuis le panneau VoiceFlowz, when le contenu est insere, then l'item est marque avec son origine, dedupe par hash normalise, borne en taille, et synchronise sous le compte courant via RLS.
+- Given clipboard sync clavier est activee et l'utilisateur colle depuis le panneau VoiceFlowz, when le contenu est insere, then l'item est marque avec son origine, dedupe par hash normalise, borne en taille, et remis a `ClipboardHistoryApi`/`ClipboardHistoryStore` pour stockage local puis sync provider.
 - Given un media joue dans une autre app, when l'utilisateur appuie sur play/pause, then VoiceFlowz envoie un media key event au consommateur media courant et affiche un etat bref de succes ou d'indisponibilite.
 - Given l'utilisateur n'est pas connecte, when il utilise le clavier, then la saisie, la dictee locale et le clipboard local restent utilisables; les sync cloud sont en etat pending ou disabled avec une explication visible dans Settings.
-- Given l'app principale est ouverte, when l'utilisateur consulte Settings, then il voit les statuts: IME actif/inactif, micro, clipboard sync, media controls, overlay, accessibility, Supabase session et sync pending/error.
+- Given l'app principale est ouverte, when l'utilisateur consulte Settings, then il voit les statuts: IME actif/inactif, micro, clipboard sync, media controls, overlay, accessibility, backend sync et sync pending/error.
 
 # Error Behavior
 
@@ -110,7 +113,7 @@ Quand VoiceFlowz est selectionne comme clavier Android, il affiche un clavier ut
 - Si le champ actif est password, OTP, noPersonalizedLearning, non-editable, absent ou limite par l'app hote, l'IME doit desactiver capture/sync/injection enrichie et afficher un mode "saisie privee" ou "champ limite".
 - Si le micro est refuse ou revoke, la dictee ne demarre pas, aucun enregistrement fantome ne tourne, et l'utilisateur voit une action vers les permissions.
 - Si la dictee echoue, timeout, retourne vide ou est annulee, aucun item transcription/clipboard vide n'est cree; le texte partiel reste localement visible seulement si l'utilisateur choisit de le conserver.
-- Si Supabase est indisponible, les items eligibles restent dans une queue locale bornee et visible; les retries sont bornes; aucune mutation partielle ne peut creer de donnees cross-user.
+- Si le backend de sync est indisponible, les items eligibles restent dans un store/queue local borne et visible; les retries sont bornes; aucune mutation partielle ne peut creer de donnees cross-user.
 - Si la session auth change ou logout arrive pendant que l'IME est ouvert, la sync cloud se coupe immediatement, la queue de l'ancien compte n'est pas exposee au nouveau compte, et le clavier continue en mode local.
 - Si play/pause n'a aucun media consumer, VoiceFlowz affiche un feedback bref "Aucun media actif" et ne demande pas de permission invasive.
 - Si les permissions notification listener/media session enrichie sont absentes, seul le play/pause generique par media key est disponible; les metadonnees media restent masquees.
@@ -118,11 +121,11 @@ Quand VoiceFlowz est selectionne comme clavier Android, il affiche un clavier ut
 
 # Problem
 
-VoiceFlowz a deja une base Flutter + Supabase et un debut de pont Android overlay, mais le vrai point d'entree systeme souhaite pour Android est le clavier. L'overlay reste utile, mais il depend de permissions fragiles et d'un modele hors-IME. Un IME donne une surface plus naturelle pour dicter, inserer, reutiliser des snippets, gerer un clipboard VoiceFlowz et controler le media en cours pendant que l'utilisateur ecrit dans n'importe quelle app. Aujourd'hui, le repo ne contient pas de `InputMethodService`, pas de declaration IME Android, pas de service clipboard clavier, pas de controles media clavier, et pas de modele de donnees distinguant clairement les captures issues du clavier.
+VoiceFlowz a deja une base Flutter + Supabase et un debut de pont Android overlay, mais le vrai point d'entree systeme souhaite pour Android est le clavier. L'overlay reste utile, mais il depend de permissions fragiles et d'un modele hors-IME. Un IME donne une surface plus naturelle pour dicter, inserer, reutiliser des snippets, gerer un clipboard VoiceFlowz et controler le media en cours pendant que l'utilisateur ecrit dans n'importe quelle app. Depuis le 2026-05-08, le clipboard doit rester backend-agnostic: l'IME emet des actions vers `ClipboardHistoryApi`/`ClipboardHistoryStore`, et Supabase n'est qu'un adaptateur de sync possible.
 
 # Solution
 
-Ajouter un IME Android natif Kotlin `VoiceFlowzInputMethodService` avec une UI clavier native et une barre d'actions VoiceFlowz. Le clavier s'integre avec les fondations Flutter/Supabase via des ponts limites: Settings et historique restent dans Flutter, les operations clavier temps reel restent natives, les donnees synchronisables passent par des repositories et migrations explicites avec RLS. Les capacites sensibles sont progressives: saisie de base sans compte, dictee avec micro, clipboard sync opt-in avec auth, play/pause media sans metadata par defaut, metadata/media sessions uniquement apres permission utilisateur explicite.
+Ajouter un IME Android natif Kotlin `VoiceFlowzInputMethodService` avec une UI clavier native et une barre d'actions VoiceFlowz. Le clavier s'integre avec les fondations Flutter via des ponts limites: Settings et historique restent dans Flutter, les operations clavier temps reel restent natives, et les donnees clipboard synchronisables passent par l'API/store backend-agnostic avant tout adaptateur provider. Les capacites sensibles sont progressives: saisie de base sans compte, dictee avec micro, clipboard sync opt-in avec auth/backend configure, play/pause media sans metadata par defaut, metadata/media sessions uniquement apres permission utilisateur explicite.
 
 # Scope In
 
@@ -133,8 +136,8 @@ Ajouter un IME Android natif Kotlin `VoiceFlowzInputMethodService` avec une UI c
 - Dictee depuis le clavier avec etats idle/recording/processing/result/error/canceled.
 - Insertion directe via `InputConnection` dans le champ actif quand autorise.
 - Detection et mode degrade pour champs sensibles ou limites a partir de `EditorInfo.inputType`, `imeOptions`, `privateImeOptions` quand disponibles, et contraintes `InputConnection`.
-- Clipboard VoiceFlowz: copier la selection via action explicite, coller depuis clipboard systeme via action explicite, inserer un item VoiceFlowz, afficher recents, pin/delete, dedupe, queue locale, sync Supabase opt-in.
-- Supabase schema evolution pour distinguer origines clavier, hashes de dedupe, device id, sync state et preferences clavier.
+- Clipboard VoiceFlowz: copier la selection via action explicite, coller depuis clipboard systeme via action explicite, inserer un item VoiceFlowz, afficher recents, pin/delete, dedupe, queue/store local, sync backend opt-in via `ClipboardHistoryApi`/`ClipboardHistoryStore`.
+- Adapter/schema evolution pour distinguer origines clavier, hashes de dedupe, device id, sync state et preferences clavier; Supabase reste l'adaptateur cloud actuel.
 - Settings Flutter pour activer/configurer: clavier, dictee, clipboard sync clavier, media controls, privacy mode, queue sync.
 - Controle media initial: play/pause generique via media key event; feedback utilisateur.
 - Controle media enrichi optionnel: verifier permission notification listener/media session avant lecture active sessions; pas de metadata par defaut.
@@ -155,14 +158,14 @@ Ajouter un IME Android natif Kotlin `VoiceFlowzInputMethodService` avec une UI c
 
 # Constraints
 
-- Le repo cible reste Flutter + Supabase; pas de retour vers Expo/Convex.
+- Le repo cible reste Flutter avec Supabase comme adaptateur actuel; pas de retour vers Expo/Convex et pas de couplage direct IME/UI vers Supabase.
 - L'IME Android doit etre natif Kotlin. Ne pas embarquer une vue Flutter complete dans le clavier tant qu'un spike n'a pas prouve latence, cycle de vie et stabilite.
-- Le clavier doit rester utilisable sans reseau et sans session Supabase.
+- Le clavier doit rester utilisable sans reseau et sans session backend.
 - Toute synchronisation clipboard est opt-in, visible et desactivable.
 - Le presse-papiers et la dictee manipulent potentiellement des donnees sensibles; aucune capture silencieuse.
 - Le service IME ne doit pas journaliser le texte saisi, dicte ou colle.
 - Les limites existantes restent applicables: 100000 caracteres max transcription, 50000 caracteres max clipboard item, retries bornes, timeouts visibles.
-- Le service role Supabase reste interdit dans tout client mobile/web/desktop.
+- Le service role Supabase reste interdit dans tout client mobile/web/desktop, et le natif Android ne doit pas embarquer de credentials backend.
 - Les policies RLS doivent utiliser `auth.uid()` comme source d'identite; le client ne doit pas envoyer un `user_id` de confiance.
 - Les controles media doivent commencer par une commande generique play/pause sans permission invasive; toute session enrichie est opt-in.
 - Les plateformes non Android ne doivent pas afficher de promesse IME.
@@ -183,13 +186,14 @@ Ajouter un IME Android natif Kotlin `VoiceFlowzInputMethodService` avec une UI c
 
 # Invariants
 
-- User text ownership is per Supabase auth user and per local account/session boundary.
+- User text ownership is per backend auth user and per local account/session boundary.
 - IME operations are explicit user actions; no background recorder, no background clipboard siphon.
 - Sensitive fields disable VoiceFlowz learning/sync/capture features.
 - Clipboard fallback remains available for voice output, but sync is independent and opt-in.
 - Logout clears account-scoped sync state from active keyboard memory.
 - Dedupe never crosses users.
 - Delete/tombstone wins over stale sync events.
+- IME clipboard events target the backend-agnostic clipboard contract; Supabase is only one adapter behind that contract.
 - Media controls do not require reading the user's media metadata in the base implementation.
 - Overlay and IME cannot start simultaneous recordings.
 - UI must tell the truth about unsupported platform states.
@@ -201,9 +205,9 @@ Ajouter un IME Android natif Kotlin `VoiceFlowzInputMethodService` avec une UI c
 - `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/`: gains native IME services/controllers and may refactor shared overlay recording state to prevent concurrent sessions.
 - `lib/core/platform/`: gains Android keyboard bridge/capabilities parallel to overlay bridge.
 - `lib/features/settings/`: gains keyboard settings/status and permission recovery flows.
-- `lib/features/clipboard/`: gains source-aware keyboard clipboard history and sync state.
+- `lib/features/clipboard/`: exposes source-aware keyboard clipboard history and sync state through `ClipboardHistoryApi`/`ClipboardHistoryStore`.
 - `lib/features/voice/`: must treat source `keyboard` as first-class alongside free/advanced/overlay.
-- `supabase/migrations/`: gains new migration for keyboard-related settings and clipboard/transcription origin metadata.
+- `supabase/migrations/`: gains adapter migration for keyboard-related settings and clipboard/transcription origin metadata while Supabase is enabled.
 - `supabase/tests/rls_smoke.sql`: expands RLS and constraint tests for keyboard rows.
 - `docs/OVERLAY_ANDROID.md`: must clarify overlay is complementary, not the primary Android entrypoint.
 - `docs/PLATFORM_BEHAVIOR.md`: must add Android IME capability row/column.
@@ -219,7 +223,7 @@ Update or create:
 - `docs/PLATFORM_BEHAVIOR.md`: Android IME capability, non-Android exclusion, clipboard/media permission matrix.
 - `docs/OVERLAY_ANDROID.md`: relationship between overlay and IME.
 - `docs/VERIFICATION.md`: Android IME manual QA matrix.
-- `docs/API_SUPABASE.md`: new fields, constraints, realtime behavior and RLS tests.
+- `docs/API_SUPABASE.md`: provider fields, constraints, realtime behavior and RLS tests while Supabase remains enabled.
 - `docs/COMPONENTS.md`: keyboard settings, clipboard panel, voice controls.
 - `PRODUCT.md` and `BUSINESS.md`: if the IME becomes primary positioning rather than overlay.
 - Support/onboarding copy: Android enable keyboard, switch keyboard, privacy warning for custom keyboards, clipboard sync opt-in.
@@ -474,14 +478,14 @@ Update or create:
 - [ ] CA 6 : Given le micro est autorise, when l'utilisateur demarre puis stoppe une dictee, then le texte final peut etre insere dans le champ actif.
 - [ ] CA 7 : Given l'utilisateur annule une dictee, when le service retourne idle, then aucune transcription ni clipboard item vide n'est cree.
 - [ ] CA 8 : Given overlay recording est actif, when l'utilisateur demarre la dictee clavier, then la seconde session est refusee ou l'utilisateur doit choisir une seule session.
-- [ ] CA 9 : Given clipboard sync clavier est desactivee, when l'utilisateur colle via le clavier, then le texte est insere mais aucun item Supabase n'est cree.
-- [ ] CA 10 : Given clipboard sync clavier est activee et l'utilisateur est authentifie, when il copie/colle via le clavier, then un item `clipboard_items` user-scoped est cree avec origine clavier.
+- [ ] CA 9 : Given clipboard sync clavier est desactivee, when l'utilisateur colle via le clavier, then le texte est insere mais aucun item provider/cloud n'est cree.
+- [ ] CA 10 : Given clipboard sync clavier est activee et l'utilisateur est authentifie, when il copie/colle via le clavier, then un event clipboard user-scoped est cree via `ClipboardHistoryApi`/`ClipboardHistoryStore` avec origine clavier.
 - [ ] CA 11 : Given deux utilisateurs sur le meme appareil, when User B se connecte apres User A, then User B ne voit pas la queue locale ni les clipboard items de User A.
 - [ ] CA 12 : Given deux devices copient le meme contenu normalise, when la sync arrive, then le dedupe evite les doublons non voulus pour le meme user.
 - [ ] CA 13 : Given un item clipboard supprime, when un evenement stale arrive ensuite, then delete-wins empeche sa restauration.
 - [ ] CA 14 : Given un texte depasse 50000 caracteres pour clipboard, when l'utilisateur tente de sync, then l'action est refusee ou confirmee selon UX sans mutation partielle.
 - [ ] CA 15 : Given le device est offline, when un item syncable est cree via clavier, then il reste dans une queue visible et bornee.
-- [ ] CA 16 : Given la session Supabase expire, when la queue tente de sync, then elle passe en erreur recuperable sans fuite cross-user.
+- [ ] CA 16 : Given la session backend expire, when la queue tente de sync, then elle passe en erreur recuperable sans fuite cross-user.
 - [ ] CA 17 : Given un media joue, when l'utilisateur appuie play/pause, then Android recoit un media key event et le media change d'etat si l'app media l'accepte.
 - [ ] CA 18 : Given aucun media n'est actif, when l'utilisateur appuie play/pause, then le clavier affiche un feedback bref et ne demande pas de permission supplementaire.
 - [ ] CA 19 : Given notification listener n'est pas autorise, when media controls sont utilises, then aucune metadata media n'est lue.
@@ -539,7 +543,7 @@ Update or create:
   6. Clipboard panel and queue.
   7. Dictation integration and recording coordinator.
   8. Tests and docs.
-- Prefer native Kotlin for IME UI and lifecycle. Use Flutter for app Settings/history and Supabase-backed screens.
+- Prefer native Kotlin for IME UI and lifecycle. Use Flutter for app Settings/history and backend-agnostic clipboard API/store orchestration.
 - Do not add broad permissions before a feature needs them. Base play/pause should not require notification listener.
 - Stop conditions:
   - If VoiceFlowz does not appear as an input method after manifest/XML tasks, stop and fix platform registration before UI work.
@@ -565,6 +569,7 @@ Update or create:
 | 2026-05-04 21:15:11 UTC | sf-start | GPT-5 Codex | Implemented the native Android IME foundation, Flutter keyboard bridge/Settings card, keyboard schema metadata, source-aware repository hashing, docs and tests. | Partial: local Dart/web/docs checks pass; Android APK proof is blocked by ARM64 AAPT2 tooling and Supabase RLS smoke needs a running/linked database. | `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase` |
 | 2026-05-04 21:15:11 UTC | sf-verify | GPT-5 Codex | Verified the implemented foundation against the spec with format, analyze, Flutter tests, web build, metadata lint, diff check, Android debug build attempt and Supabase lint attempt. | Partial: Android device/IME visibility, native APK build on x64, and SQL/RLS execution remain unproven. | `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase` |
 | 2026-05-04 21:15:11 UTC | sf-build | GPT-5 Codex | Orchestrated readiness recovery, governance bootstrap, implementation, docs alignment and verification for the Android IME chantier. | Partial: stopped before sf-end/sf-ship because required Android/Supabase/manual proof is incomplete. | `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase` |
+| 2026-05-08 17:57:25 UTC | sf-build | GPT-5 Codex | Aligned clipboard sync wording with the backend-agnostic clipboard API chantier. | partial | `/sf-start specs/clipboard-backend-agnostic-api.md task 6` |
 
 # Current Chantier Flow
 
@@ -575,4 +580,4 @@ Update or create:
 - sf-end: not launched; blocked by partial proof.
 - sf-ship: not launched; blocked by partial proof.
 
-Next lifecycle command: `/sf-test Android IME VoiceFlowz Keyboard on Android device and linked Supabase`.
+Next lifecycle command: `/sf-start specs/clipboard-backend-agnostic-api.md task 6`, then Android device and backend adapter proof when the IME clipboard bridge is implemented.

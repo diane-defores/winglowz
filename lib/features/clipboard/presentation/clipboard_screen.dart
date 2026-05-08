@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/bootstrap/supabase_bootstrap.dart';
-import '../../../data/supabase/clipboard_repository.dart';
-import '../../../data/supabase/supabase_client_provider.dart';
+import '../application/clipboard_store_provider.dart';
+import '../domain/clipboard_capture_event.dart';
+import '../domain/clipboard_normalizer.dart';
+import '../domain/clipboard_store.dart';
 
 class ClipboardScreen extends ConsumerStatefulWidget {
   const ClipboardScreen({super.key});
@@ -14,14 +15,10 @@ class ClipboardScreen extends ConsumerStatefulWidget {
 
 class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   final _contentController = TextEditingController();
-  String _source = 'manual';
+  ClipboardCanonicalSource _source = ClipboardCanonicalSource.manual;
   bool _busy = false;
   String? _message;
   List<ClipboardItemRecord> _items = const [];
-
-  static String get _cloudSyncDisabledMessage =>
-      '${SupabaseBootstrap.initError ?? 'Cloud sync is disabled.'} '
-      'Clipboard and keyboard local testing remains available.';
 
   @override
   void initState() {
@@ -36,19 +33,27 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _load() async {
-    final client = ref.read(supabaseClientProvider);
-    if (client == null) {
-      setState(() => _message = _cloudSyncDisabledMessage);
-      return;
-    }
+    final api = ref.read(clipboardHistoryApiProvider);
+    final importer = ref.read(keyboardClipboardEventImporterProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
-      final rows = await ClipboardRepository(client).list();
+      final importResult = await importer.drainFromAndroidKeyboard();
+      final rows = await api.listItems();
       if (mounted) {
-        setState(() => _items = rows);
+        setState(() {
+          _items = rows;
+          if (importResult.rejectedSensitive > 0) {
+            _message =
+                '${importResult.rejectedSensitive} capture clavier sensible ignoree.';
+          } else if (importResult.failed > 0) {
+            _message = '${importResult.failed} capture clavier non importee.';
+          } else if (importResult.imported > 0) {
+            _message = '${importResult.imported} capture clavier importee.';
+          }
+        });
       }
     } catch (error) {
       if (mounted) {
@@ -62,19 +67,25 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _add() async {
-    final client = ref.read(supabaseClientProvider);
-    if (client == null) {
-      setState(() => _message = _cloudSyncDisabledMessage);
-      return;
+    final api = ref.read(clipboardHistoryApiProvider);
+    var sensitiveConfirmed = false;
+    final classification = classifySensitiveContent(_contentController.text);
+    if (classification != ClipboardSensitiveClassification.none) {
+      sensitiveConfirmed = await _confirmSensitiveSave(classification);
+      if (!sensitiveConfirmed) {
+        return;
+      }
     }
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
-      await ClipboardRepository(
-        client,
-      ).insert(content: _contentController.text, source: _source);
+      await api.addManualItem(
+        content: _contentController.text,
+        source: _source,
+        sensitiveConfirmed: sensitiveConfirmed,
+      );
       _contentController.clear();
       await _load();
     } catch (error) {
@@ -88,19 +99,41 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
     }
   }
 
+  Future<bool> _confirmSensitiveSave(
+    ClipboardSensitiveClassification classification,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Contenu sensible'),
+          content: Text(
+            'Ce contenu ressemble a: ${classification.label}. Le sauvegarder dans le clipboard ?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Sauvegarder'),
+            ),
+          ],
+        );
+      },
+    );
+    return confirmed ?? false;
+  }
+
   Future<void> _togglePin(ClipboardItemRecord item) async {
-    final client = ref.read(supabaseClientProvider);
-    if (client == null) {
-      return;
-    }
+    final api = ref.read(clipboardHistoryApiProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
-      await ClipboardRepository(
-        client,
-      ).togglePin(id: item.id, pinned: !item.pinned);
+      await api.setPinned(id: item.id, pinned: !item.pinned);
       await _load();
     } catch (error) {
       if (mounted) {
@@ -114,16 +147,13 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _remove(String id) async {
-    final client = ref.read(supabaseClientProvider);
-    if (client == null) {
-      return;
-    }
+    final api = ref.read(clipboardHistoryApiProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
-      await ClipboardRepository(client).softDelete(id);
+      await api.removeItem(id);
       await _load();
     } catch (error) {
       if (mounted) {
@@ -151,17 +181,43 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
+        DropdownButtonFormField<ClipboardCanonicalSource>(
           initialValue: _source,
           items: const [
-            DropdownMenuItem(value: 'manual', child: Text('manual')),
-            DropdownMenuItem(value: 'voice', child: Text('voice')),
-            DropdownMenuItem(value: 'overlay', child: Text('overlay')),
-            DropdownMenuItem(value: 'system', child: Text('system')),
+            DropdownMenuItem(
+              value: ClipboardCanonicalSource.manual,
+              child: Text('manual'),
+            ),
+            DropdownMenuItem(
+              value: ClipboardCanonicalSource.voice,
+              child: Text('voice'),
+            ),
+            DropdownMenuItem(
+              value: ClipboardCanonicalSource.overlay,
+              child: Text('overlay'),
+            ),
+            DropdownMenuItem(
+              value: ClipboardCanonicalSource.system,
+              child: Text('system'),
+            ),
+            DropdownMenuItem(
+              value: ClipboardCanonicalSource.keyboard,
+              child: Text('keyboard'),
+            ),
+            DropdownMenuItem(
+              value: ClipboardCanonicalSource.keyboardVoice,
+              child: Text('keyboard voice'),
+            ),
+            DropdownMenuItem(
+              value: ClipboardCanonicalSource.keyboardClipboard,
+              child: Text('keyboard clipboard'),
+            ),
           ],
           onChanged: _busy
               ? null
-              : (value) => setState(() => _source = value ?? 'manual'),
+              : (value) => setState(
+                  () => _source = value ?? ClipboardCanonicalSource.manual,
+                ),
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Source',
@@ -196,7 +252,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
           ),
         const SizedBox(height: 16),
         const Text(
-          'Clipboard items (Supabase CRUD)',
+          'Clipboard items',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
@@ -206,7 +262,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
           Card(
             child: ListTile(
               title: Text(item.content),
-              subtitle: Text('source: ${item.source}'),
+              subtitle: Text('source: ${item.sourceLabel}'),
               trailing: Wrap(
                 spacing: 4,
                 children: [

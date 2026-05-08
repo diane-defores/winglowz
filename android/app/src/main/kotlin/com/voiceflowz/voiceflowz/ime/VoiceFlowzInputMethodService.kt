@@ -26,7 +26,17 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
             KeyboardVoiceController(
                 context = this,
                 onState = { message -> keyboardView?.setStatus(message) },
-                onResult = { text -> currentInputConnection?.commitText(text, 1) },
+                onResult = { text ->
+                    currentInputConnection?.commitText(text, 1)
+                    if (stateStore.clipboardSyncDesired && fieldPolicy.clipboardAllowed) {
+                        KeyboardClipboardEventQueue.enqueue(
+                            context = this,
+                            content = text,
+                            source = "keyboard_voice",
+                            action = "voice_result",
+                        )
+                    }
+                },
             )
     }
 
@@ -96,7 +106,7 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
         val copied =
             clipboardController.copySelection(
                 currentInputConnection,
-                sensitive = fieldPolicy.privateMode,
+                syncDesired = stateStore.clipboardSyncDesired,
             )
         showStatus(if (copied) "Selection copied" else "No selectable text")
     }
@@ -106,7 +116,11 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
             showStatus("Clipboard paste disabled for private field")
             return
         }
-        val pasted = clipboardController.pastePrimaryText(currentInputConnection)
+        val pasted =
+            clipboardController.pastePrimaryText(
+                currentInputConnection,
+                syncDesired = stateStore.clipboardSyncDesired,
+            )
         showStatus(if (pasted) "Clipboard pasted" else "No text clipboard")
     }
 

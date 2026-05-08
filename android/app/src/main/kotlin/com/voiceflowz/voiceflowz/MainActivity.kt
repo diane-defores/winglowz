@@ -8,6 +8,7 @@ import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
+import com.voiceflowz.voiceflowz.ime.KeyboardClipboardEventQueue
 import com.voiceflowz.voiceflowz.ime.KeyboardStateStore
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -94,6 +95,9 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "getKeyboardStatus" -> {
                         result.success(keyboardState.buildStatusMap())
+                    }
+                    "drainKeyboardClipboardEvents" -> {
+                        result.success(KeyboardClipboardEventQueue.drain())
                     }
                     "openInputMethodSettings" -> {
                         openInputMethodSettings()

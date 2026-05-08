@@ -139,42 +139,56 @@ select lives_ok(
       content,
       source,
       content_hash,
+      normalized_hash,
+      origin_device_id,
       origin_surface,
       capture_method,
-      sync_state
+      sync_state,
+      capture_count,
+      source_metadata
     )
     values (
       '10000000-0000-0000-0000-000000000003',
       'keyboard item',
       'keyboard_clipboard',
-      'hash-keyboard-item',
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+      'android:test-device',
       'keyboard',
       'keyboard_clipboard',
-      'pending'
+      'pending',
+      1,
+      '{"capture_count":1}'::jsonb
     )$$,
   'keyboard clipboard metadata is allowed'
 );
 
-select ok(
-  public.test_statement_throws(
-    $$insert into public.clipboard_items (
+select lives_ok(
+  $$insert into public.clipboard_items (
         content,
         source,
         content_hash,
+        normalized_hash,
+        origin_device_id,
         origin_surface,
         capture_method,
-        sync_state
+        sync_state,
+        capture_count,
+        source_metadata
       )
       values (
         'keyboard item duplicate',
         'keyboard_clipboard',
-        'hash-keyboard-item',
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+        'android:test-device',
         'keyboard',
         'keyboard_clipboard',
-        'pending'
-      )$$
-  ),
-  'keyboard clipboard hash dedupe is enforced per user and surface'
+        'pending',
+        1,
+        '{"capture_count":1}'::jsonb
+      )$$,
+  'keyboard clipboard duplicate hashes are allowed for app-level window dedupe'
 );
 
 update public.clipboard_items

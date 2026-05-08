@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "VoiceFlowz"
 created: "2026-05-04"
-updated: "2026-05-04"
+updated: "2026-05-08"
 status: draft
 source_skill: sf-docs
 scope: "android-native"
@@ -46,7 +46,7 @@ inside other apps' input fields.
 | `android/app/src/main/AndroidManifest.xml` | Android service, activity, and permission declarations | Keep IME and overlay declarations explicit; avoid broad permissions before use. |
 | `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/MainActivity.kt` | Flutter MethodChannel owner | Keep `voiceflowz/overlay` and `voiceflowz/keyboard` contracts separate. |
 | `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/Overlay*.kt` | Overlay runtime | Do not allow concurrent overlay and keyboard recording without coordinator logic. |
-| `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/**` | Native IME services/controllers | No raw text logging; sensitive fields disable capture/sync/enriched insertion. |
+| `android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime/**` | Native IME services/controllers | No raw text logging; sensitive fields disable capture/sync/enriched insertion; clipboard bridge events stay in memory unless durable storage is explicitly selected. |
 | `android/app/src/main/res/xml/**` | Android service metadata | IME metadata must match manifest service declarations. |
 
 ## Entrypoints
@@ -62,6 +62,11 @@ Android input field
   -> VoiceFlowzInputMethodService
   -> VoiceFlowzKeyboardView
   -> InputConnection / ClipboardManager / AudioManager
+
+Keyboard clipboard action
+  -> KeyboardClipboardEventQueue in memory
+  -> voiceflowz/keyboard MethodChannel drain
+  -> ClipboardHistoryApi / ClipboardHistoryStore
 ```
 
 ## Invariants
@@ -70,6 +75,8 @@ Android input field
 - Password, OTP, `noPersonalizedLearning`, and app-marked sensitive fields must disable voice capture, clipboard sync, snippets, and learning behavior.
 - Base media control sends generic play/pause key events only; it must not read metadata without explicit richer permission.
 - IME state preferences store only non-sensitive flags and counters, never typed or dictated text.
+- IME clipboard sync events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
+- The native clipboard event queue is process-memory only until a durable local storage decision is made.
 
 ## Failure Modes
 
@@ -98,6 +105,7 @@ clipboard, dictation, media keys, and OEM behavior.
 - Manifest or `res/xml` changed -> verify VoiceFlowz appears in Android keyboard settings.
 - `KeyboardSecurityPolicy` changed -> recheck password/OTP/no-personalized-learning behavior.
 - Clipboard controller changed -> recheck sensitive clipboard flags and no background clipboard capture.
+- Clipboard event queue changed -> recheck no provider credentials/imports in native code and that sensitive clips are not enqueued.
 - Media controller changed -> recheck no metadata permission is introduced silently.
 
 ## Maintenance Rule

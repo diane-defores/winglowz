@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 
+import '../../features/clipboard/domain/clipboard_capture_event.dart';
 import '../../features/keyboard/domain/keyboard_models.dart';
 import 'platform_capabilities.dart';
 
@@ -72,6 +73,20 @@ class AndroidKeyboardBridge {
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 
+  static Future<List<AndroidKeyboardClipboardEvent>>
+  drainKeyboardClipboardEvents() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return const <AndroidKeyboardClipboardEvent>[];
+    }
+    final raw = await _invoke<List<Object?>>('drainKeyboardClipboardEvents');
+    return (raw ?? const <Object?>[])
+        .whereType<Map<Object?, Object?>>()
+        .map(AndroidKeyboardClipboardEvent.fromMap)
+        .where((event) => event != null)
+        .cast<AndroidKeyboardClipboardEvent>()
+        .toList(growable: false);
+  }
+
   static Future<T?> _invoke<T>(String method, [Object? arguments]) async {
     try {
       return await _channel.invokeMethod<T>(method, arguments);
@@ -82,5 +97,59 @@ class AndroidKeyboardBridge {
         details: error.details,
       );
     }
+  }
+}
+
+class AndroidKeyboardClipboardEvent {
+  const AndroidKeyboardClipboardEvent({
+    required this.content,
+    required this.source,
+    required this.deviceId,
+    required this.capturedAtUtc,
+    required this.sourceMetadata,
+  });
+
+  final String content;
+  final ClipboardCanonicalSource source;
+  final String deviceId;
+  final DateTime capturedAtUtc;
+  final Map<String, Object?> sourceMetadata;
+
+  static AndroidKeyboardClipboardEvent? fromMap(Map<Object?, Object?> map) {
+    final content = map['content'];
+    final deviceId = map['deviceId'];
+    final capturedAtEpochMillis = map['capturedAtEpochMillis'];
+    if (content is! String ||
+        content.trim().isEmpty ||
+        deviceId is! String ||
+        deviceId.trim().isEmpty ||
+        capturedAtEpochMillis is! num) {
+      return null;
+    }
+    final metadata = <String, Object?>{};
+    final rawMetadata = map['sourceMetadata'];
+    if (rawMetadata is Map<Object?, Object?>) {
+      for (final entry in rawMetadata.entries) {
+        final key = entry.key;
+        final value = entry.value;
+        if (key is String &&
+            (value == null ||
+                value is String ||
+                value is num ||
+                value is bool)) {
+          metadata[key] = value;
+        }
+      }
+    }
+    return AndroidKeyboardClipboardEvent(
+      content: content,
+      source: ClipboardCanonicalSource.fromDatabase(map['source'] as String?),
+      deviceId: deviceId,
+      capturedAtUtc: DateTime.fromMillisecondsSinceEpoch(
+        capturedAtEpochMillis.toInt(),
+        isUtc: true,
+      ),
+      sourceMetadata: metadata,
+    );
   }
 }

@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "VoiceFlowz"
 created: "2026-05-04"
-updated: "2026-05-04"
+updated: "2026-05-08"
 status: draft
 source_skill: sf-docs
 scope: "supabase-data"
@@ -35,7 +35,9 @@ next_step: "/sf-docs technical audit"
 Supabase owns synchronized user data for transcriptions, clipboard items,
 snippets, dictionary terms, settings, and non-sensitive client events. Database
 constraints and RLS are the enforcement layer; Flutter repositories are clients,
-not authorization authorities.
+not authorization authorities. For clipboard, Supabase is the current cloud
+sync adapter behind `ClipboardHistoryStore`; the product contract lives in the
+Flutter feature API/domain.
 
 ## Owned Files
 
@@ -43,7 +45,7 @@ not authorization authorities.
 | --- | --- | --- |
 | `supabase/migrations/**` | Schema, constraints, indexes, triggers, policies, realtime | Use additive migrations; never expose service-role assumptions to clients. |
 | `supabase/tests/rls_smoke.sql` | RLS and constraint smoke tests | Expand when source allowlists or sensitive metadata constraints change. |
-| `lib/data/supabase/**` | Client repositories | Keep inserts scoped by authenticated Supabase session and omit trusted `user_id`. |
+| `lib/data/supabase/**` | Client repositories and provider adapters | Keep inserts scoped by authenticated Supabase session and omit trusted `user_id`; do not expose these classes as UI or Android contracts. |
 | `docs/API_SUPABASE.md` | Data contract documentation | Update with any schema, source, RLS, realtime, or limit changes. |
 
 ## Entrypoints
@@ -58,6 +60,11 @@ Flutter repository
   -> Supabase publishable-key client with auth session
   -> Postgres table constraint + RLS policy
   -> realtime/user-scoped query result
+
+ClipboardHistoryApi
+  -> ClipboardHistoryStore
+  -> SupabaseClipboardStore
+  -> Supabase publishable-key client with auth session
 ```
 
 ## Invariants
@@ -67,12 +74,14 @@ Flutter repository
 - Client inserts must not include trusted `user_id`.
 - Clipboard/transcription source allowlists in Dart and SQL must stay aligned.
 - `client_events.metadata` must reject sensitive keys such as tokens, raw text, audio, transcripts, and provider payloads.
+- Supabase clipboard classes must only be imported by composition roots or tests, not by feature UI or Android native code.
 
 ## Failure Modes
 
 - Missing auth session: repository calls fail recoverably; local/offline queues must not leak across users.
 - Constraint violation: client should surface a recoverable error rather than partially mutating.
 - Stale realtime after delete: tombstone/delete-wins rules must prevent restoration.
+- Supabase not configured: clipboard uses local fallback behavior where available; no Supabase request is attempted.
 
 ## Security Notes
 
@@ -91,6 +100,7 @@ psql "$SUPABASE_DB_URL" -f supabase/tests/rls_smoke.sql
 - Migration changed -> update `docs/API_SUPABASE.md` and RLS smoke tests.
 - Repository insert metadata changed -> verify SQL constraints, RLS, and docs.
 - Source allowlist changed -> update Dart model tests and SQL constraints.
+- Clipboard adapter changed -> verify `ClipboardHistoryStore` contract tests and that Supabase remains provider-specific.
 
 ## Maintenance Rule
 
