@@ -31,11 +31,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Added first-run onboarding that explains the startup path, Android keyboard setup, microphone, overlay, accessibility and cloud sync permissions.
+- Added a Settings backend-provider diagnostic card with a copyable Supabase/local-mode error.
 - Added the Android VoiceFlowz Keyboard IME foundation with native input service declaration, minimal keyboard UI, Settings bridge, Android speech recognition trigger, explicit clipboard actions and generic media play/pause.
 - Added keyboard-origin Supabase schema fields, source allowlists, clipboard hash dedupe metadata, RLS smoke coverage and Dart model/bridge tests.
 - Added project technical governance docs and a content map for future ShipFlow code/doc update gates.
 
 ### Changed
+- Changed Android/system Back handling inside the shell so Back returns to the previous app tab before exiting.
+- Moved the missing Supabase configuration diagnostic out of the global shell banner and into Settings so local-mode screens are not crowded while the backend provider remains undecided.
 - Repaired the local Flox Flutter environment and pinned it to an executable Flutter SDK variant.
 - Protected direct app routes behind Supabase auth state instead of allowing private screens to load before sign-in.
 - Updated `.env.example` to document Supabase runtime defines instead of legacy Convex/Clerk variables.

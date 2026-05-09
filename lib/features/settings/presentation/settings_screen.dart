@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 
+import '../../../core/bootstrap/supabase_bootstrap.dart';
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
@@ -335,6 +337,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await client.auth.signOut();
   }
 
+  Future<void> _copyBackendDiagnostic() async {
+    await Clipboard.setData(ClipboardData(text: _backendDiagnosticText()));
+    if (!mounted) {
+      return;
+    }
+    setState(() => _message = 'Backend diagnostic copied.');
+  }
+
+  String _backendDiagnosticText() {
+    final status = SupabaseBootstrap.isConfigured ? 'configured' : 'local_mode';
+    final detail = SupabaseBootstrap.initError ?? 'Cloud sync is disabled.';
+    return 'VoiceFlowz backend diagnostic\n'
+        'provider: supabase\n'
+        'status: $status\n'
+        'detail: $detail';
+  }
+
   @override
   Widget build(BuildContext context) {
     final storageStatusAsync = ref.watch(_storageStatusProvider);
@@ -347,6 +366,39 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
+        if (!SupabaseBootstrap.isConfigured) ...[
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(Icons.storage_outlined),
+                    title: Text('Backend provider'),
+                    subtitle: Text(
+                      'Supabase is not configured yet. VoiceFlowz stays in local mode while the backend provider decision remains open.',
+                    ),
+                  ),
+                  SelectableText(
+                    SupabaseBootstrap.initError ?? 'Cloud sync is disabled.',
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      onPressed: _copyBackendDiagnostic,
+                      icon: const Icon(Icons.copy_outlined),
+                      label: const Text('Copy diagnostic error'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
         storageStatusAsync.when(
           data: (status) {
             if (status == SecretStorageStatus.available) {

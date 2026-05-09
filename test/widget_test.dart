@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:voiceflowz/core/bootstrap/supabase_bootstrap.dart';
 import 'package:voiceflowz/core/platform/android_keyboard_bridge.dart';
 import 'package:voiceflowz/features/keyboard/domain/keyboard_models.dart';
 import 'package:voiceflowz/features/clipboard/domain/clipboard_normalizer.dart';
+import 'package:voiceflowz/features/shell/presentation/app_shell_screen.dart';
 import 'package:voiceflowz/features/voice/domain/transcription_draft.dart';
 
 void main() {
@@ -135,5 +138,34 @@ void main() {
       SupabaseBootstrap.urlEnvironmentName,
       SupabaseBootstrap.publishableKeyEnvironmentName,
     ]);
+  });
+
+  testWidgets('app shell shows onboarding and back returns to previous tab', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: AppShellScreen())),
+    );
+    await tester.pump();
+
+    expect(find.text('Start here'), findsOneWidget);
+    expect(find.textContaining('Missing Supabase config'), findsNothing);
+    expect(find.textContaining('Cloud sync is disabled'), findsNothing);
+    expect(
+      find.text('Enable VoiceFlowz Keyboard in Settings.'),
+      findsOneWidget,
+    );
+    expect(find.text('Why permissions are needed'), findsOneWidget);
+    expect(find.textContaining('Accessibility is optional'), findsOneWidget);
+
+    await tester.tap(find.text('Snippets').last);
+    await tester.pumpAndSettle();
+    expect(find.text('VoiceFlowz • Snippets'), findsOneWidget);
+
+    final handled = await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(handled, isTrue);
+    expect(find.text('VoiceFlowz • Voice'), findsOneWidget);
   });
 }

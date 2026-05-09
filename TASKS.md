@@ -37,6 +37,7 @@
 | ✅ | Supabase migration lint in CI | ✅ done |
 | ✅ | Flox Flutter environment repaired and pinned to an executable `flutter` SDK variant | ✅ done |
 | ✅ | RLS smoke converted to a pgTAP-style test and wired into CI | ✅ done |
+| ✅ | Added first-run onboarding, Android back-tab navigation, permission explanations and non-blocking backend diagnostic copy in Settings | ✅ done |
 
 ---
 
