@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:voiceflowz/core/bootstrap/supabase_bootstrap.dart';
 import 'package:voiceflowz/core/platform/android_keyboard_bridge.dart';
@@ -10,6 +11,75 @@ import 'package:voiceflowz/features/keyboard/domain/keyboard_models.dart';
 import 'package:voiceflowz/features/clipboard/domain/clipboard_normalizer.dart';
 import 'package:voiceflowz/features/shell/presentation/app_shell_screen.dart';
 import 'package:voiceflowz/features/voice/domain/transcription_draft.dart';
+
+const _overlayChannel = MethodChannel('voiceflowz/overlay');
+const _keyboardChannel = MethodChannel('voiceflowz/keyboard');
+const _secureStorageChannel = MethodChannel(
+  'plugins.it_nomads.com/flutter_secure_storage',
+);
+
+void _installAndroidBridgeMocks() {
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  messenger.setMockMethodCallHandler(_overlayChannel, (call) async {
+    switch (call.method) {
+      case 'getOverlayStatus':
+        return <String, Object?>{
+          'enabled': false,
+          'requestedEnabled': false,
+          'running': false,
+          'overlayPermissionGranted': false,
+          'accessibilityPermissionGranted': false,
+          'deliveryMode': 'clipboard_only',
+          'sizeScale': 1.0,
+          'opacity': 0.8,
+        };
+      case 'drainOverlayEvents':
+        return <Object?>[];
+    }
+    return null;
+  });
+  messenger.setMockMethodCallHandler(_keyboardChannel, (call) async {
+    switch (call.method) {
+      case 'getKeyboardStatus':
+        return <String, Object?>{
+          'supported': true,
+          'enabled': false,
+          'active': false,
+          'voiceEnabled': true,
+          'clipboardSyncDesired': false,
+          'mediaControlsEnabled': true,
+          'privacyMode': 'auto',
+        };
+      case 'drainKeyboardClipboardEvents':
+        return <Object?>[];
+    }
+    return null;
+  });
+  messenger.setMockMethodCallHandler(_secureStorageChannel, (call) async {
+    switch (call.method) {
+      case 'containsKey':
+        return false;
+      case 'read':
+        return null;
+      case 'readAll':
+        return <String, String>{};
+      case 'write':
+      case 'delete':
+      case 'deleteAll':
+        return null;
+    }
+    return null;
+  });
+}
+
+void _clearAndroidBridgeMocks() {
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  messenger.setMockMethodCallHandler(_overlayChannel, null);
+  messenger.setMockMethodCallHandler(_keyboardChannel, null);
+  messenger.setMockMethodCallHandler(_secureStorageChannel, null);
+}
 
 void main() {
   test('transcription draft validates non-empty payload and known source', () {
@@ -232,5 +302,65 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('Start here'), findsNothing);
     expect(find.text('VoiceFlowz • Settings'), findsOneWidget);
+  });
+
+  testWidgets('android shell renders every main tab body', (tester) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _installAndroidBridgeMocks();
+    addTearDown(() {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+    });
+
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: AppShellScreen())),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('VoiceFlowz • Voice'), findsOneWidget);
+    expect(find.text('Raw text'), findsOneWidget);
+    final addTranscriptionButton = find.widgetWithText(
+      FilledButton,
+      'Add transcription',
+    );
+    await tester.scrollUntilVisible(
+      addTranscriptionButton,
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(addTranscriptionButton, findsOneWidget);
+
+    await tester.tap(find.text('Clipboard').last);
+    await tester.pumpAndSettle();
+    expect(find.text('VoiceFlowz • Clipboard'), findsOneWidget);
+    expect(find.text('Clipboard content'), findsOneWidget);
+    expect(find.text('Add clipboard item'), findsOneWidget);
+
+    await tester.tap(find.text('Snippets').last);
+    await tester.pumpAndSettle();
+    expect(find.text('VoiceFlowz • Snippets'), findsOneWidget);
+    expect(find.text('Trigger'), findsOneWidget);
+    expect(find.text('Add snippet'), findsOneWidget);
+
+    await tester.tap(find.text('Dictionary').last);
+    await tester.pumpAndSettle();
+    expect(find.text('VoiceFlowz • Dictionary'), findsOneWidget);
+    expect(find.text('Term'), findsOneWidget);
+    expect(find.text('Add term'), findsOneWidget);
+
+    await tester.tap(find.text('Settings').last);
+    await tester.pumpAndSettle();
+    expect(find.text('VoiceFlowz • Settings'), findsOneWidget);
+    expect(find.text('Appearance'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('VoiceFlowz Keyboard status'),
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('VoiceFlowz Keyboard status'), findsOneWidget);
+
+    debugDefaultTargetPlatformOverride = previousPlatform;
+    _clearAndroidBridgeMocks();
   });
 }

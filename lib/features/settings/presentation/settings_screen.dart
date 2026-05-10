@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/voiceflowz_app.dart';
+import '../../../core/bootstrap/app_build_info.dart';
+import '../../../core/bootstrap/firebase_bootstrap.dart';
 import '../../../core/bootstrap/supabase_bootstrap.dart';
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
@@ -375,15 +377,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   String _backendDiagnosticText() {
-    final status = SupabaseBootstrap.isConfigured
-        ? 'legacy_remote'
+    final status = FirebaseBootstrap.isConfigured
+        ? 'firebase_remote'
+        : SupabaseBootstrap.isConfigured
+        ? 'legacy_supabase_remote'
         : 'local_mode';
-    final detail = SupabaseBootstrap.initError ?? 'Cloud sync is disabled.';
+    final firebaseDetail =
+        FirebaseBootstrap.initError ?? 'Firebase is configured.';
+    final supabaseDetail =
+        SupabaseBootstrap.initError ?? 'Legacy Supabase is configured.';
     return 'VoiceFlowz backend diagnostic\n'
         'provider: backend-agnostic\n'
+        'build: ${AppBuildInfo.diagnosticSummary}\n'
+        'firebase: ${FirebaseBootstrap.isConfigured}\n'
         'legacy_supabase: ${SupabaseBootstrap.isConfigured}\n'
         'status: $status\n'
-        'detail: $detail';
+        'firebase_detail: $firebaseDetail\n'
+        'supabase_detail: $supabaseDetail';
   }
 
   @override
@@ -458,39 +468,37 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
         AppGaps.x4,
-        if (!SupabaseBootstrap.isConfigured) ...[
-          Card(
-            child: Padding(
-              padding: AppInsets.card,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const ListTile(
-                    contentPadding: AppInsets.none,
-                    leading: Icon(Icons.storage_outlined),
-                    title: Text('Backend provider'),
-                    subtitle: Text(
-                      'Remote sync is not configured yet. VoiceFlowz stays in local mode while Firebase is wired behind backend-agnostic stores.',
-                    ),
+        Card(
+          child: Padding(
+            padding: AppInsets.card,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  contentPadding: AppInsets.none,
+                  leading: const Icon(Icons.storage_outlined),
+                  title: const Text('Backend provider'),
+                  subtitle: Text(
+                    FirebaseBootstrap.isConfigured
+                        ? 'Firebase is the active backend adapter. Legacy Supabase may remain unconfigured.'
+                        : 'Remote sync is not configured. VoiceFlowz stays in local mode.',
                   ),
-                  SelectableText(
-                    SupabaseBootstrap.initError ?? 'Cloud sync is disabled.',
+                ),
+                SelectableText(_backendDiagnosticText()),
+                AppGaps.x3,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: OutlinedButton.icon(
+                    onPressed: _copyBackendDiagnostic,
+                    icon: const Icon(Icons.copy_outlined),
+                    label: const Text('Copy diagnostic'),
                   ),
-                  AppGaps.x3,
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: OutlinedButton.icon(
-                      onPressed: _copyBackendDiagnostic,
-                      icon: const Icon(Icons.copy_outlined),
-                      label: const Text('Copy diagnostic error'),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          AppGaps.x4,
-        ],
+        ),
+        AppGaps.x4,
         storageStatusAsync.when(
           data: (status) {
             if (status == SecretStorageStatus.available) {

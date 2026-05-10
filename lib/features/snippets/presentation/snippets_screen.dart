@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/local_mode_notice.dart';
 import '../application/snippet_store_provider.dart';
 import '../domain/snippet_store.dart';
 
@@ -35,12 +36,12 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   }
 
   Future<void> _load() async {
-    final store = ref.read(snippetStoreProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final store = ref.read(snippetStoreProvider);
       final rows = await store.list();
       if (mounted) {
         setState(() => _items = rows);
@@ -57,12 +58,12 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   }
 
   Future<void> _add() async {
-    final store = ref.read(snippetStoreProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final store = ref.read(snippetStoreProvider);
       await store.insert(
         trigger: _triggerController.text,
         content: _contentController.text,
@@ -84,7 +85,6 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   }
 
   Future<void> _edit(SnippetRecord item) async {
-    final store = ref.read(snippetStoreProvider);
     final trigger = TextEditingController(text: item.trigger);
     final content = TextEditingController(text: item.content);
     final label = TextEditingController(text: item.label ?? '');
@@ -139,6 +139,7 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
 
     setState(() => _busy = true);
     try {
+      final store = ref.read(snippetStoreProvider);
       await store.update(
         id: item.id,
         trigger: trigger.text,
@@ -161,9 +162,9 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   }
 
   Future<void> _remove(String id) async {
-    final store = ref.read(snippetStoreProvider);
     setState(() => _busy = true);
     try {
+      final store = ref.read(snippetStoreProvider);
       await store.softDelete(id);
       await _load();
     } catch (error) {
@@ -182,6 +183,8 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
+        const LocalModeNotice(surface: 'Snippets'),
+        const LocalModeNoticeGap(),
         TextField(
           controller: _triggerController,
           decoration: const InputDecoration(labelText: 'Trigger'),

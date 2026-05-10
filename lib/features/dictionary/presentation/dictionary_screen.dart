@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/local_mode_notice.dart';
 import '../application/dictionary_store_provider.dart';
 import '../domain/dictionary_store.dart';
 
@@ -34,12 +35,12 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   }
 
   Future<void> _load() async {
-    final store = ref.read(dictionaryStoreProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final store = ref.read(dictionaryStoreProvider);
       final rows = await store.list();
       if (mounted) {
         setState(() => _items = rows);
@@ -56,12 +57,12 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   }
 
   Future<void> _add() async {
-    final store = ref.read(dictionaryStoreProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final store = ref.read(dictionaryStoreProvider);
       await store.insert(
         term: _termController.text,
         replacement: _replacementController.text,
@@ -83,7 +84,6 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   }
 
   Future<void> _edit(DictionaryTermRecord item) async {
-    final store = ref.read(dictionaryStoreProvider);
     final term = TextEditingController(text: item.term);
     final replacement = TextEditingController(text: item.replacement);
     bool caseSensitive = item.caseSensitive;
@@ -145,6 +145,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
 
     setState(() => _busy = true);
     try {
+      final store = ref.read(dictionaryStoreProvider);
       await store.update(
         id: item.id,
         term: term.text,
@@ -168,9 +169,9 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   }
 
   Future<void> _remove(String id) async {
-    final store = ref.read(dictionaryStoreProvider);
     setState(() => _busy = true);
     try {
+      final store = ref.read(dictionaryStoreProvider);
       await store.softDelete(id);
       await _load();
     } catch (error) {
@@ -191,6 +192,8 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
+        const LocalModeNotice(surface: 'Dictionary'),
+        const LocalModeNoticeGap(),
         TextField(
           controller: _termController,
           decoration: const InputDecoration(labelText: 'Term'),

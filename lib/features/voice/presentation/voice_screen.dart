@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/local_mode_notice.dart';
 import '../application/transcription_store.dart';
 import '../application/transcription_store_provider.dart';
 import '../domain/transcription_draft.dart';
@@ -44,9 +45,9 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   }
 
   Future<void> _load() async {
-    final store = ref.read(transcriptionStoreProvider);
     setState(() => _busy = true);
     try {
+      final store = ref.read(transcriptionStoreProvider);
       final rows = await store.list();
       if (mounted) {
         setState(() {
@@ -83,6 +84,11 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
         () =>
             _message = 'Overlay status error (${error.code}): ${error.message}',
       );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _message = 'Overlay status error: $error');
     }
   }
 
@@ -165,7 +171,6 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   }
 
   Future<void> _add() async {
-    final store = ref.read(transcriptionStoreProvider);
     final duration = int.tryParse(_durationController.text.trim()) ?? 0;
     final draft = TranscriptionDraft(
       rawText: _rawController.text,
@@ -181,6 +186,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
       _message = null;
     });
     try {
+      final store = ref.read(transcriptionStoreProvider);
       await store.insert(draft);
       _rawController.clear();
       _cleanedController.clear();
@@ -198,12 +204,12 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   }
 
   Future<void> _delete(String id) async {
-    final store = ref.read(transcriptionStoreProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final store = ref.read(transcriptionStoreProvider);
       await store.softDelete(id);
       await _load();
     } catch (error) {
@@ -218,7 +224,6 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   }
 
   Future<void> _quickEdit(TranscriptionRecord item) async {
-    final store = ref.read(transcriptionStoreProvider);
     final controller = TextEditingController(text: item.cleanedText);
     final updated = await showDialog<String>(
       context: context,
@@ -252,6 +257,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
       _message = null;
     });
     try {
+      final store = ref.read(transcriptionStoreProvider);
       await store.updateCleanedText(id: item.id, cleanedText: updated);
       await _load();
     } catch (error) {
@@ -272,6 +278,8 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
+        const LocalModeNotice(surface: 'Voice'),
+        const LocalModeNoticeGap(),
         if (PlatformCapabilities.overlaySupported)
           Card(
             child: Padding(

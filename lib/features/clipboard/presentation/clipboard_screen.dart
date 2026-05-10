@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/local_mode_notice.dart';
 import '../application/clipboard_store_provider.dart';
 import '../domain/clipboard_capture_event.dart';
 import '../domain/clipboard_normalizer.dart';
@@ -34,13 +35,13 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _load() async {
-    final api = ref.read(clipboardHistoryApiProvider);
-    final importer = ref.read(keyboardClipboardEventImporterProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final api = ref.read(clipboardHistoryApiProvider);
+      final importer = ref.read(keyboardClipboardEventImporterProvider);
       final importResult = await importer.drainFromAndroidKeyboard();
       final rows = await api.listItems();
       if (mounted) {
@@ -68,7 +69,6 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _add() async {
-    final api = ref.read(clipboardHistoryApiProvider);
     var sensitiveConfirmed = false;
     final classification = classifySensitiveContent(_contentController.text);
     if (classification != ClipboardSensitiveClassification.none) {
@@ -82,6 +82,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
       _message = null;
     });
     try {
+      final api = ref.read(clipboardHistoryApiProvider);
       await api.addManualItem(
         content: _contentController.text,
         source: _source,
@@ -128,12 +129,12 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _togglePin(ClipboardItemRecord item) async {
-    final api = ref.read(clipboardHistoryApiProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final api = ref.read(clipboardHistoryApiProvider);
       await api.setPinned(id: item.id, pinned: !item.pinned);
       await _load();
     } catch (error) {
@@ -148,12 +149,12 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _remove(String id) async {
-    final api = ref.read(clipboardHistoryApiProvider);
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final api = ref.read(clipboardHistoryApiProvider);
       await api.removeItem(id);
       await _load();
     } catch (error) {
@@ -172,6 +173,8 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
+        const LocalModeNotice(surface: 'Clipboard'),
+        const LocalModeNoticeGap(),
         TextField(
           controller: _contentController,
           minLines: 2,
