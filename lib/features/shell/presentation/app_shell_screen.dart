@@ -18,6 +18,7 @@ class AppShellScreen extends ConsumerStatefulWidget {
 
 class _AppShellScreenState extends ConsumerState<AppShellScreen> {
   int _index = 0;
+  bool _onboardingVisible = true;
   final List<int> _tabHistory = [0];
 
   void _selectTab(int value) {
@@ -43,12 +44,14 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = const [
+    final pages = [
       VoiceScreen(),
       ClipboardScreen(),
       SnippetsScreen(),
       DictionaryScreen(),
-      SettingsScreen(),
+      SettingsScreen(
+        onResumeOnboarding: () => setState(() => _onboardingVisible = true),
+      ),
     ];
     const titles = ['Voice', 'Clipboard', 'Snippets', 'Dictionary', 'Settings'];
 
@@ -77,8 +80,18 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen> {
                 ),
                 actions: [SizedBox.shrink()],
               ),
-            _OnboardingPanel(onOpenSettings: () => _selectTab(4)),
-            Expanded(child: pages[_index]),
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned.fill(child: pages[_index]),
+                  if (_onboardingVisible)
+                    _OnboardingOverlay(
+                      onClose: () => setState(() => _onboardingVisible = false),
+                      onOpenSettings: () => _selectTab(4),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
         bottomNavigationBar: NavigationBar(
@@ -112,96 +125,125 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen> {
   }
 }
 
-class _OnboardingPanel extends StatelessWidget {
-  const _OnboardingPanel({required this.onOpenSettings});
+class _OnboardingOverlay extends StatelessWidget {
+  const _OnboardingOverlay({
+    required this.onClose,
+    required this.onOpenSettings,
+  });
 
+  final VoidCallback onClose;
   final VoidCallback onOpenSettings;
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxHeight: AppLayoutMetrics.onboardingMaxHeight,
-        ),
-        child: SingleChildScrollView(
-          padding: AppInsets.onboarding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.flag_outlined,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  AppGaps.horizontalX2,
-                  Expanded(
-                    child: Text(
-                      'Start here',
+    return Positioned(
+      top: AppSpacing.x3,
+      left: AppSpacing.x3,
+      right: AppSpacing.x3,
+      child: SafeArea(
+        bottom: false,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: AppLayoutMetrics.onboardingOverlayMaxWidth,
+              maxHeight: AppLayoutMetrics.onboardingOverlayMaxHeight,
+            ),
+            child: Material(
+              elevation: AppSpacing.x2,
+              shadowColor: AppColors.borderLight,
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppRadii.md),
+              clipBehavior: Clip.antiAlias,
+              child: SingleChildScrollView(
+                padding: AppInsets.onboarding,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.flag_outlined,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        AppGaps.horizontalX2,
+                        Expanded(
+                          child: Text(
+                            'Start here',
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Close onboarding',
+                          onPressed: onClose,
+                          icon: const Icon(Icons.close_outlined),
+                        ),
+                      ],
+                    ),
+                    AppGaps.x2,
+                    const _OnboardingStep(
+                      number: '1',
+                      text: 'Enable VoiceFlowz Keyboard in Settings.',
+                    ),
+                    const _OnboardingStep(
+                      number: '2',
+                      text: 'Switch to it from any Android text field.',
+                    ),
+                    const _OnboardingStep(
+                      number: '3',
+                      text:
+                          'Use Voice for dictation tests and Clipboard for captured text.',
+                    ),
+                    AppGaps.x4,
+                    Text(
+                      'Why permissions are needed',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: onOpenSettings,
-                    icon: const Icon(Icons.settings_outlined),
-                    label: const Text('Settings'),
-                  ),
-                ],
+                    AppGaps.x2,
+                    const _PermissionNote(
+                      icon: Icons.keyboard_outlined,
+                      title: 'Keyboard',
+                      text:
+                          'Android must enable VoiceFlowz as an input method before it can type dictated text into other apps.',
+                    ),
+                    const _PermissionNote(
+                      icon: Icons.mic_none_outlined,
+                      title: 'Microphone',
+                      text:
+                          'Dictation needs microphone access only while recording speech.',
+                    ),
+                    const _PermissionNote(
+                      icon: Icons.bubble_chart_outlined,
+                      title: 'Overlay',
+                      text:
+                          'The floating control lets you start or stop dictation while another app is open.',
+                    ),
+                    const _PermissionNote(
+                      icon: Icons.accessibility_new_outlined,
+                      title: 'Accessibility',
+                      text:
+                          'Accessibility is optional but required when VoiceFlowz should insert text directly into the active field instead of falling back to the clipboard.',
+                    ),
+                    const _PermissionNote(
+                      icon: Icons.cloud_outlined,
+                      title: 'Cloud sync',
+                      text:
+                          'Cloud sync will use the configured backend adapter when available; local mode keeps testing on this device.',
+                    ),
+                    AppGaps.x3,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        onPressed: onOpenSettings,
+                        icon: const Icon(Icons.settings_outlined),
+                        label: const Text('Settings'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              AppGaps.x2,
-              const _OnboardingStep(
-                number: '1',
-                text: 'Enable VoiceFlowz Keyboard in Settings.',
-              ),
-              const _OnboardingStep(
-                number: '2',
-                text: 'Switch to it from any Android text field.',
-              ),
-              const _OnboardingStep(
-                number: '3',
-                text:
-                    'Use Voice for dictation tests and Clipboard for captured text.',
-              ),
-              AppGaps.x4,
-              Text(
-                'Why permissions are needed',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              AppGaps.x2,
-              const _PermissionNote(
-                icon: Icons.keyboard_outlined,
-                title: 'Keyboard',
-                text:
-                    'Android must enable VoiceFlowz as an input method before it can type dictated text into other apps.',
-              ),
-              const _PermissionNote(
-                icon: Icons.mic_none_outlined,
-                title: 'Microphone',
-                text:
-                    'Dictation needs microphone access only while recording speech.',
-              ),
-              const _PermissionNote(
-                icon: Icons.bubble_chart_outlined,
-                title: 'Overlay',
-                text:
-                    'The floating control lets you start or stop dictation while another app is open.',
-              ),
-              const _PermissionNote(
-                icon: Icons.accessibility_new_outlined,
-                title: 'Accessibility',
-                text:
-                    'Accessibility is optional but required when VoiceFlowz should insert text directly into the active field instead of falling back to the clipboard.',
-              ),
-              const _PermissionNote(
-                icon: Icons.cloud_outlined,
-                title: 'Cloud sync',
-                text:
-                    'Cloud sync will use the configured backend adapter when available; local mode keeps testing on this device.',
-              ),
-            ],
+            ),
           ),
         ),
       ),

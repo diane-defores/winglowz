@@ -146,7 +146,8 @@ class AppIconMetrics {
 }
 
 class AppLayoutMetrics {
-  static const onboardingMaxHeight =
+  static const onboardingOverlayMaxWidth = 520.0;
+  static const onboardingOverlayMaxHeight =
       AppSpacing.x24 + AppSpacing.x24 + AppSpacing.x20 + AppSpacing.x2;
 }
 

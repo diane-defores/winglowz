@@ -25,9 +25,12 @@ class OverlayForegroundService : Service() {
         const val ACTION_UPDATE_METER = "com.voiceflowz.voiceflowz.overlay.UPDATE_METER"
         const val ACTION_SET_RESULT_TEXT = "com.voiceflowz.voiceflowz.overlay.SET_RESULT_TEXT"
         const val ACTION_DELIVER_TEXT = "com.voiceflowz.voiceflowz.overlay.DELIVER_TEXT"
+        const val ACTION_SET_APPEARANCE = "com.voiceflowz.voiceflowz.overlay.SET_APPEARANCE"
         const val EXTRA_STATE = "state"
         const val EXTRA_LEVEL = "level"
         const val EXTRA_TEXT = "text"
+        const val EXTRA_SIZE_SCALE = "sizeScale"
+        const val EXTRA_OPACITY = "opacity"
 
         private const val NOTIFICATION_ID = 71011
         private const val notificationChannelId = "voiceflowz_overlay_recording"
@@ -37,6 +40,9 @@ class OverlayForegroundService : Service() {
 
         private const val maxXOffset = 16
         private const val defaultCollapsedWidth = 44
+        private const val preferencesName = "voiceflowz_overlay_prefs"
+        private const val keyOverlaySizeScale = "overlay_size_scale"
+        private const val keyOverlayOpacity = "overlay_opacity"
 
         @Volatile
         private var running = false
@@ -57,12 +63,15 @@ class OverlayForegroundService : Service() {
     private var initialTouchY = 0f
     private var longPressRunnable: Runnable? = null
     private var pendingState = "collapsed"
+    private var sizeScale = 1f
+    private var overlayOpacity = 0.8f
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        loadAppearancePreferences()
         createNotificationChannelIfNeeded()
     }
 
@@ -88,6 +97,10 @@ class OverlayForegroundService : Service() {
                 val text = intent.getStringExtra(EXTRA_TEXT).orEmpty()
                 handleDeliverText(text)
             }
+            ACTION_SET_APPEARANCE -> handleSetAppearance(
+                intent.getFloatExtra(EXTRA_SIZE_SCALE, sizeScale),
+                intent.getFloatExtra(EXTRA_OPACITY, overlayOpacity),
+            )
             else -> Log.w(TAG, "Overlay service action ignored: ${intent?.action ?: "null"}")
         }
         return START_STICKY
@@ -222,6 +235,7 @@ class OverlayForegroundService : Service() {
         }
 
         overlayView?.setState(pendingState)
+        overlayView?.setSizeScale(sizeScale)
         setWindowStateForOverlay(pendingState)
         attachTouchListener()
         try {
@@ -337,7 +351,7 @@ class OverlayForegroundService : Service() {
             } else {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             }
-        params.alpha = if (state == "collapsed") 0.8f else 1f
+        params.alpha = overlayOpacity
         try {
             windowManager?.updateViewLayout(overlayView, params)
         } catch (_: Exception) {
@@ -356,6 +370,21 @@ class OverlayForegroundService : Service() {
 
     private fun handleSetState(state: String?) {
         setOverlayStateInternal(state)
+    }
+
+    private fun handleSetAppearance(nextSizeScale: Float, nextOpacity: Float) {
+        sizeScale = nextSizeScale.coerceIn(0.8f, 1.4f)
+        overlayOpacity = nextOpacity.coerceIn(0.5f, 1f)
+        overlayView?.post {
+            overlayView?.setSizeScale(sizeScale)
+            setWindowStateForOverlay(pendingState)
+        }
+    }
+
+    private fun loadAppearancePreferences() {
+        val preferences = getSharedPreferences(preferencesName, MODE_PRIVATE)
+        sizeScale = preferences.getFloat(keyOverlaySizeScale, 1f).coerceIn(0.8f, 1.4f)
+        overlayOpacity = preferences.getFloat(keyOverlayOpacity, 0.8f).coerceIn(0.5f, 1f)
     }
 
     private fun normalizeState(state: String): String {

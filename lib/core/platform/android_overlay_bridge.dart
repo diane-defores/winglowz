@@ -24,6 +24,8 @@ class AndroidOverlayStatus {
     required this.overlayPermissionGranted,
     required this.accessibilityPermissionGranted,
     required this.deliveryMode,
+    required this.sizeScale,
+    required this.opacity,
   });
 
   final bool enabled;
@@ -32,6 +34,8 @@ class AndroidOverlayStatus {
   final bool overlayPermissionGranted;
   final bool accessibilityPermissionGranted;
   final OverlayDeliveryMode deliveryMode;
+  final double sizeScale;
+  final double opacity;
 
   factory AndroidOverlayStatus.fromMap(Map<Object?, Object?> map) {
     final modeRaw = map['deliveryMode'] as String? ?? 'clipboard_only';
@@ -46,6 +50,8 @@ class AndroidOverlayStatus {
       deliveryMode: modeRaw == 'injection_and_clipboard'
           ? OverlayDeliveryMode.injectionAndClipboard
           : OverlayDeliveryMode.clipboardOnly,
+      sizeScale: (map['sizeScale'] as num?)?.toDouble() ?? 1,
+      opacity: (map['opacity'] as num?)?.toDouble() ?? 0.8,
     );
   }
 }
@@ -184,9 +190,28 @@ class AndroidOverlayBridge {
         overlayPermissionGranted: false,
         accessibilityPermissionGranted: false,
         deliveryMode: OverlayDeliveryMode.clipboardOnly,
+        sizeScale: 1,
+        opacity: 0.8,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>('getOverlayStatus');
+    return AndroidOverlayStatus.fromMap(raw ?? const {});
+  }
+
+  static Future<AndroidOverlayStatus> setAppearance({
+    required double sizeScale,
+    required double opacity,
+  }) async {
+    if (!PlatformCapabilities.overlaySupported) {
+      throw const AndroidOverlayBridgeException(
+        code: 'OVERLAY_UNSUPPORTED',
+        message: 'Android overlay is not supported on this platform.',
+      );
+    }
+    final raw = await _invoke<Map<Object?, Object?>>('setOverlayAppearance', {
+      'sizeScale': sizeScale.clamp(0.8, 1.4),
+      'opacity': opacity.clamp(0.5, 1),
+    });
     return AndroidOverlayStatus.fromMap(raw ?? const {});
   }
 

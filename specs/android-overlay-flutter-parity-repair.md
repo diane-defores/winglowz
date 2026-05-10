@@ -6,7 +6,7 @@ project: "VoiceFlowz"
 created: "2026-05-10"
 created_at: "2026-05-10 09:52:03 UTC"
 updated: "2026-05-10"
-updated_at: "2026-05-10 10:20:00 UTC"
+updated_at: "2026-05-10 11:49:25 UTC"
 status: partial
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -119,6 +119,7 @@ Porter la logique utile du module Expo vers l'app Android Flutter native en gard
 - Port natif Kotlin de la bulle legacy: `WindowManager`, `TYPE_APPLICATION_OVERLAY`, drag, snap-to-edge, collapsed/recording/processing/result.
 - Bridge d'evenements natif vers Flutter pour demarrer, stopper, annuler et reporter les erreurs.
 - Methodes Flutter vers natif pour synchroniser l'etat overlay, le niveau audio, le texte resultat et la livraison.
+- Reglages Settings pour ajuster la taille et l'opacite de l'unique bulle overlay Android.
 - Foreground service conforme Android 14+ avec `foregroundServiceType="microphone"` et permissions deja declarees.
 - Injection accessibility best-effort avec clipboard fallback obligatoire.
 - Arbitration avec l'IME VoiceFlowz et toute session voix app/overlay existante.
@@ -179,6 +180,7 @@ Porter la logique utile du module Expo vers l'app Android Flutter native en gard
 - `lib/core/platform/android_overlay_bridge.dart`: doit supporter status, commands et event stream.
 - `lib/features/voice/presentation/voice_screen.dart` ou le store voix: doit consommer les evenements overlay.
 - `lib/features/settings/presentation/settings_screen.dart`: doit afficher les etats reels et actions de recovery.
+- `lib/features/settings/presentation/settings_screen.dart`: expose la taille et l'opacite persistantes de la bulle.
 - `docs/OVERLAY_ANDROID.md`: doit etre mis a jour apres implementation avec le contrat effectif.
 - `docs/VERIFICATION.md` si present, ou nouveau guide QA: doit contenir la matrice appareil Android.
 - `modules/floating-overlay/` et `voiceflowz_snapshots/`: restent references legacy jusqu'a validation, puis nettoyage possible dans un chantier separe.
@@ -302,12 +304,14 @@ Mettre a jour apres implementation:
 | 2026-05-10 09:52:03 | sf-spec | GPT-5 Codex | Created overlay parity repair spec from current Flutter code, legacy Expo module, and existing overlay docs. | Draft spec created. | `/sf-ready specs/android-overlay-flutter-parity-repair.md` |
 | 2026-05-10 10:20:00 | sf-build | GPT-5 Codex + gpt-5.3-codex-spark worker | Implemented native overlay bubble core, Dart bridge methods, docs, and parser tests. | Partial: Flutter checks pass; Android Kotlin compile blocked by missing SDK; real-device QA still required. | Install/configure Android SDK or run Blacksmith APK build, then verify on Android device. |
 | 2026-05-10 10:32:36 | sf-fix | GPT-5 Codex | Diagnosed Blacksmith `:app:compileDebugKotlin` failure from `BUG-2026-05-10-001` and replaced the invalid `AccessibilityNodeInfo.EXTRA_INPUT_TYPE` reference with `node.inputType`. | Fix attempted: `flutter analyze`, `flutter test`, and `git diff --check` pass locally; Android compile still requires Blacksmith or a configured Android SDK. | Run Blacksmith Android CI and close `BUG-2026-05-10-001` when `Analyze, Test, Build APK` passes. |
+| 2026-05-10 11:39:12 | sf-prod | GPT-5 Codex | Pushed commit `0780a2f`, followed Blacksmith run `25627619426`, collected full GitHub/Blacksmith logs, and checked artifact upload. | Android CI passed: `Analyze, Test, Build APK` in 4m55s and `Supabase Migration Tests` in 1m10s. Separate Vercel status still fails on `vite build` for a `socialflow` deployment. | Android device QA for overlay behavior; decide whether Vercel should be disabled or configured for this Flutter repo. |
+| 2026-05-10 11:49:25 | sf-ship | GPT-5 Codex | Added Settings controls for the unique Android overlay bubble size/opacity and prepared full ship bookkeeping. | Pending ship: local Flutter checks pass; Android local compile still blocked by missing SDK; device QA remains required. | Commit and push iteration; follow with Android device QA. |
 
 # Current Chantier Flow
 
 sf-spec: done  
 sf-ready: accepted with implementation risk  
 sf-start: partial; CI compile fix attempted
-sf-verify: blocked by Blacksmith Android CI/device proof
-sf-end: blocked until Android native compile + device QA  
-sf-ship: blocked until verification passes
+sf-verify: Android CI passed; device proof still pending
+sf-end: partial; implementation iteration documented, Android device QA remains
+sf-ship: pending commit/push for partial iteration

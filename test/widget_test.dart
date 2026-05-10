@@ -178,21 +178,45 @@ void main() {
     expect(find.text('Start here'), findsOneWidget);
     expect(find.textContaining('Missing Supabase config'), findsNothing);
     expect(find.textContaining('Cloud sync is disabled'), findsNothing);
-    expect(
-      find.text('Enable VoiceFlowz Keyboard in Settings.'),
-      findsOneWidget,
-    );
-    expect(find.text('Why permissions are needed'), findsOneWidget);
-    expect(find.textContaining('Accessibility is optional'), findsOneWidget);
+    expect(find.text('Raw text'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Close onboarding'));
+    await tester.pumpAndSettle();
+    expect(find.text('Start here'), findsNothing);
+    expect(find.text('Raw text'), findsOneWidget);
 
     await tester.tap(find.text('Snippets').last);
     await tester.pumpAndSettle();
     expect(find.text('VoiceFlowz • Snippets'), findsOneWidget);
+    expect(find.text('Trigger'), findsOneWidget);
+    expect(find.text('Snippets'), findsWidgets);
 
     final handled = await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
     expect(handled, isTrue);
     expect(find.text('VoiceFlowz • Voice'), findsOneWidget);
+  });
+
+  testWidgets('settings can resume onboarding overlay', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: AppShellScreen())),
+    );
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Close onboarding'));
+    await tester.pump();
+    expect(find.text('Start here'), findsNothing);
+
+    await tester.tap(find.text('Settings').last);
+    await tester.pump();
+    await tester.tap(find.text('Resume'));
+    await tester.pump();
+
+    expect(find.text('Start here'), findsOneWidget);
+    expect(
+      find.text('Enable VoiceFlowz Keyboard in Settings.'),
+      findsOneWidget,
+    );
   });
 }

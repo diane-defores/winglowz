@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "VoiceFlowz"
 created: "2026-03-18"
-updated: "2026-05-04"
+updated: "2026-05-10"
 status: "draft"
 source_skill: "sf-docs"
 scope: "update"
@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Added Android overlay appearance controls in Settings for floating bubble size and opacity.
+- Added native Android overlay bridge support for persisted bubble appearance preferences.
 - Added first-run onboarding that explains the startup path, Android keyboard setup, microphone, overlay, accessibility and cloud sync permissions.
 - Added a Settings backend-provider diagnostic card with a copyable Supabase/local-mode error.
 - Added the Android VoiceFlowz Keyboard IME foundation with native input service declaration, minimal keyboard UI, Settings bridge, Android speech recognition trigger, explicit clipboard actions and generic media play/pause.
@@ -38,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Added project technical governance docs and a content map for future ShipFlow code/doc update gates.
 
 ### Changed
+- Changed first-run onboarding into a dismissible overlay so tab content remains visible while setup guidance is shown.
 - Changed Android/system Back handling inside the shell so Back returns to the previous app tab before exiting.
 - Moved the missing Supabase configuration diagnostic out of the global shell banner and into Settings so local-mode screens are not crowded while the backend provider remains undecided.
 - Repaired the local Flox Flutter environment and pinned it to an executable Flutter SDK variant.

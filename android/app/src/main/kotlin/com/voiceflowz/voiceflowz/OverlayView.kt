@@ -107,6 +107,14 @@ class OverlayView(context: Context) : FrameLayout(context) {
 
     fun getCurrentState(): String = currentState
 
+    fun setSizeScale(scale: Float) {
+        val normalized = scale.coerceIn(0.8f, 1.4f)
+        scaleX = normalized
+        scaleY = normalized
+        pivotX = 0f
+        pivotY = 0f
+    }
+
     fun setState(state: String) {
         currentState = normalizeState(state)
         when (currentState) {

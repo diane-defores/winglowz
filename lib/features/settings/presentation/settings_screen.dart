@@ -20,7 +20,9 @@ final _storageStatusProvider = FutureProvider<SecretStorageStatus>(
 );
 
 class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.onResumeOnboarding});
+
+  final VoidCallback? onResumeOnboarding;
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
@@ -238,6 +240,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _setOverlayAppearance({
+    required double sizeScale,
+    required double opacity,
+  }) async {
+    setState(() => _overlayBusy = true);
+    try {
+      final status = await AndroidOverlayBridge.setAppearance(
+        sizeScale: sizeScale,
+        opacity: opacity,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() => _overlayStatus = status);
+    } on AndroidOverlayBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Unable to update overlay appearance (${error.code}): ${error.message}',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _overlayBusy = false);
+      }
+    }
+  }
+
   Future<void> _startOverlay() async {
     setState(() => _overlayBusy = true);
     try {
@@ -359,7 +390,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final storageStatusAsync = ref.watch(_storageStatusProvider);
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return ListView(
+        padding: AppInsets.screen,
+        children: [
+          if (widget.onResumeOnboarding != null)
+            _OnboardingSettingsTile(onResume: widget.onResumeOnboarding!),
+          if (widget.onResumeOnboarding != null) AppGaps.x2,
+          const Center(child: CircularProgressIndicator()),
+        ],
+      );
     }
 
     final overlayStatus = _overlayStatus;
@@ -368,6 +407,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
+        if (widget.onResumeOnboarding != null)
+          _OnboardingSettingsTile(onResume: widget.onResumeOnboarding!),
+        if (widget.onResumeOnboarding != null) AppGaps.x2,
         Card(
           child: Padding(
             padding: AppInsets.card,
@@ -692,6 +734,53 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 Padding(
                   padding: AppInsets.keyboardPrivacy,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(child: Text('Bubble size')),
+                          Text(
+                            '${((overlayStatus?.sizeScale ?? 1) * 100).round()}%',
+                          ),
+                        ],
+                      ),
+                      Slider(
+                        value: overlayStatus?.sizeScale ?? 1,
+                        min: 0.8,
+                        max: 1.4,
+                        divisions: 6,
+                        onChanged: _overlayBusy
+                            ? null
+                            : (value) => _setOverlayAppearance(
+                                sizeScale: value,
+                                opacity: overlayStatus?.opacity ?? 0.8,
+                              ),
+                      ),
+                      Row(
+                        children: [
+                          const Expanded(child: Text('Bubble opacity')),
+                          Text(
+                            '${((overlayStatus?.opacity ?? 0.8) * 100).round()}%',
+                          ),
+                        ],
+                      ),
+                      Slider(
+                        value: overlayStatus?.opacity ?? 0.8,
+                        min: 0.5,
+                        max: 1,
+                        divisions: 5,
+                        onChanged: _overlayBusy
+                            ? null
+                            : (value) => _setOverlayAppearance(
+                                sizeScale: overlayStatus?.sizeScale ?? 1,
+                                opacity: value,
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: AppInsets.keyboardPrivacy,
                   child: Row(
                     children: [
                       Expanded(
@@ -743,6 +832,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
       ],
+    );
+  }
+}
+
+class _OnboardingSettingsTile extends StatelessWidget {
+  const _OnboardingSettingsTile({required this.onResume});
+
+  final VoidCallback onResume;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.flag_outlined),
+        title: const Text('Onboarding'),
+        subtitle: const Text('Resume the setup guide.'),
+        trailing: TextButton(onPressed: onResume, child: const Text('Resume')),
+      ),
     );
   }
 }

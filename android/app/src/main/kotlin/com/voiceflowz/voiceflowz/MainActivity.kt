@@ -19,6 +19,8 @@ class MainActivity : FlutterActivity() {
     private val keyboardChannelName = "voiceflowz/keyboard"
     private val preferencesName = "voiceflowz_overlay_prefs"
     private val keyOverlayEnabled = "overlay_enabled"
+    private val keyOverlaySizeScale = "overlay_size_scale"
+    private val keyOverlayOpacity = "overlay_opacity"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -55,6 +57,16 @@ class MainActivity : FlutterActivity() {
                             return@setMethodCallHandler
                         }
                         setOverlayEnabled(requestedEnabled)
+                        result.success(buildStatusMap())
+                    }
+                    "setOverlayAppearance" -> {
+                        val sizeScale =
+                            call.argument<Number>("sizeScale")?.toFloat()
+                                ?: overlaySizeScale()
+                        val opacity =
+                            call.argument<Number>("opacity")?.toFloat()
+                                ?: overlayOpacity()
+                        setOverlayAppearance(sizeScale, opacity)
                         result.success(buildStatusMap())
                     }
                     "getOverlayStatus" -> {
@@ -262,12 +274,32 @@ class MainActivity : FlutterActivity() {
     private fun isOverlayEnabled(): Boolean =
         overlayPreferences().getBoolean(keyOverlayEnabled, false)
 
+    private fun overlaySizeScale(): Float =
+        overlayPreferences().getFloat(keyOverlaySizeScale, 1f)
+
+    private fun overlayOpacity(): Float =
+        overlayPreferences().getFloat(keyOverlayOpacity, 0.8f)
+
     private fun setOverlayEnabled(enabled: Boolean) {
         overlayPreferences().edit().putBoolean(keyOverlayEnabled, enabled).apply()
         if (enabled) {
             sendOverlayCommand(OverlayForegroundService.ACTION_START)
         } else {
             stopOverlayForegroundService(cancel = false)
+        }
+    }
+
+    private fun setOverlayAppearance(sizeScale: Float, opacity: Float) {
+        val normalizedSizeScale = sizeScale.coerceIn(0.8f, 1.4f)
+        val normalizedOpacity = opacity.coerceIn(0.5f, 1f)
+        overlayPreferences()
+            .edit()
+            .putFloat(keyOverlaySizeScale, normalizedSizeScale)
+            .putFloat(keyOverlayOpacity, normalizedOpacity)
+            .apply()
+        sendOverlayCommand(OverlayForegroundService.ACTION_SET_APPEARANCE) { intent ->
+            intent.putExtra(OverlayForegroundService.EXTRA_SIZE_SCALE, normalizedSizeScale)
+            intent.putExtra(OverlayForegroundService.EXTRA_OPACITY, normalizedOpacity)
         }
     }
 
@@ -304,6 +336,8 @@ class MainActivity : FlutterActivity() {
             "overlayPermissionGranted" to overlayPermissionGranted,
             "accessibilityPermissionGranted" to accessibilityPermissionGranted,
             "deliveryMode" to mode,
+            "sizeScale" to overlaySizeScale(),
+            "opacity" to overlayOpacity(),
         )
     }
 }
