@@ -284,7 +284,7 @@ object KeyboardLayoutBuilder {
                     ),
                     KeyboardKeySpec(
                         id = "clip-pins",
-                        label = "Pins",
+                        label = "Pins app",
                         action = KeyboardKeyAction.ShowClipboardPins,
                         enabled = request.clipboardAllowed,
                     ),

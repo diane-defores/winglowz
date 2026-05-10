@@ -31,7 +31,20 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
                 context = this,
                 onState = { message -> keyboardView?.setStatus(message) },
                 onResult = { text ->
-                    currentInputConnection?.commitText(text, 1)
+                    val inputConnection = currentInputConnection
+                    if (inputConnection == null) {
+                        showStatus("Dictation result ignored: no active field")
+                        return@KeyboardVoiceController
+                    }
+                    val committed =
+                        commitTextSafely(
+                            inputConnection = inputConnection,
+                            text = text,
+                            failureStatus = "Dictation text rejected by field",
+                        )
+                    if (!committed) {
+                        return@KeyboardVoiceController
+                    }
                     if (stateStore.clipboardSyncDesired && fieldPolicy.clipboardAllowed) {
                         KeyboardClipboardEventQueue.enqueue(
                             context = this,
@@ -78,13 +91,17 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
         super.onDestroy()
     }
 
-    override fun onText(text: String) {
+    override fun onText(text: String): Boolean {
         if (!fieldPolicy.inputAllowed) {
             showStatus("Input unavailable")
-            return
+            return false
         }
-        val inputConnection = currentInputConnection ?: return
-        commitWithTypingCorrections(inputConnection, text)
+        val inputConnection = currentInputConnection
+        if (inputConnection == null) {
+            showStatus("Input unavailable: no active field")
+            return false
+        }
+        return commitWithTypingCorrections(inputConnection, text)
     }
 
     override fun onEmojiInserted(emoji: String) {
@@ -92,25 +109,36 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
         applyRuntimePreferencesToView()
     }
 
-    override fun onBackspace() {
-        val inputConnection = currentInputConnection ?: return
+    override fun onBackspace(): Boolean {
+        val inputConnection = currentInputConnection
+        if (inputConnection == null) {
+            showStatus("Delete unavailable: no active field")
+            return false
+        }
         val selected = inputConnection.getSelectedText(0)
         if (!selected.isNullOrEmpty()) {
-            inputConnection.commitText("", 1)
-            return
+            return commitTextSafely(
+                inputConnection = inputConnection,
+                text = "",
+                failureStatus = "Delete selection rejected by field",
+            )
         }
-        val deleted = inputConnection.deleteSurroundingTextInCodePoints(1, 0)
+        val deleted = deleteCodePointBefore(inputConnection)
         if (!deleted) {
-            inputConnection.deleteSurroundingText(1, 0)
+            showStatus("Delete rejected by field")
         }
+        return deleted
     }
 
     override fun onDeleteWordBefore(): Boolean {
         val inputConnection = currentInputConnection ?: return false
         val selected = inputConnection.getSelectedText(0)
         if (!selected.isNullOrEmpty()) {
-            inputConnection.commitText("", 1)
-            return true
+            return commitTextSafely(
+                inputConnection = inputConnection,
+                text = "",
+                failureStatus = "Delete selection rejected by field",
+            )
         }
         val before = inputConnection.getTextBeforeCursor(128, 0)?.toString().orEmpty()
         if (before.isEmpty()) {
@@ -121,27 +149,33 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
             index--
         }
         if (index < 0) {
-            return inputConnection.deleteSurroundingTextInCodePoints(
-                before.codePointCount(0, before.length),
-                0,
-            )
+            return deleteCodePointsBefore(inputConnection, before.codePointCount(0, before.length))
         }
         while (index >= 0 && !before[index].isWhitespace()) {
             index--
         }
         val segment = before.substring(index + 1)
         val codePointCount = segment.codePointCount(0, segment.length)
-        return inputConnection.deleteSurroundingTextInCodePoints(codePointCount, 0)
+        return deleteCodePointsBefore(inputConnection, codePointCount)
     }
 
-    override fun onEnter() {
+    override fun onEnter(): Boolean {
+        val inputConnection = currentInputConnection
+        if (inputConnection == null) {
+            showStatus("Enter unavailable: no active field")
+            return false
+        }
         val actionId = currentInputEditorInfo?.imeOptions?.and(EditorInfo.IME_MASK_ACTION)
             ?: EditorInfo.IME_ACTION_NONE
         if (actionId != EditorInfo.IME_ACTION_NONE) {
-            currentInputConnection?.performEditorAction(actionId)
+            val handled = inputConnection.performEditorAction(actionId)
+            if (handled) {
+                return true
+            }
         } else {
-            sendSoftKey(KeyEvent.KEYCODE_ENTER, 0)
+            return sendSoftKey(KeyEvent.KEYCODE_ENTER, 0)
         }
+        return sendSoftKey(KeyEvent.KEYCODE_ENTER, 0)
     }
 
     override fun onVoice() {
@@ -281,13 +315,19 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
     }
 
     private fun applyRuntimePreferencesToView() {
+        val emojiRecents =
+            if (fieldPolicy.privateMode) {
+                emptyList()
+            } else {
+                stateStore.emojiRecents()
+            }
         keyboardView?.applyRuntimePreferences(
             profile = stateStore.layoutProfile,
             cornersEnabled = stateStore.cornerModeEnabled,
             debugTouchOverlay = stateStore.debugTouchOverlayEnabled,
             doubleSpacePeriod = stateStore.doubleSpacePeriodEnabled,
             punctuationAutoSpacing = stateStore.punctuationAutoSpacingEnabled,
-            recents = stateStore.emojiRecents(),
+            recents = emojiRecents,
         )
     }
 
@@ -306,39 +346,62 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
     private fun commitWithTypingCorrections(
         inputConnection: InputConnection,
         text: String,
-    ) {
+    ): Boolean {
         if (text.isEmpty()) {
-            return
+            return true
         }
 
         if (!shouldSuppressAutoCorrections()) {
-            if (stateStore.doubleSpacePeriodEnabled && text == " " && applyDoubleSpacePeriod(inputConnection)) {
-                return
+            if (stateStore.doubleSpacePeriodEnabled && text == " ") {
+                when (applyDoubleSpacePeriod(inputConnection)) {
+                    TextCorrectionResult.Applied -> return true
+                    TextCorrectionResult.Failed -> return false
+                    TextCorrectionResult.NotApplied -> Unit
+                }
             }
             if (stateStore.punctuationAutoSpacingEnabled) {
                 val spaced = applyPunctuationAutoSpacing(inputConnection, text)
                 if (spaced != null) {
-                    inputConnection.commitText(spaced, 1)
-                    return
+                    return commitTextSafely(
+                        inputConnection = inputConnection,
+                        text = spaced,
+                        failureStatus = "Punctuation insertion rejected by field",
+                    )
                 }
             }
         }
 
-        inputConnection.commitText(text, 1)
+        return commitTextSafely(
+            inputConnection = inputConnection,
+            text = text,
+            failureStatus = "Text input rejected by field",
+        )
     }
 
-    private fun applyDoubleSpacePeriod(inputConnection: InputConnection): Boolean {
+    private fun applyDoubleSpacePeriod(inputConnection: InputConnection): TextCorrectionResult {
         val before = inputConnection.getTextBeforeCursor(3, 0)?.toString().orEmpty()
         if (!before.endsWith(" ") || before.length < 2) {
-            return false
+            return TextCorrectionResult.NotApplied
         }
         val previous = before[before.length - 2]
         if (!previous.isLetterOrDigit()) {
-            return false
+            return TextCorrectionResult.NotApplied
         }
-        inputConnection.deleteSurroundingTextInCodePoints(1, 0)
-        inputConnection.commitText(". ", 1)
-        return true
+        if (!deleteCodePointBefore(inputConnection)) {
+            showStatus("Double-space correction rejected by field")
+            return TextCorrectionResult.Failed
+        }
+        val committed =
+            commitTextSafely(
+                inputConnection = inputConnection,
+                text = ". ",
+                failureStatus = "Double-space correction rejected by field",
+            )
+        return if (committed) {
+            TextCorrectionResult.Applied
+        } else {
+            TextCorrectionResult.Failed
+        }
     }
 
     private fun applyPunctuationAutoSpacing(
@@ -464,14 +527,50 @@ class VoiceFlowzInputMethodService : InputMethodService(), VoiceFlowzKeyboardVie
                 KeyCharacterMap.VIRTUAL_KEYBOARD,
                 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD,
-            )
+        )
         val downSent = inputConnection.sendKeyEvent(down)
         val upSent = inputConnection.sendKeyEvent(up)
-        return downSent || upSent
+        return downSent && upSent
+    }
+
+    private fun commitTextSafely(
+        inputConnection: InputConnection,
+        text: String,
+        failureStatus: String,
+    ): Boolean {
+        val committed = inputConnection.commitText(text, 1)
+        if (!committed) {
+            showStatus(failureStatus)
+        }
+        return committed
+    }
+
+    private fun deleteCodePointsBefore(
+        inputConnection: InputConnection,
+        count: Int,
+    ): Boolean {
+        if (count <= 0) {
+            return false
+        }
+        val deletedCodePoints = inputConnection.deleteSurroundingTextInCodePoints(count, 0)
+        if (deletedCodePoints) {
+            return true
+        }
+        return inputConnection.deleteSurroundingText(count, 0)
+    }
+
+    private fun deleteCodePointBefore(inputConnection: InputConnection): Boolean {
+        return deleteCodePointsBefore(inputConnection, 1)
     }
 
     private fun showStatus(message: String) {
         keyboardView?.setStatus(message)
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private enum class TextCorrectionResult {
+        NotApplied,
+        Applied,
+        Failed,
     }
 }

@@ -19,11 +19,11 @@ class VoiceFlowzKeyboardView(
     private val callbacks: Callbacks,
 ) : View(context) {
     interface Callbacks {
-        fun onText(text: String)
+        fun onText(text: String): Boolean
         fun onEmojiInserted(emoji: String)
-        fun onBackspace()
+        fun onBackspace(): Boolean
         fun onDeleteWordBefore(): Boolean
-        fun onEnter()
+        fun onEnter(): Boolean
         fun onVoice()
         fun onCopySelection()
         fun onPasteClipboard(): Boolean
@@ -149,6 +149,12 @@ class VoiceFlowzKeyboardView(
 
     fun applyPolicy(policy: KeyboardFieldPolicy) {
         fieldPolicy = policy
+        if (policy.privateMode) {
+            recentEmojis = emptyList()
+            if (emojiCategory == KeyboardEmojiCategory.Recents) {
+                emojiCategory = KeyboardEmojiCategory.Smileys
+            }
+        }
         statusText =
             if (policy.privateMode) {
                 "VoiceFlowz - private input (${policy.reason})"
@@ -171,7 +177,10 @@ class VoiceFlowzKeyboardView(
         debugTouchOverlayEnabled = debugTouchOverlay
         doubleSpacePeriodEnabled = doubleSpacePeriod
         punctuationAutoSpacingEnabled = punctuationAutoSpacing
-        recentEmojis = recents
+        recentEmojis = if (fieldPolicy.privateMode) emptyList() else recents
+        if (fieldPolicy.privateMode && emojiCategory == KeyboardEmojiCategory.Recents) {
+            emojiCategory = KeyboardEmojiCategory.Smileys
+        }
         refreshLayout()
     }
 
@@ -181,9 +190,6 @@ class VoiceFlowzKeyboardView(
     ) {
         fieldContext = contextMode
         enterLabel = enterActionLabel
-        if (fieldContext == KeyboardFieldContextMode.Phone) {
-            layoutMode = KeyboardLayoutMode.Numbers
-        }
         refreshLayout()
     }
 
@@ -422,21 +428,33 @@ class VoiceFlowzKeyboardView(
         when (key.action) {
             KeyboardKeyAction.Text -> {
                 val output = outputFor(key, selection) ?: return
-                callbacks.onText(output)
+                val committed = callbacks.onText(output)
+                if (!committed) {
+                    setStatus("Text input unavailable")
+                    return
+                }
                 if (panelMode == KeyboardPanelMode.Emoji) {
                     callbacks.onEmojiInserted(output)
                 }
-                if (shifted && layoutMode == KeyboardLayoutMode.Letters) {
+                if (shifted && layoutSnapshot.mode == KeyboardLayoutMode.Letters) {
                     shifted = false
                 }
             }
-            KeyboardKeyAction.Backspace -> callbacks.onBackspace()
+            KeyboardKeyAction.Backspace -> {
+                if (!callbacks.onBackspace()) {
+                    setStatus("Delete unavailable")
+                }
+            }
             KeyboardKeyAction.DeleteWordBefore -> {
                 if (!callbacks.onDeleteWordBefore()) {
                     setStatus("Word deletion unavailable")
                 }
             }
-            KeyboardKeyAction.Enter -> callbacks.onEnter()
+            KeyboardKeyAction.Enter -> {
+                if (!callbacks.onEnter()) {
+                    setStatus("Enter action unavailable")
+                }
+            }
             KeyboardKeyAction.Shift -> shifted = !shifted
             KeyboardKeyAction.ModeLetters -> {
                 layoutMode = KeyboardLayoutMode.Letters
@@ -470,13 +488,17 @@ class VoiceFlowzKeyboardView(
                 }
             }
             KeyboardKeyAction.ShowClipboardPins -> {
-                setStatus("Pinned clipboard list opens from app")
+                setStatus("Pinned clipboard list is in VoiceFlowz app")
             }
             KeyboardKeyAction.MediaPrevious -> callbacks.onMediaPrevious()
             KeyboardKeyAction.MediaPlayPause -> callbacks.onMediaPlayPause()
             KeyboardKeyAction.MediaNext -> callbacks.onMediaNext()
             KeyboardKeyAction.InsertSnippetOne -> {
-                callbacks.onText("Merci - envoye depuis VoiceFlowz")
+                val committed = callbacks.onText("Merci - envoye depuis VoiceFlowz")
+                if (!committed) {
+                    setStatus("Snippet insertion unavailable")
+                    return
+                }
                 callbacks.onSnippets()
                 panelMode = KeyboardPanelMode.None
             }
@@ -556,9 +578,15 @@ class VoiceFlowzKeyboardView(
     }
 
     private fun buildSnapshot(): KeyboardLayoutSnapshot {
+        val effectiveMode =
+            if (fieldContext == KeyboardFieldContextMode.Phone) {
+                KeyboardLayoutMode.Numbers
+            } else {
+                layoutMode
+            }
         return KeyboardLayoutBuilder.build(
             KeyboardLayoutRequest(
-                mode = layoutMode,
+                mode = effectiveMode,
                 panel = panelMode,
                 shifted = shifted,
                 fieldContext = fieldContext,

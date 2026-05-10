@@ -64,7 +64,7 @@ class AndroidKeyboardStatus {
       cornerModeEnabled: false,
       debugTouchOverlayEnabled: false,
       doubleSpacePeriodEnabled: true,
-      punctuationAutoSpacingEnabled: true,
+      punctuationAutoSpacingEnabled: false,
       privacyMode: KeyboardPrivacyMode.auto,
     );
   }
@@ -86,7 +86,7 @@ class AndroidKeyboardStatus {
       doubleSpacePeriodEnabled:
           map['doubleSpacePeriodEnabled'] as bool? ?? true,
       punctuationAutoSpacingEnabled:
-          map['punctuationAutoSpacingEnabled'] as bool? ?? true,
+          map['punctuationAutoSpacingEnabled'] as bool? ?? false,
       privacyMode: KeyboardPrivacyMode.fromName(
         map['privacyMode'] as String? ?? KeyboardPrivacyMode.auto.name,
       ),

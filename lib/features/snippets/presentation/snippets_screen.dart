@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
@@ -44,10 +45,15 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
     try {
       final store = ref.read(snippetStoreProvider);
       final rows = await store.list();
+      AppDiagnostics.record(
+        'snippet_load',
+        'store=${store.runtimeType}; items=${rows.length}',
+      );
       if (mounted) {
         setState(() => _items = rows);
       }
     } catch (error) {
+      AppDiagnostics.record('snippet_load_error', error);
       if (mounted) {
         setState(() => _message = 'Erreur chargement snippets: $error');
       }
@@ -192,6 +198,7 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppDiagnostics.record('screen_build', 'Snippets');
     return ListView(
       padding: AppInsets.screen,
       children: [

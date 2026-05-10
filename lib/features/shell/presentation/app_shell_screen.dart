@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../clipboard/presentation/clipboard_screen.dart';
@@ -25,6 +26,11 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen> {
     if (value == _index) {
       return;
     }
+    const titles = ['Voice', 'Clipboard', 'Snippets', 'Dictionary', 'Settings'];
+    AppDiagnostics.record(
+      'tab_select',
+      '${titles[_index]} -> ${titles[value]}',
+    );
     setState(() {
       _index = value;
       _tabHistory.remove(value);

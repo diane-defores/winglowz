@@ -6,6 +6,7 @@ import '../../../app/voiceflowz_app.dart';
 import '../../../core/bootstrap/app_build_info.dart';
 import '../../../core/bootstrap/firebase_bootstrap.dart';
 import '../../../core/bootstrap/supabase_bootstrap.dart';
+import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
@@ -406,7 +407,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         : 'local_mode';
     final lines = <String>[
       'VoiceFlowz backend diagnostic',
-      'diagnostic_version: 2',
+      'diagnostic_version: 3',
       'generated_at_utc: ${DateTime.now().toUtc().toIso8601String()}',
       'secret_values_redacted: true',
       'provider_contract: backend-agnostic',
@@ -431,6 +432,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'anthropic_key_present: ${_anthropicController.text.trim().isNotEmpty}',
       'overlay_status: ${_overlayDiagnostic()}',
       'keyboard_status: ${_keyboardDiagnostic()}',
+      'recent_events: ${_recentEventsDiagnostic()}',
       'settings_message: ${_sanitizeDiagnostic(_message ?? 'none')}',
     ];
     return lines.join('\n');
@@ -541,8 +543,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return text.replaceAll('\n', ' | ');
   }
 
+  String _recentEventsDiagnostic() {
+    final events = AppDiagnostics.recentEvents;
+    if (events.isEmpty) {
+      return 'none';
+    }
+    return events.map((event) => _sanitizeDiagnostic(event)).join(' || ');
+  }
+
   @override
   Widget build(BuildContext context) {
+    AppDiagnostics.record('screen_build', 'Settings');
     final storageStatusAsync = ref.watch(_storageStatusProvider);
     if (_loading) {
       return ListView(
@@ -872,7 +883,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ),
                 SwitchListTile(
-                  value: keyboardStatus?.punctuationAutoSpacingEnabled ?? true,
+                  value: keyboardStatus?.punctuationAutoSpacingEnabled ?? false,
                   onChanged: _keyboardBusy
                       ? null
                       : (value) => _setKeyboardPreferences(

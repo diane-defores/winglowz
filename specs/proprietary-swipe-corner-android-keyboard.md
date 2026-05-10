@@ -87,7 +87,7 @@ Proprietary Swipe-Corner Android Keyboard
 
 # Status
 
-Ready for implementation. This spec defines a VoiceFlowz-owned Android keyboard implementation coded in-house. Current code state as of 2026-05-10: `VoiceFlowzKeyboardView.kt` and `VoiceFlowzInputMethodService.kt` now include a modular Canvas/touch keyboard with tap + swipe-corner classifier, QWERTY/AZERTY profile switching, field-context behavior (email/url/phone/search), minimal navigation panel, lightweight emoji panel with local recents, basic double-space and punctuation auto-spacing corrections with exclusions, and optional touch-debug overlay. The full spec remains open because advanced modules (full navigation matrix, adaptive/smartbar behavior, richer emoji/clipboard workflows) and Android real-device QA are not complete.
+Ready for implementation. This spec defines a VoiceFlowz-owned Android keyboard implementation coded in-house. Current code state as of 2026-05-10: `VoiceFlowzKeyboardView.kt` and `VoiceFlowzInputMethodService.kt` now include a modular Canvas/touch keyboard with tap + swipe-corner classifier, QWERTY/AZERTY profile switching, field-context behavior (email/url/phone/search), minimal navigation panel, lightweight emoji panel with local recents, basic double-space and punctuation auto-spacing corrections with exclusions, and optional touch-debug overlay. Double-tap and long-press action policies are still pending. The full spec remains open because advanced modules (full navigation matrix, adaptive/smartbar behavior, richer emoji/clipboard workflows) and Android real-device QA are not complete.
 
 # User Story
 
@@ -827,14 +827,17 @@ Stop conditions:
 | 2026-05-10 22:10:51 UTC | sf-ready | GPT-5 Codex | Evaluated readiness gate: structure, metadata, user-story fit, adversarial/security review, language doctrine, docs coherence and fresh Android docs | ready | /sf-start Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-10 22:24:59 UTC | sf-start | GPT-5.3 Codex | Implemented modular keyboard layout engine, tap+swipe-corner classifier, QWERTY/AZERTY and field-context IME behavior, codepoint backspace, native mini-panels, keyboard preference bridge updates, docs updates, and Kotlin unit tests | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-10 22:35:50 UTC | sf-start | GPT-5.3 Codex | Extended IME with minimal Navigation panel, lightweight Emoji panel with local recents, double-space/auto-spacing corrections, and touch-debug overlay; updated docs and bridge/status contracts | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-10 22:38:00 UTC | sf-verify | GPT-5.5 | Verified current implementation against spec, local checks, bug gate, docs, and Android SDK compile availability | partial | /sf-start specs/proprietary-swipe-corner-android-keyboard.md |
+| 2026-05-10 23:20:00 UTC | sf-start | GPT-5.3 Codex | Fixed post-phone layout reset, hardened InputConnection success/failure handling with visible feedback, aligned punctuation auto-spacing default to French-only, clarified clipboard pins behavior, and documented pending long-press/double-tap implementation | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-10 22:47:20 UTC | sf-verify | GPT-5 Codex | Verified post-correction gaps: phone context no longer persists Numbers mode, InputConnection failures are surfaced, punctuation default is locale-aware, pins/double-tap/long-press docs are clarified; privacy still leaks emoji recents in private mode and local Kotlin compile is blocked by missing Android SDK | partial | /sf-start targeted private emoji recents fix, then Android SDK/CI compile proof |
 
 # Current Chantier Flow
 
 - sf-spec: done, draft saved in `specs/proprietary-swipe-corner-android-keyboard.md`
 - sf-ready: ready as of 2026-05-10 22:10:51 UTC
-- sf-start: partial implementation extended on 2026-05-10 with navigation/emoji/corrections/debug overlays in addition to modular layout/corner classifier/context/panels foundations; Android device QA and broader advanced modules remain
-- sf-verify: not launched
+- sf-start: partial implementation extended on 2026-05-10 with input-path reliability fixes (commit/delete/navigation feedback), post-phone mode reset, locale-aware punctuation default, and clearer pins messaging; Android device QA and broader advanced modules remain
+- sf-verify: partial as of 2026-05-10 22:47:20 UTC; most post-correction gaps are addressed by code review and local Dart checks, but private-mode emoji recents still leak and Android Kotlin compile proof is blocked by missing local SDK
 - sf-end: not launched
 - sf-ship: not launched
 
-Next command: `/sf-verify Proprietary Swipe-Corner Android Keyboard`
+Next command: `/sf-start targeted private emoji recents fix for Proprietary Swipe-Corner Android Keyboard`

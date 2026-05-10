@@ -4,6 +4,7 @@ import android.content.Context
 import android.provider.Settings
 import android.view.inputmethod.InputMethodInfo
 import android.view.inputmethod.InputMethodManager
+import java.util.Locale
 
 class KeyboardStateStore(private val context: Context) {
     private val preferences =
@@ -38,7 +39,13 @@ class KeyboardStateStore(private val context: Context) {
         set(value) = preferences.edit().putBoolean(KEY_DOUBLE_SPACE_PERIOD_ENABLED, value).apply()
 
     var punctuationAutoSpacingEnabled: Boolean
-        get() = preferences.getBoolean(KEY_PUNCTUATION_AUTO_SPACING_ENABLED, true)
+        get() {
+            // Spec-compatible default: French enabled by default, other locales disabled by default.
+            if (preferences.contains(KEY_PUNCTUATION_AUTO_SPACING_ENABLED)) {
+                return preferences.getBoolean(KEY_PUNCTUATION_AUTO_SPACING_ENABLED, false)
+            }
+            return defaultPunctuationAutoSpacingForLocale()
+        }
         set(value) = preferences.edit().putBoolean(KEY_PUNCTUATION_AUTO_SPACING_ENABLED, value).apply()
 
     var privacyMode: String
@@ -117,6 +124,10 @@ class KeyboardStateStore(private val context: Context) {
         val serviceName = info.serviceName ?: return false
         return info.packageName == context.packageName &&
             serviceName.endsWith(VoiceFlowzInputMethodService::class.java.simpleName)
+    }
+
+    private fun defaultPunctuationAutoSpacingForLocale(): Boolean {
+        return Locale.getDefault().language.equals("fr", ignoreCase = true)
     }
 
     companion object {

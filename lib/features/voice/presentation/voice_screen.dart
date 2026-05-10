@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
@@ -50,6 +51,10 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
     try {
       final store = ref.read(transcriptionStoreProvider);
       final rows = await store.list();
+      AppDiagnostics.record(
+        'voice_load',
+        'store=${store.runtimeType}; items=${rows.length}',
+      );
       if (mounted) {
         setState(() {
           _items = rows;
@@ -57,6 +62,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
         });
       }
     } catch (error) {
+      AppDiagnostics.record('voice_load_error', error);
       if (mounted) {
         setState(() => _message = 'Erreur chargement transcriptions: $error');
       }
@@ -286,6 +292,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppDiagnostics.record('screen_build', 'Voice');
     final overlayStatus = _overlayStatus;
     return ListView(
       padding: AppInsets.screen,

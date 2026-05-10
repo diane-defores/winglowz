@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
@@ -45,6 +46,10 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
       final importer = ref.read(keyboardClipboardEventImporterProvider);
       final importResult = await importer.drainFromAndroidKeyboard();
       final rows = await api.listItems();
+      AppDiagnostics.record(
+        'clipboard_load',
+        'api=${api.runtimeType}; items=${rows.length}; imported=${importResult.imported}; failed=${importResult.failed}; rejected_sensitive=${importResult.rejectedSensitive}',
+      );
       if (mounted) {
         setState(() {
           _items = rows;
@@ -59,6 +64,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
         });
       }
     } catch (error) {
+      AppDiagnostics.record('clipboard_load_error', error);
       if (mounted) {
         setState(() => _message = 'Erreur chargement clipboard: $error');
       }
@@ -182,6 +188,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppDiagnostics.record('screen_build', 'Clipboard');
     return ListView(
       padding: AppInsets.screen,
       children: [
