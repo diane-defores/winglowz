@@ -47,8 +47,15 @@ next_step: "/sf-start specs/firebase-backend-agnostic-migration.md"
 ## Android Keyboard IME
 
 - VoiceFlowz Keyboard is declared as an Android `InputMethodService` and is configurable from Settings through the `voiceflowz/keyboard` MethodChannel.
-- The keyboard provides a native minimal QWERTY layout, explicit clipboard copy/paste actions, Android speech recognition, and a generic play/pause media key.
+- The keyboard provides a native Canvas layout engine with QWERTY/AZERTY profiles, explicit clipboard copy/paste actions, Android speech recognition, and media keys (previous/play-pause/next).
+- Tap and swipe-corner classification is local and deterministic: tap emits the primary glyph, corner swipes emit secondary glyphs when corner mode is enabled, and return-to-center cancels the gesture.
+- Keyboard field context adapts controls for email/URL/phone/search: email and URL expose `@`/`/` plus `.com`, phone forces number layer, search sets enter action to search.
+- A minimal Navigation panel is available for cursor/edit actions: char left/right, word left/right, line start/end, delete char, and delete word-left with fallback feedback when host context is insufficient.
+- A lightweight Emoji panel is available with local categories and local recents; recents are not updated in private/sensitive fields.
+- Basic input corrections are available as toggles: double-space-to-period and punctuation auto-spacing, with exclusions for private/email/url/phone fields.
+- Optional touch-debug overlay can show key bounds, gesture direction/threshold/action diagnostics, and never includes typed content.
 - Password, OTP, `noPersonalizedLearning`, and host-marked private fields force private mode: dictation, clipboard capture, snippets, sync intent, and learning are disabled while basic typing remains available.
+- Minimal panels are available directly in the keyboard: clipboard (copy/paste/pins), media (prev/play-pause/next), snippets (single quick insert + app handoff), and settings (corners toggle + layout toggle + app handoff).
 - Clipboard sync from the keyboard is opt-in and represented as intent/status. Real cloud sync and cross-account queue flushing require the backend-agnostic Firebase adapter before production claims.
 - Non-Android platforms must not show IME activation controls.
 

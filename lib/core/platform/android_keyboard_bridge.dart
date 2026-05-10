@@ -56,6 +56,11 @@ class AndroidKeyboardBridge {
     required bool voiceEnabled,
     required bool clipboardSyncDesired,
     required bool mediaControlsEnabled,
+    required KeyboardLayoutProfile layoutProfile,
+    required bool cornerModeEnabled,
+    required bool debugTouchOverlayEnabled,
+    required bool doubleSpacePeriodEnabled,
+    required bool punctuationAutoSpacingEnabled,
     required KeyboardPrivacyMode privacyMode,
   }) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
@@ -68,6 +73,11 @@ class AndroidKeyboardBridge {
       'voiceEnabled': voiceEnabled,
       'clipboardSyncDesired': clipboardSyncDesired,
       'mediaControlsEnabled': mediaControlsEnabled,
+      'layoutProfile': layoutProfile.name,
+      'cornerModeEnabled': cornerModeEnabled,
+      'debugTouchOverlayEnabled': debugTouchOverlayEnabled,
+      'doubleSpacePeriodEnabled': doubleSpacePeriodEnabled,
+      'punctuationAutoSpacingEnabled': punctuationAutoSpacingEnabled,
       'privacyMode': privacyMode.name,
     });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});

@@ -11,6 +11,18 @@ enum KeyboardPrivacyMode {
   }
 }
 
+enum KeyboardLayoutProfile {
+  qwerty,
+  azerty;
+
+  static KeyboardLayoutProfile fromName(String value) {
+    return KeyboardLayoutProfile.values.firstWhere(
+      (profile) => profile.name == value.toLowerCase(),
+      orElse: () => KeyboardLayoutProfile.qwerty,
+    );
+  }
+}
+
 class AndroidKeyboardStatus {
   const AndroidKeyboardStatus({
     required this.supported,
@@ -19,6 +31,11 @@ class AndroidKeyboardStatus {
     required this.voiceEnabled,
     required this.clipboardSyncDesired,
     required this.mediaControlsEnabled,
+    required this.layoutProfile,
+    required this.cornerModeEnabled,
+    required this.debugTouchOverlayEnabled,
+    required this.doubleSpacePeriodEnabled,
+    required this.punctuationAutoSpacingEnabled,
     required this.privacyMode,
   });
 
@@ -28,6 +45,11 @@ class AndroidKeyboardStatus {
   final bool voiceEnabled;
   final bool clipboardSyncDesired;
   final bool mediaControlsEnabled;
+  final KeyboardLayoutProfile layoutProfile;
+  final bool cornerModeEnabled;
+  final bool debugTouchOverlayEnabled;
+  final bool doubleSpacePeriodEnabled;
+  final bool punctuationAutoSpacingEnabled;
   final KeyboardPrivacyMode privacyMode;
 
   factory AndroidKeyboardStatus.unsupported() {
@@ -38,6 +60,11 @@ class AndroidKeyboardStatus {
       voiceEnabled: false,
       clipboardSyncDesired: false,
       mediaControlsEnabled: false,
+      layoutProfile: KeyboardLayoutProfile.qwerty,
+      cornerModeEnabled: false,
+      debugTouchOverlayEnabled: false,
+      doubleSpacePeriodEnabled: true,
+      punctuationAutoSpacingEnabled: true,
       privacyMode: KeyboardPrivacyMode.auto,
     );
   }
@@ -50,6 +77,16 @@ class AndroidKeyboardStatus {
       voiceEnabled: map['voiceEnabled'] as bool? ?? true,
       clipboardSyncDesired: map['clipboardSyncDesired'] as bool? ?? false,
       mediaControlsEnabled: map['mediaControlsEnabled'] as bool? ?? true,
+      layoutProfile: KeyboardLayoutProfile.fromName(
+        map['layoutProfile'] as String? ?? KeyboardLayoutProfile.qwerty.name,
+      ),
+      cornerModeEnabled: map['cornerModeEnabled'] as bool? ?? false,
+      debugTouchOverlayEnabled:
+          map['debugTouchOverlayEnabled'] as bool? ?? false,
+      doubleSpacePeriodEnabled:
+          map['doubleSpacePeriodEnabled'] as bool? ?? true,
+      punctuationAutoSpacingEnabled:
+          map['punctuationAutoSpacingEnabled'] as bool? ?? true,
       privacyMode: KeyboardPrivacyMode.fromName(
         map['privacyMode'] as String? ?? KeyboardPrivacyMode.auto.name,
       ),
@@ -60,12 +97,25 @@ class AndroidKeyboardStatus {
     bool? voiceEnabled,
     bool? clipboardSyncDesired,
     bool? mediaControlsEnabled,
+    KeyboardLayoutProfile? layoutProfile,
+    bool? cornerModeEnabled,
+    bool? debugTouchOverlayEnabled,
+    bool? doubleSpacePeriodEnabled,
+    bool? punctuationAutoSpacingEnabled,
     KeyboardPrivacyMode? privacyMode,
   }) {
     return {
       'voiceEnabled': voiceEnabled ?? this.voiceEnabled,
       'clipboardSyncDesired': clipboardSyncDesired ?? this.clipboardSyncDesired,
       'mediaControlsEnabled': mediaControlsEnabled ?? this.mediaControlsEnabled,
+      'layoutProfile': (layoutProfile ?? this.layoutProfile).name,
+      'cornerModeEnabled': cornerModeEnabled ?? this.cornerModeEnabled,
+      'debugTouchOverlayEnabled':
+          debugTouchOverlayEnabled ?? this.debugTouchOverlayEnabled,
+      'doubleSpacePeriodEnabled':
+          doubleSpacePeriodEnabled ?? this.doubleSpacePeriodEnabled,
+      'punctuationAutoSpacingEnabled':
+          punctuationAutoSpacingEnabled ?? this.punctuationAutoSpacingEnabled,
       'privacyMode': (privacyMode ?? this.privacyMode).name,
     };
   }

@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
 import com.voiceflowz.voiceflowz.ime.KeyboardClipboardEventQueue
+import com.voiceflowz.voiceflowz.ime.KeyboardLayoutProfile
 import com.voiceflowz.voiceflowz.ime.KeyboardStateStore
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -184,6 +185,21 @@ class MainActivity : FlutterActivity() {
                         }
                         call.argument<Boolean>("mediaControlsEnabled")?.let {
                             keyboardState.mediaControlsEnabled = it
+                        }
+                        call.argument<String>("layoutProfile")?.let {
+                            keyboardState.layoutProfile = KeyboardLayoutProfile.fromRaw(it)
+                        }
+                        call.argument<Boolean>("cornerModeEnabled")?.let {
+                            keyboardState.cornerModeEnabled = it
+                        }
+                        call.argument<Boolean>("debugTouchOverlayEnabled")?.let {
+                            keyboardState.debugTouchOverlayEnabled = it
+                        }
+                        call.argument<Boolean>("doubleSpacePeriodEnabled")?.let {
+                            keyboardState.doubleSpacePeriodEnabled = it
+                        }
+                        call.argument<Boolean>("punctuationAutoSpacingEnabled")?.let {
+                            keyboardState.punctuationAutoSpacingEnabled = it
                         }
                         call.argument<String>("privacyMode")?.let {
                             keyboardState.privacyMode = it

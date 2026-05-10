@@ -11,7 +11,13 @@ import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../auth/application/auth_session_provider.dart';
+import '../../auth/domain/auth_session_store.dart';
+import '../../clipboard/application/clipboard_store_provider.dart';
+import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../keyboard/domain/keyboard_models.dart';
+import '../../snippets/application/snippet_store_provider.dart';
+import '../../voice/application/transcription_store_provider.dart';
+import '../application/settings_store_provider.dart';
 import '../data/secure_secret_store.dart';
 
 final _secretStoreProvider = Provider<SecureSecretStore>(
@@ -173,6 +179,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     bool? voiceEnabled,
     bool? clipboardSyncDesired,
     bool? mediaControlsEnabled,
+    KeyboardLayoutProfile? layoutProfile,
+    bool? cornerModeEnabled,
+    bool? debugTouchOverlayEnabled,
+    bool? doubleSpacePeriodEnabled,
+    bool? punctuationAutoSpacingEnabled,
     KeyboardPrivacyMode? privacyMode,
   }) async {
     final current = _keyboardStatus ?? AndroidKeyboardStatus.unsupported();
@@ -184,6 +195,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             clipboardSyncDesired ?? current.clipboardSyncDesired,
         mediaControlsEnabled:
             mediaControlsEnabled ?? current.mediaControlsEnabled,
+        layoutProfile: layoutProfile ?? current.layoutProfile,
+        cornerModeEnabled: cornerModeEnabled ?? current.cornerModeEnabled,
+        debugTouchOverlayEnabled:
+            debugTouchOverlayEnabled ?? current.debugTouchOverlayEnabled,
+        doubleSpacePeriodEnabled:
+            doubleSpacePeriodEnabled ?? current.doubleSpacePeriodEnabled,
+        punctuationAutoSpacingEnabled:
+            punctuationAutoSpacingEnabled ??
+            current.punctuationAutoSpacingEnabled,
         privacyMode: privacyMode ?? current.privacyMode,
       );
       if (!mounted) {
@@ -377,23 +397,148 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   String _backendDiagnosticText() {
+    final authAsync = ref.read(authSessionProvider);
+    final storageStatus = ref.read(_storageStatusProvider);
     final status = FirebaseBootstrap.isConfigured
         ? 'firebase_remote'
         : SupabaseBootstrap.isConfigured
         ? 'legacy_supabase_remote'
         : 'local_mode';
-    final firebaseDetail =
-        FirebaseBootstrap.initError ?? 'Firebase is configured.';
-    final supabaseDetail =
-        SupabaseBootstrap.initError ?? 'Legacy Supabase is configured.';
-    return 'VoiceFlowz backend diagnostic\n'
-        'provider: backend-agnostic\n'
-        'build: ${AppBuildInfo.diagnosticSummary}\n'
-        'firebase: ${FirebaseBootstrap.isConfigured}\n'
-        'legacy_supabase: ${SupabaseBootstrap.isConfigured}\n'
-        'status: $status\n'
-        'firebase_detail: $firebaseDetail\n'
-        'supabase_detail: $supabaseDetail';
+    final lines = <String>[
+      'VoiceFlowz backend diagnostic',
+      'diagnostic_version: 2',
+      'generated_at_utc: ${DateTime.now().toUtc().toIso8601String()}',
+      'secret_values_redacted: true',
+      'provider_contract: backend-agnostic',
+      'status: $status',
+      'build: ${AppBuildInfo.diagnosticSummary}',
+      'platform_capabilities: ${_platformDiagnostic()}',
+      'firebase_initialized: ${FirebaseBootstrap.isInitialized}',
+      'firebase_configured: ${FirebaseBootstrap.isConfigured}',
+      'firebase_detail: ${_sanitizeDiagnostic(FirebaseBootstrap.initError ?? 'configured_or_not_required')}',
+      'legacy_supabase_initialized: ${SupabaseBootstrap.isInitialized}',
+      'legacy_supabase_configured: ${SupabaseBootstrap.isConfigured}',
+      'legacy_supabase_detail: ${_sanitizeDiagnostic(SupabaseBootstrap.initError ?? 'configured_or_not_required')}',
+      'auth_store: ${ref.read(authSessionStoreProvider).runtimeType}',
+      'auth_session: ${_authDiagnostic(authAsync)}',
+      'settings_store: ${ref.read(settingsStoreProvider).runtimeType}',
+      'transcription_store: ${ref.read(transcriptionStoreProvider).runtimeType}',
+      'clipboard_store: ${ref.read(clipboardStoreProvider).runtimeType}',
+      'snippet_store: ${ref.read(snippetStoreProvider).runtimeType}',
+      'dictionary_store: ${ref.read(dictionaryStoreProvider).runtimeType}',
+      'secure_storage: ${_storageDiagnostic(storageStatus)}',
+      'openai_key_present: ${_openAiController.text.trim().isNotEmpty}',
+      'anthropic_key_present: ${_anthropicController.text.trim().isNotEmpty}',
+      'overlay_status: ${_overlayDiagnostic()}',
+      'keyboard_status: ${_keyboardDiagnostic()}',
+      'settings_message: ${_sanitizeDiagnostic(_message ?? 'none')}',
+    ];
+    return lines.join('\n');
+  }
+
+  String _authDiagnostic(AsyncValue<AuthSessionSnapshot> authAsync) {
+    return authAsync.when(
+      data: (session) {
+        final user = session.user;
+        return [
+          'state=data',
+          'signed_in=${session.isSignedIn}',
+          'local_fallback=${session.isLocalFallback}',
+          'provider=${user?.provider.name ?? 'none'}',
+          'anonymous=${user?.isAnonymous ?? false}',
+          'email_present=${user?.email?.isNotEmpty ?? false}',
+          'user_id_present=${user?.id.isNotEmpty ?? false}',
+          'sync_health=${session.syncStatus.health.name}',
+          'sync_issue=${session.syncStatus.issue?.code ?? 'none'}',
+        ].join('; ');
+      },
+      loading: () => 'state=loading',
+      error: (error, _) => 'state=error; error=${_sanitizeDiagnostic(error)}',
+    );
+  }
+
+  String _storageDiagnostic(AsyncValue<SecretStorageStatus> status) {
+    return status.when(
+      data: (value) => value.name,
+      loading: () => 'loading',
+      error: (error, _) => 'error=${_sanitizeDiagnostic(error)}',
+    );
+  }
+
+  String _platformDiagnostic() {
+    return [
+      'android=${PlatformCapabilities.isAndroid}',
+      'linux=${PlatformCapabilities.isLinux}',
+      'web=${PlatformCapabilities.isWeb}',
+      'local_speech=${PlatformCapabilities.localSpeechSupported}',
+      'overlay=${PlatformCapabilities.overlaySupported}',
+      'keyboard_ime=${PlatformCapabilities.keyboardImeSupported}',
+      'secure_storage_degraded=${PlatformCapabilities.secureStorageDegraded}',
+    ].join('; ');
+  }
+
+  String _overlayDiagnostic() {
+    if (!PlatformCapabilities.overlaySupported) {
+      return 'unsupported';
+    }
+    final status = _overlayStatus;
+    if (status == null) {
+      return 'not_loaded; busy=$_overlayBusy';
+    }
+    return [
+      'enabled=${status.enabled}',
+      'requested=${status.requestedEnabled}',
+      'running=${status.running}',
+      'overlay_permission=${status.overlayPermissionGranted}',
+      'accessibility_permission=${status.accessibilityPermissionGranted}',
+      'delivery=${status.deliveryMode.name}',
+      'size=${status.sizeScale}',
+      'opacity=${status.opacity}',
+      'busy=$_overlayBusy',
+    ].join('; ');
+  }
+
+  String _keyboardDiagnostic() {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return 'unsupported';
+    }
+    final status = _keyboardStatus;
+    if (status == null) {
+      return 'not_loaded; busy=$_keyboardBusy';
+    }
+    return [
+      'supported=${status.supported}',
+      'enabled=${status.enabled}',
+      'active=${status.active}',
+      'voice_enabled=${status.voiceEnabled}',
+      'clipboard_sync_desired=${status.clipboardSyncDesired}',
+      'media_controls=${status.mediaControlsEnabled}',
+      'layout=${status.layoutProfile.name}',
+      'corner_mode=${status.cornerModeEnabled}',
+      'debug_touch=${status.debugTouchOverlayEnabled}',
+      'double_space=${status.doubleSpacePeriodEnabled}',
+      'punct_spacing=${status.punctuationAutoSpacingEnabled}',
+      'privacy_mode=${status.privacyMode.name}',
+      'busy=$_keyboardBusy',
+    ].join('; ');
+  }
+
+  String _sanitizeDiagnostic(Object? value) {
+    var text = value?.toString() ?? 'none';
+    final redactionPatterns = [
+      RegExp(r'AIza[0-9A-Za-z_-]{20,}'),
+      RegExp(r'sb_[0-9A-Za-z_-]{12,}'),
+      RegExp(r'eyJ[0-9A-Za-z_.-]{20,}'),
+      RegExp(r'sk-[0-9A-Za-z_-]{12,}'),
+      RegExp(
+        r'(api[_-]?key|anon[_-]?key|publishable[_-]?key|token|secret|password)\s*[:=]\s*[^,\s;]+',
+        caseSensitive: false,
+      ),
+    ];
+    for (final pattern in redactionPatterns) {
+      text = text.replaceAll(pattern, '<redacted>');
+    }
+    return text.replaceAll('\n', ' | ');
   }
 
   @override
@@ -593,6 +738,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   subtitle: Text(
                     'enabled=${keyboardStatus?.enabled ?? false} | '
                     'active=${keyboardStatus?.active ?? false} | '
+                    'layout=${keyboardStatus?.layoutProfile.name ?? 'qwerty'} | '
+                    'corners=${keyboardStatus?.cornerModeEnabled ?? false} | '
                     'privacy=${keyboardStatus?.privacyMode.name ?? 'auto'}',
                   ),
                   trailing: _keyboardBusy
@@ -672,6 +819,80 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   title: const Text('Keyboard media play/pause'),
                   subtitle: const Text(
                     'Sends a generic Android media key without reading media metadata.',
+                  ),
+                ),
+                Padding(
+                  padding: AppInsets.keyboardPrivacy,
+                  child: DropdownButtonFormField<KeyboardLayoutProfile>(
+                    initialValue:
+                        keyboardStatus?.layoutProfile ??
+                        KeyboardLayoutProfile.qwerty,
+                    decoration: const InputDecoration(
+                      labelText: 'Keyboard letter layout',
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: KeyboardLayoutProfile.qwerty,
+                        child: Text('QWERTY'),
+                      ),
+                      DropdownMenuItem(
+                        value: KeyboardLayoutProfile.azerty,
+                        child: Text('AZERTY'),
+                      ),
+                    ],
+                    onChanged: _keyboardBusy
+                        ? null
+                        : (value) => _setKeyboardPreferences(
+                            layoutProfile:
+                                value ?? KeyboardLayoutProfile.qwerty,
+                          ),
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.cornerModeEnabled ?? false,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) =>
+                            _setKeyboardPreferences(cornerModeEnabled: value),
+                  title: const Text('Swipe-corner mode'),
+                  subtitle: const Text(
+                    'When enabled, key swipes toward corners insert secondary characters.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.doubleSpacePeriodEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          doubleSpacePeriodEnabled: value,
+                        ),
+                  title: const Text('Double-space to period'),
+                  subtitle: const Text(
+                    'Transforms double space into period-space in standard text fields.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.punctuationAutoSpacingEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          punctuationAutoSpacingEnabled: value,
+                        ),
+                  title: const Text('Punctuation auto-spacing'),
+                  subtitle: const Text(
+                    'Adds basic spacing around punctuation for standard text fields.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.debugTouchOverlayEnabled ?? false,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          debugTouchOverlayEnabled: value,
+                        ),
+                  title: const Text('Keyboard touch debug overlay'),
+                  subtitle: const Text(
+                    'Shows key bounds and gesture classifier diagnostics on the native keyboard.',
                   ),
                 ),
                 Padding(

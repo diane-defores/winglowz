@@ -6,8 +6,8 @@ project: "VoiceFlowz"
 created: "2026-05-09"
 created_at: "2026-05-09 15:32:50 UTC"
 updated: "2026-05-10"
-updated_at: "2026-05-10 22:06:25 UTC"
-status: draft
+updated_at: "2026-05-10 22:10:51 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
@@ -39,7 +39,7 @@ depends_on:
     required_status: "reviewed"
   - artifact: "specs/android-ime-voiceflowz-keyboard.md"
     artifact_version: "1.0.0"
-    required_status: "ready"
+    required_status: "legacy-ready"
   - artifact: "specs/clipboard-backend-agnostic-api.md"
     artifact_version: "0.1.0"
     required_status: "ready"
@@ -53,8 +53,8 @@ evidence:
   - "Product direction: use tap plus swipe-to-corner gestures so one compact key can expose primary and secondary characters."
   - "Local Android IME exists at android/app/src/main/kotlin/com/voiceflowz/voiceflowz/ime but VoiceFlowzKeyboardView is a Button-based minimal QWERTY prototype with no real swipe-corner layout engine."
   - "Local manifest already declares VoiceFlowzInputMethodService with BIND_INPUT_METHOD and @xml/voiceflowz_input_method."
-  - "Android official docs checked 2026-05-09: IMEs are services extending InputMethodService declared with BIND_INPUT_METHOD, android.view.InputMethod intent, and metadata."
-  - "Android official docs checked 2026-05-09: InputConnection commitText/deleteSurroundingText/performEditorAction are the correct path for field insertion and editing."
+  - "Android official docs checked 2026-05-10: IMEs are services extending InputMethodService declared with BIND_INPUT_METHOD, android.view.InputMethod intent, and metadata."
+  - "Android official docs checked 2026-05-10: InputConnection commitText/deleteSurroundingText/performEditorAction are the correct path for field insertion and editing; deleteSurroundingTextInCodePoints is available for code point deletion."
   - "FlorisBoard repository reviewed 2026-05-09: Apache-2.0 Android keyboard with smartbar quick actions, configurable preferences, input feedback, incognito behavior, editor/input abstractions and IME window concepts."
   - "User decision 2026-05-09: keep VoiceFlowz adaptive smartbar because pinned actions give users a fixed option while unpinned actions can adapt."
   - "User decision 2026-05-09: do not rely on swipe arrows for cursor navigation; add a dedicated Navigation mode with a large joystick/D-pad and visible edit buttons."
@@ -77,8 +77,8 @@ evidence:
   - "User decision 2026-05-09: add drawable gesture shortcuts starting from the space bar, with a settings page to record shapes and bind each recognized shape to an action."
   - "User decision 2026-05-09: drawable gestures from the space bar should start by movement threshold, not long press; tap remains space, swipe/draw beyond a configurable threshold starts the gesture."
   - "User decision 2026-05-09: backend work is backend-agnostic, Firebase is the first remote adapter, and Supabase is legacy/reference only."
-  - "Android official docs checked 2026-05-09: external actions should use explicit/implicit Intents where available, common intents for standard tasks, app launch intents, settings intents, and app shortcuts when exposed by apps."
-next_step: "/sf-ready Proprietary Swipe-Corner Android Keyboard"
+  - "Android official docs checked 2026-05-10: external actions should use explicit/implicit Intents where available, common intents for standard tasks, app launch intents, settings intents, app shortcuts when exposed by apps, and package visibility constraints when querying availability."
+next_step: "/sf-start Proprietary Swipe-Corner Android Keyboard"
 ---
 
 # Title
@@ -87,7 +87,7 @@ Proprietary Swipe-Corner Android Keyboard
 
 # Status
 
-Draft saved for review. This spec defines a VoiceFlowz-owned Android keyboard implementation coded in-house. Current code state as of 2026-05-10: `VoiceFlowzKeyboardView.kt` has a partial custom Canvas/touch rewrite replacing the previous Android `Button` stack, but the full spec remains open because the modular layout engine, swipe-corner classifier, AZERTY preference, navigation mode, settings panels, debug overlay and Android device QA are not complete.
+Ready for implementation. This spec defines a VoiceFlowz-owned Android keyboard implementation coded in-house. Current code state as of 2026-05-10: `VoiceFlowzKeyboardView.kt` and `VoiceFlowzInputMethodService.kt` now include a modular Canvas/touch keyboard with tap + swipe-corner classifier, QWERTY/AZERTY profile switching, field-context behavior (email/url/phone/search), minimal navigation panel, lightweight emoji panel with local recents, basic double-space and punctuation auto-spacing corrections with exclusions, and optional touch-debug overlay. The full spec remains open because advanced modules (full navigation matrix, adaptive/smartbar behavior, richer emoji/clipboard workflows) and Android real-device QA are not complete.
 
 # User Story
 
@@ -310,12 +310,13 @@ Construire une implementation proprietaire et independante du clavier Android Vo
 - `ClipboardHistoryApi` et `KeyboardClipboardEventQueue` pour clipboard.
 - Le contrat clipboard backend-agnostic doit exposer ou accepter les metadonnees `pinned`, `createdAt`/`capturedAt`, `expiresAt` ou equivalent local, et une preference de retention enumeree `24h`/`7d`/`30d`/`unlimited` sans coupler l'IME a Supabase.
 - Fresh external docs checked:
-  - Android Create an input method, consulted 2026-05-09: an IME is an app service extending `InputMethodService`, declared with `BIND_INPUT_METHOD`, `android.view.InputMethod`, and metadata.
-  - Android `InputConnection`, consulted 2026-05-09: text insertion/deletion/editor actions are done through the active input connection.
+  - Android Create an input method, consulted 2026-05-10: an IME is an app service extending `InputMethodService`, declared with `BIND_INPUT_METHOD`, `android.view.InputMethod`, and metadata.
+  - Android `InputConnection`, consulted 2026-05-10: text insertion/deletion/editor actions are done through the active input connection; `deleteSurroundingTextInCodePoints` supports code point deletion when available.
   - Android `InputMethodSubtype`, consulted 2026-05-09: subtypes describe locale/mode and can declare ASCII capability; keep subtype additions small and explicit.
-  - Android Intents and intent filters, consulted 2026-05-09: use explicit/implicit intents and resolve availability before launching external actions.
-  - Android Common intents, consulted 2026-05-09: common actions exist for standard tasks but availability depends on apps/device support.
-  - Android App shortcuts, consulted 2026-05-09: app-defined shortcuts can expose common app actions when the app/launcher/API supports them.
+  - Android Intents and intent filters, consulted 2026-05-10: use explicit/implicit intents and resolve availability before launching external actions.
+  - Android Common intents, consulted 2026-05-10: common actions exist for standard tasks but availability depends on apps/device support.
+  - Android App shortcuts, consulted 2026-05-10: app-defined shortcuts can expose common app actions when the app/launcher/API supports them.
+  - Android package visibility, consulted 2026-05-10: when querying other apps or action availability on Android 11+, declare necessary package visibility needs or rely on intents that are automatically visible where applicable.
 
 # Invariants
 
@@ -823,14 +824,17 @@ Stop conditions:
 | 2026-05-09 18:25:36 UTC | sf-spec | GPT-5 Codex | Added drawable gesture shortcuts starting from the space bar, with settings recorder, action preview, collision detection and conservative Android action catalog | draft updated | /sf-ready Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-09 18:29:15 UTC | sf-spec | GPT-5 Codex | Changed spacebar drawable gesture start from long-press style to configurable movement threshold: tap remains space, movement beyond threshold starts drawing | draft updated | /sf-ready Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-10 22:06:25 UTC | sf-spec | GPT-5 Codex | Checked existing keyboard chantier after user asked whether the remaining implementation work was specified; recorded partial custom Canvas/touch rewrite status for Tache 4 | draft tracking updated | /sf-ready Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-10 22:10:51 UTC | sf-ready | GPT-5 Codex | Evaluated readiness gate: structure, metadata, user-story fit, adversarial/security review, language doctrine, docs coherence and fresh Android docs | ready | /sf-start Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-10 22:24:59 UTC | sf-start | GPT-5.3 Codex | Implemented modular keyboard layout engine, tap+swipe-corner classifier, QWERTY/AZERTY and field-context IME behavior, codepoint backspace, native mini-panels, keyboard preference bridge updates, docs updates, and Kotlin unit tests | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-10 22:35:50 UTC | sf-start | GPT-5.3 Codex | Extended IME with minimal Navigation panel, lightweight Emoji panel with local recents, double-space/auto-spacing corrections, and touch-debug overlay; updated docs and bridge/status contracts | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
 
 # Current Chantier Flow
 
 - sf-spec: done, draft saved in `specs/proprietary-swipe-corner-android-keyboard.md`
-- sf-ready: not launched; must validate legal boundary, MVP behavior choices, and implementation readiness
-- sf-start: not launched formally; Tache 4 has a partial out-of-flow implementation in `VoiceFlowzKeyboardView.kt` and still needs formal execution/verification against this spec
+- sf-ready: ready as of 2026-05-10 22:10:51 UTC
+- sf-start: partial implementation extended on 2026-05-10 with navigation/emoji/corrections/debug overlays in addition to modular layout/corner classifier/context/panels foundations; Android device QA and broader advanced modules remain
 - sf-verify: not launched
 - sf-end: not launched
 - sf-ship: not launched
 
-Next command: `/sf-ready Proprietary Swipe-Corner Android Keyboard`
+Next command: `/sf-verify Proprietary Swipe-Corner Android Keyboard`

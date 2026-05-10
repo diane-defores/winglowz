@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "VoiceFlowz"
 created: "2026-05-04"
-updated: "2026-05-08"
+updated: "2026-05-10"
 status: draft
 source_skill: sf-docs
 scope: "android-native"
@@ -52,7 +52,7 @@ inside other apps' input fields.
 ## Entrypoints
 
 - `VoiceFlowzInputMethodService.onCreateInputView`: creates the native keyboard.
-- `VoiceFlowzInputMethodService.onStartInput`: evaluates the focused field policy.
+- `VoiceFlowzInputMethodService.onStartInput`: evaluates the focused field policy and field context (`text`, `email`, `url`, `phone`, `search`).
 - `MainActivity.configureFlutterEngine`: registers platform channels used by Settings.
 
 ## Control Flow
@@ -60,7 +60,9 @@ inside other apps' input fields.
 ```text
 Android input field
   -> VoiceFlowzInputMethodService
-  -> VoiceFlowzKeyboardView
+  -> KeyboardInputContextResolver + KeyboardSecurityPolicy
+  -> VoiceFlowzKeyboardView (Canvas)
+  -> KeyboardLayoutBuilder + KeyboardGestureClassifier
   -> InputConnection / ClipboardManager / AudioManager
 
 Keyboard clipboard action
@@ -72,8 +74,20 @@ Keyboard clipboard action
 ## Invariants
 
 - The IME uses `InputConnection` for insertion, never accessibility injection.
+- Backspace deletes one Unicode code point when no selection exists (`deleteSurroundingTextInCodePoints` fallback to legacy delete).
+- Navigation panel uses `InputConnection` + key events for: char left/right, word left/right, line start/end, and word deletion before cursor with graceful fallback.
+- Emoji panel provides local categories and local recents; private mode does not persist new emoji recents.
+- Basic typing corrections are local and opt-in:
+  - double-space to `. `
+  - punctuation auto-spacing
+  - both disabled automatically for private/email/url/phone contexts.
+- Debug touch overlay can render key bounds and gesture classifier diagnostics without exposing user text.
 - Password, OTP, `noPersonalizedLearning`, and app-marked sensitive fields must disable voice capture, clipboard sync, snippets, and learning behavior.
 - Base media control sends generic play/pause key events only; it must not read metadata without explicit richer permission.
+- Keyboard preferences are persisted in `KeyboardStateStore` and round-tripped through `voiceflowz/keyboard`:
+  - `layoutProfile`: `QWERTY` / `AZERTY`
+  - `cornerModeEnabled`: `true` / `false`
+  - `privacyMode`: `auto` / `strict` / `standard`
 - IME state preferences store only non-sensitive flags and counters, never typed or dictated text.
 - IME clipboard sync events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
 - The native clipboard event queue is process-memory only until a durable local storage decision is made.

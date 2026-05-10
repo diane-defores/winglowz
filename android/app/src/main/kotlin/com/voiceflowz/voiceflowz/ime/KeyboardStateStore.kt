@@ -21,6 +21,26 @@ class KeyboardStateStore(private val context: Context) {
         get() = preferences.getBoolean(KEY_MEDIA_CONTROLS_ENABLED, true)
         set(value) = preferences.edit().putBoolean(KEY_MEDIA_CONTROLS_ENABLED, value).apply()
 
+    var layoutProfile: KeyboardLayoutProfile
+        get() = KeyboardLayoutProfile.fromRaw(preferences.getString(KEY_LAYOUT_PROFILE, KeyboardLayoutProfile.QWERTY.name))
+        set(value) = preferences.edit().putString(KEY_LAYOUT_PROFILE, value.name).apply()
+
+    var cornerModeEnabled: Boolean
+        get() = preferences.getBoolean(KEY_CORNER_MODE_ENABLED, false)
+        set(value) = preferences.edit().putBoolean(KEY_CORNER_MODE_ENABLED, value).apply()
+
+    var debugTouchOverlayEnabled: Boolean
+        get() = preferences.getBoolean(KEY_DEBUG_TOUCH_OVERLAY_ENABLED, false)
+        set(value) = preferences.edit().putBoolean(KEY_DEBUG_TOUCH_OVERLAY_ENABLED, value).apply()
+
+    var doubleSpacePeriodEnabled: Boolean
+        get() = preferences.getBoolean(KEY_DOUBLE_SPACE_PERIOD_ENABLED, true)
+        set(value) = preferences.edit().putBoolean(KEY_DOUBLE_SPACE_PERIOD_ENABLED, value).apply()
+
+    var punctuationAutoSpacingEnabled: Boolean
+        get() = preferences.getBoolean(KEY_PUNCTUATION_AUTO_SPACING_ENABLED, true)
+        set(value) = preferences.edit().putBoolean(KEY_PUNCTUATION_AUTO_SPACING_ENABLED, value).apply()
+
     var privacyMode: String
         get() = preferences.getString(KEY_PRIVACY_MODE, PRIVACY_AUTO) ?: PRIVACY_AUTO
         set(value) {
@@ -41,8 +61,39 @@ class KeyboardStateStore(private val context: Context) {
             "voiceEnabled" to voiceEnabled,
             "clipboardSyncDesired" to clipboardSyncDesired,
             "mediaControlsEnabled" to mediaControlsEnabled,
+            "layoutProfile" to layoutProfile.name,
+            "cornerModeEnabled" to cornerModeEnabled,
+            "debugTouchOverlayEnabled" to debugTouchOverlayEnabled,
+            "doubleSpacePeriodEnabled" to doubleSpacePeriodEnabled,
+            "punctuationAutoSpacingEnabled" to punctuationAutoSpacingEnabled,
             "privacyMode" to privacyMode,
         )
+    }
+
+    fun emojiRecents(limit: Int = 16): List<String> {
+        return preferences
+            .getString(KEY_EMOJI_RECENTS, "")
+            .orEmpty()
+            .split(EMOJI_RECENT_SEPARATOR)
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+            .take(limit)
+    }
+
+    fun pushEmojiRecent(emoji: String, privateMode: Boolean) {
+        if (privateMode) {
+            return
+        }
+        val normalized = emoji.trim()
+        if (normalized.isEmpty()) {
+            return
+        }
+        val next =
+            (listOf(normalized) + emojiRecents())
+                .distinct()
+                .take(16)
+                .joinToString(separator = EMOJI_RECENT_SEPARATOR)
+        preferences.edit().putString(KEY_EMOJI_RECENTS, next).apply()
     }
 
     private fun isInputMethodEnabled(): Boolean {
@@ -73,7 +124,14 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_VOICE_ENABLED = "voice_enabled"
         const val KEY_CLIPBOARD_SYNC_DESIRED = "clipboard_sync_desired"
         const val KEY_MEDIA_CONTROLS_ENABLED = "media_controls_enabled"
+        const val KEY_LAYOUT_PROFILE = "layout_profile"
+        const val KEY_CORNER_MODE_ENABLED = "corner_mode_enabled"
+        const val KEY_DEBUG_TOUCH_OVERLAY_ENABLED = "debug_touch_overlay_enabled"
+        const val KEY_DOUBLE_SPACE_PERIOD_ENABLED = "double_space_period_enabled"
+        const val KEY_PUNCTUATION_AUTO_SPACING_ENABLED = "punctuation_auto_spacing_enabled"
+        const val KEY_EMOJI_RECENTS = "emoji_recents"
         const val KEY_PRIVACY_MODE = "privacy_mode"
+        const val EMOJI_RECENT_SEPARATOR = "|"
         const val PRIVACY_AUTO = "auto"
         const val PRIVACY_STRICT = "strict"
         const val PRIVACY_STANDARD = "standard"

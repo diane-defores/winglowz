@@ -73,13 +73,27 @@ Run on at least one emulator or real Android device before closing the IME chant
 |---|---|
 | Enable VoiceFlowz in Android input method settings | VoiceFlowz Keyboard appears as an available keyboard. |
 | Switch to VoiceFlowz from a normal text field | Native keyboard opens without launching a Flutter view inside the IME. |
-| Type letters, space, backspace, enter | Focused field receives expected `InputConnection` updates. |
+| Type letters, space, backspace, enter | Focused field receives expected `InputConnection` updates; backspace deletes one code point including emoji/surrogate pairs. |
+| Toggle QWERTY/AZERTY in Settings then reopen IME | Letter rows match selected layout profile and persist between sessions. |
+| Enable swipe-corner mode then swipe key corners | Secondary corner glyphs are inserted; center-return gesture cancels insertion. |
+| Disable swipe-corner mode | Same gestures fallback to primary tap behavior only. |
+| Open Navigation panel and run cursor/edit actions | Char left/right works; word left/right and line start/end work when host supports context; unavailable cases show recoverable feedback. |
+| Trigger delete word-left in Navigation panel | Deletes the previous word boundary or shows unavailable feedback when cursor context is absent. |
+| Open Emoji panel and insert from categories | Emoji is inserted via `InputConnection` into active field. |
+| Insert emoji in normal field then reopen Emoji panel | Recent emoji appears in local recents list. |
+| Insert emoji in private/sensitive field | Emoji insertion works, but recent emoji list does not update. |
+| Enable double-space to period and type in standard text field | Double-space converts to `. ` after word characters. |
+| Enable punctuation auto-spacing and type `: ; ! ? . ,` in standard text field | Keyboard applies basic spacing rules around punctuation. |
+| Try the same corrections in private/email/url/phone fields | Corrections are suppressed; raw input is kept. |
+| Enable keyboard touch debug overlay | Key bounds + gesture classifier diagnostics appear without exposing typed text. |
 | Focus password/OTP/no-personalized-learning field | Private mode is visible; dictation, clipboard capture, snippets and learning/sync are disabled. |
 | Tap Mic without microphone permission | No recording starts; keyboard shows recoverable permission state. |
 | Tap Mic with permission and speech recognition available | Recognized text is inserted into the active field. |
 | Clipboard copy/paste actions | Copy is explicit from selected text; paste uses current system clipboard text only. |
+| Toggle clipboard/media/snippets/settings mini-panels | Each panel opens/closes in-place and preserves base typing workflow. |
+| Focus email, URL, phone, and search fields | Keyboard adapts symbols/enter action to the field context. |
 | Tap Media while a media app is active | Android receives a play/pause media key; no metadata permission is requested. |
-| Use Settings keyboard card | Input settings, switch keyboard, voice, clipboard sync intent, media controls and privacy mode round-trip through `voiceflowz/keyboard`. |
+| Use Settings keyboard card | Input settings, switch keyboard, voice, clipboard sync intent, media controls, layout profile, corner mode, and privacy mode round-trip through `voiceflowz/keyboard`. |
 
 ## Purge Gate
 

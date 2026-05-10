@@ -10,6 +10,8 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.MeasureSpec
+import kotlin.math.abs
+import kotlin.math.hypot
 import kotlin.math.max
 
 class VoiceFlowzKeyboardView(
@@ -18,72 +20,62 @@ class VoiceFlowzKeyboardView(
 ) : View(context) {
     interface Callbacks {
         fun onText(text: String)
+        fun onEmojiInserted(emoji: String)
         fun onBackspace()
+        fun onDeleteWordBefore(): Boolean
         fun onEnter()
         fun onVoice()
         fun onCopySelection()
-        fun onPasteClipboard()
+        fun onPasteClipboard(): Boolean
         fun onSnippets()
         fun onSettings()
         fun onMediaPlayPause()
+        fun onMediaPrevious()
+        fun onMediaNext()
+        fun onNavigateCharLeft(): Boolean
+        fun onNavigateCharRight(): Boolean
+        fun onNavigateWordLeft(): Boolean
+        fun onNavigateWordRight(): Boolean
+        fun onNavigateLineStart(): Boolean
+        fun onNavigateLineEnd(): Boolean
+        fun onLayoutProfileChanged(profile: KeyboardLayoutProfile)
+        fun onCornerModeChanged(enabled: Boolean)
+        fun onDebugTouchOverlayChanged(enabled: Boolean)
+        fun onDoubleSpacePeriodChanged(enabled: Boolean)
+        fun onPunctuationAutoSpacingChanged(enabled: Boolean)
     }
-
-    private enum class LayoutMode {
-        Letters,
-        Numbers,
-        Accents,
-        Symbols,
-    }
-
-    private enum class KeyAction {
-        Text,
-        Backspace,
-        Enter,
-        Shift,
-        ModeLetters,
-        ModeNumbers,
-        ModeAccents,
-        ModeSymbols,
-        ToggleClipboard,
-        CopySelection,
-        PasteClipboard,
-        ClosePanel,
-        Voice,
-        Snippets,
-        Settings,
-        Media,
-    }
-
-    private data class KeySpec(
-        val id: String,
-        val label: String,
-        val output: String = label,
-        val action: KeyAction = KeyAction.Text,
-        val weight: Float = 1f,
-        val enabled: Boolean = true,
-        val active: Boolean = false,
-        val secondaryTopLeft: String? = null,
-        val secondaryTopRight: String? = null,
-    )
-
-    private data class RowSpec(
-        val keys: List<KeySpec>,
-        val leadingWeight: Float = 0f,
-        val trailingWeight: Float = leadingWeight,
-    )
 
     private data class KeyFrame(
-        val key: KeySpec,
+        val key: KeyboardKeySpec,
         val rect: RectF,
     )
 
     private var shifted = false
-    private var layoutMode = LayoutMode.Letters
-    private var clipboardPanelVisible = false
+    private var layoutMode = KeyboardLayoutMode.Letters
+    private var panelMode = KeyboardPanelMode.None
+    private var layoutProfile = KeyboardLayoutProfile.QWERTY
+    private var cornerModeEnabled = false
+    private var debugTouchOverlayEnabled = false
+    private var doubleSpacePeriodEnabled = true
+    private var punctuationAutoSpacingEnabled = true
+    private var emojiCategory = KeyboardEmojiCategory.Recents
+    private var recentEmojis = emptyList<String>()
     private var fieldPolicy = KeyboardSecurityPolicy.evaluate(null, KeyboardStateStore.PRIVACY_AUTO)
+    private var fieldContext = KeyboardFieldContextMode.Text
+    private var enterLabel = "Enter"
     private var statusText = "VoiceFlowz"
+
+    private var gestureStartFrame: KeyFrame? = null
+    private var gestureStartX = 0f
+    private var gestureStartY = 0f
+    private var gestureLatestX = 0f
+    private var gestureLatestY = 0f
+    private var gestureMaxDistance = 0f
     private var activeKeyId: String? = null
+    private var debugGestureText = "idle"
+
     private val keyFrames = mutableListOf<KeyFrame>()
+    private var layoutSnapshot = buildSnapshot()
 
     private val density = resources.displayMetrics.density
     private val outerPadding = dp(8f)
@@ -93,7 +85,7 @@ class VoiceFlowzKeyboardView(
     private val actionRowHeight = dp(40f)
     private val textRowHeight = dp(46f)
     private val controlRowHeight = dp(48f)
-    private val clipboardRowHeight = dp(42f)
+    private val panelRowHeight = dp(42f)
 
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.rgb(238, 241, 238)
@@ -131,6 +123,23 @@ class VoiceFlowzKeyboardView(
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
+    private val debugStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.rgb(216, 32, 32)
+        style = Paint.Style.STROKE
+        strokeWidth = dp(1f)
+    }
+    private val debugTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.rgb(160, 24, 24)
+        textAlign = Paint.Align.LEFT
+        typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+    }
+
+    private val gestureThresholds =
+        GestureThresholds(
+            tapSlopPx = dp(10f),
+            cornerThresholdPx = dp(16f),
+            returnCenterRadiusPx = dp(12f),
+        )
 
     init {
         isClickable = true
@@ -146,7 +155,36 @@ class VoiceFlowzKeyboardView(
             } else {
                 "VoiceFlowz"
             }
-        invalidate()
+        refreshLayout()
+    }
+
+    fun applyRuntimePreferences(
+        profile: KeyboardLayoutProfile,
+        cornersEnabled: Boolean,
+        debugTouchOverlay: Boolean,
+        doubleSpacePeriod: Boolean,
+        punctuationAutoSpacing: Boolean,
+        recents: List<String>,
+    ) {
+        layoutProfile = profile
+        cornerModeEnabled = cornersEnabled
+        debugTouchOverlayEnabled = debugTouchOverlay
+        doubleSpacePeriodEnabled = doubleSpacePeriod
+        punctuationAutoSpacingEnabled = punctuationAutoSpacing
+        recentEmojis = recents
+        refreshLayout()
+    }
+
+    fun applyInputContext(
+        contextMode: KeyboardFieldContextMode,
+        enterActionLabel: String,
+    ) {
+        fieldContext = contextMode
+        enterLabel = enterActionLabel
+        if (fieldContext == KeyboardFieldContextMode.Phone) {
+            layoutMode = KeyboardLayoutMode.Numbers
+        }
+        refreshLayout()
     }
 
     fun setStatus(message: String) {
@@ -178,16 +216,14 @@ class VoiceFlowzKeyboardView(
         drawStatus(canvas, y, right - left)
         y += statusHeight + keyGap
 
-        val rows = currentRows()
-        rows.forEachIndexed { index, row ->
-            val rowHeight = when {
-                clipboardPanelVisible && index == 1 -> clipboardRowHeight
-                index == 0 -> actionRowHeight
-                index == rows.lastIndex -> controlRowHeight
-                else -> textRowHeight
-            }
+        layoutSnapshot.rows.forEachIndexed { index, row ->
+            val rowHeight = rowHeightFor(index)
             drawRow(canvas, row, left, y, right - left, rowHeight)
             y += rowHeight + keyGap
+        }
+
+        if (debugTouchOverlayEnabled) {
+            drawDebugOverlay(canvas)
         }
     }
 
@@ -195,36 +231,77 @@ class VoiceFlowzKeyboardView(
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 val hit = hitTest(event.x, event.y)
-                activeKeyId = hit?.key?.id
+                if (hit == null || !hit.key.enabled) {
+                    return false
+                }
+                gestureStartFrame = hit
+                gestureStartX = event.x
+                gestureStartY = event.y
+                gestureLatestX = event.x
+                gestureLatestY = event.y
+                gestureMaxDistance = 0f
+                activeKeyId = hit.key.id
+                debugGestureText = "start key=${hit.key.id}"
                 invalidate()
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
-                val hit = hitTest(event.x, event.y)
-                val nextActive = hit?.key?.id
-                if (nextActive != activeKeyId) {
-                    activeKeyId = nextActive
-                    invalidate()
+                if (gestureStartFrame == null) {
+                    return false
                 }
+                gestureLatestX = event.x
+                gestureLatestY = event.y
+                val dx = gestureLatestX - gestureStartX
+                val dy = gestureLatestY - gestureStartY
+                val distance = hypot(dx.toDouble(), dy.toDouble()).toFloat()
+                gestureMaxDistance = max(gestureMaxDistance, distance)
+                activeKeyId = gestureStartFrame?.key?.id
+                debugGestureText =
+                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()}"
+                invalidate()
                 return true
             }
             MotionEvent.ACTION_UP -> {
-                val hit = hitTest(event.x, event.y)
-                val active = activeKeyId
-                activeKeyId = null
-                invalidate()
-                if (hit != null && hit.key.id == active && hit.key.enabled) {
-                    dispatch(hit.key)
+                val startFrame = gestureStartFrame
+                val key = startFrame?.key
+                if (key == null || !key.enabled) {
+                    resetGesture()
+                    invalidate()
+                    return true
                 }
+                val selection =
+                    effectiveGestureSelection(
+                        key = key,
+                        sample =
+                            GestureSample(
+                                startX = gestureStartX,
+                                startY = gestureStartY,
+                                endX = event.x,
+                                endY = event.y,
+                                maxDistanceFromStart = gestureMaxDistance,
+                            ),
+                    )
+                debugGestureText =
+                    "up key=${key.id} sel=${selection.name} tap=${gestureThresholds.tapSlopPx.toInt()} corner=${gestureThresholds.cornerThresholdPx.toInt()}"
+                dispatch(key, selection)
+                resetGesture()
+                invalidate()
                 return true
             }
             MotionEvent.ACTION_CANCEL -> {
-                activeKeyId = null
+                resetGesture()
+                debugGestureText = "cancel"
                 invalidate()
                 return true
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    private fun resetGesture() {
+        gestureStartFrame = null
+        activeKeyId = null
+        gestureMaxDistance = 0f
     }
 
     private fun drawStatus(canvas: Canvas, top: Float, contentWidth: Float) {
@@ -235,7 +312,7 @@ class VoiceFlowzKeyboardView(
 
     private fun drawRow(
         canvas: Canvas,
-        row: RowSpec,
+        row: KeyboardRowSpec,
         left: Float,
         top: Float,
         width: Float,
@@ -256,17 +333,21 @@ class VoiceFlowzKeyboardView(
         }
     }
 
-    private fun drawKey(canvas: Canvas, key: KeySpec, rect: RectF) {
+    private fun drawKey(
+        canvas: Canvas,
+        key: KeyboardKeySpec,
+        rect: RectF,
+    ) {
         val paint = when {
             !key.enabled -> disabledKeyPaint
             key.id == activeKeyId -> pressedKeyPaint
             key.active -> activeKeyPaint
-            key.action == KeyAction.Text -> keyPaint
+            key.action == KeyboardKeyAction.Text -> keyPaint
             else -> specialKeyPaint
         }
         canvas.drawRoundRect(rect, keyRadius, keyRadius, paint)
 
-        val textColor =
+        textPaint.color =
             if (key.active) {
                 Color.WHITE
             } else if (key.enabled) {
@@ -274,277 +355,319 @@ class VoiceFlowzKeyboardView(
             } else {
                 Color.rgb(123, 130, 126)
             }
-        textPaint.color = textColor
         textPaint.textSize = keyTextSize(key)
         val baseline = rect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
         canvas.drawText(displayLabel(key), rect.centerX(), baseline, textPaint)
 
-        if (key.secondaryTopLeft != null || key.secondaryTopRight != null) {
-            secondaryTextPaint.textSize = sp(9f)
-            secondaryTextPaint.color = if (key.enabled) Color.rgb(92, 103, 98) else Color.rgb(146, 151, 148)
-            key.secondaryTopLeft?.let {
-                canvas.drawText(it, rect.left + dp(10f), rect.top + dp(12f), secondaryTextPaint)
-            }
-            key.secondaryTopRight?.let {
-                canvas.drawText(it, rect.right - dp(10f), rect.top + dp(12f), secondaryTextPaint)
-            }
+        if (shouldRenderCorners(key)) {
+            renderCornerGlyphs(canvas, rect, key.glyph)
         }
     }
 
-    private fun dispatch(key: KeySpec) {
+    private fun shouldRenderCorners(key: KeyboardKeySpec): Boolean {
+        if (!cornerModeEnabled || key.action != KeyboardKeyAction.Text) {
+            return false
+        }
+        val glyph = key.glyph ?: return false
+        return glyph.topLeft != null ||
+            glyph.topRight != null ||
+            glyph.bottomLeft != null ||
+            glyph.bottomRight != null
+    }
+
+    private fun renderCornerGlyphs(
+        canvas: Canvas,
+        rect: RectF,
+        glyph: KeyboardKeyGlyph?,
+    ) {
+        if (glyph == null) {
+            return
+        }
+        secondaryTextPaint.textSize = sp(9f)
+        secondaryTextPaint.color = Color.rgb(92, 103, 98)
+        glyph.topLeft?.let {
+            canvas.drawText(it, rect.left + dp(10f), rect.top + dp(12f), secondaryTextPaint)
+        }
+        glyph.topRight?.let {
+            canvas.drawText(it, rect.right - dp(10f), rect.top + dp(12f), secondaryTextPaint)
+        }
+        glyph.bottomLeft?.let {
+            canvas.drawText(it, rect.left + dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
+        }
+        glyph.bottomRight?.let {
+            canvas.drawText(it, rect.right - dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
+        }
+    }
+
+    private fun effectiveGestureSelection(
+        key: KeyboardKeySpec,
+        sample: GestureSample,
+    ): GestureSelection {
+        if (!cornerModeEnabled || key.action != KeyboardKeyAction.Text || key.glyph == null) {
+            return GestureSelection.PrimaryTap
+        }
+        return KeyboardGestureClassifier.classify(sample, gestureThresholds)
+    }
+
+    private fun dispatch(
+        key: KeyboardKeySpec,
+        selection: GestureSelection,
+    ) {
+        if (selection == GestureSelection.Canceled) {
+            setStatus("Gesture canceled")
+            performHapticFeedback(HapticFeedbackConstants.REJECT)
+            return
+        }
         performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
         when (key.action) {
-            KeyAction.Text -> {
-                callbacks.onText(outputFor(key))
-                if (shifted && layoutMode == LayoutMode.Letters) {
+            KeyboardKeyAction.Text -> {
+                val output = outputFor(key, selection) ?: return
+                callbacks.onText(output)
+                if (panelMode == KeyboardPanelMode.Emoji) {
+                    callbacks.onEmojiInserted(output)
+                }
+                if (shifted && layoutMode == KeyboardLayoutMode.Letters) {
                     shifted = false
-                    invalidate()
                 }
             }
-            KeyAction.Backspace -> callbacks.onBackspace()
-            KeyAction.Enter -> callbacks.onEnter()
-            KeyAction.Shift -> {
-                shifted = !shifted
-                invalidate()
+            KeyboardKeyAction.Backspace -> callbacks.onBackspace()
+            KeyboardKeyAction.DeleteWordBefore -> {
+                if (!callbacks.onDeleteWordBefore()) {
+                    setStatus("Word deletion unavailable")
+                }
             }
-            KeyAction.ModeLetters -> {
-                layoutMode = LayoutMode.Letters
-                clipboardPanelVisible = false
-                refreshLayout()
+            KeyboardKeyAction.Enter -> callbacks.onEnter()
+            KeyboardKeyAction.Shift -> shifted = !shifted
+            KeyboardKeyAction.ModeLetters -> {
+                layoutMode = KeyboardLayoutMode.Letters
+                panelMode = KeyboardPanelMode.None
             }
-            KeyAction.ModeNumbers -> {
-                layoutMode = LayoutMode.Numbers
-                clipboardPanelVisible = false
-                refreshLayout()
+            KeyboardKeyAction.ModeNumbers -> {
+                layoutMode = KeyboardLayoutMode.Numbers
+                panelMode = KeyboardPanelMode.None
             }
-            KeyAction.ModeAccents -> {
-                layoutMode = LayoutMode.Accents
-                clipboardPanelVisible = false
-                refreshLayout()
+            KeyboardKeyAction.ModeAccents -> {
+                layoutMode = KeyboardLayoutMode.Accents
+                panelMode = KeyboardPanelMode.None
             }
-            KeyAction.ModeSymbols -> {
-                layoutMode = LayoutMode.Symbols
-                clipboardPanelVisible = false
-                refreshLayout()
+            KeyboardKeyAction.ModeSymbols -> {
+                layoutMode = KeyboardLayoutMode.Symbols
+                panelMode = KeyboardPanelMode.None
             }
-            KeyAction.ToggleClipboard -> {
-                clipboardPanelVisible = !clipboardPanelVisible
-                refreshLayout()
+            KeyboardKeyAction.ToggleNavigationPanel -> togglePanel(KeyboardPanelMode.Navigation)
+            KeyboardKeyAction.ToggleEmojiPanel -> togglePanel(KeyboardPanelMode.Emoji)
+            KeyboardKeyAction.ToggleClipboardPanel -> togglePanel(KeyboardPanelMode.Clipboard)
+            KeyboardKeyAction.ToggleMediaPanel -> togglePanel(KeyboardPanelMode.Media)
+            KeyboardKeyAction.ToggleSnippetsPanel -> togglePanel(KeyboardPanelMode.Snippets)
+            KeyboardKeyAction.ToggleSettingsPanel -> togglePanel(KeyboardPanelMode.Settings)
+            KeyboardKeyAction.CopySelection -> callbacks.onCopySelection()
+            KeyboardKeyAction.PasteClipboard -> {
+                val pasted = callbacks.onPasteClipboard()
+                if (pasted) {
+                    panelMode = KeyboardPanelMode.None
+                } else {
+                    setStatus("Clipboard unavailable")
+                }
             }
-            KeyAction.CopySelection -> callbacks.onCopySelection()
-            KeyAction.PasteClipboard -> {
-                callbacks.onPasteClipboard()
-                clipboardPanelVisible = false
-                refreshLayout()
+            KeyboardKeyAction.ShowClipboardPins -> {
+                setStatus("Pinned clipboard list opens from app")
             }
-            KeyAction.ClosePanel -> {
-                clipboardPanelVisible = false
-                refreshLayout()
+            KeyboardKeyAction.MediaPrevious -> callbacks.onMediaPrevious()
+            KeyboardKeyAction.MediaPlayPause -> callbacks.onMediaPlayPause()
+            KeyboardKeyAction.MediaNext -> callbacks.onMediaNext()
+            KeyboardKeyAction.InsertSnippetOne -> {
+                callbacks.onText("Merci - envoye depuis VoiceFlowz")
+                callbacks.onSnippets()
+                panelMode = KeyboardPanelMode.None
             }
-            KeyAction.Voice -> callbacks.onVoice()
-            KeyAction.Snippets -> callbacks.onSnippets()
-            KeyAction.Settings -> callbacks.onSettings()
-            KeyAction.Media -> callbacks.onMediaPlayPause()
+            KeyboardKeyAction.OpenVoiceFlowzSettings -> callbacks.onSettings()
+            KeyboardKeyAction.ToggleCornerMode -> {
+                cornerModeEnabled = !cornerModeEnabled
+                callbacks.onCornerModeChanged(cornerModeEnabled)
+                setStatus(if (cornerModeEnabled) "Corner swipe enabled" else "Corner swipe disabled")
+            }
+            KeyboardKeyAction.ToggleLayoutProfile -> {
+                layoutProfile =
+                    if (layoutProfile == KeyboardLayoutProfile.QWERTY) {
+                        KeyboardLayoutProfile.AZERTY
+                    } else {
+                        KeyboardLayoutProfile.QWERTY
+                    }
+                callbacks.onLayoutProfileChanged(layoutProfile)
+                setStatus("Layout ${layoutProfile.name}")
+            }
+            KeyboardKeyAction.ToggleDebugTouchOverlay -> {
+                debugTouchOverlayEnabled = !debugTouchOverlayEnabled
+                callbacks.onDebugTouchOverlayChanged(debugTouchOverlayEnabled)
+                setStatus(if (debugTouchOverlayEnabled) "Touch debug enabled" else "Touch debug disabled")
+            }
+            KeyboardKeyAction.ToggleDoubleSpacePeriod -> {
+                doubleSpacePeriodEnabled = !doubleSpacePeriodEnabled
+                callbacks.onDoubleSpacePeriodChanged(doubleSpacePeriodEnabled)
+                setStatus(if (doubleSpacePeriodEnabled) "Double-space period on" else "Double-space period off")
+            }
+            KeyboardKeyAction.TogglePunctuationAutoSpacing -> {
+                punctuationAutoSpacingEnabled = !punctuationAutoSpacingEnabled
+                callbacks.onPunctuationAutoSpacingChanged(punctuationAutoSpacingEnabled)
+                setStatus(if (punctuationAutoSpacingEnabled) "Punctuation spacing on" else "Punctuation spacing off")
+            }
+            KeyboardKeyAction.SelectEmojiRecents -> emojiCategory = KeyboardEmojiCategory.Recents
+            KeyboardKeyAction.SelectEmojiSmileys -> emojiCategory = KeyboardEmojiCategory.Smileys
+            KeyboardKeyAction.SelectEmojiHands -> emojiCategory = KeyboardEmojiCategory.Hands
+            KeyboardKeyAction.SelectEmojiSymbols -> emojiCategory = KeyboardEmojiCategory.Symbols
+            KeyboardKeyAction.NavigateCharLeft -> {
+                if (!callbacks.onNavigateCharLeft()) {
+                    setStatus("Left unavailable")
+                }
+            }
+            KeyboardKeyAction.NavigateCharRight -> {
+                if (!callbacks.onNavigateCharRight()) {
+                    setStatus("Right unavailable")
+                }
+            }
+            KeyboardKeyAction.NavigateWordLeft -> {
+                if (!callbacks.onNavigateWordLeft()) {
+                    setStatus("Word-left unavailable")
+                }
+            }
+            KeyboardKeyAction.NavigateWordRight -> {
+                if (!callbacks.onNavigateWordRight()) {
+                    setStatus("Word-right unavailable")
+                }
+            }
+            KeyboardKeyAction.NavigateLineStart -> {
+                if (!callbacks.onNavigateLineStart()) {
+                    setStatus("Start unavailable")
+                }
+            }
+            KeyboardKeyAction.NavigateLineEnd -> {
+                if (!callbacks.onNavigateLineEnd()) {
+                    setStatus("End unavailable")
+                }
+            }
+            KeyboardKeyAction.ClosePanel -> panelMode = KeyboardPanelMode.None
+            KeyboardKeyAction.Voice -> callbacks.onVoice()
         }
+        refreshLayout()
     }
 
-    private fun currentRows(): List<RowSpec> {
-        val rows = mutableListOf<RowSpec>()
-        rows.add(actionRow())
-        if (clipboardPanelVisible) {
-            rows.add(clipboardRow())
+    private fun togglePanel(target: KeyboardPanelMode) {
+        panelMode = if (panelMode == target) KeyboardPanelMode.None else target
+    }
+
+    private fun buildSnapshot(): KeyboardLayoutSnapshot {
+        return KeyboardLayoutBuilder.build(
+            KeyboardLayoutRequest(
+                mode = layoutMode,
+                panel = panelMode,
+                shifted = shifted,
+                fieldContext = fieldContext,
+                layoutProfile = layoutProfile,
+                cornerModeEnabled = cornerModeEnabled,
+                debugTouchOverlayEnabled = debugTouchOverlayEnabled,
+                doubleSpacePeriodEnabled = doubleSpacePeriodEnabled,
+                punctuationAutoSpacingEnabled = punctuationAutoSpacingEnabled,
+                emojiCategory = emojiCategory,
+                recentEmojis = recentEmojis,
+                enterLabel = enterLabel,
+                clipboardAllowed = fieldPolicy.clipboardAllowed,
+                voiceAllowed = fieldPolicy.voiceAllowed,
+                snippetsAllowed = fieldPolicy.snippetsAllowed,
+            ),
+        )
+    }
+
+    private fun outputFor(
+        key: KeyboardKeySpec,
+        selection: GestureSelection,
+    ): String? {
+        val raw = key.glyph?.outputFor(selection) ?: key.label
+        if (!shifted || layoutSnapshot.mode != KeyboardLayoutMode.Letters) {
+            return raw
         }
-        rows.addAll(
-            when (layoutMode) {
-                LayoutMode.Letters -> letterRows()
-                LayoutMode.Numbers -> numberRows()
-                LayoutMode.Accents -> accentRows()
-                LayoutMode.Symbols -> symbolRows()
-            },
-        )
-        rows.add(controlRow())
-        return rows
-    }
-
-    private fun actionRow(): RowSpec =
-        RowSpec(
-            listOf(
-                modeKey("ABC", KeyAction.ModeLetters, layoutMode == LayoutMode.Letters),
-                modeKey("123", KeyAction.ModeNumbers, layoutMode == LayoutMode.Numbers),
-                modeKey("Acc", KeyAction.ModeAccents, layoutMode == LayoutMode.Accents),
-                modeKey("Sym", KeyAction.ModeSymbols, layoutMode == LayoutMode.Symbols),
-                KeySpec("clip", "Clip", action = KeyAction.ToggleClipboard, enabled = fieldPolicy.clipboardAllowed),
-                KeySpec("mic", "Mic", action = KeyAction.Voice, enabled = fieldPolicy.voiceAllowed),
-                KeySpec("snip", "Snip", action = KeyAction.Snippets, enabled = fieldPolicy.snippetsAllowed),
-                KeySpec("gear", "Gear", action = KeyAction.Settings),
-                KeySpec("media", ">||", action = KeyAction.Media),
-            ),
-        )
-
-    private fun clipboardRow(): RowSpec =
-        RowSpec(
-            listOf(
-                KeySpec("copy", "Copy", action = KeyAction.CopySelection, weight = 1.4f, enabled = fieldPolicy.clipboardAllowed),
-                KeySpec("paste", "Paste", action = KeyAction.PasteClipboard, weight = 1.4f, enabled = fieldPolicy.clipboardAllowed),
-                KeySpec("close", "Close", action = KeyAction.ClosePanel),
-            ),
-        )
-
-    private fun letterRows(): List<RowSpec> =
-        listOf(
-            RowSpec("qwertyuiop".map { letterKey(it) }),
-            RowSpec("asdfghjkl".map { letterKey(it) }, leadingWeight = 0.45f),
-            RowSpec("zxcvbnm".map { letterKey(it) }, leadingWeight = 1.25f),
-        )
-
-    private fun numberRows(): List<RowSpec> =
-        listOf(
-            RowSpec("1234567890".map { textKey(it.toString()) }),
-            RowSpec(listOf("-", "/", ":", ";", "(", ")", "$", "&", "@", "\"").map { textKey(it) }),
-            RowSpec(listOf(".", ",", "?", "!", "'", "+", "=").map { textKey(it) }, leadingWeight = 1.2f),
-        )
-
-    private fun accentRows(): List<RowSpec> =
-        listOf(
-            RowSpec(
-                listOf(
-                    textKey("\u00e0"),
-                    textKey("\u00e2"),
-                    textKey("\u00e4"),
-                    textKey("\u00e7"),
-                    textKey("\u00e9"),
-                    textKey("\u00e8"),
-                    textKey("\u00ea"),
-                    textKey("\u00eb"),
-                ),
-                leadingWeight = 0.4f,
-            ),
-            RowSpec(
-                listOf(
-                    textKey("\u00ee"),
-                    textKey("\u00ef"),
-                    textKey("\u00f4"),
-                    textKey("\u00f6"),
-                    textKey("\u00f9"),
-                    textKey("\u00fb"),
-                    textKey("\u00fc"),
-                    textKey("\u00ff"),
-                ),
-                leadingWeight = 0.4f,
-            ),
-            RowSpec(
-                listOf(
-                    textKey("\u0153", weight = 1.2f),
-                    textKey("\u00e6", weight = 1.2f),
-                    textKey("\u00f1", weight = 1.2f),
-                    textKey("\u2019", weight = 1.2f),
-                    textKey("\u2014", weight = 1.2f),
-                ),
-                leadingWeight = 1.6f,
-            ),
-        )
-
-    private fun symbolRows(): List<RowSpec> =
-        listOf(
-            RowSpec(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "=").map { textKey(it) }),
-            RowSpec(listOf("_", "\\", "|", "~", "<", ">", "\u20ac", "\u00a3", "\u00a5").map { textKey(it) }, leadingWeight = 0.45f),
-            RowSpec(listOf(".", ",", "?", "!", "'", "`", "\u2022").map { textKey(it) }, leadingWeight = 1.2f),
-        )
-
-    private fun controlRow(): RowSpec =
-        RowSpec(
-            listOf(
-                KeySpec("shift", "Maj", action = KeyAction.Shift, weight = 1.2f, active = shifted),
-                KeySpec("comma", ",", output = ","),
-                KeySpec("space", "Espace", output = " ", weight = 4.0f),
-                KeySpec("period", ".", output = "."),
-                KeySpec("enter", "Enter", action = KeyAction.Enter, weight = 1.3f),
-                KeySpec("del", "Del", action = KeyAction.Backspace, weight = 1.2f),
-            ),
-        )
-
-    private fun modeKey(label: String, action: KeyAction, active: Boolean): KeySpec =
-        KeySpec(
-            id = "mode-$label",
-            label = label,
-            action = action,
-            active = active,
-        )
-
-    private fun letterKey(char: Char): KeySpec {
-        val label = char.toString()
-        return KeySpec(
-            id = "letter-$label",
-            label = label,
-            output = label,
-            secondaryTopLeft = secondaryFor(char, topLeft = true),
-            secondaryTopRight = secondaryFor(char, topLeft = false),
-        )
-    }
-
-    private fun textKey(label: String, output: String = label, weight: Float = 1f): KeySpec =
-        KeySpec(
-            id = "text-$label-$output",
-            label = label,
-            output = output,
-            weight = weight,
-        )
-
-    private fun outputFor(key: KeySpec): String =
-        if (shifted && layoutMode == LayoutMode.Letters && key.output.length == 1 && key.output[0].isLetter()) {
-            key.output.uppercase()
+        return if (raw.length == 1 && raw[0].isLetter()) {
+            raw.uppercase()
         } else {
-            key.output
+            raw
         }
+    }
 
-    private fun displayLabel(key: KeySpec): String =
-        if (key.action == KeyAction.Text && key.output == " ") {
-            key.label
-        } else if (shifted && layoutMode == LayoutMode.Letters && key.label.length == 1 && key.label[0].isLetter()) {
-            key.label.uppercase()
+    private fun displayLabel(key: KeyboardKeySpec): String {
+        if (key.action != KeyboardKeyAction.Text) {
+            return key.label
+        }
+        val primary = key.glyph?.primary ?: key.label
+        if (primary == " ") {
+            return key.label
+        }
+        if (!shifted || layoutSnapshot.mode != KeyboardLayoutMode.Letters) {
+            return primary
+        }
+        return if (primary.length == 1 && primary[0].isLetter()) {
+            primary.uppercase()
         } else {
-            key.label
+            primary
         }
+    }
 
-    private fun keyTextSize(key: KeySpec): Float =
-        when {
+    private fun keyTextSize(key: KeyboardKeySpec): Float {
+        return when {
             key.label.length <= 1 -> sp(19f)
             key.weight >= 3f -> sp(15f)
             key.label.length >= 5 -> sp(11f)
             else -> sp(12.5f)
         }
+    }
 
-    private fun hitTest(x: Float, y: Float): KeyFrame? =
-        keyFrames.firstOrNull { it.rect.contains(x, y) }
+    private fun hitTest(x: Float, y: Float): KeyFrame? {
+        return keyFrames.firstOrNull { it.rect.contains(x, y) }
+    }
+
+    private fun rowHeightFor(index: Int): Float {
+        return when {
+            index == 0 -> actionRowHeight
+            layoutSnapshot.panelRowCount > 0 && index in 1..layoutSnapshot.panelRowCount -> panelRowHeight
+            index == layoutSnapshot.rows.lastIndex -> controlRowHeight
+            else -> textRowHeight
+        }
+    }
 
     private fun desiredKeyboardHeight(): Int {
-        val rowCount = 1 + modeRowCount() + 1 + if (clipboardPanelVisible) 1 else 0
+        val rowCount = layoutSnapshot.rows.size
         val rowsHeight =
-            actionRowHeight +
-                modeRowCount() * textRowHeight +
-                controlRowHeight +
-                (if (clipboardPanelVisible) clipboardRowHeight else 0f)
+            layoutSnapshot.rows.indices.sumOf { index ->
+                rowHeightFor(index).toDouble()
+            }.toFloat()
         return (outerPadding * 2 + statusHeight + rowsHeight + keyGap * rowCount).toInt()
     }
 
-    private fun modeRowCount(): Int = 3
+    private fun drawDebugOverlay(canvas: Canvas) {
+        keyFrames.forEach { frame ->
+            canvas.drawRoundRect(frame.rect, keyRadius, keyRadius, debugStrokePaint)
+        }
+        val dx = gestureLatestX - gestureStartX
+        val dy = gestureLatestY - gestureStartY
+        val direction = directionFrom(dx, dy)
+        debugTextPaint.textSize = sp(10f)
+        val debugLine =
+            "debug key=${activeKeyId ?: "-"} dir=$direction sel=${debugGestureText}"
+        canvas.drawText(debugLine, outerPadding, height - dp(6f), debugTextPaint)
+    }
+
+    private fun directionFrom(dx: Float, dy: Float): String {
+        if (abs(dx) < 1f && abs(dy) < 1f) {
+            return "center"
+        }
+        val horizontal = if (dx >= 0f) "R" else "L"
+        val vertical = if (dy >= 0f) "D" else "U"
+        return "$horizontal$vertical"
+    }
 
     private fun refreshLayout() {
+        layoutSnapshot = buildSnapshot()
         requestLayout()
         invalidate()
     }
-
-    private fun secondaryFor(char: Char, topLeft: Boolean): String? =
-        when (char) {
-            'a' -> if (topLeft) "\u00e0" else "\u00e2"
-            'e' -> if (topLeft) "\u00e9" else "\u00e8"
-            'i' -> if (topLeft) "\u00ee" else null
-            'o' -> if (topLeft) "\u00f4" else "\u00f6"
-            'u' -> if (topLeft) "\u00f9" else "\u00fb"
-            'c' -> if (topLeft) "\u00e7" else null
-            'n' -> if (topLeft) "\u00f1" else null
-            else -> null
-        }
 
     private fun dp(value: Float): Float = value * density
 
