@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
 import '../application/dictionary_store_provider.dart';
 import '../domain/dictionary_store.dart';
@@ -169,6 +170,17 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   }
 
   Future<void> _remove(String id) async {
+    final confirmed = await showConfirmActionDialog(
+      context: context,
+      title: 'Delete dictionary term?',
+      message:
+          'This removes the personal dictionary rule. This action cannot be undone from this screen.',
+      confirmLabel: 'Delete',
+      destructive: true,
+    );
+    if (!mounted || !confirmed) {
+      return;
+    }
     setState(() => _busy = true);
     try {
       final store = ref.read(dictionaryStoreProvider);

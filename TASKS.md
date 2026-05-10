@@ -62,10 +62,14 @@
 
 | Pri | Task | Status |
 |-----|------|--------|
-| ✅ | Adopt ContentFlow family palette, spacing, radius, motion names, and component defaults in the Flutter theme source of truth | ✅ done |
+| ✅ | Align Flutter brand tokens, surface tokens, primary shadow, and Settings copy with the VoiceFlowz branding contract | ✅ done |
 | ✅ | Add a user-facing Appearance control for System / Light / Dark theme mode | ✅ done |
-| 🟠 | Persist the Appearance preference locally and sync it through backend-agnostic settings once Firebase adapter is finalized | ✅ done — local SettingsStore and FirebaseSettingsStore are wired behind backend-agnostic provider |
-| 🟠 | Migrate feature screens from literal `EdgeInsets`, `SizedBox`, and ad hoc text weights to shared theme tokens/components | ✅ done — feature/app presentation scan has no inline spacing, color, text style or numeric size literals |
+| ✅ | Bootstrap Appearance from local settings before `runApp`, keep local cache writes, and route authenticated saves through the backend-agnostic settings store | ✅ done |
+| ✅ | Constrain Firestore settings writes so `themeMode` accepts only `system`, `light`, or `dark` | ✅ done |
+| ✅ | Add explicit delete confirmation dialogs across Voice, Clipboard, Snippets, and Dictionary history actions | ✅ done |
+| ✅ | Block background semantics and expose route semantics for the onboarding overlay | ✅ done |
+| 🟠 | Validate Appearance sync/status against Firebase with account switch and offline failure cases, then expose pending/error state in Settings | 📋 todo |
 | 🟡 | Add a Flutter design playground/storybook screen for token inspection across light/dark modes | 📋 todo |
 | 🟡 | Add widget/golden coverage for theme mode selection and key responsive layouts | 📋 todo |
+| 🟡 | Resolve the typography contract mismatch: `branding.md` says platform system fonts, while the Flutter app ships Inter assets | 📋 todo |
 | 🟡 | Review contrast and state styling on Android overlay/keyboard status cards on real devices | 📋 todo |

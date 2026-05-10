@@ -432,7 +432,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 AppGaps.x2,
                 Text(
-                  'Uses the shared Flowz family palette from ContentFlow tokens.',
+                  'Uses the VoiceFlowz palette and shared Flowz interface tokens.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:voiceflowz/core/theme/app_theme.dart';
 import 'package:voiceflowz/core/bootstrap/supabase_bootstrap.dart';
 import 'package:voiceflowz/core/platform/android_keyboard_bridge.dart';
 import 'package:voiceflowz/core/platform/android_overlay_bridge.dart';
@@ -82,6 +83,12 @@ void _clearAndroidBridgeMocks() {
 }
 
 void main() {
+  test('app theme mode maps Material theme modes with system fallback', () {
+    expect(AppThemeMode.fromThemeMode(ThemeMode.system), AppThemeMode.system);
+    expect(AppThemeMode.fromThemeMode(ThemeMode.light), AppThemeMode.light);
+    expect(AppThemeMode.fromThemeMode(ThemeMode.dark), AppThemeMode.dark);
+  });
+
   test('transcription draft validates non-empty payload and known source', () {
     const valid = TranscriptionDraft(
       rawText: 'hello',

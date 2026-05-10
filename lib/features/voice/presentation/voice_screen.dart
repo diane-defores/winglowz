@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
 import '../application/transcription_store.dart';
 import '../application/transcription_store_provider.dart';
@@ -204,6 +205,17 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   }
 
   Future<void> _delete(String id) async {
+    final confirmed = await showConfirmActionDialog(
+      context: context,
+      title: 'Delete transcription?',
+      message:
+          'This removes the transcription from the current history. This action cannot be undone from this screen.',
+      confirmLabel: 'Delete',
+      destructive: true,
+    );
+    if (!mounted || !confirmed) {
+      return;
+    }
     setState(() {
       _busy = true;
       _message = null;

@@ -16,6 +16,12 @@ service cloud.firestore {
             (payload.retentionHours in [1, 12, 24, 72, 168]));
     }
 
+    function hasValidThemeMode(payload) {
+      return !('themeMode' in payload) ||
+          (payload.themeMode is string &&
+            (payload.themeMode in ['system', 'light', 'dark']));
+    }
+
     function hasSafeClientEventMetadata(payload) {
       return !('metadata' in payload) ||
           (payload.metadata is map &&
@@ -28,7 +34,10 @@ service cloud.firestore {
 
       match /settings/{settingId} {
         allow read: if isOwner(uid);
-        allow create, update: if isOwner(uid) && hasValidRetentionHours(request.resource.data) && hasSafeClientEventMetadata(request.resource.data);
+        allow create, update: if isOwner(uid) &&
+          hasValidThemeMode(request.resource.data) &&
+          hasValidRetentionHours(request.resource.data) &&
+          hasSafeClientEventMetadata(request.resource.data);
         allow delete: if isOwner(uid);
       }
 

@@ -9,29 +9,45 @@ enum AppThemeMode {
 
   final ThemeMode materialMode;
   final String label;
+
+  static AppThemeMode fromThemeMode(ThemeMode value) {
+    return AppThemeMode.values.firstWhere(
+      (mode) => mode.materialMode == value,
+      orElse: () => AppThemeMode.system,
+    );
+  }
 }
 
 class AppColors {
-  // ContentFlow brand primitives.
-  static const primary = Color(0xFF3B82F6);
-  static const primaryDark = Color(0xFF2563EB);
-  static const secondary = Color(0xFF8B5CF6);
-  static const accent = Color(0xFF06B6D4);
+  // VoiceFlowz brand primitives.
+  static const primary = Color(0xFF6366F1);
+  static const primaryDark = Color(0xFF4F46E5);
+  static const secondary = Color(0xFF22D3EE);
+  static const accent = secondary;
 
-  // ContentFlow neutral primitives.
+  // VoiceFlowz neutral primitives.
   static const dark = Color(0xFF0F172A);
   static const gray = Color(0xFF64748B);
+  static const neutral = gray;
   static const slate = gray;
   static const lightGray = Color(0xFFF1F5F9);
-  static const lightBlue = Color(0xFFDBEAFE);
+  static const lightBlue = Color(0xFFE0E7FF);
   static const white = Color(0xFFFFFFFF);
 
   // Semantic surfaces and text.
   static const textPrimary = dark;
   static const textMuted = gray;
-  static const surfaceSubtle = Color(0xFFF1F5F9);
-  static const surfaceTint = Color(0xFFDBEAFE);
-  static const surfaceCard = white;
+  static const surfaceBase = white;
+  static const surfaceRaised = white;
+  static const surfaceOverlay = white;
+  static const surfaceSunken = Color(0xFFF8FAFC);
+  static const surfaceSubtle = lightGray;
+  static const surfaceTint = lightBlue;
+  static const surfaceCard = surfaceRaised;
+  static const surfaceBaseDark = dark;
+  static const surfaceRaisedDark = Color(0xFF1E293B);
+  static const surfaceOverlayDark = Color(0xFF334155);
+  static const surfaceSunkenDark = Color(0xFF020617);
   static const textOnDark = white;
   static const textOnDarkMuted = Color(0xB3FFFFFF);
   static const codeText = Color(0xFFE2E8F0);
@@ -62,7 +78,7 @@ class AppTypography {
     'sans-serif',
   ];
 
-  // ContentFlow scale: base 16px, ratio 1.25.
+  // VoiceFlowz scale: base 16px, ratio 1.25.
   static const xs = 12.0;
   static const sm = 14.0;
   static const base = 16.0;
@@ -183,7 +199,7 @@ class AppShadows {
   ];
 
   static const primary = [
-    BoxShadow(color: Color(0x4D3B82F6), blurRadius: 15, offset: Offset(0, 4)),
+    BoxShadow(color: Color(0x4D6366F1), blurRadius: 15, offset: Offset(0, 4)),
   ];
 }
 
@@ -206,14 +222,14 @@ class AppTheme {
       primary: AppColors.primary,
       onPrimary: AppColors.white,
       secondary: AppColors.secondary,
-      onSecondary: AppColors.white,
+      onSecondary: AppColors.dark,
       tertiary: AppColors.accent,
       onTertiary: AppColors.dark,
       error: AppColors.danger,
-      surface: AppColors.white,
+      surface: AppColors.surfaceBase,
       onSurface: AppColors.textPrimary,
-      surfaceContainerLowest: AppColors.white,
-      surfaceContainerLow: AppColors.white,
+      surfaceContainerLowest: AppColors.surfaceSunken,
+      surfaceContainerLow: AppColors.surfaceRaised,
       surfaceContainer: AppColors.surfaceSubtle,
       surfaceContainerHighest: AppColors.surfaceSubtle,
       outline: AppColors.borderLight,
@@ -230,12 +246,12 @@ class AppTheme {
       secondary: AppColors.secondary,
       tertiary: AppColors.accent,
       error: AppColors.dangerLight,
-      surface: AppColors.dark,
-      onSurface: Color(0xFFF8FAFC),
-      surfaceContainerLowest: Color(0xFF020617),
+      surface: AppColors.surfaceBaseDark,
+      onSurface: AppColors.textOnDark,
+      surfaceContainerLowest: AppColors.surfaceSunkenDark,
       surfaceContainerLow: Color(0xFF0B1120),
-      surfaceContainer: Color(0xFF111827),
-      surfaceContainerHighest: Color(0xFF1E293B),
+      surfaceContainer: AppColors.surfaceRaisedDark,
+      surfaceContainerHighest: AppColors.surfaceOverlayDark,
       outline: AppColors.borderDarkSubtle,
       outlineVariant: AppColors.borderDarkSubtle,
     ),

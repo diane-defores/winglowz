@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
 import '../application/snippet_store_provider.dart';
 import '../domain/snippet_store.dart';
@@ -162,6 +163,17 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   }
 
   Future<void> _remove(String id) async {
+    final confirmed = await showConfirmActionDialog(
+      context: context,
+      title: 'Delete snippet?',
+      message:
+          'This removes the snippet from your reusable text list. This action cannot be undone from this screen.',
+      confirmLabel: 'Delete',
+      destructive: true,
+    );
+    if (!mounted || !confirmed) {
+      return;
+    }
     setState(() => _busy = true);
     try {
       final store = ref.read(snippetStoreProvider);
