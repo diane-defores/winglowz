@@ -29,6 +29,9 @@ next_step: "execute domain workstreams with explicit write-sets"
 > Legacy reference: this migration contract was superseded by
 > `specs/firebase-backend-agnostic-migration.md`. Flutter remains the app
 > foundation, but Supabase is no longer the active backend target.
+>
+> Archived migration contract: do not use this document as an execution plan
+> for new backend changes.
 
 ## Review outcome
 

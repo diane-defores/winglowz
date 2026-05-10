@@ -43,6 +43,8 @@ before editing. It is not public product documentation.
   and smoke tests from the previous target path.
 - `docs/technical/firebase-cli-foundation.md`: Firebase CLI foundation, deployment
   and emulator commands, and GitHub/Blacksmith secret list.
+- `docs/technical/firebase-oidc-ci-playbook.md`: step-by-step CI runbook for
+  GitHub OIDC/WIF Firestore deploy, including troubleshooting from real failures.
 
 ## Maintenance Rule
 

@@ -34,6 +34,9 @@ next_step: "/sf-docs technical audit"
 > compatibility and migration comparison. New backend work belongs to
 > backend-agnostic stores with Firebase as first adapter, per
 > `specs/firebase-backend-agnostic-migration.md`.
+>
+> Archived technical context for legacy adapters: do not use as a target design
+> document for new work.
 
 ## Purpose
 

@@ -186,10 +186,10 @@ Les noms exacts peuvent changer si l'implémentation prouve une meilleure conven
   - Action : GitHub Secrets Firebase, build APK, artifact proof. Fait avec secrets Firebase runtime, `GCP_WIF_PROVIDER` + `GCP_WIF_SERVICE_ACCOUNT` (OIDC Workload Identity Federation), build APK Blacksmith et job deploy Firestore conditionné à `main`/`master`/manuel.
   - Validate with : workflow syntax locale OK; hosted build/deploy restant à prouver après ajout des secrets GitHub.
 
-- [ ] Tâche 9 : Archiver les docs Supabase
+- [x] Tâche 9 : Archiver les docs Supabase
   - Fichiers : `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md`, `docs/API_SUPABASE.md`, `docs/MIGRATION_FLUTTER.md`, `docs/technical/supabase-data.md`.
-  - Action : marquer legacy/superseded et pointer vers cette spec.
-  - Validate with : `rg` montrant que les docs cible pointent vers Firebase/backend-agnostic.
+  - Action : marquer legacy/superseded et pointer vers cette spec. Fait avec marquage explicite `Archived`/`Legacy` dans les quatre documents.
+  - Validate with : `rg` montrant que les docs cible pointent vers Firebase/backend-agnostic; revue manuelle OK.
 
 # Acceptance Criteria
 
@@ -235,7 +235,6 @@ Les noms exacts peuvent changer si l'implémentation prouve une meilleure conven
 - Quand activer le chiffrement client pour clipboard/transcriptions avant sync cloud par défaut?
 - Doit-on activer Firestore offline persistence explicitement ou commencer avec le comportement par défaut FlutterFire?
 - Quelle règle de conflit gagne entre local pending et remote plus récent pour settings et clipboard?
-- Deploy Firebase réel reste bloqué tant que `firebase login` ou un token/service account CI n'est pas disponible.
 - Android build/smoke local reste bloqué tant que `ANDROID_HOME`/Android SDK n'est pas disponible.
 
 # Skill Run History
@@ -248,6 +247,9 @@ Les noms exacts peuvent changer si l'implémentation prouve une meilleure conven
 | 2026-05-10 00:00:00 UTC | continue | GPT-5 Codex | Installed Firebase CLI and validated local Auth/Firestore emulator startup against demo project | partial | Authenticate/deploy real Firebase project or run Blacksmith Android build |
 | 2026-05-10 09:29:11 UTC | sf-ship | GPT-5 Codex | Quick ship all dirty for backend-agnostic Firebase migration, ContentFlow theme integration, icon assets and docs | shipped | Real Firebase deploy and Android/Blacksmith proof remain |
 | 2026-05-10 16:18:01 UTC | sf-build | GPT-5 Codex | Re-ran verification gate after repository cleanup: `flutter analyze`, `flutter test`, Supabase target scan, Firebase emulator smoke, and real `firebase deploy --only firestore` attempt | partial | Authenticate Firebase CLI (or CI token/service account) then run real Firestore deploy and Android/Blacksmith proof |
+| 2026-05-10 18:38:33 UTC | sf-verify | GPT-5 Codex | Validated GitHub OIDC/WIF deploy flow end-to-end; Firestore rules/indexes deploy succeeded in CI run `25636532417`, job `75249317806`, with APK pipeline also green | done | Move to sf-end and remaining task 7 scope decision |
+| 2026-05-10 18:53:54 UTC | sf-verify | GPT-5 Codex | Re-validated Firestore deploy after IAM hardening; CI run `25636936089` kept job `Deploy Firestore Rules and Indexes` green (job `75250395805`) with strict repo-scoped principal bindings | done | Keep monitoring and finalize task 7 strategy |
+| 2026-05-10 19:02:17 UTC | sf-ship | GPT-5 Codex | Full close ship: archived Supabase target docs, updated project/master tasks and changelog, and shipped Firebase OIDC/WIF Firestore CI proof with hardened IAM bindings | shipped | Continue task 7 (Supabase runtime detachment) and Android device QA tracks |
 
 # Current Chantier Flow
 
@@ -255,7 +257,7 @@ Les noms exacts peuvent changer si l'implémentation prouve une meilleure conven
 |------|--------|----------|-----------|
 | sf-spec | done | This spec captures backend-agnostic Firebase migration contract | sf-start |
 | sf-ready | done | Scope, constraints, rules, CLI, tasks, tests and stop conditions are explicit | sf-start |
-| sf-start | in_progress | Tasks 1-6 implemented locally; Firebase emulator smoke still passes on 2026-05-10; task 8 CI wiring added with OIDC/WIF Firestore deploy; tasks 7 and 9 remain open | Add GitHub Firebase secrets, run hosted Blacksmith workflow, finish Supabase target detachment and legacy-doc archival |
-| sf-verify | in_progress | `flutter analyze` and `flutter test` pass on 2026-05-10; `firebase deploy --only firestore --project winflowz-dev` fails with missing `firebase login` auth; emulator smoke passes | Provide Firebase auth/token and run real deploy + Android/Blacksmith proof |
-| sf-end | pending | Not ready | After verification |
-| sf-ship | done | Quick all-dirty ship requested; local checks and Firebase demo emulator pass | Real Firebase deploy and Android/Blacksmith proof remain |
+| sf-start | in_progress | Tasks 1-6 implemented; task 8 (CI/Blacksmith) and task 9 (Supabase doc archival) completed on 2026-05-10; only task 7 remains open by design | Decide Supabase runtime detachment timing and execute task 7 |
+| sf-verify | done | CI run `25636532417` succeeded, and post-hardening run `25636936089` also kept Firestore deploy job `75250395805` green; OIDC/WIF auth and Firestore deploy proofs are captured | sf-end |
+| sf-end | done | Verification and legacy-doc archival complete; full close bookkeeping and ship report prepared | Continue remaining task 7 track |
+| sf-ship | done | OIDC/WIF CI deploy path is working on hosted runner; Firestore rules/indexes deployment proven and revalidated after IAM hardening | Continue remaining task 7 track |

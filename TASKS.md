@@ -10,7 +10,7 @@
 | Pri | Task | Status |
 |-----|------|--------|
 | ✅ | Replace Supabase target coupling with backend-agnostic contracts and Firebase first-adapter spec | ✅ done — `specs/firebase-backend-agnostic-migration.md` created |
-| 🔴 | Create Firebase CLI workflow for project config, Auth/Firestore setup, rules, indexes, emulator/dev validation and GitHub Secrets/Blacksmith integration | 🔄 in progress — rules/indexes/docs, FlutterFire conditional init, Auth/Firestore adapters added; Firebase CLI demo emulator starts; real Firebase deploy, Android SDK and Blacksmith proof still required |
+| ✅ | Create Firebase CLI workflow for project config, Auth/Firestore setup, rules, indexes, emulator/dev validation and GitHub Secrets/Blacksmith integration | ✅ done — GitHub OIDC/WIF wired; Firestore rules/indexes deploy proven in hosted CI (`run 25636532417`, Firestore job `75249317806`) and re-validated after IAM hardening (`run 25636936089`, Firestore job `75250395805`) |
 | ✅ | Run the verification gate end-to-end: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`, `flutter build web` | ✅ done |
 | ⚪ | Retire or archive Supabase schema/tests after Firebase adapter parity is specified | 💤 deferred |
 | ⚪ | Validate auth, transcriptions, snippets, dictionary, clipboard sync, and settings against a real Firebase environment | 💤 deferred — after Firebase adapter setup |
@@ -25,7 +25,7 @@
 | Pri | Task | Status |
 |-----|------|--------|
 | 🟡 | Expand automated coverage beyond the template test for auth gate, repositories, and sync/error flows | 📋 todo |
-| 🟡 | Revisit README/docs wording after verification so they reflect shipped behavior rather than migration intent | 📋 todo |
+| ✅ | Revisit README/docs wording after verification so they reflect shipped behavior rather than migration intent | ✅ done — Firebase OIDC CI playbook added and Supabase migration docs explicitly archived/legacy |
 
 ---
 

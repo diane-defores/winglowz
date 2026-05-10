@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Added the Android VoiceFlowz Keyboard IME foundation with native input service declaration, minimal keyboard UI, Settings bridge, Android speech recognition trigger, explicit clipboard actions and generic media play/pause.
 - Added keyboard-origin Supabase schema fields, source allowlists, clipboard hash dedupe metadata, RLS smoke coverage and Dart model/bridge tests.
 - Added project technical governance docs and a content map for future ShipFlow code/doc update gates.
+- Added `docs/technical/firebase-oidc-ci-playbook.md` with a reusable GitHub OIDC/WIF Firestore deploy runbook and troubleshooting matrix.
 
 ### Changed
 - Changed first-run onboarding into a dismissible overlay so tab content remains visible while setup guidance is shown.
@@ -48,6 +49,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Updated `.env.example` to document Supabase runtime defines instead of legacy Convex/Clerk variables.
 - Renamed Supabase runtime configuration to `SUPABASE_PUBLISHABLE_KEY` in app bootstrap and docs, while keeping the old key name as an internal compatibility fallback.
 - Updated README, platform, overlay, component, API and verification docs to describe Android IME scope and proof gaps.
+- Switched Firestore CI deploy from interactive Firebase CLI auth to GitHub OIDC/WIF in `.github/workflows/android-build.yml`.
+- Updated Firebase CI documentation to require `GCP_WIF_PROVIDER` and `GCP_WIF_SERVICE_ACCOUNT` instead of long-lived service account JSON secrets.
+- Archived Supabase migration target docs as legacy-only references and pointed execution to `specs/firebase-backend-agnostic-migration.md`.
+- Removed unnecessary Firestore indexes that caused hosted deploy errors on `settings` and `transcriptions` collection groups.
 
 ### Security
 - Converted the RLS smoke script into a pgTAP-style test covering own-user access, forged user denial, anonymous denial, tombstone preservation and sensitive client-event metadata keys.

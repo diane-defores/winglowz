@@ -31,6 +31,9 @@ next_step: "/sf-start specs/firebase-backend-agnostic-migration.md"
 > migration comparison until Firebase parity lets the Supabase adapter be
 > archived or removed. The active backend chantier is
 > `specs/firebase-backend-agnostic-migration.md`.
+>
+> Archived target contract: do not use this document to plan or implement new
+> backend work.
 
 ## Purpose
 

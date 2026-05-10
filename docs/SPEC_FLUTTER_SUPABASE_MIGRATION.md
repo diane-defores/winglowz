@@ -89,6 +89,8 @@ Migration totale VoiceFlowz vers Flutter + Supabase
 > 2026-05-09 decision to use backend-agnostic contracts with Firebase as the
 > first Android adapter. Keep it as migration history only. The active spec is
 > `specs/firebase-backend-agnostic-migration.md`.
+>
+> Archived spec: do not execute new tasks from this document.
 
 # Status
 
