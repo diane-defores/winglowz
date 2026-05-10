@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "VoiceFlowz"
 created: "2026-04-27"
-updated: "2026-05-09"
+updated: "2026-05-10"
 status: "reviewed"
 source_skill: "sf-spec"
 scope: "android_firebase_backend_agnostic_migration"
@@ -39,7 +39,19 @@ next_step: "/sf-start specs/firebase-backend-agnostic-migration.md"
 ## Required Manual Checks
 
 - Android: local speech, advanced recording, VoiceFlowz Keyboard enable/switch/type/private-field behavior, keyboard dictation permission denied/allowed, keyboard clipboard actions, keyboard media play/pause, overlay permission, accessibility fallback, clipboard fallback.
-- iOS/macOS/Windows/Linux/web: deferred unless a later reviewed decision reopens non-Android scope.
+- iOS/macOS/Windows/Linux/web: out of current runtime scope. Keep platform limits documented and do not treat desktop/web build or launch as required proof for the Android MVP.
+
+## Manual Platform Pass — 2026-05-10
+
+| Surface | Status | Evidence | Remaining proof |
+|---|---|---|---|
+| Android overlay parity | Partial | Native overlay bubble, event queue, accessibility delivery, clipboard fallback, Settings size/opacity controls, and Blacksmith Android compile proof already exist. | Real Android device QA for bubble behavior, permissions, injection, clipboard fallback, size/opacity, and overlay/IME recording arbitration. |
+| Android IME | Partial | Native IME declaration, Settings bridge, private-field gating, clipboard actions, Android speech recognition, and media key controls are implemented. | Real Android device QA for enable/switch/type/private-field/dictation/media flows. |
+| iOS microphone/speech | Out of current scope | `Info.plist` declares microphone and speech recognition usage descriptions for future compatibility; overlay and IME remain unavailable. | None for Android MVP. |
+| macOS desktop launch | Out of current scope | `Info.plist` declares microphone/speech usage and sandbox audio input entitlement for future compatibility; overlay/IME remain unavailable. | None for Android MVP. |
+| Linux desktop launch | Out of current scope | Local speech is unavailable by capability rule and secure storage is degraded. Desktop launch is not required proof while the product is Android-only. | None for Android MVP. |
+| Windows desktop launch | Out of current scope | Platform matrix keeps overlay/IME unavailable; local speech depends on plugin/runtime support. | None for Android MVP. |
+| Web permission limits | Passed build | `PlatformCapabilities.localSpeechSupported` is false on web; secure storage remains degraded; overlay/IME are unavailable. `flutter build web` passed on 2026-05-10. | Browser smoke only if web scope reopens. |
 
 ## Security Gate
 

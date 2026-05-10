@@ -251,6 +251,7 @@ Les noms exacts peuvent changer si l'implémentation prouve une meilleure conven
 | 2026-05-10 18:53:54 UTC | sf-verify | GPT-5 Codex | Re-validated Firestore deploy after IAM hardening; CI run `25636936089` kept job `Deploy Firestore Rules and Indexes` green (job `75250395805`) with strict repo-scoped principal bindings | done | Keep monitoring and finalize task 7 strategy |
 | 2026-05-10 19:02:17 UTC | sf-ship | GPT-5 Codex | Full close ship: archived Supabase target docs, updated project/master tasks and changelog, and shipped Firebase OIDC/WIF Firestore CI proof with hardened IAM bindings | shipped | Continue task 7 (Supabase runtime detachment) and Android device QA tracks |
 | 2026-05-10 19:28:58 UTC | sf-test | GPT-5 Codex | Targeted Firebase/backend-agnostic migration validation: rechecked `docs`/`specs` canonical paths (legacy root paths removed), legacy-compatibility scan (`rg`), and `Supabase` scan in `lib/test/pubspec.yaml` | partial | Task 7 still pending by design; keep Supabase legacy adapters + continue Android device QA for Firebase parity |
+| 2026-05-10 20:31:19 UTC | sf-build | GPT-5 Codex | Finalized Android-current manual pass scope: Android overlay/IME device QA remains tracked separately, iOS/macOS microphone/speech declarations are future-compatible only, non-Android desktop/web proof is out of current runtime scope, web local speech disabled, and local analyze/test/web build passed. | partial | Keep Android real-device QA under overlay/IME tasks. |
 
 # Current Chantier Flow
 
@@ -258,7 +259,7 @@ Les noms exacts peuvent changer si l'implémentation prouve une meilleure conven
 |------|--------|----------|-----------|
 | sf-spec | done | This spec captures backend-agnostic Firebase migration contract | sf-start |
 | sf-ready | done | Scope, constraints, rules, CLI, tasks, tests and stop conditions are explicit | sf-start |
-| sf-start | in_progress | Tasks 1-6 implemented; task 8 (CI/Blacksmith) and task 9 (Supabase doc archival) completed on 2026-05-10; only task 7 remains open by design | Decide Supabase runtime detachment timing and execute task 7 |
+| sf-start | in_progress | Tasks 1-6 implemented; task 8 (CI/Blacksmith), task 9 (Supabase doc archival), and the Android-current manual pass documentation/limits update completed on 2026-05-10; analyze/test/web build passed; non-Android desktop launch proof is out of current runtime scope; only task 7 remains open by design | Decide Supabase runtime detachment timing and execute task 7 |
 | sf-verify | done | CI run `25636532417` succeeded, and post-hardening run `25636936089` also kept Firestore deploy job `75250395805` green; OIDC/WIF auth and Firestore deploy proofs are captured | sf-end |
 | sf-end | done | Verification and legacy-doc archival complete; full close bookkeeping and ship report prepared | Continue remaining task 7 track |
 | sf-ship | done | OIDC/WIF CI deploy path is working on hosted runner; Firestore rules/indexes deployment proven and revalidated after IAM hardening | Continue remaining task 7 track |

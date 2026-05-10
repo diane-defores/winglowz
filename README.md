@@ -98,8 +98,9 @@ instead of a long-lived service account JSON key.
 - Auth/data: backend-agnostic contracts replace direct Convex/Supabase coupling; Firebase Auth + Firestore adapters are wired with local fallback.
 - UI: Flutter shell + auth gate + settings key storage baseline is in place.
 - Security: Firestore rules and indexes are versioned; emulator and real Firebase validation still require `firebase-tools`.
-- Android overlay: Flutter now has a native foreground overlay bubble foundation with queued native events, visual states, accessibility delivery, and clipboard fallback. Real-device QA is still required before deleting the legacy Expo overlay reference or snapshot archive.
+- Android overlay: Flutter now has a native foreground overlay bubble foundation with queued native events, visual states, accessibility delivery, clipboard fallback, and Settings size/opacity controls. Real-device QA is still required before deleting the legacy Expo overlay reference or snapshot archive.
 - Android IME: VoiceFlowz can be enabled as a native Android keyboard. The current foundation provides text entry, private-field gating, explicit clipboard actions, local Android speech recognition, play/pause media key dispatch, and Settings status/preferences. Cloud sync from the keyboard waits for Firebase CLI/emulator and real-device QA before it should be treated as production-ready.
+- Non-Android limits: iOS/macOS declare microphone and speech permission prompts; Linux and web keep local speech unavailable/degraded where the current stack cannot support it; overlay and IME remain Android-only.
 
 ## Project Structure (target)
 

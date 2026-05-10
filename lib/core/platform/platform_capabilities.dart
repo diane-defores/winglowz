@@ -7,7 +7,7 @@ class PlatformCapabilities {
       !kIsWeb && defaultTargetPlatform == TargetPlatform.linux;
   static bool get isWeb => kIsWeb;
 
-  static bool get localSpeechSupported => !isLinux;
+  static bool get localSpeechSupported => !isWeb && !isLinux;
   static bool get overlaySupported => isAndroid;
   static bool get keyboardImeSupported => isAndroid;
   static bool get secureStorageDegraded => isWeb || isLinux;

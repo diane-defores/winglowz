@@ -17,7 +17,7 @@
 | ⚪ | Validate auth, transcriptions, snippets, dictionary, clipboard sync, and settings against a real Firebase environment | 💤 deferred — after Firebase adapter setup |
 | 🟠 | Build Android IME VoiceFlowz Keyboard progressively: base native keyboard, Settings bridge, privacy gate, clipboard, media, docs, Android device QA | 🔄 in progress — foundation implemented; Android x64/device proof and backend-agnostic sync adapter still required |
 | 🟠 | Repair Flutter Android overlay parity with native floating bubble, event bridge, accessibility delivery, and appearance settings | 🔄 in progress — native bridge and Settings controls implemented; Blacksmith compile proof exists for prior overlay fix, but device QA for bubble behavior and size/opacity remains required |
-| 🟠 | Run the required manual platform pass for Android overlay, iOS microphone/speech, desktop launch, and web permission limits | 📋 todo |
+| ✅ | Run the required Android-current manual platform pass and document non-Android limits | ✅ done — Android remains the only current runtime target; capability/permission limits documented; web local speech disabled; Android real-device QA remains tracked under overlay/IME tasks |
 
 ---
 

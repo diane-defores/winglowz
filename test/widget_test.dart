@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:voiceflowz/core/bootstrap/supabase_bootstrap.dart';
 import 'package:voiceflowz/core/platform/android_keyboard_bridge.dart';
 import 'package:voiceflowz/core/platform/android_overlay_bridge.dart';
+import 'package:voiceflowz/core/platform/platform_capabilities.dart';
 import 'package:voiceflowz/features/keyboard/domain/keyboard_models.dart';
 import 'package:voiceflowz/features/clipboard/domain/clipboard_normalizer.dart';
 import 'package:voiceflowz/features/shell/presentation/app_shell_screen.dart';
@@ -128,6 +129,20 @@ void main() {
     expect(status.supported, isFalse);
     expect(status.enabled, isFalse);
   });
+
+  test(
+    'platform capability limits keep Linux speech and Android-only surfaces unavailable',
+    () {
+      final previousPlatform = debugDefaultTargetPlatformOverride;
+      debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+      addTearDown(() => debugDefaultTargetPlatformOverride = previousPlatform);
+
+      expect(PlatformCapabilities.localSpeechSupported, isFalse);
+      expect(PlatformCapabilities.overlaySupported, isFalse);
+      expect(PlatformCapabilities.keyboardImeSupported, isFalse);
+      expect(PlatformCapabilities.secureStorageDegraded, isTrue);
+    },
+  );
 
   test('supabase config prefers publishable key', () {
     final config = SupabaseBootstrap.resolveConfig(

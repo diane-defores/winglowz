@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>VoiceFlowz needs microphone access only while you are recording speech.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>VoiceFlowz uses speech recognition only when you start dictation.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

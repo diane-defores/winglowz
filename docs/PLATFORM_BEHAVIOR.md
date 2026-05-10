@@ -42,7 +42,7 @@ next_step: "/sf-start specs/firebase-backend-agnostic-migration.md"
 | macOS | supported when package/platform allows | supported | keychain-backed where available | opt-in | unavailable | unavailable |
 | Windows | supported when package/platform allows | supported | platform secure storage where available | opt-in | unavailable | unavailable |
 | Linux | local speech unavailable unless package support changes | supported via recording + Whisper | may be degraded; require explicit UI state | opt-in | unavailable | unavailable |
-| Web | ignored for current Android-first work | ignored for current Android-first work | degraded compared with native keychain/keystore | not a current priority | unavailable | unavailable |
+| Web | unavailable for current Android-first work | unavailable for current Android-first work | degraded compared with native keychain/keystore | not a current priority | unavailable | unavailable |
 
 ## Android Keyboard IME
 
@@ -63,6 +63,10 @@ next_step: "/sf-start specs/firebase-backend-agnostic-migration.md"
 ## Direct AI Calls
 
 Android may call OpenAI/Anthropic directly with user-provided keys where secure local storage and provider behavior allow. Web is intentionally ignored for now and must stay disabled for advanced cloud AI until a later reviewed decision reopens it.
+
+## Apple Microphone And Speech Permissions
+
+iOS and macOS must declare microphone and speech recognition usage descriptions before any dictation or recording prompt is tested. macOS also requires sandbox audio input entitlement for microphone capture. These declarations do not reopen overlay or IME scope outside Android.
 
 ## Limits
 
