@@ -175,14 +175,9 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Start here'), findsOneWidget);
+    expect(find.text('Start here'), findsNothing);
     expect(find.textContaining('Missing Supabase config'), findsNothing);
     expect(find.textContaining('Cloud sync is disabled'), findsNothing);
-    expect(find.text('Raw text'), findsOneWidget);
-
-    await tester.tap(find.byTooltip('Close onboarding'));
-    await tester.pumpAndSettle();
-    expect(find.text('Start here'), findsNothing);
     expect(find.text('Raw text'), findsOneWidget);
 
     await tester.tap(find.text('Snippets').last);
@@ -204,9 +199,8 @@ void main() {
     );
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Close onboarding'));
-    await tester.pump();
     expect(find.text('Start here'), findsNothing);
+    expect(find.text('Raw text'), findsOneWidget);
 
     await tester.tap(find.text('Settings').last);
     await tester.pump();
@@ -218,5 +212,10 @@ void main() {
       find.text('Enable VoiceFlowz Keyboard in Settings.'),
       findsOneWidget,
     );
+
+    await tester.tap(find.byTooltip('Close onboarding'));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('Start here'), findsNothing);
+    expect(find.text('VoiceFlowz • Settings'), findsOneWidget);
   });
 }

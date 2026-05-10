@@ -43,6 +43,7 @@ class AppColors {
   static const borderLight = Color(0x14000000);
   static const borderDarkSubtle = Color(0x1AFFFFFF);
   static const overlayDark = Color(0x1AFFFFFF);
+  static const overlayScrim = Color(0x660F172A);
 
   // Support colors.
   static const success = Color(0xFF16A34A);
@@ -149,6 +150,10 @@ class AppLayoutMetrics {
   static const onboardingOverlayMaxWidth = 520.0;
   static const onboardingOverlayMaxHeight =
       AppSpacing.x24 + AppSpacing.x24 + AppSpacing.x20 + AppSpacing.x2;
+}
+
+class AppElevation {
+  static const overlay = 8.0;
 }
 
 class AppRadii {
