@@ -5,8 +5,8 @@ artifact_version: "0.1.0"
 project: "VoiceFlowz"
 created: "2026-05-09"
 created_at: "2026-05-09 15:32:50 UTC"
-updated: "2026-05-10"
-updated_at: "2026-05-10 22:10:51 UTC"
+updated: "2026-05-11"
+updated_at: "2026-05-11 03:15:38 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -830,14 +830,17 @@ Stop conditions:
 | 2026-05-10 22:38:00 UTC | sf-verify | GPT-5.5 | Verified current implementation against spec, local checks, bug gate, docs, and Android SDK compile availability | partial | /sf-start specs/proprietary-swipe-corner-android-keyboard.md |
 | 2026-05-10 23:20:00 UTC | sf-start | GPT-5.3 Codex | Fixed post-phone layout reset, hardened InputConnection success/failure handling with visible feedback, aligned punctuation auto-spacing default to French-only, clarified clipboard pins behavior, and documented pending long-press/double-tap implementation | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-10 22:47:20 UTC | sf-verify | GPT-5 Codex | Verified post-correction gaps: phone context no longer persists Numbers mode, InputConnection failures are surfaced, punctuation default is locale-aware, pins/double-tap/long-press docs are clarified; privacy still leaks emoji recents in private mode and local Kotlin compile is blocked by missing Android SDK | partial | /sf-start targeted private emoji recents fix, then Android SDK/CI compile proof |
+| 2026-05-10 22:55:00 UTC | sf-verify | GPT-5 Codex | Re-verified targeted private emoji recents fix: private fields no longer read recents into the emoji panel and no longer write inserted emoji to recent history; double-space suppression remains gated by private/email/url/phone context; local Dart checks pass, Android Kotlin compile proof remains blocked by missing SDK | verified | /sf-end Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-11 03:15:38 UTC | continue | GPT-5 Codex | Resumed chantier after targeted verification and routed to partial closeout because Android Kotlin compile proof and device QA remain missing | routed | /sf-end Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-11 03:15:38 UTC | sf-end | GPT-5 Codex | Closed the implementation session as partial: core custom keyboard work, privacy fix and Dart checks are recorded, while Android native compile/device proof remains required before ship | deferred | /sf-ship only after Android Kotlin/Gradle or CI compile proof and device QA |
 
 # Current Chantier Flow
 
 - sf-spec: done, draft saved in `specs/proprietary-swipe-corner-android-keyboard.md`
 - sf-ready: ready as of 2026-05-10 22:10:51 UTC
-- sf-start: partial implementation extended on 2026-05-10 with input-path reliability fixes (commit/delete/navigation feedback), post-phone mode reset, locale-aware punctuation default, and clearer pins messaging; Android device QA and broader advanced modules remain
-- sf-verify: partial as of 2026-05-10 22:47:20 UTC; most post-correction gaps are addressed by code review and local Dart checks, but private-mode emoji recents still leak and Android Kotlin compile proof is blocked by missing local SDK
-- sf-end: not launched
+- sf-start: partial implementation extended on 2026-05-10 with input-path reliability fixes (commit/delete/navigation feedback), post-phone mode reset, locale-aware punctuation default, private emoji recents gating, and clearer pins messaging; Android device QA and broader advanced modules remain
+- sf-verify: verified as of 2026-05-10 22:55:00 UTC for the targeted privacy-recents fix and post-fix warnings; Android Kotlin compile proof remains blocked by missing local SDK and should be covered before sf-ship
+- sf-end: deferred as of 2026-05-11 03:15:38 UTC; session closed as partial because compile/device evidence is still missing
 - sf-ship: not launched
 
-Next command: `/sf-start targeted private emoji recents fix for Proprietary Swipe-Corner Android Keyboard`
+Next command: `/sf-ship Proprietary Swipe-Corner Android Keyboard` only after Android Kotlin/Gradle or CI compile proof and Android device QA

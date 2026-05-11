@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Added native Android overlay bridge support for persisted bubble appearance preferences.
 - Added first-run onboarding that explains the startup path, Android keyboard setup, microphone, overlay, accessibility and cloud sync permissions.
 - Added a Settings backend-provider diagnostic card with a copyable Supabase/local-mode error.
-- Added the Android VoiceFlowz Keyboard IME foundation with native input service declaration, minimal keyboard UI, Settings bridge, Android speech recognition trigger, explicit clipboard actions and generic media play/pause.
+- Added the Android VoiceFlowz Keyboard IME foundation with a custom swipe-corner keyboard surface, native input service declaration, Settings bridge, Android speech recognition trigger, explicit clipboard actions, emoji/navigation panels, touch-debug overlay and generic media play/pause.
 - Added keyboard-origin Supabase schema fields, source allowlists, clipboard hash dedupe metadata, RLS smoke coverage and Dart model/bridge tests.
 - Added project technical governance docs and a content map for future ShipFlow code/doc update gates.
 - Added `docs/technical/firebase-oidc-ci-playbook.md` with a reusable GitHub OIDC/WIF Firestore deploy runbook and troubleshooting matrix.
@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Updated `.env.example` to document Supabase runtime defines instead of legacy Convex/Clerk variables.
 - Renamed Supabase runtime configuration to `SUPABASE_PUBLISHABLE_KEY` in app bootstrap and docs, while keeping the old key name as an internal compatibility fallback.
 - Updated README, platform, overlay, component, API and verification docs to describe Android IME scope and proof gaps.
+- Updated Android keyboard docs and spec trace to distinguish the implemented MVP from pending double-tap, long-press, drawable gesture, Android compile and device QA work.
 - Switched Firestore CI deploy from interactive Firebase CLI auth to GitHub OIDC/WIF in `.github/workflows/android-build.yml`.
 - Updated Firebase CI documentation to require `GCP_WIF_PROVIDER` and `GCP_WIF_SERVICE_ACCOUNT` instead of long-lived service account JSON secrets.
 - Archived Supabase migration target docs as legacy-only references and pointed execution to `specs/firebase-backend-agnostic-migration.md`.
@@ -59,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Converted the RLS smoke script into a pgTAP-style test covering own-user access, forged user denial, anonymous denial, tombstone preservation and sensitive client-event metadata keys.
 - Added database guardrails for tombstone preservation, client event metadata size, sensitive metadata keys and user-scoped query indexes.
 - Added IME private-field gating for password, OTP, no-personalized-learning and host-marked sensitive fields so dictation, snippets and clipboard capture are disabled there.
+- Hardened Android IME private mode so emoji recents are neither loaded into the keyboard panel nor written after emoji insertion in sensitive fields.
 
 ## [2026-04-26]
 

@@ -15,7 +15,7 @@
 | ✅ | Run the verification gate end-to-end: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`, `flutter build web` | ✅ done |
 | ⚪ | Retire or archive Supabase schema/tests after Firebase adapter parity is specified | 💤 deferred |
 | ⚪ | Validate auth, transcriptions, snippets, dictionary, clipboard sync, and settings against a real Firebase environment | 💤 deferred — after Firebase adapter setup |
-| 🟠 | Build Android IME VoiceFlowz Keyboard progressively: base native keyboard, Settings bridge, privacy gate, clipboard, media, docs, Android device QA | 🔄 in progress — foundation implemented; Android x64/device proof and backend-agnostic sync adapter still required |
+| 🟠 | Build Android IME VoiceFlowz Keyboard progressively: base native keyboard, Settings bridge, privacy gate, clipboard, media, docs, Android device QA | 🔄 in progress — custom swipe-corner keyboard, Settings bridge, privacy gate, native panels, docs and Dart checks implemented; Android Kotlin compile/device proof and backend-agnostic sync adapter still required |
 | 🟠 | Repair Flutter Android overlay parity with native floating bubble, event bridge, accessibility delivery, and appearance settings | 🔄 in progress — native bridge and Settings controls implemented; Blacksmith compile proof exists for prior overlay fix, but device QA for bubble behavior and size/opacity remains required |
 | ✅ | Run the required Android-current manual platform pass and document non-Android limits | ✅ done — Android remains the only current runtime target; capability/permission limits documented; web local speech disabled; Android real-device QA remains tracked under overlay/IME tasks |
 
