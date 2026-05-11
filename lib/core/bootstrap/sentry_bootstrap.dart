@@ -96,7 +96,8 @@ class SentryBootstrap {
       if (message == null) {
         return breadcrumb;
       }
-      return breadcrumb?.copyWith(message: _sanitize(message));
+      breadcrumb?.message = _sanitize(message);
+      return breadcrumb;
     };
   }
 
