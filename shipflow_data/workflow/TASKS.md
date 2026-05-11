@@ -75,3 +75,11 @@
 | 🟡 | Add widget/golden coverage for theme mode selection and key responsive layouts | 📋 todo |
 | 🟡 | Resolve the typography contract mismatch: `branding.md` says platform system fonts, while the Flutter app ships Inter assets | 📋 todo |
 | 🟡 | Review contrast and state styling on Android overlay/keyboard status cards on real devices | 📋 todo |
+
+### Audit: Code
+
+| Pri | Task | Status |
+|-----|------|--------|
+| 🟠 | Add route-level auth/flow guarding in `app_router.dart` so feature routes cannot be opened directly when auth and account state are required | 📋 todo |
+| 🟡 | Add null-safety and error mapping around Google Sign-In credential construction in `lib/features/auth/data/firebase_auth_session_store.dart` | 📋 todo |
+| 🟡 | Gate or contextualize diagnostic support export (`_backendDiagnosticText` in `settings_screen.dart`) outside explicit support/debug flows | 📋 todo |
