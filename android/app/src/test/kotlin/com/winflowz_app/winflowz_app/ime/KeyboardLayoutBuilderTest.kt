@@ -25,6 +25,7 @@ class KeyboardLayoutBuilderTest {
                     clipboardAllowed = true,
                     voiceAllowed = true,
                     snippetsAllowed = true,
+                    suggestions = emptyList(),
                 ),
             )
 
@@ -53,6 +54,7 @@ class KeyboardLayoutBuilderTest {
                     clipboardAllowed = true,
                     voiceAllowed = true,
                     snippetsAllowed = true,
+                    suggestions = emptyList(),
                 ),
             )
 
@@ -82,6 +84,7 @@ class KeyboardLayoutBuilderTest {
                     clipboardAllowed = true,
                     voiceAllowed = true,
                     snippetsAllowed = true,
+                    suggestions = emptyList(),
                 ),
             )
 
@@ -89,5 +92,96 @@ class KeyboardLayoutBuilderTest {
         val controlRow = snapshot.rows.last()
         assertTrue(controlRow.keys.any { it.label == "+" })
         assertTrue(controlRow.keys.any { it.label == "-" })
+    }
+
+    @Test
+    fun `navigation panel exposes forward deletion and selection cancel`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.Navigation,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val panelActions = snapshot.rows.take(3).flatMap { row -> row.keys.map { it.action } }
+        assertTrue(panelActions.contains(KeyboardKeyAction.ForwardDelete))
+        assertTrue(panelActions.contains(KeyboardKeyAction.DeleteWordAfter))
+        assertTrue(panelActions.contains(KeyboardKeyAction.CancelSelection))
+    }
+
+    @Test
+    fun `clipboard panel exposes reference editing actions`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.Clipboard,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val panelActions = snapshot.rows[1].keys.map { it.action }
+        assertTrue(panelActions.contains(KeyboardKeyAction.CutSelection))
+        assertTrue(panelActions.contains(KeyboardKeyAction.PastePlainClipboard))
+        assertTrue(panelActions.contains(KeyboardKeyAction.SelectAll))
+        assertTrue(panelActions.contains(KeyboardKeyAction.Undo))
+        assertTrue(panelActions.contains(KeyboardKeyAction.Redo))
+    }
+
+    @Test
+    fun `adds suggestion row above typing rows`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = listOf("bonjour", "bonsoir"),
+                ),
+            )
+
+        assertEquals(1, snapshot.suggestionRowCount)
+        assertEquals(KeyboardKeyAction.InsertSuggestion, snapshot.rows[1].keys.first().action)
+        assertEquals("bonjour", snapshot.rows[1].keys.first().suggestion)
     }
 }

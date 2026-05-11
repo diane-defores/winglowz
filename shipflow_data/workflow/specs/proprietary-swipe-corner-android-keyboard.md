@@ -6,7 +6,7 @@ project: "WinFlowzApp"
 created: "2026-05-09"
 created_at: "2026-05-09 15:32:50 UTC"
 updated: "2026-05-11"
-updated_at: "2026-05-11 15:12:10 UTC"
+updated_at: "2026-05-11 17:53:55 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -898,14 +898,16 @@ Stop conditions:
 | 2026-05-11 14:20:23 UTC | sf-start | GPT-5 Codex | Implemented second reference-keyboard parity slice: selection update state, narrow InputConnection editor abstraction, confirmed navigation moves and centralized clipboard paste insertion | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-11 15:02:57 UTC | sf-start | GPT-5 Codex | Added FlutterWeb keyboard preview as the single browser review surface for Vercel, including profile/context/panel controls and responsive shell navigation | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-11 15:12:10 UTC | sf-ship | GPT-5 Codex | Shipped reference-keyboard parity foundations and FlutterWeb keyboard preview with Dart checks and web build proof; Android native compile/device proof remains pending | shipped | /sf-verify Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-11 17:53:55 UTC | sf-start | GPT-5 Codex | Installed local Android SDK command-line tools/platform 36 and proved app Kotlin compilation with `./gradlew :app:compileDebugKotlin -x :app:processDebugResources -x :app:processDebugManifest -x :app:compileFlutterBuildDebug`; full Android resource packaging remains blocked on this aarch64 runner because AAPT2 is x86_64 | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard on x86_64 CI or Android device |
+| 2026-05-11 18:04:46 UTC | sf-verify | GPT-5 Codex | Verified current keyboard IME chantier against the spec, dirty diff, bug gate and local checks; `flutter analyze`, `flutter test test/widget_test.dart`, `git diff --check` and Kotlin compile with AAPT/Flutter resource tasks excluded pass; full `:app:testDebugUnitTest` still blocks at `:app:processDebugResources` because AAPT2 cannot start on this aarch64 runner | partial | Full Gradle packaging on x86_64 CI/Blacksmith, then Android device IME QA |
 
 # Current Chantier Flow
 
 - sf-spec: done, draft saved in `shipflow_data/workflow/specs/proprietary-swipe-corner-android-keyboard.md`
 - sf-ready: ready as of 2026-05-10 22:10:51 UTC
-- sf-start: partial implementation extended on 2026-05-11 with reference-keyboard foundation/editing parity and FlutterWeb review surface: IME subtypes, switch-next metadata, defensive lifecycle hooks, richer field context/action id, numeric field mode, visible snippet panel entry, removal of hardcoded snippet insertion, `onUpdateSelection`, `KeyboardSelectionState`, centralized `InputConnectionEditor`, confirmed navigation moves, centralized clipboard paste insertion, and a Vercel-testable `Keyboard preview` screen; Android compile/device QA and broader advanced modules remain
-- sf-verify: verified as of 2026-05-10 22:55:00 UTC for the targeted privacy-recents fix and post-fix warnings; Android Kotlin compile proof remains blocked by missing local SDK and should be covered before sf-ship
+- sf-start: partial implementation extended on 2026-05-11 with reference-keyboard foundation/editing parity, FlutterWeb review surface, and local Android SDK setup sufficient to prove `:app:compileDebugKotlin`; full Android resource packaging is still blocked on this aarch64 runner because Gradle/AAPT2 artifacts are x86_64, and Android device QA plus broader advanced modules remain
+- sf-verify: partial as of 2026-05-11 18:04:46 UTC; Kotlin compile and local Dart checks pass, but full Gradle packaging/tests still fail at AAPT2 on this aarch64 runner and Android device IME QA remains missing
 - sf-end: deferred as of 2026-05-11 03:15:38 UTC; session closed as partial because compile/device evidence is still missing
 - sf-ship: shipped on 2026-05-11 15:12:10 UTC for the current parity/FlutterWeb preview slice; not a final Android native readiness ship
 
-Next command: `/sf-verify Proprietary Swipe-Corner Android Keyboard`, then `/sf-ship Proprietary Swipe-Corner Android Keyboard` only after Android Kotlin/Gradle or CI compile proof and Android device QA
+Next command: full Gradle packaging on x86_64 CI/Blacksmith, then Android device IME QA before final Android readiness ship

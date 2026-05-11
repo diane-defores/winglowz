@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/diagnostics/app_diagnostics.dart';
+import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
@@ -44,6 +45,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
     try {
       final store = ref.read(dictionaryStoreProvider);
       final rows = await store.list();
+      await _syncKeyboardRules(rows);
       AppDiagnostics.record(
         'dictionary_load',
         'store=${store.runtimeType}; items=${rows.length}',
@@ -202,6 +204,24 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
       if (mounted) {
         setState(() => _busy = false);
       }
+    }
+  }
+
+  Future<void> _syncKeyboardRules(List<DictionaryTermRecord> rows) async {
+    try {
+      await AndroidKeyboardBridge.setDictionaryRules(
+        rows
+            .map(
+              (item) => AndroidKeyboardTextRule(
+                trigger: item.term,
+                replacement: item.replacement,
+                caseSensitive: item.caseSensitive,
+              ),
+            )
+            .toList(growable: false),
+      );
+    } catch (error) {
+      AppDiagnostics.record('dictionary_keyboard_sync_error', error);
     }
   }
 

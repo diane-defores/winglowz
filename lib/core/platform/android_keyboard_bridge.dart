@@ -83,6 +83,30 @@ class AndroidKeyboardBridge {
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 
+  static Future<void> setSnippetRules(
+    List<AndroidKeyboardTextRule> rules,
+  ) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    await _invoke<void>(
+      'setKeyboardSnippetRules',
+      rules.map((rule) => rule.toMap()).toList(growable: false),
+    );
+  }
+
+  static Future<void> setDictionaryRules(
+    List<AndroidKeyboardTextRule> rules,
+  ) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    await _invoke<void>(
+      'setKeyboardDictionaryRules',
+      rules.map((rule) => rule.toMap()).toList(growable: false),
+    );
+  }
+
   static Future<List<AndroidKeyboardClipboardEvent>>
   drainKeyboardClipboardEvents() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
@@ -107,6 +131,26 @@ class AndroidKeyboardBridge {
         details: error.details,
       );
     }
+  }
+}
+
+class AndroidKeyboardTextRule {
+  const AndroidKeyboardTextRule({
+    required this.trigger,
+    required this.replacement,
+    required this.caseSensitive,
+  });
+
+  final String trigger;
+  final String replacement;
+  final bool caseSensitive;
+
+  Map<String, Object?> toMap() {
+    return {
+      'trigger': trigger,
+      'replacement': replacement,
+      'caseSensitive': caseSensitive,
+    };
   }
 }
 

@@ -22,11 +22,20 @@ class WinFlowzAppKeyboardView(
         fun onText(text: String): Boolean
         fun onEmojiInserted(emoji: String)
         fun onBackspace(): Boolean
+        fun onForwardDelete(): Boolean
         fun onDeleteWordBefore(): Boolean
+        fun onDeleteWordAfter(): Boolean
         fun onEnter(): Boolean
         fun onVoice()
         fun onCopySelection()
+        fun onCutSelection(): Boolean
         fun onPasteClipboard(): Boolean
+        fun onPastePlainClipboard(): Boolean
+        fun onSelectAll(): Boolean
+        fun onUndo(): Boolean
+        fun onRedo(): Boolean
+        fun onCancelSelection(): Boolean
+        fun onSuggestionSelected(suggestion: String): Boolean
         fun onSnippets()
         fun onSettings()
         fun onMediaPlayPause()
@@ -64,6 +73,7 @@ class WinFlowzAppKeyboardView(
     private var fieldContext = KeyboardFieldContextMode.Text
     private var enterLabel = "Enter"
     private var statusText = "WinFlowzApp"
+    private var suggestions = emptyList<String>()
 
     private var gestureStartFrame: KeyFrame? = null
     private var gestureStartX = 0f
@@ -190,6 +200,17 @@ class WinFlowzAppKeyboardView(
     ) {
         fieldContext = contextMode
         enterLabel = enterActionLabel
+        refreshLayout()
+    }
+
+    fun applyTypingAssistant(
+        autoCapitalized: Boolean,
+        candidates: List<String>,
+    ) {
+        if (layoutMode == KeyboardLayoutMode.Letters && shifted != autoCapitalized) {
+            shifted = autoCapitalized
+        }
+        suggestions = candidates.take(3)
         refreshLayout()
     }
 
@@ -445,9 +466,19 @@ class WinFlowzAppKeyboardView(
                     setStatus("Delete unavailable")
                 }
             }
+            KeyboardKeyAction.ForwardDelete -> {
+                if (!callbacks.onForwardDelete()) {
+                    setStatus("Forward delete unavailable")
+                }
+            }
             KeyboardKeyAction.DeleteWordBefore -> {
                 if (!callbacks.onDeleteWordBefore()) {
                     setStatus("Word deletion unavailable")
+                }
+            }
+            KeyboardKeyAction.DeleteWordAfter -> {
+                if (!callbacks.onDeleteWordAfter()) {
+                    setStatus("Forward word deletion unavailable")
                 }
             }
             KeyboardKeyAction.Enter -> {
@@ -479,12 +510,51 @@ class WinFlowzAppKeyboardView(
             KeyboardKeyAction.ToggleSnippetsPanel -> togglePanel(KeyboardPanelMode.Snippets)
             KeyboardKeyAction.ToggleSettingsPanel -> togglePanel(KeyboardPanelMode.Settings)
             KeyboardKeyAction.CopySelection -> callbacks.onCopySelection()
+            KeyboardKeyAction.CutSelection -> {
+                if (!callbacks.onCutSelection()) {
+                    setStatus("Cut unavailable")
+                }
+            }
             KeyboardKeyAction.PasteClipboard -> {
                 val pasted = callbacks.onPasteClipboard()
                 if (pasted) {
                     panelMode = KeyboardPanelMode.None
                 } else {
                     setStatus("Clipboard unavailable")
+                }
+            }
+            KeyboardKeyAction.PastePlainClipboard -> {
+                val pasted = callbacks.onPastePlainClipboard()
+                if (pasted) {
+                    panelMode = KeyboardPanelMode.None
+                } else {
+                    setStatus("Plain paste unavailable")
+                }
+            }
+            KeyboardKeyAction.SelectAll -> {
+                if (!callbacks.onSelectAll()) {
+                    setStatus("Select all unavailable")
+                }
+            }
+            KeyboardKeyAction.Undo -> {
+                if (!callbacks.onUndo()) {
+                    setStatus("Undo unavailable")
+                }
+            }
+            KeyboardKeyAction.Redo -> {
+                if (!callbacks.onRedo()) {
+                    setStatus("Redo unavailable")
+                }
+            }
+            KeyboardKeyAction.CancelSelection -> {
+                if (!callbacks.onCancelSelection()) {
+                    setStatus("Selection cancel unavailable")
+                }
+            }
+            KeyboardKeyAction.InsertSuggestion -> {
+                val suggestion = key.suggestion ?: return
+                if (!callbacks.onSuggestionSelected(suggestion)) {
+                    setStatus("Suggestion unavailable")
                 }
             }
             KeyboardKeyAction.ShowClipboardPins -> {
@@ -598,6 +668,7 @@ class WinFlowzAppKeyboardView(
                 clipboardAllowed = fieldPolicy.clipboardAllowed,
                 voiceAllowed = fieldPolicy.voiceAllowed,
                 snippetsAllowed = fieldPolicy.snippetsAllowed,
+                suggestions = suggestions,
             ),
         )
     }
@@ -649,9 +720,11 @@ class WinFlowzAppKeyboardView(
     }
 
     private fun rowHeightFor(index: Int): Float {
+        val firstPanelIndex = 1 + layoutSnapshot.suggestionRowCount
         return when {
             index == 0 -> actionRowHeight
-            layoutSnapshot.panelRowCount > 0 && index in 1..layoutSnapshot.panelRowCount -> panelRowHeight
+            layoutSnapshot.suggestionRowCount > 0 && index in 1..layoutSnapshot.suggestionRowCount -> panelRowHeight
+            layoutSnapshot.panelRowCount > 0 && index in firstPanelIndex until firstPanelIndex + layoutSnapshot.panelRowCount -> panelRowHeight
             index == layoutSnapshot.rows.lastIndex -> controlRowHeight
             else -> textRowHeight
         }

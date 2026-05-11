@@ -5,6 +5,8 @@ import android.provider.Settings
 import android.view.inputmethod.InputMethodInfo
 import android.view.inputmethod.InputMethodManager
 import java.util.Locale
+import org.json.JSONArray
+import org.json.JSONObject
 
 class KeyboardStateStore(private val context: Context) {
     private val preferences =
@@ -103,6 +105,22 @@ class KeyboardStateStore(private val context: Context) {
         preferences.edit().putString(KEY_EMOJI_RECENTS, next).apply()
     }
 
+    fun textRules(): List<KeyboardTextRule> {
+        return snippetRules() + dictionaryRules()
+    }
+
+    fun snippetRules(): List<KeyboardTextRule> = readRules(KEY_TEXT_EXPANSION_SNIPPETS)
+
+    fun dictionaryRules(): List<KeyboardTextRule> = readRules(KEY_TEXT_EXPANSION_DICTIONARY)
+
+    fun replaceSnippetRules(rules: List<KeyboardTextRule>) {
+        preferences.edit().putString(KEY_TEXT_EXPANSION_SNIPPETS, encodeRules(rules)).apply()
+    }
+
+    fun replaceDictionaryRules(rules: List<KeyboardTextRule>) {
+        preferences.edit().putString(KEY_TEXT_EXPANSION_DICTIONARY, encodeRules(rules)).apply()
+    }
+
     private fun isInputMethodEnabled(): Boolean {
         val manager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -130,6 +148,45 @@ class KeyboardStateStore(private val context: Context) {
         return Locale.getDefault().language.equals("fr", ignoreCase = true)
     }
 
+    private fun readRules(key: String): List<KeyboardTextRule> {
+        val raw = preferences.getString(key, "[]").orEmpty()
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    val trigger = item.optString("trigger").trim()
+                    val replacement = item.optString("replacement")
+                    if (trigger.isNotEmpty() && replacement.isNotBlank()) {
+                        add(
+                            KeyboardTextRule(
+                                trigger = trigger,
+                                replacement = replacement,
+                                caseSensitive = item.optBoolean("caseSensitive", false),
+                            ),
+                        )
+                    }
+                }
+            }
+        }.getOrDefault(emptyList())
+    }
+
+    private fun encodeRules(rules: List<KeyboardTextRule>): String {
+        val array = JSONArray()
+        rules
+            .filter { it.trigger.isNotBlank() && it.replacement.isNotBlank() }
+            .take(MAX_TEXT_RULES)
+            .forEach { rule ->
+                array.put(
+                    JSONObject()
+                        .put("trigger", rule.trigger.trim())
+                        .put("replacement", rule.replacement)
+                        .put("caseSensitive", rule.caseSensitive),
+                )
+            }
+        return array.toString()
+    }
+
     companion object {
         const val PREFERENCES_NAME = "winflowz_app_keyboard_prefs"
         const val KEY_VOICE_ENABLED = "voice_enabled"
@@ -142,7 +199,10 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_PUNCTUATION_AUTO_SPACING_ENABLED = "punctuation_auto_spacing_enabled"
         const val KEY_EMOJI_RECENTS = "emoji_recents"
         const val KEY_PRIVACY_MODE = "privacy_mode"
+        const val KEY_TEXT_EXPANSION_SNIPPETS = "text_expansion_snippets"
+        const val KEY_TEXT_EXPANSION_DICTIONARY = "text_expansion_dictionary"
         const val EMOJI_RECENT_SEPARATOR = "|"
+        const val MAX_TEXT_RULES = 300
         const val PRIVACY_AUTO = "auto"
         const val PRIVACY_STRICT = "strict"
         const val PRIVACY_STANDARD = "standard"

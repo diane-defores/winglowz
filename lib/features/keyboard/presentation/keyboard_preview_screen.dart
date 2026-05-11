@@ -460,6 +460,7 @@ class KeyboardPreviewSnapshot {
 
   List<KeyboardPreviewRow> get rows {
     final rows = <KeyboardPreviewRow>[_actionRow()];
+    rows.addAll(_suggestionRows());
     rows.addAll(_panelRows());
     rows.addAll(_typingRows());
     rows.add(_controlRow());
@@ -489,6 +490,24 @@ class KeyboardPreviewSnapshot {
     );
   }
 
+  List<KeyboardPreviewRow> _suggestionRows() {
+    if (privateMode ||
+        fieldContext != KeyboardPreviewFieldContext.text ||
+        mode != KeyboardPreviewMode.letters) {
+      return const [];
+    }
+    return const [
+      KeyboardPreviewRow(
+        height: 42,
+        keys: [
+          KeyboardPreviewKey(label: "j'arrive", special: true, weight: 1.4),
+          KeyboardPreviewKey(label: 'bonjour', special: true, weight: 1.4),
+          KeyboardPreviewKey(label: 'merci', special: true, weight: 1.4),
+        ],
+      ),
+    ];
+  }
+
   List<KeyboardPreviewRow> _panelRows() {
     switch (panel) {
       case KeyboardPreviewPanel.none:
@@ -508,10 +527,12 @@ class KeyboardPreviewSnapshot {
           ),
           KeyboardPreviewRow(
             height: 42,
-            leadingWeight: 1.5,
             keys: [
-              KeyboardPreviewKey(label: 'Del', special: true, weight: 1.4),
-              KeyboardPreviewKey(label: 'DelW', special: true, weight: 1.4),
+              KeyboardPreviewKey(label: 'Del', special: true),
+              KeyboardPreviewKey(label: 'DelW<', special: true),
+              KeyboardPreviewKey(label: 'FDel', special: true),
+              KeyboardPreviewKey(label: 'DelW>', special: true),
+              KeyboardPreviewKey(label: 'Esc', special: true),
               KeyboardPreviewKey(label: 'Back', special: true, weight: 1.2),
             ],
           ),
@@ -544,7 +565,12 @@ class KeyboardPreviewSnapshot {
             height: 42,
             keys: [
               KeyboardPreviewKey(label: 'Copy', special: true, weight: 1.2),
+              KeyboardPreviewKey(label: 'Cut', special: true),
               KeyboardPreviewKey(label: 'Paste', special: true, weight: 1.2),
+              KeyboardPreviewKey(label: 'Plain', special: true),
+              KeyboardPreviewKey(label: 'All', special: true),
+              KeyboardPreviewKey(label: 'Undo', special: true),
+              KeyboardPreviewKey(label: 'Redo', special: true),
               KeyboardPreviewKey(label: 'Pins app', special: true),
               KeyboardPreviewKey(label: 'Close', special: true),
             ],

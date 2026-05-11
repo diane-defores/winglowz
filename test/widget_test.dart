@@ -54,6 +54,9 @@ void _installAndroidBridgeMocks() {
         };
       case 'drainKeyboardClipboardEvents':
         return <Object?>[];
+      case 'setKeyboardSnippetRules':
+      case 'setKeyboardDictionaryRules':
+        return true;
     }
     return null;
   });
@@ -90,6 +93,11 @@ Widget _appShellTestWidget() {
       home: const AppShellScreen(),
     ),
   );
+}
+
+Future<void> _pumpNavigationFrame(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 300));
 }
 
 void main() {
@@ -281,13 +289,13 @@ void main() {
     expect(find.text('Raw text'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.text_snippet_outlined).last);
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
     expect(find.text('WinFlowzApp • Snippets'), findsOneWidget);
     expect(find.text('Trigger'), findsOneWidget);
     expect(find.text('Snippets'), findsWidgets);
 
     final handled = await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
 
     expect(handled, isTrue);
     expect(find.text('WinFlowzApp • Voice'), findsOneWidget);
@@ -327,7 +335,7 @@ void main() {
     });
 
     await tester.pumpWidget(_appShellTestWidget());
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
 
     expect(find.text('WinFlowzApp • Voice'), findsOneWidget);
     expect(find.text('Raw text'), findsOneWidget);
@@ -343,31 +351,31 @@ void main() {
     expect(addTranscriptionButton, findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.content_paste_outlined).last);
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
     expect(find.text('WinFlowzApp • Clipboard'), findsOneWidget);
     expect(find.text('Clipboard content'), findsOneWidget);
     expect(find.text('Add clipboard item'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.keyboard_outlined).last);
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
     expect(find.text('WinFlowzApp • Keyboard'), findsOneWidget);
     expect(find.text('Keyboard preview'), findsOneWidget);
     expect(find.text('Profile'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.text_snippet_outlined).last);
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
     expect(find.text('WinFlowzApp • Snippets'), findsOneWidget);
     expect(find.text('Trigger'), findsOneWidget);
     expect(find.text('Add snippet'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.auto_fix_high_outlined).last);
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
     expect(find.text('WinFlowzApp • Dictionary'), findsOneWidget);
     expect(find.text('Term'), findsOneWidget);
     expect(find.text('Add term'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.settings_outlined).last);
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
     expect(find.text('WinFlowzApp • Settings'), findsOneWidget);
     expect(find.text('Appearance'), findsOneWidget);
     await tester.scrollUntilVisible(

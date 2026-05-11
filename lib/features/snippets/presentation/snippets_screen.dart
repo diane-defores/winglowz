@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/diagnostics/app_diagnostics.dart';
+import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
@@ -45,6 +46,7 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
     try {
       final store = ref.read(snippetStoreProvider);
       final rows = await store.list();
+      await _syncKeyboardRules(rows);
       AppDiagnostics.record(
         'snippet_load',
         'store=${store.runtimeType}; items=${rows.length}',
@@ -193,6 +195,24 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
       if (mounted) {
         setState(() => _busy = false);
       }
+    }
+  }
+
+  Future<void> _syncKeyboardRules(List<SnippetRecord> rows) async {
+    try {
+      await AndroidKeyboardBridge.setSnippetRules(
+        rows
+            .map(
+              (item) => AndroidKeyboardTextRule(
+                trigger: item.trigger,
+                replacement: item.content,
+                caseSensitive: false,
+              ),
+            )
+            .toList(growable: false),
+      );
+    } catch (error) {
+      AppDiagnostics.record('snippet_keyboard_sync_error', error);
     }
   }
 

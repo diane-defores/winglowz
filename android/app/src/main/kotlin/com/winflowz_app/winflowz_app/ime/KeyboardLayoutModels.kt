@@ -48,7 +48,9 @@ enum class KeyboardFieldContextMode {
 enum class KeyboardKeyAction {
     Text,
     Backspace,
+    ForwardDelete,
     DeleteWordBefore,
+    DeleteWordAfter,
     Enter,
     Shift,
     ModeLetters,
@@ -86,6 +88,13 @@ enum class KeyboardKeyAction {
     NavigateLineEnd,
     ClosePanel,
     Voice,
+    CutSelection,
+    SelectAll,
+    PastePlainClipboard,
+    Undo,
+    Redo,
+    CancelSelection,
+    InsertSuggestion,
 }
 
 data class KeyboardKeyGlyph(
@@ -115,6 +124,7 @@ data class KeyboardKeySpec(
     val weight: Float = 1f,
     val enabled: Boolean = true,
     val active: Boolean = false,
+    val suggestion: String? = null,
 )
 
 data class KeyboardRowSpec(
@@ -128,6 +138,7 @@ data class KeyboardLayoutSnapshot(
     val mode: KeyboardLayoutMode,
     val panel: KeyboardPanelMode,
     val panelRowCount: Int,
+    val suggestionRowCount: Int,
 )
 
 data class KeyboardLayoutRequest(
@@ -146,6 +157,7 @@ data class KeyboardLayoutRequest(
     val clipboardAllowed: Boolean,
     val voiceAllowed: Boolean,
     val snippetsAllowed: Boolean,
+    val suggestions: List<String>,
 )
 
 object KeyboardLayoutBuilder {
@@ -159,6 +171,8 @@ object KeyboardLayoutBuilder {
 
         val rows = mutableListOf<KeyboardRowSpec>()
         rows.add(actionRow(request, effectiveMode))
+        val suggestionRows = suggestionRows(request)
+        rows.addAll(suggestionRows)
         val panelRows = panelRows(request)
         rows.addAll(panelRows)
         rows.addAll(letterRows(request, effectiveMode))
@@ -168,6 +182,7 @@ object KeyboardLayoutBuilder {
             mode = effectiveMode,
             panel = request.panel,
             panelRowCount = panelRows.size,
+            suggestionRowCount = suggestionRows.size,
         )
     }
 
@@ -190,6 +205,27 @@ object KeyboardLayoutBuilder {
                     panelKey("Prefs", KeyboardKeyAction.ToggleSettingsPanel, request.panel == KeyboardPanelMode.Settings),
                     KeyboardKeySpec("voice", "Mic", KeyboardKeyAction.Voice, enabled = request.voiceAllowed),
                 ),
+        )
+    }
+
+    private fun suggestionRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        val suggestions = request.suggestions.map { it.trim() }.filter { it.isNotEmpty() }.take(3)
+        if (suggestions.isEmpty()) {
+            return emptyList()
+        }
+        return listOf(
+            KeyboardRowSpec(
+                keys =
+                    suggestions.mapIndexed { index, suggestion ->
+                        KeyboardKeySpec(
+                            id = "suggestion-$index",
+                            label = suggestion,
+                            action = KeyboardKeyAction.InsertSuggestion,
+                            suggestion = suggestion,
+                            weight = 1.4f,
+                        )
+                    },
+            ),
         )
     }
 
@@ -221,11 +257,13 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(
                 keys =
                     listOf(
-                        KeyboardKeySpec("nav-del-char", "Del", KeyboardKeyAction.Backspace, weight = 1.4f),
-                        KeyboardKeySpec("nav-del-word", "DelW", KeyboardKeyAction.DeleteWordBefore, weight = 1.4f),
+                        KeyboardKeySpec("nav-del-before", "Del", KeyboardKeyAction.Backspace),
+                        KeyboardKeySpec("nav-del-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore),
+                        KeyboardKeySpec("nav-del-after", "FDel", KeyboardKeyAction.ForwardDelete),
+                        KeyboardKeySpec("nav-del-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter),
+                        KeyboardKeySpec("nav-cancel", "Esc", KeyboardKeyAction.CancelSelection),
                         KeyboardKeySpec("nav-close", "Back", KeyboardKeyAction.ClosePanel, weight = 1.2f),
                     ),
-                leadingWeight = 1.5f,
             ),
         )
     }
@@ -278,11 +316,38 @@ object KeyboardLayoutBuilder {
                         weight = 1.2f,
                     ),
                     KeyboardKeySpec(
+                        id = "clip-cut",
+                        label = "Cut",
+                        action = KeyboardKeyAction.CutSelection,
+                        enabled = request.clipboardAllowed,
+                    ),
+                    KeyboardKeySpec(
                         id = "clip-paste",
                         label = "Paste",
                         action = KeyboardKeyAction.PasteClipboard,
                         enabled = request.clipboardAllowed,
                         weight = 1.2f,
+                    ),
+                    KeyboardKeySpec(
+                        id = "clip-paste-plain",
+                        label = "Plain",
+                        action = KeyboardKeyAction.PastePlainClipboard,
+                        enabled = request.clipboardAllowed,
+                    ),
+                    KeyboardKeySpec(
+                        id = "clip-select-all",
+                        label = "All",
+                        action = KeyboardKeyAction.SelectAll,
+                    ),
+                    KeyboardKeySpec(
+                        id = "clip-undo",
+                        label = "Undo",
+                        action = KeyboardKeyAction.Undo,
+                    ),
+                    KeyboardKeySpec(
+                        id = "clip-redo",
+                        label = "Redo",
+                        action = KeyboardKeyAction.Redo,
                     ),
                     KeyboardKeySpec(
                         id = "clip-pins",

@@ -56,9 +56,35 @@ class InputConnectionEditor(
         flags: Int = 0,
     ): CharSequence? = inputConnection?.getTextBeforeCursor(maxChars, flags)
 
+    fun textAfterCursor(
+        maxChars: Int,
+        flags: Int = 0,
+    ): CharSequence? = inputConnection?.getTextAfterCursor(maxChars, flags)
+
     fun commitText(text: String): KeyboardEditorResult {
         val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
         return if (connection.commitText(text, 1)) {
+            KeyboardEditorResult.Applied
+        } else {
+            KeyboardEditorResult.Rejected
+        }
+    }
+
+    fun replaceTextBeforeCursor(
+        deleteBeforeCodePoints: Int,
+        replacement: String,
+    ): KeyboardEditorResult {
+        if (deleteBeforeCodePoints <= 0) {
+            return KeyboardEditorResult.Rejected
+        }
+        val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
+        connection.beginBatchEdit()
+        val deleted =
+            connection.deleteSurroundingTextInCodePoints(deleteBeforeCodePoints, 0) ||
+                connection.deleteSurroundingText(deleteBeforeCodePoints, 0)
+        val committed = deleted && connection.commitText(replacement, 1)
+        connection.endBatchEdit()
+        return if (committed) {
             KeyboardEditorResult.Applied
         } else {
             KeyboardEditorResult.Rejected
@@ -80,9 +106,33 @@ class InputConnectionEditor(
         }
     }
 
+    fun deleteCodePointsAfter(count: Int): KeyboardEditorResult {
+        if (count <= 0) {
+            return KeyboardEditorResult.Rejected
+        }
+        val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
+        if (connection.deleteSurroundingTextInCodePoints(0, count)) {
+            return KeyboardEditorResult.Applied
+        }
+        return if (connection.deleteSurroundingText(0, count)) {
+            KeyboardEditorResult.Applied
+        } else {
+            KeyboardEditorResult.Rejected
+        }
+    }
+
     fun performEditorAction(actionId: Int): KeyboardEditorResult {
         val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
         return if (connection.performEditorAction(actionId)) {
+            KeyboardEditorResult.Applied
+        } else {
+            KeyboardEditorResult.Rejected
+        }
+    }
+
+    fun performContextMenuAction(actionId: Int): KeyboardEditorResult {
+        val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
+        return if (connection.performContextMenuAction(actionId)) {
             KeyboardEditorResult.Applied
         } else {
             KeyboardEditorResult.Rejected
@@ -146,24 +196,44 @@ class InputConnectionEditor(
         return moveSelectionFromExtracted(extracted, target)
     }
 
+    fun cancelSelection(): KeyboardEditorResult {
+        val extracted = extractedText() ?: return KeyboardEditorResult.Unavailable
+        val text = extracted.text?.toString() ?: return KeyboardEditorResult.Unavailable
+        val target = extracted.selectionStart.coerceIn(0, text.length)
+        return setSelection(target, target)
+    }
+
+    fun setSelection(
+        selectionStart: Int,
+        selectionEnd: Int,
+    ): KeyboardEditorResult {
+        val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
+        if (!connection.setSelection(selectionStart, selectionEnd)) {
+            return KeyboardEditorResult.Rejected
+        }
+        val confirmed = extractedText()
+        if (confirmed != null &&
+            confirmed.selectionStart == selectionStart &&
+            confirmed.selectionEnd == selectionEnd
+        ) {
+            return KeyboardEditorResult.Applied
+        }
+        return KeyboardEditorResult.Unconfirmed
+    }
+
     private fun moveSelectionFromExtracted(
         extracted: ExtractedText,
         target: Int,
     ): KeyboardEditorResult {
-        val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
+        if (inputConnection == null) {
+            return KeyboardEditorResult.Unavailable
+        }
         val text = extracted.text?.toString() ?: return KeyboardEditorResult.Unavailable
         val selection = extracted.selectionStart.coerceIn(0, text.length)
         if (target == selection) {
             return KeyboardEditorResult.Unavailable
         }
-        if (!connection.setSelection(target, target)) {
-            return KeyboardEditorResult.Rejected
-        }
-        val confirmed = extractedText()
-        if (confirmed != null && confirmed.selectionStart == target && confirmed.selectionEnd == target) {
-            return KeyboardEditorResult.Applied
-        }
-        return KeyboardEditorResult.Unconfirmed
+        return setSelection(target, target)
     }
 
     private fun extractedText(): ExtractedText? {

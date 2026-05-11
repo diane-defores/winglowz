@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Added Android IME typing assistance foundations: automatic capitalization, current-word suggestions, shortcut expansion, and app-to-native sync for Snippets/Dictionary text-expander rules.
+- Added Android IME reference editing actions inspired by the functional keyboard: forward delete, delete-word-forward, cut, select all, paste as plain text, undo, redo and selection cancel, mirrored in the FlutterWeb keyboard preview.
 - Added a FlutterWeb `Keyboard preview` screen for Vercel/browser review of the WinFlowzApp Keyboard layouts, field contexts, panels and private/corner/debug states.
 - Added Android IME reference-parity foundations: FR/EN subtypes, next-keyboard switching metadata, defensive lifecycle hooks, numeric/date field context handling and centralized `InputConnectionEditor` editing/navigation results.
 - Added Android overlay appearance controls in Settings for floating bubble size and opacity.

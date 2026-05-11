@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import com.winflowz_app.winflowz_app.ime.KeyboardClipboardEventQueue
 import com.winflowz_app.winflowz_app.ime.KeyboardLayoutProfile
 import com.winflowz_app.winflowz_app.ime.KeyboardStateStore
+import com.winflowz_app.winflowz_app.ime.KeyboardTextRule
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -268,8 +269,34 @@ class MainActivity : FlutterActivity() {
                         }
                         result.success(keyboardState.buildStatusMap())
                     }
+                    "setKeyboardSnippetRules" -> {
+                        keyboardState.replaceSnippetRules(keyboardTextRulesFromArgument(call.arguments))
+                        result.success(true)
+                    }
+                    "setKeyboardDictionaryRules" -> {
+                        keyboardState.replaceDictionaryRules(keyboardTextRulesFromArgument(call.arguments))
+                        result.success(true)
+                    }
                     else -> result.notImplemented()
                 }
+            }
+    }
+
+    private fun keyboardTextRulesFromArgument(argument: Any?): List<KeyboardTextRule> {
+        return (argument as? List<*>)
+            .orEmpty()
+            .mapNotNull { item ->
+                val row = item as? Map<*, *> ?: return@mapNotNull null
+                val trigger = (row["trigger"] as? String).orEmpty().trim()
+                val replacement = (row["replacement"] as? String).orEmpty()
+                if (trigger.isEmpty() || replacement.isBlank()) {
+                    return@mapNotNull null
+                }
+                KeyboardTextRule(
+                    trigger = trigger,
+                    replacement = replacement,
+                    caseSensitive = row["caseSensitive"] as? Boolean ?: false,
+                )
             }
     }
 

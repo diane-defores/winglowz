@@ -104,6 +104,7 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             contextMode = inputContext.fieldContext,
             enterActionLabel = inputContext.enterLabel,
         )
+        refreshTypingAssistantState()
     }
 
     override fun onUpdateSelection(
@@ -129,6 +130,7 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
                 candidatesStart = candidatesStart,
                 candidatesEnd = candidatesEnd,
             )
+        refreshTypingAssistantState()
     }
 
     override fun onFinishInput() {
@@ -167,13 +169,37 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             return false
         }
         if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            return editor.commitText("").reportFailure("Delete selection rejected by field")
+            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+            refreshTypingAssistantState(editor)
+            return deleted
         }
         val deleted = editor.deleteCodePointsBefore(1)
         if (!deleted.applied) {
             showStatus("Delete rejected by field")
         }
+        refreshTypingAssistantState(editor)
         return deleted.applied
+    }
+
+    override fun onForwardDelete(): Boolean {
+        val editor = editor()
+        if (!editor.hasActiveConnection()) {
+            showStatus("Forward delete unavailable: no active field")
+            return false
+        }
+        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+            refreshTypingAssistantState(editor)
+            return deleted
+        }
+        val deleted = editor.deleteCodePointsAfter(1)
+        if (deleted.applied) {
+            refreshTypingAssistantState(editor)
+            return true
+        }
+        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, 0)
+        refreshTypingAssistantState(editor)
+        return sent
     }
 
     override fun onDeleteWordBefore(): Boolean {
@@ -182,7 +208,9 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             return false
         }
         if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            return editor.commitText("").reportFailure("Delete selection rejected by field")
+            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+            refreshTypingAssistantState(editor)
+            return deleted
         }
         val before = editor.textBeforeCursor(128)?.toString().orEmpty()
         if (before.isEmpty()) {
@@ -193,14 +221,51 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             index--
         }
         if (index < 0) {
-            return editor.deleteCodePointsBefore(before.codePointCount(0, before.length)).applied
+            val deleted = editor.deleteCodePointsBefore(before.codePointCount(0, before.length)).applied
+            refreshTypingAssistantState(editor)
+            return deleted
         }
         while (index >= 0 && !before[index].isWhitespace()) {
             index--
         }
         val segment = before.substring(index + 1)
         val codePointCount = segment.codePointCount(0, segment.length)
-        return editor.deleteCodePointsBefore(codePointCount).applied
+        val deleted = editor.deleteCodePointsBefore(codePointCount).applied
+        refreshTypingAssistantState(editor)
+        return deleted
+    }
+
+    override fun onDeleteWordAfter(): Boolean {
+        val editor = editor()
+        if (!editor.hasActiveConnection()) {
+            return false
+        }
+        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+            refreshTypingAssistantState(editor)
+            return deleted
+        }
+        val after = editor.textAfterCursor(128)?.toString().orEmpty()
+        if (after.isEmpty()) {
+            return false
+        }
+        var index = 0
+        while (index < after.length && after[index].isWhitespace()) {
+            index++
+        }
+        while (index < after.length && !after[index].isWhitespace()) {
+            index++
+        }
+        val segment = after.substring(0, index.coerceAtLeast(1))
+        val codePointCount = segment.codePointCount(0, segment.length)
+        val deleted = editor.deleteCodePointsAfter(codePointCount)
+        if (deleted.applied) {
+            refreshTypingAssistantState(editor)
+            return true
+        }
+        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+        refreshTypingAssistantState(editor)
+        return sent
     }
 
     override fun onEnter(): Boolean {
@@ -245,6 +310,20 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
         showStatus(if (copied) "Selection copied" else "No selectable text")
     }
 
+    override fun onCutSelection(): Boolean {
+        if (!fieldPolicy.clipboardAllowed) {
+            showStatus("Clipboard capture disabled for private field")
+            return false
+        }
+        if (!selectionState.hasSelection && editor().selectedText().isNullOrEmpty()) {
+            showStatus("No selectable text")
+            return false
+        }
+        val cut = editor().performContextMenuAction(android.R.id.cut)
+        refreshTypingAssistantState()
+        return cut.reportFailure("Cut rejected by field")
+    }
+
     override fun onPasteClipboard(): Boolean {
         if (!fieldPolicy.clipboardAllowed) {
             showStatus("Clipboard paste disabled for private field")
@@ -257,6 +336,66 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             )
         showStatus(if (pasted) "Clipboard pasted" else "No text clipboard")
         return pasted
+    }
+
+    override fun onPastePlainClipboard(): Boolean {
+        if (!fieldPolicy.clipboardAllowed) {
+            showStatus("Clipboard paste disabled for private field")
+            return false
+        }
+        val plainPaste = editor().performContextMenuAction(android.R.id.pasteAsPlainText)
+        if (plainPaste.applied) {
+            showStatus("Plain clipboard pasted")
+            return true
+        }
+        return onPasteClipboard()
+    }
+
+    override fun onSelectAll(): Boolean {
+        if (!inputContext.selectionModeAllowed) {
+            showStatus("Selection unavailable in this field")
+            return false
+        }
+        return editor().performContextMenuAction(android.R.id.selectAll).reportFailure("Select all rejected by field")
+    }
+
+    override fun onUndo(): Boolean {
+        return editor().performContextMenuAction(android.R.id.undo).reportFailure("Undo rejected by field")
+    }
+
+    override fun onRedo(): Boolean {
+        return editor().performContextMenuAction(android.R.id.redo).reportFailure("Redo rejected by field")
+    }
+
+    override fun onCancelSelection(): Boolean {
+        if (!selectionState.hasSelection && editor().selectedText().isNullOrEmpty()) {
+            showStatus("No active selection")
+            return false
+        }
+        val canceled = editor().cancelSelection().reportFailure("Selection cancel rejected by field")
+        refreshTypingAssistantState()
+        return canceled
+    }
+
+    override fun onSuggestionSelected(suggestion: String): Boolean {
+        if (!typingAssistantAllowed()) {
+            return false
+        }
+        val editor = editor()
+        if (!editor.hasActiveConnection()) {
+            return false
+        }
+        val before = editor.textBeforeCursor(128)?.toString().orEmpty()
+        val deleteCount = KeyboardTextAssistant.deleteCountForCurrentToken(before)
+        val replacement = suggestion.trim()
+        val result =
+            if (deleteCount > 0) {
+                editor.replaceTextBeforeCursor(deleteCount, "$replacement ")
+            } else {
+                editor.commitText("$replacement ")
+            }
+        refreshTypingAssistantState(editor)
+        return result.reportFailure("Suggestion rejected by field")
     }
 
     override fun onSnippets() {
@@ -398,7 +537,10 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
         if (!shouldSuppressAutoCorrections()) {
             if (stateStore.doubleSpacePeriodEnabled && text == " ") {
                 when (applyDoubleSpacePeriod(editor)) {
-                    TextCorrectionResult.Applied -> return true
+                    TextCorrectionResult.Applied -> {
+                        refreshTypingAssistantState(editor)
+                        return true
+                    }
                     TextCorrectionResult.Failed -> return false
                     TextCorrectionResult.NotApplied -> Unit
                 }
@@ -406,12 +548,66 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             if (stateStore.punctuationAutoSpacingEnabled) {
                 val spaced = applyPunctuationAutoSpacing(editor, text)
                 if (spaced != null) {
-                    return editor.commitText(spaced).reportFailure("Punctuation insertion rejected by field")
+                    val committed = editor.commitText(spaced).reportFailure("Punctuation insertion rejected by field")
+                    if (committed) {
+                        applyTextExpansionAfterBoundary(editor)
+                        refreshTypingAssistantState(editor)
+                    }
+                    return committed
                 }
             }
         }
 
-        return editor.commitText(text).reportFailure("Text input rejected by field")
+        val committed = editor.commitText(text).reportFailure("Text input rejected by field")
+        if (committed) {
+            applyTextExpansionAfterBoundary(editor)
+            refreshTypingAssistantState(editor)
+        }
+        return committed
+    }
+
+    private fun applyTextExpansionAfterBoundary(editor: InputConnectionEditor): Boolean {
+        if (!typingAssistantAllowed()) {
+            return false
+        }
+        val before = editor.textBeforeCursor(192)?.toString().orEmpty()
+        val match = KeyboardTextAssistant.expansionAfterBoundary(before, stateStore.textRules()) ?: return false
+        val expanded =
+            editor.replaceTextBeforeCursor(
+                deleteBeforeCodePoints = match.deleteBeforeCodePoints,
+                replacement = match.replacement,
+            )
+        if (expanded.applied) {
+            showStatus("Shortcut expanded")
+            return true
+        }
+        expanded.reportFailure("Shortcut expansion rejected by field")
+        return false
+    }
+
+    private fun refreshTypingAssistantState(editor: InputConnectionEditor = editor()) {
+        if (!editor.hasActiveConnection()) {
+            keyboardView?.applyTypingAssistant(autoCapitalized = false, candidates = emptyList())
+            return
+        }
+        val before = editor.textBeforeCursor(128)?.toString().orEmpty()
+        val allowed = typingAssistantAllowed()
+        keyboardView?.applyTypingAssistant(
+            autoCapitalized = allowed && KeyboardTextAssistant.shouldAutoCapitalize(before),
+            candidates =
+                if (allowed) {
+                    KeyboardTextAssistant.suggestions(before, stateStore.textRules())
+                } else {
+                    emptyList()
+                },
+        )
+    }
+
+    private fun typingAssistantAllowed(): Boolean {
+        if (!fieldPolicy.inputAllowed || fieldPolicy.privateMode || !fieldPolicy.snippetsAllowed) {
+            return false
+        }
+        return inputContext.fieldContext in setOf(KeyboardFieldContextMode.Text, KeyboardFieldContextMode.Search)
     }
 
     private fun applyDoubleSpacePeriod(editor: InputConnectionEditor): TextCorrectionResult {
