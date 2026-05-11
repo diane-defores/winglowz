@@ -3,8 +3,10 @@ package com.winflowz_app.winflowz_app
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.Manifest
 import android.provider.Settings
 import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
@@ -42,6 +44,10 @@ class MainActivity : FlutterActivity() {
                     }
                     "openAccessibilitySettings" -> {
                         openAccessibilitySettings()
+                        result.success(true)
+                    }
+                    "openAppSettings" -> {
+                        openApplicationSettings()
                         result.success(true)
                     }
                     "drainOverlayEvents" -> {
@@ -445,11 +451,30 @@ class MainActivity : FlutterActivity() {
             "overlayPermissionGranted" to overlayPermissionGranted,
             "accessibilityPermissionGranted" to accessibilityPermissionGranted,
             "deliveryMode" to mode,
+            "recordAudioGranted" to isRecordAudioPermissionGranted(),
             "sizeScale" to overlaySizeScale(),
             "opacity" to overlayOpacity(),
             "eventQueueSize" to OverlayEventQueue.size(),
             "serviceState" to OverlayForegroundService.serviceState(),
             "lastNativeEvent" to (OverlayEventQueue.lastEventSummary() ?: "none"),
         )
+    }
+
+    private fun openApplicationSettings() {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.parse("package:$packageName"),
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+
+    private fun isRecordAudioPermissionGranted(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkSelfPermission(Manifest.permission.RECORD_AUDIO) ==
+                PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
     }
 }

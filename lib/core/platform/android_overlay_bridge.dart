@@ -23,6 +23,7 @@ class AndroidOverlayStatus {
     required this.running,
     required this.overlayPermissionGranted,
     required this.accessibilityPermissionGranted,
+    required this.recordAudioGranted,
     required this.deliveryMode,
     required this.sizeScale,
     required this.opacity,
@@ -36,6 +37,7 @@ class AndroidOverlayStatus {
   final bool running;
   final bool overlayPermissionGranted;
   final bool accessibilityPermissionGranted;
+  final bool recordAudioGranted;
   final OverlayDeliveryMode deliveryMode;
   final double sizeScale;
   final double opacity;
@@ -53,6 +55,7 @@ class AndroidOverlayStatus {
           map['overlayPermissionGranted'] as bool? ?? false,
       accessibilityPermissionGranted:
           map['accessibilityPermissionGranted'] as bool? ?? false,
+      recordAudioGranted: map['recordAudioGranted'] as bool? ?? false,
       deliveryMode: modeRaw == 'injection_and_clipboard'
           ? OverlayDeliveryMode.injectionAndClipboard
           : OverlayDeliveryMode.clipboardOnly,
@@ -190,6 +193,16 @@ class AndroidOverlayBridge {
     await _invoke<void>('openAccessibilitySettings');
   }
 
+  static Future<void> openAppSettings() async {
+    if (!PlatformCapabilities.overlaySupported) {
+      throw const AndroidOverlayBridgeException(
+        code: 'OVERLAY_UNSUPPORTED',
+        message: 'Android app settings is not supported on this platform.',
+      );
+    }
+    await _invoke<void>('openAppSettings');
+  }
+
   static Future<AndroidOverlayStatus> getStatus() async {
     if (!PlatformCapabilities.overlaySupported) {
       return const AndroidOverlayStatus(
@@ -198,6 +211,7 @@ class AndroidOverlayBridge {
         running: false,
         overlayPermissionGranted: false,
         accessibilityPermissionGranted: false,
+        recordAudioGranted: false,
         deliveryMode: OverlayDeliveryMode.clipboardOnly,
         sizeScale: 1,
         opacity: 0.8,
@@ -262,43 +276,9 @@ class AndroidOverlayBridge {
     return (raw ?? const <Object?>[])
         .whereType<Map<Object?, Object?>>()
         .map(AndroidOverlayEvent.fromMap)
-        .whereType<AndroidOverlayEvent>()
+        .where((event) => event != null)
+        .cast<AndroidOverlayEvent>()
         .toList(growable: false);
-  }
-
-  static Future<void> setVisualState(AndroidOverlayVisualState state) async {
-    if (!PlatformCapabilities.overlaySupported) {
-      return;
-    }
-    await _invoke<void>('setOverlayState', {'state': state.name});
-  }
-
-  static Future<void> updateMeterLevel(double level) async {
-    if (!PlatformCapabilities.overlaySupported) {
-      return;
-    }
-    await _invoke<void>('updateMeterLevel', {'level': level.clamp(0, 1)});
-  }
-
-  static Future<void> setResultText(String text) async {
-    if (!PlatformCapabilities.overlaySupported || text.trim().isEmpty) {
-      return;
-    }
-    await _invoke<void>('setResultText', {'text': text});
-  }
-
-  static Future<AndroidOverlayDeliveryResult> deliverText(String text) async {
-    if (!PlatformCapabilities.overlaySupported || text.trim().isEmpty) {
-      return const AndroidOverlayDeliveryResult(
-        injected: false,
-        clipboardCopied: false,
-        sensitiveField: false,
-      );
-    }
-    final raw = await _invoke<Map<Object?, Object?>>('deliverText', {
-      'text': text,
-    });
-    return AndroidOverlayDeliveryResult.fromMap(raw ?? const {});
   }
 
   static Future<T?> _invoke<T>(String method, [Object? arguments]) async {

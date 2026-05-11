@@ -17,6 +17,8 @@ import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../keyboard/domain/keyboard_models.dart';
 import '../../snippets/application/snippet_store_provider.dart';
+import '../domain/onboarding_permission_contract.dart';
+import '../domain/settings_store.dart';
 import '../../voice/application/transcription_store_provider.dart';
 import '../application/settings_store_provider.dart';
 import '../data/secure_secret_store.dart';
@@ -42,11 +44,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late final TextEditingController _anthropicController;
   late final ScrollController _scrollController;
   bool _loading = true;
+  bool _onboardingLoading = true;
   bool _saving = false;
+  static const _onboardingOverlayFallback = AndroidOverlayStatus(
+    enabled: false,
+    requestedEnabled: false,
+    running: false,
+    overlayPermissionGranted: false,
+    accessibilityPermissionGranted: false,
+    recordAudioGranted: false,
+    deliveryMode: OverlayDeliveryMode.clipboardOnly,
+    sizeScale: 1,
+    opacity: 0.8,
+    eventQueueSize: 0,
+    serviceState: 'unknown',
+  );
   AndroidOverlayStatus? _overlayStatus;
   bool _overlayBusy = false;
   AndroidKeyboardStatus? _keyboardStatus;
   bool _keyboardBusy = false;
+  UserSettingsSnapshot? _onboardingSettings;
   String? _message;
 
   @override
@@ -58,6 +75,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _loadSecrets();
     _loadOverlayState();
     _loadKeyboardState();
+    _loadOnboardingSettings();
   }
 
   @override
@@ -80,6 +98,43 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       _anthropicController.text = anthropicKey;
       _loading = false;
     });
+  }
+
+  Future<void> _loadOnboardingSettings() async {
+    final store = ref.read(settingsStoreProvider);
+    try {
+      final settings = await store.load();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _onboardingSettings = settings;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _message = 'Impossible de charger la progression onboarding: $error');
+    } finally {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _onboardingLoading = false);
+    }
+  }
+
+  OnboardingReadiness _onboardingReadiness() {
+    final settings = _onboardingSettings ?? const UserSettingsSnapshot.defaults();
+    return evaluateOnboardingReadiness(
+      isPlatformSupported: PlatformCapabilities.isAndroid &&
+          PlatformCapabilities.overlaySupported,
+      overlayStatus: _overlayStatus ?? _onboardingOverlayFallback,
+      keyboardStatus: _keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
+      persistedStep: settings.onboardingCurrentStep,
+      onboardingCompleted: settings.onboardingCompleted,
+      accessibilitySkipped: settings.onboardingAccessibilitySkipped,
+      microphoneSkipped: settings.onboardingMicrophoneSkipped,
+    );
   }
 
   Future<void> _saveSecrets() async {
@@ -135,6 +190,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (mounted) {
         setState(() => _overlayBusy = false);
       }
+      _loadOnboardingSettings();
     }
   }
 
@@ -161,6 +217,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (mounted) {
         setState(() => _keyboardBusy = false);
       }
+      _loadOnboardingSettings();
     }
   }
 
@@ -168,6 +225,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     try {
       await AndroidKeyboardBridge.openInputMethodSettings();
       await _loadKeyboardState();
+      await _loadOnboardingSettings();
     } catch (error) {
       if (!mounted) {
         return;
@@ -180,6 +238,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     try {
       await AndroidKeyboardBridge.showInputMethodPicker();
       await _loadKeyboardState();
+      await _loadOnboardingSettings();
     } catch (error) {
       if (!mounted) {
         return;
@@ -243,6 +302,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       AppDiagnostics.record('overlay_permission_settings', 'open');
       await AndroidOverlayBridge.openPermissionSettings();
       await _loadOverlayState();
+      await _loadOnboardingSettings();
     } catch (error) {
       if (!mounted) {
         return;
@@ -436,6 +496,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       AppDiagnostics.record('overlay_accessibility_settings', 'open');
       await AndroidOverlayBridge.openAccessibilitySettings();
       await _loadOverlayState();
+      await _loadOnboardingSettings();
     } on AndroidOverlayBridgeException catch (error) {
       if (!mounted) {
         return;
@@ -646,11 +707,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     AppDiagnostics.record('screen_build', 'Settings');
     final storageStatusAsync = ref.watch(_storageStatusProvider);
-    if (_loading) {
+    final onboardingReadiness = _onboardingReadiness();
+    if (_loading || _onboardingLoading) {
       return _settingsList(
         children: [
           if (widget.onResumeOnboarding != null)
-            _OnboardingSettingsTile(onResume: widget.onResumeOnboarding!),
+            _OnboardingSettingsTile(
+              onResume: widget.onResumeOnboarding!,
+              readiness: onboardingReadiness,
+            ),
           if (widget.onResumeOnboarding != null) AppGaps.x2,
           const Center(child: CircularProgressIndicator()),
         ],
@@ -663,7 +728,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return _settingsList(
       children: [
         if (widget.onResumeOnboarding != null)
-          _OnboardingSettingsTile(onResume: widget.onResumeOnboarding!),
+          _OnboardingSettingsTile(
+            onResume: widget.onResumeOnboarding!,
+            readiness: onboardingReadiness,
+          ),
         if (widget.onResumeOnboarding != null) AppGaps.x2,
         Card(
           child: Padding(
@@ -1183,18 +1251,56 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 }
 
 class _OnboardingSettingsTile extends StatelessWidget {
-  const _OnboardingSettingsTile({required this.onResume});
+  const _OnboardingSettingsTile({
+    required this.onResume,
+    required this.readiness,
+  });
 
   final VoidCallback onResume;
+  final OnboardingReadiness readiness;
 
   @override
   Widget build(BuildContext context) {
+    final mandatory = readiness.steps
+        .where((step) => step.definition.category == OnboardingStepCategory.mandatory)
+        .toList(growable: false);
+    final recommended = readiness.steps
+        .where((step) => step.definition.category == OnboardingStepCategory.recommended)
+        .toList(growable: false);
+    final mandatoryDone = mandatory.where((step) => step.completed).length;
+    final recommendedDone = recommended.where((step) => step.completed).length;
+    final actionLabel = readiness.shouldShowOnboarding
+        ? 'Reprendre'
+        : readiness.onboardingCompleted
+            ? 'Voir le récapitulatif'
+            : 'Reprendre';
+
     return Card(
       child: ListTile(
         leading: const Icon(Icons.flag_outlined),
-        title: const Text('Onboarding'),
-        subtitle: const Text('Resume the setup guide.'),
-        trailing: TextButton(onPressed: onResume, child: const Text('Resume')),
+        title: const Text('Onboarding permissions'),
+        subtitle: readiness.platformSupported
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    readiness.shouldShowOnboarding
+                        ? 'Étapes complétées: ${mandatoryDone}/${mandatory.length} obligatoires, ${recommendedDone}/${recommended.length} recommandées'
+                        : 'Onboarding terminé',
+                  ),
+                  if (recommended.isNotEmpty)
+                    Text(
+                      'Conseils restants: '
+                      '${recommended.where((step) => !step.completed).length}',
+                    ),
+                ],
+              )
+            : const Text('Non requis sur cette plateforme'),
+        trailing: TextButton(
+          onPressed: onResume,
+          child: Text(actionLabel),
+        ),
       ),
     );
   }

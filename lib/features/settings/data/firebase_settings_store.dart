@@ -59,6 +59,11 @@ class FirebaseSettingsStore implements SettingsStore {
       'retentionHours': _retentionHours(settings.retentionPolicy),
       'clipboardAutoSync': settings.clipboardAutoSync,
       'transcriptionSync': settings.transcriptionSync,
+      'onboardingCompleted': settings.onboardingCompleted,
+      'onboardingCurrentStep': settings.onboardingCurrentStep,
+      'onboardingLastSeenAt': settings.onboardingLastSeenAt,
+      'onboardingAccessibilitySkipped': settings.onboardingAccessibilitySkipped,
+      'onboardingMicrophoneSkipped': settings.onboardingMicrophoneSkipped,
       'updatedAt': FieldValue.serverTimestamp(),
     };
   }
@@ -70,14 +75,30 @@ class FirebaseSettingsStore implements SettingsStore {
         orElse: () => ThemeMode.system,
       ),
       retentionPolicy: UserRetentionPolicy.fromValue(
-        data['retentionPolicy'] as String? ??
-            UserRetentionPolicy.sevenDays.value,
+        data['retentionPolicy'] as String? ?? UserRetentionPolicy.sevenDays.value,
       ),
       clipboardAutoSync: data['clipboardAutoSync'] as bool? ?? true,
       transcriptionSync: data['transcriptionSync'] as bool? ?? true,
+      onboardingCompleted: data['onboardingCompleted'] as bool? ?? false,
+      onboardingCurrentStep: _coerceStep(data['onboardingCurrentStep']),
+      onboardingLastSeenAt: _timestampToDate(data['onboardingLastSeenAt']),
+      onboardingAccessibilitySkipped:
+          data['onboardingAccessibilitySkipped'] as bool? ?? false,
+      onboardingMicrophoneSkipped: data['onboardingMicrophoneSkipped'] as bool? ?? false,
       syncStatus: const SyncStatus(health: SyncHealth.synced),
       updatedAt: _timestampToDate(data['updatedAt']),
     );
+  }
+
+  static int _coerceStep(Object? value) {
+    if (value is int) {
+      return value < 0 ? 0 : value;
+    }
+    if (value is num) {
+      final intValue = value.toInt();
+      return intValue < 0 ? 0 : intValue;
+    }
+    return 0;
   }
 
   static int _retentionHours(UserRetentionPolicy policy) {
@@ -93,6 +114,9 @@ class FirebaseSettingsStore implements SettingsStore {
   static DateTime? _timestampToDate(Object? value) {
     if (value is Timestamp) {
       return value.toDate();
+    }
+    if (value is String) {
+      return DateTime.tryParse(value);
     }
     return null;
   }

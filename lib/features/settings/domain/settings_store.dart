@@ -10,6 +10,11 @@ class UserSettingsSnapshot {
     required this.clipboardAutoSync,
     required this.transcriptionSync,
     required this.syncStatus,
+    this.onboardingCompleted = false,
+    this.onboardingCurrentStep = 0,
+    this.onboardingLastSeenAt,
+    this.onboardingAccessibilitySkipped = false,
+    this.onboardingMicrophoneSkipped = false,
     this.updatedAt,
   });
 
@@ -19,6 +24,11 @@ class UserSettingsSnapshot {
       clipboardAutoSync = true,
       transcriptionSync = true,
       syncStatus = const SyncStatus.localOnly(),
+      onboardingCompleted = false,
+      onboardingCurrentStep = 0,
+      onboardingLastSeenAt = null,
+      onboardingAccessibilitySkipped = false,
+      onboardingMicrophoneSkipped = false,
       updatedAt = null;
 
   final ThemeMode themeMode;
@@ -26,6 +36,11 @@ class UserSettingsSnapshot {
   final bool clipboardAutoSync;
   final bool transcriptionSync;
   final SyncStatus syncStatus;
+  final bool onboardingCompleted;
+  final int onboardingCurrentStep;
+  final DateTime? onboardingLastSeenAt;
+  final bool onboardingAccessibilitySkipped;
+  final bool onboardingMicrophoneSkipped;
   final DateTime? updatedAt;
 
   UserSettingsSnapshot copyWith({
@@ -34,6 +49,11 @@ class UserSettingsSnapshot {
     bool? clipboardAutoSync,
     bool? transcriptionSync,
     SyncStatus? syncStatus,
+    bool? onboardingCompleted,
+    int? onboardingCurrentStep,
+    DateTime? onboardingLastSeenAt,
+    bool? onboardingAccessibilitySkipped,
+    bool? onboardingMicrophoneSkipped,
     DateTime? updatedAt,
   }) {
     return UserSettingsSnapshot(
@@ -42,6 +62,13 @@ class UserSettingsSnapshot {
       clipboardAutoSync: clipboardAutoSync ?? this.clipboardAutoSync,
       transcriptionSync: transcriptionSync ?? this.transcriptionSync,
       syncStatus: syncStatus ?? this.syncStatus,
+      onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+      onboardingCurrentStep: onboardingCurrentStep ?? this.onboardingCurrentStep,
+      onboardingLastSeenAt: onboardingLastSeenAt ?? this.onboardingLastSeenAt,
+      onboardingAccessibilitySkipped:
+          onboardingAccessibilitySkipped ?? this.onboardingAccessibilitySkipped,
+      onboardingMicrophoneSkipped:
+          onboardingMicrophoneSkipped ?? this.onboardingMicrophoneSkipped,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
