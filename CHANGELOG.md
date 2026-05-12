@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Wired the Android IME key-value engine into the live keyboard layout and dispatch path, including parsed text keys, Ctrl/Alt/Fn modifier keys, key-event dispatch, macro dispatch support and an Fn navigation modmap.
+- Added Android IME key-value engine foundations inspired by the reference keyboard: typed key values, parser support for text/keyevent/action/modifier/macro payloads, Shift/Ctrl modifier handling, modmap overrides, and native unit-test coverage.
+- Added Android IME touch foundations for pointer-id tracking, secondary pointer suppression, long-press repeat on destructive/navigation keys, and horizontal spacebar sliding for cursor movement.
 - Added Android IME typing assistance foundations: automatic capitalization, current-word suggestions, shortcut expansion, and app-to-native sync for Snippets/Dictionary text-expander rules.
 - Added Android IME reference editing actions inspired by the functional keyboard: forward delete, delete-word-forward, cut, select all, paste as plain text, undo, redo and selection cancel, mirrored in the FlutterWeb keyboard preview.
 - Added a FlutterWeb `Keyboard preview` screen for Vercel/browser review of the WinFlowzApp Keyboard layouts, field contexts, panels and private/corner/debug states.

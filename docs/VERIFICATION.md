@@ -74,6 +74,8 @@ Run on at least one emulator or real Android device before closing the IME chant
 | Enable WinFlowzApp in Android input method settings | WinFlowzApp Keyboard appears as an available keyboard. |
 | Switch to WinFlowzApp from a normal text field | Native keyboard opens without launching a Flutter view inside the IME. |
 | Type letters, space, backspace, enter | Focused field receives expected `InputConnection` updates; backspace deletes one code point including emoji/surrogate pairs. |
+| Tap Ctrl/Alt/Fn then a text key | Modifier is visible as active, applies to the next key-value dispatch, then clears. |
+| Tap Fn then `h/j/k/l` | Built-in modmap sends left/down/up/right key events instead of inserting letters. |
 | Toggle QWERTY/AZERTY in Settings then reopen IME | Letter rows match selected layout profile and persist between sessions. |
 | Enable swipe-corner mode then swipe key corners | Secondary corner glyphs are inserted; center-return gesture cancels insertion. |
 | Disable swipe-corner mode | Same gestures fallback to primary tap behavior only. |
@@ -86,6 +88,9 @@ Run on at least one emulator or real Android device before closing the IME chant
 | Enable punctuation auto-spacing and type `: ; ! ? . ,` in standard text field | Keyboard applies basic spacing rules around punctuation. |
 | Try the same corrections in private/email/url/phone fields | Corrections are suppressed; raw input is kept. |
 | Enable keyboard touch debug overlay | Key bounds + gesture classifier diagnostics appear without exposing typed text. |
+| Long-press Backspace / forward delete / word delete / navigation keys | Action repeats at a controlled cadence and stops immediately on release/cancel. |
+| Slide horizontally from the space bar | Cursor moves left/right by character steps without inserting a space. |
+| Touch with a second finger while one key is active | Secondary pointer does not emit a second key or corrupt the active gesture. |
 | Focus password/OTP/no-personalized-learning field | Private mode is visible; dictation, clipboard capture, snippets and learning/sync are disabled. |
 | Tap Mic without microphone permission | No recording starts; keyboard shows recoverable permission state. |
 | Tap Mic with permission and speech recognition available | Recognized text is inserted into the active field. |

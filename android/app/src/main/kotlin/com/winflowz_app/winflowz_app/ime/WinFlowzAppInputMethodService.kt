@@ -466,6 +466,11 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
         return moved || sendSoftKey(KeyEvent.KEYCODE_MOVE_END, 0)
     }
 
+    override fun onKeyEvent(
+        keyCode: Int,
+        metaState: Int,
+    ): Boolean = sendSoftKey(keyCode, metaState)
+
     override fun onLayoutProfileChanged(profile: KeyboardLayoutProfile) {
         stateStore.layoutProfile = profile
         applyRuntimePreferencesToView()

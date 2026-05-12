@@ -120,7 +120,8 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_WIF_SERVICE_ACCOUNT }}
-          token_format: access_token
+          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
+          create_credentials_file: true
 
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@15.17.0
@@ -134,9 +135,10 @@ jobs:
           test -n "$FIREBASE_PROJECT_ID"
           test -n "$GCP_WIF_PROVIDER"
           test -n "$GCP_WIF_SERVICE_ACCOUNT"
+          test -n "$GOOGLE_APPLICATION_CREDENTIALS"
+          test -f "$GOOGLE_APPLICATION_CREDENTIALS"
 
       - name: Deploy Firestore rules and indexes
         env:
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_TOKEN: ${{ steps.gcp-auth.outputs.access_token }}
         run: firebase deploy --only firestore --project "$FIREBASE_PROJECT_ID" --non-interactive

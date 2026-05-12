@@ -47,6 +47,7 @@ class WinFlowzAppKeyboardView(
         fun onNavigateWordRight(): Boolean
         fun onNavigateLineStart(): Boolean
         fun onNavigateLineEnd(): Boolean
+        fun onKeyEvent(keyCode: Int, metaState: Int): Boolean
         fun onLayoutProfileChanged(profile: KeyboardLayoutProfile)
         fun onCornerModeChanged(enabled: Boolean)
         fun onDebugTouchOverlayChanged(enabled: Boolean)
@@ -74,6 +75,7 @@ class WinFlowzAppKeyboardView(
     private var enterLabel = "Enter"
     private var statusText = "WinFlowzApp"
     private var suggestions = emptyList<String>()
+    private val activeSystemModifiers = linkedSetOf<KeyboardSystemModifier>()
 
     private var gestureStartFrame: KeyFrame? = null
     private var gestureStartX = 0f
@@ -81,8 +83,13 @@ class WinFlowzAppKeyboardView(
     private var gestureLatestX = 0f
     private var gestureLatestY = 0f
     private var gestureMaxDistance = 0f
+    private var activePointerId = MotionEvent.INVALID_POINTER_ID
     private var activeKeyId: String? = null
     private var debugGestureText = "idle"
+    private var longPressTriggered = false
+    private var repeatActionKey: KeyboardKeySpec? = null
+    private var slidingSpace = false
+    private var lastSlideStep = 0
 
     private val keyFrames = mutableListOf<KeyFrame>()
     private var layoutSnapshot = buildSnapshot()
@@ -149,6 +156,36 @@ class WinFlowzAppKeyboardView(
             tapSlopPx = dp(10f),
             cornerThresholdPx = dp(16f),
             returnCenterRadiusPx = dp(12f),
+        )
+    private val longPressDelayMs = 420L
+    private val repeatDelayMs = 72L
+    private val spaceSlideStartPx = dp(18f)
+    private val spaceSlideStepPx = dp(34f)
+
+    private val longPressRunnable =
+        Runnable {
+            handleLongPress()
+        }
+
+    private val repeatRunnable =
+        object : Runnable {
+            override fun run() {
+                val key = repeatActionKey ?: return
+                dispatch(key, GestureSelection.PrimaryTap)
+                postDelayed(this, repeatDelayMs)
+            }
+        }
+
+    private val repeatingActions =
+        setOf(
+            KeyboardKeyAction.Backspace,
+            KeyboardKeyAction.ForwardDelete,
+            KeyboardKeyAction.DeleteWordBefore,
+            KeyboardKeyAction.DeleteWordAfter,
+            KeyboardKeyAction.NavigateCharLeft,
+            KeyboardKeyAction.NavigateCharRight,
+            KeyboardKeyAction.NavigateWordLeft,
+            KeyboardKeyAction.NavigateWordRight,
         )
 
     init {
@@ -257,78 +294,206 @@ class WinFlowzAppKeyboardView(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                val hit = hitTest(event.x, event.y)
-                if (hit == null || !hit.key.enabled) {
-                    return false
+                return startGesture(event.getPointerId(event.actionIndex), event.x, event.y)
+            }
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                if (activePointerId != MotionEvent.INVALID_POINTER_ID) {
+                    debugGestureText = "multi-touch ignored active=$activePointerId"
+                    invalidate()
+                    return true
                 }
-                gestureStartFrame = hit
-                gestureStartX = event.x
-                gestureStartY = event.y
-                gestureLatestX = event.x
-                gestureLatestY = event.y
-                gestureMaxDistance = 0f
-                activeKeyId = hit.key.id
-                debugGestureText = "start key=${hit.key.id}"
-                invalidate()
-                return true
+                val index = event.actionIndex
+                return startGesture(event.getPointerId(index), event.getX(index), event.getY(index))
             }
             MotionEvent.ACTION_MOVE -> {
                 if (gestureStartFrame == null) {
                     return false
                 }
-                gestureLatestX = event.x
-                gestureLatestY = event.y
+                val pointerIndex = event.findPointerIndex(activePointerId)
+                if (pointerIndex < 0) {
+                    cancelGesture("missing active pointer")
+                    return true
+                }
+                gestureLatestX = event.getX(pointerIndex)
+                gestureLatestY = event.getY(pointerIndex)
                 val dx = gestureLatestX - gestureStartX
                 val dy = gestureLatestY - gestureStartY
                 val distance = hypot(dx.toDouble(), dy.toDouble()).toFloat()
                 gestureMaxDistance = max(gestureMaxDistance, distance)
                 activeKeyId = gestureStartFrame?.key?.id
+                handleSpaceSlider(dx, dy)
                 debugGestureText =
-                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()}"
+                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()} slide=$slidingSpace"
                 invalidate()
                 return true
             }
             MotionEvent.ACTION_UP -> {
-                val startFrame = gestureStartFrame
-                val key = startFrame?.key
-                if (key == null || !key.enabled) {
-                    resetGesture()
-                    invalidate()
-                    return true
-                }
-                val selection =
-                    effectiveGestureSelection(
-                        key = key,
-                        sample =
-                            GestureSample(
-                                startX = gestureStartX,
-                                startY = gestureStartY,
-                                endX = event.x,
-                                endY = event.y,
-                                maxDistanceFromStart = gestureMaxDistance,
-                            ),
-                    )
-                debugGestureText =
-                    "up key=${key.id} sel=${selection.name} tap=${gestureThresholds.tapSlopPx.toInt()} corner=${gestureThresholds.cornerThresholdPx.toInt()}"
-                dispatch(key, selection)
-                resetGesture()
-                invalidate()
-                return true
+                return finishGesture(event.getPointerId(event.actionIndex), event.x, event.y)
+            }
+            MotionEvent.ACTION_POINTER_UP -> {
+                val index = event.actionIndex
+                return finishGesture(event.getPointerId(index), event.getX(index), event.getY(index))
             }
             MotionEvent.ACTION_CANCEL -> {
-                resetGesture()
-                debugGestureText = "cancel"
-                invalidate()
+                cancelGesture("cancel")
                 return true
             }
         }
         return super.onTouchEvent(event)
     }
 
+    private fun startGesture(
+        pointerId: Int,
+        x: Float,
+        y: Float,
+    ): Boolean {
+        val hit = hitTest(x, y)
+        if (hit == null || !hit.key.enabled) {
+            return false
+        }
+        gestureStartFrame = hit
+        gestureStartX = x
+        gestureStartY = y
+        gestureLatestX = x
+        gestureLatestY = y
+        gestureMaxDistance = 0f
+        activePointerId = pointerId
+        activeKeyId = hit.key.id
+        longPressTriggered = false
+        slidingSpace = false
+        lastSlideStep = 0
+        debugGestureText = "start pointer=$pointerId key=${hit.key.id}"
+        removeCallbacks(longPressRunnable)
+        postDelayed(longPressRunnable, longPressDelayMs)
+        invalidate()
+        return true
+    }
+
+    private fun finishGesture(
+        pointerId: Int,
+        x: Float,
+        y: Float,
+    ): Boolean {
+        if (pointerId != activePointerId) {
+            debugGestureText = "ignored pointer-up pointer=$pointerId active=$activePointerId"
+            invalidate()
+            return true
+        }
+        removeCallbacks(longPressRunnable)
+        stopRepeat()
+        val key = gestureStartFrame?.key
+        if (key == null || !key.enabled) {
+            resetGesture()
+            invalidate()
+            return true
+        }
+        if (slidingSpace || longPressTriggered) {
+            debugGestureText = "up key=${key.id} consumed slide=$slidingSpace long=$longPressTriggered"
+            resetGesture()
+            invalidate()
+            return true
+        }
+        val selection =
+            effectiveGestureSelection(
+                key = key,
+                sample =
+                    GestureSample(
+                        startX = gestureStartX,
+                        startY = gestureStartY,
+                        endX = x,
+                        endY = y,
+                        maxDistanceFromStart = gestureMaxDistance,
+                    ),
+            )
+        debugGestureText =
+            "up key=${key.id} sel=${selection.name} tap=${gestureThresholds.tapSlopPx.toInt()} corner=${gestureThresholds.cornerThresholdPx.toInt()}"
+        dispatch(key, selection)
+        resetGesture()
+        invalidate()
+        return true
+    }
+
+    private fun cancelGesture(reason: String) {
+        removeCallbacks(longPressRunnable)
+        stopRepeat()
+        resetGesture()
+        debugGestureText = reason
+        invalidate()
+    }
+
     private fun resetGesture() {
         gestureStartFrame = null
+        activePointerId = MotionEvent.INVALID_POINTER_ID
         activeKeyId = null
         gestureMaxDistance = 0f
+        longPressTriggered = false
+        slidingSpace = false
+        lastSlideStep = 0
+    }
+
+    private fun handleLongPress() {
+        val key = gestureStartFrame?.key ?: return
+        if (!key.enabled || slidingSpace) {
+            return
+        }
+        debugGestureText = "long key=${key.id}"
+        if (key.action in repeatingActions) {
+            longPressTriggered = true
+            repeatActionKey = key
+            dispatch(key, GestureSelection.PrimaryTap)
+            removeCallbacks(repeatRunnable)
+            postDelayed(repeatRunnable, repeatDelayMs)
+        } else if (key.action == KeyboardKeyAction.Shift) {
+            longPressTriggered = true
+            shifted = true
+            setStatus("Shift held")
+            refreshLayout()
+        } else {
+            invalidate()
+            return
+        }
+        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        invalidate()
+    }
+
+    private fun stopRepeat() {
+        removeCallbacks(repeatRunnable)
+        repeatActionKey = null
+    }
+
+    private fun handleSpaceSlider(
+        dx: Float,
+        dy: Float,
+    ) {
+        val key = gestureStartFrame?.key ?: return
+        if (!isSpaceKey(key) || abs(dx) < spaceSlideStartPx || abs(dx) < abs(dy) * 1.25f) {
+            return
+        }
+        removeCallbacks(longPressRunnable)
+        slidingSpace = true
+        val step = (dx / spaceSlideStepPx).toInt()
+        val delta = step - lastSlideStep
+        if (delta == 0) {
+            return
+        }
+        repeat(abs(delta)) {
+            val moved =
+                if (delta > 0) {
+                    callbacks.onNavigateCharRight()
+                } else {
+                    callbacks.onNavigateCharLeft()
+                }
+            if (!moved) {
+                setStatus("Cursor slide unavailable")
+                return@repeat
+            }
+        }
+        lastSlideStep = step
+    }
+
+    private fun isSpaceKey(key: KeyboardKeySpec): Boolean {
+        return key.action == KeyboardKeyAction.Text &&
+            (key.glyph?.primary == " " || key.keyValue?.text == " ")
     }
 
     private fun drawStatus(canvas: Canvas, top: Float, contentWidth: Float) {
@@ -368,14 +533,14 @@ class WinFlowzAppKeyboardView(
         val paint = when {
             !key.enabled -> disabledKeyPaint
             key.id == activeKeyId -> pressedKeyPaint
-            key.active -> activeKeyPaint
+            key.active || isActiveModifierKey(key) -> activeKeyPaint
             key.action == KeyboardKeyAction.Text -> keyPaint
             else -> specialKeyPaint
         }
         canvas.drawRoundRect(rect, keyRadius, keyRadius, paint)
 
         textPaint.color =
-            if (key.active) {
+            if (key.active || isActiveModifierKey(key)) {
                 Color.WHITE
             } else if (key.enabled) {
                 Color.rgb(29, 35, 32)
@@ -447,18 +612,22 @@ class WinFlowzAppKeyboardView(
         }
         performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
         when (key.action) {
+            KeyboardKeyAction.KeyValue -> {
+                val keyValue = key.keyValue ?: return
+                if (!dispatchKeyValue(keyValue, selection, clearModifiersAfter = true)) {
+                    setStatus("Key unavailable")
+                }
+            }
             KeyboardKeyAction.Text -> {
-                val output = outputFor(key, selection) ?: return
-                val committed = callbacks.onText(output)
+                val keyValue = keyValueForSelection(key, selection) ?: return
+                val committed = dispatchKeyValue(keyValue, selection, clearModifiersAfter = true)
                 if (!committed) {
                     setStatus("Text input unavailable")
                     return
                 }
                 if (panelMode == KeyboardPanelMode.Emoji) {
+                    val output = keyValue.text ?: key.glyph?.outputFor(selection) ?: return
                     callbacks.onEmojiInserted(output)
-                }
-                if (shifted && layoutSnapshot.mode == KeyboardLayoutMode.Letters) {
-                    shifted = false
                 }
             }
             KeyboardKeyAction.Backspace -> {
@@ -638,6 +807,109 @@ class WinFlowzAppKeyboardView(
         refreshLayout()
     }
 
+    private fun dispatchKeyValue(
+        value: KeyboardKeyValue,
+        selection: GestureSelection,
+        clearModifiersAfter: Boolean,
+    ): Boolean {
+        val effectiveValue =
+            if (value.kind == KeyboardKeyValueKind.Modifier) {
+                value
+            } else {
+                KeyboardKeyModifier.apply(value, currentSystemModifiers(), KeyboardLayoutBuilder.defaultModMap())
+            }
+        val result =
+            when (effectiveValue.kind) {
+                KeyboardKeyValueKind.Text -> {
+                    val text = effectiveValue.text ?: return false
+                    callbacks.onText(text)
+                }
+                KeyboardKeyValueKind.KeyEvent -> {
+                    val keyCode = effectiveValue.keyCode ?: return false
+                    callbacks.onKeyEvent(keyCode, metaStateFor(currentSystemModifiers()))
+                }
+                KeyboardKeyValueKind.Action -> {
+                    val action = effectiveValue.action ?: return false
+                    dispatch(
+                        KeyboardKeySpec(
+                            id = "keyvalue-action-${action.name}",
+                            label = action.name,
+                            action = action,
+                        ),
+                        selection,
+                    )
+                    true
+                }
+                KeyboardKeyValueKind.Modifier -> {
+                    toggleSystemModifier(effectiveValue.modifier ?: return false)
+                    true
+                }
+                KeyboardKeyValueKind.Macro -> {
+                    effectiveValue.macro.all { macroValue ->
+                        dispatchKeyValue(macroValue, GestureSelection.PrimaryTap, clearModifiersAfter = false)
+                    }
+                }
+            }
+        if (result && clearModifiersAfter && effectiveValue.kind != KeyboardKeyValueKind.Modifier) {
+            clearTransientModifiers()
+        }
+        return result
+    }
+
+    private fun toggleSystemModifier(modifier: KeyboardSystemModifier) {
+        when (modifier) {
+            KeyboardSystemModifier.Shift -> shifted = !shifted
+            KeyboardSystemModifier.Ctrl,
+            KeyboardSystemModifier.Alt,
+            KeyboardSystemModifier.Fn,
+            -> {
+                if (activeSystemModifiers.contains(modifier)) {
+                    activeSystemModifiers.remove(modifier)
+                } else {
+                    activeSystemModifiers.add(modifier)
+                }
+                val state = if (activeSystemModifiers.contains(modifier)) "on" else "off"
+                setStatus("${modifier.name} $state")
+            }
+        }
+    }
+
+    private fun clearTransientModifiers() {
+        activeSystemModifiers.clear()
+        if (shifted && layoutSnapshot.mode == KeyboardLayoutMode.Letters) {
+            shifted = false
+        }
+    }
+
+    private fun currentSystemModifiers(): Set<KeyboardSystemModifier> {
+        val modifiers = linkedSetOf<KeyboardSystemModifier>()
+        if (shifted && layoutSnapshot.mode == KeyboardLayoutMode.Letters) {
+            modifiers.add(KeyboardSystemModifier.Shift)
+        }
+        modifiers.addAll(activeSystemModifiers)
+        return modifiers
+    }
+
+    private fun metaStateFor(modifiers: Set<KeyboardSystemModifier>): Int {
+        var metaState = 0
+        if (KeyboardSystemModifier.Shift in modifiers) {
+            metaState = metaState or android.view.KeyEvent.META_SHIFT_ON or android.view.KeyEvent.META_SHIFT_LEFT_ON
+        }
+        if (KeyboardSystemModifier.Ctrl in modifiers) {
+            metaState = metaState or android.view.KeyEvent.META_CTRL_ON or android.view.KeyEvent.META_CTRL_LEFT_ON
+        }
+        if (KeyboardSystemModifier.Alt in modifiers) {
+            metaState = metaState or android.view.KeyEvent.META_ALT_ON or android.view.KeyEvent.META_ALT_LEFT_ON
+        }
+        return metaState
+    }
+
+    private fun isActiveModifierKey(key: KeyboardKeySpec): Boolean {
+        val modifier = key.keyValue?.modifier ?: return false
+        return (modifier == KeyboardSystemModifier.Shift && shifted) ||
+            activeSystemModifiers.contains(modifier)
+    }
+
     private fun togglePanel(target: KeyboardPanelMode) {
         panelMode = if (panelMode == target) KeyboardPanelMode.None else target
     }
@@ -673,18 +945,15 @@ class WinFlowzAppKeyboardView(
         )
     }
 
-    private fun outputFor(
+    private fun keyValueForSelection(
         key: KeyboardKeySpec,
         selection: GestureSelection,
-    ): String? {
+    ): KeyboardKeyValue? {
         val raw = key.glyph?.outputFor(selection) ?: key.label
-        if (!shifted || layoutSnapshot.mode != KeyboardLayoutMode.Letters) {
-            return raw
-        }
-        return if (raw.length == 1 && raw[0].isLetter()) {
-            raw.uppercase()
+        return if (selection == GestureSelection.PrimaryTap) {
+            key.keyValue ?: KeyboardKeyValue.text(raw, key.label)
         } else {
-            raw
+            KeyboardKeyValue.text(raw)
         }
     }
 

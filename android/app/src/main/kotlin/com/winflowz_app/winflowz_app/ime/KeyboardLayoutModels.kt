@@ -46,6 +46,7 @@ enum class KeyboardFieldContextMode {
 }
 
 enum class KeyboardKeyAction {
+    KeyValue,
     Text,
     Backspace,
     ForwardDelete,
@@ -121,6 +122,7 @@ data class KeyboardKeySpec(
     val label: String,
     val action: KeyboardKeyAction,
     val glyph: KeyboardKeyGlyph? = null,
+    val keyValue: KeyboardKeyValue? = null,
     val weight: Float = 1f,
     val enabled: Boolean = true,
     val active: Boolean = false,
@@ -161,6 +163,14 @@ data class KeyboardLayoutRequest(
 )
 
 object KeyboardLayoutBuilder {
+    private val builtInModMap =
+        KeyboardModMap().apply {
+            add(KeyboardSystemModifier.Fn, KeyboardKeyValue.text("h"), KeyboardKeyValue.keyEvent(android.view.KeyEvent.KEYCODE_DPAD_LEFT, "Left"))
+            add(KeyboardSystemModifier.Fn, KeyboardKeyValue.text("j"), KeyboardKeyValue.keyEvent(android.view.KeyEvent.KEYCODE_DPAD_DOWN, "Down"))
+            add(KeyboardSystemModifier.Fn, KeyboardKeyValue.text("k"), KeyboardKeyValue.keyEvent(android.view.KeyEvent.KEYCODE_DPAD_UP, "Up"))
+            add(KeyboardSystemModifier.Fn, KeyboardKeyValue.text("l"), KeyboardKeyValue.keyEvent(android.view.KeyEvent.KEYCODE_DPAD_RIGHT, "Right"))
+        }
+
     fun build(request: KeyboardLayoutRequest): KeyboardLayoutSnapshot {
         val effectiveMode =
             if (request.fieldContext.isNumericEntry()) {
@@ -541,11 +551,15 @@ object KeyboardLayoutBuilder {
                         id = "shift",
                         label = shiftLabel,
                         action = KeyboardKeyAction.Shift,
+                        keyValue = KeyboardKeyValue.modifier(KeyboardSystemModifier.Shift, shiftLabel),
                         weight = 1.2f,
                         active = request.shifted && mode == KeyboardLayoutMode.Letters,
                     ),
+                    modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
+                    modifierKey("Alt", KeyboardSystemModifier.Alt),
+                    modifierKey("Fn", KeyboardSystemModifier.Fn),
                     textKey(leftSymbol),
-                    textKey("Espace", " ", weight = 4f),
+                    textKey("Espace", " ", weight = 3f),
                     textKey(rightSymbol),
                     KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.3f),
                     KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, weight = 1.2f),
@@ -583,11 +597,13 @@ object KeyboardLayoutBuilder {
 
     private fun letterKey(char: Char): KeyboardKeySpec {
         val lower = char.lowercase()
+        val parsed = KeyboardKeyValueParser.parse(lower)
         return KeyboardKeySpec(
             id = "letter-$lower",
-            label = lower,
+            label = parsed.renderLabel(),
             action = KeyboardKeyAction.Text,
             glyph = glyphFor(lower[0]),
+            keyValue = parsed,
         )
     }
 
@@ -600,14 +616,34 @@ object KeyboardLayoutBuilder {
         output: String = label,
         weight: Float = 1f,
     ): KeyboardKeySpec {
+        val parsed = KeyboardKeyValueParser.parse(if (label == output) output else "$label:'${escapeKeyValue(output)}'")
         return KeyboardKeySpec(
             id = "text-$label-$output",
-            label = label,
+            label = parsed.renderLabel(),
             action = KeyboardKeyAction.Text,
             glyph = KeyboardKeyGlyph(primary = output),
+            keyValue = parsed,
             weight = weight,
         )
     }
+
+    private fun modifierKey(
+        label: String,
+        modifier: KeyboardSystemModifier,
+    ): KeyboardKeySpec {
+        val parsed = KeyboardKeyValueParser.parse("$label:modifier:${modifier.name}")
+        return KeyboardKeySpec(
+            id = "modifier-${modifier.name.lowercase()}",
+            label = parsed.renderLabel(),
+            action = KeyboardKeyAction.KeyValue,
+            keyValue = parsed,
+            weight = 0.9f,
+        )
+    }
+
+    fun defaultModMap(): KeyboardModMap = builtInModMap
+
+    private fun escapeKeyValue(value: String): String = value.replace("\\", "\\\\").replace("'", "\\'")
 
     private fun glyphFor(char: Char): KeyboardKeyGlyph {
         return when (char) {

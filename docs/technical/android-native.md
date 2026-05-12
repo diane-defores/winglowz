@@ -62,7 +62,7 @@ Android input field
   -> WinFlowzAppInputMethodService
   -> KeyboardInputContextResolver + KeyboardSecurityPolicy
   -> WinFlowzAppKeyboardView (Canvas)
-  -> KeyboardLayoutBuilder + KeyboardGestureClassifier
+  -> KeyboardLayoutBuilder + KeyboardKeyValueEngine + KeyboardGestureClassifier
   -> InputConnection / ClipboardManager / AudioManager
 
 Keyboard clipboard action
@@ -91,6 +91,9 @@ Keyboard clipboard action
 - IME state preferences store only non-sensitive flags and counters, never typed or dictated text.
 - IME clipboard sync events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
 - The native clipboard event queue is process-memory only until a durable local storage decision is made.
+- Text keys carry a `KeyboardKeyValue` model in addition to display glyphs. `KeyboardKeyValueParser`, `KeyboardKeyModifier`, and `KeyboardModMap` are the local foundation for parsed layouts, macros, Ctrl/Alt/Fn/Shift behavior and user modmaps; the live layout dispatches parsed text keys, key events, action values and macros through existing callbacks.
+- Ctrl, Alt and Fn are exposed as modifier keys in the control row. They latch for the next key-value dispatch, then clear; Fn currently ships with a conservative built-in navigation modmap for `h/j/k/l`.
+- Touch handling tracks the active pointer id, ignores secondary pointers without dispatching duplicate keys, supports long-press repeat for destructive/navigation actions, and uses horizontal spacebar sliding for cursor movement. It still does not implement full multi-finger modifier chords or selection sliders.
 
 ## Failure Modes
 
@@ -98,6 +101,7 @@ Keyboard clipboard action
 - InputConnection unavailable or host app blocks access: show recoverable keyboard feedback.
 - Microphone permission unavailable: do not start recording.
 - No media consumer: play/pause action may be ignored by Android; show best-effort feedback.
+- Android unit tests that require resource bundling can be blocked on ARM64 hosts when AAPT2 is unavailable; `:app:compileDebugKotlin` is the local native compile proof, while full test/package proof belongs on x86_64 CI or device.
 
 ## Security Notes
 
