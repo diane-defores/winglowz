@@ -9,6 +9,7 @@ import 'package:winflowz_app/core/platform/android_keyboard_bridge.dart';
 import 'package:winflowz_app/core/platform/android_overlay_bridge.dart';
 import 'package:winflowz_app/core/platform/platform_capabilities.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
+import 'package:winflowz_app/features/keyboard/presentation/keyboard_preview_screen.dart';
 import 'package:winflowz_app/features/clipboard/domain/clipboard_normalizer.dart';
 import 'package:winflowz_app/features/shell/presentation/app_shell_screen.dart';
 import 'package:winflowz_app/features/voice/domain/transcription_draft.dart';
@@ -95,9 +96,56 @@ Widget _appShellTestWidget() {
   );
 }
 
+Widget _keyboardPreviewTestWidget() {
+  return ProviderScope(
+    child: MaterialApp(
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      home: const Scaffold(body: KeyboardPreviewScreen()),
+    ),
+  );
+}
+
+String _simulatedBufferText(WidgetTester tester) {
+  final selectable = tester.widget<SelectableText>(
+    find.byKey(const Key('keyboard-preview-simulated-buffer')),
+  );
+  return selectable.data ?? selectable.textSpan?.toPlainText() ?? '';
+}
+
+String _simulatedStatusText(WidgetTester tester) {
+  final status = tester.widget<Text>(
+    find.byKey(const Key('keyboard-preview-simulated-status')),
+  );
+  return status.data ?? '';
+}
+
 Future<void> _pumpNavigationFrame(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
+}
+
+Future<void> _selectDropdownOption(
+  WidgetTester tester,
+  Key dropdownKey,
+  String optionText,
+) async {
+  await tester.ensureVisible(find.byKey(dropdownKey));
+  await tester.tap(find.byKey(dropdownKey));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(optionText).last);
+  await tester.pumpAndSettle();
+}
+
+Future<void> _tapVisible(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+}
+
+void _useLargeViewport(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1440, 2200);
+  tester.view.devicePixelRatio = 1.0;
 }
 
 void main() {
@@ -385,4 +433,75 @@ void main() {
     debugDefaultTargetPlatformOverride = previousPlatform;
     _clearAndroidBridgeMocks();
   });
+
+  testWidgets(
+    'keyboard preview sandbox types letters and handles Space Back Enter Shift suggestion',
+    (tester) async {
+      _useLargeViewport(tester);
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+      await tester.pumpWidget(_keyboardPreviewTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(_simulatedBufferText(tester), '|');
+
+      await _tapVisible(tester, find.text('h'));
+      expect(_simulatedBufferText(tester), 'h|');
+
+      await _tapVisible(tester, find.text('Space'));
+      expect(_simulatedBufferText(tester), 'h |');
+
+      await _tapVisible(tester, find.text('Back'));
+      expect(_simulatedBufferText(tester), 'h|');
+
+      await _tapVisible(tester, find.text('Enter'));
+      expect(_simulatedBufferText(tester), 'h\n|');
+
+      await _tapVisible(tester, find.text('Shift'));
+      expect(_simulatedStatusText(tester), contains('Shift enabled'));
+
+      await _tapVisible(tester, find.text('a'));
+      expect(_simulatedBufferText(tester), 'h\nA|');
+
+      await _tapVisible(tester, find.text('bonjour'));
+      expect(_simulatedBufferText(tester), 'h\nA bonjour|');
+      expect(_simulatedStatusText(tester), contains('Suggestion'));
+    },
+  );
+
+  testWidgets(
+    'keyboard preview sandbox updates email context and reports disabled/non simulated actions',
+    (tester) async {
+      _useLargeViewport(tester);
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+      await tester.pumpWidget(_keyboardPreviewTestWidget());
+      await tester.pumpAndSettle();
+
+      await _selectDropdownOption(
+        tester,
+        const Key('keyboard-preview-field-dropdown'),
+        'Email',
+      );
+      expect(_simulatedStatusText(tester), contains('Field context: Email'));
+
+      await _tapVisible(tester, find.text('@'));
+      expect(_simulatedBufferText(tester), '@|');
+
+      await _tapVisible(tester, find.widgetWithText(FilterChip, 'Private'));
+      expect(_simulatedStatusText(tester), contains('Private mode on'));
+
+      await _tapVisible(tester, find.text('Clip'));
+      expect(_simulatedBufferText(tester), '@|');
+      expect(_simulatedStatusText(tester), contains('disabled'));
+
+      await _tapVisible(tester, find.text('Mic'));
+      expect(_simulatedBufferText(tester), '@|');
+      expect(_simulatedStatusText(tester), contains('non simulated'));
+    },
+  );
 }

@@ -89,7 +89,7 @@ Proprietary Swipe-Corner Android Keyboard
 
 # Status
 
-Ready for implementation. This spec defines a WinFlowzApp-owned Android keyboard implementation coded in-house. Current code state as of 2026-05-10: `WinFlowzAppKeyboardView.kt` and `WinFlowzAppInputMethodService.kt` now include a modular Canvas/touch keyboard with tap + swipe-corner classifier, QWERTY/AZERTY profile switching, field-context behavior (email/url/phone/search), minimal navigation panel, lightweight emoji panel with local recents, basic double-space and punctuation auto-spacing corrections with exclusions, and optional touch-debug overlay. Double-tap and long-press action policies are still pending. The full spec remains open because advanced modules (full navigation matrix, adaptive/smartbar behavior, richer emoji/clipboard workflows) and Android real-device QA are not complete.
+Ready for implementation. This spec defines a WinFlowzApp-owned Android keyboard implementation coded in-house. Current code state as of 2026-05-10: `WinFlowzAppKeyboardView.kt` and `WinFlowzAppInputMethodService.kt` now include a modular Canvas/touch keyboard with tap + swipe-corner classifier, QWERTY/AZERTY profile switching, field-context behavior (email/url/phone/search), minimal navigation panel, lightweight emoji panel with local recents, basic double-space and punctuation auto-spacing corrections with exclusions, and optional touch-debug overlay. Double-tap and long-press action policies are still pending. The full spec remains open because advanced modules (full navigation matrix, adaptive/smartbar behavior, richer emoji/clipboard workflows) and Android real-device QA are not complete. Fast next slice as of 2026-05-12: make the FlutterWeb/Vercel keyboard preview interactive with a simulated input field so product review can see what typed output each key/suggestion/action produces before native Android device QA.
 
 # User Story
 
@@ -114,6 +114,9 @@ Gestes dessines depuis espace: l'utilisateur demarre sur la barre espace; si le 
 # Success Behavior
 
 - Given WinFlowzApp Keyboard est active comme IME, when l'utilisateur ouvre un champ texte standard, then la vue clavier native apparait sans lancer Flutter et propose une rangee d'actions compacte plus un layout de saisie utilisable.
+- Given la preview clavier FlutterWeb est ouverte sur Vercel, when l'utilisateur appuie sur les touches visibles, then un champ de saisie simule au-dessus du clavier affiche immediatement le texte produit.
+- Given l'utilisateur teste Shift, Space, Back, Enter, une suggestion, un mode ou un panneau dans la preview FlutterWeb, when l'action est simulee localement, then le champ simule et un statut court montrent le resultat sans presenter cela comme une preuve de comportement IME Android natif.
+- Given l'utilisateur change le contexte de preview email, URL, telephone, recherche ou prive, when la simulation est relancee, then les touches, les suggestions, les actions desactivees et le champ simule restent coherents avec ce contexte.
 - Given l'utilisateur ouvre Settings sans clavier configure, when il consulte la section clavier, then un assistant d'activation affiche l'etape exacte: activer WinFlowzApp Keyboard dans Android, le choisir comme clavier actif, puis tester la saisie dans un champ integre.
 - Given l'assistant d'activation est visible, when l'etat Android change, then il affiche un statut clair `pas active`, `active mais pas actif`, ou `actif`, et propose uniquement l'action suivante utile.
 - Given le mode debug tactile est active dans les options developpeur, when l'utilisateur interagit avec le clavier, then les limites des touches, la direction de swipe detectee, les seuils et l'action declenchee sont visibles sans journaliser le texte utilisateur.
@@ -165,6 +168,8 @@ Gestes dessines depuis espace: l'utilisateur demarre sur la barre espace; si le 
 # Error Behavior
 
 - Si `currentInputConnection` est nul ou retourne false, l'action est consideree non appliquee; le clavier affiche un feedback bref et ne met pas a jour d'etat de sync.
+- Si une touche de la preview FlutterWeb n'a pas encore de simulation fiable, elle affiche l'action attendue ou un statut non simule au lieu de modifier silencieusement le champ.
+- Si une touche ou suggestion est desactivee en mode prive/sensible dans la preview FlutterWeb, elle reste inerte et ne modifie pas le champ simule.
 - Si un geste reste sous le seuil ou tombe entre deux directions, il est traite comme tap primaire ou annule selon la regle documentee; il ne choisit jamais un coin aleatoire.
 - Si un geste revient au centre avant relache, il est toujours annule et n'insere rien.
 - Si plusieurs pointeurs touchent le clavier, seul le premier pointeur actif peut produire une action; les autres sont ignores jusqu'a relache complete.
@@ -268,6 +273,7 @@ Construire une implementation proprietaire et independante du clavier Android Wi
 - Preferences Flutter/MethodChannel existantes conservees: voiceEnabled, clipboardSyncDesired, mediaControlsEnabled, privacyMode.
 - Tests unitaires JVM/Kotlin pour resolution layout/geste/politique autant que possible, plus tests Dart existants pour bridge/settings.
 - Documentation de la QA Android manuelle.
+- Preview FlutterWeb interactive dans `lib/features/keyboard/presentation/keyboard_preview_screen.dart`: champ de saisie simule, buffer/cursor local, taps de touches, Shift, Space, Back, Enter, suggestions, changements de mode/contexte/panneau, clear/reset, dernier statut d'action, et libelles explicites quand une action reste seulement visuelle.
 
 # Scope Out
 
@@ -281,6 +287,7 @@ Construire une implementation proprietaire et independante du clavier Android Wi
 - Gestes circle/roundtrip comme actions productives dans le MVP WinFlowzApp; le retour centre est uniquement une annulation.
 - Multi-langues exhaustif au-dela de QWERTY et AZERTY.
 - iOS custom keyboard, desktop/web keyboard, billing, entitlement premium.
+- Fidelite IME native complete dans FlutterWeb: pas de vrai `InputConnection`, pas de gestes multi-touch natifs, pas de long press/repeat Android, pas de clipboard systeme, pas de voice/media systeme; la preview web est un outil de review rapide, pas la validation finale.
 - Refonte du backend clipboard ou de Supabase.
 - Mode une main, clavier compact gauche/droite, clavier flottant et redimensionnement libre.
 
@@ -319,6 +326,7 @@ Construire une implementation proprietaire et independante du clavier Android Wi
   - Android Common intents, consulted 2026-05-10: common actions exist for standard tasks but availability depends on apps/device support.
   - Android App shortcuts, consulted 2026-05-10: app-defined shortcuts can expose common app actions when the app/launcher/API supports them.
   - Android package visibility, consulted 2026-05-10: when querying other apps or action availability on Android 11+, declare necessary package visibility needs or rely on intents that are automatically visible where applicable.
+  - Fresh external docs not needed for the 2026-05-12 FlutterWeb typing sandbox slice: the change is local Flutter widget behavior using existing project patterns, with no new external API, platform contract, dependency, or Vercel build behavior.
 
 # Invariants
 
@@ -499,6 +507,22 @@ Priority 4 - Advanced typing:
   - Validate with : `flutter analyze`, `flutter test test/widget_test.dart`, `flutter build web`.
   - Status 2026-05-11 : implemente; reste une preview visuelle proxy, pas une preuve de comportement IME Android natif.
   - Notes : La preview doit rester alignee avec les layouts Kotlin; a terme, extraire un schema partage ou ajouter des tests de coherence.
+
+- [ ] Tache 0d : Rendre la preview FlutterWeb tappable avec champ simule
+  - Fichier : `lib/features/keyboard/presentation/keyboard_preview_screen.dart`
+  - Action : Ajouter une surface de saisie au-dessus du clavier, un buffer/cursor local, un dispatch de tap pour `_KeyCap`, et une semantique explicite pour lettres, chiffres, ponctuation, Space, Back, Enter, Shift, mode, panneau, suggestions et clear/reset.
+  - User story link : permet a l'utilisateur de tester vite sur Vercel ce que produit le clavier sans attendre un appareil Android ou un SDK local complet.
+  - Depends on : Tache 0c.
+  - Validate with : `flutter test test/widget_test.dart`, `flutter analyze`, `flutter build web`, puis test manuel Vercel de `/keyboard`.
+  - Notes : Le champ est un simulateur produit; ne pas pretendre couvrir `InputConnection`, gestures Android, long press/repeat natif, clipboard systeme ou voice/media.
+
+- [ ] Tache 0e : Ajouter les tests widget de simulation clavier web
+  - Fichier : `test/widget_test.dart`
+  - Action : Couvrir ouverture de `/keyboard`, tap lettre, Space, Back, Enter, Shift, insertion d'une suggestion, changement contexte email/URL/private, et verification qu'une action non simulee ou desactivee ne modifie pas le buffer.
+  - User story link : evite que la preview Vercel redevienne purement visuelle pendant les iterations rapides.
+  - Depends on : Tache 0d.
+  - Validate with : `flutter test test/widget_test.dart`.
+  - Notes : Tests centres sur comportement FlutterWeb local, pas sur preuve Kotlin/Android native.
 
 - [ ] Tache 1 : Ajouter un garde-fou provenance dans la doc technique
   - Fichier : `docs/technical/android-native.md`
@@ -775,12 +799,17 @@ Priority 4 - Advanced typing:
 - [ ] CA 73 : Given le champ est prive ou sensible, when l'utilisateur insere un emoji depuis le panneau, then l'insertion peut fonctionner mais les recents emoji ne sont ni lus ni mis a jour.
 - [ ] CA 74 : Given un geste dessine depuis espace est configure pour ouvrir une app installee ou un ecran Settings Android supporte, when l'action est resolue par Android, then WinFlowzApp lance l'intent correspondant apres relachement.
 - [ ] CA 75 : Given un geste dessine est configure pour une action WinFlowzApp interne ou un snippet, when l'action est autorisee dans le contexte courant, then elle s'execute sans quitter le clavier.
+- [ ] CA 76 : Given `/keyboard` est ouvert dans la build FlutterWeb/Vercel, when l'utilisateur tape `j`, `Space`, `a`, `Back`, then le champ simule affiche la sequence attendue et le statut de derniere action se met a jour.
+- [ ] CA 77 : Given `/keyboard` est en mode texte non prive, when l'utilisateur appuie sur une suggestion comme `j'arrive`, then le champ simule insere la suggestion de facon visible et conserve une separation lisible avec le texte existant.
+- [ ] CA 78 : Given `/keyboard` passe en contexte email, URL, phone, number, search ou private, when l'utilisateur interagit avec les touches contextuelles, then les labels visibles, les touches desactivees et les mutations du champ simule refletent ce contexte.
+- [ ] CA 79 : Given une touche de preview n'a pas encore de comportement simule fiable, when l'utilisateur appuie dessus, then la preview affiche un statut explicite et ne modifie pas le champ comme si l'action native avait ete prouvee.
 
 # Test Strategy
 
 - Unit tests Kotlin/JVM for layout mapping, gesture classification, action dispatch data, and sensitive field policy where Android dependencies can be isolated.
 - Android instrumentation or manual device QA for `InputMethodService`, touch rendering, `InputConnection`, and IME picker.
 - Flutter checks for Settings and bridge if touched: `flutter analyze`, `flutter test`.
+- FlutterWeb preview sandbox checks: widget-test `KeyboardPreviewScreen` for letter insertion, Shift, Space, Back, Enter, suggestion insertion, context switches, private disabled actions and unknown-action status; manual Vercel check on `/keyboard` after `flutter build web`.
 - Manual QA required on at least one Android phone: fresh install activation assistant, enable IME, switch keyboard, test integrated field, enable hidden touch-debug overlay, verify tap/swipe/annulation diagnostics, type paragraph in QWERTY and AZERTY, test double-space-to-period on/off and in email/URL/password fields, test punctuation auto-spacing defaults in French and English, test email/URL/phone/search field variants, test special-key double tap on/off and long-press precedence, configure drawable spacebar gesture, verify space tap under threshold inserts normal space, draw recognized and ambiguous gestures beyond threshold, verify configurable threshold, verify action preview, release execution, cancellation, unavailable Android action, app launch/settings intent where available, test portrait/landscape/split-screen sizing, configure active languages, switch keyboard language, launch dictation with selected language, choose themes, test light/dark/system modes, verify keyboard/action bar/settings panel theme application, verify Settings Flutter reflects IME preferences and IME reflects Settings Flutter preferences, configure keyboard modules, add/remove/reorder allowed rows/panels/actions, validate fallback profile, toggle normal/corners mode, use all four swipe corners, verify return-center cancellation, use top icon bar, swipe icon bar pages, verify pinned actions stay fixed while unpinned actions adapt, verify private mode does not update action usage stats, set action-bar long press to pin and long-press Chiffres/Media, set action-bar long press to attach context row and long-press Chiffres/Media, verify row dedupe/close/height limit, open Navigation mode, move cursor with joystick/D-pad, use visible arrows, move character left/right, move word left/right repeatedly, move by real paragraph up/down repeatedly, verify paragraph fallback when context is insufficient, delete character left/right, delete word left/right, long-press word deletion in both directions, open emoji, insert recent/category emoji, verify emoji recents update only outside private/sensitive fields, open clipboard, paste clipboard item, verify automatic return to normal keyboard after successful paste, verify clipboard panel stays open on failed/refused paste, pin clipboard item, verify Epingles button/filter opens pinned items without crowding normal history, change clipboard retention across 24h/7 days/30 days/unlimited, verify 7 days default, verify non-pinned old items purge and pinned items remain, verify unlimited keeps non-pinned items by age, unpin old item and verify it becomes purgeable, configure action bar from top bar and settings panel, add/remove/reorder actions, open settings panel, toggle corners/haptics/audio, open Android settings, switch default keyboard, tap and long-press media, verify contextual media row, verify adaptive action sorting, backspace emoji, rotate, test password field, test chat/search/email fields.
 - Build validation: Android debug build on an environment with Android SDK. Respect existing ARM64 release guardrail; do not run release APK/AAB locally on ARM64.
 
@@ -818,11 +847,14 @@ Priority 4 - Advanced typing:
 - State risk: IME and Flutter Settings drift. Mitigation: one shared preference contract, MethodChannel status roundtrip tests, and native local store as offline source when Flutter is closed.
 - Compatibility risk: OEM IME windows and host apps vary. Mitigation: broad manual QA matrix and conservative fallback behavior.
 - Scope risk: WinFlowzApp action bar distracts from base typing. Mitigation: base typing MVP is the readiness gate; advanced panels can remain minimal.
+- Review risk: FlutterWeb preview can drift from native Android behavior and give false confidence. Mitigation: label it as a simulated sandbox, keep unsupported actions explicit, add widget tests, and continue to require Kotlin compile proof plus Android device QA for native readiness.
 
 # Execution Notes
 
 Read first:
 
+- `lib/features/keyboard/presentation/keyboard_preview_screen.dart`
+- `test/widget_test.dart`
 - `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzAppInputMethodService.kt`
 - `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzAppKeyboardView.kt`
 - `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardSecurityPolicy.kt`
@@ -902,14 +934,17 @@ Stop conditions:
 | 2026-05-11 18:04:46 UTC | sf-verify | GPT-5 Codex | Verified current keyboard IME chantier against the spec, dirty diff, bug gate and local checks; `flutter analyze`, `flutter test test/widget_test.dart`, `git diff --check` and Kotlin compile with AAPT/Flutter resource tasks excluded pass; full `:app:testDebugUnitTest` still blocks at `:app:processDebugResources` because AAPT2 cannot start on this aarch64 runner | partial | Full Gradle packaging on x86_64 CI/Blacksmith, then Android device IME QA |
 | 2026-05-12 18:28:25 UTC | sf-build | GPT-5 Codex | Continued reference-keyboard parity by adding Kotlin `KeyboardKeyValue`/parser/modifier/modmap foundations plus active-pointer touch handling, secondary pointer suppression, long-press repeat, and horizontal spacebar cursor sliding | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-12 20:02:23 UTC | direct | GPT-5 Codex | Wired the key-value engine into live layout and dispatch: parsed text keys, Ctrl/Alt/Fn modifier keys, key-event/action/macro dispatch support and built-in Fn navigation modmap | partial | /sf-verify Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-12 20:39:39 UTC | sf-spec | GPT-5 Codex | Added light spec for FlutterWeb keyboard typing sandbox: simulated input field, tappable preview keys, suggestions, context/private handling and widget-test coverage | updated | /sf-start FlutterWeb keyboard typing sandbox |
+| 2026-05-13 03:27:07 UTC | sf-start | GPT-5 Codex | Implemented FlutterWeb keyboard typing sandbox: simulated input buffer/cursor/status, tappable `_KeyCap` dispatch for letters/numbers/punctuation and Shift/Space/Back/Enter/suggestions, clear/reset controls, explicit disabled/non-simulated statuses, and widget tests for typing plus email/private behavior | implemented | /sf-verify Proprietary Swipe-Corner Android Keyboard |
+| 2026-05-13 03:30:25 UTC | sf-verify | GPT-5 Codex | Verified the FlutterWeb typing sandbox locally, fixed suggestion spacing so suggestions do not attach to existing text, and reran widget tests, analyzer and diff whitespace checks | partial | /sf-ship FlutterWeb keyboard typing sandbox, then /sf-prod and preview browser check |
 
 # Current Chantier Flow
 
-- sf-spec: done, draft saved in `shipflow_data/workflow/specs/proprietary-swipe-corner-android-keyboard.md`
+- sf-spec: updated 2026-05-12 with the fast FlutterWeb keyboard typing sandbox slice in `shipflow_data/workflow/specs/proprietary-swipe-corner-android-keyboard.md`
 - sf-ready: ready as of 2026-05-10 22:10:51 UTC
-- sf-start: partial implementation extended through 2026-05-12 with reference-keyboard foundation/editing parity, FlutterWeb review surface, local Android SDK setup sufficient to prove `:app:compileDebugKotlin`, key-value/parser/modifier/modmap foundations wired into live text/keyevent/action/macro dispatch with Ctrl/Alt/Fn keys and Fn navigation modmap, plus touch pointer/long-press/repeat/spacebar-slider foundations; full Android resource packaging is still blocked on this aarch64 runner because Gradle/AAPT2 artifacts are x86_64, and Android device QA plus broader advanced modules remain
-- sf-verify: partial as of 2026-05-12 18:28:25 UTC; Kotlin compile and local Dart checks pass, but full Gradle packaging/tests still fail around Android resource/class bundling when AAPT/resource outputs are excluded on this ARM runner and Android device IME QA remains missing
+- sf-start: implemented 2026-05-13 for the FlutterWeb keyboard typing sandbox slice (`Tache 0d/0e` scope): `/keyboard` now exposes a simulated input field with local buffer/cursor/status, tappable key dispatch for core typing actions, explicit private/disabled/non-simulated feedback, and widget coverage for typing + context/private transitions
+- sf-verify: partial as of 2026-05-13 for the FlutterWeb typing sandbox slice: local code/test proof passes with `flutter test test/widget_test.dart`, `flutter analyze`, and `git diff --check`, including a verifier fix for suggestion spacing; Vercel preview/manual browser proof remains pending because project development mode is undocumented while `vercel.json` is present, and broader Android native packaging/device QA constraints remain tracked in prior runs
 - sf-end: deferred as of 2026-05-11 03:15:38 UTC; session closed as partial because compile/device evidence is still missing
 - sf-ship: shipped on 2026-05-11 15:12:10 UTC for the current parity/FlutterWeb preview slice; not a final Android native readiness ship
 
-Next command: /sf-verify Proprietary Swipe-Corner Android Keyboard, then full Gradle packaging on x86_64 CI/Blacksmith and Android device IME QA before final Android readiness ship
+Next command: /sf-ship FlutterWeb keyboard typing sandbox, then /sf-prod and preview browser check for `/keyboard`
