@@ -36,6 +36,30 @@ class KeyboardStateStore(private val context: Context) {
         get() = preferences.getBoolean(KEY_DEBUG_TOUCH_OVERLAY_ENABLED, false)
         set(value) = preferences.edit().putBoolean(KEY_DEBUG_TOUCH_OVERLAY_ENABLED, value).apply()
 
+    var keyVibrationEnabled: Boolean
+        get() = preferences.getBoolean(KEY_KEY_VIBRATION_ENABLED, true)
+        set(value) = preferences.edit().putBoolean(KEY_KEY_VIBRATION_ENABLED, value).apply()
+
+    var keySoundEnabled: Boolean
+        get() = preferences.getBoolean(KEY_KEY_SOUND_ENABLED, false)
+        set(value) = preferences.edit().putBoolean(KEY_KEY_SOUND_ENABLED, value).apply()
+
+    var spellingSuggestionsEnabled: Boolean
+        get() = preferences.getBoolean(KEY_SPELLING_SUGGESTIONS_ENABLED, true)
+        set(value) = preferences.edit().putBoolean(KEY_SPELLING_SUGGESTIONS_ENABLED, value).apply()
+
+    var specialKeyCornersEnabled: Boolean
+        get() = preferences.getBoolean(KEY_SPECIAL_KEY_CORNERS_ENABLED, false)
+        set(value) = preferences.edit().putBoolean(KEY_SPECIAL_KEY_CORNERS_ENABLED, value).apply()
+
+    var frenchLanguageEnabled: Boolean
+        get() = preferences.getBoolean(KEY_FRENCH_LANGUAGE_ENABLED, true)
+        set(value) = preferences.edit().putBoolean(KEY_FRENCH_LANGUAGE_ENABLED, value).apply()
+
+    var englishLanguageEnabled: Boolean
+        get() = preferences.getBoolean(KEY_ENGLISH_LANGUAGE_ENABLED, true)
+        set(value) = preferences.edit().putBoolean(KEY_ENGLISH_LANGUAGE_ENABLED, value).apply()
+
     var doubleSpacePeriodEnabled: Boolean
         get() = preferences.getBoolean(KEY_DOUBLE_SPACE_PERIOD_ENABLED, true)
         set(value) = preferences.edit().putBoolean(KEY_DOUBLE_SPACE_PERIOD_ENABLED, value).apply()
@@ -73,6 +97,12 @@ class KeyboardStateStore(private val context: Context) {
             "layoutProfile" to layoutProfile.name,
             "cornerModeEnabled" to cornerModeEnabled,
             "debugTouchOverlayEnabled" to debugTouchOverlayEnabled,
+            "keyVibrationEnabled" to keyVibrationEnabled,
+            "keySoundEnabled" to keySoundEnabled,
+            "spellingSuggestionsEnabled" to spellingSuggestionsEnabled,
+            "specialKeyCornersEnabled" to specialKeyCornersEnabled,
+            "frenchLanguageEnabled" to frenchLanguageEnabled,
+            "englishLanguageEnabled" to englishLanguageEnabled,
             "doubleSpacePeriodEnabled" to doubleSpacePeriodEnabled,
             "punctuationAutoSpacingEnabled" to punctuationAutoSpacingEnabled,
             "privacyMode" to privacyMode,
@@ -119,6 +149,25 @@ class KeyboardStateStore(private val context: Context) {
 
     fun replaceDictionaryRules(rules: List<KeyboardTextRule>) {
         preferences.edit().putString(KEY_TEXT_EXPANSION_DICTIONARY, encodeRules(rules)).apply()
+    }
+
+    fun clipboardEntries(): List<KeyboardClipboardEntry> = readClipboardEntries()
+
+    fun pushClipboardEntry(
+        content: String,
+        pinned: Boolean = false,
+    ) {
+        val normalized = content.trim()
+        if (normalized.isEmpty()) {
+            return
+        }
+        val existing = clipboardEntries()
+        val existingPinned = existing.firstOrNull { it.content == normalized }?.pinned == true
+        val next =
+            (listOf(KeyboardClipboardEntry(normalized, pinned || existingPinned)) + existing)
+                .distinctBy { it.content }
+                .take(MAX_CLIPBOARD_ENTRIES)
+        preferences.edit().putString(KEY_CLIPBOARD_ENTRIES, encodeClipboardEntries(next)).apply()
     }
 
     private fun isInputMethodEnabled(): Boolean {
@@ -187,6 +236,42 @@ class KeyboardStateStore(private val context: Context) {
         return array.toString()
     }
 
+    private fun readClipboardEntries(): List<KeyboardClipboardEntry> {
+        val raw = preferences.getString(KEY_CLIPBOARD_ENTRIES, "[]").orEmpty()
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    val content = item.optString("content").trim()
+                    if (content.isNotEmpty()) {
+                        add(
+                            KeyboardClipboardEntry(
+                                content = content,
+                                pinned = item.optBoolean("pinned", false),
+                            ),
+                        )
+                    }
+                }
+            }
+        }.getOrDefault(emptyList())
+    }
+
+    private fun encodeClipboardEntries(entries: List<KeyboardClipboardEntry>): String {
+        val array = JSONArray()
+        entries
+            .filter { it.content.isNotBlank() }
+            .take(MAX_CLIPBOARD_ENTRIES)
+            .forEach { entry ->
+                array.put(
+                    JSONObject()
+                        .put("content", entry.content)
+                        .put("pinned", entry.pinned),
+                )
+            }
+        return array.toString()
+    }
+
     companion object {
         const val PREFERENCES_NAME = "winflowz_app_keyboard_prefs"
         const val KEY_VOICE_ENABLED = "voice_enabled"
@@ -195,14 +280,22 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_LAYOUT_PROFILE = "layout_profile"
         const val KEY_CORNER_MODE_ENABLED = "corner_mode_enabled"
         const val KEY_DEBUG_TOUCH_OVERLAY_ENABLED = "debug_touch_overlay_enabled"
+        const val KEY_KEY_VIBRATION_ENABLED = "key_vibration_enabled"
+        const val KEY_KEY_SOUND_ENABLED = "key_sound_enabled"
+        const val KEY_SPELLING_SUGGESTIONS_ENABLED = "spelling_suggestions_enabled"
+        const val KEY_SPECIAL_KEY_CORNERS_ENABLED = "special_key_corners_enabled"
+        const val KEY_FRENCH_LANGUAGE_ENABLED = "french_language_enabled"
+        const val KEY_ENGLISH_LANGUAGE_ENABLED = "english_language_enabled"
         const val KEY_DOUBLE_SPACE_PERIOD_ENABLED = "double_space_period_enabled"
         const val KEY_PUNCTUATION_AUTO_SPACING_ENABLED = "punctuation_auto_spacing_enabled"
         const val KEY_EMOJI_RECENTS = "emoji_recents"
         const val KEY_PRIVACY_MODE = "privacy_mode"
         const val KEY_TEXT_EXPANSION_SNIPPETS = "text_expansion_snippets"
         const val KEY_TEXT_EXPANSION_DICTIONARY = "text_expansion_dictionary"
+        const val KEY_CLIPBOARD_ENTRIES = "clipboard_entries"
         const val EMOJI_RECENT_SEPARATOR = "|"
         const val MAX_TEXT_RULES = 300
+        const val MAX_CLIPBOARD_ENTRIES = 60
         const val PRIVACY_AUTO = "auto"
         const val PRIVACY_STRICT = "strict"
         const val PRIVACY_STANDARD = "standard"

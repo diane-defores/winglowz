@@ -52,6 +52,12 @@ void _installAndroidBridgeMocks() {
           'clipboardSyncDesired': false,
           'mediaControlsEnabled': true,
           'privacyMode': 'auto',
+          'keyVibrationEnabled': true,
+          'keySoundEnabled': false,
+          'spellingSuggestionsEnabled': true,
+          'specialKeyCornersEnabled': false,
+          'frenchLanguageEnabled': true,
+          'englishLanguageEnabled': true,
         };
       case 'drainKeyboardClipboardEvents':
         return <Object?>[];
@@ -580,10 +586,95 @@ void main() {
     await _tapVisible(tester, find.text('Media'));
 
     expect(find.text('Now'), findsOneWidget);
-    expect(find.text('Now playing: tap Now'), findsOneWidget);
+    expect(find.text('Now playing: tap Now'), findsNothing);
 
     await _tapVisible(tester, find.text('Now'));
     expect(find.text('Daft Punk - Digital Love'), findsWidgets);
+
+    await _tapVisible(tester, find.text('Now'));
+    expect(find.text('Daft Punk - Digital Love'), findsNothing);
+  });
+
+  testWidgets('keyboard preview snippets panel scrolls current snippets', (
+    tester,
+  ) async {
+    _useLargeViewport(tester);
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+    await tester.pumpWidget(_keyboardPreviewTestWidget());
+    await tester.pumpAndSettle();
+
+    await _tapVisible(tester, find.text('Snip'));
+
+    expect(find.text('j\'arrive'), findsWidgets);
+    expect(find.text('D\'accord'), findsOneWidget);
+    expect(find.text('Signature'), findsOneWidget);
+
+    await _tapVisible(tester, find.text('D\'accord'));
+
+    expect(_simulatedBufferText(tester), contains('D\'accord'));
+    expect(_simulatedStatusText(tester), 'Snippet inserted.');
+  });
+
+  testWidgets('keyboard preview clipboard shows entries and full history', (
+    tester,
+  ) async {
+    _useLargeViewport(tester);
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+    await tester.pumpWidget(_keyboardPreviewTestWidget());
+    await tester.pumpAndSettle();
+
+    await _tapVisible(tester, find.text('Clip'));
+
+    expect(find.text('Latest copied text'), findsOneWidget);
+    expect(find.text('Copy'), findsNothing);
+
+    await _tapVisible(tester, find.text('Latest copied text'));
+    expect(_simulatedBufferText(tester), contains('Latest copied text'));
+
+    await _tapVisible(tester, find.text('Clip'));
+    await tester.longPress(find.text('Clip'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Pin Pinned account id'), findsOneWidget);
+    expect(find.text('q'), findsNothing);
+    expect(find.text('Space'), findsNothing);
+  });
+
+  testWidgets('keyboard preview settings panel exposes important shortcuts', (
+    tester,
+  ) async {
+    _useLargeViewport(tester);
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+    await tester.pumpWidget(_keyboardPreviewTestWidget());
+    await tester.pumpAndSettle();
+
+    await _tapVisible(tester, find.text('Prefs'));
+
+    expect(find.text('Keyboard'), findsOneWidget);
+    expect(find.text('App'), findsOneWidget);
+    expect(find.text('Theme'), findsOneWidget);
+    expect(find.text('QWERTY'), findsWidgets);
+    expect(find.text('Vibe on'), findsOneWidget);
+    expect(find.text('Sound off'), findsOneWidget);
+    expect(find.text('Suggest on'), findsOneWidget);
+    expect(find.text('FR on'), findsOneWidget);
+    expect(find.text('EN on'), findsOneWidget);
+    expect(find.text('Special off'), findsOneWidget);
+    expect(find.text('Corners on'), findsOneWidget);
+    expect(find.text('2sp on'), findsOneWidget);
+    expect(find.text('Punc on'), findsOneWidget);
+    expect(find.text('Debug off'), findsOneWidget);
+    expect(find.text('q'), findsNothing);
+    expect(find.text('Space'), findsNothing);
   });
 
   testWidgets('keyboard preview number mode uses three by three keypad rows', (

@@ -31,9 +31,7 @@ class KeyboardClipboardController(private val context: Context) {
 
     fun pastePrimaryText(inputConnection: InputConnection?, syncDesired: Boolean): Boolean {
         val clip = clipboard.primaryClip ?: return false
-        val item = clip.getItemAt(0) ?: return false
-        val value = item.coerceToText(context)?.toString()?.takeIf { it.isNotBlank() }
-            ?: return false
+        val value = primaryText() ?: return false
         val pasted = InputConnectionEditor(inputConnection).commitText(value).applied
         if (pasted && syncDesired && !clip.isSensitive()) {
             KeyboardClipboardEventQueue.enqueue(
@@ -44,6 +42,12 @@ class KeyboardClipboardController(private val context: Context) {
             )
         }
         return pasted
+    }
+
+    fun primaryText(): String? {
+        val clip = clipboard.primaryClip ?: return null
+        val item = clip.getItemAt(0) ?: return null
+        return item.coerceToText(context)?.toString()?.trim()?.takeIf { it.isNotBlank() }
     }
 
     private fun ClipData.isSensitive(): Boolean {

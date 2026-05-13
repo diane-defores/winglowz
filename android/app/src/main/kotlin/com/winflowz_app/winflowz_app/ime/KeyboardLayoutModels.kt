@@ -25,6 +25,7 @@ enum class KeyboardPanelMode {
     Accents,
     Emoji,
     Clipboard,
+    ClipboardFull,
     Media,
     Snippets,
     Settings,
@@ -68,6 +69,7 @@ enum class KeyboardKeyAction {
     ToggleSettingsPanel,
     CopySelection,
     PasteClipboard,
+    InsertClipboardEntry,
     ShowClipboardPins,
     MediaPrevious,
     MediaPlayPause,
@@ -75,9 +77,17 @@ enum class KeyboardKeyAction {
     MediaNowPlaying,
     InsertSnippetOne,
     OpenWinFlowzAppSettings,
+    OpenThemeSettings,
+    ShowKeyboardPicker,
     ToggleCornerMode,
     ToggleLayoutProfile,
     ToggleDebugTouchOverlay,
+    ToggleKeyVibration,
+    ToggleKeySound,
+    ToggleSpellingSuggestions,
+    ToggleSpecialKeyCorners,
+    ToggleFrenchLanguage,
+    ToggleEnglishLanguage,
     ToggleDoubleSpacePeriod,
     TogglePunctuationAutoSpacing,
     SelectEmojiRecents,
@@ -124,6 +134,11 @@ data class KeyboardKeyGlyph(
     }
 }
 
+data class KeyboardClipboardEntry(
+    val content: String,
+    val pinned: Boolean = false,
+)
+
 data class KeyboardKeySpec(
     val id: String,
     val label: String,
@@ -140,6 +155,7 @@ data class KeyboardRowSpec(
     val keys: List<KeyboardKeySpec>,
     val leadingWeight: Float = 0f,
     val trailingWeight: Float = leadingWeight,
+    val horizontalScrollable: Boolean = false,
 )
 
 data class KeyboardLayoutSnapshot(
@@ -158,16 +174,24 @@ data class KeyboardLayoutRequest(
     val layoutProfile: KeyboardLayoutProfile,
     val cornerModeEnabled: Boolean,
     val debugTouchOverlayEnabled: Boolean,
+    val keyVibrationEnabled: Boolean = true,
+    val keySoundEnabled: Boolean = false,
+    val spellingSuggestionsEnabled: Boolean = true,
+    val specialKeyCornersEnabled: Boolean = false,
+    val frenchLanguageEnabled: Boolean = true,
+    val englishLanguageEnabled: Boolean = true,
     val doubleSpacePeriodEnabled: Boolean,
     val punctuationAutoSpacingEnabled: Boolean,
     val emojiCategory: KeyboardEmojiCategory,
     val recentEmojis: List<String>,
     val enterLabel: String,
     val clipboardAllowed: Boolean,
+    val clipboardEntries: List<KeyboardClipboardEntry> = emptyList(),
     val voiceAllowed: Boolean,
     val snippetsAllowed: Boolean,
+    val snippets: List<KeyboardTextRule> = emptyList(),
     val suggestions: List<String>,
-    val mediaNowPlayingLabel: String = "Now playing: tap Now",
+    val mediaNowPlayingLabel: String? = null,
 )
 
 object KeyboardLayoutBuilder {
@@ -189,12 +213,14 @@ object KeyboardLayoutBuilder {
 
         val rows = mutableListOf<KeyboardRowSpec>()
         rows.add(actionRow(request, effectiveMode))
-        val suggestionRows = suggestionRows(request)
+        val suggestionRows = if (request.panel.suppressesTypingRows()) emptyList() else suggestionRows(request)
         rows.addAll(suggestionRows)
         val panelRows = panelRows(request)
         rows.addAll(panelRows)
-        rows.addAll(letterRows(request, effectiveMode))
-        rows.add(controlRow(request, effectiveMode))
+        if (!request.panel.suppressesTypingRows()) {
+            rows.addAll(letterRows(request, effectiveMode))
+            rows.add(controlRow(request, effectiveMode))
+        }
         return KeyboardLayoutSnapshot(
             rows = rows,
             mode = effectiveMode,
@@ -202,6 +228,10 @@ object KeyboardLayoutBuilder {
             panelRowCount = panelRows.size,
             suggestionRowCount = suggestionRows.size,
         )
+    }
+
+    private fun KeyboardPanelMode.suppressesTypingRows(): Boolean {
+        return this == KeyboardPanelMode.Settings || this == KeyboardPanelMode.ClipboardFull
     }
 
     private fun actionRow(
@@ -217,7 +247,12 @@ object KeyboardLayoutBuilder {
                     modeKey("#+=", KeyboardKeyAction.ModeSymbols, mode == KeyboardLayoutMode.Symbols),
                     panelKey("Nav", KeyboardKeyAction.ToggleNavigationPanel, request.panel == KeyboardPanelMode.Navigation),
                     panelKey("Emoji", KeyboardKeyAction.ToggleEmojiPanel, request.panel == KeyboardPanelMode.Emoji),
-                    panelKey("Clip", KeyboardKeyAction.ToggleClipboardPanel, request.panel == KeyboardPanelMode.Clipboard, request.clipboardAllowed),
+                    panelKey(
+                        "Clip",
+                        KeyboardKeyAction.ToggleClipboardPanel,
+                        request.panel == KeyboardPanelMode.Clipboard || request.panel == KeyboardPanelMode.ClipboardFull,
+                        request.clipboardAllowed,
+                    ),
                     panelKey("Snip", KeyboardKeyAction.ToggleSnippetsPanel, request.panel == KeyboardPanelMode.Snippets, request.snippetsAllowed),
                     panelKey("Media", KeyboardKeyAction.ToggleMediaPanel, request.panel == KeyboardPanelMode.Media),
                     panelKey("Prefs", KeyboardKeyAction.ToggleSettingsPanel, request.panel == KeyboardPanelMode.Settings),
@@ -254,9 +289,10 @@ object KeyboardLayoutBuilder {
             KeyboardPanelMode.Accents -> accentPanelRows()
             KeyboardPanelMode.Emoji -> emojiPanelRows(request)
             KeyboardPanelMode.Clipboard -> listOf(clipboardPanelRow(request))
+            KeyboardPanelMode.ClipboardFull -> clipboardFullPanelRows(request)
             KeyboardPanelMode.Media -> mediaPanelRows(request)
             KeyboardPanelMode.Snippets -> listOf(snippetsPanelRow(request))
-            KeyboardPanelMode.Settings -> listOf(settingsPanelRow(request))
+            KeyboardPanelMode.Settings -> settingsPanelRows(request)
         }
     }
 
@@ -368,159 +404,231 @@ object KeyboardLayoutBuilder {
 
     private fun clipboardPanelRow(request: KeyboardLayoutRequest): KeyboardRowSpec {
         return KeyboardRowSpec(
-            keys =
-                listOf(
-                    KeyboardKeySpec(
-                        id = "clip-copy",
-                        label = "Copy",
-                        action = KeyboardKeyAction.CopySelection,
-                        enabled = request.clipboardAllowed,
-                        weight = 1.2f,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-cut",
-                        label = "Cut",
-                        action = KeyboardKeyAction.CutSelection,
-                        enabled = request.clipboardAllowed,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-paste",
-                        label = "Paste",
-                        action = KeyboardKeyAction.PasteClipboard,
-                        enabled = request.clipboardAllowed,
-                        weight = 1.2f,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-paste-plain",
-                        label = "Plain",
-                        action = KeyboardKeyAction.PastePlainClipboard,
-                        enabled = request.clipboardAllowed,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-select-all",
-                        label = "All",
-                        action = KeyboardKeyAction.SelectAll,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-undo",
-                        label = "Undo",
-                        action = KeyboardKeyAction.Undo,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-redo",
-                        label = "Redo",
-                        action = KeyboardKeyAction.Redo,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-pins",
-                        label = "Pins app",
-                        action = KeyboardKeyAction.ShowClipboardPins,
-                        enabled = request.clipboardAllowed,
-                    ),
-                    KeyboardKeySpec(
-                        id = "clip-close",
-                        label = "Close",
-                        action = KeyboardKeyAction.ClosePanel,
-                    ),
-                ),
+            keys = clipboardEntryKeys(request.clipboardEntries.take(12), request.clipboardAllowed),
+            horizontalScrollable = true,
         )
     }
 
+    private fun clipboardFullPanelRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        val pinned = request.clipboardEntries.filter { it.pinned }
+        val normal = request.clipboardEntries.filterNot { it.pinned }
+        val entries = (pinned + normal).take(12)
+        if (entries.isEmpty()) {
+            return listOf(KeyboardRowSpec(keys = clipboardEntryKeys(emptyList(), request.clipboardAllowed)))
+        }
+        return entries.chunked(3).map { chunk ->
+            KeyboardRowSpec(keys = clipboardEntryKeys(chunk, request.clipboardAllowed))
+        }
+    }
+
+    private fun clipboardEntryKeys(
+        entries: List<KeyboardClipboardEntry>,
+        clipboardAllowed: Boolean,
+    ): List<KeyboardKeySpec> {
+        if (entries.isEmpty()) {
+            return listOf(
+                KeyboardKeySpec(
+                    id = "clip-empty",
+                    label = "Clipboard empty",
+                    action = KeyboardKeyAction.InsertClipboardEntry,
+                    enabled = false,
+                    weight = 1.8f,
+                ),
+            )
+        }
+        return entries.mapIndexed { index, entry ->
+            KeyboardKeySpec(
+                id = "clip-entry-$index",
+                label = clipboardLabel(entry),
+                action = KeyboardKeyAction.InsertClipboardEntry,
+                enabled = clipboardAllowed,
+                active = entry.pinned,
+                suggestion = entry.content,
+                weight = 1.8f,
+            )
+        }
+    }
+
+    private fun clipboardLabel(entry: KeyboardClipboardEntry): String {
+        val normalized = entry.content.replace(Regex("\\s+"), " ").trim()
+        val label = if (normalized.length <= 24) normalized else normalized.take(23) + "..."
+        return if (entry.pinned) "Pin $label" else label
+    }
+
     private fun mediaPanelRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        val rows =
+            mutableListOf(
+                KeyboardRowSpec(
+                    keys =
+                        listOf(
+                            KeyboardKeySpec("media-prev", "Prev", KeyboardKeyAction.MediaPrevious),
+                            KeyboardKeySpec("media-play", ">||", KeyboardKeyAction.MediaPlayPause, weight = 1.2f),
+                            KeyboardKeySpec("media-next", "Next", KeyboardKeyAction.MediaNext),
+                            KeyboardKeySpec("media-now", "Now", KeyboardKeyAction.MediaNowPlaying),
+                            KeyboardKeySpec("media-close", "Close", KeyboardKeyAction.ClosePanel),
+                        ),
+                ),
+            )
+        request.mediaNowPlayingLabel?.let { label ->
+            rows.add(
+                KeyboardRowSpec(
+                    keys =
+                        listOf(
+                            KeyboardKeySpec(
+                                "media-now-playing-label",
+                                label,
+                                KeyboardKeyAction.MediaNowPlaying,
+                                weight = 5f,
+                            ),
+                        ),
+                ),
+            )
+        }
+        return rows
+    }
+
+    private fun snippetsPanelRow(request: KeyboardLayoutRequest): KeyboardRowSpec {
+        val snippetKeys =
+            request.snippets
+                .take(12)
+                .mapIndexed { index, rule ->
+                    KeyboardKeySpec(
+                        id = "snippet-$index",
+                        label = snippetLabel(rule),
+                        action = KeyboardKeyAction.InsertSnippetOne,
+                        enabled = request.snippetsAllowed,
+                        weight = 1.7f,
+                        suggestion = rule.replacement,
+                    )
+                }
+        val contentKeys =
+            if (snippetKeys.isEmpty()) {
+                listOf(
+                    KeyboardKeySpec(
+                        id = "snippet-empty",
+                        label = "No snippets",
+                        action = KeyboardKeyAction.InsertSnippetOne,
+                        enabled = false,
+                        weight = 1.8f,
+                    ),
+                )
+            } else {
+                snippetKeys
+            }
+        return KeyboardRowSpec(
+            keys =
+                contentKeys +
+                    listOf(
+                        KeyboardKeySpec(
+                            id = "snippet-open",
+                            label = "App",
+                            action = KeyboardKeyAction.OpenWinFlowzAppSettings,
+                            weight = 1.2f,
+                        ),
+                        KeyboardKeySpec("snippet-close", "Close", KeyboardKeyAction.ClosePanel),
+                    ),
+            horizontalScrollable = true,
+        )
+    }
+
+    private fun snippetLabel(rule: KeyboardTextRule): String {
+        val replacement = rule.replacement.trim()
+        val label = replacement.ifBlank { rule.trigger.trim() }
+        return if (label.length <= 18) label else label.take(17) + "..."
+    }
+
+    private fun settingsPanelRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
         return listOf(
             KeyboardRowSpec(
                 keys =
                     listOf(
-                        KeyboardKeySpec("media-prev", "Prev", KeyboardKeyAction.MediaPrevious),
-                        KeyboardKeySpec("media-play", ">||", KeyboardKeyAction.MediaPlayPause, weight = 1.2f),
-                        KeyboardKeySpec("media-next", "Next", KeyboardKeyAction.MediaNext),
-                        KeyboardKeySpec("media-now", "Now", KeyboardKeyAction.MediaNowPlaying),
-                        KeyboardKeySpec("media-close", "Close", KeyboardKeyAction.ClosePanel),
+                        KeyboardKeySpec("setting-keyboard-picker", "Keyboard", KeyboardKeyAction.ShowKeyboardPicker, weight = 1.3f),
+                        KeyboardKeySpec("setting-app", "App", KeyboardKeyAction.OpenWinFlowzAppSettings),
+                        KeyboardKeySpec("setting-theme", "Theme", KeyboardKeyAction.OpenThemeSettings),
+                        KeyboardKeySpec("setting-layout", request.layoutProfile.name, KeyboardKeyAction.ToggleLayoutProfile, weight = 1.1f),
+                        KeyboardKeySpec("setting-close", "Close", KeyboardKeyAction.ClosePanel),
                     ),
             ),
             KeyboardRowSpec(
                 keys =
                     listOf(
                         KeyboardKeySpec(
-                            "media-now-playing-label",
-                            request.mediaNowPlayingLabel,
-                            KeyboardKeyAction.MediaNowPlaying,
-                            weight = 5f,
+                            id = "setting-vibration",
+                            label = if (request.keyVibrationEnabled) "Vibe on" else "Vibe off",
+                            action = KeyboardKeyAction.ToggleKeyVibration,
+                            active = request.keyVibrationEnabled,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-sound",
+                            label = if (request.keySoundEnabled) "Sound on" else "Sound off",
+                            action = KeyboardKeyAction.ToggleKeySound,
+                            active = request.keySoundEnabled,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-debug",
+                            label = if (request.debugTouchOverlayEnabled) "Debug on" else "Debug off",
+                            action = KeyboardKeyAction.ToggleDebugTouchOverlay,
+                            active = request.debugTouchOverlayEnabled,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-suggestions",
+                            label = if (request.spellingSuggestionsEnabled) "Suggest on" else "Suggest off",
+                            action = KeyboardKeyAction.ToggleSpellingSuggestions,
+                            active = request.spellingSuggestionsEnabled,
+                            weight = 1.2f,
                         ),
                     ),
             ),
-        )
-    }
-
-    private fun snippetsPanelRow(request: KeyboardLayoutRequest): KeyboardRowSpec {
-        return KeyboardRowSpec(
-            keys =
-                listOf(
-                    KeyboardKeySpec(
-                        id = "snippet-one",
-                        label = "Snippet",
-                        action = KeyboardKeyAction.InsertSnippetOne,
-                        enabled = request.snippetsAllowed,
-                        weight = 1.8f,
+            KeyboardRowSpec(
+                keys =
+                    listOf(
+                        KeyboardKeySpec(
+                            id = "setting-language-fr",
+                            label = if (request.frenchLanguageEnabled) "FR on" else "FR off",
+                            action = KeyboardKeyAction.ToggleFrenchLanguage,
+                            active = request.frenchLanguageEnabled,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-language-en",
+                            label = if (request.englishLanguageEnabled) "EN on" else "EN off",
+                            action = KeyboardKeyAction.ToggleEnglishLanguage,
+                            active = request.englishLanguageEnabled,
+                        ),
                     ),
-                    KeyboardKeySpec(
-                        id = "snippet-open",
-                        label = "App",
-                        action = KeyboardKeyAction.OpenWinFlowzAppSettings,
-                        weight = 1.2f,
+                leadingWeight = 1f,
+                trailingWeight = 1f,
+            ),
+            KeyboardRowSpec(
+                keys =
+                    listOf(
+                        KeyboardKeySpec(
+                            id = "setting-corners",
+                            label = if (request.cornerModeEnabled) "Corners on" else "Corners off",
+                            action = KeyboardKeyAction.ToggleCornerMode,
+                            active = request.cornerModeEnabled,
+                            weight = 1.2f,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-double-space",
+                            label = if (request.doubleSpacePeriodEnabled) "2sp on" else "2sp off",
+                            action = KeyboardKeyAction.ToggleDoubleSpacePeriod,
+                            active = request.doubleSpacePeriodEnabled,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-punct",
+                            label = if (request.punctuationAutoSpacingEnabled) "Punc on" else "Punc off",
+                            action = KeyboardKeyAction.TogglePunctuationAutoSpacing,
+                            active = request.punctuationAutoSpacingEnabled,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-special-corners",
+                            label = if (request.specialKeyCornersEnabled) "Special on" else "Special off",
+                            action = KeyboardKeyAction.ToggleSpecialKeyCorners,
+                            active = request.specialKeyCornersEnabled,
+                            weight = 1.2f,
+                        ),
                     ),
-                    KeyboardKeySpec("snippet-close", "Close", KeyboardKeyAction.ClosePanel),
-                ),
-        )
-    }
-
-    private fun settingsPanelRow(request: KeyboardLayoutRequest): KeyboardRowSpec {
-        return KeyboardRowSpec(
-            keys =
-                listOf(
-                    KeyboardKeySpec(
-                        id = "setting-corners",
-                        label = if (request.cornerModeEnabled) "Corners on" else "Corners off",
-                        action = KeyboardKeyAction.ToggleCornerMode,
-                        active = request.cornerModeEnabled,
-                        weight = 1.2f,
-                    ),
-                    KeyboardKeySpec(
-                        id = "setting-layout",
-                        label = request.layoutProfile.name,
-                        action = KeyboardKeyAction.ToggleLayoutProfile,
-                        weight = 1.1f,
-                    ),
-                    KeyboardKeySpec(
-                        id = "setting-debug",
-                        label = if (request.debugTouchOverlayEnabled) "Debug on" else "Debug off",
-                        action = KeyboardKeyAction.ToggleDebugTouchOverlay,
-                        active = request.debugTouchOverlayEnabled,
-                        weight = 1.1f,
-                    ),
-                    KeyboardKeySpec(
-                        id = "setting-double-space",
-                        label = if (request.doubleSpacePeriodEnabled) "2sp on" else "2sp off",
-                        action = KeyboardKeyAction.ToggleDoubleSpacePeriod,
-                        active = request.doubleSpacePeriodEnabled,
-                    ),
-                    KeyboardKeySpec(
-                        id = "setting-punct",
-                        label = if (request.punctuationAutoSpacingEnabled) "Punc on" else "Punc off",
-                        action = KeyboardKeyAction.TogglePunctuationAutoSpacing,
-                        active = request.punctuationAutoSpacingEnabled,
-                    ),
-                    KeyboardKeySpec(
-                        id = "setting-app",
-                        label = "App",
-                        action = KeyboardKeyAction.OpenWinFlowzAppSettings,
-                    ),
-                    KeyboardKeySpec(
-                        id = "setting-close",
-                        label = "Close",
-                        action = KeyboardKeyAction.ClosePanel,
-                    ),
-                ),
+            ),
         )
     }
 

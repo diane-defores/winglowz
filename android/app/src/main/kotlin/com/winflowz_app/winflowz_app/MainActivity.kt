@@ -264,6 +264,24 @@ class MainActivity : FlutterActivity() {
                         call.argument<Boolean>("debugTouchOverlayEnabled")?.let {
                             keyboardState.debugTouchOverlayEnabled = it
                         }
+                        call.argument<Boolean>("keyVibrationEnabled")?.let {
+                            keyboardState.keyVibrationEnabled = it
+                        }
+                        call.argument<Boolean>("keySoundEnabled")?.let {
+                            keyboardState.keySoundEnabled = it
+                        }
+                        call.argument<Boolean>("spellingSuggestionsEnabled")?.let {
+                            keyboardState.spellingSuggestionsEnabled = it
+                        }
+                        call.argument<Boolean>("specialKeyCornersEnabled")?.let {
+                            keyboardState.specialKeyCornersEnabled = it
+                        }
+                        call.argument<Boolean>("frenchLanguageEnabled")?.let {
+                            keyboardState.frenchLanguageEnabled = it
+                        }
+                        call.argument<Boolean>("englishLanguageEnabled")?.let {
+                            keyboardState.englishLanguageEnabled = it
+                        }
                         call.argument<Boolean>("doubleSpacePeriodEnabled")?.let {
                             keyboardState.doubleSpacePeriodEnabled = it
                         }

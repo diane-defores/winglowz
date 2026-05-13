@@ -12,7 +12,7 @@ data class KeyboardExpansionMatch(
 )
 
 object KeyboardTextAssistant {
-    private val defaultWords =
+    private val defaultFrenchWords =
         listOf(
             "bonjour",
             "bonsoir",
@@ -26,6 +26,19 @@ object KeyboardTextAssistant {
             "adresse",
             "rendez-vous",
         )
+    private val defaultEnglishWords =
+        listOf(
+            "hello",
+            "thanks",
+            "tomorrow",
+            "today",
+            "now",
+            "address",
+            "meeting",
+            "perfect",
+            "coming",
+            "okay",
+        )
 
     fun shouldAutoCapitalize(textBeforeCursor: String): Boolean {
         val trimmed = textBeforeCursor.trimEnd()
@@ -38,6 +51,8 @@ object KeyboardTextAssistant {
     fun suggestions(
         textBeforeCursor: String,
         rules: List<KeyboardTextRule>,
+        frenchEnabled: Boolean = true,
+        englishEnabled: Boolean = true,
         maxCount: Int = 3,
     ): List<String> {
         val prefix = currentTokenBeforeCursor(textBeforeCursor)
@@ -55,7 +70,7 @@ object KeyboardTextAssistant {
                         add(rule.replacement)
                     }
                 }
-                defaultWords.forEach { word ->
+                defaultWords(frenchEnabled = frenchEnabled, englishEnabled = englishEnabled).forEach { word ->
                     if (word.lowercase().startsWith(normalizedPrefix)) {
                         add(word)
                     }
@@ -66,6 +81,20 @@ object KeyboardTextAssistant {
             .filter { it.isNotEmpty() && !it.equals(prefix, ignoreCase = true) }
             .distinct()
             .take(maxCount)
+    }
+
+    private fun defaultWords(
+        frenchEnabled: Boolean,
+        englishEnabled: Boolean,
+    ): List<String> {
+        return buildList {
+            if (frenchEnabled) {
+                addAll(defaultFrenchWords)
+            }
+            if (englishEnabled) {
+                addAll(defaultEnglishWords)
+            }
+        }
     }
 
     fun expansionAfterBoundary(

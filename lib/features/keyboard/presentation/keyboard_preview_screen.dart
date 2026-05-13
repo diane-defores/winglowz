@@ -25,6 +25,7 @@ enum KeyboardPreviewPanel {
   accents('Accents'),
   emoji('Emoji'),
   clipboard('Clipboard'),
+  clipboardFull('Clip full'),
   snippets('Snippets'),
   media('Media'),
   settings('Settings');
@@ -59,8 +60,14 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
   bool _privateMode = false;
   bool _corners = true;
   bool _debug = false;
+  bool _vibration = true;
+  bool _sound = false;
+  bool _suggestions = true;
+  bool _specialCorners = false;
+  bool _french = true;
+  bool _english = true;
   bool _shiftEnabled = false;
-  String _mediaNowPlaying = 'Now playing: tap Now';
+  String? _mediaNowPlaying;
   String _buffer = '';
   int _cursor = 0;
   String _status =
@@ -116,7 +123,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
       _buffer = '';
       _cursor = 0;
       _shiftEnabled = false;
-      _mediaNowPlaying = 'Now playing: tap Now';
+      _mediaNowPlaying = null;
       _panel = KeyboardPreviewPanel.none;
       _mode = _fieldContext.numeric
           ? KeyboardPreviewMode.numbers
@@ -184,6 +191,12 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
           break;
         }
         final target = key.panelTarget!;
+        if (target == KeyboardPreviewPanel.clipboard &&
+            (_panel == KeyboardPreviewPanel.clipboard ||
+                _panel == KeyboardPreviewPanel.clipboardFull)) {
+          _setPanel(KeyboardPreviewPanel.none);
+          return;
+        }
         if (_panel == target) {
           _setPanel(KeyboardPreviewPanel.none);
           return;
@@ -192,6 +205,12 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
         break;
       case KeyboardPreviewKeyAction.closePanel:
         _setPanel(KeyboardPreviewPanel.none);
+        break;
+      case KeyboardPreviewKeyAction.clipboardEntry:
+        _insertText(
+          key.output ?? key.label,
+          status: 'Clipboard entry inserted.',
+        );
         break;
       case KeyboardPreviewKeyAction.shift:
         setState(() {
@@ -210,12 +229,67 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
         break;
       case KeyboardPreviewKeyAction.mediaNowPlaying:
         setState(() {
-          _mediaNowPlaying = 'Daft Punk - Digital Love';
-          _status = _mediaNowPlaying;
+          if (_mediaNowPlaying == null) {
+            _mediaNowPlaying = 'Daft Punk - Digital Love';
+            _status = _mediaNowPlaying!;
+          } else {
+            _mediaNowPlaying = null;
+            _status = 'Now playing hidden.';
+          }
+        });
+        break;
+      case KeyboardPreviewKeyAction.keyboardPicker:
+        _setStatus('Keyboard picker is Android-only.');
+        break;
+      case KeyboardPreviewKeyAction.openAppSettings:
+        _setStatus('Would open WinFlowzApp settings on Android.');
+        break;
+      case KeyboardPreviewKeyAction.openThemeSettings:
+        _setStatus('Would open WinFlowzApp Appearance settings on Android.');
+        break;
+      case KeyboardPreviewKeyAction.toggleVibration:
+        setState(() {
+          _vibration = !_vibration;
+          _status = _vibration ? 'Key vibration on.' : 'Key vibration off.';
+        });
+        break;
+      case KeyboardPreviewKeyAction.toggleSound:
+        setState(() {
+          _sound = !_sound;
+          _status = _sound ? 'Key sound on.' : 'Key sound off.';
+        });
+        break;
+      case KeyboardPreviewKeyAction.toggleSuggestions:
+        setState(() {
+          _suggestions = !_suggestions;
+          _status = _suggestions ? 'Suggestions on.' : 'Suggestions off.';
+        });
+        break;
+      case KeyboardPreviewKeyAction.toggleSpecialCorners:
+        setState(() {
+          _specialCorners = !_specialCorners;
+          _status = _specialCorners
+              ? 'Special key corners on.'
+              : 'Special key corners off.';
+        });
+        break;
+      case KeyboardPreviewKeyAction.toggleFrench:
+        setState(() {
+          _french = !_french;
+          _status = _french ? 'French enabled.' : 'French disabled.';
+        });
+        break;
+      case KeyboardPreviewKeyAction.toggleEnglish:
+        setState(() {
+          _english = !_english;
+          _status = _english ? 'English enabled.' : 'English disabled.';
         });
         break;
       case KeyboardPreviewKeyAction.suggestion:
         _insertSuggestion(key.output ?? key.label);
+        break;
+      case KeyboardPreviewKeyAction.snippet:
+        _insertText(key.output ?? key.label, status: 'Snippet inserted.');
         break;
       case KeyboardPreviewKeyAction.text:
         var value = key.output ?? key.label;
@@ -237,6 +311,18 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
     }
   }
 
+  void _onKeyLongPressed(KeyboardPreviewKey key) {
+    if (!key.enabled) {
+      return;
+    }
+    if (key.action == KeyboardPreviewKeyAction.panelSwitch &&
+        key.panelTarget == KeyboardPreviewPanel.clipboard) {
+      _setPanel(KeyboardPreviewPanel.clipboardFull);
+      return;
+    }
+    _onKeyPressed(key);
+  }
+
   @override
   Widget build(BuildContext context) {
     final preview = KeyboardPreviewSnapshot(
@@ -247,6 +333,12 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
       privateMode: _privateMode,
       corners: _corners,
       debug: _debug,
+      vibration: _vibration,
+      sound: _sound,
+      suggestionsEnabled: _suggestions,
+      specialCorners: _specialCorners,
+      frenchEnabled: _french,
+      englishEnabled: _english,
       shiftEnabled: _shiftEnabled,
       mediaNowPlaying: _mediaNowPlaying,
     );
@@ -297,6 +389,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
           cursor: _cursor,
           status: _status,
           onKeyPressed: _onKeyPressed,
+          onKeyLongPressed: _onKeyLongPressed,
           onClear: _clearBuffer,
           onReset: _resetSandbox,
         ),
@@ -464,6 +557,7 @@ class _KeyboardFrame extends StatelessWidget {
     required this.cursor,
     required this.status,
     required this.onKeyPressed,
+    required this.onKeyLongPressed,
     required this.onClear,
     required this.onReset,
   });
@@ -473,6 +567,7 @@ class _KeyboardFrame extends StatelessWidget {
   final int cursor;
   final String status;
   final ValueChanged<KeyboardPreviewKey> onKeyPressed;
+  final ValueChanged<KeyboardPreviewKey> onKeyLongPressed;
   final VoidCallback onClear;
   final VoidCallback onReset;
 
@@ -511,6 +606,7 @@ class _KeyboardFrame extends StatelessWidget {
                     row: row,
                     debug: snapshot.debug,
                     onKeyPressed: onKeyPressed,
+                    onKeyLongPressed: onKeyLongPressed,
                   ),
                   AppGaps.x2,
                 ],
@@ -553,14 +649,40 @@ class _KeyboardRow extends StatelessWidget {
     required this.row,
     required this.debug,
     required this.onKeyPressed,
+    required this.onKeyLongPressed,
   });
 
   final KeyboardPreviewRow row;
   final bool debug;
   final ValueChanged<KeyboardPreviewKey> onKeyPressed;
+  final ValueChanged<KeyboardPreviewKey> onKeyLongPressed;
 
   @override
   Widget build(BuildContext context) {
+    if (row.horizontalScrollable) {
+      return SizedBox(
+        height: row.height,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              for (final key in row.keys) ...[
+                SizedBox(
+                  width: (key.weight * 84).clamp(72, 180).toDouble(),
+                  child: _KeyCap(
+                    keySpec: key,
+                    debug: debug,
+                    onPressed: () => onKeyPressed(key),
+                    onLongPressed: () => onKeyLongPressed(key),
+                  ),
+                ),
+                if (key != row.keys.last) AppGaps.horizontalX2,
+              ],
+            ],
+          ),
+        ),
+      );
+    }
     return SizedBox(
       height: row.height,
       child: Row(
@@ -574,6 +696,7 @@ class _KeyboardRow extends StatelessWidget {
                 keySpec: key,
                 debug: debug,
                 onPressed: () => onKeyPressed(key),
+                onLongPressed: () => onKeyLongPressed(key),
               ),
             ),
             if (key != row.keys.last) AppGaps.horizontalX2,
@@ -594,11 +717,13 @@ class _KeyCap extends StatelessWidget {
     required this.keySpec,
     required this.debug,
     required this.onPressed,
+    required this.onLongPressed,
   });
 
   final KeyboardPreviewKey keySpec;
   final bool debug;
   final VoidCallback onPressed;
+  final VoidCallback onLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -615,6 +740,7 @@ class _KeyCap extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadii.sm),
         onTap: onPressed,
+        onLongPress: onLongPressed,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: keySpec.enabled ? background : AppColors.keyboardKeyDisabled,
@@ -790,6 +916,12 @@ class KeyboardPreviewSnapshot {
     required this.privateMode,
     required this.corners,
     required this.debug,
+    required this.vibration,
+    required this.sound,
+    required this.suggestionsEnabled,
+    required this.specialCorners,
+    required this.frenchEnabled,
+    required this.englishEnabled,
     required this.shiftEnabled,
     required this.mediaNowPlaying,
   });
@@ -801,15 +933,26 @@ class KeyboardPreviewSnapshot {
   final bool privateMode;
   final bool corners;
   final bool debug;
+  final bool vibration;
+  final bool sound;
+  final bool suggestionsEnabled;
+  final bool specialCorners;
+  final bool frenchEnabled;
+  final bool englishEnabled;
   final bool shiftEnabled;
-  final String mediaNowPlaying;
+  final String? mediaNowPlaying;
 
   List<KeyboardPreviewRow> get rows {
     final rows = <KeyboardPreviewRow>[_actionRow()];
-    rows.addAll(_suggestionRows());
-    rows.addAll(_panelRows());
-    rows.addAll(_typingRows());
-    rows.add(_controlRow());
+    if (panel == KeyboardPreviewPanel.settings ||
+        panel == KeyboardPreviewPanel.clipboardFull) {
+      rows.addAll(_panelRows());
+    } else {
+      rows.addAll(_suggestionRows());
+      rows.addAll(_panelRows());
+      rows.addAll(_typingRows());
+      rows.add(_controlRow());
+    }
     return rows;
   }
 
@@ -827,6 +970,9 @@ class KeyboardPreviewSnapshot {
           'Clip',
           KeyboardPreviewPanel.clipboard,
           enabled: !privateMode,
+          activeOverride:
+              panel == KeyboardPreviewPanel.clipboard ||
+              panel == KeyboardPreviewPanel.clipboardFull,
         ),
         _panelKey('Snip', KeyboardPreviewPanel.snippets, enabled: !privateMode),
         _panelKey('Media', KeyboardPreviewPanel.media),
@@ -844,7 +990,8 @@ class KeyboardPreviewSnapshot {
   List<KeyboardPreviewRow> _suggestionRows() {
     if (privateMode ||
         fieldContext != KeyboardPreviewFieldContext.text ||
-        mode != KeyboardPreviewMode.letters) {
+        mode != KeyboardPreviewMode.letters ||
+        !suggestionsEnabled) {
       return const [];
     }
     return const [
@@ -1005,36 +1152,72 @@ class KeyboardPreviewSnapshot {
         return [
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightCompact,
-            keys: [
-              _unsupportedKey('Copy', weight: 1.2),
-              _unsupportedKey('Cut'),
-              _unsupportedKey('Paste', weight: 1.2),
-              _unsupportedKey('Plain'),
-              _unsupportedKey('All'),
-              _unsupportedKey('Undo'),
-              _unsupportedKey('Redo'),
-              _unsupportedKey('Pins app'),
-              const KeyboardPreviewKey(
-                label: 'Close',
-                special: true,
-                action: KeyboardPreviewKeyAction.closePanel,
-              ),
-            ],
+            keys: _clipboardPreviewKeys(take: 6),
+            horizontalScrollable: true,
           ),
         ];
+      case KeyboardPreviewPanel.clipboardFull:
+        return _clipboardFullRows();
       case KeyboardPreviewPanel.snippets:
         return [
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightCompact,
             keys: [
-              _unsupportedKey('Snippet', weight: 1.8),
-              _unsupportedKey('App', weight: 1.2),
+              const KeyboardPreviewKey(
+                label: 'j\'arrive',
+                output: 'j\'arrive',
+                special: true,
+                weight: 1.7,
+                action: KeyboardPreviewKeyAction.snippet,
+              ),
+              const KeyboardPreviewKey(
+                label: 'D\'accord',
+                output: 'D\'accord',
+                special: true,
+                weight: 1.7,
+                action: KeyboardPreviewKeyAction.snippet,
+              ),
+              const KeyboardPreviewKey(
+                label: 'Merci beaucoup',
+                output: 'Merci beaucoup',
+                special: true,
+                weight: 1.9,
+                action: KeyboardPreviewKeyAction.snippet,
+              ),
+              const KeyboardPreviewKey(
+                label: 'Je te rappelle',
+                output: 'Je te rappelle',
+                special: true,
+                weight: 1.9,
+                action: KeyboardPreviewKeyAction.snippet,
+              ),
+              const KeyboardPreviewKey(
+                label: 'Adresse',
+                output: 'Mon adresse est ',
+                special: true,
+                weight: 1.5,
+                action: KeyboardPreviewKeyAction.snippet,
+              ),
+              const KeyboardPreviewKey(
+                label: 'Signature',
+                output: 'Bien cordialement,',
+                special: true,
+                weight: 1.7,
+                action: KeyboardPreviewKeyAction.snippet,
+              ),
+              const KeyboardPreviewKey(
+                label: 'App',
+                special: true,
+                weight: 1.2,
+                action: KeyboardPreviewKeyAction.openAppSettings,
+              ),
               const KeyboardPreviewKey(
                 label: 'Close',
                 special: true,
                 action: KeyboardPreviewKeyAction.closePanel,
               ),
             ],
+            horizontalScrollable: true,
           ),
         ];
       case KeyboardPreviewPanel.media:
@@ -1057,20 +1240,104 @@ class KeyboardPreviewSnapshot {
               ),
             ],
           ),
+          if (mediaNowPlaying != null)
+            KeyboardPreviewRow(
+              height: AppKeyboardPreview.rowHeightCompact,
+              keys: [
+                KeyboardPreviewKey(
+                  label: mediaNowPlaying!,
+                  special: true,
+                  weight: 5,
+                  action: KeyboardPreviewKeyAction.mediaNowPlaying,
+                ),
+              ],
+            ),
+        ];
+      case KeyboardPreviewPanel.settings:
+        return [
+          KeyboardPreviewRow(
+            height: AppKeyboardPreview.rowHeightCompact,
+            keys: [
+              const KeyboardPreviewKey(
+                label: 'Keyboard',
+                special: true,
+                weight: 1.3,
+                action: KeyboardPreviewKeyAction.keyboardPicker,
+              ),
+              const KeyboardPreviewKey(
+                label: 'App',
+                special: true,
+                action: KeyboardPreviewKeyAction.openAppSettings,
+              ),
+              const KeyboardPreviewKey(
+                label: 'Theme',
+                special: true,
+                action: KeyboardPreviewKeyAction.openThemeSettings,
+              ),
+              KeyboardPreviewKey(
+                label: profile.name.toUpperCase(),
+                special: true,
+                weight: 1.1,
+                action: KeyboardPreviewKeyAction.unsupported,
+                unsupportedReason: 'Use Profile dropdown above',
+              ),
+              const KeyboardPreviewKey(
+                label: 'Close',
+                special: true,
+                action: KeyboardPreviewKeyAction.closePanel,
+              ),
+            ],
+          ),
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightCompact,
             keys: [
               KeyboardPreviewKey(
-                label: mediaNowPlaying,
+                label: vibration ? 'Vibe on' : 'Vibe off',
                 special: true,
-                weight: 5,
-                action: KeyboardPreviewKeyAction.mediaNowPlaying,
+                active: vibration,
+                action: KeyboardPreviewKeyAction.toggleVibration,
+              ),
+              KeyboardPreviewKey(
+                label: sound ? 'Sound on' : 'Sound off',
+                special: true,
+                active: sound,
+                action: KeyboardPreviewKeyAction.toggleSound,
+              ),
+              KeyboardPreviewKey(
+                label: debug ? 'Debug on' : 'Debug off',
+                special: true,
+                active: debug,
+                action: KeyboardPreviewKeyAction.unsupported,
+                unsupportedReason: 'Use the Debug chip above',
+              ),
+              KeyboardPreviewKey(
+                label: suggestionsEnabled ? 'Suggest on' : 'Suggest off',
+                special: true,
+                active: suggestionsEnabled,
+                weight: 1.2,
+                action: KeyboardPreviewKeyAction.toggleSuggestions,
               ),
             ],
           ),
-        ];
-      case KeyboardPreviewPanel.settings:
-        return [
+          KeyboardPreviewRow(
+            height: AppKeyboardPreview.rowHeightCompact,
+            keys: [
+              KeyboardPreviewKey(
+                label: frenchEnabled ? 'FR on' : 'FR off',
+                special: true,
+                active: frenchEnabled,
+                action: KeyboardPreviewKeyAction.toggleFrench,
+              ),
+              KeyboardPreviewKey(
+                label: englishEnabled ? 'EN on' : 'EN off',
+                special: true,
+                active: englishEnabled,
+                action: KeyboardPreviewKeyAction.toggleEnglish,
+              ),
+            ],
+            leadingWeight: 1,
+            trailingWeight: 1,
+          ),
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightCompact,
             keys: [
@@ -1083,24 +1350,26 @@ class KeyboardPreviewSnapshot {
                 unsupportedReason:
                     'Use the Corners chip above for simulation toggles',
               ),
-              KeyboardPreviewKey(
-                label: profile.name.toUpperCase(),
+              const KeyboardPreviewKey(
+                label: '2sp on',
                 special: true,
-                weight: 1.1,
+                active: true,
                 action: KeyboardPreviewKeyAction.unsupported,
-                unsupportedReason: 'Use Profile dropdown above',
-              ),
-              KeyboardPreviewKey(
-                label: debug ? 'Debug on' : 'Debug off',
-                special: true,
-                active: debug,
-                action: KeyboardPreviewKeyAction.unsupported,
-                unsupportedReason: 'Use the Debug chip above',
+                unsupportedReason: 'Native double-space period toggle',
               ),
               const KeyboardPreviewKey(
-                label: 'Close',
+                label: 'Punc on',
                 special: true,
-                action: KeyboardPreviewKeyAction.closePanel,
+                active: true,
+                action: KeyboardPreviewKeyAction.unsupported,
+                unsupportedReason: 'Native punctuation spacing toggle',
+              ),
+              KeyboardPreviewKey(
+                label: specialCorners ? 'Special on' : 'Special off',
+                special: true,
+                active: specialCorners,
+                weight: 1.2,
+                action: KeyboardPreviewKeyAction.toggleSpecialCorners,
               ),
             ],
           ),
@@ -1348,15 +1617,54 @@ class KeyboardPreviewSnapshot {
     String label,
     KeyboardPreviewPanel target, {
     bool enabled = true,
+    bool? activeOverride,
   }) {
     return KeyboardPreviewKey(
       label: label,
-      active: panel == target,
+      active: activeOverride ?? panel == target,
       enabled: enabled,
       special: true,
       action: KeyboardPreviewKeyAction.panelSwitch,
       panelTarget: target,
     );
+  }
+
+  List<KeyboardPreviewRow> _clipboardFullRows() {
+    final keys = _clipboardPreviewKeys(take: 12);
+    final rows = <KeyboardPreviewRow>[];
+    for (var index = 0; index < keys.length; index += 3) {
+      final end = index + 3 > keys.length ? keys.length : index + 3;
+      rows.add(
+        KeyboardPreviewRow(
+          height: AppKeyboardPreview.rowHeightCompact,
+          keys: keys.sublist(index, end),
+        ),
+      );
+    }
+    return rows;
+  }
+
+  List<KeyboardPreviewKey> _clipboardPreviewKeys({required int take}) {
+    const entries = [
+      ('Pinned account id', 'Pinned account id', true),
+      ('Latest copied text', 'Latest copied text', false),
+      ('Meeting notes', 'Meeting notes ready to paste', false),
+      ('Support reply', 'Thanks, I will look into it.', false),
+      ('Address', 'Mon adresse est ', false),
+      ('Invoice ref', 'INV-2026-042', false),
+      ('Email intro', 'Bonjour,', false),
+      ('Signature', 'Bien cordialement,', false),
+    ];
+    return entries.take(take).map((entry) {
+      return KeyboardPreviewKey(
+        label: entry.$3 ? 'Pin ${entry.$1}' : entry.$1,
+        output: entry.$2,
+        active: entry.$3,
+        special: true,
+        weight: 1.8,
+        action: KeyboardPreviewKeyAction.clipboardEntry,
+      );
+    }).toList();
   }
 
   KeyboardPreviewKey _unsupportedKey(String label, {double weight = 1}) {
@@ -1396,11 +1704,22 @@ class KeyboardPreviewSnapshot {
 enum KeyboardPreviewKeyAction {
   text,
   suggestion,
+  clipboardEntry,
+  snippet,
   space,
   backspace,
   enter,
   shift,
   mediaNowPlaying,
+  keyboardPicker,
+  openAppSettings,
+  openThemeSettings,
+  toggleVibration,
+  toggleSound,
+  toggleSuggestions,
+  toggleSpecialCorners,
+  toggleFrench,
+  toggleEnglish,
   modeSwitch,
   panelSwitch,
   closePanel,
@@ -1413,12 +1732,14 @@ class KeyboardPreviewRow {
     required this.keys,
     this.leadingWeight = 0,
     this.trailingWeight = 0,
+    this.horizontalScrollable = false,
   });
 
   final double height;
   final List<KeyboardPreviewKey> keys;
   final double leadingWeight;
   final double trailingWeight;
+  final bool horizontalScrollable;
 }
 
 class KeyboardPreviewKey {

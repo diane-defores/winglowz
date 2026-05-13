@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
+import android.view.SoundEffectConstants
 import android.view.View
 import android.view.View.MeasureSpec
 import kotlin.math.abs
@@ -38,6 +39,8 @@ class WinFlowzAppKeyboardView(
         fun onSuggestionSelected(suggestion: String): Boolean
         fun onSnippets()
         fun onSettings()
+        fun onThemeSettings()
+        fun onKeyboardPicker()
         fun onMediaPlayPause()
         fun onMediaPrevious()
         fun onMediaNext()
@@ -56,6 +59,12 @@ class WinFlowzAppKeyboardView(
         fun onLayoutProfileChanged(profile: KeyboardLayoutProfile)
         fun onCornerModeChanged(enabled: Boolean)
         fun onDebugTouchOverlayChanged(enabled: Boolean)
+        fun onKeyVibrationChanged(enabled: Boolean)
+        fun onKeySoundChanged(enabled: Boolean)
+        fun onSpellingSuggestionsChanged(enabled: Boolean)
+        fun onSpecialKeyCornersChanged(enabled: Boolean)
+        fun onFrenchLanguageChanged(enabled: Boolean)
+        fun onEnglishLanguageChanged(enabled: Boolean)
         fun onDoubleSpacePeriodChanged(enabled: Boolean)
         fun onPunctuationAutoSpacingChanged(enabled: Boolean)
     }
@@ -63,6 +72,7 @@ class WinFlowzAppKeyboardView(
     private data class KeyFrame(
         val key: KeyboardKeySpec,
         val rect: RectF,
+        val rowScrollable: Boolean = false,
     )
 
     private var shifted = false
@@ -71,6 +81,12 @@ class WinFlowzAppKeyboardView(
     private var layoutProfile = KeyboardLayoutProfile.QWERTY
     private var cornerModeEnabled = false
     private var debugTouchOverlayEnabled = false
+    private var keyVibrationEnabled = true
+    private var keySoundEnabled = false
+    private var spellingSuggestionsEnabled = true
+    private var specialKeyCornersEnabled = false
+    private var frenchLanguageEnabled = true
+    private var englishLanguageEnabled = true
     private var doubleSpacePeriodEnabled = true
     private var punctuationAutoSpacingEnabled = true
     private var emojiCategory = KeyboardEmojiCategory.Recents
@@ -80,7 +96,9 @@ class WinFlowzAppKeyboardView(
     private var enterLabel = "Enter"
     private var statusText = "WinFlowzApp"
     private var suggestions = emptyList<String>()
-    private var mediaNowPlayingLabel = "Now playing: tap Now"
+    private var clipboardEntries = emptyList<KeyboardClipboardEntry>()
+    private var snippets = emptyList<KeyboardTextRule>()
+    private var mediaNowPlayingLabel: String? = null
     private val activeSystemModifiers = linkedSetOf<KeyboardSystemModifier>()
 
     private var gestureStartFrame: KeyFrame? = null
@@ -96,6 +114,10 @@ class WinFlowzAppKeyboardView(
     private var repeatActionKey: KeyboardKeySpec? = null
     private var slidingSpace = false
     private var lastSlideStep = 0
+    private var scrollingHorizontalRow = false
+    private var lastHorizontalScrollX = 0f
+    private var horizontalRowScrollOffset = 0f
+    private var horizontalRowMaxScrollOffset = 0f
 
     private val keyFrames = mutableListOf<KeyFrame>()
     private var layoutSnapshot = buildSnapshot()
@@ -225,15 +247,31 @@ class WinFlowzAppKeyboardView(
         profile: KeyboardLayoutProfile,
         cornersEnabled: Boolean,
         debugTouchOverlay: Boolean,
+        keyVibration: Boolean,
+        keySound: Boolean,
+        spellingSuggestions: Boolean,
+        specialKeyCorners: Boolean,
+        frenchLanguage: Boolean,
+        englishLanguage: Boolean,
         doubleSpacePeriod: Boolean,
         punctuationAutoSpacing: Boolean,
         recents: List<String>,
+        clipboardEntries: List<KeyboardClipboardEntry>,
+        snippets: List<KeyboardTextRule>,
     ) {
         layoutProfile = profile
         cornerModeEnabled = cornersEnabled
         debugTouchOverlayEnabled = debugTouchOverlay
+        keyVibrationEnabled = keyVibration
+        keySoundEnabled = keySound
+        spellingSuggestionsEnabled = spellingSuggestions
+        specialKeyCornersEnabled = specialKeyCorners
+        frenchLanguageEnabled = frenchLanguage
+        englishLanguageEnabled = englishLanguage
         doubleSpacePeriodEnabled = doubleSpacePeriod
         punctuationAutoSpacingEnabled = punctuationAutoSpacing
+        this.clipboardEntries = clipboardEntries
+        this.snippets = snippets
         recentEmojis = if (fieldPolicy.privateMode) emptyList() else recents
         if (fieldPolicy.privateMode && emojiCategory == KeyboardEmojiCategory.Recents) {
             emojiCategory = KeyboardEmojiCategory.Smileys
@@ -332,8 +370,9 @@ class WinFlowzAppKeyboardView(
                 gestureMaxDistance = max(gestureMaxDistance, distance)
                 activeKeyId = gestureStartFrame?.key?.id
                 handleSpaceSlider(dx, dy)
+                handleHorizontalRowScroll(dx, gestureLatestX)
                 debugGestureText =
-                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()} slide=$slidingSpace"
+                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()} slide=$slidingSpace scroll=$scrollingHorizontalRow"
                 invalidate()
                 return true
             }
@@ -397,8 +436,8 @@ class WinFlowzAppKeyboardView(
             invalidate()
             return true
         }
-        if (slidingSpace || longPressTriggered) {
-            debugGestureText = "up key=${key.id} consumed slide=$slidingSpace long=$longPressTriggered"
+        if (slidingSpace || scrollingHorizontalRow || longPressTriggered) {
+            debugGestureText = "up key=${key.id} consumed slide=$slidingSpace scroll=$scrollingHorizontalRow long=$longPressTriggered"
             resetGesture()
             invalidate()
             return true
@@ -439,11 +478,13 @@ class WinFlowzAppKeyboardView(
         longPressTriggered = false
         slidingSpace = false
         lastSlideStep = 0
+        scrollingHorizontalRow = false
+        lastHorizontalScrollX = 0f
     }
 
     private fun handleLongPress() {
         val key = gestureStartFrame?.key ?: return
-        if (!key.enabled || slidingSpace) {
+        if (!key.enabled || slidingSpace || scrollingHorizontalRow) {
             return
         }
         debugGestureText = "long key=${key.id}"
@@ -458,11 +499,17 @@ class WinFlowzAppKeyboardView(
             shifted = true
             setStatus("Shift held")
             refreshLayout()
+        } else if (key.action == KeyboardKeyAction.ToggleClipboardPanel) {
+            longPressTriggered = true
+            horizontalRowScrollOffset = 0f
+            panelMode = KeyboardPanelMode.ClipboardFull
+            setStatus("Clipboard history")
+            refreshLayout()
         } else {
             invalidate()
             return
         }
-        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        performKeyboardHaptic(HapticFeedbackConstants.LONG_PRESS)
         invalidate()
     }
 
@@ -501,6 +548,34 @@ class WinFlowzAppKeyboardView(
         lastSlideStep = step
     }
 
+    private fun handleHorizontalRowScroll(
+        dxFromStart: Float,
+        x: Float,
+    ) {
+        if (!gestureStartFrame.isScrollableRowFrame() || abs(dxFromStart) < dp(8f)) {
+            return
+        }
+        if (abs(dxFromStart) < abs(gestureLatestY - gestureStartY) * 1.2f) {
+            return
+        }
+        removeCallbacks(longPressRunnable)
+        if (!scrollingHorizontalRow) {
+            scrollingHorizontalRow = true
+            lastHorizontalScrollX = x
+        }
+        val delta = lastHorizontalScrollX - x
+        val next = (horizontalRowScrollOffset + delta).coerceIn(0f, horizontalRowMaxScrollOffset)
+        if (next != horizontalRowScrollOffset) {
+            horizontalRowScrollOffset = next
+            invalidate()
+        }
+        lastHorizontalScrollX = x
+    }
+
+    private fun KeyFrame?.isScrollableRowFrame(): Boolean {
+        return this?.rowScrollable == true
+    }
+
     private fun isSpaceKey(key: KeyboardKeySpec): Boolean {
         return key.action == KeyboardKeyAction.Text &&
             (key.glyph?.primary == " " || key.keyValue?.text == " ")
@@ -520,12 +595,16 @@ class WinFlowzAppKeyboardView(
         width: Float,
         height: Float,
     ) {
+        if (row.horizontalScrollable) {
+            drawScrollableRow(canvas, row, left, top, width, height)
+            return
+        }
+
         val totalWeight =
             row.keys.sumOf { it.weight.toDouble() }.toFloat() + row.leadingWeight + row.trailingWeight
         val usableWidth = width - keyGap * max(0, row.keys.size - 1)
         val unit = usableWidth / totalWeight
         var x = left + unit * row.leadingWeight
-
         row.keys.forEach { key ->
             val keyWidth = unit * key.weight
             val rect = RectF(x, top, x + keyWidth, top + height)
@@ -533,6 +612,35 @@ class WinFlowzAppKeyboardView(
             drawKey(canvas, key, rect)
             x += keyWidth + keyGap
         }
+    }
+
+    private fun drawScrollableRow(
+        canvas: Canvas,
+        row: KeyboardRowSpec,
+        left: Float,
+        top: Float,
+        width: Float,
+        height: Float,
+    ) {
+        val baseKeyWidth = dp(76f)
+        val keyWidths = row.keys.map { key -> max(dp(72f), baseKeyWidth * key.weight) }
+        val contentWidth = keyWidths.sum() + keyGap * max(0, row.keys.size - 1)
+        horizontalRowMaxScrollOffset = max(0f, contentWidth - width)
+        horizontalRowScrollOffset = horizontalRowScrollOffset.coerceIn(0f, horizontalRowMaxScrollOffset)
+
+        val clipSave = canvas.save()
+        canvas.clipRect(left, top, left + width, top + height)
+        var x = left - horizontalRowScrollOffset
+        row.keys.forEachIndexed { index, key ->
+            val keyWidth = keyWidths[index]
+            val rect = RectF(x, top, x + keyWidth, top + height)
+            if (rect.right >= left && rect.left <= left + width) {
+                keyFrames.add(KeyFrame(key, rect, rowScrollable = true))
+                drawKey(canvas, key, rect)
+            }
+            x += keyWidth + keyGap
+        }
+        canvas.restoreToCount(clipSave)
     }
 
     private fun drawKey(
@@ -567,7 +675,7 @@ class WinFlowzAppKeyboardView(
     }
 
     private fun shouldRenderCorners(key: KeyboardKeySpec): Boolean {
-        if (!cornerModeEnabled || key.action != KeyboardKeyAction.Text) {
+        if (!cornerModeEnabled || !allowsCornerGesture(key)) {
             return false
         }
         val glyph = key.glyph ?: return false
@@ -605,10 +713,14 @@ class WinFlowzAppKeyboardView(
         key: KeyboardKeySpec,
         sample: GestureSample,
     ): GestureSelection {
-        if (!cornerModeEnabled || key.action != KeyboardKeyAction.Text || key.glyph == null) {
+        if (!cornerModeEnabled || !allowsCornerGesture(key) || key.glyph == null) {
             return GestureSelection.PrimaryTap
         }
         return KeyboardGestureClassifier.classify(sample, gestureThresholds)
+    }
+
+    private fun allowsCornerGesture(key: KeyboardKeySpec): Boolean {
+        return key.action == KeyboardKeyAction.Text || specialKeyCornersEnabled
     }
 
     private fun dispatch(
@@ -617,10 +729,11 @@ class WinFlowzAppKeyboardView(
     ) {
         if (selection == GestureSelection.Canceled) {
             setStatus("Gesture canceled")
-            performHapticFeedback(HapticFeedbackConstants.REJECT)
+            performKeyboardHaptic(HapticFeedbackConstants.REJECT)
             return
         }
-        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        performKeyboardHaptic(HapticFeedbackConstants.KEYBOARD_TAP)
+        performKeySound()
         when (key.action) {
             KeyboardKeyAction.KeyValue -> {
                 val keyValue = key.keyValue ?: return
@@ -685,7 +798,7 @@ class WinFlowzAppKeyboardView(
             KeyboardKeyAction.ToggleNavigationPanel -> togglePanel(KeyboardPanelMode.Navigation)
             KeyboardKeyAction.ToggleAccentPanel -> togglePanel(KeyboardPanelMode.Accents)
             KeyboardKeyAction.ToggleEmojiPanel -> togglePanel(KeyboardPanelMode.Emoji)
-            KeyboardKeyAction.ToggleClipboardPanel -> togglePanel(KeyboardPanelMode.Clipboard)
+            KeyboardKeyAction.ToggleClipboardPanel -> toggleClipboardPanel()
             KeyboardKeyAction.ToggleMediaPanel -> togglePanel(KeyboardPanelMode.Media)
             KeyboardKeyAction.ToggleSnippetsPanel -> togglePanel(KeyboardPanelMode.Snippets)
             KeyboardKeyAction.ToggleSettingsPanel -> togglePanel(KeyboardPanelMode.Settings)
@@ -709,6 +822,16 @@ class WinFlowzAppKeyboardView(
                     panelMode = KeyboardPanelMode.None
                 } else {
                     setStatus("Plain paste unavailable")
+                }
+            }
+            KeyboardKeyAction.InsertClipboardEntry -> {
+                val content = key.suggestion
+                if (content.isNullOrBlank()) {
+                    setStatus("Clipboard empty")
+                } else if (callbacks.onText(content)) {
+                    panelMode = KeyboardPanelMode.None
+                } else {
+                    setStatus("Clipboard entry rejected by field")
                 }
             }
             KeyboardKeyAction.SelectAll -> {
@@ -744,15 +867,28 @@ class WinFlowzAppKeyboardView(
             KeyboardKeyAction.MediaPlayPause -> callbacks.onMediaPlayPause()
             KeyboardKeyAction.MediaNext -> callbacks.onMediaNext()
             KeyboardKeyAction.MediaNowPlaying -> {
-                mediaNowPlayingLabel = callbacks.onMediaNowPlaying()
-                setStatus(mediaNowPlayingLabel)
+                if (mediaNowPlayingLabel == null) {
+                    mediaNowPlayingLabel = callbacks.onMediaNowPlaying()
+                    setStatus(mediaNowPlayingLabel ?: "Now playing unavailable")
+                } else {
+                    mediaNowPlayingLabel = null
+                    setStatus("Now playing hidden")
+                }
                 refreshLayout()
             }
             KeyboardKeyAction.InsertSnippetOne -> {
-                callbacks.onSnippets()
-                panelMode = KeyboardPanelMode.None
+                val snippet = key.suggestion
+                if (snippet.isNullOrBlank()) {
+                    callbacks.onSnippets()
+                } else if (callbacks.onText(snippet)) {
+                    panelMode = KeyboardPanelMode.None
+                } else {
+                    setStatus("Snippet rejected by field")
+                }
             }
             KeyboardKeyAction.OpenWinFlowzAppSettings -> callbacks.onSettings()
+            KeyboardKeyAction.OpenThemeSettings -> callbacks.onThemeSettings()
+            KeyboardKeyAction.ShowKeyboardPicker -> callbacks.onKeyboardPicker()
             KeyboardKeyAction.ToggleCornerMode -> {
                 cornerModeEnabled = !cornerModeEnabled
                 callbacks.onCornerModeChanged(cornerModeEnabled)
@@ -772,6 +908,36 @@ class WinFlowzAppKeyboardView(
                 debugTouchOverlayEnabled = !debugTouchOverlayEnabled
                 callbacks.onDebugTouchOverlayChanged(debugTouchOverlayEnabled)
                 setStatus(if (debugTouchOverlayEnabled) "Touch debug enabled" else "Touch debug disabled")
+            }
+            KeyboardKeyAction.ToggleKeyVibration -> {
+                keyVibrationEnabled = !keyVibrationEnabled
+                callbacks.onKeyVibrationChanged(keyVibrationEnabled)
+                setStatus(if (keyVibrationEnabled) "Key vibration on" else "Key vibration off")
+            }
+            KeyboardKeyAction.ToggleKeySound -> {
+                keySoundEnabled = !keySoundEnabled
+                callbacks.onKeySoundChanged(keySoundEnabled)
+                setStatus(if (keySoundEnabled) "Key sound on" else "Key sound off")
+            }
+            KeyboardKeyAction.ToggleSpellingSuggestions -> {
+                spellingSuggestionsEnabled = !spellingSuggestionsEnabled
+                callbacks.onSpellingSuggestionsChanged(spellingSuggestionsEnabled)
+                setStatus(if (spellingSuggestionsEnabled) "Suggestions on" else "Suggestions off")
+            }
+            KeyboardKeyAction.ToggleSpecialKeyCorners -> {
+                specialKeyCornersEnabled = !specialKeyCornersEnabled
+                callbacks.onSpecialKeyCornersChanged(specialKeyCornersEnabled)
+                setStatus(if (specialKeyCornersEnabled) "Special key corners on" else "Special key corners off")
+            }
+            KeyboardKeyAction.ToggleFrenchLanguage -> {
+                frenchLanguageEnabled = !frenchLanguageEnabled
+                callbacks.onFrenchLanguageChanged(frenchLanguageEnabled)
+                setStatus(if (frenchLanguageEnabled) "French enabled" else "French disabled")
+            }
+            KeyboardKeyAction.ToggleEnglishLanguage -> {
+                englishLanguageEnabled = !englishLanguageEnabled
+                callbacks.onEnglishLanguageChanged(englishLanguageEnabled)
+                setStatus(if (englishLanguageEnabled) "English enabled" else "English disabled")
             }
             KeyboardKeyAction.ToggleDoubleSpacePeriod -> {
                 doubleSpacePeriodEnabled = !doubleSpacePeriodEnabled
@@ -841,6 +1007,18 @@ class WinFlowzAppKeyboardView(
             KeyboardKeyAction.Voice -> callbacks.onVoice()
         }
         refreshLayout()
+    }
+
+    private fun performKeyboardHaptic(feedbackConstant: Int) {
+        if (keyVibrationEnabled) {
+            performHapticFeedback(feedbackConstant)
+        }
+    }
+
+    private fun performKeySound() {
+        if (keySoundEnabled) {
+            playSoundEffect(SoundEffectConstants.CLICK)
+        }
     }
 
     private fun dispatchKeyValue(
@@ -947,7 +1125,18 @@ class WinFlowzAppKeyboardView(
     }
 
     private fun togglePanel(target: KeyboardPanelMode) {
+        horizontalRowScrollOffset = 0f
         panelMode = if (panelMode == target) KeyboardPanelMode.None else target
+    }
+
+    private fun toggleClipboardPanel() {
+        horizontalRowScrollOffset = 0f
+        panelMode =
+            if (panelMode == KeyboardPanelMode.Clipboard || panelMode == KeyboardPanelMode.ClipboardFull) {
+                KeyboardPanelMode.None
+            } else {
+                KeyboardPanelMode.Clipboard
+            }
     }
 
     private fun buildSnapshot(): KeyboardLayoutSnapshot {
@@ -968,14 +1157,22 @@ class WinFlowzAppKeyboardView(
                 layoutProfile = layoutProfile,
                 cornerModeEnabled = cornerModeEnabled,
                 debugTouchOverlayEnabled = debugTouchOverlayEnabled,
+                keyVibrationEnabled = keyVibrationEnabled,
+                keySoundEnabled = keySoundEnabled,
+                spellingSuggestionsEnabled = spellingSuggestionsEnabled,
+                specialKeyCornersEnabled = specialKeyCornersEnabled,
+                frenchLanguageEnabled = frenchLanguageEnabled,
+                englishLanguageEnabled = englishLanguageEnabled,
                 doubleSpacePeriodEnabled = doubleSpacePeriodEnabled,
                 punctuationAutoSpacingEnabled = punctuationAutoSpacingEnabled,
                 emojiCategory = emojiCategory,
                 recentEmojis = recentEmojis,
                 enterLabel = enterLabel,
                 clipboardAllowed = fieldPolicy.clipboardAllowed,
+                clipboardEntries = clipboardEntries,
                 voiceAllowed = fieldPolicy.voiceAllowed,
                 snippetsAllowed = fieldPolicy.snippetsAllowed,
+                snippets = snippets,
                 suggestions = suggestions,
                 mediaNowPlayingLabel = mediaNowPlayingLabel,
             ),

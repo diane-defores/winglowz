@@ -5,8 +5,8 @@ artifact_version: "0.1.0"
 project: "WinFlowzApp"
 created: "2026-05-11"
 created_at: "2026-05-11 00:00:00 UTC"
-updated: "2026-05-11"
-updated_at: "2026-05-11 21:38:00 UTC"
+updated: "2026-05-13"
+updated_at: "2026-05-13 17:29:40 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -331,14 +331,15 @@ Mettre en place un assistant onboarding Android dédié, piloté par un état ma
 | 2026-05-11 21:21:34 UTC | sf-ready | GPT-5 Codex | Review of readiness criteria and traceability gates. | Not ready: missing required `Documentation Coherence` section and unresolved `Open Questions` (blocking onboarding scope + optionality). | `/sf-spec onboarding-permissions-guide.md` |
 | 2026-05-11 21:38:00 UTC | sf-ready | GPT-5 Codex | Readiness gate of the spec for user-story fit, completeness, adversarial and security adequacy, and traceability before implementation. | Ready. | `/sf-start shipflow_data/workflow/specs/onboarding-permissions-guide.md` |
 | 2026-05-11 22:01:00 UTC | sf-start | GPT-5 Codex | Activated implementation for guided onboarding: stepper rewrite in app shell and onboarding tile in settings planned. | In_progress. | `/sf-spec onboarding-permissions-guide.md` |
+| 2026-05-13 17:29:40 UTC | sf-verify | GPT-5 Codex | Verified implementation against spec: stepper + resume flows are present; platform contracts and persistence wired; docs proof and dependency/version drift still pending; open fix-attempted high-severity overlay bug remains. | Partial. | `/sf-end shipflow_data/workflow/specs/onboarding-permissions-guide.md` |
 
 # Current Chantier Flow
 
 - sf-spec: done
 - sf-ready: done
 - sf-start: done
-- sf-verify: not launched
+- sf-verify: partial
 - sf-end: not launched
 - sf-ship: not launched
 
-Next lifecycle command: `/sf-start shipflow_data/workflow/specs/onboarding-permissions-guide.md`
+Next lifecycle command: `/sf-end shipflow_data/workflow/specs/onboarding-permissions-guide.md`

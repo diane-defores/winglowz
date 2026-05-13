@@ -34,6 +34,12 @@ class AndroidKeyboardStatus {
     required this.layoutProfile,
     required this.cornerModeEnabled,
     required this.debugTouchOverlayEnabled,
+    required this.keyVibrationEnabled,
+    required this.keySoundEnabled,
+    required this.spellingSuggestionsEnabled,
+    required this.specialKeyCornersEnabled,
+    required this.frenchLanguageEnabled,
+    required this.englishLanguageEnabled,
     required this.doubleSpacePeriodEnabled,
     required this.punctuationAutoSpacingEnabled,
     required this.privacyMode,
@@ -48,6 +54,12 @@ class AndroidKeyboardStatus {
   final KeyboardLayoutProfile layoutProfile;
   final bool cornerModeEnabled;
   final bool debugTouchOverlayEnabled;
+  final bool keyVibrationEnabled;
+  final bool keySoundEnabled;
+  final bool spellingSuggestionsEnabled;
+  final bool specialKeyCornersEnabled;
+  final bool frenchLanguageEnabled;
+  final bool englishLanguageEnabled;
   final bool doubleSpacePeriodEnabled;
   final bool punctuationAutoSpacingEnabled;
   final KeyboardPrivacyMode privacyMode;
@@ -63,6 +75,12 @@ class AndroidKeyboardStatus {
       layoutProfile: KeyboardLayoutProfile.qwerty,
       cornerModeEnabled: false,
       debugTouchOverlayEnabled: false,
+      keyVibrationEnabled: true,
+      keySoundEnabled: false,
+      spellingSuggestionsEnabled: true,
+      specialKeyCornersEnabled: false,
+      frenchLanguageEnabled: true,
+      englishLanguageEnabled: true,
       doubleSpacePeriodEnabled: true,
       punctuationAutoSpacingEnabled: false,
       privacyMode: KeyboardPrivacyMode.auto,
@@ -83,6 +101,14 @@ class AndroidKeyboardStatus {
       cornerModeEnabled: map['cornerModeEnabled'] as bool? ?? false,
       debugTouchOverlayEnabled:
           map['debugTouchOverlayEnabled'] as bool? ?? false,
+      keyVibrationEnabled: map['keyVibrationEnabled'] as bool? ?? true,
+      keySoundEnabled: map['keySoundEnabled'] as bool? ?? false,
+      spellingSuggestionsEnabled:
+          map['spellingSuggestionsEnabled'] as bool? ?? true,
+      specialKeyCornersEnabled:
+          map['specialKeyCornersEnabled'] as bool? ?? false,
+      frenchLanguageEnabled: map['frenchLanguageEnabled'] as bool? ?? true,
+      englishLanguageEnabled: map['englishLanguageEnabled'] as bool? ?? true,
       doubleSpacePeriodEnabled:
           map['doubleSpacePeriodEnabled'] as bool? ?? true,
       punctuationAutoSpacingEnabled:
@@ -100,6 +126,12 @@ class AndroidKeyboardStatus {
     KeyboardLayoutProfile? layoutProfile,
     bool? cornerModeEnabled,
     bool? debugTouchOverlayEnabled,
+    bool? keyVibrationEnabled,
+    bool? keySoundEnabled,
+    bool? spellingSuggestionsEnabled,
+    bool? specialKeyCornersEnabled,
+    bool? frenchLanguageEnabled,
+    bool? englishLanguageEnabled,
     bool? doubleSpacePeriodEnabled,
     bool? punctuationAutoSpacingEnabled,
     KeyboardPrivacyMode? privacyMode,
@@ -112,6 +144,16 @@ class AndroidKeyboardStatus {
       'cornerModeEnabled': cornerModeEnabled ?? this.cornerModeEnabled,
       'debugTouchOverlayEnabled':
           debugTouchOverlayEnabled ?? this.debugTouchOverlayEnabled,
+      'keyVibrationEnabled': keyVibrationEnabled ?? this.keyVibrationEnabled,
+      'keySoundEnabled': keySoundEnabled ?? this.keySoundEnabled,
+      'spellingSuggestionsEnabled':
+          spellingSuggestionsEnabled ?? this.spellingSuggestionsEnabled,
+      'specialKeyCornersEnabled':
+          specialKeyCornersEnabled ?? this.specialKeyCornersEnabled,
+      'frenchLanguageEnabled':
+          frenchLanguageEnabled ?? this.frenchLanguageEnabled,
+      'englishLanguageEnabled':
+          englishLanguageEnabled ?? this.englishLanguageEnabled,
       'doubleSpacePeriodEnabled':
           doubleSpacePeriodEnabled ?? this.doubleSpacePeriodEnabled,
       'punctuationAutoSpacingEnabled':

@@ -60,8 +60,10 @@ In `.github/workflows/android-build.yml` (or equivalent deploy workflow):
    - `id-token: write`
    - `contents: read`
 2. Authenticate with `google-github-actions/auth@v3`.
-3. Use `token_format: access_token` when passing token to `firebase-tools`.
-4. Export `FIREBASE_TOKEN` from `steps.<auth-id>.outputs.access_token`.
+3. Set `create_credentials_file: true` so the action exports
+   `GOOGLE_APPLICATION_CREDENTIALS` for downstream Google SDK-compatible tools.
+4. Do not export `FIREBASE_TOKEN`; Firebase CLI can use Application Default
+   Credentials from the generated credentials file.
 5. Deploy with:
    - `firebase deploy --only firestore --project "$FIREBASE_PROJECT_ID" --non-interactive`
 
@@ -82,7 +84,6 @@ In `.github/workflows/android-build.yml` (or equivalent deploy workflow):
    - minimum for this runbook started with `roles/firebase.admin`
 6. Grant principal permissions on the service account:
    - `roles/iam.workloadIdentityUser`
-   - `roles/iam.serviceAccountTokenCreator`
 
 ## Repository Binding
 
@@ -110,14 +111,16 @@ If repository ownership/name changed, update:
 3. Error:
    `iam.serviceAccounts.getAccessToken denied`
    Fix:
-   missing `roles/iam.serviceAccountTokenCreator` on target service account for
-   the federated principal.
+   missing or wrong `roles/iam.workloadIdentityUser` service-account binding for
+   the federated principal. Check that the binding member uses this repository,
+   not a copied value from another repo.
 
 4. Error:
    `Failed to authenticate, have you run firebase login?`
    Fix:
-   pass `FIREBASE_TOKEN` from OIDC auth action access token (or use explicit
-   credentials file path flow).
+   ensure `create_credentials_file: true` is set and the generated
+   `GOOGLE_APPLICATION_CREDENTIALS` file is available to the Firebase deploy
+   step.
 
 5. Error:
    `Permissions denied enabling firestore.googleapis.com`

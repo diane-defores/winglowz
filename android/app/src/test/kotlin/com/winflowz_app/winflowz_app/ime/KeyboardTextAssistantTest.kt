@@ -46,4 +46,25 @@ class KeyboardTextAssistantTest {
         assertEquals("j'arrive", custom.first())
         assertTrue(defaults.contains("bonjour"))
     }
+
+    @Test
+    fun `suggestions filter built in defaults by enabled languages`() {
+        val frenchOnly =
+            KeyboardTextAssistant.suggestions(
+                textBeforeCursor = "he",
+                rules = rules,
+                frenchEnabled = true,
+                englishEnabled = false,
+            )
+        val englishOnly =
+            KeyboardTextAssistant.suggestions(
+                textBeforeCursor = "he",
+                rules = rules,
+                frenchEnabled = false,
+                englishEnabled = true,
+            )
+
+        assertFalse(frenchOnly.contains("hello"))
+        assertTrue(englishOnly.contains("hello"))
+    }
 }

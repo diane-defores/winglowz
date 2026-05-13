@@ -114,7 +114,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (!mounted) {
         return;
       }
-      setState(() => _message = 'Impossible de charger la progression onboarding: $error');
+      setState(
+        () => _message =
+            'Impossible de charger la progression onboarding: $error',
+      );
     } finally {
       if (mounted) {
         setState(() => _onboardingLoading = false);
@@ -123,9 +126,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   OnboardingReadiness _onboardingReadiness() {
-    final settings = _onboardingSettings ?? const UserSettingsSnapshot.defaults();
+    final settings =
+        _onboardingSettings ?? const UserSettingsSnapshot.defaults();
     return evaluateOnboardingReadiness(
-      isPlatformSupported: PlatformCapabilities.isAndroid &&
+      isPlatformSupported:
+          PlatformCapabilities.isAndroid &&
           PlatformCapabilities.overlaySupported,
       overlayStatus: _overlayStatus ?? _onboardingOverlayFallback,
       keyboardStatus: _keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
@@ -253,6 +258,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     KeyboardLayoutProfile? layoutProfile,
     bool? cornerModeEnabled,
     bool? debugTouchOverlayEnabled,
+    bool? keyVibrationEnabled,
+    bool? keySoundEnabled,
+    bool? spellingSuggestionsEnabled,
+    bool? specialKeyCornersEnabled,
+    bool? frenchLanguageEnabled,
+    bool? englishLanguageEnabled,
     bool? doubleSpacePeriodEnabled,
     bool? punctuationAutoSpacingEnabled,
     KeyboardPrivacyMode? privacyMode,
@@ -270,6 +281,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         cornerModeEnabled: cornerModeEnabled ?? current.cornerModeEnabled,
         debugTouchOverlayEnabled:
             debugTouchOverlayEnabled ?? current.debugTouchOverlayEnabled,
+        keyVibrationEnabled: keyVibrationEnabled ?? current.keyVibrationEnabled,
+        keySoundEnabled: keySoundEnabled ?? current.keySoundEnabled,
+        spellingSuggestionsEnabled:
+            spellingSuggestionsEnabled ?? current.spellingSuggestionsEnabled,
+        specialKeyCornersEnabled:
+            specialKeyCornersEnabled ?? current.specialKeyCornersEnabled,
+        frenchLanguageEnabled:
+            frenchLanguageEnabled ?? current.frenchLanguageEnabled,
+        englishLanguageEnabled:
+            englishLanguageEnabled ?? current.englishLanguageEnabled,
         doubleSpacePeriodEnabled:
             doubleSpacePeriodEnabled ?? current.doubleSpacePeriodEnabled,
         punctuationAutoSpacingEnabled:
@@ -907,6 +928,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     'active=${keyboardStatus?.active ?? false} | '
                     'layout=${keyboardStatus?.layoutProfile.name ?? 'qwerty'} | '
                     'corners=${keyboardStatus?.cornerModeEnabled ?? false} | '
+                    'languages=${keyboardStatus?.frenchLanguageEnabled ?? true ? 'fr' : ''}${(keyboardStatus?.frenchLanguageEnabled ?? true) && (keyboardStatus?.englishLanguageEnabled ?? true) ? '+' : ''}${keyboardStatus?.englishLanguageEnabled ?? true ? 'en' : ''} | '
                     'privacy=${keyboardStatus?.privacyMode.name ?? 'auto'}',
                   ),
                   trailing: _keyboardBusy
@@ -1024,6 +1046,72 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   title: const Text('Swipe-corner mode'),
                   subtitle: const Text(
                     'When enabled, key swipes toward corners insert secondary characters.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.frenchLanguageEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          frenchLanguageEnabled: value,
+                        ),
+                  title: const Text('French suggestions'),
+                  subtitle: const Text(
+                    'Enables the built-in French suggestion dictionary.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.englishLanguageEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          englishLanguageEnabled: value,
+                        ),
+                  title: const Text('English suggestions'),
+                  subtitle: const Text(
+                    'Enables the built-in English suggestion dictionary.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.spellingSuggestionsEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          spellingSuggestionsEnabled: value,
+                        ),
+                  title: const Text('Spelling suggestions'),
+                  subtitle: const Text(
+                    'Shows candidate words above the native keyboard. Text expansion rules still run separately.',
+                  ),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.keyVibrationEnabled ?? true,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) =>
+                            _setKeyboardPreferences(keyVibrationEnabled: value),
+                  title: const Text('Key vibration'),
+                  subtitle: const Text('Toggles keyboard haptic feedback.'),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.keySoundEnabled ?? false,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) =>
+                            _setKeyboardPreferences(keySoundEnabled: value),
+                  title: const Text('Key sound'),
+                  subtitle: const Text('Toggles keyboard click sounds.'),
+                ),
+                SwitchListTile(
+                  value: keyboardStatus?.specialKeyCornersEnabled ?? false,
+                  onChanged: _keyboardBusy
+                      ? null
+                      : (value) => _setKeyboardPreferences(
+                          specialKeyCornersEnabled: value,
+                        ),
+                  title: const Text('Special-key corner gestures'),
+                  subtitle: const Text(
+                    'Allows swipe-corner alternates on non-letter keys when corner mode is enabled.',
                   ),
                 ),
                 SwitchListTile(
@@ -1261,18 +1349,24 @@ class _OnboardingSettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mandatory = readiness.steps
-        .where((step) => step.definition.category == OnboardingStepCategory.mandatory)
+        .where(
+          (step) =>
+              step.definition.category == OnboardingStepCategory.mandatory,
+        )
         .toList(growable: false);
     final recommended = readiness.steps
-        .where((step) => step.definition.category == OnboardingStepCategory.recommended)
+        .where(
+          (step) =>
+              step.definition.category == OnboardingStepCategory.recommended,
+        )
         .toList(growable: false);
     final mandatoryDone = mandatory.where((step) => step.completed).length;
     final recommendedDone = recommended.where((step) => step.completed).length;
     final actionLabel = readiness.shouldShowOnboarding
         ? 'Reprendre'
         : readiness.onboardingCompleted
-            ? 'Voir le récapitulatif'
-            : 'Reprendre';
+        ? 'Voir le récapitulatif'
+        : 'Reprendre';
 
     return Card(
       child: ListTile(
@@ -1296,10 +1390,7 @@ class _OnboardingSettingsTile extends StatelessWidget {
                 ],
               )
             : const Text('Non requis sur cette plateforme'),
-        trailing: TextButton(
-          onPressed: onResume,
-          child: Text(actionLabel),
-        ),
+        trailing: TextButton(onPressed: onResume, child: Text(actionLabel)),
       ),
     );
   }

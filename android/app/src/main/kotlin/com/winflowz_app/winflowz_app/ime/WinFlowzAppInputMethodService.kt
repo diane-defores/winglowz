@@ -2,10 +2,12 @@ package com.winflowz_app.winflowz_app.ime
 
 import android.content.Intent
 import android.inputmethodservice.InputMethodService
+import android.content.Context
 import android.view.inputmethod.InputMethodSubtype
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.winflowz_app.winflowz_app.MainActivity
 
@@ -302,11 +304,16 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             showStatus("Clipboard capture disabled for private field")
             return
         }
+        val selectedText = editor().selectedText()?.toString()?.trim()
         val copied =
             clipboardController.copySelection(
                 currentInputConnection,
                 syncDesired = stateStore.clipboardSyncDesired,
             )
+        if (copied && !selectedText.isNullOrBlank()) {
+            stateStore.pushClipboardEntry(selectedText)
+            applyRuntimePreferencesToView()
+        }
         showStatus(if (copied) "Selection copied" else "No selectable text")
     }
 
@@ -334,6 +341,10 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
                 currentInputConnection,
                 syncDesired = stateStore.clipboardSyncDesired,
             )
+        if (pasted) {
+            clipboardController.primaryText()?.let { stateStore.pushClipboardEntry(it) }
+            applyRuntimePreferencesToView()
+        }
         showStatus(if (pasted) "Clipboard pasted" else "No text clipboard")
         return pasted
     }
@@ -413,6 +424,17 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
         startActivity(intent)
+    }
+
+    override fun onThemeSettings() {
+        onSettings()
+        showStatus("Open WinFlowzApp Appearance settings")
+    }
+
+    override fun onKeyboardPicker() {
+        val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        manager.showInputMethodPicker()
+        showStatus("Keyboard picker opened")
     }
 
     override fun onMediaPlayPause() {
@@ -510,6 +532,45 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
         showStatus(if (enabled) "Touch debug enabled" else "Touch debug disabled")
     }
 
+    override fun onKeyVibrationChanged(enabled: Boolean) {
+        stateStore.keyVibrationEnabled = enabled
+        applyRuntimePreferencesToView()
+        showStatus(if (enabled) "Key vibration enabled" else "Key vibration disabled")
+    }
+
+    override fun onKeySoundChanged(enabled: Boolean) {
+        stateStore.keySoundEnabled = enabled
+        applyRuntimePreferencesToView()
+        showStatus(if (enabled) "Key sound enabled" else "Key sound disabled")
+    }
+
+    override fun onSpellingSuggestionsChanged(enabled: Boolean) {
+        stateStore.spellingSuggestionsEnabled = enabled
+        applyRuntimePreferencesToView()
+        refreshTypingAssistantState()
+        showStatus(if (enabled) "Suggestions enabled" else "Suggestions disabled")
+    }
+
+    override fun onSpecialKeyCornersChanged(enabled: Boolean) {
+        stateStore.specialKeyCornersEnabled = enabled
+        applyRuntimePreferencesToView()
+        showStatus(if (enabled) "Special key corners enabled" else "Special key corners disabled")
+    }
+
+    override fun onFrenchLanguageChanged(enabled: Boolean) {
+        stateStore.frenchLanguageEnabled = enabled
+        applyRuntimePreferencesToView()
+        refreshTypingAssistantState()
+        showStatus(if (enabled) "French enabled" else "French disabled")
+    }
+
+    override fun onEnglishLanguageChanged(enabled: Boolean) {
+        stateStore.englishLanguageEnabled = enabled
+        applyRuntimePreferencesToView()
+        refreshTypingAssistantState()
+        showStatus(if (enabled) "English enabled" else "English disabled")
+    }
+
     override fun onDoubleSpacePeriodChanged(enabled: Boolean) {
         stateStore.doubleSpacePeriodEnabled = enabled
         applyRuntimePreferencesToView()
@@ -533,10 +594,25 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             profile = stateStore.layoutProfile,
             cornersEnabled = stateStore.cornerModeEnabled,
             debugTouchOverlay = stateStore.debugTouchOverlayEnabled,
+            keyVibration = stateStore.keyVibrationEnabled,
+            keySound = stateStore.keySoundEnabled,
+            spellingSuggestions = stateStore.spellingSuggestionsEnabled,
+            specialKeyCorners = stateStore.specialKeyCornersEnabled,
+            frenchLanguage = stateStore.frenchLanguageEnabled,
+            englishLanguage = stateStore.englishLanguageEnabled,
             doubleSpacePeriod = stateStore.doubleSpacePeriodEnabled,
             punctuationAutoSpacing = stateStore.punctuationAutoSpacingEnabled,
             recents = emojiRecents,
+            clipboardEntries = clipboardEntriesForKeyboard(),
+            snippets = stateStore.snippetRules(),
         )
+    }
+
+    private fun clipboardEntriesForKeyboard(): List<KeyboardClipboardEntry> {
+        val primary = clipboardController.primaryText()?.let { KeyboardClipboardEntry(it) }
+        return (listOfNotNull(primary) + stateStore.clipboardEntries())
+            .distinctBy { it.content }
+            .take(60)
     }
 
     private fun shouldSuppressAutoCorrections(): Boolean {
@@ -621,8 +697,13 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
         keyboardView?.applyTypingAssistant(
             autoCapitalized = allowed && KeyboardTextAssistant.shouldAutoCapitalize(before),
             candidates =
-                if (allowed) {
-                    KeyboardTextAssistant.suggestions(before, stateStore.textRules())
+                if (allowed && stateStore.spellingSuggestionsEnabled) {
+                    KeyboardTextAssistant.suggestions(
+                        textBeforeCursor = before,
+                        rules = stateStore.textRules(),
+                        frenchEnabled = stateStore.frenchLanguageEnabled,
+                        englishEnabled = stateStore.englishLanguageEnabled,
+                    )
                 } else {
                     emptyList()
                 },
