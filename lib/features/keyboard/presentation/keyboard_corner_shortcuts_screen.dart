@@ -1,65 +1,86 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../snippets/application/snippet_store_provider.dart';
+import '../../snippets/domain/snippet_store.dart';
 import '../domain/keyboard_models.dart';
+import 'keyboard_preview_screen.dart';
 
-class KeyboardCornerShortcutsScreen extends StatefulWidget {
+class KeyboardCornerShortcutsScreen extends ConsumerStatefulWidget {
   const KeyboardCornerShortcutsScreen({super.key});
 
   @override
-  State<KeyboardCornerShortcutsScreen> createState() =>
+  ConsumerState<KeyboardCornerShortcutsScreen> createState() =>
       _KeyboardCornerShortcutsScreenState();
 }
 
 class _KeyboardCornerShortcutsScreenState
-    extends State<KeyboardCornerShortcutsScreen> {
-  final _expressionController = TextEditingController();
-  final _labelController = TextEditingController();
-  AndroidKeyboardCornerConfig _config = AndroidKeyboardCornerConfig.defaults();
+    extends ConsumerState<KeyboardCornerShortcutsScreen> {
+  final _searchController = TextEditingController();
+  final _advancedExpressionController = TextEditingController();
+  final _advancedLabelController = TextEditingController();
+  final _importController = TextEditingController();
+  final _previewController = TextEditingController();
+  KeyboardCornerDraft _draft = KeyboardCornerDraft.fromConfig(
+    AndroidKeyboardCornerConfig.defaults(),
+  );
+  List<SnippetRecord> _snippets = const [];
   bool _loading = true;
   bool _saving = false;
-  bool _sensitive = false;
-  String _selectedKeyId = _keyOptions.first.id;
-  KeyboardCornerSlot _selectedSlot = KeyboardCornerSlot.topLeft;
+  bool _privateMode = false;
   String? _message;
 
   @override
   void initState() {
     super.initState();
-    _loadConfig();
+    _searchController.addListener(() => setState(() {}));
+    _load();
   }
 
   @override
   void dispose() {
-    _expressionController.dispose();
-    _labelController.dispose();
+    _searchController.dispose();
+    _advancedExpressionController.dispose();
+    _advancedLabelController.dispose();
+    _importController.dispose();
+    _previewController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadConfig() async {
+  Future<void> _load() async {
     setState(() => _loading = true);
     try {
       final config = await AndroidKeyboardBridge.getCornerConfig();
+      final snippets = await ref.read(snippetStoreProvider).list();
       if (!mounted) {
         return;
       }
       setState(() {
-        _config = config;
+        _draft = KeyboardCornerDraft.fromConfig(config);
+        _snippets = snippets;
         _message = PlatformCapabilities.keyboardImeSupported
-            ? null
-            : 'Simulation only on this platform. Android IME settings are not changed.';
+            ? 'Loaded. Changes stay in draft until Save.'
+            : 'Simulation only: this platform does not change the Android IME.';
       });
-      _syncEditorsFromSelection();
+      _syncAdvancedEditor();
     } on AndroidKeyboardBridgeException catch (error) {
       if (!mounted) {
         return;
       }
-      setState(
-        () => _message =
-            'Unable to load corner shortcuts (${error.code}): ${error.message}',
-      );
+      setState(() {
+        _message =
+            'Unable to load native corner shortcuts (${error.code}): ${error.message}';
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _message = 'Unable to load snippets: $error');
     } finally {
       if (mounted) {
         setState(() => _loading = false);
@@ -67,93 +88,108 @@ class _KeyboardCornerShortcutsScreenState
     }
   }
 
-  Future<void> _setPreset(String presetId) async {
-    setState(() => _saving = true);
-    try {
-      final next = PlatformCapabilities.keyboardImeSupported
-          ? await AndroidKeyboardBridge.setCornerPreset(presetId)
-          : _config.copyWith(presetId: presetId);
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _config = next;
-        _message = 'Corner preset: ${_presetName(presetId)}.';
-      });
-      _syncEditorsFromSelection();
-    } on AndroidKeyboardBridgeException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      setState(
-        () => _message =
-            'Unable to save preset (${error.code}): ${error.message}',
+  void _selectKey(String keyId) {
+    setState(() {
+      _draft = _draft.copyWith(selectedKeyId: keyId);
+    });
+    _syncAdvancedEditor();
+  }
+
+  void _selectSlot(KeyboardCornerSlot slot) {
+    setState(() {
+      _draft = _draft.copyWith(selectedSlot: slot);
+    });
+    _syncAdvancedEditor();
+  }
+
+  void _setPreset(String presetId) {
+    setState(() {
+      _draft = _draft.copyWith(
+        draftConfig: _draft.draftConfig.copyWith(presetId: presetId),
+        validationMessage: null,
       );
-    } finally {
-      if (mounted) {
-        setState(() => _saving = false);
-      }
+      _message = 'Preset changed in draft.';
+    });
+  }
+
+  void _applyAction(KeyboardGuidedAction action) {
+    _applyShortcut(
+      action.shortcutFor(
+        keyId: _draft.selectedKeyId,
+        slot: _draft.selectedSlot,
+      ),
+      message: '${action.category.label}: ${action.title} added to draft.',
+    );
+  }
+
+  void _applyShortcut(
+    AndroidKeyboardCornerShortcut shortcut, {
+    required String message,
+  }) {
+    final validation = _validateShortcut(shortcut);
+    setState(() {
+      _draft = validation == null
+          ? _draft.applyShortcut(shortcut)
+          : _draft.copyWith(validationMessage: validation);
+      _message = validation ?? message;
+    });
+    if (validation == null) {
+      _syncAdvancedEditor();
     }
   }
 
-  Future<void> _saveOverride() async {
-    final expression = _expressionController.text.trim();
-    if (expression.isEmpty) {
-      setState(() => _message = 'Expression is required.');
+  String? _validateShortcut(AndroidKeyboardCornerShortcut shortcut) {
+    if (!KeyboardConfigurableKeyCatalog.contains(shortcut.keyId)) {
+      return 'Unknown key id: ${shortcut.keyId}.';
+    }
+    if (shortcut.expression.trim().isEmpty) {
+      return 'Expression is required.';
+    }
+    if ((shortcut.label ?? shortcut.displayLabel).length > 12) {
+      return 'Corner label is too long. Keep it under 12 characters.';
+    }
+    return null;
+  }
+
+  Future<void> _saveDraft() async {
+    final error = _validateConfig(_draft.draftConfig);
+    if (error != null) {
+      setState(() {
+        _draft = _draft.copyWith(validationMessage: error);
+        _message = error;
+      });
       return;
     }
-    final label = _labelController.text.trim();
-    final override = AndroidKeyboardCornerShortcut(
-      keyId: _selectedKeyId,
-      slot: _selectedSlot,
-      expression: expression,
-      label: label.isEmpty ? null : label,
-      sensitive: _sensitive,
-    );
-    final nextOverrides = [
-      for (final item in _config.overrides)
-        if (item.keyId != _selectedKeyId || item.slot != _selectedSlot) item,
-      override,
-    ];
-    await _persistConfig(
-      _config.copyWith(overrides: nextOverrides),
-      successMessage: 'Corner shortcut saved.',
-    );
-  }
-
-  Future<void> _clearOverride() async {
-    final nextOverrides = [
-      for (final item in _config.overrides)
-        if (item.keyId != _selectedKeyId || item.slot != _selectedSlot) item,
-    ];
-    await _persistConfig(
-      _config.copyWith(overrides: nextOverrides),
-      successMessage: 'Corner override cleared.',
-    );
-  }
-
-  Future<void> _resetConfig() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      setState(() {
+        _message =
+            'Save disabled here: only Android can persist WinFlowzApp Keyboard IME settings.';
+      });
+      return;
+    }
     setState(() => _saving = true);
     try {
-      final next = PlatformCapabilities.keyboardImeSupported
-          ? await AndroidKeyboardBridge.resetCornerConfig()
-          : AndroidKeyboardCornerConfig.defaults();
+      final saved = await AndroidKeyboardBridge.setCornerConfig(
+        _draft.draftConfig,
+      );
       if (!mounted) {
         return;
       }
       setState(() {
-        _config = next;
-        _message = 'Corner shortcuts reset to defaults.';
+        _draft = KeyboardCornerDraft.fromConfig(saved).copyWith(
+          selectedKeyId: _draft.selectedKeyId,
+          selectedSlot: _draft.selectedSlot,
+        );
+        _message = 'Corner shortcuts saved to Android keyboard.';
       });
-      _syncEditorsFromSelection();
     } on AndroidKeyboardBridgeException catch (error) {
       if (!mounted) {
         return;
       }
-      setState(
-        () => _message =
-            'Unable to reset shortcuts (${error.code}): ${error.message}',
-      );
+      setState(() {
+        _message =
+            'Unable to save native config (${error.code}): ${error.message}';
+      });
     } finally {
       if (mounted) {
         setState(() => _saving = false);
@@ -161,305 +197,586 @@ class _KeyboardCornerShortcutsScreenState
     }
   }
 
-  Future<void> _persistConfig(
-    AndroidKeyboardCornerConfig config, {
-    required String successMessage,
-  }) async {
-    setState(() => _saving = true);
-    try {
-      final next = PlatformCapabilities.keyboardImeSupported
-          ? await AndroidKeyboardBridge.setCornerConfig(config)
-          : config;
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _config = next;
-        _message = successMessage;
-      });
-      _syncEditorsFromSelection();
-    } on AndroidKeyboardBridgeException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      setState(
-        () => _message =
-            'Unable to save shortcut (${error.code}): ${error.message}',
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _saving = false);
-      }
-    }
-  }
-
-  void _selectKey(String value) {
-    setState(() => _selectedKeyId = value);
-    _syncEditorsFromSelection();
-  }
-
-  void _selectSlot(KeyboardCornerSlot value) {
-    setState(() => _selectedSlot = value);
-    _syncEditorsFromSelection();
-  }
-
-  void _syncEditorsFromSelection() {
-    final shortcut = _overrideForSelection() ?? _presetForSelection();
-    _expressionController.text = shortcut?.expression ?? '';
-    _labelController.text = shortcut?.label ?? '';
-    _sensitive = shortcut?.sensitive ?? false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  AndroidKeyboardCornerShortcut? _overrideForSelection() {
-    for (final shortcut in _config.overrides.reversed) {
-      if (shortcut.keyId == _selectedKeyId && shortcut.slot == _selectedSlot) {
-        return shortcut;
+  String? _validateConfig(AndroidKeyboardCornerConfig config) {
+    for (final shortcut in config.overrides) {
+      final error = _validateShortcut(shortcut);
+      if (error != null) {
+        return error;
       }
     }
     return null;
   }
 
-  AndroidKeyboardCornerShortcut? _presetForSelection() {
-    final resolved = KeyboardCornerPresetCatalog.resolvedForKey(
-      config: _config.copyWith(overrides: const []),
-      keyId: _selectedKeyId,
+  void _discardDraft() {
+    setState(() {
+      _draft = _draft.discard();
+      _message = 'Draft discarded.';
+    });
+    _syncAdvancedEditor();
+  }
+
+  void _resetCorner() {
+    setState(() {
+      _draft = _draft.resetCorner(_draft.selectedKeyId, _draft.selectedSlot);
+      _message = 'Selected corner override reset in draft.';
+    });
+    _syncAdvancedEditor();
+  }
+
+  Future<void> _resetKey() async {
+    final count = _draft.draftConfig.overrides
+        .where((item) => item.keyId == _draft.selectedKeyId)
+        .length;
+    if (count == 0) {
+      setState(() => _message = 'This key has no overrides to reset.');
+      return;
+    }
+    final confirmed = await _confirm(
+      title: 'Reset key?',
+      body: 'This removes $count override(s) from the selected key draft.',
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    setState(() {
+      _draft = _draft.resetKey(_draft.selectedKeyId);
+      _message = 'Selected key overrides reset in draft.';
+    });
+    _syncAdvancedEditor();
+  }
+
+  Future<void> _resetAllDraft() async {
+    final confirmed = await _confirm(
+      title: 'Reset all shortcuts?',
+      body:
+          'This resets the draft to native defaults. Nothing changes in Android until Save.',
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    setState(() {
+      _draft = _draft.copyWith(
+        draftConfig: AndroidKeyboardCornerConfig.defaults(),
+        validationMessage: null,
+      );
+      _message = 'Full reset staged in draft.';
+    });
+    _syncAdvancedEditor();
+  }
+
+  Future<bool> _confirm({required String title, required String body}) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(title),
+            content: Text(body),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Confirm'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
+  Future<void> _showExportDialog() async {
+    final encoded = const JsonEncoder.withIndent(
+      '  ',
+    ).convert(_draft.draftConfig.toMap());
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Export corner config'),
+        content: SizedBox(width: 560, child: SelectableText(encoded)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showImportDialog() async {
+    _importController.clear();
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Import corner config'),
+        content: SizedBox(
+          width: 560,
+          child: TextField(
+            key: const Key('corner-import-json-field'),
+            controller: _importController,
+            maxLines: 8,
+            decoration: const InputDecoration(
+              labelText: 'JSON config',
+              hintText: '{"version":1,"presetId":"french_accents"...}',
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              _importJson(_importController.text);
+              Navigator.of(context).pop();
+            },
+            child: const Text('Preview import'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _importJson(String raw) {
+    if (raw.length > 24000) {
+      setState(() => _message = 'Import rejected: JSON is too large.');
+      return;
+    }
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map<String, Object?> &&
+          decoded is! Map<Object?, Object?>) {
+        setState(() => _message = 'Import rejected: expected a JSON object.');
+        return;
+      }
+      final map = Map<Object?, Object?>.from(decoded as Map);
+      final version = map['version'];
+      if (version != null && version != 1) {
+        setState(() => _message = 'Import rejected: unknown config version.');
+        return;
+      }
+      final imported = AndroidKeyboardCornerConfig.fromMap(
+        map,
+      ).copyWith(availablePresets: _draft.draftConfig.availablePresets);
+      final error = _validateConfig(imported);
+      setState(() {
+        _draft = error == null
+            ? _draft.copyWith(draftConfig: imported, validationMessage: null)
+            : _draft.copyWith(validationMessage: error);
+        _message = error ?? 'Import preview staged. Review then Save.';
+      });
+    } on FormatException {
+      setState(() => _message = 'Import rejected: invalid JSON.');
+    }
+  }
+
+  void _syncAdvancedEditor() {
+    final shortcut = _selectedShortcut();
+    _advancedExpressionController.text = shortcut?.expression ?? '';
+    _advancedLabelController.text = shortcut?.label ?? '';
+  }
+
+  AndroidKeyboardCornerShortcut? _selectedShortcut() {
+    for (final shortcut in _draft.draftConfig.overrides.reversed) {
+      if (shortcut.keyId == _draft.selectedKeyId &&
+          shortcut.slot == _draft.selectedSlot) {
+        return shortcut;
+      }
+    }
+    final presetOnly = _draft.draftConfig.copyWith(overrides: const []);
+    return KeyboardCornerPresetCatalog.resolvedForKey(
+      config: presetOnly,
+      keyId: _draft.selectedKeyId,
       cornersEnabled: true,
       specialKeyCornersEnabled: true,
       privateMode: false,
-      specialKey: _selectedKey()?.special ?? false,
-    );
-    return resolved[_selectedSlot];
+      specialKey: KeyboardConfigurableKeyCatalog.byId(
+        _draft.selectedKeyId,
+      ).special,
+    )[_draft.selectedSlot];
   }
 
-  _KeyboardCornerKeyOption? _selectedKey() {
-    return _keyOptions.firstWhere(
-      (option) => option.id == _selectedKeyId,
-      orElse: () => _keyOptions.first,
+  void _applyAdvanced() {
+    final expression = _advancedExpressionController.text.trim();
+    final label = _advancedLabelController.text.trim();
+    _applyShortcut(
+      AndroidKeyboardCornerShortcut(
+        keyId: _draft.selectedKeyId,
+        slot: _draft.selectedSlot,
+        expression: expression,
+        label: label.isEmpty ? null : label,
+        sensitive: _looksSensitive(expression),
+      ),
+      message: 'Advanced expression added to draft.',
     );
   }
 
-  String _presetName(String id) {
-    return _config.availablePresets
-        .firstWhere(
-          (preset) => preset.id == id,
-          orElse: () => const AndroidKeyboardCornerPreset(
-            id: KeyboardCornerPresetCatalog.frenchAccents,
-            name: 'French accents',
-          ),
-        )
-        .name;
+  bool _looksSensitive(String expression) {
+    final lower = expression.toLowerCase();
+    return lower.contains('clipboard') ||
+        lower.contains('snippet') ||
+        lower.contains('paste') ||
+        lower.contains('copy');
+  }
+
+  void _simulateSelectedCorner() {
+    final shortcut = _selectedShortcut();
+    if (shortcut == null) {
+      setState(() => _message = 'No shortcut on this corner.');
+      return;
+    }
+    if (_nativeOnly(shortcut.expression)) {
+      setState(() {
+        _message =
+            'Native-only action: ${shortcut.displayLabel}. Android device QA required.';
+      });
+      return;
+    }
+    final text = _textFromExpression(shortcut.expression);
+    _previewController.text += text;
+    setState(() => _message = 'Preview inserted ${shortcut.displayLabel}.');
+  }
+
+  bool _nativeOnly(String expression) {
+    final lower = expression.toLowerCase();
+    return lower.contains('action:') ||
+        lower.contains('keyevent:') ||
+        lower.contains('modifier:');
+  }
+
+  String _textFromExpression(String expression) {
+    final separator = expression.indexOf(':');
+    final payload = separator > 0
+        ? expression.substring(separator + 1)
+        : expression;
+    final trimmed = payload.trim();
+    if (trimmed.startsWith("'") &&
+        trimmed.endsWith("'") &&
+        trimmed.length > 1) {
+      return trimmed
+          .substring(1, trimmed.length - 1)
+          .replaceAll(r"\'", "'")
+          .replaceAll(r'\\', r'\');
+    }
+    return trimmed;
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedKey = _selectedKey() ?? _keyOptions.first;
-    final resolved = KeyboardCornerPresetCatalog.resolvedForKey(
-      config: _config,
-      keyId: _selectedKeyId,
-      cornersEnabled: true,
-      specialKeyCornersEnabled: true,
-      privateMode: false,
-      specialKey: selectedKey.special,
+    final selectedKey = KeyboardConfigurableKeyCatalog.byId(
+      _draft.selectedKeyId,
     );
-    return Scaffold(
-      appBar: AppBar(title: const Text('Corner shortcuts')),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: AppInsets.screen,
-              children: [
-                Card(
-                  child: Padding(
-                    padding: AppInsets.card,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DropdownButtonFormField<String>(
-                          key: ValueKey(_config.presetId),
-                          initialValue: _config.presetId,
-                          decoration: const InputDecoration(
-                            labelText: 'Corner preset',
-                          ),
-                          items: [
-                            for (final preset in _config.availablePresets)
-                              DropdownMenuItem(
-                                value: preset.id,
-                                child: Text(preset.name),
-                              ),
-                          ],
-                          onChanged: _saving || _config.availablePresets.isEmpty
-                              ? null
-                              : (value) {
-                                  if (value != null) {
-                                    _setPreset(value);
-                                  }
-                                },
-                        ),
-                        AppGaps.x2,
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: OutlinedButton.icon(
-                            onPressed: _saving ? null : _resetConfig,
-                            icon: const Icon(Icons.restore),
-                            label: const Text('Reset defaults'),
-                          ),
-                        ),
-                      ],
-                    ),
+    final selectedShortcut = _selectedShortcut();
+    return PopScope(
+      canPop: !_draft.dirty,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop || !_draft.dirty) {
+          return;
+        }
+        final discard = await _confirm(
+          title: 'Discard draft?',
+          body: 'You have unsaved corner shortcut changes.',
+        );
+        if (discard && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Corner shortcuts'),
+          actions: [
+            TextButton.icon(
+              onPressed: _saving || !_draft.dirty ? null : _discardDraft,
+              icon: const Icon(Icons.undo_outlined),
+              label: const Text('Discard'),
+            ),
+            FilledButton.icon(
+              onPressed: _saving || !_draft.dirty ? null : _saveDraft,
+              icon: const Icon(Icons.save_outlined),
+              label: const Text('Save'),
+            ),
+            AppGaps.horizontalX2,
+          ],
+        ),
+        body: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView(
+                padding: AppInsets.screen,
+                children: [
+                  _StatusStrip(
+                    dirty: _draft.dirty,
+                    saving: _saving,
+                    message: _message,
+                    unsupported: !PlatformCapabilities.keyboardImeSupported,
                   ),
-                ),
-                AppGaps.x3,
-                Card(
-                  child: Padding(
-                    padding: AppInsets.card,
+                  AppGaps.x3,
+                  _Section(
+                    title: 'Preset and preview',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Wrap(
                           spacing: AppSpacing.x3,
-                          runSpacing: AppSpacing.x3,
+                          runSpacing: AppSpacing.x2,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             SizedBox(
-                              width: 220,
+                              width: 280,
                               child: DropdownButtonFormField<String>(
-                                key: ValueKey(_selectedKeyId),
-                                initialValue: _selectedKeyId,
+                                key: const Key('corner-preset-dropdown'),
+                                initialValue: _draft.draftConfig.presetId,
+                                isExpanded: true,
                                 decoration: const InputDecoration(
-                                  labelText: 'Key',
+                                  labelText: 'Draft preset',
                                 ),
                                 items: [
-                                  for (final option in _keyOptions)
+                                  for (final preset
+                                      in _draft.draftConfig.availablePresets)
                                     DropdownMenuItem(
-                                      value: option.id,
-                                      child: Text(option.label),
+                                      value: preset.id,
+                                      child: Text(
+                                        preset.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                 ],
                                 onChanged: _saving
                                     ? null
                                     : (value) {
                                         if (value != null) {
-                                          _selectKey(value);
+                                          _setPreset(value);
                                         }
                                       },
                               ),
                             ),
-                            SizedBox(
-                              width: 180,
-                              child:
-                                  DropdownButtonFormField<KeyboardCornerSlot>(
-                                    key: ValueKey(_selectedSlot),
-                                    initialValue: _selectedSlot,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Corner',
-                                    ),
-                                    items: [
-                                      for (final slot
-                                          in KeyboardCornerSlot.values)
-                                        DropdownMenuItem(
-                                          value: slot,
-                                          child: Text(_slotLabel(slot)),
-                                        ),
-                                    ],
-                                    onChanged: _saving
-                                        ? null
-                                        : (value) {
-                                            if (value != null) {
-                                              _selectSlot(value);
-                                            }
-                                          },
-                                  ),
+                            FilterChip(
+                              selected: _privateMode,
+                              onSelected: (value) {
+                                setState(() {
+                                  _privateMode = value;
+                                  _message = value
+                                      ? 'Private preview: sensitive corners are shown as blocked.'
+                                      : 'Private preview off.';
+                                });
+                              },
+                              avatar: const Icon(Icons.lock_outline),
+                              label: const Text('Private preview'),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _resetAllDraft,
+                              icon: const Icon(Icons.restart_alt_outlined),
+                              label: const Text('Reset all draft'),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _showExportDialog,
+                              icon: const Icon(Icons.ios_share_outlined),
+                              label: const Text('Export JSON'),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _showImportDialog,
+                              icon: const Icon(Icons.data_object_outlined),
+                              label: const Text('Import JSON'),
                             ),
                           ],
                         ),
                         AppGaps.x3,
-                        TextField(
-                          controller: _expressionController,
-                          enabled: !_saving,
-                          decoration: const InputDecoration(
-                            labelText: 'KeyboardKeyValue expression',
-                            hintText: "à, label:'text', action:Undo",
-                          ),
+                        KeyboardCornerSelectablePreview(
+                          config: _draft.draftConfig,
+                          selectedKeyId: _draft.selectedKeyId,
+                          selectedSlot: _draft.selectedSlot,
+                          privateMode: _privateMode,
+                          specialKeyCornersEnabled: true,
+                          onKeySelected: _selectKey,
+                          onSlotSelected: _selectSlot,
+                        ),
+                      ],
+                    ),
+                  ),
+                  AppGaps.x3,
+                  _Section(
+                    title: '${selectedKey.label} corners',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: AppSpacing.x2,
+                          runSpacing: AppSpacing.x2,
+                          children: [
+                            for (final slot in KeyboardCornerSlot.values)
+                              ChoiceChip(
+                                key: Key('corner-slot-${slot.name}'),
+                                selected: slot == _draft.selectedSlot,
+                                onSelected: (_) => _selectSlot(slot),
+                                label: Text(
+                                  '${_slotLabel(slot)}: ${_shortcutLabel(slot)}',
+                                ),
+                              ),
+                          ],
                         ),
                         AppGaps.x2,
-                        TextField(
-                          controller: _labelController,
-                          enabled: !_saving,
-                          decoration: const InputDecoration(
-                            labelText: 'Corner label',
-                            hintText: 'Optional short label',
-                          ),
+                        _WarningLine(
+                          shortcut: selectedShortcut,
+                          privateMode: _privateMode,
+                          specialKey: selectedKey.special,
                         ),
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          value: _sensitive,
-                          onChanged: _saving
-                              ? null
-                              : (value) => setState(() => _sensitive = value),
-                          title: const Text('Sensitive action'),
-                          subtitle: const Text(
-                            'Blocks this shortcut in private fields.',
-                          ),
-                        ),
+                        AppGaps.x2,
                         Wrap(
                           spacing: AppSpacing.x2,
                           runSpacing: AppSpacing.x2,
                           children: [
                             OutlinedButton.icon(
-                              onPressed: _saving ? null : _clearOverride,
-                              icon: const Icon(Icons.clear),
-                              label: const Text('Clear override'),
+                              onPressed: _resetCorner,
+                              icon: const Icon(Icons.clear_outlined),
+                              label: const Text('Reset corner'),
                             ),
-                            FilledButton.icon(
-                              onPressed: _saving ? null : _saveOverride,
-                              icon: const Icon(Icons.save_outlined),
-                              label: const Text('Save shortcut'),
+                            OutlinedButton.icon(
+                              onPressed: _resetKey,
+                              icon: const Icon(Icons.keyboard_return_outlined),
+                              label: const Text('Reset key'),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _simulateSelectedCorner,
+                              icon: const Icon(Icons.play_arrow_outlined),
+                              label: const Text('Preview action'),
+                            ),
+                          ],
+                        ),
+                        AppGaps.x2,
+                        TextField(
+                          controller: _previewController,
+                          minLines: 2,
+                          maxLines: 4,
+                          decoration: const InputDecoration(
+                            labelText: 'Preview buffer',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AppGaps.x3,
+                  _Section(
+                    title: 'Action picker',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          key: const Key('corner-action-search'),
+                          controller: _searchController,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            labelText:
+                                'Search accents, punctuation, actions or snippets',
+                          ),
+                        ),
+                        AppGaps.x3,
+                        _ActionCatalog(
+                          actions: _filteredActions(),
+                          onSelected: _applyAction,
+                        ),
+                        AppGaps.x3,
+                        _SnippetCatalog(
+                          snippets: _filteredSnippets(),
+                          onSelected: (snippet) {
+                            _applyAction(
+                              KeyboardGuidedAction(
+                                category: KeyboardGuidedActionCategory.snippet,
+                                title: snippet.label ?? snippet.trigger,
+                                expression:
+                                    '${snippet.trigger}:${KeyboardGuidedAction.quotedTextExpression(snippet.content)}',
+                                label: snippet.trigger,
+                                sensitive: true,
+                                description:
+                                    'Snippet content is inserted by Android keyboard.',
+                              ),
+                            );
+                          },
+                        ),
+                        AppGaps.x3,
+                        ExpansionTile(
+                          tilePadding: EdgeInsets.zero,
+                          title: const Text('Advanced expression'),
+                          children: [
+                            TextField(
+                              key: const Key('corner-advanced-expression'),
+                              controller: _advancedExpressionController,
+                              decoration: const InputDecoration(
+                                labelText: 'KeyboardKeyValue expression',
+                                hintText: "action:Undo or label:'text'",
+                              ),
+                            ),
+                            AppGaps.x2,
+                            TextField(
+                              controller: _advancedLabelController,
+                              decoration: const InputDecoration(
+                                labelText: 'Short corner label',
+                              ),
+                            ),
+                            AppGaps.x2,
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: FilledButton.icon(
+                                onPressed: _applyAdvanced,
+                                icon: const Icon(Icons.add_circle_outline),
+                                label: const Text('Apply expression'),
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
-                ),
-                AppGaps.x3,
-                Card(
-                  child: Padding(
-                    padding: AppInsets.card,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          selectedKey.label,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        AppGaps.x2,
-                        for (final slot in KeyboardCornerSlot.values)
-                          ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(_slotLabel(slot)),
-                            subtitle: Text(
-                              resolved[slot]?.displayLabel ?? 'Default tap',
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                if (_message != null) ...[
-                  AppGaps.x3,
-                  Text(
-                    _message!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
                 ],
-              ],
-            ),
+              ),
+      ),
     );
+  }
+
+  List<KeyboardGuidedAction> _filteredActions() {
+    final query = _searchController.text.trim().toLowerCase();
+    final actions = KeyboardGuidedActionCatalog.defaultActions();
+    if (query.isEmpty) {
+      return actions;
+    }
+    return actions
+        .where(
+          (action) =>
+              action.title.toLowerCase().contains(query) ||
+              action.expression.toLowerCase().contains(query) ||
+              action.category.label.toLowerCase().contains(query),
+        )
+        .toList(growable: false);
+  }
+
+  List<SnippetRecord> _filteredSnippets() {
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      return _snippets;
+    }
+    return _snippets
+        .where(
+          (snippet) =>
+              snippet.trigger.toLowerCase().contains(query) ||
+              (snippet.label ?? '').toLowerCase().contains(query) ||
+              snippet.content.toLowerCase().contains(query),
+        )
+        .toList(growable: false);
+  }
+
+  String _shortcutLabel(KeyboardCornerSlot slot) {
+    final shortcut = KeyboardCornerPresetCatalog.resolvedForKey(
+      config: _draft.draftConfig,
+      keyId: _draft.selectedKeyId,
+      cornersEnabled: true,
+      specialKeyCornersEnabled: true,
+      privateMode: _privateMode,
+      specialKey: KeyboardConfigurableKeyCatalog.byId(
+        _draft.selectedKeyId,
+      ).special,
+    )[slot];
+    return shortcut?.displayLabel ?? 'tap';
   }
 
   String _slotLabel(KeyboardCornerSlot slot) {
@@ -472,36 +789,211 @@ class _KeyboardCornerShortcutsScreenState
   }
 }
 
-class _KeyboardCornerKeyOption {
-  const _KeyboardCornerKeyOption(this.id, this.label, {this.special = false});
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.child});
 
-  final String id;
-  final String label;
-  final bool special;
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: AppInsets.card,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            AppGaps.x3,
+            child,
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-const _keyOptions = [
-  _KeyboardCornerKeyOption('letter-a', 'A'),
-  _KeyboardCornerKeyOption('letter-e', 'E'),
-  _KeyboardCornerKeyOption('letter-i', 'I'),
-  _KeyboardCornerKeyOption('letter-o', 'O'),
-  _KeyboardCornerKeyOption('letter-u', 'U'),
-  _KeyboardCornerKeyOption('letter-c', 'C'),
-  _KeyboardCornerKeyOption('letter-n', 'N'),
-  _KeyboardCornerKeyOption('letter-s', 'S'),
-  _KeyboardCornerKeyOption('letter-j', 'J'),
-  _KeyboardCornerKeyOption('letter-k', 'K'),
-  _KeyboardCornerKeyOption('letter-l', 'L'),
-  _KeyboardCornerKeyOption('letter-f', 'F'),
-  _KeyboardCornerKeyOption('letter-g', 'G'),
-  _KeyboardCornerKeyOption('letter-h', 'H'),
-  _KeyboardCornerKeyOption('text-comma', 'Comma'),
-  _KeyboardCornerKeyOption('text-period', 'Period'),
-  _KeyboardCornerKeyOption('space', 'Space', special: true),
-  _KeyboardCornerKeyOption('enter', 'Enter', special: true),
-  _KeyboardCornerKeyOption('shift', 'Shift', special: true),
-  _KeyboardCornerKeyOption('modifier-ctrl', 'Ctrl', special: true),
-  _KeyboardCornerKeyOption('modifier-alt', 'Alt', special: true),
-  _KeyboardCornerKeyOption('modifier-fn', 'Fn', special: true),
-  _KeyboardCornerKeyOption('del-letter-row', 'Backspace', special: true),
-];
+class _StatusStrip extends StatelessWidget {
+  const _StatusStrip({
+    required this.dirty,
+    required this.saving,
+    required this.unsupported,
+    this.message,
+  });
+
+  final bool dirty;
+  final bool saving;
+  final bool unsupported;
+  final String? message;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final status = saving
+        ? 'Saving native config...'
+        : dirty
+        ? 'Draft has unsaved changes'
+        : 'Saved';
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: unsupported
+            ? colorScheme.errorContainer
+            : colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+      ),
+      child: Padding(
+        padding: AppInsets.card,
+        child: Row(
+          children: [
+            Icon(
+              unsupported ? Icons.info_outline : Icons.edit_note_outlined,
+              color: unsupported
+                  ? colorScheme.onErrorContainer
+                  : colorScheme.onSurfaceVariant,
+            ),
+            AppGaps.horizontalX2,
+            Expanded(
+              child: Text(
+                message == null ? status : '$status. $message',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionCatalog extends StatelessWidget {
+  const _ActionCatalog({required this.actions, required this.onSelected});
+
+  final List<KeyboardGuidedAction> actions;
+  final ValueChanged<KeyboardGuidedAction> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final grouped =
+        <KeyboardGuidedActionCategory, List<KeyboardGuidedAction>>{};
+    for (final action in actions) {
+      grouped.putIfAbsent(action.category, () => []).add(action);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final entry in grouped.entries) ...[
+          Text(
+            entry.key.label,
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(fontWeight: AppFontWeights.bold),
+          ),
+          AppGaps.x1,
+          Wrap(
+            spacing: AppSpacing.x2,
+            runSpacing: AppSpacing.x2,
+            children: [
+              for (final action in entry.value)
+                ActionChip(
+                  key: Key('corner-action-${action.title}'),
+                  avatar: Icon(_iconFor(action)),
+                  label: Text(action.title),
+                  onPressed: () => onSelected(action),
+                ),
+            ],
+          ),
+          AppGaps.x3,
+        ],
+      ],
+    );
+  }
+
+  IconData _iconFor(KeyboardGuidedAction action) {
+    return switch (action.category) {
+      KeyboardGuidedActionCategory.accent => Icons.text_fields,
+      KeyboardGuidedActionCategory.punctuation => Icons.more_horiz,
+      KeyboardGuidedActionCategory.snippet => Icons.text_snippet_outlined,
+      KeyboardGuidedActionCategory.action => Icons.touch_app_outlined,
+      KeyboardGuidedActionCategory.macro => Icons.account_tree_outlined,
+      KeyboardGuidedActionCategory.advancedExpression => Icons.code,
+    };
+  }
+}
+
+class _SnippetCatalog extends StatelessWidget {
+  const _SnippetCatalog({required this.snippets, required this.onSelected});
+
+  final List<SnippetRecord> snippets;
+  final ValueChanged<SnippetRecord> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    if (snippets.isEmpty) {
+      return const Text('No matching snippets.');
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Snippets',
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(fontWeight: AppFontWeights.bold),
+        ),
+        AppGaps.x1,
+        Wrap(
+          spacing: AppSpacing.x2,
+          runSpacing: AppSpacing.x2,
+          children: [
+            for (final snippet in snippets)
+              ActionChip(
+                key: Key('corner-snippet-${snippet.trigger}'),
+                avatar: const Icon(Icons.text_snippet_outlined),
+                label: Text(snippet.label ?? snippet.trigger),
+                onPressed: () => onSelected(snippet),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _WarningLine extends StatelessWidget {
+  const _WarningLine({
+    required this.shortcut,
+    required this.privateMode,
+    required this.specialKey,
+  });
+
+  final AndroidKeyboardCornerShortcut? shortcut;
+  final bool privateMode;
+  final bool specialKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final warnings = <String>[];
+    if (shortcut == null) {
+      warnings.add('Default tap: no corner action.');
+    } else {
+      final expression = shortcut!.expression.toLowerCase();
+      if (shortcut!.sensitive && privateMode) {
+        warnings.add('Blocked in private fields.');
+      }
+      if (expression.contains('action:') ||
+          expression.contains('keyevent:') ||
+          expression.contains('modifier:')) {
+        warnings.add('Native-only action.');
+      }
+      if (specialKey) {
+        warnings.add('Special-key corners require the Android setting.');
+      }
+    }
+    return Text(
+      warnings.join(' '),
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+}

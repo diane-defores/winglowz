@@ -52,13 +52,14 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 - Corner shortcuts are configured per stable key id and corner slot through local Android preferences. The default preset preserves the French accent corners; additional presets cover punctuation, combined French punctuation, developer symbols, and no-corner mode.
 - User corner overrides can insert text, key events, actions, modifiers, or macros through the native parser. Private fields still suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros.
 - Keyboard field context adapts controls for email/URL/phone/search: email and URL expose `@`/`/` plus `.com`, phone forces number layer, search sets enter action to search.
+- The Flutter Settings corner editor is a product configuration surface, not an IME runtime. It can stage drafts, search guided actions/snippets, preview text-like outputs, import/export JSON, and save through the Android keyboard bridge only when Android IME support is available.
 - A minimal Navigation panel is available for cursor/edit actions: char left/right, word left/right, line start/end, delete char, and delete word-left with fallback feedback when host context is insufficient.
 - A lightweight Emoji panel is available with local categories and local recents; recents are not updated in private/sensitive fields.
 - Basic input corrections are available as toggles: double-space-to-period and punctuation auto-spacing, with exclusions for private/email/url/phone fields.
 - Optional touch-debug overlay can show key bounds, gesture direction/threshold/action diagnostics, and never includes typed content.
 - Password, OTP, `noPersonalizedLearning`, and host-marked private fields force private mode: dictation, clipboard capture, snippets, sync intent, and learning are disabled while basic typing remains available.
 - Minimal panels are available directly in the keyboard: clipboard (copy/paste/pins), media (prev/play-pause/next), snippets (single quick insert + app handoff), and settings (corners toggle + layout toggle + app handoff).
-- FlutterWeb keyboard preview can simulate corner presets and simple text/snippet-style corner insertions for visual review. It is not proof of native Android key events, IME field policy, or system-level dispatch.
+- FlutterWeb keyboard preview and the visual corner editor can simulate corner presets and simple text/snippet-style corner insertions for visual review. They are not proof of native Android key events, IME field policy, native persistence, or system-level dispatch.
 - Clipboard sync from the keyboard is opt-in and represented as intent/status. Real cloud sync and cross-account queue flushing require the backend-agnostic Firebase adapter before production claims.
 - Non-Android platforms must not show IME activation controls.
 

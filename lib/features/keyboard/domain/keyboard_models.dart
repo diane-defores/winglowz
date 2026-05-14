@@ -37,6 +37,101 @@ enum KeyboardCornerSlot {
   }
 }
 
+class KeyboardConfigurableKey {
+  const KeyboardConfigurableKey({
+    required this.id,
+    required this.label,
+    required this.row,
+    this.special = false,
+    this.description,
+  });
+
+  final String id;
+  final String label;
+  final int row;
+  final bool special;
+  final String? description;
+}
+
+class KeyboardConfigurableKeyCatalog {
+  const KeyboardConfigurableKeyCatalog._();
+
+  static const keys = [
+    KeyboardConfigurableKey(id: 'letter-q', label: 'Q', row: 0),
+    KeyboardConfigurableKey(id: 'letter-w', label: 'W', row: 0),
+    KeyboardConfigurableKey(id: 'letter-e', label: 'E', row: 0),
+    KeyboardConfigurableKey(id: 'letter-r', label: 'R', row: 0),
+    KeyboardConfigurableKey(id: 'letter-t', label: 'T', row: 0),
+    KeyboardConfigurableKey(id: 'letter-y', label: 'Y', row: 0),
+    KeyboardConfigurableKey(id: 'letter-u', label: 'U', row: 0),
+    KeyboardConfigurableKey(id: 'letter-i', label: 'I', row: 0),
+    KeyboardConfigurableKey(id: 'letter-o', label: 'O', row: 0),
+    KeyboardConfigurableKey(id: 'letter-p', label: 'P', row: 0),
+    KeyboardConfigurableKey(id: 'letter-a', label: 'A', row: 1),
+    KeyboardConfigurableKey(id: 'letter-s', label: 'S', row: 1),
+    KeyboardConfigurableKey(id: 'letter-d', label: 'D', row: 1),
+    KeyboardConfigurableKey(id: 'letter-f', label: 'F', row: 1),
+    KeyboardConfigurableKey(id: 'letter-g', label: 'G', row: 1),
+    KeyboardConfigurableKey(id: 'letter-h', label: 'H', row: 1),
+    KeyboardConfigurableKey(id: 'letter-j', label: 'J', row: 1),
+    KeyboardConfigurableKey(id: 'letter-k', label: 'K', row: 1),
+    KeyboardConfigurableKey(id: 'letter-l', label: 'L', row: 1),
+    KeyboardConfigurableKey(id: 'shift', label: 'Shift', row: 2, special: true),
+    KeyboardConfigurableKey(id: 'letter-z', label: 'Z', row: 2),
+    KeyboardConfigurableKey(id: 'letter-x', label: 'X', row: 2),
+    KeyboardConfigurableKey(id: 'letter-c', label: 'C', row: 2),
+    KeyboardConfigurableKey(id: 'letter-v', label: 'V', row: 2),
+    KeyboardConfigurableKey(id: 'letter-b', label: 'B', row: 2),
+    KeyboardConfigurableKey(id: 'letter-n', label: 'N', row: 2),
+    KeyboardConfigurableKey(id: 'letter-m', label: 'M', row: 2),
+    KeyboardConfigurableKey(
+      id: 'del-letter-row',
+      label: 'Back',
+      row: 2,
+      special: true,
+      description: 'Backspace',
+    ),
+    KeyboardConfigurableKey(
+      id: 'modifier-ctrl',
+      label: 'Ctrl',
+      row: 3,
+      special: true,
+    ),
+    KeyboardConfigurableKey(
+      id: 'modifier-alt',
+      label: 'Alt',
+      row: 3,
+      special: true,
+    ),
+    KeyboardConfigurableKey(
+      id: 'modifier-fn',
+      label: 'Fn',
+      row: 3,
+      special: true,
+    ),
+    KeyboardConfigurableKey(
+      id: 'text-comma',
+      label: ',',
+      row: 3,
+      special: true,
+    ),
+    KeyboardConfigurableKey(id: 'space', label: 'Space', row: 3, special: true),
+    KeyboardConfigurableKey(
+      id: 'text-period',
+      label: '.',
+      row: 3,
+      special: true,
+    ),
+    KeyboardConfigurableKey(id: 'enter', label: 'Enter', row: 3, special: true),
+  ];
+
+  static KeyboardConfigurableKey byId(String id) {
+    return keys.firstWhere((key) => key.id == id, orElse: () => keys.first);
+  }
+
+  static bool contains(String id) => keys.any((key) => key.id == id);
+}
+
 class AndroidKeyboardCornerShortcut {
   const AndroidKeyboardCornerShortcut({
     required this.keyId,
@@ -104,6 +199,302 @@ class AndroidKeyboardCornerShortcut {
       'label': label,
       'sensitive': sensitive,
     };
+  }
+}
+
+enum KeyboardGuidedActionCategory {
+  accent('Accent'),
+  punctuation('Punctuation'),
+  snippet('Snippet'),
+  action('Action'),
+  macro('Macro'),
+  advancedExpression('Advanced');
+
+  const KeyboardGuidedActionCategory(this.label);
+
+  final String label;
+}
+
+class KeyboardGuidedAction {
+  const KeyboardGuidedAction({
+    required this.category,
+    required this.title,
+    required this.expression,
+    this.label,
+    this.description,
+    this.sensitive = false,
+    this.nativeOnly = false,
+    this.specialKeyGated = false,
+  });
+
+  final KeyboardGuidedActionCategory category;
+  final String title;
+  final String expression;
+  final String? label;
+  final String? description;
+  final bool sensitive;
+  final bool nativeOnly;
+  final bool specialKeyGated;
+
+  AndroidKeyboardCornerShortcut shortcutFor({
+    required String keyId,
+    required KeyboardCornerSlot slot,
+  }) {
+    return AndroidKeyboardCornerShortcut(
+      keyId: keyId,
+      slot: slot,
+      expression: expression,
+      label: label ?? _shortLabel(title),
+      sensitive: sensitive,
+    );
+  }
+
+  static String quotedTextExpression(String value) {
+    final escaped = value.replaceAll(r'\', r'\\').replaceAll("'", r"\'");
+    return "'$escaped'";
+  }
+
+  static String _shortLabel(String value) {
+    final trimmed = value.trim();
+    if (trimmed.length <= 8) {
+      return trimmed;
+    }
+    return trimmed.substring(0, 8);
+  }
+}
+
+class KeyboardGuidedActionCatalog {
+  const KeyboardGuidedActionCatalog._();
+
+  static const accents = [
+    'à',
+    'â',
+    'ä',
+    'æ',
+    'é',
+    'è',
+    'ê',
+    'ë',
+    'î',
+    'ï',
+    'ô',
+    'ö',
+    'ù',
+    'û',
+    'ü',
+    'ç',
+    'ñ',
+    'ß',
+    'œ',
+  ];
+
+  static const punctuation = [
+    ',',
+    '.',
+    '?',
+    '!',
+    "'",
+    '"',
+    '(',
+    ')',
+    ':',
+    ';',
+    '...',
+    '--',
+    '/',
+    r'\',
+    '|',
+    '~',
+    '{',
+    '}',
+    '[',
+    ']',
+    '<',
+    '>',
+    '=',
+    '_',
+  ];
+
+  static const actions = [
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Undo',
+      expression: 'action:Undo',
+      nativeOnly: true,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Redo',
+      expression: 'action:Redo',
+      nativeOnly: true,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Copy',
+      expression: 'action:CopySelection',
+      sensitive: true,
+      nativeOnly: true,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Paste',
+      expression: 'action:PasteClipboard',
+      sensitive: true,
+      nativeOnly: true,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Delete word',
+      expression: 'action:DeleteWordBefore',
+      nativeOnly: true,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Move left',
+      expression: 'action:NavigateCharLeft',
+      nativeOnly: true,
+      specialKeyGated: true,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Move right',
+      expression: 'action:NavigateCharRight',
+      nativeOnly: true,
+      specialKeyGated: true,
+    ),
+  ];
+
+  static List<KeyboardGuidedAction> defaultActions() {
+    return [
+      for (final accent in accents)
+        KeyboardGuidedAction(
+          category: KeyboardGuidedActionCategory.accent,
+          title: accent,
+          expression: KeyboardGuidedAction.quotedTextExpression(accent),
+          label: accent,
+        ),
+      for (final sign in punctuation)
+        KeyboardGuidedAction(
+          category: KeyboardGuidedActionCategory.punctuation,
+          title: sign,
+          expression: KeyboardGuidedAction.quotedTextExpression(sign),
+          label: sign,
+        ),
+      ...actions,
+      const KeyboardGuidedAction(
+        category: KeyboardGuidedActionCategory.macro,
+        title: 'Select all + copy',
+        expression: 'action:SelectAll,action:CopySelection',
+        label: 'Copy all',
+        sensitive: true,
+        nativeOnly: true,
+      ),
+    ];
+  }
+}
+
+class KeyboardCornerDraft {
+  const KeyboardCornerDraft({
+    required this.savedConfig,
+    required this.draftConfig,
+    required this.selectedKeyId,
+    required this.selectedSlot,
+    this.validationMessage,
+  });
+
+  factory KeyboardCornerDraft.fromConfig(AndroidKeyboardCornerConfig config) {
+    return KeyboardCornerDraft(
+      savedConfig: config,
+      draftConfig: config,
+      selectedKeyId: KeyboardConfigurableKeyCatalog.keys.first.id,
+      selectedSlot: KeyboardCornerSlot.topLeft,
+    );
+  }
+
+  final AndroidKeyboardCornerConfig savedConfig;
+  final AndroidKeyboardCornerConfig draftConfig;
+  final String selectedKeyId;
+  final KeyboardCornerSlot selectedSlot;
+  final String? validationMessage;
+
+  bool get dirty => !_sameConfig(savedConfig, draftConfig);
+
+  KeyboardCornerDraft copyWith({
+    AndroidKeyboardCornerConfig? savedConfig,
+    AndroidKeyboardCornerConfig? draftConfig,
+    String? selectedKeyId,
+    KeyboardCornerSlot? selectedSlot,
+    String? validationMessage,
+  }) {
+    return KeyboardCornerDraft(
+      savedConfig: savedConfig ?? this.savedConfig,
+      draftConfig: draftConfig ?? this.draftConfig,
+      selectedKeyId: selectedKeyId ?? this.selectedKeyId,
+      selectedSlot: selectedSlot ?? this.selectedSlot,
+      validationMessage: validationMessage,
+    );
+  }
+
+  KeyboardCornerDraft applyShortcut(AndroidKeyboardCornerShortcut shortcut) {
+    return copyWith(
+      draftConfig: draftConfig.copyWith(
+        overrides: [
+          for (final item in draftConfig.overrides)
+            if (item.keyId != shortcut.keyId || item.slot != shortcut.slot)
+              item,
+          shortcut,
+        ],
+      ),
+      validationMessage: null,
+    );
+  }
+
+  KeyboardCornerDraft resetCorner(String keyId, KeyboardCornerSlot slot) {
+    return copyWith(
+      draftConfig: draftConfig.copyWith(
+        overrides: [
+          for (final item in draftConfig.overrides)
+            if (item.keyId != keyId || item.slot != slot) item,
+        ],
+      ),
+      validationMessage: null,
+    );
+  }
+
+  KeyboardCornerDraft resetKey(String keyId) {
+    return copyWith(
+      draftConfig: draftConfig.copyWith(
+        overrides: [
+          for (final item in draftConfig.overrides)
+            if (item.keyId != keyId) item,
+        ],
+      ),
+      validationMessage: null,
+    );
+  }
+
+  KeyboardCornerDraft discard() {
+    return copyWith(draftConfig: savedConfig, validationMessage: null);
+  }
+
+  static bool _sameConfig(
+    AndroidKeyboardCornerConfig left,
+    AndroidKeyboardCornerConfig right,
+  ) {
+    if (left.presetId != right.presetId ||
+        left.overrides.length != right.overrides.length) {
+      return false;
+    }
+    final leftItems =
+        left.overrides.map((item) => item.toMap().toString()).toList()..sort();
+    final rightItems =
+        right.overrides.map((item) => item.toMap().toString()).toList()..sort();
+    for (var index = 0; index < leftItems.length; index++) {
+      if (leftItems[index] != rightItems[index]) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

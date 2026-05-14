@@ -63,9 +63,12 @@ This inventory separates:
   language, permissions, key management status, auth session visibility,
   Android overlay status, and Android keyboard IME status/preferences.
 - `KeyboardCornerShortcutsScreen`:
-  Android keyboard corner preset and per-key override editor. It reads and
-  writes the native `winflowz_app/keyboard` corner config when Android IME is
-  available, and clearly stays in simulation mode on unsupported platforms.
+  visual Android keyboard corner editor with selectable keyboard preview,
+  draft-before-save state, guided accent/punctuation/snippet/action choices,
+  private-field warnings, per-corner/per-key reset, and JSON import/export. It
+  reads and writes the native `winflowz_app/keyboard` corner config when
+  Android IME is available, and clearly stays in simulation mode on unsupported
+  platforms.
 - `PermissionCards`:
   platform-specific permission status + recovery actions.
 
@@ -99,6 +102,10 @@ This inventory separates:
   Flutter preview/sandbox for keyboard review, including simulated input,
   panels, numeric grid, scrollable snippets/clipboard rows, media status,
   settings panel, and configurable corner preset rendering.
+- `KeyboardCornerSelectablePreview`:
+  reusable preview surface for the corner editor. It renders stable key ids,
+  four selectable corner targets, draft labels, private-mode filtering, and
+  special-key corner gating without claiming native Android dispatch proof.
 
 Native event contract to preserve from Kotlin module:
 

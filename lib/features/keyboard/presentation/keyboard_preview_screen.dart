@@ -979,6 +979,275 @@ class _CornerLabel extends StatelessWidget {
   }
 }
 
+class KeyboardCornerSelectablePreview extends StatelessWidget {
+  const KeyboardCornerSelectablePreview({
+    super.key,
+    required this.config,
+    required this.selectedKeyId,
+    required this.selectedSlot,
+    required this.privateMode,
+    required this.specialKeyCornersEnabled,
+    required this.onKeySelected,
+    required this.onSlotSelected,
+  });
+
+  final AndroidKeyboardCornerConfig config;
+  final String selectedKeyId;
+  final KeyboardCornerSlot selectedSlot;
+  final bool privateMode;
+  final bool specialKeyCornersEnabled;
+  final ValueChanged<String> onKeySelected;
+  final ValueChanged<KeyboardCornerSlot> onSlotSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <int, List<KeyboardConfigurableKey>>{};
+    for (final key in KeyboardConfigurableKeyCatalog.keys) {
+      rows.putIfAbsent(key.row, () => <KeyboardConfigurableKey>[]).add(key);
+    }
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: AppKeyboardPreview.maxWidth,
+        ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: privateMode
+                ? AppColors.keyboardPrivateFrame
+                : AppColors.keyboardDefaultFrame,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            border: Border.all(color: Theme.of(context).colorScheme.outline),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.x2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final row in rows.entries) ...[
+                  SizedBox(
+                    height: row.key == 3
+                        ? AppKeyboardPreview.rowHeightControl
+                        : AppKeyboardPreview.rowHeightRegular,
+                    child: Row(
+                      children: [
+                        for (final keySpec in row.value) ...[
+                          Expanded(
+                            flex: _previewFlex(keySpec),
+                            child: _SelectableCornerKeyCap(
+                              keySpec: keySpec,
+                              shortcuts:
+                                  KeyboardCornerPresetCatalog.resolvedForKey(
+                                    config: config,
+                                    keyId: keySpec.id,
+                                    cornersEnabled: true,
+                                    specialKeyCornersEnabled:
+                                        specialKeyCornersEnabled,
+                                    privateMode: privateMode,
+                                    specialKey: keySpec.special,
+                                  ),
+                              selectedKeyId: selectedKeyId,
+                              selectedSlot: selectedSlot,
+                              onKeySelected: onKeySelected,
+                              onSlotSelected: onSlotSelected,
+                            ),
+                          ),
+                          if (keySpec != row.value.last) AppGaps.horizontalX2,
+                        ],
+                      ],
+                    ),
+                  ),
+                  if (row.key != rows.keys.last) AppGaps.x2,
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  int _previewFlex(KeyboardConfigurableKey keySpec) {
+    if (keySpec.id == 'space') {
+      return 360;
+    }
+    if (keySpec.special) {
+      return 120;
+    }
+    return 100;
+  }
+}
+
+class _SelectableCornerKeyCap extends StatelessWidget {
+  const _SelectableCornerKeyCap({
+    required this.keySpec,
+    required this.shortcuts,
+    required this.selectedKeyId,
+    required this.selectedSlot,
+    required this.onKeySelected,
+    required this.onSlotSelected,
+  });
+
+  final KeyboardConfigurableKey keySpec;
+  final Map<KeyboardCornerSlot, AndroidKeyboardCornerShortcut> shortcuts;
+  final String selectedKeyId;
+  final KeyboardCornerSlot selectedSlot;
+  final ValueChanged<String> onKeySelected;
+  final ValueChanged<KeyboardCornerSlot> onSlotSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = keySpec.id == selectedKeyId;
+    final colorScheme = Theme.of(context).colorScheme;
+    final background = selected
+        ? colorScheme.primaryContainer
+        : keySpec.special
+        ? AppColors.keyboardKeySpecial
+        : AppColors.white;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: 'Keyboard key ${keySpec.label}',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: Key('corner-preview-key-${keySpec.id}'),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+          onTap: () => onKeySelected(keySpec.id),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: background,
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+              border: Border.all(
+                color: selected ? colorScheme.primary : AppColors.borderLight,
+                width: selected ? 2 : AppKeyboardPreview.keyBorderWidth,
+              ),
+            ),
+            child: Stack(
+              children: [
+                _CornerTapTarget(
+                  slot: KeyboardCornerSlot.topLeft,
+                  selected:
+                      selected && selectedSlot == KeyboardCornerSlot.topLeft,
+                  shortcut: shortcuts[KeyboardCornerSlot.topLeft],
+                  alignment: Alignment.topLeft,
+                  onTap: () {
+                    onKeySelected(keySpec.id);
+                    onSlotSelected(KeyboardCornerSlot.topLeft);
+                  },
+                ),
+                _CornerTapTarget(
+                  slot: KeyboardCornerSlot.topRight,
+                  selected:
+                      selected && selectedSlot == KeyboardCornerSlot.topRight,
+                  shortcut: shortcuts[KeyboardCornerSlot.topRight],
+                  alignment: Alignment.topRight,
+                  onTap: () {
+                    onKeySelected(keySpec.id);
+                    onSlotSelected(KeyboardCornerSlot.topRight);
+                  },
+                ),
+                _CornerTapTarget(
+                  slot: KeyboardCornerSlot.bottomLeft,
+                  selected:
+                      selected && selectedSlot == KeyboardCornerSlot.bottomLeft,
+                  shortcut: shortcuts[KeyboardCornerSlot.bottomLeft],
+                  alignment: Alignment.bottomLeft,
+                  onTap: () {
+                    onKeySelected(keySpec.id);
+                    onSlotSelected(KeyboardCornerSlot.bottomLeft);
+                  },
+                ),
+                _CornerTapTarget(
+                  slot: KeyboardCornerSlot.bottomRight,
+                  selected:
+                      selected &&
+                      selectedSlot == KeyboardCornerSlot.bottomRight,
+                  shortcut: shortcuts[KeyboardCornerSlot.bottomRight],
+                  alignment: Alignment.bottomRight,
+                  onTap: () {
+                    onKeySelected(keySpec.id);
+                    onSlotSelected(KeyboardCornerSlot.bottomRight);
+                  },
+                ),
+                Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.x1,
+                      ),
+                      child: Text(
+                        keySpec.label,
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: AppColors.keyboardKeyForeground,
+                          fontWeight: AppFontWeights.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CornerTapTarget extends StatelessWidget {
+  const _CornerTapTarget({
+    required this.slot,
+    required this.selected,
+    required this.shortcut,
+    required this.alignment,
+    required this.onTap,
+  });
+
+  final KeyboardCornerSlot slot;
+  final bool selected;
+  final AndroidKeyboardCornerShortcut? shortcut;
+  final Alignment alignment;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Align(
+      alignment: alignment,
+      child: InkResponse(
+        key: Key('corner-preview-slot-${slot.name}'),
+        radius: 18,
+        onTap: onTap,
+        child: Container(
+          width: 34,
+          height: 24,
+          alignment: alignment,
+          padding: const EdgeInsets.all(AppKeyboardPreview.cornerLabelPadding),
+          decoration: selected
+              ? BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: .16),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                )
+              : null,
+          child: Text(
+            shortcut?.displayLabel ?? ' ',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: selected
+                  ? colorScheme.primary
+                  : AppColors.keyboardCornerLabel,
+              fontWeight: AppFontWeights.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class KeyboardPreviewSnapshot {
   KeyboardPreviewSnapshot({
     required this.profile,

@@ -81,6 +81,14 @@ Run on at least one emulator or real Android device before closing the IME chant
 | Toggle QWERTY/AZERTY in Settings then reopen IME | Letter rows match selected layout profile and persist between sessions. |
 | Enable swipe-corner mode then swipe key corners | Default French accent corner shortcuts are visible and inserted; center-return gesture cancels insertion. |
 | Open Settings > Keyboard > Corner shortcuts | Preset, key, corner slot, expression, label, sensitive flag, save, clear override, and reset defaults are available. |
+| Use the visual corner editor preview | Tapping a key selects it; tapping one of its four corner targets selects that corner without saving immediately. |
+| Search the action picker for an accent, punctuation mark, action, or snippet | Matching guided actions/snippets are shown; selecting one updates the draft preview and marks the state dirty. |
+| Toggle Private preview in the corner editor | Sensitive snippets/clipboard/action shortcuts show a private-field blocked warning instead of pretending they will run. |
+| Use Preview action in the corner editor | Text/snippet-like actions append to the preview buffer; native-only actions report that Android device QA is required. |
+| Reset a corner, reset a key, then discard draft | Only the targeted overrides are staged for reset; discard restores the previously saved config without a native save. |
+| Export corner JSON | The exported payload contains only version, preset id, overrides, labels, and sensitive flags. It must not include clipboard history, typed text, or secrets. |
+| Import invalid or oversize corner JSON | The editor rejects the import and does not call the native save bridge. |
+| Save a valid visual-editor draft on Android | The editor calls `setKeyboardCornerConfig` once and reports a saved state after the native bridge responds. |
 | Change corner preset to punctuation or developer symbols | Keyboard status returns the new preset; native keys and Flutter preview render the selected preset. |
 | Save `letter-a/topLeft -> à` override | Swipe top-left on `a` inserts `à`; normal tap still inserts `a`. |
 | Save a text-expander corner expression such as `JA:'j\\'arrive'` | Swipe on the configured corner inserts the full replacement text in a standard field. |
