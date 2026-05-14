@@ -49,6 +49,23 @@ class TubeflowSiteThemeTokens {
   static const Color siteBorderDarkSubtle = Color(0x1AFFFFFF);
   static const Color siteWhiteSubtle = Color(0x1AFFFFFF);
 
+  // Light companion palette for app screens that still support Light/System.
+  static const Color appLightBackground = Color(0xFFF4F3EE);
+  static const Color appLightSurface = Color(0xFFFAFAF7);
+  static const Color appLightCard = Color(0xFFFFFFFF);
+  static const Color appLightMuted = Color(0xFFE7E5DE);
+  static const Color appLightMutedForeground = Color(0xFF5F5F5A);
+  static const Color appLightBorder = Color(0xFFD8D5CC);
+  static const Color appLightBorderSubtle = Color(0x1A262626);
+  static const Color appLightText = Color(0xFF171717);
+  static const Color appLightInput = Color(0xFFFFFFFF);
+
+  // App action palette: TubeFlow keeps primary actions monochrome.
+  static const Color appActionLight = Color(0xFF262626);
+  static const Color appActionOnLight = Color(0xFFFCFCFC);
+  static const Color appActionDark = Color(0xFFFCFCFC);
+  static const Color appActionOnDark = Color(0xFF343A40);
+
   // Raysons (root radius + variants).
   static const double siteRadius = 16.0;
   static const double siteRadiusSm = siteRadius - 4.0;
@@ -115,14 +132,15 @@ class TubeflowSiteThemeTokens {
 
   // Surfaces and state token values used in Flutter theme composition.
   static const double surfaceSubtleAlpha = 0.72;
-  static const double textFieldFillAlpha = 0.45;
-  static const double cardShadowAlpha = 0.08;
+  static const double textFieldFillAlpha = 0.72;
+  static const double cardShadowAlpha = 0.18;
+  static const double darkCardShadowAlpha = 0.42;
   static const double textFieldBorderWidth = 1.5;
-  static const double cardElevationLight = 1.0;
-  static const double cardElevationDark = 0.0;
+  static const double cardElevationLight = 2.0;
+  static const double cardElevationDark = 8.0;
   static const double appBarElevation = 0.0;
   static const double dividerThickness = 1.0;
-  static const double elevationOverlay = 8.0;
+  static const double elevationOverlay = 18.0;
 
   // Motion.
   static const Duration motionInstant = Duration(milliseconds: 120);
@@ -134,26 +152,26 @@ class TubeflowSiteThemeTokens {
   static const Cubic motionSpring = Cubic(0.34, 1.56, 0.64, 1);
 
   // Composants d'app UI conservés pour la continuité de l'app Flutter.
-  static const Color brandPrimary = Color(0xFF6366F1);
-  static const Color brandPrimaryDark = Color(0xFF4F46E5);
-  static const Color brandSecondary = Color(0xFF22D3EE);
+  static const Color brandPrimary = appActionLight;
+  static const Color brandPrimaryDark = appActionDark;
+  static const Color brandSecondary = siteSecondary;
   static const Color brandSuccess = Color(0xFF16A34A);
   static const Color brandWarning = Color(0xFFD97706);
   static const Color brandDanger = Color(0xFFDC2626);
   static const Color brandDangerLight = Color(0xFFF87171);
-  static const Color lightGray = Color(0xFFF1F5F9);
-  static const Color surfaceSunken = Color(0xFFF8FAFC);
-  static const Color surfaceRaised = Color(0xFFFFFFFF);
-  static const Color surfaceSunkenDark = Color(0xFF020617);
-  static const Color surfaceRaisedDark = Color(0xFF1E293B);
-  static const Color surfaceOverlayDark = Color(0xFF334155);
+  static const Color lightGray = appLightMuted;
+  static const Color surfaceSunken = appLightBackground;
+  static const Color surfaceRaised = appLightCard;
+  static const Color surfaceSunkenDark = siteBackground;
+  static const Color surfaceRaisedDark = siteCard;
+  static const Color surfaceOverlayDark = siteSecondary;
 
-  // Ombres (mêmes valeurs fonctionnelles que les tokens existants).
-  static const Color shadowSoft = Color(0x0F000000);
-  static const Color shadowCard = Color(0x14000000);
-  static const Color shadowCardHover = Color(0x1F000000);
-  static const Color shadowCardLarge = Color(0x26000000);
-  static const Color shadowPrimary = Color(0x4D6366F1);
+  // Ombres plus proches du rendu TubeFlow: profondes mais neutres.
+  static const Color shadowSoft = Color(0x18000000);
+  static const Color shadowCard = Color(0x26000000);
+  static const Color shadowCardHover = Color(0x33000000);
+  static const Color shadowCardLarge = Color(0x40000000);
+  static const Color shadowPrimary = Color(0x33000000);
 
   // Surfaces/typographies de rappel de la page clavier (existant app).
   static const Color keyboardPrivateFrame = Color(0xFFF6E8E2);

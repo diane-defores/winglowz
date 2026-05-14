@@ -5,6 +5,7 @@ import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
 import '../application/transcription_store.dart';
@@ -300,121 +301,115 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
         const LocalModeNotice(surface: 'Voice'),
         const LocalModeNoticeGap(),
         if (PlatformCapabilities.overlaySupported)
-          Card(
-            child: Padding(
-              padding: AppInsets.compactCard,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Android Overlay Controls',
-                    style: Theme.of(context).textTheme.titleSmall,
+          AppSectionCard(
+            title: 'Android Overlay Controls',
+            padding: AppInsets.compactCard,
+            stretch: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'enabled=${overlayStatus?.enabled ?? false} | '
+                  'running=${overlayStatus?.running ?? false} | '
+                  'delivery=${overlayStatus?.deliveryMode.name ?? 'clipboardOnly'}',
+                ),
+                if (overlayStatus?.accessibilityPermissionGranted == false)
+                  const Padding(
+                    padding: AppInsets.stack,
+                    child: Text(
+                      'Accessibility is disabled: delivery falls back to clipboard only.',
+                    ),
                   ),
-                  AppGaps.x2,
-                  Text(
-                    'enabled=${overlayStatus?.enabled ?? false} | '
-                    'running=${overlayStatus?.running ?? false} | '
-                    'delivery=${overlayStatus?.deliveryMode.name ?? 'clipboardOnly'}',
-                  ),
-                  if (overlayStatus?.accessibilityPermissionGranted == false)
-                    const Padding(
-                      padding: AppInsets.stack,
-                      child: Text(
-                        'Accessibility is disabled: delivery falls back to clipboard only.',
+                AppGaps.x3,
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: _overlayBusy ? null : _startOverlay,
+                        child: const Text('Start overlay'),
                       ),
                     ),
-                  AppGaps.x3,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FilledButton(
-                          onPressed: _overlayBusy ? null : _startOverlay,
-                          child: const Text('Start overlay'),
-                        ),
+                    AppGaps.horizontalX2,
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _overlayBusy ? null : _stopOverlay,
+                        child: const Text('Stop'),
                       ),
-                      AppGaps.horizontalX2,
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: _overlayBusy ? null : _stopOverlay,
-                          child: const Text('Stop'),
-                        ),
+                    ),
+                    AppGaps.horizontalX2,
+                    Expanded(
+                      child: TextButton(
+                        onPressed: _overlayBusy ? null : _cancelOverlay,
+                        child: const Text('Cancel'),
                       ),
-                      AppGaps.horizontalX2,
-                      Expanded(
-                        child: TextButton(
-                          onPressed: _overlayBusy ? null : _cancelOverlay,
-                          child: const Text('Cancel'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         if (PlatformCapabilities.overlaySupported) AppGaps.x2,
-        TextField(
-          controller: _rawController,
-          minLines: 2,
-          maxLines: 4,
-          decoration: const InputDecoration(labelText: 'Raw text'),
-        ),
-        AppGaps.x2,
-        TextField(
-          controller: _cleanedController,
-          minLines: 2,
-          maxLines: 4,
-          decoration: const InputDecoration(labelText: 'Cleaned text'),
-        ),
-        AppGaps.x2,
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _languageController,
-                decoration: const InputDecoration(labelText: 'Language'),
+        AppSectionCard(
+          title: 'Nouvelle transcription',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _rawController,
+                minLines: 2,
+                maxLines: 4,
+                decoration: const InputDecoration(labelText: 'Raw text'),
               ),
-            ),
-            AppGaps.horizontalX2,
-            Expanded(
-              child: TextField(
-                controller: _durationController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Duration (ms)'),
+              AppGaps.x2,
+              TextField(
+                controller: _cleanedController,
+                minLines: 2,
+                maxLines: 4,
+                decoration: const InputDecoration(labelText: 'Cleaned text'),
               ),
-            ),
-          ],
-        ),
-        AppGaps.x2,
-        DropdownButtonFormField<String>(
-          initialValue: _source,
-          items: const [
-            DropdownMenuItem(value: 'free', child: Text('free')),
-            DropdownMenuItem(value: 'advanced', child: Text('advanced')),
-            DropdownMenuItem(value: 'overlay', child: Text('overlay')),
-            DropdownMenuItem(value: 'keyboard', child: Text('keyboard')),
-          ],
-          onChanged: _busy
-              ? null
-              : (value) => setState(() => _source = value ?? 'advanced'),
-          decoration: const InputDecoration(labelText: 'Source'),
-        ),
-        AppGaps.x2,
-        Row(
-          children: [
-            Expanded(
-              child: FilledButton.icon(
-                onPressed: _busy ? null : _add,
-                icon: const Icon(Icons.add),
-                label: const Text('Add transcription'),
+              AppGaps.x2,
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _languageController,
+                      decoration: const InputDecoration(labelText: 'Language'),
+                    ),
+                  ),
+                  AppGaps.horizontalX2,
+                  Expanded(
+                    child: TextField(
+                      controller: _durationController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Duration (ms)',
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            AppGaps.horizontalX2,
-            OutlinedButton(
-              onPressed: _busy ? null : _load,
-              child: const Text('Refresh'),
-            ),
-          ],
+              AppGaps.x2,
+              DropdownButtonFormField<String>(
+                initialValue: _source,
+                items: const [
+                  DropdownMenuItem(value: 'free', child: Text('free')),
+                  DropdownMenuItem(value: 'advanced', child: Text('advanced')),
+                  DropdownMenuItem(value: 'overlay', child: Text('overlay')),
+                  DropdownMenuItem(value: 'keyboard', child: Text('keyboard')),
+                ],
+                onChanged: _busy
+                    ? null
+                    : (value) => setState(() => _source = value ?? 'advanced'),
+                decoration: const InputDecoration(labelText: 'Source'),
+              ),
+              AppGaps.x3,
+              AppFormActions(
+                primaryLabel: 'Add transcription',
+                onPrimary: _busy ? null : _add,
+                onSecondary: _busy ? null : _load,
+              ),
+            ],
+          ),
         ),
         if (_busy)
           const Padding(
@@ -424,36 +419,31 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
         if (_message != null)
           Padding(padding: AppInsets.message, child: Text(_message!)),
         AppGaps.x4,
-        Text('Transcriptions', style: Theme.of(context).textTheme.titleSmall),
+        const AppEntityListHeader(title: 'Transcriptions'),
         AppGaps.x2,
         if (_items.isEmpty)
-          const Card(child: ListTile(title: Text('No transcription yet.'))),
+          const AppEmptyStateCard(message: 'No transcription yet.'),
         for (final item in _items)
-          Card(
-            child: ListTile(
-              title: Text(item.cleanedText),
-              subtitle: Text(
-                'raw: ${item.rawText}\n'
-                'lang: ${item.language} | source: ${item.source} | '
-                'duration: ${item.durationMs}ms',
-              ),
-              isThreeLine: true,
-              trailing: Wrap(
-                spacing: AppIconMetrics.listActionSpacing,
-                children: [
-                  IconButton(
-                    tooltip: 'Edit cleaned',
-                    onPressed: _busy ? null : () => _quickEdit(item),
-                    icon: const Icon(Icons.edit_outlined),
-                  ),
-                  IconButton(
-                    tooltip: 'Delete',
-                    onPressed: _busy ? null : () => _delete(item.id),
-                    icon: const Icon(Icons.delete_outline),
-                  ),
-                ],
-              ),
+          AppEntityListTile(
+            title: Text(item.cleanedText),
+            subtitle: Text(
+              'raw: ${item.rawText}\n'
+              'lang: ${item.language} | source: ${item.source} | '
+              'duration: ${item.durationMs}ms',
             ),
+            isThreeLine: true,
+            actions: [
+              IconButton(
+                tooltip: 'Edit cleaned',
+                onPressed: _busy ? null : () => _quickEdit(item),
+                icon: const Icon(Icons.edit_outlined),
+              ),
+              IconButton(
+                tooltip: 'Delete',
+                onPressed: _busy ? null : () => _delete(item.id),
+                icon: const Icon(Icons.delete_outline),
+              ),
+            ],
           ),
       ],
     );

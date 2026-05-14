@@ -45,6 +45,7 @@ supersedes: []
 evidence:
   - "2026-05-09 design audit adopted ContentFlow family colors, spacing, radii, motion names and component defaults in lib/core/theme/app_theme.dart."
   - "2026-05-09 design audit added a transient Settings Appearance selector in lib/features/settings/presentation/settings_screen.dart."
+  - "2026-05-14 component audit scored C overall; it requires an active chantier attached to this design-system spec, not closure."
   - "Current appThemeModeProvider is in-memory only in lib/app/winflowz_app.dart."
   - "User decision 2026-05-09: settings and backend data must be backend-agnostic; Firebase is the first adapter."
   - "User decision 2026-05-09: Supabase is no longer the target backend."
@@ -339,6 +340,14 @@ Transformer l'Appearance selector en préférence produit complète: module Sett
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-09 15:19:23 UTC | sf-spec | GPT-5 Codex | Created draft spec for post-settings-decision design system completion | Draft spec created; later unblocked by backend-agnostic SettingsStore decision | `/sf-ready shipflow_data/workflow/specs/settings-driven-design-system.md after Firebase adapter spec` |
 | 2026-05-11 19:08:22 UTC | sf-ship | GPT-5.5 | Centralized theme variables using TubeFlow theme references across AppTheme, keyboard preview, settings slider, and shell breakpoints; copied theme-reference assets from tubeflow_site | shipped | `/sf-end shipflow_data/workflow/specs/settings-driven-design-system.md` |
+| 2026-05-14 22:27:20 UTC | sf-design-from-scratch | GPT-5 Codex | Reworked the Flutter visual layer toward TubeFlow: monochrome action palette, charcoal/off-white surfaces, stronger card depth, themed shell background, auth card, and card-based form panels on representative screens | passed local validation | Continue visual audit/playground before final closure |
+| 2026-05-14 22:37:00 UTC | sf-audit-components | GPT-5 Codex | Audited Flutter component architecture after TubeFlow design pass | C overall; top-heavy screens, repeated CRUD panels, oversized Settings/Keyboard widgets | Extract shared UI primitives before final design-system closure |
+| 2026-05-14 22:47:39 UTC | component-refactor | GPT-5 Codex | Added shared Flutter UI primitives, migrated representative CRUD pages, grouped keyboard preview control props, and moved initial Settings sections to shared cards | passed local validation | Continue extracting Settings keyboard/overlay/secrets sections |
+| 2026-05-14 22:49:32 UTC | chantier-classification | GPT-5 Codex | Corrected the component audit classification after operator challenge | component audit `C` is an active chantier attached to this spec; no separate parallel chantier opened | Keep `sf-end` blocked until remaining component work raises the baseline |
+| 2026-05-14 22:57:24 UTC | continue | GPT-5 Codex | Continued the active component chantier by splitting Settings rendering into dedicated section widgets and adding `AppStatusCard` | `flutter analyze` and `flutter test` passed | Continue accessibility/focus contracts and orchestration extraction |
+| 2026-05-14 23:18:36 UTC | component-a11y | GPT-5 Codex | Added focus traversal, semantic labels, keyboard activation, and tests for keyboard corner targets; added semantic values for overlay sliders | `flutter analyze`, targeted keyboard corner tests, and full `flutter test` passed | Continue data orchestration extraction and visual/manual review |
+| 2026-05-14 23:29:47 UTC | continue | GPT-5 Codex | Extracted Settings keyboard/overlay native bridge orchestration into application controllers and added merge-logic test coverage | `flutter analyze`, targeted controller test, and full `flutter test` passed | Run visual/manual review and component re-audit before closure |
+| 2026-05-14 23:34:40 UTC | component-re-audit | GPT-5 Codex | Split Settings sections and keyboard preview widgets into part files, reran component checks, and rescored component baseline | component score raised from C to B; `flutter analyze`, targeted tests, full `flutter test`, and `git diff --check` passed | Continue visual/design validation; component-system blocker cleared |
 
 # Current Chantier Flow
 
@@ -346,7 +355,7 @@ Transformer l'Appearance selector en préférence produit complète: module Sett
 |------|--------|----------|-----------|
 | sf-spec | done | This draft spec exists and records the SettingsStore decision | Specify Firebase adapter |
 | sf-ready | blocked | Firebase adapter contract is pending | Run after Firebase adapter spec |
-| sf-start | pending | Implementation intentionally deferred | Wait for sf-ready |
-| sf-verify | pending | No implementation yet | After sf-start |
-| sf-end | pending | No implementation yet | After sf-verify |
-| sf-ship | done | Theme tokens migrated for core screens; theme reference files copied | Continue sf-end once remaining design tasks are complete | /sf-end |
+| sf-start | partial | User-directed visual and component implementation has started despite the Firebase settings gate; theme tokens, shell/auth styling, shared CRUD primitives, grouped keyboard preview props, Settings section extraction, keyboard corner a11y/focus contracts, Settings bridge controllers, and component file splits are implemented | Continue visual/design validation and Firebase settings gate |
+| sf-verify | partial | Local validation passed after the component refactor with `dart format`, `flutter analyze`, `flutter test`, and `git diff --check`; latest continuation reran `flutter analyze`, targeted tests, full `flutter test`, and `git diff --check` | Add visual/manual review for the design layer |
+| sf-end | blocked | Component-system blocker is cleared to `B`, but the broader design-system chantier still has Firebase settings readiness and visual validation gates | Resolve Firebase settings gate or explicitly defer it before final closure |
+| sf-ship | partial | Previous theme-token work was shipped; current component-refactor work is validated locally but not shipped | Ship only after the active chantier follow-ups are accepted or explicitly deferred |

@@ -27,7 +27,7 @@ class AppColors {
   static const accent = secondary;
 
   // Neutral primitives (site theme base + app continuity).
-  static const dark = TubeflowSiteThemeTokens.siteText;
+  static const dark = TubeflowSiteThemeTokens.appLightText;
   static const gray = TubeflowSiteThemeTokens.siteMutedForeground;
   static const neutral = gray;
   static const slate = gray;
@@ -42,12 +42,12 @@ class AppColors {
   static const siteBackground = TubeflowSiteThemeTokens.siteBackground;
   static const siteForeground = TubeflowSiteThemeTokens.siteForeground;
   static const textMuted = gray;
-  static const surfaceBase = white;
-  static const surfaceRaised = white;
-  static const surfaceOverlay = white;
+  static const surfaceBase = TubeflowSiteThemeTokens.appLightBackground;
+  static const surfaceRaised = TubeflowSiteThemeTokens.appLightCard;
+  static const surfaceOverlay = TubeflowSiteThemeTokens.appLightSurface;
   static const surfaceSunken = TubeflowSiteThemeTokens.surfaceSunken;
   static const surfaceSubtle = lightGray;
-  static const surfaceTint = lightBlue;
+  static const surfaceTint = TubeflowSiteThemeTokens.appLightMuted;
   static const surfaceCard = surfaceRaised;
   static const surfaceBaseDark = siteBackground;
   static const surfaceRaisedDark = TubeflowSiteThemeTokens.surfaceRaisedDark;
@@ -61,8 +61,8 @@ class AppColors {
   static const badgeText = TubeflowSiteThemeTokens.siteBadgeText;
 
   // Borders and overlays.
-  static const borderSubtle = TubeflowSiteThemeTokens.siteBorderSubtle;
-  static const borderLight = TubeflowSiteThemeTokens.siteBorder;
+  static const borderSubtle = TubeflowSiteThemeTokens.appLightBorderSubtle;
+  static const borderLight = TubeflowSiteThemeTokens.appLightBorder;
   static const borderDarkSubtle = TubeflowSiteThemeTokens.siteBorderDarkSubtle;
   static const overlayScrim = TubeflowSiteThemeTokens.siteScrim;
 
@@ -248,6 +248,34 @@ class AppElevation {
   static const cardDark = TubeflowSiteThemeTokens.cardElevationDark;
 }
 
+class AppGradients {
+  static LinearGradient shell(Brightness brightness) {
+    if (brightness == Brightness.dark) {
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          TubeflowSiteThemeTokens.siteBackground,
+          Color(0xFF1F1F1F),
+          TubeflowSiteThemeTokens.siteCard,
+        ],
+        stops: [0, 0.48, 1],
+      );
+    }
+
+    return const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        TubeflowSiteThemeTokens.appLightBackground,
+        TubeflowSiteThemeTokens.appLightSurface,
+        Color(0xFFEDEBE3),
+      ],
+      stops: [0, 0.52, 1],
+    );
+  }
+}
+
 class AppRadii {
   static const sm = TubeflowSiteThemeTokens.siteRadiusSm;
   static const md = TubeflowSiteThemeTokens.siteRadiusMd;
@@ -316,17 +344,21 @@ class AppTheme {
       brightness: Brightness.light,
     ).copyWith(
       primary: AppColors.primary,
-      onPrimary: AppColors.white,
-      secondary: AppColors.secondary,
-      onSecondary: AppColors.dark,
-      tertiary: AppColors.accent,
-      onTertiary: AppColors.dark,
+      onPrimary: TubeflowSiteThemeTokens.appActionOnLight,
+      primaryContainer: TubeflowSiteThemeTokens.appLightMuted,
+      onPrimaryContainer: AppColors.dark,
+      secondary: TubeflowSiteThemeTokens.siteSecondary,
+      onSecondary: AppColors.white,
+      secondaryContainer: TubeflowSiteThemeTokens.appLightMuted,
+      onSecondaryContainer: AppColors.dark,
+      tertiary: TubeflowSiteThemeTokens.siteRing,
+      onTertiary: AppColors.white,
       error: AppColors.danger,
       surface: AppColors.surfaceBase,
       onSurface: AppColors.textPrimary,
       surfaceContainerLowest: AppColors.surfaceSunken,
-      surfaceContainerLow: AppColors.surfaceRaised,
-      surfaceContainer: AppColors.surfaceSubtle,
+      surfaceContainerLow: AppColors.surfaceOverlay,
+      surfaceContainer: AppColors.surfaceRaised,
       surfaceContainerHighest: AppColors.surfaceSubtle,
       outline: AppColors.borderLight,
       outlineVariant: AppColors.borderSubtle,
@@ -338,9 +370,16 @@ class AppTheme {
       seedColor: AppColors.primary,
       brightness: Brightness.dark,
     ).copyWith(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      tertiary: AppColors.accent,
+      primary: AppColors.primaryDark,
+      onPrimary: TubeflowSiteThemeTokens.appActionOnDark,
+      primaryContainer: TubeflowSiteThemeTokens.siteSecondary,
+      onPrimaryContainer: AppColors.textOnDark,
+      secondary: TubeflowSiteThemeTokens.siteSecondary,
+      onSecondary: AppColors.textOnDark,
+      secondaryContainer: TubeflowSiteThemeTokens.siteMuted,
+      onSecondaryContainer: AppColors.textOnDark,
+      tertiary: TubeflowSiteThemeTokens.siteRing,
+      onTertiary: AppColors.textOnDark,
       error: AppColors.dangerLight,
       surface: AppColors.surfaceBaseDark,
       onSurface: AppColors.textOnDark,
@@ -365,11 +404,13 @@ class AppTheme {
       fontFamily: AppTypography.fontFamily,
       fontFamilyFallback: AppTypography.fontFallback,
       textTheme: textTheme,
+      canvasColor: colorScheme.surface,
       appBarTheme: AppBarTheme(
         centerTitle: false,
         elevation: TubeflowSiteThemeTokens.appBarElevation,
-        backgroundColor: colorScheme.surface,
+        backgroundColor: colorScheme.surface.withValues(alpha: 0.92),
         foregroundColor: colorScheme.onSurface,
+        surfaceTintColor: AppColors.transparent,
         titleTextStyle: textTheme.titleLarge?.copyWith(
           color: colorScheme.onSurface,
           fontWeight: AppFontWeights.bold,
@@ -379,9 +420,13 @@ class AppTheme {
         margin: const EdgeInsets.symmetric(vertical: AppSpacing.x2),
         elevation: isDark ? AppElevation.cardDark : AppElevation.cardLight,
         shadowColor: AppColors.black.withValues(
-          alpha: isDark ? 0 : TubeflowSiteThemeTokens.cardShadowAlpha,
+          alpha: isDark
+              ? TubeflowSiteThemeTokens.darkCardShadowAlpha
+              : TubeflowSiteThemeTokens.cardShadowAlpha,
         ),
-        color: colorScheme.surface,
+        color: isDark
+            ? colorScheme.surfaceContainer
+            : colorScheme.surfaceContainerLow,
         surfaceTintColor: AppColors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.md),
@@ -404,9 +449,11 @@ class AppTheme {
           ),
         ),
         filled: true,
-        fillColor: colorScheme.surfaceContainerHighest.withValues(
-          alpha: TubeflowSiteThemeTokens.textFieldFillAlpha,
-        ),
+        fillColor: isDark
+            ? TubeflowSiteThemeTokens.siteInput.withValues(
+                alpha: TubeflowSiteThemeTokens.textFieldFillAlpha,
+              )
+            : TubeflowSiteThemeTokens.appLightInput,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.x4,
           vertical: AppSpacing.x3,
@@ -420,6 +467,8 @@ class AppTheme {
           ),
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
+          elevation: isDark ? 0 : 2,
+          shadowColor: AppColors.black.withValues(alpha: 0.24),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.md),
           ),
@@ -434,6 +483,7 @@ class AppTheme {
           ),
           foregroundColor: colorScheme.primary,
           side: BorderSide(color: colorScheme.outline),
+          backgroundColor: colorScheme.surfaceContainer.withValues(alpha: 0.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.md),
           ),
@@ -461,11 +511,32 @@ class AppTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        indicatorColor: colorScheme.primaryContainer,
-        backgroundColor: colorScheme.surface,
+        indicatorColor: colorScheme.primary.withValues(
+          alpha: isDark ? 0.14 : 0.1,
+        ),
+        backgroundColor: isDark
+            ? colorScheme.surfaceContainerLow
+            : colorScheme.surfaceContainerLow,
         surfaceTintColor: AppColors.transparent,
+        shadowColor: AppColors.black.withValues(alpha: 0.28),
         labelTextStyle: WidgetStateProperty.all(
           const TextStyle(fontWeight: AppFontWeights.semiBold),
+        ),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: colorScheme.surface.withValues(alpha: 0.82),
+        indicatorColor: colorScheme.primary.withValues(
+          alpha: isDark ? 0.14 : 0.1,
+        ),
+        selectedIconTheme: IconThemeData(color: colorScheme.primary),
+        selectedLabelTextStyle: textTheme.labelMedium?.copyWith(
+          color: colorScheme.primary,
+        ),
+        unselectedIconTheme: IconThemeData(
+          color: colorScheme.onSurface.withValues(alpha: 0.58),
+        ),
+        unselectedLabelTextStyle: textTheme.labelMedium?.copyWith(
+          color: colorScheme.onSurface.withValues(alpha: 0.58),
         ),
       ),
       switchTheme: SwitchThemeData(
@@ -489,8 +560,41 @@ class AppTheme {
         backgroundColor: colorScheme.surfaceContainerHighest,
         selectedColor: colorScheme.primaryContainer,
         labelStyle: textTheme.labelMedium,
+        side: BorderSide(color: colorScheme.outlineVariant),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.pill),
+        ),
+      ),
+      listTileTheme: ListTileThemeData(
+        iconColor: colorScheme.onSurface.withValues(alpha: 0.72),
+        textColor: colorScheme.onSurface,
+        subtitleTextStyle: textTheme.bodySmall,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.x4,
+          vertical: AppSpacing.x1,
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surfaceContainer,
+        surfaceTintColor: AppColors.transparent,
+        elevation: AppElevation.overlay,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.lg),
+          side: BorderSide(color: colorScheme.outlineVariant),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: isDark
+            ? TubeflowSiteThemeTokens.siteForeground
+            : TubeflowSiteThemeTokens.siteBackground,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: isDark
+              ? TubeflowSiteThemeTokens.sitePrimaryForeground
+              : TubeflowSiteThemeTokens.siteForeground,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(

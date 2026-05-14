@@ -415,6 +415,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     return LayoutBuilder(
       builder: (context, constraints) {
         final useRail = constraints.maxWidth >= AppBreakpoints.navigationRail;
+        final colorScheme = Theme.of(context).colorScheme;
         return PopScope(
           canPop: !_onboardingVisible && _tabHistory.length <= 1,
           onPopInvokedWithResult: (didPop, result) {
@@ -428,93 +429,104 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
             }
           },
           child: Scaffold(
-            appBar: _onboardingVisible
-                ? null
-                : AppBar(title: Text('WinFlowz • ${titles[_index]}')),
-            body: Row(
-              children: [
-                if (useRail)
-                  NavigationRail(
-                    extended:
-                        constraints.maxWidth >=
-                        AppBreakpoints.navigationRailExtended,
-                    selectedIndex: _index,
-                    onDestinationSelected: _selectTab,
-                    destinations: const [
-                      NavigationRailDestination(
-                        icon: Icon(Icons.keyboard_voice_outlined),
-                        label: Text('Voice'),
+            appBar: AppBar(title: Text('WinFlowz • ${titles[_index]}')),
+            body: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: AppGradients.shell(colorScheme.brightness),
+              ),
+              child: Row(
+                children: [
+                  if (useRail)
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: colorScheme.outlineVariant),
+                        ),
                       ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.content_paste_outlined),
-                        label: Text('Clipboard'),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.keyboard_outlined),
-                        label: Text('Keyboard'),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.text_snippet_outlined),
-                        label: Text('Snippets'),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.auto_fix_high_outlined),
-                        label: Text('Dictionary'),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.settings_outlined),
-                        label: Text('Settings'),
-                      ),
-                    ],
-                  ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      if (!PlatformCapabilities.localSpeechSupported)
-                        const MaterialBanner(
-                          content: Text(
-                            'Local speech is unavailable on Linux. Use advanced Whisper mode.',
+                      child: NavigationRail(
+                        extended:
+                            constraints.maxWidth >=
+                            AppBreakpoints.navigationRailExtended,
+                        selectedIndex: _index,
+                        onDestinationSelected: _selectTab,
+                        destinations: const [
+                          NavigationRailDestination(
+                            icon: Icon(Icons.keyboard_voice_outlined),
+                            label: Text('Voice'),
                           ),
-                          actions: [SizedBox.shrink()],
-                        ),
-                      if (!PlatformCapabilities.overlaySupported)
-                        const MaterialBanner(
-                          content: Text(
-                            'Android overlay is unavailable on this platform.',
+                          NavigationRailDestination(
+                            icon: Icon(Icons.content_paste_outlined),
+                            label: Text('Clipboard'),
                           ),
-                          actions: [SizedBox.shrink()],
-                        ),
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            Positioned.fill(child: pages[_index]),
-                            if (_onboardingVisible)
-                              _OnboardingOverlay(
-                                readiness: _onboardingReadiness,
-                                isBusy: _onboardingBusy,
-                                message: _onboardingMessage,
-                                onClose: _pauseOnboarding,
-                                onOpenSettings: () => _selectTab(5),
-                                onPrimaryAction: _openCurrentStepPrimaryAction,
-                                onSecondaryAction:
-                                    _onboardingReadiness
-                                            ?.activeStep
-                                            ?.definition
-                                            .id ==
-                                        OnboardingStepId.keyboardIme
-                                    ? _openCurrentStepSecondaryAction
-                                    : null,
-                                onSkip: _skipCurrentStep,
-                                onRefresh: _refreshOnboardingState,
-                                onComplete: _completeOnboarding,
-                              ),
-                          ],
-                        ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.keyboard_outlined),
+                            label: Text('Keyboard'),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.text_snippet_outlined),
+                            label: Text('Snippets'),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.auto_fix_high_outlined),
+                            label: Text('Dictionary'),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.settings_outlined),
+                            label: Text('Settings'),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        if (!PlatformCapabilities.localSpeechSupported)
+                          const MaterialBanner(
+                            content: Text(
+                              'Local speech is unavailable on Linux. Use advanced Whisper mode.',
+                            ),
+                            actions: [SizedBox.shrink()],
+                          ),
+                        if (!PlatformCapabilities.overlaySupported)
+                          const MaterialBanner(
+                            content: Text(
+                              'Android overlay is unavailable on this platform.',
+                            ),
+                            actions: [SizedBox.shrink()],
+                          ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(child: pages[_index]),
+                              if (_onboardingVisible)
+                                _OnboardingOverlay(
+                                  readiness: _onboardingReadiness,
+                                  isBusy: _onboardingBusy,
+                                  message: _onboardingMessage,
+                                  onClose: _pauseOnboarding,
+                                  onOpenSettings: () => _selectTab(5),
+                                  onPrimaryAction:
+                                      _openCurrentStepPrimaryAction,
+                                  onSecondaryAction:
+                                      _onboardingReadiness
+                                              ?.activeStep
+                                              ?.definition
+                                              .id ==
+                                          OnboardingStepId.keyboardIme
+                                      ? _openCurrentStepSecondaryAction
+                                      : null,
+                                  onSkip: _skipCurrentStep,
+                                  onRefresh: _refreshOnboardingState,
+                                  onComplete: _completeOnboarding,
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             bottomNavigationBar: useRail || _onboardingVisible
                 ? null
@@ -681,7 +693,7 @@ class _OnboardingOverlay extends StatelessWidget {
                                         color: Theme.of(
                                           context,
                                         ).colorScheme.error,
-                                  ),
+                                      ),
                                 ),
                               ],
                               AppGaps.x3,

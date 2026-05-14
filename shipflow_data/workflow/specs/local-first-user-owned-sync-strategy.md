@@ -5,8 +5,8 @@ artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-10"
 created_at: "2026-05-10 21:41:03 UTC"
-updated: "2026-05-10"
-updated_at: "2026-05-10 21:41:03 UTC"
+updated: "2026-05-14"
+updated_at: "2026-05-14 22:02:35 UTC"
 status: draft
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -54,6 +54,8 @@ evidence:
   - "User decision 2026-05-10: prefer user devices and user-owned cloud accounts such as Dropbox or Google Drive as sync relays."
   - "User decision 2026-05-10: do not force devices onto the same Wi-Fi; sync must work across independent 3G/Wi-Fi networks when possible."
   - "User decision 2026-05-10: avoid paid add-ons by default; increase the LTD price earlier if the product value and cost model require it."
+  - "User decision 2026-05-14: for AppSumo/LTD global buyers, local dictation must use downloadable language packs instead of assuming only French and English."
+  - "Research 2026-05-14: free/on-device ASR candidates include sherpa-onnx, Whisper local, Vosk, FunASR/SenseVoice, Moonshine, WeNet, and PaddleSpeech; model licensing and language coverage vary by pack."
   - "Official docs checked 2026-05-10: MDN WebRTC protocols document ICE/STUN/TURN and the need for TURN relay fallback when direct peer connection is blocked."
   - "Official docs checked 2026-05-10: Google Drive appDataFolder supports hidden app-specific storage through the drive.appdata scope."
   - "Official docs checked 2026-05-10: Dropbox App folder access scopes API calls to the app folder and requires production approval for public scale."
@@ -96,6 +98,8 @@ Resultat observable attendu: WinFlowz reste utilisable et durable en local, puis
 
 WinFlowz accepte les actions produit normales sans backend distant, persiste les donnees localement de facon durable, puis synchronise les changements seulement si l'utilisateur active une methode de sync. La sync produit des changements observables sur un autre appareil via un transport choisi, prioritairement un espace cloud appartenant a l'utilisateur ou une connexion P2P quand elle est possible; en cas d'echec, les changements restent locaux, visibles en etat pending ou error, et peuvent etre renvoyes plus tard sans perte. L'edge case facile a rater est le cas mobile/desktop non simultanement en ligne: le P2P direct ne suffit pas, donc la strategie doit inclure une boite aux lettres asynchrone chiffree, idealement dans le cloud de l'utilisateur, avec un relais WinFlowz minimal seulement comme fallback explicite.
 
+Pour la dictee clavier, le comportement minimal est aussi local-first: WinFlowz doit utiliser les ressources de l'appareil quand un pack de langue local est installe, puis seulement retomber sur Android SpeechRecognizer ou un worker WinFlowz explicite quand le pack local manque, echoue, ou n'est pas disponible pour la langue choisie. Un lancement LTD global ne doit pas promettre une dictee offline universelle; il doit promettre des packs locaux gratuits pour les langues supportees, avec fallback clair pour les autres langues.
+
 # Success Behavior
 
 - Given l'app est installee sans `SUPABASE_URL`, sans `SUPABASE_PUBLISHABLE_KEY` et sans Firebase configure, when l'utilisateur ouvre Voice, Voice Flows, Dictionary ou Clipboard Snippet, then chaque page affiche son contenu local ou un etat vide utilisable, pas un coeur de page blanc.
@@ -106,6 +110,9 @@ WinFlowz accepte les actions produit normales sans backend distant, persiste les
 - Given le P2P direct echoue a cause de NAT, pare-feu ou reseau mobile, when un transport asynchrone est configure, then WinFlowz retombe sur la boite aux lettres cloud utilisateur ou sur un relais minimal, et l'utilisateur voit seulement un statut de sync plus lent, pas une panne bloquante.
 - Given le compte cloud utilisateur a un quota depasse, une autorisation expiree ou une API rate limited, when une sync est lancee, then les changements restent locaux et l'UI expose une action reconnect/retry.
 - Given l'utilisateur est en LTD, when il utilise le produit sans sync cloud WinFlowz, then le cout variable serveur reste proche de zero hors licence, telemetry minimale et distribution.
+- Given l'utilisateur est en LTD et dicte dans une langue supportee par un pack local installe, when il utilise le clavier WinFlowz, then la transcription ne consomme pas de worker WinFlowz.
+- Given l'utilisateur dicte dans une langue sans pack local installe, when il lance la dictee clavier, then WinFlowz propose l'installation du pack si disponible ou bascule vers une politique fallback explicite.
+- Given la langue systeme ou la langue clavier change, when WinFlowz detecte une langue compatible, then il peut suggerer le pack local correspondant sans le telecharger silencieusement.
 - Given un utilisateur retire un appareil, when l'appareil retire essaie de synchroniser, then il ne peut plus dechiffrer les nouvelles enveloppes et son statut est visible comme appareil revoque.
 
 # Error Behavior
@@ -116,6 +123,8 @@ WinFlowz accepte les actions produit normales sans backend distant, persiste les
 - Si deux appareils modifient la meme donnee hors ligne, le moteur applique une regle de merge connue par domaine et conserve assez de metadata pour expliquer le resultat ou exposer un conflit manuel quand la merge automatique serait risquee.
 - Si une enveloppe distante est corrompue, trop ancienne, inconnue ou signee par un appareil revoque, elle est ignoree ou mise en quarantaine sans casser la queue.
 - Si un relais WinFlowz est indisponible, la sync P2P live echoue proprement et la sync asynchrone reste disponible quand un provider utilisateur est configure.
+- Si un pack ASR local est absent, corrompu, incompatible avec l'appareil, ou trop lourd pour la memoire disponible, la dictee clavier doit afficher un fallback explicite au lieu de bloquer ou d'envoyer silencieusement l'audio vers un worker.
+- Si une langue n'a pas encore de pack local de qualite suffisante, la fiche pack doit l'indiquer comme `experimental` ou `fallback only`, pas comme support complet.
 - Si l'utilisateur perd sa cle de recovery, WinFlowz doit etre honnete: les donnees chiffretees hors appareil ne sont pas recuperables par WinFlowz.
 - Si un contenu sensible clipboard provient d'un champ prive ou d'une capture automatique, les regles de `ClipboardHistoryApi` continuent de s'appliquer; la sync ne doit pas contourner private mode ou confirmation.
 - Ce qui ne doit jamais arriver: stockage de cles OpenAI/Anthropic en cloud, logs de contenu utilisateur en clair, service-role secret dans le client, ecriture cloud silencieuse alors que l'utilisateur pense etre en local-only, ou suppression distante sans tombstone/retry.
@@ -123,6 +132,8 @@ WinFlowz accepte les actions produit normales sans backend distant, persiste les
 # Problem
 
 WinFlowz vise un usage multi-appareils, mais un LTD rend dangereux tout modele ou nos serveurs deviennent le lieu principal de stockage et de synchronisation de textes, clipboard, snippets, dictionnaires et transcriptions. Le cout serveur peut devenir structurel alors que le revenu est encaisse une seule fois.
+
+Le meme probleme existe pour la dictee: si chaque appui sur le micro du clavier declenche un worker WinFlowz, un LTD mondial peut transformer des utilisateurs tres actifs en cout variable permanent. Le produit doit donc separer la valeur du clavier et des workflows de la consommation serveur, en utilisant des packs ASR locaux gratuits quand c'est possible.
 
 Le probleme actuel est double. D'abord, l'app a deja un mode `local_mode`, mais le retour utilisateur indique que plusieurs pages restent vides hors Settings quand la configuration Supabase manque. Cela signifie que le local mode n'est pas encore une promesse produit robuste. Ensuite, la sync multi-appareils ne peut pas etre resolue uniquement par P2P direct: les appareils ne sont pas toujours en ligne ensemble, pas toujours sur le meme reseau, et les reseaux mobiles ou pare-feu peuvent bloquer les connexions directes.
 
@@ -139,6 +150,8 @@ La doctrine par defaut est:
 - P2P comme optimisation live, pas comme unique garantie.
 - Serveurs WinFlowz limites a licence, device registry minimal, rendezvous/signaling et eventuel relay rate-limited.
 - Aucun contenu utilisateur lisible cote WinFlowz.
+- Dictee locale via catalogue de packs de langue gratuits et optionnels, telecharges a la demande selon langue systeme, langue clavier ou choix utilisateur.
+- Worker WinFlowz pour transcription seulement en mode fallback/qualite explicite, avec garde-fous de quota compatibles LTD.
 
 # Scope In
 
@@ -150,6 +163,10 @@ La doctrine par defaut est:
 - Ajouter une sync asynchrone par boite aux lettres: upload/download d'enveloppes chiffrees, pagination, checkpoints, retries, backoff, dedupe.
 - Ajouter une strategie de pairing entre appareils: QR code, phrase de recovery ou lien court qui ne transmet jamais la cle maitre en clair a WinFlowz.
 - Ajouter des etats UI: local-only, sync pending, synced, needs reauth, conflict, provider quota/rate limited, relay unavailable.
+- Ajouter un catalogue de packs ASR locaux: langue, moteur, modele, taille, licence, niveau qualite (`experimental`, `standard`, `recommended`), compatibilite appareil, version et checksum.
+- Ajouter un gestionnaire de telechargement modele: installation, reprise, verification checksum, suppression, mise a jour, stockage local et etat visible.
+- Ajouter une politique fallback ASR: pack local installe, pack disponible a installer, Android SpeechRecognizer, worker qualite explicite, ou indisponible.
+- Ajouter une detection langue: locale systeme, langues clavier, choix manuel utilisateur et eventuelle detection audio quand le moteur la supporte.
 - Definir une politique de sync par domaine: settings syncables, transcriptions syncables, snippets/dictionary syncables, clipboard syncable avec garde-fous et opt-out par categorie.
 - Definir le role minimal possible des serveurs WinFlowz: licence/entitlement, device registry metadata, rendezvous/signaling, relay rate-limited et telemetry redacted.
 - Documenter les limites commerciales: pas de promesse "sync illimitee via nos serveurs" pour les LTD.
@@ -163,6 +180,8 @@ La doctrine par defaut est:
 - Forcer les appareils a etre sur le meme Wi-Fi.
 - Synchroniser les cles OpenAI/Anthropic BYO dans la premiere version.
 - Synchroniser l'audio brut par defaut.
+- Bundler tous les modeles ASR dans l'APK initial.
+- Promettre une dictee offline haute qualite dans toutes les langues au lancement LTD.
 - Ajouter de la collaboration temps reel multi-utilisateur type Google Docs.
 - Ajouter billing/checkout complet, sauf si necessaire pour verifier entitlement LTD.
 - Remplacer Firebase partout en une seule passe; Firebase peut rester un adaptateur distant tant que le contrat local-first le contient.
@@ -174,6 +193,9 @@ La doctrine par defaut est:
 - Les stores UI ne doivent pas importer directement Firebase, Supabase, Dropbox, Drive, OneDrive ou WebRTC.
 - Toutes les donnees envoyees vers un provider utilisateur ou un serveur WinFlowz doivent etre chiffrees cote client avant transport.
 - Les serveurs WinFlowz ne doivent pas avoir la cle permettant de lire transcriptions, clipboard, snippets, dictionnaire ou preferences sensibles.
+- La dictee clavier ne doit pas envoyer l'audio vers un worker WinFlowz sans action ou reglage explicite quand un mode local est attendu.
+- Les packs ASR locaux doivent avoir une licence compatible avec la distribution commerciale WinFlowz avant d'etre marques `recommended`.
+- Les langues vendues dans la page LTD doivent correspondre a des packs verifies ou a un fallback clairement annonce.
 - Les cles BYO OpenAI/Anthropic restent dans `flutter_secure_storage` ou equivalent local securise et ne sont pas syncables en V1.
 - Le clipboard a des risques particuliers: private fields, contenus secrets, retention et confirmation continuent de primer sur la sync.
 - Les suppressions doivent produire des tombstones synchronisables; supprimer localement sans tombstone peut ressusciter une donnee sur un autre appareil.

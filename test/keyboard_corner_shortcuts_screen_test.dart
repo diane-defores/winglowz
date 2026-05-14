@@ -178,6 +178,26 @@ void main() {
     });
   });
 
+  testWidgets('corner preview exposes semantic corner targets', (tester) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await _runAsAndroid(tester, () async {
+        _installKeyboardMock(calls: <MethodCall>[]);
+
+        await tester.pumpWidget(_testWidget(await _snippetStore()));
+        await tester.pumpAndSettle();
+
+        expect(_semanticWidget('Keyboard key Q'), findsOneWidget);
+        expect(_semanticWidget('Top left corner on Q'), findsOneWidget);
+        expect(_semanticWidget('Top right corner on Q'), findsOneWidget);
+        expect(_semanticWidget('Bottom left corner on Q'), findsOneWidget);
+        expect(_semanticWidget('Bottom right corner on Q'), findsOneWidget);
+      });
+    } finally {
+      semantics.dispose();
+    }
+  });
+
   testWidgets('visual editor rejects invalid import JSON without saving', (
     tester,
   ) async {
@@ -207,4 +227,10 @@ void main() {
       );
     });
   });
+}
+
+Finder _semanticWidget(String label) {
+  return find.byWidgetPredicate(
+    (widget) => widget is Semantics && widget.properties.label == label,
+  );
 }

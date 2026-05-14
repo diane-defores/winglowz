@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
 import '../application/clipboard_store_provider.dart';
@@ -194,68 +195,68 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
       children: [
         const LocalModeNotice(surface: 'Clipboard'),
         const LocalModeNoticeGap(),
-        TextField(
-          controller: _contentController,
-          minLines: 2,
-          maxLines: 4,
-          decoration: const InputDecoration(labelText: 'Clipboard content'),
-        ),
-        AppGaps.x2,
-        DropdownButtonFormField<ClipboardCanonicalSource>(
-          initialValue: _source,
-          items: const [
-            DropdownMenuItem(
-              value: ClipboardCanonicalSource.manual,
-              child: Text('manual'),
-            ),
-            DropdownMenuItem(
-              value: ClipboardCanonicalSource.voice,
-              child: Text('voice'),
-            ),
-            DropdownMenuItem(
-              value: ClipboardCanonicalSource.overlay,
-              child: Text('overlay'),
-            ),
-            DropdownMenuItem(
-              value: ClipboardCanonicalSource.system,
-              child: Text('system'),
-            ),
-            DropdownMenuItem(
-              value: ClipboardCanonicalSource.keyboard,
-              child: Text('keyboard'),
-            ),
-            DropdownMenuItem(
-              value: ClipboardCanonicalSource.keyboardVoice,
-              child: Text('keyboard voice'),
-            ),
-            DropdownMenuItem(
-              value: ClipboardCanonicalSource.keyboardClipboard,
-              child: Text('keyboard clipboard'),
-            ),
-          ],
-          onChanged: _busy
-              ? null
-              : (value) => setState(
-                  () => _source = value ?? ClipboardCanonicalSource.manual,
+        AppSectionCard(
+          title: 'Nouvel item clipboard',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _contentController,
+                minLines: 2,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  labelText: 'Clipboard content',
                 ),
-          decoration: const InputDecoration(labelText: 'Source'),
-        ),
-        AppGaps.x2,
-        Row(
-          children: [
-            Expanded(
-              child: FilledButton.icon(
-                onPressed: _busy ? null : _add,
-                icon: const Icon(Icons.add),
-                label: const Text('Add clipboard item'),
               ),
-            ),
-            AppGaps.horizontalX2,
-            OutlinedButton(
-              onPressed: _busy ? null : _load,
-              child: const Text('Refresh'),
-            ),
-          ],
+              AppGaps.x2,
+              DropdownButtonFormField<ClipboardCanonicalSource>(
+                initialValue: _source,
+                items: const [
+                  DropdownMenuItem(
+                    value: ClipboardCanonicalSource.manual,
+                    child: Text('manual'),
+                  ),
+                  DropdownMenuItem(
+                    value: ClipboardCanonicalSource.voice,
+                    child: Text('voice'),
+                  ),
+                  DropdownMenuItem(
+                    value: ClipboardCanonicalSource.overlay,
+                    child: Text('overlay'),
+                  ),
+                  DropdownMenuItem(
+                    value: ClipboardCanonicalSource.system,
+                    child: Text('system'),
+                  ),
+                  DropdownMenuItem(
+                    value: ClipboardCanonicalSource.keyboard,
+                    child: Text('keyboard'),
+                  ),
+                  DropdownMenuItem(
+                    value: ClipboardCanonicalSource.keyboardVoice,
+                    child: Text('keyboard voice'),
+                  ),
+                  DropdownMenuItem(
+                    value: ClipboardCanonicalSource.keyboardClipboard,
+                    child: Text('keyboard clipboard'),
+                  ),
+                ],
+                onChanged: _busy
+                    ? null
+                    : (value) => setState(
+                        () =>
+                            _source = value ?? ClipboardCanonicalSource.manual,
+                      ),
+                decoration: const InputDecoration(labelText: 'Source'),
+              ),
+              AppGaps.x3,
+              AppFormActions(
+                primaryLabel: 'Add clipboard item',
+                onPrimary: _busy ? null : _add,
+                onSecondary: _busy ? null : _load,
+              ),
+            ],
+          ),
         ),
         if (_busy)
           const Padding(
@@ -265,33 +266,28 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
         if (_message != null)
           Padding(padding: AppInsets.message, child: Text(_message!)),
         AppGaps.x4,
-        Text('Clipboard items', style: Theme.of(context).textTheme.titleSmall),
+        const AppEntityListHeader(title: 'Clipboard items'),
         AppGaps.x2,
         if (_items.isEmpty)
-          const Card(child: ListTile(title: Text('No clipboard item yet.'))),
+          const AppEmptyStateCard(message: 'No clipboard item yet.'),
         for (final item in _items)
-          Card(
-            child: ListTile(
-              title: Text(item.content),
-              subtitle: Text('source: ${item.sourceLabel}'),
-              trailing: Wrap(
-                spacing: AppIconMetrics.listActionSpacing,
-                children: [
-                  IconButton(
-                    tooltip: item.pinned ? 'Unpin' : 'Pin',
-                    onPressed: _busy ? null : () => _togglePin(item),
-                    icon: Icon(
-                      item.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Delete',
-                    onPressed: _busy ? null : () => _remove(item.id),
-                    icon: const Icon(Icons.delete_outline),
-                  ),
-                ],
+          AppEntityListTile(
+            title: Text(item.content),
+            subtitle: Text('source: ${item.sourceLabel}'),
+            actions: [
+              IconButton(
+                tooltip: item.pinned ? 'Unpin' : 'Pin',
+                onPressed: _busy ? null : () => _togglePin(item),
+                icon: Icon(
+                  item.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                ),
               ),
-            ),
+              IconButton(
+                tooltip: 'Delete',
+                onPressed: _busy ? null : () => _remove(item.id),
+                icon: const Icon(Icons.delete_outline),
+              ),
+            ],
           ),
       ],
     );

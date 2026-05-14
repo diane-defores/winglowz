@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-03-18"
-updated: "2026-05-09"
+updated: "2026-05-14"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "business"
@@ -23,7 +23,7 @@ evidence:
 business_model: "Freemium voice productivity app with bring-your-own-key advanced features"
 market: "Cross-platform dictation, transcript cleanup, snippets, dictionary, and clipboard productivity tools"
 target_audience: "Professionals and power users who produce text from speech across Android, iOS, desktop, and web"
-value_proposition: "Capture speech quickly, clean it when needed, and reuse it across apps with account-based sync, Android keyboard entry, and Android overlay where available"
+value_proposition: "Capture speech quickly from the Android keyboard or overlay, use local language packs where available, clean text when needed, and reuse it across apps with sync paths designed to avoid unbounded server cost"
 depends_on: []
 supersedes: []
 next_review: "2026-05-26"
@@ -46,7 +46,7 @@ Libérer les mains des professionnels grâce à la dictée vocale intelligente, 
 
 ## Proposition de valeur
 
-WinFlowz cible une application Flutter Android-first avec contrats backend-agnostiques et Firebase comme premier adaptateur distant. Le produit combine dictée locale quand disponible, transcription avancée Whisper avec clé OpenAI locale BYO, nettoyage IA Claude optionnel avec clé Anthropic locale BYO, historique synchronisé, snippets, dictionnaire personnel, clavier Android natif, et overlay Android natif avec fallback clipboard.
+WinFlowz cible une application Flutter Android-first avec contrats backend-agnostiques et Firebase comme premier adaptateur distant. Le produit combine clavier Android natif comme interface principale, overlay Android optionnel, dictée locale par packs de langue téléchargeables quand disponible, fallback de transcription explicite, nettoyage IA Claude optionnel avec clé Anthropic locale BYO, historique synchronisé, snippets et dictionnaire personnel.
 
 ## Capacités business de référence
 
@@ -58,6 +58,7 @@ WinFlowz cible une application Flutter Android-first avec contrats backend-agnos
 | Snippets + dictionnaire comme fonctionnalités produit | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md` |
 | Clavier Android natif WinFlowz | target-reviewed | `shipflow_data/workflow/specs/android-ime-winflowz_app-keyboard.md` |
 | Overlay Android natif uniquement | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md` |
+| Packs vocaux locaux téléchargeables | target-reviewed | `shipflow_data/workflow/specs/keyboard-action-bar-voice-recording.md` |
 | Expo/Convex/Clerk comme implémentation cible | out-of-scope | explicitement exclu de la cible finale |
 | Quotas gratuits / premium / billing | out-of-scope | non inclus dans le scope migration |
 
@@ -73,6 +74,7 @@ Le modèle reste freemium BYO pour la migration. Les plans payants restent hors 
 - L'utilisateur gère transcriptions, clipboard, snippets et dictionnaire depuis son compte.
 - Le clavier Android WinFlowz reste disponible uniquement sur Android et sert de surface prioritaire dans les champs texte.
 - L'overlay Android reste disponible uniquement sur Android avec fallback clipboard.
+- La dictée clavier vise un mode local-first par packs de langue installables; les langues non couvertes doivent utiliser un fallback explicite et ne doivent pas être présentées comme offline garanties.
 
 ### État legacy-current (pré-migration, à ne pas présenter comme cible)
 

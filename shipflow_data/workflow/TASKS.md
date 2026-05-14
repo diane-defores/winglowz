@@ -83,3 +83,15 @@
 | 🟠 | Add route-level auth/flow guarding in `app_router.dart` so feature routes cannot be opened directly when auth and account state are required | 📋 todo |
 | 🟡 | Add null-safety and error mapping around Google Sign-In credential construction in `lib/features/auth/data/firebase_auth_session_store.dart` | 📋 todo |
 | 🟡 | Gate or contextualize diagnostic support export (`_backendDiagnosticText` in `settings_screen.dart`) outside explicit support/debug flows | 📋 todo |
+
+### Audit: Components
+
+| Pri | Task | Status |
+|-----|------|--------|
+| 🟠 | Treat the component audit `C` score as an active chantier under `settings-driven-design-system` until the component baseline reaches at least `B` | ✅ done — re-audit baseline raised to `B`; visual/manual review remains a design validation item, not a component-system blocker |
+| 🟠 | Extract shared CRUD form/list primitives for Voice, Clipboard, Snippets, and Dictionary so repeated `Card` + `Padding` + fields + submit/refresh/list patterns do not keep drifting | ✅ done — `AppSectionCard`, `AppFormActions`, `AppEntityListHeader`, `AppEmptyStateCard`, and `AppEntityListTile` now cover the representative CRUD pages |
+| 🟠 | Split `SettingsScreen` into composable settings sections for Appearance, backend diagnostics, keyboard, overlay, secrets, and platform capability rows | ✅ done — Settings rendering now uses dedicated private section widgets plus shared `AppSectionCard`/`AppStatusCard` primitives |
+| 🟠 | Split keyboard editor/preview controls into smaller variant-driven widgets and replace the 16-prop `_PreviewControls` surface with grouped config objects or section components | ✅ done — `_PreviewControls` now takes grouped `value` and `actions` objects |
+| 🟡 | Add explicit accessibility/focus contracts for custom keyboard corner targets and editor controls beyond basic `Semantics` labels | ✅ done — corner preview now has ordered focus traversal, semantic key/corner targets, Enter/Space activation, overlay slider semantic values, and widget-test coverage |
+| 🟡 | Introduce reusable app primitives (`AppSectionCard`, `AppFormPanel`, `AppEntityListTile`, `AppStatusCard`) instead of assembling Material primitives inline on every page | ✅ done — first shared component set added under `lib/core/widgets/app_components.dart` |
+| 🟡 | Move data mutation/load orchestration out of the large page state classes where practical, keeping screen widgets focused on rendering and interaction wiring | ✅ done — Settings keyboard/overlay bridge orchestration moved to `SettingsKeyboardController`/`SettingsOverlayController`, and keyboard preview/settings rendering split into dedicated part files |

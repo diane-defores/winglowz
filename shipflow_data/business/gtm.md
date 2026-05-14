@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-05-14"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "gtm"
@@ -20,7 +20,7 @@ evidence:
 target_segment:
   - "Mobile professionals dictating notes and messages"
   - "Android power users needing overlay-driven text capture"
-offer: "A voice-first mobile workflow with free local dictation and optional advanced AI cleanup via user-provided keys"
+offer: "A voice-first mobile workflow with downloadable local voice packs for supported languages and optional advanced AI cleanup via user-provided keys"
 channels:
   - "Internal APK distribution and direct demos"
   - "Cross-promotion to adjacent WinFlowz users"
@@ -54,7 +54,7 @@ Utilisateurs mobiles orientés productivité, en priorité :
 
 ## Promesse publique sûre
 
-"WinFlowz transforme la voix en texte copiable sur mobile, avec un mode local gratuit et un mode avancé via vos clés API."
+"WinFlowz transforme la voix en texte depuis le clavier Android et l'overlay, avec des packs vocaux locaux gratuits pour les langues supportées et des fallbacks explicites quand un pack local n'est pas disponible."
 
 ## Promesses à éviter
 
@@ -63,6 +63,24 @@ Utilisateurs mobiles orientés productivité, en priorité :
 - "Premium illimité" sans infrastructure de quota.
 - "Données vocales jamais stockées" sans audit complet du flux audio, des caches natifs et des fournisseurs externes.
 - "Prêt entreprise" sans auth, politiques de rétention et garanties sécurité.
+- "Dictée offline dans toutes les langues" tant que chaque pack local n'a pas été vérifié en qualité, licence et intégration Android.
+- "Support vocal universel inclus" sans distinguer packs locaux, reconnaissance Android et fallback cloud/BYO.
+
+## LTD / AppSumo Messaging
+
+Le lifetime deal attire des utilisateurs globaux. Le message doit donc vendre une architecture extensible par packs de langue, pas une promesse implicite français/anglais.
+
+Formulation sûre:
+
+- "Local voice packs for supported languages."
+- "Install only the language packs you need."
+- "Fallback transcription when a local pack is unavailable."
+
+Formulation à éviter:
+
+- "Unlimited local voice in every language."
+- "All languages offline."
+- "No cloud ever" tant que les fallbacks existent.
 
 ## Canaux de distribution pragmatiques
 
@@ -87,3 +105,4 @@ Utilisateurs mobiles orientés productivité, en priorité :
 - Politique claire de données et fournisseurs.
 - Mesures de latence et fiabilité sur appareils Android réels.
 - Positionnement `LTD + abonnement` implémente avec droits/quotas.
+- Catalogue initial de packs vocaux documenté avec langue, moteur, taille, licence, niveau qualité et fallback.

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
 import '../application/snippet_store_provider.dart';
@@ -224,38 +225,37 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
       children: [
         const LocalModeNotice(surface: 'Snippets'),
         const LocalModeNoticeGap(),
-        TextField(
-          controller: _triggerController,
-          decoration: const InputDecoration(labelText: 'Trigger'),
-        ),
-        AppGaps.x2,
-        TextField(
-          controller: _contentController,
-          minLines: 2,
-          maxLines: 4,
-          decoration: const InputDecoration(labelText: 'Content'),
-        ),
-        AppGaps.x2,
-        TextField(
-          controller: _labelController,
-          decoration: const InputDecoration(labelText: 'Label (optional)'),
-        ),
-        AppGaps.x2,
-        Row(
-          children: [
-            Expanded(
-              child: FilledButton.icon(
-                onPressed: _busy ? null : _add,
-                icon: const Icon(Icons.add),
-                label: const Text('Add snippet'),
+        AppSectionCard(
+          title: 'Nouveau snippet',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _triggerController,
+                decoration: const InputDecoration(labelText: 'Trigger'),
               ),
-            ),
-            AppGaps.horizontalX2,
-            OutlinedButton(
-              onPressed: _busy ? null : _load,
-              child: const Text('Refresh'),
-            ),
-          ],
+              AppGaps.x2,
+              TextField(
+                controller: _contentController,
+                minLines: 2,
+                maxLines: 4,
+                decoration: const InputDecoration(labelText: 'Content'),
+              ),
+              AppGaps.x2,
+              TextField(
+                controller: _labelController,
+                decoration: const InputDecoration(
+                  labelText: 'Label (optional)',
+                ),
+              ),
+              AppGaps.x3,
+              AppFormActions(
+                primaryLabel: 'Add snippet',
+                onPrimary: _busy ? null : _add,
+                onSecondary: _busy ? null : _load,
+              ),
+            ],
+          ),
         ),
         if (_busy)
           const Padding(
@@ -265,33 +265,27 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
         if (_message != null)
           Padding(padding: AppInsets.message, child: Text(_message!)),
         AppGaps.x4,
-        Text('Snippets', style: Theme.of(context).textTheme.titleSmall),
+        const AppEntityListHeader(title: 'Snippets'),
         AppGaps.x2,
-        if (_items.isEmpty)
-          const Card(child: ListTile(title: Text('No snippet yet.'))),
+        if (_items.isEmpty) const AppEmptyStateCard(message: 'No snippet yet.'),
         for (final item in _items)
-          Card(
-            child: ListTile(
-              title: Text(item.trigger),
-              subtitle: Text(
-                '${item.label == null || item.label!.isEmpty ? '' : '[${item.label}] '}${item.content}',
-              ),
-              trailing: Wrap(
-                spacing: AppIconMetrics.listActionSpacing,
-                children: [
-                  IconButton(
-                    tooltip: 'Edit',
-                    onPressed: _busy ? null : () => _edit(item),
-                    icon: const Icon(Icons.edit_outlined),
-                  ),
-                  IconButton(
-                    tooltip: 'Delete',
-                    onPressed: _busy ? null : () => _remove(item.id),
-                    icon: const Icon(Icons.delete_outline),
-                  ),
-                ],
-              ),
+          AppEntityListTile(
+            title: Text(item.trigger),
+            subtitle: Text(
+              '${item.label == null || item.label!.isEmpty ? '' : '[${item.label}] '}${item.content}',
             ),
+            actions: [
+              IconButton(
+                tooltip: 'Edit',
+                onPressed: _busy ? null : () => _edit(item),
+                icon: const Icon(Icons.edit_outlined),
+              ),
+              IconButton(
+                tooltip: 'Delete',
+                onPressed: _busy ? null : () => _remove(item.id),
+                icon: const Icon(Icons.delete_outline),
+              ),
+            ],
           ),
       ],
     );
