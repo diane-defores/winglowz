@@ -117,22 +117,7 @@ enum class KeyboardKeyAction {
 
 data class KeyboardKeyGlyph(
     val primary: String,
-    val topLeft: String? = null,
-    val topRight: String? = null,
-    val bottomLeft: String? = null,
-    val bottomRight: String? = null,
-) {
-    fun outputFor(selection: GestureSelection): String? {
-        return when (selection) {
-            GestureSelection.PrimaryTap -> primary
-            GestureSelection.TopLeft -> topLeft ?: primary
-            GestureSelection.TopRight -> topRight ?: primary
-            GestureSelection.BottomLeft -> bottomLeft ?: primary
-            GestureSelection.BottomRight -> bottomRight ?: primary
-            GestureSelection.Canceled -> null
-        }
-    }
-}
+)
 
 data class KeyboardClipboardEntry(
     val content: String,
@@ -149,6 +134,7 @@ data class KeyboardKeySpec(
     val enabled: Boolean = true,
     val active: Boolean = false,
     val suggestion: String? = null,
+    val cornerAssignments: KeyboardCornerAssignments = KeyboardCornerAssignments.Empty,
 )
 
 data class KeyboardRowSpec(
@@ -192,6 +178,8 @@ data class KeyboardLayoutRequest(
     val snippets: List<KeyboardTextRule> = emptyList(),
     val suggestions: List<String>,
     val mediaNowPlayingLabel: String? = null,
+    val cornerConfig: KeyboardCornerConfig = KeyboardCornerConfig(),
+    val fieldPolicy: KeyboardFieldPolicy = KeyboardSecurityPolicy.evaluate(null, KeyboardStateStore.PRIVACY_AUTO),
 )
 
 object KeyboardLayoutBuilder {
@@ -221,12 +209,34 @@ object KeyboardLayoutBuilder {
             rows.addAll(letterRows(request, effectiveMode))
             rows.add(controlRow(request, effectiveMode))
         }
+        val resolvedRows = rows.map { row -> attachCornerAssignments(row, request) }
         return KeyboardLayoutSnapshot(
-            rows = rows,
+            rows = resolvedRows,
             mode = effectiveMode,
             panel = request.panel,
             panelRowCount = panelRows.size,
             suggestionRowCount = suggestionRows.size,
+        )
+    }
+
+    private fun attachCornerAssignments(
+        row: KeyboardRowSpec,
+        request: KeyboardLayoutRequest,
+    ): KeyboardRowSpec {
+        return row.copy(
+            keys =
+                row.keys.map { key ->
+                    key.copy(
+                        cornerAssignments =
+                            KeyboardCornerShortcutResolver.resolve(
+                                key = key,
+                                config = request.cornerConfig,
+                                cornerModeEnabled = request.cornerModeEnabled,
+                                specialKeyCornersEnabled = request.specialKeyCornersEnabled,
+                                fieldPolicy = request.fieldPolicy,
+                            ),
+                    )
+                },
         )
     }
 
@@ -855,7 +865,7 @@ object KeyboardLayoutBuilder {
     ): KeyboardKeySpec {
         val parsed = KeyboardKeyValueParser.parse(if (label == output) output else "$label:'${escapeKeyValue(output)}'")
         return KeyboardKeySpec(
-            id = "text-$label-$output",
+            id = stableTextKeyId(output),
             label = parsed.renderLabel(),
             action = KeyboardKeyAction.Text,
             glyph = KeyboardKeyGlyph(primary = output),
@@ -882,17 +892,62 @@ object KeyboardLayoutBuilder {
 
     private fun escapeKeyValue(value: String): String = value.replace("\\", "\\\\").replace("'", "\\'")
 
-    private fun glyphFor(char: Char): KeyboardKeyGlyph {
-        return when (char) {
-            'a' -> KeyboardKeyGlyph("a", topLeft = "à", topRight = "â", bottomLeft = "ä", bottomRight = "æ")
-            'e' -> KeyboardKeyGlyph("e", topLeft = "é", topRight = "è", bottomLeft = "ê", bottomRight = "ë")
-            'i' -> KeyboardKeyGlyph("i", topLeft = "î", topRight = "ï")
-            'o' -> KeyboardKeyGlyph("o", topLeft = "ô", topRight = "ö")
-            'u' -> KeyboardKeyGlyph("u", topLeft = "ù", topRight = "û", bottomLeft = "ü")
-            'c' -> KeyboardKeyGlyph("c", topLeft = "ç")
-            'n' -> KeyboardKeyGlyph("n", topLeft = "ñ")
-            's' -> KeyboardKeyGlyph("s", topRight = "ß")
-            else -> KeyboardKeyGlyph(primary = char.toString())
+    private fun stableTextKeyId(output: String): String {
+        if (output == " ") {
+            return "space"
         }
+        if (output.length == 1 && output[0].isDigit()) {
+            return "digit-$output"
+        }
+        val mapped =
+            mapOf(
+                "," to "comma",
+                "." to "period",
+                ";" to "semicolon",
+                ":" to "colon",
+                "!" to "exclamation",
+                "?" to "question",
+                "/" to "slash",
+                "\\" to "backslash",
+                "+" to "plus",
+                "-" to "hyphen",
+                "*" to "asterisk",
+                "@" to "at",
+                "#" to "hash",
+                "'" to "apostrophe",
+                "\"" to "quote",
+                "_" to "underscore",
+                "|" to "pipe",
+                "~" to "tilde",
+                "<" to "less",
+                ">" to "greater",
+                "€" to "euro",
+                "£" to "pound",
+                "¥" to "yen",
+                "[" to "left-bracket",
+                "]" to "right-bracket",
+                "{" to "left-brace",
+                "}" to "right-brace",
+                "%" to "percent",
+                "^" to "caret",
+                "=" to "equals",
+                "`" to "backtick",
+                "•" to "bullet",
+                "—" to "em-dash",
+                "…" to "ellipsis",
+                ".com" to "dotcom",
+            )[output]
+        if (mapped != null) {
+            return "text-$mapped"
+        }
+        val codePoints =
+            output.codePoints()
+                .toArray()
+                .joinToString(separator = "-") { codePoint -> codePoint.toString(16) }
+        return "text-u$codePoints"
+    }
+
+    private fun glyphFor(char: Char): KeyboardKeyGlyph {
+        return KeyboardKeyGlyph(primary = char.toString())
     }
 }

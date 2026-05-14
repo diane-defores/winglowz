@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowzApp"
 created: "2026-04-27"
-updated: "2026-05-10"
+updated: "2026-05-14"
 status: "reviewed"
 source_skill: "sf-spec"
 scope: "android_firebase_backend_agnostic_migration"
@@ -30,6 +30,8 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 - `dart format --set-exit-if-changed .`
 - `flutter analyze`
 - `flutter test`
+- `flutter test test/widget_test.dart`
+- `./gradlew :app:compileDebugKotlin -x :app:processDebugResources -x :app:processDebugManifest -x :app:compileFlutterBuildDebug`
 - Android build on a machine with Android toolchain.
 - Android IME build/resource proof on an x64 Android runner when the local host is ARM64 and AAPT2 is unavailable.
 - Android overlay sanity (without full build when toolchain is heavy): verify `flutter analyze`, then run on Android and check start/stop/cancel/status from Settings and Voice screens.
@@ -77,7 +79,18 @@ Run on at least one emulator or real Android device before closing the IME chant
 | Tap Ctrl/Alt/Fn then a text key | Modifier is visible as active, applies to the next key-value dispatch, then clears. |
 | Tap Fn then `h/j/k/l` | Built-in modmap sends left/down/up/right key events instead of inserting letters. |
 | Toggle QWERTY/AZERTY in Settings then reopen IME | Letter rows match selected layout profile and persist between sessions. |
-| Enable swipe-corner mode then swipe key corners | Secondary corner glyphs are inserted; center-return gesture cancels insertion. |
+| Enable swipe-corner mode then swipe key corners | Default French accent corner shortcuts are visible and inserted; center-return gesture cancels insertion. |
+| Open Settings > Keyboard > Corner shortcuts | Preset, key, corner slot, expression, label, sensitive flag, save, clear override, and reset defaults are available. |
+| Change corner preset to punctuation or developer symbols | Keyboard status returns the new preset; native keys and Flutter preview render the selected preset. |
+| Save `letter-a/topLeft -> à` override | Swipe top-left on `a` inserts `à`; normal tap still inserts `a`. |
+| Save a text-expander corner expression such as `JA:'j\\'arrive'` | Swipe on the configured corner inserts the full replacement text in a standard field. |
+| Save a key event/action/macro corner expression | Swipe dispatches through `KeyboardKeyValue`; invalid expressions are rejected by native validation. |
+| Configure a special-key corner with special-key corners disabled | The label is hidden and the corner action is not dispatched. |
+| Enable special-key corners and configure Ctrl/Enter/Backspace corner | The configured corner dispatches unless a protected gesture or field policy blocks it. |
+| Use a configured corner in password/OTP/no-personalized-learning field | Normal text accents remain allowed; sensitive snippets/clipboard/voice/action shortcuts are suppressed. |
+| Corrupt or oversize stored corner JSON | Keyboard falls back to default French accents, keeps primary typing usable, and reset defaults recovers the state. |
+| Swipe horizontally from space with a configured space corner | Cursor slider wins once the threshold is reached; no corner action fires. |
+| Scroll snippets or clipboard rows horizontally | Horizontal scroll wins; no item or corner shortcut is inserted accidentally. |
 | Disable swipe-corner mode | Same gestures fallback to primary tap behavior only. |
 | Open Navigation panel and run cursor/edit actions | Char left/right works; word left/right and line start/end work when host supports context; unavailable cases show recoverable feedback. |
 | Trigger delete word-left in Navigation panel | Deletes the previous word boundary or shows unavailable feedback when cursor context is absent. |
@@ -99,6 +112,7 @@ Run on at least one emulator or real Android device before closing the IME chant
 | Focus email, URL, phone, and search fields | Keyboard adapts symbols/enter action to the field context. |
 | Tap Media while a media app is active | Android receives a play/pause media key; no metadata permission is requested. |
 | Use Settings keyboard card | Input settings, switch keyboard, voice, clipboard sync intent, media controls, layout profile, corner mode, and privacy mode round-trip through `winflowz_app/keyboard`. |
+| Use FlutterWeb keyboard preview corner controls | Presets and simple text-like corner actions render and simulate locally; status copy does not claim native Android proof. |
 
 ## Purge Gate
 

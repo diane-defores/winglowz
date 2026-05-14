@@ -67,6 +67,8 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
   bool _french = true;
   bool _english = true;
   bool _shiftEnabled = false;
+  AndroidKeyboardCornerConfig _cornerConfig =
+      AndroidKeyboardCornerConfig.defaults();
   String? _mediaNowPlaying;
   String _buffer = '';
   int _cursor = 0;
@@ -124,6 +126,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
       _cursor = 0;
       _shiftEnabled = false;
       _mediaNowPlaying = null;
+      _cornerConfig = AndroidKeyboardCornerConfig.defaults();
       _panel = KeyboardPreviewPanel.none;
       _mode = _fieldContext.numeric
           ? KeyboardPreviewMode.numbers
@@ -320,7 +323,44 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
       _setPanel(KeyboardPreviewPanel.clipboardFull);
       return;
     }
+    final corner = key.topLeftShortcut;
+    if (corner != null) {
+      _simulateCorner(corner);
+      return;
+    }
     _onKeyPressed(key);
+  }
+
+  void _simulateCorner(AndroidKeyboardCornerShortcut shortcut) {
+    final expression = shortcut.expression.toLowerCase();
+    if (expression.contains('action:') ||
+        expression.startsWith('keyevent:') ||
+        expression.startsWith('modifier:') ||
+        expression.contains(',keyevent:') ||
+        expression.contains(',action:') ||
+        expression.contains(',modifier:')) {
+      _setStatus('Native-only corner action: ${shortcut.displayLabel}.');
+      return;
+    }
+    final text = _textFromCornerExpression(shortcut.expression);
+    _insertText(text, status: 'Corner shortcut inserted "$text".');
+  }
+
+  String _textFromCornerExpression(String expression) {
+    final separator = expression.indexOf(':');
+    final payload = separator > 0
+        ? expression.substring(separator + 1)
+        : expression;
+    final trimmed = payload.trim();
+    if (trimmed.startsWith("'") &&
+        trimmed.endsWith("'") &&
+        trimmed.length > 1) {
+      return trimmed
+          .substring(1, trimmed.length - 1)
+          .replaceAll(r"\'", "'")
+          .replaceAll(r'\\', r'\');
+    }
+    return trimmed;
   }
 
   @override
@@ -341,6 +381,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
       englishEnabled: _english,
       shiftEnabled: _shiftEnabled,
       mediaNowPlaying: _mediaNowPlaying,
+      cornerConfig: _cornerConfig,
     );
 
     return ListView(
@@ -363,6 +404,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
           privateMode: _privateMode,
           corners: _corners,
           debug: _debug,
+          cornerConfig: _cornerConfig,
           onProfileChanged: (value) => setState(() => _profile = value),
           onFieldContextChanged: _setFieldContext,
           onPanelChanged: _setPanel,
@@ -380,6 +422,10 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
           onDebugChanged: (value) => setState(() {
             _debug = value;
             _status = value ? 'Debug overlay on.' : 'Debug overlay off.';
+          }),
+          onCornerPresetChanged: (value) => setState(() {
+            _cornerConfig = _cornerConfig.copyWith(presetId: value);
+            _status = 'Preview corner preset: $value.';
           }),
         ),
         AppGaps.x4,
@@ -407,6 +453,7 @@ class _PreviewControls extends StatelessWidget {
     required this.privateMode,
     required this.corners,
     required this.debug,
+    required this.cornerConfig,
     required this.onProfileChanged,
     required this.onFieldContextChanged,
     required this.onPanelChanged,
@@ -414,6 +461,7 @@ class _PreviewControls extends StatelessWidget {
     required this.onPrivateModeChanged,
     required this.onCornersChanged,
     required this.onDebugChanged,
+    required this.onCornerPresetChanged,
   });
 
   final KeyboardLayoutProfile profile;
@@ -423,6 +471,7 @@ class _PreviewControls extends StatelessWidget {
   final bool privateMode;
   final bool corners;
   final bool debug;
+  final AndroidKeyboardCornerConfig cornerConfig;
   final ValueChanged<KeyboardLayoutProfile> onProfileChanged;
   final ValueChanged<KeyboardPreviewFieldContext> onFieldContextChanged;
   final ValueChanged<KeyboardPreviewPanel> onPanelChanged;
@@ -430,6 +479,7 @@ class _PreviewControls extends StatelessWidget {
   final ValueChanged<bool> onPrivateModeChanged;
   final ValueChanged<bool> onCornersChanged;
   final ValueChanged<bool> onDebugChanged;
+  final ValueChanged<String> onCornerPresetChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -474,6 +524,20 @@ class _PreviewControls extends StatelessWidget {
                   values: KeyboardPreviewMode.values,
                   labelFor: (value) => value.label,
                   onChanged: fieldContext.numeric ? null : onModeChanged,
+                ),
+                _Dropdown<String>(
+                  fieldKey: const Key(
+                    'keyboard-preview-corner-preset-dropdown',
+                  ),
+                  label: 'Corners',
+                  value: cornerConfig.presetId,
+                  values: KeyboardCornerPresetCatalog.presets
+                      .map((preset) => preset.id)
+                      .toList(growable: false),
+                  labelFor: (value) => KeyboardCornerPresetCatalog.presets
+                      .firstWhere((preset) => preset.id == value)
+                      .name,
+                  onChanged: onCornerPresetChanged,
                 ),
               ],
             ),
@@ -533,10 +597,18 @@ class _Dropdown<T> extends StatelessWidget {
       child: DropdownButtonFormField<T>(
         key: fieldKey,
         initialValue: value,
+        isExpanded: true,
         decoration: InputDecoration(labelText: label),
         items: [
           for (final item in values)
-            DropdownMenuItem(value: item, child: Text(labelFor(item))),
+            DropdownMenuItem(
+              value: item,
+              child: Text(
+                labelFor(item),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
         ],
         onChanged: onChanged == null
             ? null
@@ -754,24 +826,24 @@ class _KeyCap extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              if (keySpec.topLeft != null)
+              if (keySpec.topLeftShortcut != null)
                 _CornerLabel(
-                  text: keySpec.topLeft!,
+                  text: keySpec.topLeftShortcut!.displayLabel,
                   alignment: Alignment.topLeft,
                 ),
-              if (keySpec.topRight != null)
+              if (keySpec.topRightShortcut != null)
                 _CornerLabel(
-                  text: keySpec.topRight!,
+                  text: keySpec.topRightShortcut!.displayLabel,
                   alignment: Alignment.topRight,
                 ),
-              if (keySpec.bottomLeft != null)
+              if (keySpec.bottomLeftShortcut != null)
                 _CornerLabel(
-                  text: keySpec.bottomLeft!,
+                  text: keySpec.bottomLeftShortcut!.displayLabel,
                   alignment: Alignment.bottomLeft,
                 ),
-              if (keySpec.bottomRight != null)
+              if (keySpec.bottomRightShortcut != null)
                 _CornerLabel(
-                  text: keySpec.bottomRight!,
+                  text: keySpec.bottomRightShortcut!.displayLabel,
                   alignment: Alignment.bottomRight,
                 ),
               Center(
@@ -924,6 +996,7 @@ class KeyboardPreviewSnapshot {
     required this.englishEnabled,
     required this.shiftEnabled,
     required this.mediaNowPlaying,
+    required this.cornerConfig,
   });
 
   final KeyboardLayoutProfile profile;
@@ -941,6 +1014,7 @@ class KeyboardPreviewSnapshot {
   final bool englishEnabled;
   final bool shiftEnabled;
   final String? mediaNowPlaying;
+  final AndroidKeyboardCornerConfig cornerConfig;
 
   List<KeyboardPreviewRow> get rows {
     final rows = <KeyboardPreviewRow>[_actionRow()];
@@ -1476,19 +1550,27 @@ class KeyboardPreviewSnapshot {
       KeyboardPreviewRow(
         height: AppKeyboardPreview.rowHeightRegular,
         keys: [
-          KeyboardPreviewKey(
-            label: 'Shift',
-            special: true,
-            active: shiftEnabled,
-            weight: 1.2,
-            action: KeyboardPreviewKeyAction.shift,
+          _withCorners(
+            keyId: 'shift',
+            specialKey: true,
+            key: KeyboardPreviewKey(
+              label: 'Shift',
+              special: true,
+              active: shiftEnabled,
+              weight: 1.2,
+              action: KeyboardPreviewKeyAction.shift,
+            ),
           ),
           ..._letterKeys(bottom),
-          const KeyboardPreviewKey(
-            label: 'Back',
-            special: true,
-            weight: 1.2,
-            action: KeyboardPreviewKeyAction.backspace,
+          _withCorners(
+            keyId: 'del-letter-row',
+            specialKey: true,
+            key: const KeyboardPreviewKey(
+              label: 'Back',
+              special: true,
+              weight: 1.2,
+              action: KeyboardPreviewKeyAction.backspace,
+            ),
           ),
         ],
       ),
@@ -1525,41 +1607,61 @@ class KeyboardPreviewSnapshot {
       return KeyboardPreviewRow(
         height: AppKeyboardPreview.rowHeightControl,
         keys: [
-          const KeyboardPreviewKey(
-            label: 'Ctrl',
-            special: true,
-            weight: .9,
-            action: KeyboardPreviewKeyAction.unsupported,
-            unsupportedReason: 'Modifier keys are native-only in preview',
+          _withCorners(
+            keyId: 'modifier-ctrl',
+            specialKey: true,
+            key: const KeyboardPreviewKey(
+              label: 'Ctrl',
+              special: true,
+              weight: .9,
+              action: KeyboardPreviewKeyAction.unsupported,
+              unsupportedReason: 'Modifier keys are native-only in preview',
+            ),
           ),
-          const KeyboardPreviewKey(
-            label: 'Alt',
-            special: true,
-            weight: .9,
-            action: KeyboardPreviewKeyAction.unsupported,
-            unsupportedReason: 'Modifier keys are native-only in preview',
+          _withCorners(
+            keyId: 'modifier-alt',
+            specialKey: true,
+            key: const KeyboardPreviewKey(
+              label: 'Alt',
+              special: true,
+              weight: .9,
+              action: KeyboardPreviewKeyAction.unsupported,
+              unsupportedReason: 'Modifier keys are native-only in preview',
+            ),
           ),
-          const KeyboardPreviewKey(
-            label: 'Fn',
-            special: true,
-            weight: .9,
-            action: KeyboardPreviewKeyAction.unsupported,
-            unsupportedReason: 'Modifier keys are native-only in preview',
+          _withCorners(
+            keyId: 'modifier-fn',
+            specialKey: true,
+            key: const KeyboardPreviewKey(
+              label: 'Fn',
+              special: true,
+              weight: .9,
+              action: KeyboardPreviewKeyAction.unsupported,
+              unsupportedReason: 'Modifier keys are native-only in preview',
+            ),
           ),
           KeyboardPreviewKey(label: leftSymbol, special: true),
-          const KeyboardPreviewKey(
-            label: 'Space',
-            special: true,
-            weight: 3,
-            action: KeyboardPreviewKeyAction.space,
-            output: ' ',
+          _withCorners(
+            keyId: 'space',
+            specialKey: true,
+            key: const KeyboardPreviewKey(
+              label: 'Space',
+              special: true,
+              weight: 3,
+              action: KeyboardPreviewKeyAction.space,
+              output: ' ',
+            ),
           ),
           KeyboardPreviewKey(label: rightSymbol, special: true),
-          KeyboardPreviewKey(
-            label: fieldContext.enterLabel,
-            special: true,
-            weight: 1.3,
-            action: KeyboardPreviewKeyAction.enter,
+          _withCorners(
+            keyId: 'enter',
+            specialKey: true,
+            key: KeyboardPreviewKey(
+              label: fieldContext.enterLabel,
+              special: true,
+              weight: 1.3,
+              action: KeyboardPreviewKeyAction.enter,
+            ),
           ),
         ],
       );
@@ -1577,12 +1679,16 @@ class KeyboardPreviewSnapshot {
               : KeyboardPreviewKeyAction.text,
           output: left == 'Shift' ? null : left,
         ),
-        const KeyboardPreviewKey(
-          label: 'Space',
-          special: true,
-          weight: 4,
-          action: KeyboardPreviewKeyAction.space,
-          output: ' ',
+        _withCorners(
+          keyId: 'space',
+          specialKey: true,
+          key: const KeyboardPreviewKey(
+            label: 'Space',
+            special: true,
+            weight: 4,
+            action: KeyboardPreviewKeyAction.space,
+            output: ' ',
+          ),
         ),
         KeyboardPreviewKey(
           label: right,
@@ -1593,11 +1699,15 @@ class KeyboardPreviewSnapshot {
               : KeyboardPreviewKeyAction.text,
           output: right == 'Back' ? null : right,
         ),
-        KeyboardPreviewKey(
-          label: fieldContext.enterLabel,
-          special: true,
-          weight: 1.4,
-          action: KeyboardPreviewKeyAction.enter,
+        _withCorners(
+          keyId: 'enter',
+          specialKey: true,
+          key: KeyboardPreviewKey(
+            label: fieldContext.enterLabel,
+            special: true,
+            weight: 1.4,
+            action: KeyboardPreviewKeyAction.enter,
+          ),
         ),
       ],
     );
@@ -1679,25 +1789,32 @@ class KeyboardPreviewSnapshot {
   List<KeyboardPreviewKey> _letterKeys(String letters) {
     return [
       for (var index = 0; index < letters.length; index++)
-        KeyboardPreviewKey(
-          label: letters[index],
-          topLeft: corners ? _cornerFor(letters[index], 0) : null,
-          topRight: corners ? _cornerFor(letters[index], 1) : null,
+        _withCorners(
+          keyId: 'letter-${letters[index]}',
+          key: KeyboardPreviewKey(label: letters[index]),
         ),
     ];
   }
 
-  String? _cornerFor(String letter, int slot) {
-    const corners = {
-      'a': ['à', 'â'],
-      'e': ['é', 'è'],
-      'i': ['î', 'ï'],
-      'o': ['ô', 'ö'],
-      'u': ['ù', 'û'],
-      'c': ['ç', null],
-      'n': ['ñ', null],
-    };
-    return corners[letter]?[slot];
+  KeyboardPreviewKey _withCorners({
+    required String keyId,
+    required KeyboardPreviewKey key,
+    bool specialKey = false,
+  }) {
+    final resolved = KeyboardCornerPresetCatalog.resolvedForKey(
+      config: cornerConfig,
+      keyId: keyId,
+      cornersEnabled: corners,
+      specialKeyCornersEnabled: specialCorners,
+      privateMode: privateMode,
+      specialKey: specialKey,
+    );
+    return key.copyWith(
+      topLeftShortcut: resolved[KeyboardCornerSlot.topLeft],
+      topRightShortcut: resolved[KeyboardCornerSlot.topRight],
+      bottomLeftShortcut: resolved[KeyboardCornerSlot.bottomLeft],
+      bottomRightShortcut: resolved[KeyboardCornerSlot.bottomRight],
+    );
   }
 }
 
@@ -1754,10 +1871,10 @@ class KeyboardPreviewKey {
     this.modeTarget,
     this.panelTarget,
     this.unsupportedReason,
-    this.topLeft,
-    this.topRight,
-    this.bottomLeft,
-    this.bottomRight,
+    this.topLeftShortcut,
+    this.topRightShortcut,
+    this.bottomLeftShortcut,
+    this.bottomRightShortcut,
   });
 
   final String label;
@@ -1770,8 +1887,32 @@ class KeyboardPreviewKey {
   final KeyboardPreviewMode? modeTarget;
   final KeyboardPreviewPanel? panelTarget;
   final String? unsupportedReason;
-  final String? topLeft;
-  final String? topRight;
-  final String? bottomLeft;
-  final String? bottomRight;
+  final AndroidKeyboardCornerShortcut? topLeftShortcut;
+  final AndroidKeyboardCornerShortcut? topRightShortcut;
+  final AndroidKeyboardCornerShortcut? bottomLeftShortcut;
+  final AndroidKeyboardCornerShortcut? bottomRightShortcut;
+
+  KeyboardPreviewKey copyWith({
+    AndroidKeyboardCornerShortcut? topLeftShortcut,
+    AndroidKeyboardCornerShortcut? topRightShortcut,
+    AndroidKeyboardCornerShortcut? bottomLeftShortcut,
+    AndroidKeyboardCornerShortcut? bottomRightShortcut,
+  }) {
+    return KeyboardPreviewKey(
+      label: label,
+      weight: weight,
+      enabled: enabled,
+      active: active,
+      special: special,
+      action: action,
+      output: output,
+      modeTarget: modeTarget,
+      panelTarget: panelTarget,
+      unsupportedReason: unsupportedReason,
+      topLeftShortcut: topLeftShortcut ?? this.topLeftShortcut,
+      topRightShortcut: topRightShortcut ?? this.topRightShortcut,
+      bottomLeftShortcut: bottomLeftShortcut ?? this.bottomLeftShortcut,
+      bottomRightShortcut: bottomRightShortcut ?? this.bottomRightShortcut,
+    );
+  }
 }

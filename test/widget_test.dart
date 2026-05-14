@@ -202,6 +202,7 @@ void main() {
       'clipboardSyncDesired': true,
       'mediaControlsEnabled': true,
       'privacyMode': 'strict',
+      'cornerPresetId': 'developer_symbols',
     });
 
     expect(status.supported, isTrue);
@@ -210,10 +211,49 @@ void main() {
     expect(status.voiceEnabled, isFalse);
     expect(status.clipboardSyncDesired, isTrue);
     expect(status.privacyMode, KeyboardPrivacyMode.strict);
+    expect(status.cornerPresetId, 'developer_symbols');
     expect(
       status.toPreferencesMap(mediaControlsEnabled: false),
       containsPair('mediaControlsEnabled', false),
     );
+  });
+
+  test('android keyboard corner config parses presets and overrides', () {
+    final config = AndroidKeyboardCornerConfig.fromMap({
+      'presetId': 'punctuation_corners',
+      'overrides': [
+        {
+          'keyId': 'letter-a',
+          'slot': 'topLeft',
+          'expression': "JA:'j\\'arrive'",
+          'label': 'JA',
+          'sensitive': true,
+        },
+      ],
+      'availablePresets': [
+        {'id': 'punctuation_corners', 'name': 'Punctuation corners'},
+      ],
+    });
+
+    final resolved = KeyboardCornerPresetCatalog.resolvedForKey(
+      config: config,
+      keyId: 'letter-a',
+      cornersEnabled: true,
+      specialKeyCornersEnabled: false,
+      privateMode: false,
+    );
+    final privateResolved = KeyboardCornerPresetCatalog.resolvedForKey(
+      config: config,
+      keyId: 'letter-a',
+      cornersEnabled: true,
+      specialKeyCornersEnabled: false,
+      privateMode: true,
+    );
+
+    expect(config.presetId, 'punctuation_corners');
+    expect(config.availablePresets.single.name, 'Punctuation corners');
+    expect(resolved[KeyboardCornerSlot.topLeft]?.displayLabel, 'JA');
+    expect(privateResolved[KeyboardCornerSlot.topLeft], isNull);
   });
 
   test('android keyboard clipboard event parses native bridge maps', () {
@@ -571,6 +611,34 @@ void main() {
       expect(_simulatedBufferText(tester), 'œ|');
     },
   );
+
+  testWidgets('keyboard preview resolves configurable corner presets', (
+    tester,
+  ) async {
+    _useLargeViewport(tester);
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+    await tester.pumpWidget(_keyboardPreviewTestWidget());
+    await tester.pumpAndSettle();
+
+    expect(find.text('à'), findsOneWidget);
+
+    await tester.longPress(find.text('a').first);
+    await tester.pumpAndSettle();
+    expect(_simulatedBufferText(tester), 'à|');
+    expect(_simulatedStatusText(tester), contains('Corner shortcut'));
+
+    await _selectDropdownOption(
+      tester,
+      const Key('keyboard-preview-corner-preset-dropdown'),
+      'Punctuation corners',
+    );
+
+    expect(find.text('?'), findsOneWidget);
+    expect(find.text('à'), findsNothing);
+  });
 
   testWidgets('keyboard preview media panel can show now playing line', (
     tester,

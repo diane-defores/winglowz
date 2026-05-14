@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowzApp"
 created: "2026-05-04"
-updated: "2026-05-09"
+updated: "2026-05-14"
 status: draft
 source_skill: sf-docs
 scope: "flutter-app"
@@ -69,6 +69,11 @@ Settings UI
   -> Android MethodChannel
   -> native status/settings action
 
+Keyboard corner editor / preview
+  -> AndroidKeyboardCornerConfig + KeyboardCornerPresetCatalog
+  -> AndroidKeyboardBridge get/set/reset corner config on Android
+  -> local simulation only on web/non-Android preview
+
 Clipboard UI
   -> AndroidKeyboardBridge.drainKeyboardClipboardEvents
   -> ClipboardHistoryApi
@@ -85,11 +90,14 @@ Clipboard UI
 - Clipboard UI, application APIs and domain models must not import Supabase adapters.
 - Android native code emits platform actions/events; backend writes go through the Flutter product API or an equivalent store contract.
 - Keyboard clipboard bridge events are imported by Flutter before listing clipboard items; sensitive automatic content can be rejected by the store without user confirmation.
+- Keyboard corner config models in `lib/features/keyboard/domain/keyboard_models.dart` mirror the native preset/override wire shape. Unsupported platforms may simulate defaults but must not claim that Android IME preferences were changed.
+- `KeyboardPreviewScreen` can render corner presets and simulate simple text-like corner outputs. Native Android key events, field policy enforcement, and system dispatch still require Android IME validation.
 
 ## Failure Modes
 
 - Native channel unavailable: show a recoverable Settings message instead of crashing.
 - Remote backend not configured: keep local UI usable with the local clipboard store where available and display configuration state for cloud sync.
+- Native corner config validation failure: keep the current editor state visible, show the bridge error, and do not pretend the shortcut was saved.
 
 ## Security Notes
 
@@ -106,6 +114,7 @@ flutter test
 ## Reader Checklist
 
 - `lib/core/platform/**` changed -> verify native channel contract and Settings UI.
+- `lib/features/keyboard/domain/keyboard_models.dart` or keyboard preview changed -> verify preset parsing, override precedence, private-mode filtering, and widget tests for preview rendering.
 - Domain model source allowlist changed -> verify SQL constraints and tests.
 - Repository metadata changed -> verify backend adapter docs and security rules/tests.
 - Clipboard API/store changed -> verify no feature UI imports `lib/data/supabase`, run clipboard tests and update provider docs.

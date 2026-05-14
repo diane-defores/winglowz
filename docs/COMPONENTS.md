@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowzApp"
 created: "2026-04-26"
-updated: "2026-05-04"
+updated: "2026-05-14"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "components"
@@ -62,6 +62,10 @@ This inventory separates:
 - `SettingsScreen`:
   language, permissions, key management status, auth session visibility,
   Android overlay status, and Android keyboard IME status/preferences.
+- `KeyboardCornerShortcutsScreen`:
+  Android keyboard corner preset and per-key override editor. It reads and
+  writes the native `winflowz_app/keyboard` corner config when Android IME is
+  available, and clearly stays in simulation mode on unsupported platforms.
 - `PermissionCards`:
   platform-specific permission status + recovery actions.
 
@@ -89,7 +93,12 @@ This inventory separates:
   force private mode.
 - `AndroidKeyboardBridge`:
   Dart MethodChannel wrapper for IME enabled/active status, input-method
-  settings, keyboard picker, and non-sensitive preferences.
+  settings, keyboard picker, non-sensitive preferences, and configurable
+  corner shortcut config.
+- `KeyboardPreviewScreen`:
+  Flutter preview/sandbox for keyboard review, including simulated input,
+  panels, numeric grid, scrollable snippets/clipboard rows, media status,
+  settings panel, and configurable corner preset rendering.
 
 Native event contract to preserve from Kotlin module:
 

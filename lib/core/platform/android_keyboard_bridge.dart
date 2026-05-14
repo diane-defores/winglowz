@@ -32,6 +32,56 @@ class AndroidKeyboardBridge {
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 
+  static Future<AndroidKeyboardCornerConfig> getCornerConfig() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return AndroidKeyboardCornerConfig.defaults();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>('getKeyboardCornerConfig');
+    return AndroidKeyboardCornerConfig.fromMap(raw ?? const {});
+  }
+
+  static Future<AndroidKeyboardCornerConfig> setCornerConfig(
+    AndroidKeyboardCornerConfig config,
+  ) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: 'Android keyboard IME is not supported on this platform.',
+      );
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'setKeyboardCornerConfig',
+      config.toMap(),
+    );
+    return AndroidKeyboardCornerConfig.fromMap(raw ?? const {});
+  }
+
+  static Future<AndroidKeyboardCornerConfig> setCornerPreset(
+    String presetId,
+  ) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: 'Android keyboard IME is not supported on this platform.',
+      );
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'setKeyboardCornerPreset',
+      {'presetId': presetId},
+    );
+    return AndroidKeyboardCornerConfig.fromMap(raw ?? const {});
+  }
+
+  static Future<AndroidKeyboardCornerConfig> resetCornerConfig() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return AndroidKeyboardCornerConfig.defaults();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'resetKeyboardCornerConfig',
+    );
+    return AndroidKeyboardCornerConfig.fromMap(raw ?? const {});
+  }
+
   static Future<void> openInputMethodSettings() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
       throw const AndroidKeyboardBridgeException(

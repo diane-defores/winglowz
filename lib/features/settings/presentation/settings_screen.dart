@@ -16,6 +16,7 @@ import '../../auth/domain/auth_session_store.dart';
 import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../keyboard/domain/keyboard_models.dart';
+import '../../keyboard/presentation/keyboard_corner_shortcuts_screen.dart';
 import '../../snippets/application/snippet_store_provider.dart';
 import '../domain/onboarding_permission_contract.dart';
 import '../domain/settings_store.dart';
@@ -248,6 +249,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return;
       }
       setState(() => _message = 'Unable to show keyboard picker: $error');
+    }
+  }
+
+  Future<void> _openCornerShortcuts() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const KeyboardCornerShortcutsScreen(),
+      ),
+    );
+    if (mounted) {
+      await _loadKeyboardState();
     }
   }
 
@@ -677,6 +689,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'media_controls=${status.mediaControlsEnabled}',
       'layout=${status.layoutProfile.name}',
       'corner_mode=${status.cornerModeEnabled}',
+      'corner_preset=${status.cornerPresetId}',
       'debug_touch=${status.debugTouchOverlayEnabled}',
       'double_space=${status.doubleSpacePeriodEnabled}',
       'punct_spacing=${status.punctuationAutoSpacingEnabled}',
@@ -1047,6 +1060,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   subtitle: const Text(
                     'When enabled, key swipes toward corners insert secondary characters.',
                   ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.open_in_full_outlined),
+                  title: const Text('Corner shortcuts'),
+                  subtitle: Text(
+                    'Preset=${keyboardStatus?.cornerPresetId ?? KeyboardCornerPresetCatalog.frenchAccents}. Configure per-key corner actions.',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: _keyboardBusy ? null : _openCornerShortcuts,
                 ),
                 SwitchListTile(
                   value: keyboardStatus?.frenchLanguageEnabled ?? true,

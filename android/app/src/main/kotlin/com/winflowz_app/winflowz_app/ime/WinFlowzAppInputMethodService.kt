@@ -605,6 +605,7 @@ class WinFlowzAppInputMethodService : InputMethodService(), WinFlowzAppKeyboardV
             recents = emojiRecents,
             clipboardEntries = clipboardEntriesForKeyboard(),
             snippets = stateStore.snippetRules(),
+            cornerConfig = stateStore.cornerConfig(),
         )
     }
 

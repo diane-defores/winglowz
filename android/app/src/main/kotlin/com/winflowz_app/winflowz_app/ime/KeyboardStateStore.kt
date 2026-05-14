@@ -96,6 +96,7 @@ class KeyboardStateStore(private val context: Context) {
             "mediaControlsEnabled" to mediaControlsEnabled,
             "layoutProfile" to layoutProfile.name,
             "cornerModeEnabled" to cornerModeEnabled,
+            "cornerPresetId" to cornerConfig().presetId,
             "debugTouchOverlayEnabled" to debugTouchOverlayEnabled,
             "keyVibrationEnabled" to keyVibrationEnabled,
             "keySoundEnabled" to keySoundEnabled,
@@ -152,6 +153,30 @@ class KeyboardStateStore(private val context: Context) {
     }
 
     fun clipboardEntries(): List<KeyboardClipboardEntry> = readClipboardEntries()
+
+    fun cornerConfig(): KeyboardCornerConfig {
+        return KeyboardCornerConfig.fromJson(preferences.getString(KEY_CORNER_CONFIG, null))
+    }
+
+    fun replaceCornerConfig(config: KeyboardCornerConfig): KeyboardCornerConfig {
+        val validated = config.validated()
+        val encoded = validated.toJson().toString()
+        if (encoded.length > MAX_CORNER_CONFIG_JSON_LENGTH) {
+            throw KeyboardCornerConfigException("Corner shortcut config is too large")
+        }
+        preferences.edit().putString(KEY_CORNER_CONFIG, encoded).apply()
+        return validated
+    }
+
+    fun setCornerPreset(presetId: String): KeyboardCornerConfig {
+        val next = cornerConfig().withPreset(presetId)
+        return replaceCornerConfig(next)
+    }
+
+    fun resetCornerConfig(): KeyboardCornerConfig {
+        preferences.edit().remove(KEY_CORNER_CONFIG).apply()
+        return KeyboardCornerConfig()
+    }
 
     fun pushClipboardEntry(
         content: String,
@@ -293,9 +318,11 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_TEXT_EXPANSION_SNIPPETS = "text_expansion_snippets"
         const val KEY_TEXT_EXPANSION_DICTIONARY = "text_expansion_dictionary"
         const val KEY_CLIPBOARD_ENTRIES = "clipboard_entries"
+        const val KEY_CORNER_CONFIG = "corner_config"
         const val EMOJI_RECENT_SEPARATOR = "|"
         const val MAX_TEXT_RULES = 300
         const val MAX_CLIPBOARD_ENTRIES = 60
+        const val MAX_CORNER_CONFIG_JSON_LENGTH = 24000
         const val PRIVACY_AUTO = "auto"
         const val PRIVACY_STRICT = "strict"
         const val PRIVACY_STANDARD = "standard"

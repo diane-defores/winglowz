@@ -11,6 +11,8 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
 import com.winflowz_app.winflowz_app.ime.KeyboardClipboardEventQueue
+import com.winflowz_app.winflowz_app.ime.KeyboardCornerConfig
+import com.winflowz_app.winflowz_app.ime.KeyboardCornerConfigException
 import com.winflowz_app.winflowz_app.ime.KeyboardLayoutProfile
 import com.winflowz_app.winflowz_app.ime.KeyboardStateStore
 import com.winflowz_app.winflowz_app.ime.KeyboardTextRule
@@ -233,6 +235,51 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "getKeyboardStatus" -> {
                         result.success(keyboardState.buildStatusMap())
+                    }
+                    "getKeyboardCornerConfig" -> {
+                        result.success(keyboardState.cornerConfig().toMap(includePresets = true))
+                    }
+                    "setKeyboardCornerConfig" -> {
+                        val rawConfig = call.arguments as? Map<*, *>
+                        if (rawConfig == null) {
+                            result.error(
+                                "KEYBOARD_CORNER_CONFIG_INVALID",
+                                "Corner config payload must be a map.",
+                                null,
+                            )
+                            return@setMethodCallHandler
+                        }
+                        try {
+                            val config = KeyboardCornerConfig.fromMap(rawConfig)
+                            result.success(keyboardState.replaceCornerConfig(config).toMap(includePresets = true))
+                        } catch (error: KeyboardCornerConfigException) {
+                            result.error(
+                                "KEYBOARD_CORNER_CONFIG_INVALID",
+                                error.message ?: "Corner config is invalid.",
+                                null,
+                            )
+                        } catch (error: IllegalArgumentException) {
+                            result.error(
+                                "KEYBOARD_CORNER_CONFIG_INVALID",
+                                error.message ?: "Corner config is invalid.",
+                                null,
+                            )
+                        }
+                    }
+                    "resetKeyboardCornerConfig" -> {
+                        result.success(keyboardState.resetCornerConfig().toMap(includePresets = true))
+                    }
+                    "setKeyboardCornerPreset" -> {
+                        val presetId = call.argument<String>("presetId").orEmpty().trim()
+                        try {
+                            result.success(keyboardState.setCornerPreset(presetId).toMap(includePresets = true))
+                        } catch (error: KeyboardCornerConfigException) {
+                            result.error(
+                                "KEYBOARD_CORNER_PRESET_INVALID",
+                                error.message ?: "Corner preset is invalid.",
+                                null,
+                            )
+                        }
                     }
                     "drainKeyboardClipboardEvents" -> {
                         result.success(KeyboardClipboardEventQueue.drain())

@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowzApp"
 created: "2026-05-04"
-updated: "2026-05-10"
+updated: "2026-05-14"
 status: draft
 source_skill: sf-docs
 scope: "android-native"
@@ -87,13 +87,18 @@ Keyboard clipboard action
 - Keyboard preferences are persisted in `KeyboardStateStore` and round-tripped through `winflowz_app/keyboard`:
   - `layoutProfile`: `QWERTY` / `AZERTY`
   - `cornerModeEnabled`: `true` / `false`
+  - `cornerConfig`: versioned JSON with a preset id and per-key/per-slot overrides
   - `privacyMode`: `auto` / `strict` / `standard`
 - IME state preferences store only non-sensitive flags and counters, never typed or dictated text.
+- Corner shortcut execution uses `KeyboardCornerShortcuts`, `KeyboardCornerShortcutResolver`, and `KeyboardKeyValue` instead of a second action language. The resolver combines preset, user overrides, field policy, `cornerModeEnabled`, and `specialKeyCornersEnabled` at layout snapshot time.
+- The built-in corner preset preserves the legacy French accents for `a/e/i/o/u/c/n/s`. Additional presets are punctuation, French accents plus punctuation, developer symbols, and no corners.
+- Corner shortcut values may dispatch text, key events, actions, modifiers, and macros. Private fields suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros while keeping normal text accents available.
 - IME clipboard sync events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
 - The native clipboard event queue is process-memory only until a durable local storage decision is made.
 - Text keys carry a `KeyboardKeyValue` model in addition to display glyphs. `KeyboardKeyValueParser`, `KeyboardKeyModifier`, and `KeyboardModMap` are the local foundation for parsed layouts, macros, Ctrl/Alt/Fn/Shift behavior and user modmaps; the live layout dispatches parsed text keys, key events, action values and macros through existing callbacks.
 - Ctrl, Alt and Fn are exposed as modifier keys in the control row. They latch for the next key-value dispatch, then clear; Fn currently ships with a conservative built-in navigation modmap for `h/j/k/l`.
 - Touch handling tracks the active pointer id, ignores secondary pointers without dispatching duplicate keys, supports long-press repeat for destructive/navigation actions, and uses horizontal spacebar sliding for cursor movement. It still does not implement full multi-finger modifier chords or selection sliders.
+- Protected gestures keep priority over corners: space slider, horizontal scroll rows, long press/repeat, and return-to-center cancellation must not dispatch a configured corner.
 
 ## Failure Modes
 
@@ -125,6 +130,7 @@ clipboard, dictation, media keys, and OEM behavior.
 - Clipboard controller changed -> recheck sensitive clipboard flags and no background clipboard capture.
 - Clipboard event queue changed -> recheck no provider credentials/imports in native code and that sensitive clips are not enqueued.
 - Media controller changed -> recheck no metadata permission is introduced silently.
+- `KeyboardCornerShortcuts.kt`, `KeyboardLayoutModels.kt`, `WinFlowzAppKeyboardView.kt`, or `KeyboardStateStore.kt` changed -> recheck default accents, override precedence, private-field suppression, special-key toggle, space slider priority, scroll row priority, and corrupt JSON fallback.
 
 ## Maintenance Rule
 

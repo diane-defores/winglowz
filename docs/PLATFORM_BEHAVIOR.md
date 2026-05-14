@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowzApp"
 created: "2026-04-27"
-updated: "2026-05-10"
+updated: "2026-05-14"
 status: "reviewed"
 source_skill: "sf-spec"
 scope: "platform_behavior"
@@ -48,7 +48,9 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 
 - WinFlowzApp Keyboard is declared as an Android `InputMethodService` and is configurable from Settings through the `winflowz_app/keyboard` MethodChannel.
 - The keyboard provides a native Canvas layout engine with QWERTY/AZERTY profiles, explicit clipboard copy/paste actions, Android speech recognition, and media keys (previous/play-pause/next).
-- Tap and swipe-corner classification is local and deterministic: tap emits the primary glyph, corner swipes emit secondary glyphs when corner mode is enabled, and return-to-center cancels the gesture.
+- Tap and swipe-corner classification is local and deterministic: tap emits the primary glyph, configurable corner swipes dispatch typed `KeyboardKeyValue` actions when corner mode is enabled, and return-to-center cancels the gesture.
+- Corner shortcuts are configured per stable key id and corner slot through local Android preferences. The default preset preserves the French accent corners; additional presets cover punctuation, combined French punctuation, developer symbols, and no-corner mode.
+- User corner overrides can insert text, key events, actions, modifiers, or macros through the native parser. Private fields still suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros.
 - Keyboard field context adapts controls for email/URL/phone/search: email and URL expose `@`/`/` plus `.com`, phone forces number layer, search sets enter action to search.
 - A minimal Navigation panel is available for cursor/edit actions: char left/right, word left/right, line start/end, delete char, and delete word-left with fallback feedback when host context is insufficient.
 - A lightweight Emoji panel is available with local categories and local recents; recents are not updated in private/sensitive fields.
@@ -56,6 +58,7 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 - Optional touch-debug overlay can show key bounds, gesture direction/threshold/action diagnostics, and never includes typed content.
 - Password, OTP, `noPersonalizedLearning`, and host-marked private fields force private mode: dictation, clipboard capture, snippets, sync intent, and learning are disabled while basic typing remains available.
 - Minimal panels are available directly in the keyboard: clipboard (copy/paste/pins), media (prev/play-pause/next), snippets (single quick insert + app handoff), and settings (corners toggle + layout toggle + app handoff).
+- FlutterWeb keyboard preview can simulate corner presets and simple text/snippet-style corner insertions for visual review. It is not proof of native Android key events, IME field policy, or system-level dispatch.
 - Clipboard sync from the keyboard is opt-in and represented as intent/status. Real cloud sync and cross-account queue flushing require the backend-agnostic Firebase adapter before production claims.
 - Non-Android platforms must not show IME activation controls.
 

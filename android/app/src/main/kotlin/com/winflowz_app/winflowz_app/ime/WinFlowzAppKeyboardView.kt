@@ -99,6 +99,7 @@ class WinFlowzAppKeyboardView(
     private var clipboardEntries = emptyList<KeyboardClipboardEntry>()
     private var snippets = emptyList<KeyboardTextRule>()
     private var mediaNowPlayingLabel: String? = null
+    private var cornerConfig = KeyboardCornerConfig()
     private val activeSystemModifiers = linkedSetOf<KeyboardSystemModifier>()
 
     private var gestureStartFrame: KeyFrame? = null
@@ -258,6 +259,7 @@ class WinFlowzAppKeyboardView(
         recents: List<String>,
         clipboardEntries: List<KeyboardClipboardEntry>,
         snippets: List<KeyboardTextRule>,
+        cornerConfig: KeyboardCornerConfig,
     ) {
         layoutProfile = profile
         cornerModeEnabled = cornersEnabled
@@ -272,6 +274,7 @@ class WinFlowzAppKeyboardView(
         punctuationAutoSpacingEnabled = punctuationAutoSpacing
         this.clipboardEntries = clipboardEntries
         this.snippets = snippets
+        this.cornerConfig = cornerConfig
         recentEmojis = if (fieldPolicy.privateMode) emptyList() else recents
         if (fieldPolicy.privateMode && emojiCategory == KeyboardEmojiCategory.Recents) {
             emojiCategory = KeyboardEmojiCategory.Smileys
@@ -670,42 +673,34 @@ class WinFlowzAppKeyboardView(
         canvas.drawText(displayLabel(key), rect.centerX(), baseline, textPaint)
 
         if (shouldRenderCorners(key)) {
-            renderCornerGlyphs(canvas, rect, key.glyph)
+            renderCornerGlyphs(canvas, rect, key.cornerAssignments)
         }
     }
 
     private fun shouldRenderCorners(key: KeyboardKeySpec): Boolean {
-        if (!cornerModeEnabled || !allowsCornerGesture(key)) {
-            return false
-        }
-        val glyph = key.glyph ?: return false
-        return glyph.topLeft != null ||
-            glyph.topRight != null ||
-            glyph.bottomLeft != null ||
-            glyph.bottomRight != null
+        return cornerModeEnabled &&
+            allowsCornerGesture(key) &&
+            !key.cornerAssignments.isEmpty()
     }
 
     private fun renderCornerGlyphs(
         canvas: Canvas,
         rect: RectF,
-        glyph: KeyboardKeyGlyph?,
+        assignments: KeyboardCornerAssignments,
     ) {
-        if (glyph == null) {
-            return
-        }
         secondaryTextPaint.textSize = sp(9f)
         secondaryTextPaint.color = Color.rgb(92, 103, 98)
-        glyph.topLeft?.let {
-            canvas.drawText(it, rect.left + dp(10f), rect.top + dp(12f), secondaryTextPaint)
+        assignments.topLeft?.let {
+            canvas.drawText(it.label, rect.left + dp(10f), rect.top + dp(12f), secondaryTextPaint)
         }
-        glyph.topRight?.let {
-            canvas.drawText(it, rect.right - dp(10f), rect.top + dp(12f), secondaryTextPaint)
+        assignments.topRight?.let {
+            canvas.drawText(it.label, rect.right - dp(10f), rect.top + dp(12f), secondaryTextPaint)
         }
-        glyph.bottomLeft?.let {
-            canvas.drawText(it, rect.left + dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
+        assignments.bottomLeft?.let {
+            canvas.drawText(it.label, rect.left + dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
         }
-        glyph.bottomRight?.let {
-            canvas.drawText(it, rect.right - dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
+        assignments.bottomRight?.let {
+            canvas.drawText(it.label, rect.right - dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
         }
     }
 
@@ -713,14 +708,14 @@ class WinFlowzAppKeyboardView(
         key: KeyboardKeySpec,
         sample: GestureSample,
     ): GestureSelection {
-        if (!cornerModeEnabled || !allowsCornerGesture(key) || key.glyph == null) {
+        if (!cornerModeEnabled || !allowsCornerGesture(key) || key.cornerAssignments.isEmpty()) {
             return GestureSelection.PrimaryTap
         }
         return KeyboardGestureClassifier.classify(sample, gestureThresholds)
     }
 
     private fun allowsCornerGesture(key: KeyboardKeySpec): Boolean {
-        return key.action == KeyboardKeyAction.Text || specialKeyCornersEnabled
+        return (key.action == KeyboardKeyAction.Text && key.id != "space") || specialKeyCornersEnabled
     }
 
     private fun dispatch(
@@ -734,6 +729,13 @@ class WinFlowzAppKeyboardView(
         }
         performKeyboardHaptic(HapticFeedbackConstants.KEYBOARD_TAP)
         performKeySound()
+        if (selection != GestureSelection.PrimaryTap) {
+            val cornerValue = keyValueForSelection(key, selection)
+            if (cornerValue == null || !dispatchKeyValue(cornerValue, selection, clearModifiersAfter = true)) {
+                setStatus("Corner shortcut unavailable")
+            }
+            return
+        }
         when (key.action) {
             KeyboardKeyAction.KeyValue -> {
                 val keyValue = key.keyValue ?: return
@@ -749,7 +751,7 @@ class WinFlowzAppKeyboardView(
                     return
                 }
                 if (panelMode == KeyboardPanelMode.Emoji) {
-                    val output = keyValue.text ?: key.glyph?.outputFor(selection) ?: return
+                    val output = keyValue.text ?: return
                     callbacks.onEmojiInserted(output)
                 }
             }
@@ -1175,6 +1177,8 @@ class WinFlowzAppKeyboardView(
                 snippets = snippets,
                 suggestions = suggestions,
                 mediaNowPlayingLabel = mediaNowPlayingLabel,
+                cornerConfig = cornerConfig,
+                fieldPolicy = fieldPolicy,
             ),
         )
     }
@@ -1183,11 +1187,11 @@ class WinFlowzAppKeyboardView(
         key: KeyboardKeySpec,
         selection: GestureSelection,
     ): KeyboardKeyValue? {
-        val raw = key.glyph?.outputFor(selection) ?: key.label
         return if (selection == GestureSelection.PrimaryTap) {
+            val raw = key.glyph?.primary ?: key.label
             key.keyValue ?: KeyboardKeyValue.text(raw, key.label)
         } else {
-            KeyboardKeyValue.text(raw)
+            key.cornerAssignments.forSelection(selection)?.value
         }
     }
 

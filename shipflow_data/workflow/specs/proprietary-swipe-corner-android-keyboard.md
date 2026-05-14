@@ -937,6 +937,7 @@ Stop conditions:
 | 2026-05-12 20:39:39 UTC | sf-spec | GPT-5 Codex | Added light spec for FlutterWeb keyboard typing sandbox: simulated input field, tappable preview keys, suggestions, context/private handling and widget-test coverage | updated | /sf-start FlutterWeb keyboard typing sandbox |
 | 2026-05-13 03:27:07 UTC | sf-start | GPT-5 Codex | Implemented FlutterWeb keyboard typing sandbox: simulated input buffer/cursor/status, tappable `_KeyCap` dispatch for letters/numbers/punctuation and Shift/Space/Back/Enter/suggestions, clear/reset controls, explicit disabled/non-simulated statuses, and widget tests for typing plus email/private behavior | implemented | /sf-verify Proprietary Swipe-Corner Android Keyboard |
 | 2026-05-13 03:30:25 UTC | sf-verify | GPT-5 Codex | Verified the FlutterWeb typing sandbox locally, fixed suggestion spacing so suggestions do not attach to existing text, and reran widget tests, analyzer and diff whitespace checks | partial | /sf-ship FlutterWeb keyboard typing sandbox, then /sf-prod and preview browser check |
+| 2026-05-14 11:24:18 UTC | sf-build | GPT-5 Codex | Moved hardcoded swipe-corner accent behavior into the dedicated configurable corner shortcuts chantier; native layout now resolves corner assignments from presets/overrides and Flutter preview/settings use the same config contract | implemented in child chantier | /sf-verify Configurable Key Corner Swipes |
 
 # Current Chantier Flow
 
