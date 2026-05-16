@@ -162,10 +162,10 @@ const _stepDefinitions = <OnboardingStepDefinition>[
   ),
   OnboardingStepDefinition(
     id: OnboardingStepId.mediaSessionAccess,
-    title: 'Accès média',
-    description: 'Autorise WinFlowz à lire les sessions média Android.',
+    title: 'Accès notifications et média',
+    description: 'Autorise WinFlowz à lire les notifications média Android.',
     why:
-        'Cet accès permet au clavier d’afficher le titre en cours et d’ouvrir l’app qui lit le son.',
+        'Cet accès sert surtout au clavier pour afficher le titre en cours et ouvrir l’app qui lit le son. Il reste optionnel.',
     category: OnboardingStepCategory.recommended,
     group: OnboardingStepGroup.keyboard,
     openActionLabel: 'Ouvrir Accès aux notifications',

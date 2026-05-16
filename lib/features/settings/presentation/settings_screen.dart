@@ -1026,7 +1026,9 @@ class _OnboardingSettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final completed = readiness.steps.where((step) => step.completed).length;
+    final active = readiness.steps.where((step) => step.satisfied).length;
+    final skipped = readiness.steps.where((step) => step.skipped).length;
+    final pending = readiness.steps.where((step) => step.requiresAction).length;
     final actionLabel = readiness.shouldShowOnboarding
         ? 'Reprendre'
         : readiness.onboardingCompleted
@@ -1036,7 +1038,7 @@ class _OnboardingSettingsTile extends StatelessWidget {
     final subtitle = !readiness.platformSupported
         ? 'Non requis sur cette plateforme'
         : readiness.shouldShowOnboarding
-        ? 'Modules configurés: $completed/${readiness.steps.length} • micro/voice, clavier et clipboard restent au choix'
+        ? 'Actifs: $active • Ignorés: $skipped • À configurer si utile: $pending'
         : 'Onboarding terminé';
 
     return AppStatusCard(
