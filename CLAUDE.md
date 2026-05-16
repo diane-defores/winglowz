@@ -59,8 +59,6 @@ Current migration baseline includes:
 flutter pub get
 flutter analyze
 flutter test
-flutter run -d android
-flutter run -d ios
 ```
 
 For Supabase:
@@ -83,7 +81,9 @@ supabase db push
 
 ## ARM64 Android Release Guardrail
 
-On Linux ARM64 (`aarch64`/`arm64`), do not run Android release builds locally: no `flutter build apk --release`, `flutter build appbundle --release`, `./gradlew assembleRelease`, or `./gradlew bundleRelease`. Route APK/AAB release builds to Blacksmith or another Linux x64 CI runner. Local Flutter work is limited to `flutter analyze`, `flutter test`, and `flutter build web --release`.
+Do not run Android builds, packaging, installs, or Gradle tasks locally from this VM. This includes `flutter build apk`, `flutter build appbundle`, `flutter run -d android`, `./gradlew ...`, `assemble*`, `bundle*`, `compile*`, and `testDebugUnitTest`, even for debug builds. The VM has previously been destabilized by local Android/AAPT2 work. Route APK/AAB/IME validation to GitHub Actions/Blacksmith and Diane's physical-device QA. Local agent checks are limited to `flutter analyze`, `flutter test` or targeted `flutter test ...`, and web-only checks/builds when explicitly needed.
+
+Sentry can be used for runtime crash/error evidence from installed app sessions, but it does not replace Blacksmith CI for Android build validation.
 
 ## Architecture
 
