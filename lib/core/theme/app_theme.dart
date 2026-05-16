@@ -533,19 +533,25 @@ class AppTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary;
+            return isDark
+                ? colorScheme.primary
+                : colorScheme.onPrimaryContainer;
           }
           return isDark ? colorScheme.onSurface : colorScheme.surface;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary.withValues(alpha: isDark ? 0.45 : 0.4);
+            return isDark
+                ? colorScheme.primary.withValues(alpha: 0.45)
+                : colorScheme.primaryContainer;
           }
           return colorScheme.onSurface.withValues(alpha: isDark ? 0.28 : 0.24);
         }),
         trackOutlineColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary.withValues(alpha: isDark ? 0.7 : 0.5);
+            return isDark
+                ? colorScheme.primary.withValues(alpha: 0.7)
+                : colorScheme.onPrimaryContainer.withValues(alpha: 0.45);
           }
           return colorScheme.outline;
         }),
