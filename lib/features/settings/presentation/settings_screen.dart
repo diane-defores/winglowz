@@ -596,9 +596,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() => _message = 'Backend diagnostic copied.');
   }
 
-  void _clearDiagnosticLogs() {
+  Future<void> _clearDiagnosticLogs() async {
     AppDiagnostics.clear();
-    setState(() => _message = 'Diagnostic logs cleared.');
+    AndroidKeyboardStatus? status;
+    if (PlatformCapabilities.keyboardImeSupported) {
+      try {
+        status = await _keyboardController.clearDiagnostics();
+      } on AndroidKeyboardBridgeException catch (error) {
+        AppDiagnostics.record(
+          'keyboard_diagnostics_clear_error',
+          '${error.code}: ${error.message}',
+        );
+      }
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      if (status != null) {
+        _keyboardStatus = status;
+      }
+      _message = 'Diagnostic logs cleared.';
+    });
   }
 
   String _backendDiagnosticText() {
@@ -635,6 +654,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'anthropic_key_present: ${_anthropicController.text.trim().isNotEmpty}',
       'overlay_status: ${_overlayDiagnostic()}',
       'keyboard_status: ${_keyboardDiagnostic()}',
+      'keyboard_last_error: ${_sanitizeDiagnostic(_keyboardStatus?.lastKeyboardError ?? 'none')}',
       'recent_events: ${_recentEventsDiagnostic()}',
       'settings_message: ${_sanitizeDiagnostic(_message ?? 'none')}',
     ];
@@ -793,6 +813,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'double_space=${status.doubleSpacePeriodEnabled}',
       'punct_spacing=${status.punctuationAutoSpacingEnabled}',
       'privacy_mode=${status.privacyMode.name}',
+      'recovery_count=${status.keyboardRecoveryCount}',
+      'last_error_at=${status.lastKeyboardErrorAt ?? 'none'}',
+      'last_error=${_sanitizeDiagnostic(status.lastKeyboardError ?? 'none')}',
       'busy=$_keyboardBusy',
     ].join('; ');
   }

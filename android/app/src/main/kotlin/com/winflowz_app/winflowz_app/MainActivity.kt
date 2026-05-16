@@ -243,6 +243,18 @@ class MainActivity : FlutterActivity() {
                 val keyboardState = KeyboardStateStore(this)
                 when (call.method) {
                     "getKeyboardStatus" -> {
+                        try {
+                            result.success(keyboardState.buildStatusMap())
+                        } catch (error: Exception) {
+                            result.error(
+                                "KEYBOARD_STATUS_UNAVAILABLE",
+                                "Unable to read keyboard status.",
+                                error.message,
+                            )
+                        }
+                    }
+                    "clearKeyboardDiagnostics" -> {
+                        keyboardState.clearKeyboardDiagnostics()
                         result.success(keyboardState.buildStatusMap())
                     }
                     "getKeyboardCornerConfig" -> {

@@ -197,9 +197,10 @@ class WinFlowzKeyboardView(
     private var lastVerticalScrollY = 0f
     private var verticalPanelScrollOffset = 0f
     private var verticalPanelMaxScrollOffset = 0f
+    private var recoveringFromKeyboardError = false
 
     private val keyFrames = mutableListOf<KeyFrame>()
-    private var layoutSnapshot = buildSnapshot()
+    private var layoutSnapshot = KeyboardLayoutBuilder.safeFallback()
 
     private val density = resources.displayMetrics.density
     private val pressEffects = KeyboardPressEffects(density) { SystemClock.uptimeMillis() }
@@ -315,6 +316,7 @@ class WinFlowzKeyboardView(
         isFocusable = true
         setBackgroundColor(Color.TRANSPARENT)
         applyThemeMode(themeMode)
+        refreshLayout()
     }
 
     fun applyPolicy(policy: KeyboardFieldPolicy) {
@@ -473,7 +475,13 @@ class WinFlowzKeyboardView(
     }
 
     override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+        runKeyboardSafely("onDraw") {
+            super.onDraw(canvas)
+            drawKeyboard(canvas)
+        } ?: drawRecoveredFallback(canvas)
+    }
+
+    private fun drawKeyboard(canvas: Canvas) {
         keyFrames.clear()
         if (!fieldPolicy.privateMode && themeConfig.useGradient && themeConfig.presetId != "system" && !themeConfig.useImage) {
             backgroundPaint.shader =
@@ -545,6 +553,12 @@ class WinFlowzKeyboardView(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        return runKeyboardSafely("onTouchEvent:${event.actionMasked}") {
+            handleTouchEvent(event)
+        } ?: true
+    }
+
+    private fun handleTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 return startGesture(event.getPointerId(event.actionIndex), event.x, event.y)
@@ -691,6 +705,12 @@ class WinFlowzKeyboardView(
     }
 
     private fun handleLongPress() {
+        runKeyboardSafely("handleLongPress:${gestureStartFrame?.key?.id ?: "none"}") {
+            handleLongPressUnsafe()
+        }
+    }
+
+    private fun handleLongPressUnsafe() {
         val key = gestureStartFrame?.key ?: return
         if (!key.enabled || slidingSpace || scrollingHorizontalRow) {
             return
@@ -1040,6 +1060,15 @@ class WinFlowzKeyboardView(
     }
 
     private fun dispatch(
+        key: KeyboardKeySpec,
+        selection: GestureSelection,
+    ) {
+        runKeyboardSafely("dispatch:${key.id}") {
+            dispatchUnsafe(key, selection)
+        }
+    }
+
+    private fun dispatchUnsafe(
         key: KeyboardKeySpec,
         selection: GestureSelection,
     ) {
@@ -1702,9 +1731,84 @@ class WinFlowzKeyboardView(
     }
 
     private fun refreshLayout() {
-        layoutSnapshot = buildSnapshot()
-        requestLayout()
-        invalidate()
+        runKeyboardSafely("refreshLayout") {
+            layoutSnapshot = buildSnapshot()
+            requestLayout()
+            invalidate()
+        }
+    }
+
+    private fun <T> runKeyboardSafely(
+        actionId: String,
+        block: () -> T,
+    ): T? {
+        return try {
+            block()
+        } catch (error: Throwable) {
+            recoverFromKeyboardError(actionId, error)
+            null
+        }
+    }
+
+    private fun recoverFromKeyboardError(
+        actionId: String,
+        error: Throwable,
+    ) {
+        if (recoveringFromKeyboardError) {
+            return
+        }
+        recoveringFromKeyboardError = true
+        try {
+            stopRepeat()
+            removeCallbacks(longPressRunnable)
+            resetGesture()
+            val source =
+                when {
+                    themeConfig.useImage -> "image"
+                    themeConfig.useGradient -> "gradient"
+                    else -> "solid"
+                }
+            KeyboardCrashReporter.report(
+                context = context,
+                crashContext =
+                    KeyboardCrashContext(
+                        actionId = actionId,
+                        panel = panelMode.name,
+                        mode = layoutMode.name,
+                        layoutProfile = layoutProfile.name,
+                        compactMode = compactModeEnabled,
+                        heightScale = keyboardHeightScale,
+                        themePresetId = themeConfig.presetId,
+                        themeSource = source,
+                        privateMode = fieldPolicy.privateMode,
+                    ),
+                error = error,
+            )
+            layoutMode = KeyboardLayoutMode.Letters
+            panelMode = KeyboardPanelMode.None
+            layoutSnapshot = KeyboardLayoutBuilder.safeFallback()
+            themeConfig = KeyboardThemeConfig()
+            themeImagePath = null
+            themeBitmap = null
+            applyThemeMode(KeyboardStateStore.THEME_SYSTEM)
+            statusText = "Keyboard recovered"
+            requestLayout()
+            invalidate()
+        } catch (_: Throwable) {
+            layoutSnapshot = KeyboardLayoutBuilder.safeFallback()
+            statusText = "Keyboard recovered"
+        } finally {
+            recoveringFromKeyboardError = false
+        }
+    }
+
+    private fun drawRecoveredFallback(canvas: Canvas) {
+        runCatching {
+            canvas.drawColor(nativeColors.background)
+            statusPaint.color = nativeColors.statusText
+            statusPaint.textSize = sp(14f)
+            canvas.drawText("Keyboard recovered", width / 2f, max(dp(28f), height / 2f), statusPaint)
+        }
     }
 
     private fun dp(value: Float): Float = value * density

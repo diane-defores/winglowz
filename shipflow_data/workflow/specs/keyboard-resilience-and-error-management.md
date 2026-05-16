@@ -6,7 +6,7 @@ project: "winflowz_app"
 created: "2026-05-16"
 created_at: "2026-05-16 07:23:29 UTC"
 updated: "2026-05-16"
-updated_at: "2026-05-16 07:27:00 UTC"
+updated_at: "2026-05-16 07:56:49 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -43,7 +43,7 @@ evidence:
   - "Local code: lib/core/bootstrap/sentry_bootstrap.dart configures sentry_flutter 9.20.0 and redacted breadcrumbs."
   - "Local code: android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzKeyboardView.kt centralizes drawing, touch dispatch, panel switching and layout snapshot rebuilds."
   - "Official docs checked 2026-05-16: Sentry Flutter docs state the Flutter SDK supports automatic error reporting; Flutter error-reporting docs state Sentry can capture Dart and native Android layers, including Java/Kotlin/C/C++."
-next_step: "/sf-start Keyboard Resilience and Error Management"
+next_step: "Manual Android QA for Keyboard Resilience and Error Management"
 ---
 
 ## Title
@@ -298,13 +298,15 @@ Ajouter une couche de résilience native autour du clavier: reporter Kotlin redi
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-16 07:23:29 UTC | sf-spec | GPT-5 Codex | Created full spec for keyboard resilience, crash recovery, diagnostics and Sentry-safe reporting. | Draft saved | /sf-ready Keyboard Resilience and Error Management |
 | 2026-05-16 07:27:00 UTC | sf-ready | GPT-5 Codex | Validated readiness gate: structure, metadata, user-story alignment, adversarial review, security, language doctrine and fresh-docs evidence. | ready | /sf-start Keyboard Resilience and Error Management |
+| 2026-05-16 07:39:27 UTC | sf-start | legacy runtime (gpt3.5-codex unavailable) | Implemented native redacted keyboard crash diagnostics, safe view/service recovery wrappers, fallback snapshot, Flutter bridge/settings copy-clear-status, tests and QA docs. | implemented | /sf-verify Keyboard Resilience and Error Management |
+| 2026-05-16 07:41:38 UTC | sf-verify | GPT-5 Codex | Verified implementation against spec with Flutter tests, Kotlin compile, diff check and adversarial review; Android real-device QA, Sentry test correlation and Kotlin unit execution remain unproven. | partial | Manual Android QA for Keyboard Resilience and Error Management |
 
 ## Current Chantier Flow
 - sf-spec: done
 - sf-ready: ready
-- sf-start: not launched
-- sf-verify: not launched
+- sf-start: implemented - code, tests and docs implemented; real Android QA belongs to verification evidence
+- sf-verify: partial - local checks passed; real Android QA, Sentry test event and Kotlin unit test execution still pending
 - sf-end: not launched
 - sf-ship: not launched
 
-Next command: `/sf-start Keyboard Resilience and Error Management`.
+Next command: manual Android QA for Keyboard Resilience and Error Management.

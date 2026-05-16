@@ -100,6 +100,11 @@ Keyboard clipboard action
 - Theme image import uses a system image picker, decodes/downsamples to a bounded PNG in app-private storage, and rejects non-image or oversized output; no broad storage permission is required and the IME renders only the private path.
 - Replacing or resetting a theme cleans up superseded app-private theme images under `filesDir/keyboard_themes` to avoid orphaned files.
 - Keyboard diagnostics now expose `themePresetId`, `themePressEffect`, `themeBackgroundSource`, `themeConfigSize`, and `themeFallbackStatus` without exposing private image paths.
+- Keyboard crash recovery records only allowlisted native diagnostics: action id, panel, mode, layout profile, compact flag, height scale, theme preset/source, private-mode flag, exception class/message redigés, short stack, UTC timestamp, and recovery counter. It must never persist typed text, clipboard contents, snippets, dictation, emails, tokens, JWTs, prompts, or provider payloads.
+- `WinFlowzKeyboardView` wraps draw/touch/dispatch/layout refresh paths. A recoverable exception stops repeat runnables, clears the active gesture, stores the diagnostic through `KeyboardCrashReporter`, and switches to a neutral `KeyboardLayoutBuilder.safeFallback()` snapshot without deleting user preferences.
+- `WinFlowzInputMethodService` wraps lifecycle preference refresh and system actions such as settings/theme launch and keyboard picker. Service-level failures are reported through the same redigé diagnostic store and shown as `Keyboard recovered`.
+- Flutter Settings can call `getKeyboardStatus` and `clearKeyboardDiagnostics` on `winflowz_app/keyboard`. `Clear logs` clears both `AppDiagnostics` and native keyboard diagnostics; `Copy diagnostic` includes the last native incident when present.
+- Sentry is expected to be initialized through `sentry_flutter` when a DSN is configured. This module does not add a standalone Android Sentry dependency; native keyboard diagnostics remain local and copyable when Sentry is absent, offline, or not initialized.
 - The built-in corner preset preserves the legacy French accents for `a/e/i/o/u/c/n/s`. Additional presets are punctuation, French accents plus punctuation, developer symbols, and no corners.
 - Corner shortcut values may dispatch text, key events, actions, modifiers, and macros. Private fields suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros while keeping normal text accents available.
 - IME clipboard sync events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
@@ -113,6 +118,8 @@ Keyboard clipboard action
 
 - IME not enabled: Settings must open Android input method settings.
 - InputConnection unavailable or host app blocks access: show recoverable keyboard feedback.
+- IME draw/layout/touch/action exception: store a redigé diagnostic, stop repeat gestures, show `Keyboard recovered`, and render a minimal safe fallback keyboard. If the fallback canvas draw also fails, Android may still terminate the IME; the stored diagnostic is the recovery source of truth.
+- ANR or process kill: runtime wrappers may not run after the freeze. Breadcrumbs/diagnostics before the freeze are best effort only.
 - Microphone permission unavailable: do not start recording.
 - No media consumer: play/pause action may be ignored by Android; show best-effort feedback.
 - Android unit tests that require resource bundling can be blocked on ARM64 hosts when AAPT2 is unavailable; `:app:compileDebugKotlin` is the local native compile proof, while full test/package proof belongs on x86_64 CI or device.
@@ -131,6 +138,16 @@ flutter build apk --debug
 
 Manual Android validation is still required for IME visibility, typing,
 clipboard, dictation, media keys, and OEM behavior.
+
+### Keyboard Crash Recovery QA
+
+1. In Settings > Backend provider, press `Clear logs`.
+2. Enable/switch to WinFlowz in a real Android text field.
+3. Exercise sensitive IME actions: `#+=`, `Prefs`, `Clip`, `Media`, long-press `123`, long-press delete/navigation, compact mode, theme with image/gradient, and clipboard/settings scroll.
+4. Return to Settings > Backend provider and press `Copy diagnostic`.
+5. Verify the copied diagnostic includes only post-clear events, `keyboard_status`, `recovery_count`, and `keyboard_last_error` when a native failure occurred.
+6. Verify copied diagnostics do not contain typed text, clipboard text, snippets, dictation content, raw emails, API keys, tokens, JWTs, prompts, or provider payloads.
+7. If `SENTRY_DSN` is configured in a test build, correlate the run from app-visible Sentry state only; this skill does not have direct Sentry dashboard access.
 
 ## Reader Checklist
 

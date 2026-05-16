@@ -146,6 +146,23 @@ Run on at least one emulator or real Android device before closing the IME chant
 | Use Settings keyboard card | Input settings, switch keyboard, voice, clipboard sync intent, media controls, layout profile, corner mode, and privacy mode round-trip through `winflowz_app/keyboard`. |
 | Use FlutterWeb keyboard preview corner controls | Presets and simple text-like corner actions render and simulate locally; status copy does not claim native Android proof. |
 
+## Android IME Crash Recovery Matrix
+
+Run after native keyboard resilience changes and before closing the keyboard recovery chantier:
+
+| Case | Expected result |
+|---|---|
+| Press Settings > Backend provider > Clear logs, reproduce an IME issue, then Copy diagnostic | Copied text contains only post-clear `AppDiagnostics` plus native keyboard recovery fields. |
+| Tap `#+=` or symbol mode | Symbol panel opens, or the IME shows `Keyboard recovered` and stays visible with a redigé diagnostic available from Settings. |
+| Simulate or trigger layout rebuild failure | Fallback keyboard renders with basic letters/space/delete/enter; `keyboardRecoveryCount` increments. |
+| Trigger dispatch/action failure | Repeat runnable stops, action is not retried automatically, and copied diagnostics include action id but no user content. |
+| Run the same recovery check in password/OTP/private field | Diagnostic includes private-mode/status flags only; no typed text, clipboard content, suggestions, snippets, or dictation result appears. |
+| Run without `SENTRY_DSN` | IME recovery and local diagnostic still work; copied diagnostic shows Sentry disabled/not configured from Flutter bootstrap state. |
+| Run with test `SENTRY_DSN` | Any Sentry evidence must be correlated from app-visible status or operator-supplied issue/event id; no raw Sentry payload or PII is copied into docs. |
+| Use invalid/missing theme image or risky custom theme | Theme fallback/recovery is visible, user theme config is not deleted automatically, and diagnostic only exposes theme preset/source/status. |
+| Scroll Settings or Clipboard panels in the IME | Scroll succeeds, or failure recovers without blocking `Close`/typing fallback. |
+| Load Settings on web/desktop | Keyboard diagnostic fields are tolerated as absent/unsupported; clear/copy diagnostics do not crash. |
+
 ## Purge Gate
 
 Before deleting legacy JS/TS application code:

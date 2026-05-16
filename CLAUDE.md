@@ -69,6 +69,18 @@ For Supabase:
 supabase db push
 ```
 
+## ShipFlow Development Mode
+
+- development_mode: hybrid
+- validation_surface: mixed
+- ship_before_preview_test: conditional
+- post_ship_verification: sf-prod for web; manual Android QA by Diane for APK/IME behavior
+- deployment_provider: vercel for web; GitHub Actions/Blacksmith for Android builds
+- preview_source: https://winflowz-app.vercel.app/
+- production_url: https://winflowz-app.vercel.app/
+- notes: Agents can access and validate the Flutter web app on Vercel at `https://winflowz-app.vercel.app/`. Android keyboard/overlay/APK behavior must be validated manually by Diane on a physical phone; agents should provide clear QA steps and use copied diagnostics/logs from the device as evidence.
+- last_reviewed: 2026-05-16
+
 ## ARM64 Android Release Guardrail
 
 On Linux ARM64 (`aarch64`/`arm64`), do not run Android release builds locally: no `flutter build apk --release`, `flutter build appbundle --release`, `./gradlew assembleRelease`, or `./gradlew bundleRelease`. Route APK/AAB release builds to Blacksmith or another Linux x64 CI runner. Local Flutter work is limited to `flutter analyze`, `flutter test`, and `flutter build web --release`.

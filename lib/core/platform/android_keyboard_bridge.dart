@@ -32,6 +32,16 @@ class AndroidKeyboardBridge {
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 
+  static Future<AndroidKeyboardStatus> clearDiagnostics() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return AndroidKeyboardStatus.unsupported();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'clearKeyboardDiagnostics',
+    );
+    return AndroidKeyboardStatus.fromMap(raw ?? const {});
+  }
+
   static Future<AndroidKeyboardCornerConfig> getCornerConfig() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
       return AndroidKeyboardCornerConfig.defaults();

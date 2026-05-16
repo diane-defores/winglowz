@@ -233,6 +233,58 @@ object KeyboardLayoutBuilder {
         )
     }
 
+    fun safeFallback(): KeyboardLayoutSnapshot {
+        return KeyboardLayoutSnapshot(
+            rows =
+                listOf(
+                    KeyboardRowSpec(
+                        keys =
+                            listOf(
+                                KeyboardKeySpec("fallback-status", "Recovered", KeyboardKeyAction.ClosePanel, enabled = false, weight = 2f),
+                                KeyboardKeySpec("fallback-abc", "ABC", KeyboardKeyAction.ModeLetters),
+                                KeyboardKeySpec("fallback-del", "Del", KeyboardKeyAction.Backspace),
+                            ),
+                    ),
+                    KeyboardRowSpec(
+                        keys = "asdfghjkl".map { char -> safeTextKey(char.toString()) },
+                    ),
+                    KeyboardRowSpec(
+                        keys =
+                            listOf(
+                                safeTextKey("z"),
+                                safeTextKey("x"),
+                                safeTextKey("c"),
+                                safeTextKey("v"),
+                                safeTextKey("b"),
+                                safeTextKey("n"),
+                                safeTextKey("m"),
+                                safeTextKey(" ", label = "Space", weight = 2.2f),
+                                KeyboardKeySpec("fallback-enter", "Enter", KeyboardKeyAction.Enter, weight = 1.2f),
+                            ),
+                    ),
+                ),
+            mode = KeyboardLayoutMode.Letters,
+            panel = KeyboardPanelMode.None,
+            panelRowCount = 0,
+            suggestionRowCount = 0,
+        )
+    }
+
+    private fun safeTextKey(
+        output: String,
+        label: String = output,
+        weight: Float = 1f,
+    ): KeyboardKeySpec {
+        return KeyboardKeySpec(
+            id = if (output == " ") "fallback-space" else "fallback-text-${output.codePoints().toArray().joinToString("-")}",
+            label = label,
+            action = KeyboardKeyAction.Text,
+            glyph = KeyboardKeyGlyph(primary = output),
+            keyValue = KeyboardKeyValue.text(output, label),
+            weight = weight,
+        )
+    }
+
     private fun attachCornerAssignments(
         row: KeyboardRowSpec,
         request: KeyboardLayoutRequest,

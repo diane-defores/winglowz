@@ -45,6 +45,9 @@ void main() {
         'doubleSpacePeriodEnabled': true,
         'punctuationAutoSpacingEnabled': false,
         'privacyMode': 'auto',
+        'lastKeyboardError': 'token=[REDACTED_SECRET]',
+        'lastKeyboardErrorAt': '2026-05-16T08:00:00Z',
+        'keyboardRecoveryCount': 2,
       });
 
       final status = await const SettingsKeyboardController().setPreferences(
@@ -67,4 +70,47 @@ void main() {
       expect(calls.single.arguments, containsPair('voiceEnabled', true));
     },
   );
+
+  test(
+    'SettingsKeyboardController clears native keyboard diagnostics',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      final calls = <MethodCall>[];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_keyboardChannel, (call) async {
+            calls.add(call);
+            return <Object?, Object?>{
+              'supported': true,
+              'enabled': true,
+              'active': true,
+              'lastKeyboardError': '',
+              'lastKeyboardErrorAt': '',
+              'keyboardRecoveryCount': 0,
+            };
+          });
+
+      final status = await const SettingsKeyboardController()
+          .clearDiagnostics();
+
+      expect(calls.single.method, 'clearKeyboardDiagnostics');
+      expect(status.keyboardRecoveryCount, 0);
+      expect(status.lastKeyboardError, isNull);
+      expect(status.lastKeyboardErrorAt, isNull);
+    },
+  );
+
+  test('AndroidKeyboardStatus parses redacted keyboard diagnostic fields', () {
+    final status = AndroidKeyboardStatus.fromMap({
+      'supported': true,
+      'lastKeyboardError':
+          'keyboard_recovered=true; message=token=[REDACTED_SECRET]',
+      'lastKeyboardErrorAt': '2026-05-16T08:05:00Z',
+      'keyboardRecoveryCount': 3,
+    });
+
+    expect(status.lastKeyboardError, contains('[REDACTED_SECRET]'));
+    expect(status.lastKeyboardError, isNot(contains('abc123')));
+    expect(status.lastKeyboardErrorAt, '2026-05-16T08:05:00Z');
+    expect(status.keyboardRecoveryCount, 3);
+  });
 }

@@ -63,7 +63,9 @@ class WinFlowzInputMethodService :
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         if (stateStore.themeMode == KeyboardStateStore.THEME_SYSTEM) {
-            applyRuntimePreferencesToView()
+            runServiceSafely("onConfigurationChanged") {
+                applyRuntimePreferencesToView()
+            }
         }
     }
 
@@ -72,20 +74,24 @@ class WinFlowzInputMethodService :
         key: String?,
     ) {
         if (key == KeyboardStateStore.KEY_THEME_MODE || key == KeyboardStateStore.KEY_THEME_CONFIG) {
-            applyRuntimePreferencesToView()
+            runServiceSafely("onSharedPreferenceChanged:$key") {
+                applyRuntimePreferencesToView()
+            }
         }
     }
 
     override fun onCreateInputView(): View {
-        val view = WinFlowzKeyboardView(this, this)
-        keyboardView = view
-        view.applyPolicy(fieldPolicy)
-        applyRuntimePreferencesToView()
-        view.applyInputContext(
-            contextMode = inputContext.fieldContext,
-            enterActionLabel = inputContext.enterLabel,
-        )
-        return view
+        return runServiceSafely("onCreateInputView") {
+            val view = WinFlowzKeyboardView(this, this)
+            keyboardView = view
+            view.applyPolicy(fieldPolicy)
+            applyRuntimePreferencesToView()
+            view.applyInputContext(
+                contextMode = inputContext.fieldContext,
+                enterActionLabel = inputContext.enterLabel,
+            )
+            view
+        } ?: View(this)
     }
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
@@ -116,20 +122,22 @@ class WinFlowzInputMethodService :
     }
 
     private fun refreshInputState(attribute: EditorInfo?) {
-        fieldPolicy = KeyboardSecurityPolicy.evaluate(attribute, stateStore.privacyMode)
-        inputContext = KeyboardInputContextResolver.resolve(attribute)
-        selectionState =
-            KeyboardSelectionState.fromEditorBounds(
-                selectionStart = attribute?.initialSelStart ?: -1,
-                selectionEnd = attribute?.initialSelEnd ?: -1,
+        runServiceSafely("refreshInputState") {
+            fieldPolicy = KeyboardSecurityPolicy.evaluate(attribute, stateStore.privacyMode)
+            inputContext = KeyboardInputContextResolver.resolve(attribute)
+            selectionState =
+                KeyboardSelectionState.fromEditorBounds(
+                    selectionStart = attribute?.initialSelStart ?: -1,
+                    selectionEnd = attribute?.initialSelEnd ?: -1,
+                )
+            keyboardView?.applyPolicy(fieldPolicy)
+            applyRuntimePreferencesToView()
+            keyboardView?.applyInputContext(
+                contextMode = inputContext.fieldContext,
+                enterActionLabel = inputContext.enterLabel,
             )
-        keyboardView?.applyPolicy(fieldPolicy)
-        applyRuntimePreferencesToView()
-        keyboardView?.applyInputContext(
-            contextMode = inputContext.fieldContext,
-            enterActionLabel = inputContext.enterLabel,
-        )
-        refreshTypingAssistantState()
+            refreshTypingAssistantState()
+        }
     }
 
     override fun onUpdateSelection(
@@ -450,27 +458,33 @@ class WinFlowzInputMethodService :
     }
 
     override fun onSettings() {
-        val intent =
-            Intent(this, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-        startActivity(intent)
+        runServiceSafely("openSettings") {
+            val intent =
+                Intent(this, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            startActivity(intent)
+        }
     }
 
     override fun onThemeSettings() {
-        val intent =
-            Intent(this, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                putExtra("openRoute", "/keyboard/theme")
-            }
-        startActivity(intent)
-        showStatus("Open WinFlowz Keyboard Theme Studio")
+        runServiceSafely("openThemeSettings") {
+            val intent =
+                Intent(this, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra("openRoute", "/keyboard/theme")
+                }
+            startActivity(intent)
+            showStatus("Open WinFlowz Keyboard Theme Studio")
+        }
     }
 
     override fun onKeyboardPicker() {
-        val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        manager.showInputMethodPicker()
-        showStatus("Keyboard picker opened")
+        runServiceSafely("showKeyboardPicker") {
+            val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            manager.showInputMethodPicker()
+            showStatus("Keyboard picker opened")
+        }
     }
 
     override fun onMediaPlayPause() {
@@ -640,33 +654,35 @@ class WinFlowzInputMethodService :
     }
 
     private fun applyRuntimePreferencesToView() {
-        val emojiRecents =
-            if (fieldPolicy.privateMode) {
-                emptyList()
-            } else {
-                stateStore.emojiRecents()
-            }
-        keyboardView?.applyRuntimePreferences(
-            profile = stateStore.layoutProfile,
-            cornersEnabled = stateStore.cornerModeEnabled,
-            debugTouchOverlay = stateStore.debugTouchOverlayEnabled,
-            keyVibration = stateStore.keyVibrationEnabled,
-            keySound = stateStore.keySoundEnabled,
-            spellingSuggestions = stateStore.spellingSuggestionsEnabled,
-            specialKeyCorners = stateStore.specialKeyCornersEnabled,
-            frenchLanguage = stateStore.frenchLanguageEnabled,
-            englishLanguage = stateStore.englishLanguageEnabled,
-            doubleSpacePeriod = stateStore.doubleSpacePeriodEnabled,
-            punctuationAutoSpacing = stateStore.punctuationAutoSpacingEnabled,
-            keyboardHeightScale = stateStore.keyboardHeightScale,
-            compactMode = stateStore.compactModeEnabled,
-            themeMode = stateStore.themeMode,
-            themeConfig = stateStore.themeConfig(),
-            recents = emojiRecents,
-            clipboardEntries = clipboardEntriesForKeyboard(),
-            snippets = stateStore.snippetRules(),
-            cornerConfig = stateStore.cornerConfig(),
-        )
+        runServiceSafely("applyRuntimePreferencesToView") {
+            val emojiRecents =
+                if (fieldPolicy.privateMode) {
+                    emptyList()
+                } else {
+                    stateStore.emojiRecents()
+                }
+            keyboardView?.applyRuntimePreferences(
+                profile = stateStore.layoutProfile,
+                cornersEnabled = stateStore.cornerModeEnabled,
+                debugTouchOverlay = stateStore.debugTouchOverlayEnabled,
+                keyVibration = stateStore.keyVibrationEnabled,
+                keySound = stateStore.keySoundEnabled,
+                spellingSuggestions = stateStore.spellingSuggestionsEnabled,
+                specialKeyCorners = stateStore.specialKeyCornersEnabled,
+                frenchLanguage = stateStore.frenchLanguageEnabled,
+                englishLanguage = stateStore.englishLanguageEnabled,
+                doubleSpacePeriod = stateStore.doubleSpacePeriodEnabled,
+                punctuationAutoSpacing = stateStore.punctuationAutoSpacingEnabled,
+                keyboardHeightScale = stateStore.keyboardHeightScale,
+                compactMode = stateStore.compactModeEnabled,
+                themeMode = stateStore.themeMode,
+                themeConfig = stateStore.themeConfig(),
+                recents = emojiRecents,
+                clipboardEntries = clipboardEntriesForKeyboard(),
+                snippets = stateStore.snippetRules(),
+                cornerConfig = stateStore.cornerConfig(),
+            )
+        }
     }
 
     private fun clipboardEntriesForKeyboard(): List<KeyboardClipboardEntry> {
@@ -841,6 +857,35 @@ class WinFlowzInputMethodService :
     private fun showStatus(message: String) {
         keyboardView?.setStatus(message)
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun <T> runServiceSafely(
+        actionId: String,
+        block: () -> T,
+    ): T? {
+        return try {
+            block()
+        } catch (error: Throwable) {
+            KeyboardCrashReporter.report(
+                context = this,
+                crashContext =
+                    KeyboardCrashContext(
+                        actionId = actionId,
+                        panel = "service",
+                        mode = inputContext.fieldContext.name,
+                        layoutProfile = stateStore.layoutProfile.name,
+                        compactMode = stateStore.compactModeEnabled,
+                        heightScale = stateStore.keyboardHeightScale,
+                        themePresetId = stateStore.themeConfig().presetId,
+                        themeSource = "service",
+                        privateMode = fieldPolicy.privateMode,
+                    ),
+                error = error,
+            )
+            keyboardView?.setStatus("Keyboard recovered")
+            Toast.makeText(this, "Keyboard recovered", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
 
     private enum class TextCorrectionResult {

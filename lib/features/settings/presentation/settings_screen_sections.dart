@@ -76,7 +76,7 @@ class _BackendProviderSection extends StatelessWidget {
   final String detail;
   final String diagnosticText;
   final VoidCallback onCopyDiagnostic;
-  final VoidCallback onClearDiagnosticLogs;
+  final Future<void> Function() onClearDiagnosticLogs;
 
   @override
   Widget build(BuildContext context) {
@@ -312,6 +312,29 @@ class _KeyboardSettingsSection extends StatelessWidget {
                     icon: const Icon(Icons.refresh),
                   ),
           ),
+          ListTile(
+            leading: const Icon(Icons.health_and_safety_outlined),
+            title: const Text('Recovery diagnostics'),
+            subtitle: Text(
+              'recoveries=${status?.keyboardRecoveryCount ?? 0} | '
+              'last=${status?.lastKeyboardErrorAt ?? 'none'} | '
+              'sentry=${SentryBootstrap.isConfigured ? 'configured' : 'disabled'}',
+            ),
+          ),
+          if (status?.lastKeyboardError != null)
+            ExpansionTile(
+              tilePadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.x4,
+              ),
+              title: const Text('Last keyboard incident'),
+              subtitle: const Text('Redacted native diagnostic'),
+              children: [
+                Padding(
+                  padding: AppInsets.keyboardPrivacy,
+                  child: SelectableText(status!.lastKeyboardError!),
+                ),
+              ],
+            ),
           if (status?.enabled == false)
             const ListTile(
               leading: Icon(Icons.info_outline),

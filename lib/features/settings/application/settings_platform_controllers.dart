@@ -18,6 +18,26 @@ class SettingsKeyboardController {
     return AndroidKeyboardBridge.showInputMethodPicker();
   }
 
+  Future<AndroidKeyboardStatus> clearDiagnostics() {
+    return AndroidKeyboardBridge.clearDiagnostics();
+  }
+
+  String statusSummary(AndroidKeyboardStatus status) {
+    return [
+      'enabled=${status.enabled}',
+      'active=${status.active}',
+      'layout=${status.layoutProfile.name}',
+      'theme=${status.themeMode}',
+      'theme_preset=${status.themePresetId}',
+      'theme_fallback=${status.themeFallbackStatus}',
+      'compact=${status.compactModeEnabled}',
+      'height=${status.keyboardHeightScale}',
+      'recoveries=${status.keyboardRecoveryCount}',
+      'last_error_at=${status.lastKeyboardErrorAt ?? 'none'}',
+      'last_error=${SensitiveRedactor.redact(status.lastKeyboardError ?? 'none')}',
+    ].join('; ');
+  }
+
   Future<AndroidKeyboardStatus> setPreferences({
     required AndroidKeyboardStatus current,
     bool? voiceEnabled,

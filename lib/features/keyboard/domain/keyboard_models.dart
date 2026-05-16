@@ -1344,6 +1344,9 @@ class AndroidKeyboardStatus {
     required this.keyboardHeightScale,
     required this.compactModeEnabled,
     required this.privacyMode,
+    required this.lastKeyboardError,
+    required this.lastKeyboardErrorAt,
+    required this.keyboardRecoveryCount,
   });
 
   final bool supported;
@@ -1373,6 +1376,9 @@ class AndroidKeyboardStatus {
   final double keyboardHeightScale;
   final bool compactModeEnabled;
   final KeyboardPrivacyMode privacyMode;
+  final String? lastKeyboardError;
+  final String? lastKeyboardErrorAt;
+  final int keyboardRecoveryCount;
 
   factory AndroidKeyboardStatus.unsupported() {
     return const AndroidKeyboardStatus(
@@ -1403,6 +1409,9 @@ class AndroidKeyboardStatus {
       keyboardHeightScale: 1,
       compactModeEnabled: false,
       privacyMode: KeyboardPrivacyMode.auto,
+      lastKeyboardError: null,
+      lastKeyboardErrorAt: null,
+      keyboardRecoveryCount: 0,
     );
   }
 
@@ -1450,7 +1459,16 @@ class AndroidKeyboardStatus {
       privacyMode: KeyboardPrivacyMode.fromName(
         map['privacyMode'] as String? ?? KeyboardPrivacyMode.auto.name,
       ),
+      lastKeyboardError: _nonEmptyString(map['lastKeyboardError']),
+      lastKeyboardErrorAt: _nonEmptyString(map['lastKeyboardErrorAt']),
+      keyboardRecoveryCount:
+          (map['keyboardRecoveryCount'] as num?)?.toInt() ?? 0,
     );
+  }
+
+  static String? _nonEmptyString(Object? value) {
+    final text = value is String ? value.trim() : '';
+    return text.isEmpty ? null : text;
   }
 
   Map<String, Object?> toPreferencesMap({

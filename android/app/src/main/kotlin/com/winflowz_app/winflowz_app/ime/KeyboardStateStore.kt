@@ -111,6 +111,24 @@ class KeyboardStateStore(private val context: Context) {
             preferences.edit().putString(KEY_PRIVACY_MODE, normalized).apply()
         }
 
+    val lastKeyboardError: String?
+        get() = preferences.getString(KEY_LAST_KEYBOARD_ERROR, null)
+
+    val lastKeyboardErrorAt: String?
+        get() = preferences.getString(KEY_LAST_KEYBOARD_ERROR_AT, null)
+
+    val keyboardRecoveryCount: Int
+        get() = preferences.getInt(KEY_KEYBOARD_RECOVERY_COUNT, 0)
+
+    fun clearKeyboardDiagnostics() {
+        preferences
+            .edit()
+            .remove(KEY_LAST_KEYBOARD_ERROR)
+            .remove(KEY_LAST_KEYBOARD_ERROR_AT)
+            .putInt(KEY_KEYBOARD_RECOVERY_COUNT, 0)
+            .apply()
+    }
+
     fun buildStatusMap(): Map<String, Any> {
         val theme = themeConfig()
         val rawThemeConfig = preferences.getString(KEY_THEME_CONFIG, null)
@@ -159,6 +177,9 @@ class KeyboardStateStore(private val context: Context) {
             "keyboardHeightScale" to keyboardHeightScale,
             "compactModeEnabled" to compactModeEnabled,
             "privacyMode" to privacyMode,
+            "lastKeyboardError" to (lastKeyboardError ?: ""),
+            "lastKeyboardErrorAt" to (lastKeyboardErrorAt ?: ""),
+            "keyboardRecoveryCount" to keyboardRecoveryCount,
         )
     }
 
@@ -439,6 +460,9 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_CLIPBOARD_ENTRIES = "clipboard_entries"
         const val KEY_CORNER_CONFIG = "corner_config"
         const val KEY_THEME_CONFIG = "theme_config"
+        const val KEY_LAST_KEYBOARD_ERROR = "last_keyboard_error"
+        const val KEY_LAST_KEYBOARD_ERROR_AT = "last_keyboard_error_at"
+        const val KEY_KEYBOARD_RECOVERY_COUNT = "keyboard_recovery_count"
         const val EMOJI_RECENT_SEPARATOR = "|"
         const val MAX_TEXT_RULES = 300
         const val MAX_CLIPBOARD_ENTRIES = 60
