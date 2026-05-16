@@ -869,7 +869,7 @@ object KeyboardLayoutBuilder {
                     shiftKey("Maj", request.shifted),
                     modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                     modifierKey("Alt", KeyboardSystemModifier.Alt),
-                    modifierKey("Fn", KeyboardSystemModifier.Fn),
+                    KeyboardKeySpec("esc-letter-compact", "Échap", KeyboardKeyAction.Escape),
                 ) +
                     chars.map { letterKey(it) } +
                     listOf(
@@ -1041,7 +1041,7 @@ object KeyboardLayoutBuilder {
                     listOf(
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                         modifierKey("Alt", KeyboardSystemModifier.Alt),
-                        modifierKey("Fn", KeyboardSystemModifier.Fn),
+                        KeyboardKeySpec("esc-letter-control", "Échap", KeyboardKeyAction.Escape),
                         textKey(leftSymbol),
                         textKey("Espace", " ", weight = 3f),
                         textKey(rightSymbol),

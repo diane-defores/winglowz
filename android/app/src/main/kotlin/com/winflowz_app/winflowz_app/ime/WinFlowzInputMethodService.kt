@@ -252,7 +252,7 @@ class WinFlowzInputMethodService :
             return deleted
         }
         if (isTermuxInputTarget()) {
-            val sent = sendSoftKey(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+            val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
             refreshTypingAssistantState(editor)
             return sent
         }
@@ -902,6 +902,9 @@ class WinFlowzInputMethodService :
 
     private fun typingAssistantAllowed(): Boolean {
         if (!fieldPolicy.inputAllowed || fieldPolicy.privateMode || !fieldPolicy.snippetsAllowed) {
+            return false
+        }
+        if (isTermuxInputTarget()) {
             return false
         }
         return inputContext.fieldContext in setOf(KeyboardFieldContextMode.Text, KeyboardFieldContextMode.Search)

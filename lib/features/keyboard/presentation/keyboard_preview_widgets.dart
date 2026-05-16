@@ -1559,14 +1559,14 @@ class KeyboardPreviewSnapshot {
             ),
           ),
           _withCorners(
-            keyId: 'modifier-fn',
+            keyId: 'escape-letter-control',
             specialKey: true,
             key: const KeyboardPreviewKey(
-              label: 'Fn',
+              label: 'Échap',
               special: true,
               weight: .9,
               action: KeyboardPreviewKeyAction.unsupported,
-              unsupportedReason: 'Modifier keys are native-only in preview',
+              unsupportedReason: 'Escape is native-only in preview',
             ),
           ),
           KeyboardPreviewKey(label: leftSymbol, special: true),

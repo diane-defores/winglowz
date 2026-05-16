@@ -71,6 +71,7 @@ class KeyboardLayoutBuilderTest {
         assertEquals("Del", bottomLetterRow.keys.last().label)
         assertEquals(KeyboardKeyAction.Backspace, bottomLetterRow.keys.last().action)
         assertEquals("Ctrl", controlRow.keys.first().label)
+        assertTrue(controlRow.keys.any { it.label == "Échap" && it.action == KeyboardKeyAction.Escape })
         assertTrue(controlRow.keys.any { it.action == KeyboardKeyAction.Enter })
         assertTrue(controlRow.keys.none { it.action == KeyboardKeyAction.Shift || it.action == KeyboardKeyAction.Backspace })
     }
@@ -675,7 +676,7 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
-    fun `control row exposes parsed modifier key values`() {
+    fun `letter control row exposes ctrl alt and escape`() {
         val snapshot =
             KeyboardLayoutBuilder.build(
                 KeyboardLayoutRequest(
@@ -699,9 +700,9 @@ class KeyboardLayoutBuilderTest {
             )
 
         val modifierValues = snapshot.rows.last().keys.mapNotNull { it.keyValue?.modifier }.toSet()
-        assertTrue(modifierValues.contains(KeyboardSystemModifier.Shift))
         assertTrue(modifierValues.contains(KeyboardSystemModifier.Ctrl))
         assertTrue(modifierValues.contains(KeyboardSystemModifier.Alt))
-        assertTrue(modifierValues.contains(KeyboardSystemModifier.Fn))
+        assertFalse(modifierValues.contains(KeyboardSystemModifier.Fn))
+        assertTrue(snapshot.rows.last().keys.any { it.label == "Échap" && it.action == KeyboardKeyAction.Escape })
     }
 }
