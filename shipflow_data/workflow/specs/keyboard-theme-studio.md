@@ -414,13 +414,16 @@ None. The spec fixes v1 choices as local-only image storage, no marketplace, no 
 | 2026-05-15 20:48:43 UTC | sf-start | GPT-5 Codex | Implemented advanced theme studio slice: full v1 preset catalog, collapsible sections, JSON import/export, radial gradient, border/radius/shadow/easing fields, native renderer support, downsampled image import, tests and docs updates. | partial | /sf-verify Keyboard Theme Studio |
 | 2026-05-15 20:54:21 UTC | sf-verify | GPT-5 Codex | Verified advanced theme studio slice against spec contract, local Flutter/Kotlin checks, docs, metadata, bug gate and remaining Android/device proof gaps. | partial | /sf-start Keyboard Theme Studio (diagnostics + image cleanup + device QA proof) |
 | 2026-05-16 01:03:55 UTC | sf-start | GPT-5 Codex | Implemented diagnostics/fallback slice: Settings keyboard diagnostic now exposes theme preset/effect/background/config-size/fallback status, native theme replacement/reset now cleans superseded private images, and press effects now apply configured easing (`easeOut`/`linear`/`spring`). | partial | /sf-verify Keyboard Theme Studio |
+| 2026-05-16 01:23:41 UTC | sf-verify | GPT-5 Codex | Verified diagnostics/cleanup/easing slice against Keyboard Theme Studio contract; local Flutter checks pass and diagnostics contract is now covered, while Android device QA and full Kotlin unit execution remain pending due environment constraints. | partial | /sf-start Keyboard Theme Studio (device QA proof + full Kotlin unit run on healthy runner) |
+| 2026-05-16 02:05:00 UTC | sf-start | GPT-5 Codex | Improved Theme Studio web/live preview editing sync: form controls now rebind correctly after preset/import/reset and color fields react during typing; kept contract/tests coherent. | partial | /sf-verify Keyboard Theme Studio |
 
 ## Current Chantier Flow
 
 - sf-spec: done, draft created at `shipflow_data/workflow/specs/keyboard-theme-studio.md`.
 - sf-ready: ready after clarifying local-only security assumptions and official docs URLs.
-- sf-start: partial implementation extended with diagnostics/fallback fields, private-theme-image cleanup on replace/reset, and native easing-aware press effects.
-- sf-verify: pending rerun after diagnostics/cleanup/easing slice; remaining known gaps are full Kotlin unit execution on a healthy AAPT2 runner and Android device QA.
+- sf-start: partial implementation includes diagnostics/fallback fields, private-theme-image cleanup on replace/reset, and native easing-aware press effects.
+- sf-verify: partial after diagnostics/cleanup/easing verification; remaining known gaps are Android device QA evidence and full Kotlin unit execution on a healthy AAPT2 runner.
+- sf-start (latest): partial web preview/control sync hardening completed for Theme Studio fields/presets/import-reset flows.
 - sf-end: not launched.
 - sf-ship: not launched.
 - Prochaine commande recommandée: `/sf-verify Keyboard Theme Studio`.

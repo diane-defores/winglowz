@@ -507,7 +507,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.settings_outlined).last);
     await _pumpNavigationFrame(tester);
     expect(find.text('WinFlowz • Settings'), findsOneWidget);
-    expect(find.text('Appearance'), findsOneWidget);
+    expect(find.text('Appearance'), findsWidgets);
 
     debugDefaultTargetPlatformOverride = previousPlatform;
     _clearAndroidBridgeMocks();
@@ -603,14 +603,14 @@ void main() {
       expect(find.text('Paste'), findsOneWidget);
       expect(find.text('Undo'), findsOneWidget);
       expect(find.text('Redo'), findsOneWidget);
-      expect(find.text('Para↑'), findsOneWidget);
-      expect(find.text('Line↑'), findsOneWidget);
+      expect(find.text('⏫'), findsOneWidget);
+      expect(find.text('↑'), findsOneWidget);
       expect(find.text('Word←'), findsOneWidget);
       expect(find.text('←'), findsOneWidget);
       expect(find.text('→'), findsOneWidget);
       expect(find.text('Word→'), findsOneWidget);
-      expect(find.text('Line↓'), findsOneWidget);
-      expect(find.text('Para↓'), findsOneWidget);
+      expect(find.text('↓'), findsOneWidget);
+      expect(find.text('⏬'), findsOneWidget);
       expect(find.text('Del←'), findsOneWidget);
       expect(find.text('DelW←'), findsOneWidget);
       expect(find.text('Del→'), findsOneWidget);

@@ -234,6 +234,7 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
             title: 'Preset',
             subtitle: 'Set a base then adjust gradient and key colors.',
             child: DropdownButtonFormField<String>(
+              key: ValueKey('theme-preset-${_draft.presetId}'),
               initialValue: _draft.presetId,
               items: KeyboardThemePresetCatalog.presets
                   .map(
@@ -266,6 +267,7 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
                   ),
                 ),
                 DropdownButtonFormField<KeyboardThemeGradientStyle>(
+                  key: ValueKey('theme-gradient-${_draft.gradientStyle.name}'),
                   initialValue: _draft.gradientStyle,
                   decoration: const InputDecoration(
                     labelText: 'Gradient style',
@@ -335,6 +337,9 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
             title: 'Keys',
             subtitle: 'Primary colors applied by the native keyboard renderer.',
             child: Column(
+              key: ValueKey(
+                'theme-keys-${_draft.keyColor}-${_draft.specialKeyColor}-${_draft.activeKeyColor}-${_draft.pressedKeyColor}-${_draft.textColor}-${_draft.cornerTextColor}-${_draft.statusTextColor}',
+              ),
               children: [
                 _ColorField(
                   label: 'Key color',
@@ -459,6 +464,7 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
             child: Column(
               children: [
                 DropdownButtonFormField<KeyboardThemePressEffect>(
+                  key: ValueKey('theme-effect-${_draft.pressEffect.name}'),
                   initialValue: _draft.pressEffect,
                   decoration: const InputDecoration(labelText: 'Press effect'),
                   items: KeyboardThemePressEffect.values
@@ -478,6 +484,7 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<KeyboardThemeEffectEasing>(
+                  key: ValueKey('theme-easing-${_draft.effectEasing.name}'),
                   initialValue: _draft.effectEasing,
                   decoration: const InputDecoration(labelText: 'Easing'),
                   items: KeyboardThemeEffectEasing.values
@@ -734,6 +741,12 @@ class _ColorField extends StatelessWidget {
             ),
           ),
         ),
+        onChanged: (raw) {
+          final parsed = int.tryParse(raw.trim(), radix: 16);
+          if (parsed != null) {
+            onChanged(parsed);
+          }
+        },
         onFieldSubmitted: (raw) {
           final parsed = int.tryParse(raw.trim(), radix: 16);
           if (parsed != null) {
