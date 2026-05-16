@@ -221,6 +221,7 @@ class WinFlowzKeyboardView(
     private val horizontalRowScrollOffsetById = mutableMapOf<String, Float>()
     private val horizontalRowMaxOffsetById = mutableMapOf<String, Float>()
     private val horizontalRowPageWidthById = mutableMapOf<String, Float>()
+    private val horizontalRowPageById = mutableMapOf<String, Int>()
     private val horizontalRowAnimatorById = mutableMapOf<String, ValueAnimator>()
     private var scrollingVerticalPanel = false
     private var lastVerticalScrollY = 0f
@@ -992,14 +993,17 @@ class WinFlowzKeyboardView(
             if (targetPage != startPage) {
                 performKeyboardHaptic(HapticFeedbackConstants.CLOCK_TICK)
             }
-            setActionBarState(
-                actionBarController.setRowPage(
-                    rowId = rowId,
-                    page = targetPage,
-                    state = actionBarState,
-                    environment = actionEnvironment(),
-                ),
-            )
+            horizontalRowPageById[rowId] = targetPage
+            if (rowId.startsWith("action-row-")) {
+                setActionBarState(
+                    actionBarController.setRowPage(
+                        rowId = rowId,
+                        page = targetPage,
+                        state = actionBarState,
+                        environment = actionEnvironment(),
+                    ),
+                )
+            }
             animateHorizontalRowOffset(rowId, currentOffset, targetOffset)
             return
         }
@@ -1203,7 +1207,7 @@ class WinFlowzKeyboardView(
         horizontalRowPageWidthById[rowId] = max(dp(1f), width)
         if (row.pagedHorizontalScrollable) {
             val pageWidth = horizontalRowPageWidthById[rowId] ?: max(dp(1f), width)
-            val page = actionBarState.rowPageById[rowId] ?: 0
+            val page = horizontalRowPageById[rowId] ?: actionBarState.rowPageById[rowId] ?: 0
             val targetOffset = pageOffset(page, pageWidth, maxOffset)
             val isActiveGesture = scrollingHorizontalRow && activeHorizontalRowId == rowId
             val isAnimating = horizontalRowAnimatorById.containsKey(rowId)
@@ -1280,6 +1284,11 @@ class WinFlowzKeyboardView(
         width: Float,
         height: Float,
     ) {
+        if (row.horizontalScrollable) {
+            drawScrollableRow(canvas, row, left, top, width, height)
+            return
+        }
+
         val totalWeight =
             row.keys.sumOf { it.weight.toDouble() }.toFloat() + row.leadingWeight + row.trailingWeight
         val usableWidth = width - keyGap() * max(0, row.keys.size - 1)
@@ -1333,29 +1342,28 @@ class WinFlowzKeyboardView(
         val baseline = rect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
         canvas.drawText(displayLabel(key), rect.centerX(), baseline, textPaint)
 
-        if (key.pinned && key.actionDescriptorPrimary) {
-            drawPinnedBadge(canvas, rect)
-        }
-
         if (shouldRenderCorners(key)) {
             renderCornerGlyphs(canvas, rect, key.cornerAssignments)
+        }
+
+        if (key.pinned && key.actionDescriptorPrimary) {
+            drawPinnedBadge(canvas, rect, paint.color)
         }
     }
 
     private fun drawPinnedBadge(
         canvas: Canvas,
         rect: RectF,
+        keyColor: Int,
     ) {
         val cx = rect.right - dp(8f)
         val cy = rect.top + dp(8f)
         when (themeConfig.presetId) {
-            "pixel_candy" -> drawCandyPinnedBadge(canvas, cx, cy)
-            "sunset_gradient" -> drawCloudPinnedBadge(canvas, cx, cy)
-            "neon_terminal" -> drawLedPinnedBadge(canvas, cx, cy, Color.parseColor("#00F5A0"))
-            "glass_mint" -> drawDropPinnedBadge(canvas, cx, cy, Color.parseColor("#7AF0CF"))
-            "paper_ink" -> drawPaperPinnedBadge(canvas, cx, cy)
-            "midnight_aurora" -> drawStarPinnedBadge(canvas, cx, cy, Color.parseColor("#B983FF"))
-            else -> drawLedPinnedBadge(canvas, cx, cy, activeKeyPaint.color)
+            "pixel_candy" -> drawCandyPinnedBadge(canvas, cx, cy, keyColor)
+            "sunset_gradient" -> drawCloudPinnedBadge(canvas, cx, cy, keyColor)
+            "glass_mint" -> drawDropPinnedBadge(canvas, cx, cy, contrastBadgeAccentColor(keyColor))
+            "midnight_aurora" -> drawStarPinnedBadge(canvas, cx, cy, contrastBadgeAccentColor(keyColor))
+            else -> drawLedPinnedBadge(canvas, cx, cy, contrastBadgeAccentColor(keyColor), contrastBadgeBaseColor(keyColor))
         }
     }
 
@@ -1363,9 +1371,10 @@ class WinFlowzKeyboardView(
         canvas: Canvas,
         cx: Float,
         cy: Float,
+        keyColor: Int,
     ) {
-        pinnedBadgePaint.color = Color.WHITE
-        pinnedBadgeAccentPaint.color = Color.parseColor("#FF5BB8")
+        pinnedBadgePaint.color = contrastBadgeBaseColor(keyColor)
+        pinnedBadgeAccentPaint.color = contrastBadgeAccentColor(keyColor)
         val body = RectF(cx - dp(4.5f), cy - dp(3f), cx + dp(4.5f), cy + dp(3f))
         canvas.drawRoundRect(body, dp(3f), dp(3f), pinnedBadgeAccentPaint)
         canvas.drawCircle(cx, cy, dp(2.1f), pinnedBadgePaint)
@@ -1389,8 +1398,9 @@ class WinFlowzKeyboardView(
         canvas: Canvas,
         cx: Float,
         cy: Float,
+        keyColor: Int,
     ) {
-        pinnedBadgePaint.color = Color.argb(235, 255, 245, 232)
+        pinnedBadgePaint.color = contrastBadgeBaseColor(keyColor)
         canvas.drawCircle(cx - dp(3f), cy + dp(1f), dp(3.3f), pinnedBadgePaint)
         canvas.drawCircle(cx + dp(1f), cy - dp(1f), dp(4.1f), pinnedBadgePaint)
         canvas.drawCircle(cx + dp(5f), cy + dp(1.2f), dp(3f), pinnedBadgePaint)
@@ -1402,11 +1412,12 @@ class WinFlowzKeyboardView(
         cx: Float,
         cy: Float,
         color: Int,
+        baseColor: Int = Color.argb(85, Color.red(color), Color.green(color), Color.blue(color)),
     ) {
-        pinnedBadgePaint.color = Color.argb(85, Color.red(color), Color.green(color), Color.blue(color))
+        pinnedBadgePaint.color = baseColor
         pinnedBadgeAccentPaint.color = color
-        canvas.drawCircle(cx, cy, dp(5.8f), pinnedBadgePaint)
-        canvas.drawCircle(cx, cy, dp(3.1f), pinnedBadgeAccentPaint)
+        canvas.drawCircle(cx, cy, dp(6.2f), pinnedBadgePaint)
+        canvas.drawCircle(cx, cy, dp(3.4f), pinnedBadgeAccentPaint)
     }
 
     private fun drawDropPinnedBadge(
@@ -1430,11 +1441,23 @@ class WinFlowzKeyboardView(
         cx: Float,
         cy: Float,
     ) {
-        pinnedBadgePaint.color = Color.parseColor("#222222")
-        pinnedBadgePaint.strokeWidth = dp(1.6f)
-        pinnedBadgePaint.style = Paint.Style.STROKE
-        canvas.drawCircle(cx, cy, dp(4f), pinnedBadgePaint)
-        pinnedBadgePaint.style = Paint.Style.FILL
+        drawLedPinnedBadge(canvas, cx, cy, contrastBadgeAccentColor(specialKeyPaint.color), contrastBadgeBaseColor(specialKeyPaint.color))
+    }
+
+    private fun contrastBadgeBaseColor(keyColor: Int): Int {
+        return if (relativeLuminance(keyColor) > 0.55f) Color.argb(235, 24, 28, 32) else Color.argb(235, 255, 255, 255)
+    }
+
+    private fun contrastBadgeAccentColor(keyColor: Int): Int {
+        return if (relativeLuminance(keyColor) > 0.55f) Color.WHITE else Color.BLACK
+    }
+
+    private fun relativeLuminance(color: Int): Float {
+        fun channel(value: Int): Float {
+            val normalized = value / 255f
+            return if (normalized <= 0.03928f) normalized / 12.92f else Math.pow(((normalized + 0.055f) / 1.055f).toDouble(), 2.4).toFloat()
+        }
+        return 0.2126f * channel(Color.red(color)) + 0.7152f * channel(Color.green(color)) + 0.0722f * channel(Color.blue(color))
     }
 
     private fun drawStarPinnedBadge(
@@ -1621,7 +1644,12 @@ class WinFlowzKeyboardView(
                 panelMode = KeyboardPanelMode.None
             }
             KeyboardKeyAction.ModeNumbers -> {
-                layoutMode = KeyboardLayoutMode.Numbers
+                layoutMode =
+                    if (layoutMode == KeyboardLayoutMode.Numbers) {
+                        KeyboardLayoutMode.Letters
+                    } else {
+                        KeyboardLayoutMode.Numbers
+                    }
                 panelMode = KeyboardPanelMode.None
             }
             KeyboardKeyAction.ModeAccents -> {
@@ -1629,7 +1657,12 @@ class WinFlowzKeyboardView(
                 panelMode = KeyboardPanelMode.None
             }
             KeyboardKeyAction.ModeSymbols -> {
-                layoutMode = KeyboardLayoutMode.Symbols
+                layoutMode =
+                    if (layoutMode == KeyboardLayoutMode.Symbols) {
+                        KeyboardLayoutMode.Letters
+                    } else {
+                        KeyboardLayoutMode.Symbols
+                    }
                 panelMode = KeyboardPanelMode.None
             }
             KeyboardKeyAction.ToggleNavigationPanel -> togglePanel(KeyboardPanelMode.Navigation)
@@ -1811,6 +1844,7 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.SelectEmojiNature -> emojiCategory = KeyboardEmojiCategory.Nature
             KeyboardKeyAction.SelectEmojiFood -> emojiCategory = KeyboardEmojiCategory.Food
             KeyboardKeyAction.SelectEmojiObjects -> emojiCategory = KeyboardEmojiCategory.Objects
+            KeyboardKeyAction.SelectEmojiActivities -> emojiCategory = KeyboardEmojiCategory.Activities
             KeyboardKeyAction.NavigateCharLeft -> {
                 if (!callbacks.onNavigateCharLeft()) {
                     setStatus("Left unavailable")

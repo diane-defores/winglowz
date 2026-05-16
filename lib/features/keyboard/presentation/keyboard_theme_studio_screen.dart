@@ -1167,7 +1167,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
           children: [
             _previewRow(theme, const ['Q', 'W', 'E', 'R', 'T']),
             SizedBox(height: theme.rowVerticalGap),
-            _previewRow(theme, const ['A', 'S', 'D', 'F', 'G']),
+            _previewRow(theme, const ['A', 'S', 'D', 'F', 'G'], pinnedLabel: 'D'),
             SizedBox(height: theme.rowVerticalGap),
             _previewRow(theme, const ['Shift', 'Z', 'X', 'C', '⌫']),
             SizedBox(height: theme.rowVerticalGap),
@@ -1215,7 +1215,11 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
     );
   }
 
-  Widget _previewRow(KeyboardThemeConfig theme, List<String> labels) {
+  Widget _previewRow(
+    KeyboardThemeConfig theme,
+    List<String> labels, {
+    String? pinnedLabel,
+  }) {
     return Row(
       children: [
         for (var i = 0; i < labels.length; i++) ...[
@@ -1226,6 +1230,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
                 theme,
                 labels[i],
                 special: labels[i] == 'Shift' || labels[i] == '⌫',
+                pinned: labels[i] == pinnedLabel,
               ),
             ),
           ),
@@ -1240,6 +1245,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
     String label, {
     bool special = false,
     bool active = false,
+    bool pinned = false,
   }) {
     final pressed = _pressedKeys.contains(label);
     final bg = active
@@ -1339,12 +1345,54 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
                     ),
                   ),
                 ),
+              if (pinned) _ThemePinnedBadge(keyColor: Color(bg)),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class _ThemePinnedBadge extends StatelessWidget {
+  const _ThemePinnedBadge({required this.keyColor});
+
+  final Color keyColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = _relativeLuminance(keyColor) > .55
+        ? const Color(0xEB181C20)
+        : const Color(0xEBFFFFFF);
+    final borderColor = _relativeLuminance(keyColor) > .55
+        ? Colors.white
+        : Colors.black;
+    return Positioned(
+      top: 5,
+      right: 5,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: baseColor,
+          shape: BoxShape.circle,
+          border: Border.all(color: borderColor, width: 1),
+        ),
+        child: const SizedBox(width: 8, height: 8),
+      ),
+    );
+  }
+}
+
+double _relativeLuminance(Color color) {
+  double channel(double value) {
+    final normalized = value / 255;
+    return normalized <= .03928
+        ? normalized / 12.92
+        : math.pow((normalized + .055) / 1.055, 2.4).toDouble();
+  }
+
+  return .2126 * channel(color.red.toDouble()) +
+      .7152 * channel(color.green.toDouble()) +
+      .0722 * channel(color.blue.toDouble());
 }
 
 class _PreviewPressEffectPainter extends CustomPainter {

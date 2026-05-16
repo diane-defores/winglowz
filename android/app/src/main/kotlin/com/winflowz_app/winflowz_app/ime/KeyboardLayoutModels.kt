@@ -45,6 +45,7 @@ enum class KeyboardEmojiCategory {
     Nature,
     Food,
     Objects,
+    Activities,
 }
 
 enum class KeyboardFieldContextMode {
@@ -120,6 +121,7 @@ enum class KeyboardKeyAction {
     SelectEmojiNature,
     SelectEmojiFood,
     SelectEmojiObjects,
+    SelectEmojiActivities,
     NavigateCharLeft,
     NavigateCharRight,
     NavigateWordLeft,
@@ -505,13 +507,13 @@ object KeyboardLayoutBuilder {
                 keys =
                     listOf(
                         KeyboardKeySpec("emoji-recents", "🕘", KeyboardKeyAction.SelectEmojiRecents, active = request.emojiCategory == KeyboardEmojiCategory.Recents),
-                        KeyboardKeySpec("emoji-smileys", ":-)", KeyboardKeyAction.SelectEmojiSmileys, active = request.emojiCategory == KeyboardEmojiCategory.Smileys),
+                        KeyboardKeySpec("emoji-smileys", "😀", KeyboardKeyAction.SelectEmojiSmileys, active = request.emojiCategory == KeyboardEmojiCategory.Smileys),
                         KeyboardKeySpec("emoji-hands", "👏", KeyboardKeyAction.SelectEmojiHands, active = request.emojiCategory == KeyboardEmojiCategory.Hands),
                         KeyboardKeySpec("emoji-symbols", "✨", KeyboardKeyAction.SelectEmojiSymbols, active = request.emojiCategory == KeyboardEmojiCategory.Symbols),
                         KeyboardKeySpec("emoji-nature", "🌿", KeyboardKeyAction.SelectEmojiNature, active = request.emojiCategory == KeyboardEmojiCategory.Nature),
                         KeyboardKeySpec("emoji-food", "🍔", KeyboardKeyAction.SelectEmojiFood, active = request.emojiCategory == KeyboardEmojiCategory.Food),
                         KeyboardKeySpec("emoji-objects", "💡", KeyboardKeyAction.SelectEmojiObjects, active = request.emojiCategory == KeyboardEmojiCategory.Objects),
-                        KeyboardKeySpec("emoji-close", "×", KeyboardKeyAction.ClosePanel),
+                        KeyboardKeySpec("emoji-activities", "⚽", KeyboardKeyAction.SelectEmojiActivities, active = request.emojiCategory == KeyboardEmojiCategory.Activities),
                     ),
             )
 
@@ -521,6 +523,7 @@ object KeyboardLayoutBuilder {
         val nature = listOf("🌿", "🌱", "🌴", "🌵", "🌸", "🌻", "🌙", "☀️", "⭐", "🌈", "⚡", "💧", "🔥", "🌊", "🍀", "🌍")
         val food = listOf("🍔", "🍕", "🍟", "🌮", "🍣", "🍜", "🍩", "🍪", "🍫", "☕", "🍺", "🍎", "🍌", "🍓", "🥑", "🥐")
         val objects = listOf("💡", "📌", "📎", "✏️", "📱", "💻", "⌚", "🎧", "📷", "🔑", "🔒", "🧲", "🧰", "⚙️", "🛠️", "🧪")
+        val activities = listOf("⚽", "🏀", "🏈", "🎾", "🏆", "🎮", "🎲", "🎸", "🎧", "🎬", "🎨", "🎤", "🚗", "✈️", "🚀", "🎉")
         val recents = (request.recentEmojis.filter { it.isNotBlank() } + smileys).distinct().take(16)
         val selected =
             when (request.emojiCategory) {
@@ -531,6 +534,7 @@ object KeyboardLayoutBuilder {
                 KeyboardEmojiCategory.Nature -> nature
                 KeyboardEmojiCategory.Food -> food
                 KeyboardEmojiCategory.Objects -> objects
+                KeyboardEmojiCategory.Activities -> activities
             }
 
         val emojiChunkSize = 8
@@ -600,19 +604,36 @@ object KeyboardLayoutBuilder {
     }
 
     private fun mediaPanelRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        val primaryMediaKeys =
+            mutableListOf(
+                KeyboardKeySpec("media-prev", "Prev", KeyboardKeyAction.MediaPrevious),
+                KeyboardKeySpec("media-play", ">||", KeyboardKeyAction.MediaPlayPause, weight = 1.2f),
+                KeyboardKeySpec("media-next", "Next", KeyboardKeyAction.MediaNext),
+            ).apply {
+                if (!request.compactModeEnabled) {
+                    add(KeyboardKeySpec("media-now", "Now", KeyboardKeyAction.MediaNowPlaying))
+                    add(KeyboardKeySpec("media-open-app", "App", KeyboardKeyAction.OpenMediaApp))
+                    add(KeyboardKeySpec("media-stop", "Stop", KeyboardKeyAction.MediaStop))
+                    add(KeyboardKeySpec("media-volume-down", "Vol-", KeyboardKeyAction.VolumeDown))
+                    add(KeyboardKeySpec("media-volume-up", "Vol+", KeyboardKeyAction.VolumeUp))
+                    add(KeyboardKeySpec("media-brightness-down", "Bri-", KeyboardKeyAction.BrightnessDown))
+                    add(KeyboardKeySpec("media-brightness-up", "Bri+", KeyboardKeyAction.BrightnessUp))
+                    add(KeyboardKeySpec("media-shuffle", "Shuffle", KeyboardKeyAction.MediaShuffle, weight = 1.2f))
+                    add(KeyboardKeySpec("media-loop", "Loop", KeyboardKeyAction.MediaLoop))
+                } else {
+                    add(KeyboardKeySpec("media-now", "Now", KeyboardKeyAction.MediaNowPlaying))
+                    add(KeyboardKeySpec("media-open-app", "App", KeyboardKeyAction.OpenMediaApp))
+                    add(KeyboardKeySpec("media-stop", "Stop", KeyboardKeyAction.MediaStop))
+                }
+            }
         val rows =
             mutableListOf(
                 KeyboardRowSpec(
-                    keys =
-                        listOf(
-                            KeyboardKeySpec("media-prev", "Prev", KeyboardKeyAction.MediaPrevious),
-                            KeyboardKeySpec("media-play", ">||", KeyboardKeyAction.MediaPlayPause, weight = 1.2f),
-                            KeyboardKeySpec("media-next", "Next", KeyboardKeyAction.MediaNext),
-                            KeyboardKeySpec("media-now", "Now", KeyboardKeyAction.MediaNowPlaying),
-                            KeyboardKeySpec("media-open-app", "App", KeyboardKeyAction.OpenMediaApp),
-                            KeyboardKeySpec("media-stop", "Stop", KeyboardKeyAction.MediaStop),
-                        ),
+                    keys = primaryMediaKeys,
                     horizontalScrollable = !request.compactModeEnabled,
+                    pagedHorizontalScrollable = !request.compactModeEnabled,
+                    visiblePageKeyCount = if (request.compactModeEnabled) null else 10,
+                    rowId = "media-panel-primary",
                 ),
             )
         if (request.compactModeEnabled) {
@@ -861,9 +882,7 @@ object KeyboardLayoutBuilder {
                 listOf(
                     KeyboardRowSpec(rowFromChars("qwertyuiop").keys + KeyboardKeySpec("del-letter-row", "Del", KeyboardKeyAction.Backspace)),
                     KeyboardRowSpec(
-                        rowFromChars("asdfghjkl").keys + KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter),
-                        leadingWeight = 0.5f,
-                        trailingWeight = 0.5f,
+                        qwertyHomeRowKeys() + KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter),
                     ),
                     compactControlLetterRow("zxcvbnm", request),
                 )
@@ -885,7 +904,6 @@ object KeyboardLayoutBuilder {
                 listOf(
                     shiftKey("Maj", request.shifted),
                     modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                    modifierKey("Alt", KeyboardSystemModifier.Alt),
                     KeyboardKeySpec("tab-letter-compact", "Tab", KeyboardKeyAction.InsertTab),
                     KeyboardKeySpec("esc-letter-compact", "Échap", KeyboardKeyAction.Escape),
                 ) +
@@ -921,7 +939,6 @@ object KeyboardLayoutBuilder {
                     modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
                     KeyboardKeySpec("esc-symbols", "Esc", KeyboardKeyAction.Escape),
                     modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                    modifierKey("Alt", KeyboardSystemModifier.Alt),
                     modifierKey("Fn", KeyboardSystemModifier.Fn),
                     textKey("."),
                     textKey(","),
@@ -938,7 +955,7 @@ object KeyboardLayoutBuilder {
             KeyboardLayoutProfile.QWERTY ->
                 listOf(
                     rowFromChars("qwertyuiop"),
-                    rowFromChars("asdfghjkl", leading = 0.5f),
+                    KeyboardRowSpec(qwertyHomeRowKeys()),
                     bottomLetterRowWithControls("zxcvbnm", request.shifted),
                 )
             KeyboardLayoutProfile.AZERTY ->
@@ -967,6 +984,10 @@ object KeyboardLayoutBuilder {
             keys = chars.map { letterKey(it) },
             leadingWeight = leading,
         )
+    }
+
+    private fun qwertyHomeRowKeys(): List<KeyboardKeySpec> {
+        return "asdfghjkl".map { letterKey(it) } + textKey(";")
     }
 
     private fun numberRows(): List<KeyboardRowSpec> {
@@ -1018,11 +1039,12 @@ object KeyboardLayoutBuilder {
     private fun symbolRows(): List<KeyboardRowSpec> {
         return listOf(
             KeyboardRowSpec(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "=").map { textKey(it) }),
-            KeyboardRowSpec(listOf("_", "\\", "|", "~", "<", ">", "$", "€", "£", "¥").map { textKey(it) }, leadingWeight = 0.3f),
+            KeyboardRowSpec(listOf("_", "\\", "|", "~", "<", ">", "$", "€", "£", "¥").map { textKey(it) }),
             KeyboardRowSpec(
                 listOf(KeyboardKeySpec("esc-symbols", "Esc", KeyboardKeyAction.Escape)) +
-                    listOf(".", ",", "?", "!", "'", "`", "•").map { textKey(it) },
-                leadingWeight = 0.7f,
+                    listOf(".", ",", "?", "!", "'", "`", "•").map { textKey(it) } +
+                    KeyboardKeySpec("del-symbol-row", "Del", KeyboardKeyAction.Backspace, weight = 1.2f),
+                leadingWeight = 0.5f,
             ),
         )
     }
@@ -1058,7 +1080,6 @@ object KeyboardLayoutBuilder {
                 keys =
                     listOf(
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                        modifierKey("Alt", KeyboardSystemModifier.Alt),
                         KeyboardKeySpec("tab-letter-control", "Tab", KeyboardKeyAction.InsertTab),
                         KeyboardKeySpec("esc-letter-control", "Échap", KeyboardKeyAction.Escape),
                         textKey(leftSymbol),
@@ -1068,19 +1089,34 @@ object KeyboardLayoutBuilder {
                     ),
             )
         }
+        val modifierKeys =
+            listOfNotNull(
+                modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
+                modifierKey("Alt", KeyboardSystemModifier.Alt).takeUnless { mode == KeyboardLayoutMode.Symbols },
+                modifierKey("Fn", KeyboardSystemModifier.Fn),
+            )
         return KeyboardRowSpec(
             keys =
                 listOf(
                     shiftKey(shiftLabel, active = false),
-                    modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                    modifierKey("Alt", KeyboardSystemModifier.Alt),
-                    modifierKey("Fn", KeyboardSystemModifier.Fn),
-                    textKey(leftSymbol),
-                    textKey("Espace", " ", weight = 3f),
-                    textKey(rightSymbol),
-                    KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.3f),
-                    KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, weight = 1.2f),
-            ),
+                ) +
+                    modifierKeys +
+                    if (mode == KeyboardLayoutMode.Symbols) {
+                        listOf(
+                            textKey(leftSymbol),
+                            textKey("Espace", " ", weight = 3f),
+                            textKey(rightSymbol),
+                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.3f),
+                        )
+                    } else {
+                        listOf(
+                            textKey(leftSymbol),
+                            textKey("Espace", " ", weight = 3f),
+                            textKey(rightSymbol),
+                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.3f),
+                            KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, weight = 1.2f),
+                        )
+                    },
         )
     }
 

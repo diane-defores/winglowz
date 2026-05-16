@@ -216,6 +216,7 @@ class _KeyboardFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final rows = snapshot.rows;
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
@@ -244,14 +245,14 @@ class _KeyboardFrame extends StatelessWidget {
                   onReset: onReset,
                 ),
                 AppGaps.x2,
-                for (final row in snapshot.rows) ...[
+                for (final row in rows.indexed) ...[
                   _KeyboardRow(
-                    row: row,
+                    row: row.$2,
                     debug: snapshot.debug,
                     onKeyPressed: onKeyPressed,
                     onKeyLongPressed: onKeyLongPressed,
                   ),
-                  AppGaps.x2,
+                  if (row.$1 != rows.length - 1) AppGaps.x2,
                 ],
               ],
             ),
@@ -417,6 +418,7 @@ class _KeyCap extends StatelessWidget {
                   text: keySpec.bottomRightShortcut!.displayLabel,
                   alignment: Alignment.bottomRight,
                 ),
+              if (keySpec.pinned) const _PinnedBadge(),
               Center(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
@@ -438,6 +440,26 @@ class _KeyCap extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _PinnedBadge extends StatelessWidget {
+  const _PinnedBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 5,
+      right: 5,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.white.withValues(alpha: .92),
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.keyboardKeyForeground, width: 1),
+        ),
+        child: const SizedBox(width: 8, height: 8),
       ),
     );
   }
@@ -974,6 +996,7 @@ class KeyboardPreviewSnapshot {
             'Clip',
             KeyboardPreviewPanel.clipboard,
             enabled: !privateMode,
+            pinned: true,
             activeOverride:
                 panel == KeyboardPreviewPanel.clipboard ||
                 panel == KeyboardPreviewPanel.clipboardFull,
@@ -991,7 +1014,7 @@ class KeyboardPreviewSnapshot {
         _withCorners(
           keyId: 'panel-Media',
           specialKey: true,
-          key: _panelKey('Media', KeyboardPreviewPanel.media),
+          key: _panelKey('Media', KeyboardPreviewPanel.media, pinned: true),
         ),
         _withCorners(
           keyId: 'panel-Prefs',
@@ -1675,11 +1698,13 @@ class KeyboardPreviewSnapshot {
     KeyboardPreviewPanel target, {
     bool enabled = true,
     bool? activeOverride,
+    bool pinned = false,
   }) {
     return KeyboardPreviewKey(
       label: label,
       active: activeOverride ?? panel == target,
       enabled: enabled,
+      pinned: pinned,
       special: true,
       action: KeyboardPreviewKeyAction.panelSwitch,
       panelTarget: target,
@@ -1813,6 +1838,7 @@ class KeyboardPreviewKey {
     this.weight = 1,
     this.enabled = true,
     this.active = false,
+    this.pinned = false,
     this.special = false,
     this.action = KeyboardPreviewKeyAction.text,
     this.output,
@@ -1829,6 +1855,7 @@ class KeyboardPreviewKey {
   final double weight;
   final bool enabled;
   final bool active;
+  final bool pinned;
   final bool special;
   final KeyboardPreviewKeyAction action;
   final String? output;
@@ -1851,6 +1878,7 @@ class KeyboardPreviewKey {
       weight: weight,
       enabled: enabled,
       active: active,
+      pinned: pinned,
       special: special,
       action: action,
       output: output,

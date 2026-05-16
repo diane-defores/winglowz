@@ -11,6 +11,9 @@ class KeyboardActionRenderer {
     }
 
     private fun renderRow(row: KeyboardActionRowSpec): KeyboardRowSpec {
+        val visibleCount = row.visiblePageKeyCount
+        val rowNeedsHorizontalScroll =
+            row.pagedHorizontal && visibleCount != null && row.items.size > visibleCount
         return KeyboardRowSpec(
             rowId = row.rowId,
             keys =
@@ -21,9 +24,9 @@ class KeyboardActionRenderer {
                         item
                     }
                 },
-            horizontalScrollable = row.visiblePageKeyCount != null || row.pagedHorizontal,
-            pagedHorizontalScrollable = row.pagedHorizontal,
-            visiblePageKeyCount = row.visiblePageKeyCount,
+            horizontalScrollable = rowNeedsHorizontalScroll,
+            pagedHorizontalScrollable = rowNeedsHorizontalScroll,
+            visiblePageKeyCount = visibleCount.takeIf { rowNeedsHorizontalScroll },
         )
     }
 }

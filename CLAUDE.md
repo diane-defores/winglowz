@@ -85,6 +85,10 @@ Do not run Android builds, packaging, installs, or Gradle tasks locally from thi
 
 Sentry can be used for runtime crash/error evidence from installed app sessions, but it does not replace Blacksmith CI for Android build validation.
 
+## Git Commit Guardrail
+
+Do not create commits unless Diane explicitly asks for a commit, or unless an invoked ShipFlow chip/skill explicitly requires committing as part of its workflow. By default, leave changes in the working tree and report what changed. Diane handles commits herself. For small visual tweaks, quick copy changes, icons, spacing, or exploratory fixes, edit the files and report the diff/checks without committing.
+
 ## Architecture
 
 ```text

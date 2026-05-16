@@ -27,7 +27,6 @@ class KeyboardActionCatalog private constructor(
         state: KeyboardActionBarState,
     ): Boolean {
         return when (descriptor.id) {
-            "letters" -> environment.layoutMode == KeyboardLayoutMode.Letters
             "numbers" -> environment.layoutMode == KeyboardLayoutMode.Numbers ||
                 state.attachedRows.any { it.providerActionId == descriptor.id }
             "accents" -> environment.panelMode == KeyboardPanelMode.Accents ||
@@ -93,7 +92,7 @@ class KeyboardActionCatalog private constructor(
                         KeyboardActionRowSpec(
                             rowId = "action-row-navigation",
                             dedupeKey = "navigation",
-                            visiblePageKeyCount = 7,
+                            visiblePageKeyCount = 10,
                             pagedHorizontal = true,
                             items =
                                 listOf(
@@ -136,7 +135,7 @@ class KeyboardActionCatalog private constructor(
                         KeyboardActionRowSpec(
                             rowId = "action-row-accents",
                             dedupeKey = "accents",
-                            visiblePageKeyCount = 8,
+                            visiblePageKeyCount = 10,
                             pagedHorizontal = true,
                             items =
                                 listOf("é", "è", "ê", "ë", "à", "â", "ç", "ù", "û", "ü", "î", "ï", "ô", "œ", "æ", "É", "À", "Ç")
@@ -151,7 +150,7 @@ class KeyboardActionCatalog private constructor(
                         KeyboardActionRowSpec(
                             rowId = "action-row-emoji",
                             dedupeKey = "emoji",
-                            visiblePageKeyCount = 8,
+                            visiblePageKeyCount = 10,
                             pagedHorizontal = true,
                             items =
                                 listOf("😀", "😂", "😊", "😍", "🔥", "✨", "👏", "❤️", "👍", "🙏", "✅", "💡", "🎯", "🌿", "🍔", "💻")
@@ -169,7 +168,7 @@ class KeyboardActionCatalog private constructor(
                             KeyboardActionRowSpec(
                                 rowId = "action-row-clipboard",
                                 dedupeKey = "clipboard",
-                                visiblePageKeyCount = 4,
+                                visiblePageKeyCount = 10,
                                 pagedHorizontal = true,
                                 items =
                                     listOf(
@@ -189,7 +188,7 @@ class KeyboardActionCatalog private constructor(
                         KeyboardActionRowSpec(
                             rowId = "action-row-media",
                             dedupeKey = "media",
-                            visiblePageKeyCount = 5,
+                            visiblePageKeyCount = 10,
                             pagedHorizontal = true,
                             items =
                                 listOf(
@@ -226,7 +225,7 @@ class KeyboardActionCatalog private constructor(
                         KeyboardActionRowSpec(
                             rowId = "action-row-snippets",
                             dedupeKey = "snippets",
-                            visiblePageKeyCount = 4,
+                            visiblePageKeyCount = 10,
                             pagedHorizontal = true,
                             items =
                                 if (snippetItems.isEmpty()) {
@@ -240,7 +239,6 @@ class KeyboardActionCatalog private constructor(
 
             val descriptors =
                 listOf(
-                    KeyboardActionDescriptor("letters", "ABC", "ABC", "Letters keyboard", KeyboardKeyAction.ModeLetters, pinnable = false, adaptiveEligible = false),
                     KeyboardActionDescriptor("numbers", "123", "123", "Numbers keyboard", KeyboardKeyAction.ModeNumbers, rowProvider = numberProvider),
                     KeyboardActionDescriptor("symbols", "#+=", "#+=", "Symbols keyboard", KeyboardKeyAction.ModeSymbols, rowProvider = symbolsProvider),
                     KeyboardActionDescriptor("accents", "Acc", "Acc", "Accent panel", KeyboardKeyAction.ToggleAccentPanel, rowProvider = accentsProvider),
@@ -268,8 +266,8 @@ class KeyboardActionCatalog private constructor(
                         "snippets",
                         "Snip",
                         "Snip",
-                        "Open snippets",
-                        KeyboardKeyAction.OpenWinFlowzSnippets,
+                        "Snippets panel",
+                        KeyboardKeyAction.ToggleSnippetsPanel,
                         availabilityPolicy = KeyboardActionAvailabilityPolicy.SnippetsAllowed,
                         sensitiveInPrivate = true,
                         rowProvider = snippetsProvider,

@@ -40,6 +40,41 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
+    fun `qwerty home row uses ten equal letter grid slots`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val topLetterRow = snapshot.rows[1]
+        val homeLetterRow = snapshot.rows[2]
+
+        assertEquals("qwertyuiop", topLetterRow.keys.map { it.label }.joinToString(separator = ""))
+        assertEquals("asdfghjkl;", homeLetterRow.keys.map { it.label }.joinToString(separator = ""))
+        assertEquals(topLetterRow.keys.size, homeLetterRow.keys.size)
+        assertTrue(homeLetterRow.keys.all { it.weight == 1f })
+        assertEquals(0f, homeLetterRow.leadingWeight)
+        assertEquals(0f, homeLetterRow.trailingWeight)
+    }
+
+    @Test
     fun `places shift and backspace above bottom controls in letter mode`() {
         val snapshot =
             KeyboardLayoutBuilder.build(
@@ -230,6 +265,43 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
+    fun `symbol mode puts delete on symbol row instead of control row`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Symbols,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val symbolRows = snapshot.rows.drop(1).take(3)
+        val modifierValues = snapshot.rows.last().keys.mapNotNull { it.keyValue?.modifier }.toSet()
+
+        assertEquals(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "="), symbolRows[0].keys.map { it.label })
+        assertEquals(listOf("_", "\\", "|", "~", "<", ">", "$", "€", "£", "¥"), symbolRows[1].keys.map { it.label })
+        assertEquals(listOf("Esc", ".", ",", "?", "!", "'", "`", "•", "Del"), symbolRows[2].keys.map { it.label })
+        assertTrue(symbolRows[2].keys.last().action == KeyboardKeyAction.Backspace)
+        assertFalse(snapshot.rows.last().keys.any { it.label == "Del" && it.action == KeyboardKeyAction.Backspace })
+        assertTrue(modifierValues.contains(KeyboardSystemModifier.Ctrl))
+        assertTrue(modifierValues.contains(KeyboardSystemModifier.Fn))
+        assertFalse(modifierValues.contains(KeyboardSystemModifier.Alt))
+    }
+
+    @Test
     fun `symbol mode exposes escape key`() {
         val snapshot =
             KeyboardLayoutBuilder.build(
@@ -319,7 +391,8 @@ class KeyboardLayoutBuilderTest {
 
         val categoryLabels = snapshot.rows[1].keys.map { it.label }
         val emojiLabels = snapshot.rows[2].keys.map { it.label }
-        assertTrue(categoryLabels.containsAll(listOf("🕘", ":-)", "👏", "✨", "🌿", "🍔", "💡", "×")))
+        assertTrue(categoryLabels.containsAll(listOf("🕘", "😀", "👏", "✨", "🌿", "🍔", "💡", "⚽")))
+        assertFalse(categoryLabels.contains("×"))
         assertEquals(8, emojiLabels.size)
         assertEquals("🔥", emojiLabels.first())
         assertTrue(emojiLabels.contains("😀"))
@@ -472,11 +545,20 @@ class KeyboardLayoutBuilderTest {
         val actions = panelRows.flatMap { row -> row.keys.map { it.action } }
 
         assertEquals(2, snapshot.panelRowCount)
+        assertEquals("media-panel-primary", panelRows[0].rowId)
+        assertTrue(panelRows[0].pagedHorizontalScrollable)
+        assertEquals(10, panelRows[0].visiblePageKeyCount)
         assertTrue(actions.contains(KeyboardKeyAction.MediaPrevious))
         assertTrue(actions.contains(KeyboardKeyAction.MediaPlayPause))
         assertTrue(actions.contains(KeyboardKeyAction.MediaNext))
         assertTrue(actions.contains(KeyboardKeyAction.MediaNowPlaying))
         assertTrue(actions.contains(KeyboardKeyAction.OpenMediaApp))
+        assertTrue(actions.contains(KeyboardKeyAction.MediaLoop))
+        assertTrue(actions.contains(KeyboardKeyAction.MediaShuffle))
+        assertTrue(actions.contains(KeyboardKeyAction.VolumeDown))
+        assertTrue(actions.contains(KeyboardKeyAction.VolumeUp))
+        assertTrue(actions.contains(KeyboardKeyAction.BrightnessDown))
+        assertTrue(actions.contains(KeyboardKeyAction.BrightnessUp))
         assertEquals("Daft Punk - Digital Love", panelRows[1].keys.single().label)
     }
 
@@ -660,9 +742,10 @@ class KeyboardLayoutBuilderTest {
         assertEquals("action-row-main", mainActionRow.rowId)
         assertFalse(mainActionRow.horizontalScrollable)
         assertFalse(mainActionRow.pagedHorizontalScrollable)
-        assertTrue(mainActionRow.keys.map { it.label }.containsAll(listOf("ABC", "123", "Acc", "#+=", "Nav", "Prefs")))
-        assertEquals(listOf("ABC", "123", "#+="), mainActionRow.keys.take(3).map { it.label })
-        assertTrue(mainActionRow.keys.any { it.label == "Snip" && it.action == KeyboardKeyAction.OpenWinFlowzSnippets })
+        assertTrue(mainActionRow.keys.map { it.label }.containsAll(listOf("123", "Acc", "#+=", "Nav", "Prefs")))
+        assertFalse(mainActionRow.keys.any { it.label == "ABC" && it.actionDescriptorPrimary })
+        assertEquals(listOf("123", "#+=", "Acc"), mainActionRow.keys.take(3).map { it.label })
+        assertTrue(mainActionRow.keys.any { it.label == "Snip" && it.action == KeyboardKeyAction.ToggleSnippetsPanel })
     }
 
     @Test
@@ -747,7 +830,7 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
-    fun `letter control row exposes ctrl alt and escape`() {
+    fun `letter control row exposes ctrl and escape without alt`() {
         val snapshot =
             KeyboardLayoutBuilder.build(
                 KeyboardLayoutRequest(
@@ -772,7 +855,7 @@ class KeyboardLayoutBuilderTest {
 
         val modifierValues = snapshot.rows.last().keys.mapNotNull { it.keyValue?.modifier }.toSet()
         assertTrue(modifierValues.contains(KeyboardSystemModifier.Ctrl))
-        assertTrue(modifierValues.contains(KeyboardSystemModifier.Alt))
+        assertFalse(modifierValues.contains(KeyboardSystemModifier.Alt))
         assertFalse(modifierValues.contains(KeyboardSystemModifier.Fn))
         assertTrue(snapshot.rows.last().keys.any { it.label == "Échap" && it.action == KeyboardKeyAction.Escape })
     }

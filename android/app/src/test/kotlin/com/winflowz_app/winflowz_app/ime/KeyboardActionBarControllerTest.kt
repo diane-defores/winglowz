@@ -66,6 +66,79 @@ class KeyboardActionBarControllerTest {
         assertTrue(snapshot.attachedRows.any { it.dedupeKey == "emoji" })
     }
 
+    @Test
+    fun `media pinned row keeps controls after stop`() {
+        val snapshot =
+            controller.buildRenderSnapshot(
+                state = KeyboardActionBarState(pinnedActionIds = setOf("media")),
+                environment = environment(),
+            )
+
+        val mediaRow = snapshot.attachedRows.single { it.dedupeKey == "media" }
+        val labels = mediaRow.items.map { it.label }
+
+        assertEquals(10, mediaRow.visiblePageKeyCount)
+        assertTrue(labels.indexOf("Vol-") > labels.indexOf("Stop"))
+        assertTrue(labels.indexOf("Vol+") > labels.indexOf("Stop"))
+        assertTrue(labels.indexOf("Bri-") > labels.indexOf("Stop"))
+        assertTrue(labels.indexOf("Bri+") > labels.indexOf("Stop"))
+        assertTrue(labels.indexOf("Loop") > labels.indexOf("Stop"))
+    }
+
+    @Test
+    fun `pinned action rows only scroll when they exceed alphabet slots`() {
+        val overflowingActionIds = listOf("numbers", "symbols", "accents", "navigation", "emoji", "media")
+
+        overflowingActionIds.forEach { actionId ->
+            val snapshot =
+                controller.buildRenderSnapshot(
+                    state = KeyboardActionBarState(pinnedActionIds = setOf(actionId)),
+                    environment = environment(),
+                )
+
+            val row = snapshot.attachedRows.single { it.dedupeKey == actionId }
+            assertEquals(10, row.visiblePageKeyCount)
+        }
+
+        val shortRowsSnapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                    actionBarState =
+                        KeyboardActionBarState(
+                            pinnedActionIds = setOf("clipboard", "snippets"),
+                            attachedRows =
+                                listOf(
+                                    KeyboardAttachedActionRowState("clipboard", "action-row-clipboard", "clipboard"),
+                                    KeyboardAttachedActionRowState("snippets", "action-row-snippets", "snippets"),
+                                ),
+                        ),
+                ),
+            )
+
+        val clipboardRow = shortRowsSnapshot.rows.single { it.rowId == "action-row-clipboard" }
+        val snippetsRow = shortRowsSnapshot.rows.single { it.rowId == "action-row-snippets" }
+        assertFalse(clipboardRow.horizontalScrollable)
+        assertFalse(snippetsRow.horizontalScrollable)
+        assertEquals(null, clipboardRow.visiblePageKeyCount)
+        assertEquals(null, snippetsRow.visiblePageKeyCount)
+    }
+
     private fun environment(): KeyboardActionEnvironment {
         return KeyboardActionEnvironment(
             fieldPolicy =
