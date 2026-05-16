@@ -1036,8 +1036,8 @@ class _OnboardingProgressDots extends StatelessWidget {
       children: [
         for (var i = 0; i < pages.length; i++) ...[
           Container(
-            width: i == index ? 20 : 8,
-            height: 8,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
               color: _dotColor(
                 colorScheme: colorScheme,
@@ -1045,6 +1045,20 @@ class _OnboardingProgressDots extends StatelessWidget {
                 isCurrent: i == index,
               ),
               borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: i == index
+                    ? colorScheme.primary
+                    : colorScheme.outlineVariant,
+              ),
+            ),
+            child: Icon(
+              pages[i].icon,
+              size: 14,
+              color: _iconColor(
+                colorScheme: colorScheme,
+                stepId: pages[i].stepId,
+                isCurrent: i == index,
+              ),
             ),
           ),
           if (i != pages.length - 1) const SizedBox(width: AppSpacing.x1),
@@ -1064,6 +1078,19 @@ class _OnboardingProgressDots extends StatelessWidget {
       }
     }
     return isCurrent ? colorScheme.primary : colorScheme.outlineVariant;
+  }
+
+  Color _iconColor({
+    required ColorScheme colorScheme,
+    required OnboardingStepId stepId,
+    required bool isCurrent,
+  }) {
+    for (final step in readiness.steps) {
+      if (step.definition.id == stepId && step.satisfied) {
+        return Colors.white;
+      }
+    }
+    return isCurrent ? colorScheme.onPrimary : colorScheme.onSurfaceVariant;
   }
 }
 
