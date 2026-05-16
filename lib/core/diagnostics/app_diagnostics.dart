@@ -43,6 +43,10 @@ class AppDiagnostics {
   static List<AppDiagnosticEvent> get recentEvents =>
       List<AppDiagnosticEvent>.unmodifiable(_events);
 
+  static void clear() {
+    _events.clear();
+  }
+
   static void record(String category, Object? message) {
     final normalizedMessage = _singleLine(message);
     final now = DateTime.now().toUtc();

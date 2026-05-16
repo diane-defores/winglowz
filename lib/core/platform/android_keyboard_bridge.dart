@@ -118,6 +118,8 @@ class AndroidKeyboardBridge {
     required bool englishLanguageEnabled,
     required bool doubleSpacePeriodEnabled,
     required bool punctuationAutoSpacingEnabled,
+    required double keyboardHeightScale,
+    required bool compactModeEnabled,
     required KeyboardPrivacyMode privacyMode,
   }) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
@@ -142,6 +144,8 @@ class AndroidKeyboardBridge {
       'englishLanguageEnabled': englishLanguageEnabled,
       'doubleSpacePeriodEnabled': doubleSpacePeriodEnabled,
       'punctuationAutoSpacingEnabled': punctuationAutoSpacingEnabled,
+      'keyboardHeightScale': keyboardHeightScale,
+      'compactModeEnabled': compactModeEnabled,
       'privacyMode': privacyMode.name,
     });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});

@@ -87,6 +87,18 @@ class KeyboardStateStore(private val context: Context) {
         }
         set(value) = preferences.edit().putBoolean(KEY_PUNCTUATION_AUTO_SPACING_ENABLED, value).apply()
 
+    var keyboardHeightScale: Float
+        get() = preferences.getFloat(KEY_KEYBOARD_HEIGHT_SCALE, KEYBOARD_HEIGHT_DEFAULT)
+            .coerceIn(KEYBOARD_HEIGHT_MIN, KEYBOARD_HEIGHT_MAX)
+        set(value) {
+            val normalized = value.coerceIn(KEYBOARD_HEIGHT_MIN, KEYBOARD_HEIGHT_MAX)
+            preferences.edit().putFloat(KEY_KEYBOARD_HEIGHT_SCALE, normalized).apply()
+        }
+
+    var compactModeEnabled: Boolean
+        get() = preferences.getBoolean(KEY_COMPACT_MODE_ENABLED, false)
+        set(value) = preferences.edit().putBoolean(KEY_COMPACT_MODE_ENABLED, value).apply()
+
     var privacyMode: String
         get() = preferences.getString(KEY_PRIVACY_MODE, PRIVACY_AUTO) ?: PRIVACY_AUTO
         set(value) {
@@ -144,6 +156,8 @@ class KeyboardStateStore(private val context: Context) {
             "englishLanguageEnabled" to englishLanguageEnabled,
             "doubleSpacePeriodEnabled" to doubleSpacePeriodEnabled,
             "punctuationAutoSpacingEnabled" to punctuationAutoSpacingEnabled,
+            "keyboardHeightScale" to keyboardHeightScale,
+            "compactModeEnabled" to compactModeEnabled,
             "privacyMode" to privacyMode,
         )
     }
@@ -416,6 +430,8 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_ENGLISH_LANGUAGE_ENABLED = "english_language_enabled"
         const val KEY_DOUBLE_SPACE_PERIOD_ENABLED = "double_space_period_enabled"
         const val KEY_PUNCTUATION_AUTO_SPACING_ENABLED = "punctuation_auto_spacing_enabled"
+        const val KEY_KEYBOARD_HEIGHT_SCALE = "keyboard_height_scale"
+        const val KEY_COMPACT_MODE_ENABLED = "compact_mode_enabled"
         const val KEY_EMOJI_RECENTS = "emoji_recents"
         const val KEY_PRIVACY_MODE = "privacy_mode"
         const val KEY_TEXT_EXPANSION_SNIPPETS = "text_expansion_snippets"
@@ -434,5 +450,8 @@ class KeyboardStateStore(private val context: Context) {
         const val THEME_SYSTEM = "system"
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"
+        const val KEYBOARD_HEIGHT_MIN = 0.85f
+        const val KEYBOARD_HEIGHT_MAX = 1.20f
+        const val KEYBOARD_HEIGHT_DEFAULT = 1.0f
     }
 }

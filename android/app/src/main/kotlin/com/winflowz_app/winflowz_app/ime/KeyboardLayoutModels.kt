@@ -91,6 +91,9 @@ enum class KeyboardKeyAction {
     ToggleEnglishLanguage,
     ToggleDoubleSpacePeriod,
     TogglePunctuationAutoSpacing,
+    DecreaseKeyboardHeight,
+    IncreaseKeyboardHeight,
+    KeyboardHeightDisplay,
     SelectEmojiRecents,
     SelectEmojiSmileys,
     SelectEmojiHands,
@@ -169,6 +172,8 @@ data class KeyboardLayoutRequest(
     val englishLanguageEnabled: Boolean = true,
     val doubleSpacePeriodEnabled: Boolean,
     val punctuationAutoSpacingEnabled: Boolean,
+    val keyboardHeightScale: Float = KeyboardStateStore.KEYBOARD_HEIGHT_DEFAULT,
+    val compactModeEnabled: Boolean = false,
     val emojiCategory: KeyboardEmojiCategory,
     val recentEmojis: List<String>,
     val enterLabel: String,
@@ -214,7 +219,9 @@ object KeyboardLayoutBuilder {
         rows.addAll(panelRows)
         if (!request.panel.suppressesTypingRows()) {
             rows.addAll(letterRows(request, effectiveMode))
-            rows.add(controlRow(request, effectiveMode))
+            if (!request.compactModeEnabled) {
+                rows.add(controlRow(request, effectiveMode))
+            }
         }
         val resolvedRows = rows.map { row -> attachCornerAssignments(row, request) }
         return KeyboardLayoutSnapshot(
@@ -637,6 +644,29 @@ object KeyboardLayoutBuilder {
                 keys =
                     listOf(
                         KeyboardKeySpec(
+                            id = "setting-height-down",
+                            label = "H-",
+                            action = KeyboardKeyAction.DecreaseKeyboardHeight,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-height-display",
+                            label = if (request.compactModeEnabled) "Compact ◉" else "H ${(request.keyboardHeightScale * 100).toInt()}% ◉",
+                            action = KeyboardKeyAction.KeyboardHeightDisplay,
+                            weight = 1.8f,
+                        ),
+                        KeyboardKeySpec(
+                            id = "setting-height-up",
+                            label = "H+",
+                            action = KeyboardKeyAction.IncreaseKeyboardHeight,
+                        ),
+                    ),
+                leadingWeight = 0.6f,
+                trailingWeight = 0.6f,
+            ),
+            KeyboardRowSpec(
+                keys =
+                    listOf(
+                        KeyboardKeySpec(
                             id = "setting-corners",
                             label = if (request.cornerModeEnabled) "Corners on" else "Corners off",
                             action = KeyboardKeyAction.ToggleCornerMode,
@@ -671,12 +701,87 @@ object KeyboardLayoutBuilder {
         request: KeyboardLayoutRequest,
         mode: KeyboardLayoutMode,
     ): List<KeyboardRowSpec> {
+        if (request.compactModeEnabled) {
+            return compactRows(request, mode)
+        }
         return when (mode) {
             KeyboardLayoutMode.Letters -> letterRowsForProfile(request)
             KeyboardLayoutMode.Numbers -> numberRows()
             KeyboardLayoutMode.Accents -> accentRows()
             KeyboardLayoutMode.Symbols -> symbolRows()
         }
+    }
+
+    private fun compactRows(
+        request: KeyboardLayoutRequest,
+        mode: KeyboardLayoutMode,
+    ): List<KeyboardRowSpec> {
+        return when (mode) {
+            KeyboardLayoutMode.Letters -> compactLetterRows(request)
+            KeyboardLayoutMode.Numbers -> compactNumberRows(request)
+            KeyboardLayoutMode.Accents -> compactAccentRows(request)
+            KeyboardLayoutMode.Symbols -> compactSymbolRows(request)
+        }
+    }
+
+    private fun compactLetterRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        return when (request.layoutProfile) {
+            KeyboardLayoutProfile.QWERTY ->
+                listOf(
+                    KeyboardRowSpec(rowFromChars("qwertyuiop").keys + KeyboardKeySpec("del-letter-row", "Del", KeyboardKeyAction.Backspace, weight = 0.9f)),
+                    KeyboardRowSpec(rowFromChars("asdfghjkl").keys + KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.0f), leadingWeight = 0.2f),
+                    compactControlLetterRow("zxcvbnm", request),
+                )
+            KeyboardLayoutProfile.AZERTY ->
+                listOf(
+                    KeyboardRowSpec(rowFromChars("azertyuiop").keys + KeyboardKeySpec("del-letter-row", "Del", KeyboardKeyAction.Backspace, weight = 0.9f)),
+                    KeyboardRowSpec(rowFromChars("qsdfghjklm").keys + KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.0f)),
+                    compactControlLetterRow("wxcvbn", request),
+                )
+        }
+    }
+
+    private fun compactControlLetterRow(
+        chars: String,
+        request: KeyboardLayoutRequest,
+    ): KeyboardRowSpec {
+        return KeyboardRowSpec(
+            keys =
+                listOf(
+                    shiftKey("Maj", request.shifted),
+                    modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
+                    modifierKey("Alt", KeyboardSystemModifier.Alt),
+                    modifierKey("Fn", KeyboardSystemModifier.Fn),
+                ) +
+                    chars.map { letterKey(it) } +
+                    listOf(
+                        textKey("Espace", " ", weight = 2f),
+                    ),
+        )
+    }
+
+    private fun compactNumberRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        return listOf(
+            KeyboardRowSpec(listOf(textKey("@", weight = 0.8f), textKey("+", weight = 0.8f), textKey("1"), textKey("2"), textKey("3"), textKey("-"), textKey("#"), KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, weight = 0.9f))),
+            KeyboardRowSpec(listOf(textKey("?"), textKey("*"), textKey("4"), textKey("5"), textKey("6"), textKey("/"), textKey("!"), KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.0f))),
+            KeyboardRowSpec(listOf(modeKey("ABC", KeyboardKeyAction.ModeLetters, false), modifierKey("Ctrl", KeyboardSystemModifier.Ctrl), textKey("7"), textKey("8"), textKey("9"), textKey("."), textKey(",", weight = 0.8f), textKey("Espace", " ", weight = 2f))),
+        )
+    }
+
+    private fun compactAccentRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        return listOf(
+            KeyboardRowSpec(listOf("à", "â", "ä", "ç", "é", "è", "ê", "ë").map { textKey(it) } + KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, weight = 0.9f)),
+            KeyboardRowSpec(listOf("î", "ï", "ô", "ö", "ù", "û", "ü", "ÿ").map { textKey(it) } + KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.0f)),
+            KeyboardRowSpec(listOf(modeKey("ABC", KeyboardKeyAction.ModeLetters, false), modifierKey("Ctrl", KeyboardSystemModifier.Ctrl), textKey("œ"), textKey("æ"), textKey("ñ"), textKey("’"), textKey("Espace", " ", weight = 2f))),
+        )
+    }
+
+    private fun compactSymbolRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
+        return listOf(
+            KeyboardRowSpec(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+").map { textKey(it) } + KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, weight = 0.9f)),
+            KeyboardRowSpec(listOf("_", "\\", "|", "~", "<", ">", "€", "£").map { textKey(it) } + KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.0f)),
+            KeyboardRowSpec(listOf(modeKey("ABC", KeyboardKeyAction.ModeLetters, false), modifierKey("Ctrl", KeyboardSystemModifier.Ctrl), textKey(".", weight = 0.8f), textKey(","), textKey("?"), textKey("!"), textKey("Espace", " ", weight = 2f))),
+        )
     }
 
     private fun letterRowsForProfile(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
@@ -888,13 +993,13 @@ object KeyboardLayoutBuilder {
         output: String = label,
         weight: Float = 1f,
     ): KeyboardKeySpec {
-        val parsed = KeyboardKeyValueParser.parse(if (label == output) output else "$label:'${escapeKeyValue(output)}'")
+        val value = KeyboardKeyValue.text(output, label)
         return KeyboardKeySpec(
             id = stableTextKeyId(output),
-            label = parsed.renderLabel(),
+            label = value.renderLabel(),
             action = KeyboardKeyAction.Text,
             glyph = KeyboardKeyGlyph(primary = output),
-            keyValue = parsed,
+            keyValue = value,
             weight = weight,
         )
     }
@@ -914,8 +1019,6 @@ object KeyboardLayoutBuilder {
     }
 
     fun defaultModMap(): KeyboardModMap = builtInModMap
-
-    private fun escapeKeyValue(value: String): String = value.replace("\\", "\\\\").replace("'", "\\'")
 
     private fun stableTextKeyId(output: String): String {
         if (output == " ") {

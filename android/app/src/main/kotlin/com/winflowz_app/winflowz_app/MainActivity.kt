@@ -347,6 +347,12 @@ class MainActivity : FlutterActivity() {
                         call.argument<Boolean>("punctuationAutoSpacingEnabled")?.let {
                             keyboardState.punctuationAutoSpacingEnabled = it
                         }
+                        call.argument<Double>("keyboardHeightScale")?.let {
+                            keyboardState.keyboardHeightScale = it.toFloat()
+                        }
+                        call.argument<Boolean>("compactModeEnabled")?.let {
+                            keyboardState.compactModeEnabled = it
+                        }
                         call.argument<String>("privacyMode")?.let {
                             keyboardState.privacyMode = it
                         }

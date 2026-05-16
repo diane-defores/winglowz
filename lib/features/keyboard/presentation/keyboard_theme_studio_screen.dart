@@ -219,10 +219,12 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
+    final mediaQuery = MediaQuery.of(context);
+    final safeBottomPadding = mediaQuery.viewPadding.bottom;
     return Scaffold(
       appBar: AppBar(title: const Text('Keyboard Theme Studio')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + safeBottomPadding),
         children: [
           AppSectionCard(
             title: 'Preview',
@@ -758,13 +760,38 @@ class _ColorField extends StatelessWidget {
   }
 }
 
-class _ThemeDraftPreview extends StatelessWidget {
+class _ThemeDraftPreview extends StatefulWidget {
   const _ThemeDraftPreview({required this.theme});
 
   final KeyboardThemeConfig theme;
 
   @override
+  State<_ThemeDraftPreview> createState() => _ThemeDraftPreviewState();
+}
+
+class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
+  final Set<String> _pressedKeys = <String>{};
+
+  void _press(String key) {
+    if (widget.theme.pressEffect == KeyboardThemePressEffect.none) {
+      return;
+    }
+    setState(() => _pressedKeys.add(key));
+    final holdMs = widget.theme.effectDurationMs.clamp(80, 600);
+    Future<void>.delayed(Duration(milliseconds: holdMs), () {
+      if (!mounted) return;
+      setState(() => _pressedKeys.remove(key));
+    });
+  }
+
+  void _release(String key) {
+    if (!mounted) return;
+    setState(() => _pressedKeys.remove(key));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = widget.theme;
     final gradientColors = [
       Color(theme.backgroundStartColor),
       Color(theme.backgroundEndColor),
@@ -837,7 +864,6 @@ class _ThemeDraftPreview extends StatelessWidget {
               theme,
               labels[i],
               special: labels[i] == 'Shift' || labels[i] == '⌫',
-              pressed: labels[i] == '⌫',
             ),
           ),
           if (i != labels.length - 1) const SizedBox(width: 6),
@@ -851,51 +877,85 @@ class _ThemeDraftPreview extends StatelessWidget {
     String label, {
     bool special = false,
     bool active = false,
-    bool pressed = false,
   }) {
+    final pressed = _pressedKeys.contains(label);
     final bg = active
         ? theme.activeKeyColor
         : (pressed
               ? theme.pressedKeyColor
               : (special ? theme.specialKeyColor : theme.keyColor));
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Color(bg),
-        borderRadius: BorderRadius.circular(theme.keyRadius),
-        border: pressed && theme.pressEffect != KeyboardThemePressEffect.none
-            ? Border.all(color: Color(theme.activeKeyColor), width: 2)
-            : (theme.borderWidth > 0
-                  ? Border.all(
-                      color: Color(theme.borderColor),
-                      width: theme.borderWidth,
-                    )
-                  : null),
-        boxShadow: pressed && theme.pressEffect != KeyboardThemePressEffect.none
-            ? [
-                BoxShadow(
-                  color: Color(theme.activeKeyColor).withValues(alpha: 0.35),
-                  blurRadius: 10 + theme.effectIntensity * 8,
-                  spreadRadius: 1 + theme.effectIntensity * 2,
-                ),
-              ]
-            : (theme.shadowBlur > 0
+    final double animatedScale = switch (theme.pressEffect) {
+      KeyboardThemePressEffect.scale => pressed ? 1.08 : 1,
+      KeyboardThemePressEffect.pulse => pressed ? 1.06 : 1,
+      KeyboardThemePressEffect.shake => pressed ? 1.03 : 1,
+      KeyboardThemePressEffect.none ||
+      KeyboardThemePressEffect.ripple ||
+      KeyboardThemePressEffect.glow ||
+      KeyboardThemePressEffect.confettiLite ||
+      KeyboardThemePressEffect.fireworksLite => 1,
+    };
+    final animatedOffsetX =
+        theme.pressEffect == KeyboardThemePressEffect.shake && pressed
+        ? 2.0
+        : 0.0;
+    return GestureDetector(
+      onTapDown: (_) => _press(label),
+      onTapUp: (_) => _release(label),
+      onTapCancel: () => _release(label),
+      child: AnimatedContainer(
+        duration: Duration(
+          milliseconds: (theme.effectDurationMs * 0.45).round().clamp(60, 220),
+        ),
+        curve: Curves.easeOut,
+        transform: Matrix4.translationValues(animatedOffsetX, 0, 0),
+        child: AnimatedScale(
+          scale: animatedScale,
+          duration: Duration(
+            milliseconds: (theme.effectDurationMs * 0.4).round().clamp(60, 200),
+          ),
+          curve: Curves.easeOut,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Color(bg),
+              borderRadius: BorderRadius.circular(theme.keyRadius),
+              border: pressed && theme.pressEffect != KeyboardThemePressEffect.none
+                  ? Border.all(color: Color(theme.activeKeyColor), width: 2)
+                  : (theme.borderWidth > 0
+                        ? Border.all(
+                            color: Color(theme.borderColor),
+                            width: theme.borderWidth,
+                          )
+                        : null),
+              boxShadow:
+                  pressed && theme.pressEffect != KeyboardThemePressEffect.none
                   ? [
                       BoxShadow(
-                        color: Color(theme.shadowColor),
-                        blurRadius: theme.shadowBlur,
-                        offset: Offset(0, theme.shadowOffsetY),
+                        color: Color(theme.activeKeyColor).withValues(alpha: 0.35),
+                        blurRadius: 10 + theme.effectIntensity * 8,
+                        spreadRadius: 1 + theme.effectIntensity * 2,
                       ),
                     ]
-                  : null),
-      ),
-      child: SizedBox(
-        height: 36,
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Color(theme.textColor),
-              fontWeight: FontWeight.w700,
+                  : (theme.shadowBlur > 0
+                        ? [
+                            BoxShadow(
+                              color: Color(theme.shadowColor),
+                              blurRadius: theme.shadowBlur,
+                              offset: Offset(0, theme.shadowOffsetY),
+                            ),
+                          ]
+                        : null),
+            ),
+            child: SizedBox(
+              height: 36,
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: Color(theme.textColor),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
             ),
           ),
         ),

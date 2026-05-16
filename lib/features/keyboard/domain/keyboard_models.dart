@@ -1341,6 +1341,8 @@ class AndroidKeyboardStatus {
     required this.englishLanguageEnabled,
     required this.doubleSpacePeriodEnabled,
     required this.punctuationAutoSpacingEnabled,
+    required this.keyboardHeightScale,
+    required this.compactModeEnabled,
     required this.privacyMode,
   });
 
@@ -1368,6 +1370,8 @@ class AndroidKeyboardStatus {
   final bool englishLanguageEnabled;
   final bool doubleSpacePeriodEnabled;
   final bool punctuationAutoSpacingEnabled;
+  final double keyboardHeightScale;
+  final bool compactModeEnabled;
   final KeyboardPrivacyMode privacyMode;
 
   factory AndroidKeyboardStatus.unsupported() {
@@ -1396,6 +1400,8 @@ class AndroidKeyboardStatus {
       englishLanguageEnabled: true,
       doubleSpacePeriodEnabled: true,
       punctuationAutoSpacingEnabled: false,
+      keyboardHeightScale: 1,
+      compactModeEnabled: false,
       privacyMode: KeyboardPrivacyMode.auto,
     );
   }
@@ -1435,6 +1441,12 @@ class AndroidKeyboardStatus {
           map['doubleSpacePeriodEnabled'] as bool? ?? true,
       punctuationAutoSpacingEnabled:
           map['punctuationAutoSpacingEnabled'] as bool? ?? false,
+      keyboardHeightScale:
+          ((map['keyboardHeightScale'] as num?)?.toDouble() ?? 1).clamp(
+            0.85,
+            1.2,
+          ),
+      compactModeEnabled: map['compactModeEnabled'] as bool? ?? false,
       privacyMode: KeyboardPrivacyMode.fromName(
         map['privacyMode'] as String? ?? KeyboardPrivacyMode.auto.name,
       ),

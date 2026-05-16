@@ -627,6 +627,18 @@ class WinFlowzInputMethodService :
         showStatus(if (enabled) "Punctuation spacing enabled" else "Punctuation spacing disabled")
     }
 
+    override fun onKeyboardHeightScaleChanged(scale: Float) {
+        stateStore.keyboardHeightScale = scale
+        applyRuntimePreferencesToView()
+        showStatus("Keyboard height ${(stateStore.keyboardHeightScale * 100).toInt()}%")
+    }
+
+    override fun onCompactModeChanged(enabled: Boolean) {
+        stateStore.compactModeEnabled = enabled
+        applyRuntimePreferencesToView()
+        showStatus(if (enabled) "Compact keyboard enabled" else "Compact keyboard disabled")
+    }
+
     private fun applyRuntimePreferencesToView() {
         val emojiRecents =
             if (fieldPolicy.privateMode) {
@@ -646,6 +658,8 @@ class WinFlowzInputMethodService :
             englishLanguage = stateStore.englishLanguageEnabled,
             doubleSpacePeriod = stateStore.doubleSpacePeriodEnabled,
             punctuationAutoSpacing = stateStore.punctuationAutoSpacingEnabled,
+            keyboardHeightScale = stateStore.keyboardHeightScale,
+            compactMode = stateStore.compactModeEnabled,
             themeMode = stateStore.themeMode,
             themeConfig = stateStore.themeConfig(),
             recents = emojiRecents,

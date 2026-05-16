@@ -125,12 +125,15 @@ class WinFlowzKeyboardView(
         fun onEnglishLanguageChanged(enabled: Boolean)
         fun onDoubleSpacePeriodChanged(enabled: Boolean)
         fun onPunctuationAutoSpacingChanged(enabled: Boolean)
+        fun onKeyboardHeightScaleChanged(scale: Float)
+        fun onCompactModeChanged(enabled: Boolean)
     }
 
     private data class KeyFrame(
         val key: KeyboardKeySpec,
         val rect: RectF,
         val rowScrollable: Boolean = false,
+        val panelScrollable: Boolean = false,
     )
 
     private var shifted = false
@@ -158,6 +161,8 @@ class WinFlowzKeyboardView(
     private var englishLanguageEnabled = true
     private var doubleSpacePeriodEnabled = true
     private var punctuationAutoSpacingEnabled = true
+    private var keyboardHeightScale = KeyboardStateStore.KEYBOARD_HEIGHT_DEFAULT
+    private var compactModeEnabled = false
     private var emojiCategory = KeyboardEmojiCategory.Recents
     private var recentEmojis = emptyList<String>()
     private var fieldPolicy = KeyboardSecurityPolicy.evaluate(null, KeyboardStateStore.PRIVACY_AUTO)
@@ -188,6 +193,10 @@ class WinFlowzKeyboardView(
     private var lastHorizontalScrollX = 0f
     private var horizontalRowScrollOffset = 0f
     private var horizontalRowMaxScrollOffset = 0f
+    private var scrollingVerticalPanel = false
+    private var lastVerticalScrollY = 0f
+    private var verticalPanelScrollOffset = 0f
+    private var verticalPanelMaxScrollOffset = 0f
 
     private val keyFrames = mutableListOf<KeyFrame>()
     private var layoutSnapshot = buildSnapshot()
@@ -202,6 +211,7 @@ class WinFlowzKeyboardView(
     private val textRowHeight = dp(46f)
     private val controlRowHeight = dp(48f)
     private val panelRowHeight = dp(42f)
+    private val keyboardHeightStep = 0.03f
 
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = NativeKeyboardColors.Light.background
@@ -336,6 +346,8 @@ class WinFlowzKeyboardView(
         englishLanguage: Boolean,
         doubleSpacePeriod: Boolean,
         punctuationAutoSpacing: Boolean,
+        keyboardHeightScale: Float,
+        compactMode: Boolean,
         themeMode: String,
         themeConfig: KeyboardThemeConfig,
         recents: List<String>,
@@ -354,6 +366,11 @@ class WinFlowzKeyboardView(
         englishLanguageEnabled = englishLanguage
         doubleSpacePeriodEnabled = doubleSpacePeriod
         punctuationAutoSpacingEnabled = punctuationAutoSpacing
+        this.keyboardHeightScale = keyboardHeightScale.coerceIn(
+            KeyboardStateStore.KEYBOARD_HEIGHT_MIN,
+            KeyboardStateStore.KEYBOARD_HEIGHT_MAX,
+        )
+        compactModeEnabled = compactMode
         this.themeConfig = themeConfig
         if (themeImagePath != themeConfig.backgroundImagePath) {
             themeImagePath = themeConfig.backgroundImagePath
@@ -367,6 +384,7 @@ class WinFlowzKeyboardView(
         if (fieldPolicy.privateMode && emojiCategory == KeyboardEmojiCategory.Recents) {
             emojiCategory = KeyboardEmojiCategory.Smileys
         }
+        requestLayout()
         refreshLayout()
     }
 
@@ -503,6 +521,15 @@ class WinFlowzKeyboardView(
         y += statusHeight + keyGap
 
         layoutSnapshot.rows.forEachIndexed { index, row ->
+            if (usesVerticalPanelScroll() && index == firstPanelRowIndex()) {
+                val panelHeight = visiblePanelHeight()
+                drawVerticalPanelRows(canvas, left, y, right - left, panelHeight)
+                y += panelHeight + keyGap
+                return@forEachIndexed
+            }
+            if (usesVerticalPanelScroll() && index in firstPanelRowIndex() until firstPanelRowIndex() + layoutSnapshot.panelRowCount) {
+                return@forEachIndexed
+            }
             val rowHeight = rowHeightFor(index)
             drawRow(canvas, row, left, y, right - left, rowHeight)
             y += rowHeight + keyGap
@@ -549,8 +576,9 @@ class WinFlowzKeyboardView(
                 activeKeyId = gestureStartFrame?.key?.id
                 handleSpaceSlider(dx, dy)
                 handleHorizontalRowScroll(dx, gestureLatestX)
+                handleVerticalPanelScroll(dy, gestureLatestY)
                 debugGestureText =
-                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()} slide=$slidingSpace scroll=$scrollingHorizontalRow"
+                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()} slide=$slidingSpace scroll=$scrollingHorizontalRow vscroll=$scrollingVerticalPanel"
                 invalidate()
                 return true
             }
@@ -614,8 +642,8 @@ class WinFlowzKeyboardView(
             invalidate()
             return true
         }
-        if (slidingSpace || scrollingHorizontalRow || longPressTriggered) {
-            debugGestureText = "up key=${key.id} consumed slide=$slidingSpace scroll=$scrollingHorizontalRow long=$longPressTriggered"
+        if (slidingSpace || scrollingHorizontalRow || scrollingVerticalPanel || longPressTriggered) {
+            debugGestureText = "up key=${key.id} consumed slide=$slidingSpace scroll=$scrollingHorizontalRow vscroll=$scrollingVerticalPanel long=$longPressTriggered"
             resetGesture()
             invalidate()
             return true
@@ -658,6 +686,8 @@ class WinFlowzKeyboardView(
         lastSlideStep = 0
         scrollingHorizontalRow = false
         lastHorizontalScrollX = 0f
+        scrollingVerticalPanel = false
+        lastVerticalScrollY = 0f
     }
 
     private fun handleLongPress() {
@@ -686,6 +716,7 @@ class WinFlowzKeyboardView(
         } else if (key.action == KeyboardKeyAction.ToggleClipboardPanel) {
             longPressTriggered = true
             horizontalRowScrollOffset = 0f
+            verticalPanelScrollOffset = 0f
             panelMode = KeyboardPanelMode.ClipboardFull
             setStatus("Clipboard history")
             refreshLayout()
@@ -772,8 +803,36 @@ class WinFlowzKeyboardView(
         lastHorizontalScrollX = x
     }
 
+    private fun handleVerticalPanelScroll(
+        dyFromStart: Float,
+        y: Float,
+    ) {
+        if (!gestureStartFrame.isScrollablePanelFrame() || abs(dyFromStart) < dp(8f)) {
+            return
+        }
+        if (abs(dyFromStart) < abs(gestureLatestX - gestureStartX) * 1.2f) {
+            return
+        }
+        removeCallbacks(longPressRunnable)
+        if (!scrollingVerticalPanel) {
+            scrollingVerticalPanel = true
+            lastVerticalScrollY = y
+        }
+        val delta = lastVerticalScrollY - y
+        val next = (verticalPanelScrollOffset + delta).coerceIn(0f, verticalPanelMaxScrollOffset)
+        if (next != verticalPanelScrollOffset) {
+            verticalPanelScrollOffset = next
+            invalidate()
+        }
+        lastVerticalScrollY = y
+    }
+
     private fun KeyFrame?.isScrollableRowFrame(): Boolean {
         return this?.rowScrollable == true
+    }
+
+    private fun KeyFrame?.isScrollablePanelFrame(): Boolean {
+        return this?.panelScrollable == true
     }
 
     private fun isSpaceKey(key: KeyboardKeySpec): Boolean {
@@ -849,6 +908,53 @@ class WinFlowzKeyboardView(
             x += keyWidth + keyGap
         }
         canvas.restoreToCount(clipSave)
+    }
+
+    private fun drawVerticalPanelRows(
+        canvas: Canvas,
+        left: Float,
+        top: Float,
+        width: Float,
+        height: Float,
+    ) {
+        val firstPanelIndex = firstPanelRowIndex()
+        val panelRows = layoutSnapshot.rows.drop(firstPanelIndex).take(layoutSnapshot.panelRowCount)
+        val contentHeight = panelRows.size * panelRowHeight + keyGap * max(0, panelRows.size - 1)
+        verticalPanelMaxScrollOffset = max(0f, contentHeight - height)
+        verticalPanelScrollOffset = verticalPanelScrollOffset.coerceIn(0f, verticalPanelMaxScrollOffset)
+
+        val clipSave = canvas.save()
+        canvas.clipRect(left, top, left + width, top + height)
+        var y = top - verticalPanelScrollOffset
+        panelRows.forEach { row ->
+            if (y + panelRowHeight >= top && y <= top + height) {
+                drawPanelScrollRow(canvas, row, left, y, width, panelRowHeight)
+            }
+            y += panelRowHeight + keyGap
+        }
+        canvas.restoreToCount(clipSave)
+    }
+
+    private fun drawPanelScrollRow(
+        canvas: Canvas,
+        row: KeyboardRowSpec,
+        left: Float,
+        top: Float,
+        width: Float,
+        height: Float,
+    ) {
+        val totalWeight =
+            row.keys.sumOf { it.weight.toDouble() }.toFloat() + row.leadingWeight + row.trailingWeight
+        val usableWidth = width - keyGap * max(0, row.keys.size - 1)
+        val unit = usableWidth / totalWeight
+        var x = left + unit * row.leadingWeight
+        row.keys.forEach { key ->
+            val keyWidth = unit * key.weight
+            val rect = RectF(x, top, x + keyWidth, top + height)
+            keyFrames.add(KeyFrame(key, rect, panelScrollable = true))
+            drawKey(canvas, key, rect)
+            x += keyWidth + keyGap
+        }
     }
 
     private fun drawKey(
@@ -1175,6 +1281,15 @@ class WinFlowzKeyboardView(
                 callbacks.onPunctuationAutoSpacingChanged(punctuationAutoSpacingEnabled)
                 setStatus(if (punctuationAutoSpacingEnabled) "Punctuation spacing on" else "Punctuation spacing off")
             }
+            KeyboardKeyAction.DecreaseKeyboardHeight -> {
+                updateKeyboardHeightScale(-keyboardHeightStep)
+            }
+            KeyboardKeyAction.IncreaseKeyboardHeight -> {
+                updateKeyboardHeightScale(keyboardHeightStep)
+            }
+            KeyboardKeyAction.KeyboardHeightDisplay -> {
+                setStatus(if (compactModeEnabled) "Compact keyboard on" else "Keyboard height ${(keyboardHeightScale * 100).toInt()}%")
+            }
             KeyboardKeyAction.SelectEmojiRecents -> emojiCategory = KeyboardEmojiCategory.Recents
             KeyboardKeyAction.SelectEmojiSmileys -> emojiCategory = KeyboardEmojiCategory.Smileys
             KeyboardKeyAction.SelectEmojiHands -> emojiCategory = KeyboardEmojiCategory.Hands
@@ -1383,11 +1498,13 @@ class WinFlowzKeyboardView(
 
     private fun togglePanel(target: KeyboardPanelMode) {
         horizontalRowScrollOffset = 0f
+        verticalPanelScrollOffset = 0f
         panelMode = if (panelMode == target) KeyboardPanelMode.None else target
     }
 
     private fun toggleClipboardPanel() {
         horizontalRowScrollOffset = 0f
+        verticalPanelScrollOffset = 0f
         panelMode =
             if (panelMode == KeyboardPanelMode.Clipboard || panelMode == KeyboardPanelMode.ClipboardFull) {
                 KeyboardPanelMode.None
@@ -1422,6 +1539,8 @@ class WinFlowzKeyboardView(
                 englishLanguageEnabled = englishLanguageEnabled,
                 doubleSpacePeriodEnabled = doubleSpacePeriodEnabled,
                 punctuationAutoSpacingEnabled = punctuationAutoSpacingEnabled,
+                keyboardHeightScale = keyboardHeightScale,
+                compactModeEnabled = compactModeEnabled,
                 emojiCategory = emojiCategory,
                 recentEmojis = recentEmojis,
                 enterLabel = enterLabel,
@@ -1500,10 +1619,64 @@ class WinFlowzKeyboardView(
     private fun desiredKeyboardHeight(): Int {
         val rowCount = layoutSnapshot.rows.size
         val rowsHeight =
-            layoutSnapshot.rows.indices.sumOf { index ->
-                rowHeightFor(index).toDouble()
-            }.toFloat()
-        return (outerPadding * 2 + statusHeight + rowsHeight + keyGap * rowCount).toInt()
+            if (usesVerticalPanelScroll()) {
+                actionRowHeight + visiblePanelHeight()
+            } else {
+                layoutSnapshot.rows.indices.sumOf { index ->
+                    rowHeightFor(index).toDouble()
+                }.toFloat()
+            }
+        val effectiveRowCount = if (usesVerticalPanelScroll()) 2 else rowCount
+        val baseHeight = outerPadding * 2 + statusHeight + rowsHeight + keyGap * effectiveRowCount
+        return (baseHeight * keyboardHeightScale).toInt()
+    }
+
+    private fun usesVerticalPanelScroll(): Boolean {
+        return panelMode == KeyboardPanelMode.Settings || panelMode == KeyboardPanelMode.ClipboardFull
+    }
+
+    private fun firstPanelRowIndex(): Int {
+        return 1 + layoutSnapshot.suggestionRowCount
+    }
+
+    private fun visiblePanelHeight(): Float {
+        val visibleRows = if (compactModeEnabled) 2 else 3
+        return panelRowHeight * visibleRows + keyGap * (visibleRows - 1)
+    }
+
+    private fun updateKeyboardHeightScale(delta: Float) {
+        if (delta < 0f &&
+            !compactModeEnabled &&
+            keyboardHeightScale <= KeyboardStateStore.KEYBOARD_HEIGHT_MIN + 0.001f
+        ) {
+            compactModeEnabled = true
+            callbacks.onCompactModeChanged(true)
+            setStatus("Compact keyboard on")
+            requestLayout()
+            refreshLayout()
+            return
+        }
+        if (delta > 0f && compactModeEnabled) {
+            compactModeEnabled = false
+            callbacks.onCompactModeChanged(false)
+            setStatus("Compact keyboard off")
+            requestLayout()
+            refreshLayout()
+            return
+        }
+        val next = (keyboardHeightScale + delta).coerceIn(
+            KeyboardStateStore.KEYBOARD_HEIGHT_MIN,
+            KeyboardStateStore.KEYBOARD_HEIGHT_MAX,
+        )
+        if (next == keyboardHeightScale) {
+            setStatus(if (compactModeEnabled) "Compact keyboard on" else "Keyboard height ${(keyboardHeightScale * 100).toInt()}%")
+            return
+        }
+        keyboardHeightScale = next
+        callbacks.onKeyboardHeightScaleChanged(next)
+        setStatus("Keyboard height ${(keyboardHeightScale * 100).toInt()}%")
+        requestLayout()
+        refreshLayout()
     }
 
     private fun drawDebugOverlay(canvas: Canvas) {

@@ -8,6 +8,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  changes:
+    name: Detect APK-impacting changes
+    runs-on: ubuntu-latest
+    outputs:
+      apk: ${{ steps.filter.outputs.apk }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            apk:
+              - 'android/**'
+              - 'lib/**'
+              - 'pubspec.yaml'
+              - 'pubspec.lock'
+              - '.github/workflows/android-build.yml'
+
   analyze:
     name: Flutter Analyze
     runs-on: blacksmith-2vcpu-ubuntu-2404
@@ -73,8 +94,10 @@ jobs:
     runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 45
     needs:
+      - changes
       - analyze
       - test
+    if: github.event_name != 'pull_request' || needs.changes.outputs.apk == 'true'
 
     steps:
       - name: Configure Git default branch

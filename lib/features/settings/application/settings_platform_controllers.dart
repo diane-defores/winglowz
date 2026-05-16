@@ -35,6 +35,8 @@ class SettingsKeyboardController {
     bool? englishLanguageEnabled,
     bool? doubleSpacePeriodEnabled,
     bool? punctuationAutoSpacingEnabled,
+    double? keyboardHeightScale,
+    bool? compactModeEnabled,
     KeyboardPrivacyMode? privacyMode,
   }) {
     return AndroidKeyboardBridge.setPreferences(
@@ -63,6 +65,8 @@ class SettingsKeyboardController {
       punctuationAutoSpacingEnabled:
           punctuationAutoSpacingEnabled ??
           current.punctuationAutoSpacingEnabled,
+      keyboardHeightScale: keyboardHeightScale ?? current.keyboardHeightScale,
+      compactModeEnabled: compactModeEnabled ?? current.compactModeEnabled,
       privacyMode: privacyMode ?? current.privacyMode,
     );
   }

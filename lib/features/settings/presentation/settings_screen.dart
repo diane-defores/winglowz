@@ -53,6 +53,8 @@ typedef _KeyboardPreferenceChanged =
       bool? englishLanguageEnabled,
       bool? doubleSpacePeriodEnabled,
       bool? punctuationAutoSpacingEnabled,
+      double? keyboardHeightScale,
+      bool? compactModeEnabled,
       KeyboardPrivacyMode? privacyMode,
     });
 
@@ -324,6 +326,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     bool? englishLanguageEnabled,
     bool? doubleSpacePeriodEnabled,
     bool? punctuationAutoSpacingEnabled,
+    double? keyboardHeightScale,
+    bool? compactModeEnabled,
     KeyboardPrivacyMode? privacyMode,
   }) async {
     final current = _keyboardStatus ?? AndroidKeyboardStatus.unsupported();
@@ -345,6 +349,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         englishLanguageEnabled: englishLanguageEnabled,
         doubleSpacePeriodEnabled: doubleSpacePeriodEnabled,
         punctuationAutoSpacingEnabled: punctuationAutoSpacingEnabled,
+        keyboardHeightScale: keyboardHeightScale,
+        compactModeEnabled: compactModeEnabled,
         privacyMode: privacyMode,
       );
       if (!mounted) {
@@ -588,6 +594,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return;
     }
     setState(() => _message = 'Backend diagnostic copied.');
+  }
+
+  void _clearDiagnosticLogs() {
+    AppDiagnostics.clear();
+    setState(() => _message = 'Diagnostic logs cleared.');
   }
 
   String _backendDiagnosticText() {
@@ -920,6 +931,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             detail: _appearanceSyncDetail(authAsync),
             diagnosticText: _backendDiagnosticText(),
             onCopyDiagnostic: _copyBackendDiagnostic,
+            onClearDiagnosticLogs: _clearDiagnosticLogs,
           ),
         ),
         _collapsibleSection(

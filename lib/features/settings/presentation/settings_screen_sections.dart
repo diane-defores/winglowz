@@ -69,12 +69,14 @@ class _BackendProviderSection extends StatelessWidget {
     required this.detail,
     required this.diagnosticText,
     required this.onCopyDiagnostic,
+    required this.onClearDiagnosticLogs,
   });
 
   final String summary;
   final String detail;
   final String diagnosticText;
   final VoidCallback onCopyDiagnostic;
+  final VoidCallback onClearDiagnosticLogs;
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +97,21 @@ class _BackendProviderSection extends StatelessWidget {
             subtitle: const Text('Afficher/masquer le bloc complet'),
             children: [SelectableText(diagnosticText), AppGaps.x3],
           ),
-          OutlinedButton.icon(
-            onPressed: onCopyDiagnostic,
-            icon: const Icon(Icons.copy_outlined),
-            label: const Text('Copy diagnostic'),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              OutlinedButton.icon(
+                onPressed: onCopyDiagnostic,
+                icon: const Icon(Icons.copy_outlined),
+                label: const Text('Copy diagnostic'),
+              ),
+              OutlinedButton.icon(
+                onPressed: onClearDiagnosticLogs,
+                icon: const Icon(Icons.delete_sweep_outlined),
+                label: const Text('Clear logs'),
+              ),
+            ],
           ),
         ],
       ),
@@ -443,6 +456,43 @@ class _KeyboardSettingsSection extends StatelessWidget {
             title: const Text('Spelling suggestions'),
             subtitle: const Text(
               'Shows candidate words above the native keyboard. Text expansion rules still run separately.',
+            ),
+          ),
+          Padding(
+            padding: AppInsets.keyboardPrivacy,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    const Expanded(child: Text('Keyboard height')),
+                    Text(
+                      '${((status?.keyboardHeightScale ?? 1) * 100).round()}%',
+                    ),
+                  ],
+                ),
+                Slider(
+                  value: (status?.keyboardHeightScale ?? 1).clamp(0.85, 1.2),
+                  min: 0.85,
+                  max: 1.2,
+                  divisions: 12,
+                  semanticFormatterCallback: (value) =>
+                      'Keyboard height ${(value * 100).round()} percent',
+                  onChanged: busy
+                      ? null
+                      : (value) =>
+                            onPreferenceChanged(keyboardHeightScale: value),
+                ),
+              ],
+            ),
+          ),
+          SwitchListTile(
+            value: status?.compactModeEnabled ?? false,
+            onChanged: busy
+                ? null
+                : (value) => onPreferenceChanged(compactModeEnabled: value),
+            title: const Text('Compact keyboard mode'),
+            subtitle: const Text(
+              'Uses three dense typing rows when you need the lowest keyboard height.',
             ),
           ),
           SwitchListTile(
