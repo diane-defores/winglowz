@@ -813,16 +813,21 @@ class _OnboardingOverlay extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final overlayWidth =
-                          (constraints.maxWidth - (AppSpacing.x4 * 2)).clamp(
+                          ((constraints.maxWidth - (AppSpacing.x4 * 2)).clamp(
                             0.0,
                             constraints.maxWidth,
-                          );
+                          )).toDouble();
+                      final cardWidth = showDeferPrompt && overlayWidth > 560
+                          ? 560.0
+                          : overlayWidth;
                       return Align(
                         alignment: Alignment.topCenter,
                         child: SizedBox(
                           key: const Key('onboarding-overlay-card-frame'),
-                          width: overlayWidth,
-                          height: constraints.maxHeight,
+                          width: cardWidth,
+                          height: showDeferPrompt
+                              ? null
+                              : constraints.maxHeight,
                           child: GestureDetector(
                             onTap: () {},
                             child: AppModalCard(
@@ -871,17 +876,19 @@ class _OnboardingOverlay extends StatelessWidget {
                                         ).colorScheme.error,
                                       ),
                                     ],
-                                    AppGaps.x3,
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: TextButton.icon(
-                                        onPressed: showDeferPrompt
-                                            ? null
-                                            : onDefer,
-                                        icon: const Icon(Icons.close_outlined),
-                                        label: const Text('Plus tard'),
+                                    if (!showDeferPrompt) ...[
+                                      AppGaps.x3,
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton.icon(
+                                          onPressed: onDefer,
+                                          icon: const Icon(
+                                            Icons.close_outlined,
+                                          ),
+                                          label: const Text('Plus tard'),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ],
                                 ),
                               ),

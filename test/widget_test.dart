@@ -411,6 +411,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
       expect(find.text('Onboarding mis en pause'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Plus tard'), findsNothing);
       expect(
         find.text(
           "Tu peux reprendre la suite de l'onboarding quand tu veux à partir des paramètres.",
