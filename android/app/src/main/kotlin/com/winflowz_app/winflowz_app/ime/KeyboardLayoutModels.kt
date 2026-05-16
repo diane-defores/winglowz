@@ -404,32 +404,32 @@ object KeyboardLayoutBuilder {
                 KeyboardRowSpec(
                     keys =
                         listOf(
-                            KeyboardKeySpec("nav-del-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore),
-                            KeyboardKeySpec("nav-del-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter),
                             KeyboardKeySpec("nav-select-all", "All", KeyboardKeyAction.SelectAll),
                             KeyboardKeySpec("nav-copy", "Copy", KeyboardKeyAction.CopySelection),
-                            KeyboardKeySpec("nav-cut", "Cut", KeyboardKeyAction.CutSelection),
-                            KeyboardKeySpec("nav-paste", "Paste", KeyboardKeyAction.PasteClipboard),
+                            KeyboardKeySpec("nav-del-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore),
+                            KeyboardKeySpec("nav-del-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter),
+                            KeyboardKeySpec("nav-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp),
+                            KeyboardKeySpec("nav-line-up", "↑", KeyboardKeyAction.NavigateLineUp),
                         ),
                 ),
                 KeyboardRowSpec(
                     keys =
                         listOf(
+                            KeyboardKeySpec("nav-cut", "Cut", KeyboardKeyAction.CutSelection),
+                            KeyboardKeySpec("nav-paste", "Paste", KeyboardKeyAction.PasteClipboard),
                             KeyboardKeySpec("nav-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft),
                             KeyboardKeySpec("nav-word-right", "Word→", KeyboardKeyAction.NavigateWordRight),
-                            KeyboardKeySpec("nav-undo", "Undo", KeyboardKeyAction.Undo),
-                            KeyboardKeySpec("nav-redo", "Redo", KeyboardKeyAction.Redo),
-                            KeyboardKeySpec("nav-line-up", "↑", KeyboardKeyAction.NavigateLineUp),
+                            KeyboardKeySpec("nav-paragraph-down", "⏬", KeyboardKeyAction.NavigateParagraphDown),
                             KeyboardKeySpec("nav-line-down", "↓", KeyboardKeyAction.NavigateLineDown),
                         ),
                 ),
                 KeyboardRowSpec(
                     keys =
                         listOf(
+                            KeyboardKeySpec("nav-undo", "Undo", KeyboardKeyAction.Undo),
+                            KeyboardKeySpec("nav-redo", "Redo", KeyboardKeyAction.Redo),
                             KeyboardKeySpec("nav-del-before", "Del←", KeyboardKeyAction.Backspace),
                             KeyboardKeySpec("nav-del-after", "Del→", KeyboardKeyAction.ForwardDelete),
-                            KeyboardKeySpec("nav-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp),
-                            KeyboardKeySpec("nav-paragraph-down", "⏬", KeyboardKeyAction.NavigateParagraphDown),
                             KeyboardKeySpec("nav-left", "←", KeyboardKeyAction.NavigateCharLeft),
                             KeyboardKeySpec("nav-right", "→", KeyboardKeyAction.NavigateCharRight),
                         ),
@@ -442,30 +442,30 @@ object KeyboardLayoutBuilder {
                     listOf(
                         KeyboardKeySpec("nav-select-all", "All", KeyboardKeyAction.SelectAll),
                         KeyboardKeySpec("nav-copy", "Copy", KeyboardKeyAction.CopySelection),
-                        KeyboardKeySpec("nav-cut", "Cut", KeyboardKeyAction.CutSelection),
-                        KeyboardKeySpec("nav-paste", "Paste", KeyboardKeyAction.PasteClipboard),
                         KeyboardKeySpec("nav-del-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore),
                         KeyboardKeySpec("nav-del-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter),
+                        KeyboardKeySpec("nav-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp),
+                        KeyboardKeySpec("nav-line-up", "↑", KeyboardKeyAction.NavigateLineUp),
                     ),
             ),
             KeyboardRowSpec(
                 keys =
                     listOf(
+                        KeyboardKeySpec("nav-cut", "Cut", KeyboardKeyAction.CutSelection),
+                        KeyboardKeySpec("nav-paste", "Paste", KeyboardKeyAction.PasteClipboard),
                         KeyboardKeySpec("nav-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft),
                         KeyboardKeySpec("nav-word-right", "Word→", KeyboardKeyAction.NavigateWordRight),
-                        KeyboardKeySpec("nav-undo", "Undo", KeyboardKeyAction.Undo),
-                        KeyboardKeySpec("nav-redo", "Redo", KeyboardKeyAction.Redo),
-                        KeyboardKeySpec("nav-line-up", "↑", KeyboardKeyAction.NavigateLineUp),
+                        KeyboardKeySpec("nav-paragraph-down", "⏬", KeyboardKeyAction.NavigateParagraphDown),
                         KeyboardKeySpec("nav-line-down", "↓", KeyboardKeyAction.NavigateLineDown),
                     ),
             ),
             KeyboardRowSpec(
                 keys =
                     listOf(
+                        KeyboardKeySpec("nav-undo", "Undo", KeyboardKeyAction.Undo),
+                        KeyboardKeySpec("nav-redo", "Redo", KeyboardKeyAction.Redo),
                         KeyboardKeySpec("nav-del-before", "Del←", KeyboardKeyAction.Backspace),
                         KeyboardKeySpec("nav-del-after", "Del→", KeyboardKeyAction.ForwardDelete),
-                        KeyboardKeySpec("nav-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp),
-                        KeyboardKeySpec("nav-paragraph-down", "⏬", KeyboardKeyAction.NavigateParagraphDown),
                         KeyboardKeySpec("nav-left", "←", KeyboardKeyAction.NavigateCharLeft),
                         KeyboardKeySpec("nav-right", "→", KeyboardKeyAction.NavigateCharRight),
                     ),
@@ -885,6 +885,7 @@ object KeyboardLayoutBuilder {
                     shiftKey("Maj", request.shifted),
                     modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                     modifierKey("Alt", KeyboardSystemModifier.Alt),
+                    KeyboardKeySpec("tab-letter-compact", "Tab", KeyboardKeyAction.InsertTab),
                     KeyboardKeySpec("esc-letter-compact", "Échap", KeyboardKeyAction.Escape),
                 ) +
                     chars.map { letterKey(it) } +
@@ -1057,6 +1058,7 @@ object KeyboardLayoutBuilder {
                     listOf(
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                         modifierKey("Alt", KeyboardSystemModifier.Alt),
+                        KeyboardKeySpec("tab-letter-control", "Tab", KeyboardKeyAction.InsertTab),
                         KeyboardKeySpec("esc-letter-control", "Échap", KeyboardKeyAction.Escape),
                         textKey(leftSymbol),
                         textKey("Espace", " ", weight = 3f),

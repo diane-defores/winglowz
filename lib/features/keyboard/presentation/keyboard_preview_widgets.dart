@@ -1058,36 +1058,36 @@ class KeyboardPreviewSnapshot {
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightCompact,
             keys: [
-              _unsupportedKey('DelW←'),
-              _unsupportedKey('DelW→'),
               _unsupportedKey('All'),
               _unsupportedKey('Copy'),
-              _unsupportedKey('Cut'),
-              _unsupportedKey('Paste'),
+              _unsupportedKey('DelW←'),
+              _unsupportedKey('DelW→'),
+              _unsupportedKey('⏫'),
+              _unsupportedKey('↑'),
             ],
           ),
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightCompact,
             keys: [
+              _unsupportedKey('Cut'),
+              _unsupportedKey('Paste'),
               _unsupportedKey('Word←'),
               _unsupportedKey('Word→'),
-              _unsupportedKey('Undo'),
-              _unsupportedKey('Redo'),
-              _unsupportedKey('↑'),
+              _unsupportedKey('⏬'),
               _unsupportedKey('↓'),
             ],
           ),
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightCompact,
             keys: [
+              _unsupportedKey('Undo'),
+              _unsupportedKey('Redo'),
               const KeyboardPreviewKey(
                 label: 'Del←',
                 special: true,
                 action: KeyboardPreviewKeyAction.backspace,
               ),
               _unsupportedKey('Del→'),
-              _unsupportedKey('⏫'),
-              _unsupportedKey('⏬'),
               _unsupportedKey('←'),
               _unsupportedKey('→'),
             ],
@@ -1563,6 +1563,17 @@ class KeyboardPreviewSnapshot {
               weight: .9,
               action: KeyboardPreviewKeyAction.unsupported,
               unsupportedReason: 'Modifier keys are native-only in preview',
+            ),
+          ),
+          _withCorners(
+            keyId: 'tab-letter-control',
+            specialKey: true,
+            key: const KeyboardPreviewKey(
+              label: 'Tab',
+              special: true,
+              weight: .9,
+              action: KeyboardPreviewKeyAction.unsupported,
+              unsupportedReason: 'Tab is native-only in preview',
             ),
           ),
           _withCorners(

@@ -71,6 +71,12 @@ class KeyboardLayoutBuilderTest {
         assertEquals("Del", bottomLetterRow.keys.last().label)
         assertEquals(KeyboardKeyAction.Backspace, bottomLetterRow.keys.last().action)
         assertEquals("Ctrl", controlRow.keys.first().label)
+        assertTrue(controlRow.keys.zipWithNext().any { (left, right) ->
+            left.label == "Tab" &&
+                left.action == KeyboardKeyAction.InsertTab &&
+                right.label == "Échap" &&
+                right.action == KeyboardKeyAction.Escape
+        })
         assertTrue(controlRow.keys.any { it.label == "Échap" && it.action == KeyboardKeyAction.Escape })
         assertTrue(controlRow.keys.any { it.action == KeyboardKeyAction.Enter })
         assertTrue(controlRow.keys.none { it.action == KeyboardKeyAction.Shift || it.action == KeyboardKeyAction.Backspace })
@@ -196,7 +202,9 @@ class KeyboardLayoutBuilderTest {
         val labels = panelRows.flatMap { row -> row.keys.map { it.label } }
 
         assertEquals(3, snapshot.panelRowCount)
-        assertTrue(labels.take(6).containsAll(listOf("All", "Copy", "Cut", "Paste", "DelW←", "DelW→")))
+        assertEquals(listOf("All", "Copy", "DelW←", "DelW→", "⏫", "↑"), panelRows[0].keys.map { it.label })
+        assertEquals(listOf("Cut", "Paste", "Word←", "Word→", "⏬", "↓"), panelRows[1].keys.map { it.label })
+        assertEquals(listOf("Undo", "Redo", "Del←", "Del→", "←", "→"), panelRows[2].keys.map { it.label })
         assertTrue(labels.containsAll(listOf("Del←", "Del→", "DelW←", "DelW→")))
         assertTrue(labels.containsAll(listOf("⏫", "↑", "⏬", "↓")))
         assertFalse(labels.contains("Clip"))
