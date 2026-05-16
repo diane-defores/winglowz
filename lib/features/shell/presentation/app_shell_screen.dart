@@ -1329,18 +1329,41 @@ class _OnboardingCompletionContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final completed = readiness.steps.where((step) => step.completed).length;
+    final allActive = readiness.steps.every((step) => step.satisfied);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppBannerCard(
+        AppBannerCard(
           icon: Icons.check_circle_outline,
-          title: 'Configuration terminée',
-          message:
-              'Les modules que tu as choisis sont prêts. Tu peux terminer maintenant ou revoir les réglages.',
+          title: allActive ? 'Moonflow est prêt' : 'Configuration terminée',
+          message: allActive
+              ? 'Tu vas pouvoir profiter au maximum de Moonflow.'
+              : 'Les modules que tu as choisis sont prêts. Tu peux terminer maintenant ou revoir les réglages.',
           accentColor: AppColors.success,
         ),
         AppGaps.x2,
+        if (allActive) ...[
+          const _OnboardingPathHint(
+            icon: Icons.keyboard_voice_outlined,
+            title: 'Dicter depuis le clavier',
+            text:
+                'Utilise le micro pour transformer ta voix en texte directement là où tu écris.',
+          ),
+          const _OnboardingPathHint(
+            icon: Icons.content_paste_outlined,
+            title: 'Retrouver ton clipboard',
+            text:
+                'Garde tes copies récentes à portée de main pour les réutiliser depuis le clavier.',
+          ),
+          const _OnboardingPathHint(
+            icon: Icons.tune_outlined,
+            title: 'Contrôler ton téléphone plus vite',
+            text:
+                'Accède aux médias, à la luminosité et aux actions rapides sans quitter ton flux.',
+          ),
+          AppGaps.x2,
+        ],
         Wrap(
           spacing: AppSpacing.x2,
           runSpacing: AppSpacing.x2,
