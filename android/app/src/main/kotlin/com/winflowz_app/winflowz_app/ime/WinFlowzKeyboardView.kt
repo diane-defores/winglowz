@@ -12,6 +12,7 @@ import android.graphics.RectF
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.Typeface
+import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
 import android.view.HapticFeedbackConstants
@@ -19,6 +20,7 @@ import android.view.MotionEvent
 import android.view.SoundEffectConstants
 import android.view.View
 import android.view.View.MeasureSpec
+import android.view.WindowInsets
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
@@ -1359,8 +1361,8 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.IncreaseKeyboardHeight -> {
                 updateKeyboardHeightScale(keyboardHeightStep)
             }
-            KeyboardKeyAction.KeyboardHeightDisplay -> {
-                setStatus(if (compactModeEnabled) "Compact keyboard on" else "Keyboard height ${(keyboardHeightScale * 100).toInt()}%")
+            KeyboardKeyAction.ToggleCompactMode -> {
+                toggleCompactMode()
             }
             KeyboardKeyAction.SelectEmojiRecents -> emojiCategory = KeyboardEmojiCategory.Recents
             KeyboardKeyAction.SelectEmojiSmileys -> emojiCategory = KeyboardEmojiCategory.Smileys
@@ -1702,10 +1704,11 @@ class WinFlowzKeyboardView(
         val effectiveRowCount = if (usesVerticalPanelScroll()) 2 else rowCount
         val baseHeight = outerPadding * 2 + statusHeight + rowsHeight + rowGap() * effectiveRowCount
         return (baseHeight * keyboardHeightScale).toInt()
+            .plus(bottomSafeInset())
     }
 
     private fun usesVerticalPanelScroll(): Boolean {
-        return panelMode == KeyboardPanelMode.Settings || panelMode == KeyboardPanelMode.ClipboardFull
+        return panelMode == KeyboardPanelMode.ClipboardFull
     }
 
     private fun firstPanelRowIndex(): Int {
@@ -1715,6 +1718,27 @@ class WinFlowzKeyboardView(
     private fun visiblePanelHeight(): Float {
         val visibleRows = if (compactModeEnabled) 2 else 3
         return panelRowHeight * visibleRows + rowGap() * (visibleRows - 1)
+    }
+
+    private fun bottomSafeInset(): Int {
+        val insets = rootWindowInsets
+        val navigationInset =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                insets?.getInsets(WindowInsets.Type.navigationBars())?.bottom ?: 0
+            } else {
+                @Suppress("DEPRECATION")
+                insets?.systemWindowInsetBottom ?: 0
+            }
+        val fallbackInset = if (compactModeEnabled) dp(28f).toInt() else dp(8f).toInt()
+        return max(navigationInset, fallbackInset)
+    }
+
+    private fun toggleCompactMode() {
+        compactModeEnabled = !compactModeEnabled
+        callbacks.onCompactModeChanged(compactModeEnabled)
+        setStatus(if (compactModeEnabled) "Compact keyboard on" else "Compact keyboard off")
+        requestLayout()
+        refreshLayout()
     }
 
     private fun updateKeyboardHeightScale(delta: Float) {

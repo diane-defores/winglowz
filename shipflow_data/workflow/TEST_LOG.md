@@ -23,3 +23,16 @@
 - Bug pointer: BUG-2026-05-16-002 -> bugs/BUG-2026-05-16-002.md; BUG-2026-05-16-003 -> bugs/BUG-2026-05-16-003.md
 - Evidence pointer: user report in sf-test reply at 2026-05-16 08:34:01 UTC; no private diagnostic pasted.
 - Follow-up: /sf-fix BUG-2026-05-16-003 then /sf-fix BUG-2026-05-16-002
+
+## 2026-05-16 - Backend Provider logs panel retest
+
+- Scope: bug BUG-2026-05-16-004
+- Environment: Android real device / web Settings
+- Tester: user
+- Source: sf-test manual confirmation
+- Status: pass
+- Confidence: high
+- Result summary: Backend Provider Logs and Diagnostics opens without the red Flutter assertion panel; previous unbounded log panel crash is fixed.
+- Bug pointer: BUG-2026-05-16-004 -> bugs/BUG-2026-05-16-004.md
+- Evidence pointer: user confirmation in chat at 2026-05-16 09:27:41 UTC.
+- Follow-up: closed

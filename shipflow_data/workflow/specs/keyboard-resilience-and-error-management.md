@@ -6,7 +6,7 @@ project: "winflowz_app"
 created: "2026-05-16"
 created_at: "2026-05-16 07:23:29 UTC"
 updated: "2026-05-16"
-updated_at: "2026-05-16 08:49:42 UTC"
+updated_at: "2026-05-16 09:27:41 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -43,7 +43,7 @@ evidence:
   - "Local code: lib/core/bootstrap/sentry_bootstrap.dart configures sentry_flutter 9.20.0 and redacted breadcrumbs."
   - "Local code: android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzKeyboardView.kt centralizes drawing, touch dispatch, panel switching and layout snapshot rebuilds."
   - "Official docs checked 2026-05-16: Sentry Flutter docs state the Flutter SDK supports automatic error reporting; Flutter error-reporting docs state Sentry can capture Dart and native Android layers, including Java/Kotlin/C/C++."
-next_step: "/sf-test --retest BUG-2026-05-16-004"
+next_step: "/sf-fix BUG-2026-05-16-003"
 ---
 
 ## Title

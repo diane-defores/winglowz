@@ -94,7 +94,7 @@ enum class KeyboardKeyAction {
     TogglePunctuationAutoSpacing,
     DecreaseKeyboardHeight,
     IncreaseKeyboardHeight,
-    KeyboardHeightDisplay,
+    ToggleCompactMode,
     SelectEmojiRecents,
     SelectEmojiSmileys,
     SelectEmojiHands,
@@ -732,9 +732,10 @@ object KeyboardLayoutBuilder {
                             action = KeyboardKeyAction.DecreaseKeyboardHeight,
                         ),
                         KeyboardKeySpec(
-                            id = "setting-height-display",
-                            label = if (request.compactModeEnabled) "Compact ◉" else "H ${(request.keyboardHeightScale * 100).toInt()}% ◉",
-                            action = KeyboardKeyAction.KeyboardHeightDisplay,
+                            id = "setting-compact",
+                            label = if (request.compactModeEnabled) "Compact on" else "Compact",
+                            action = KeyboardKeyAction.ToggleCompactMode,
+                            active = request.compactModeEnabled,
                             weight = 1.8f,
                         ),
                         KeyboardKeySpec(
