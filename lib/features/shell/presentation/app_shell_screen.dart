@@ -258,8 +258,8 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     return index < 0 ? null : index;
   }
 
-  Future<void> _openCurrentStepPrimaryAction() async {
-    final step = _onboardingReadiness?.activeStep?.definition;
+  Future<void> _openCurrentStepPrimaryAction([OnboardingStepId? stepId]) async {
+    final step = _onboardingStepDefinition(stepId);
     if (step == null) {
       return;
     }
@@ -338,8 +338,10 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     }
   }
 
-  Future<void> _openCurrentStepSecondaryAction() async {
-    final step = _onboardingReadiness?.activeStep?.definition;
+  Future<void> _openCurrentStepSecondaryAction([
+    OnboardingStepId? stepId,
+  ]) async {
+    final step = _onboardingStepDefinition(stepId);
     if (step == null || step.id != OnboardingStepId.keyboardIme) {
       return;
     }
@@ -373,9 +375,9 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     }
   }
 
-  Future<void> _skipCurrentStep() async {
-    final step = _onboardingReadiness?.activeStep;
-    if (step == null || step.isMandatory) {
+  Future<void> _skipCurrentStep([OnboardingStepId? stepId]) async {
+    final step = _onboardingStepProgress(stepId);
+    if (step == null) {
       return;
     }
     final settings = _onboardingSettings;
@@ -417,6 +419,28 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       _onboardingSettings = updated;
     });
     await _refreshOnboardingState();
+  }
+
+  OnboardingStepDefinition? _onboardingStepDefinition(
+    OnboardingStepId? stepId,
+  ) {
+    return _onboardingStepProgress(stepId)?.definition;
+  }
+
+  OnboardingStepProgress? _onboardingStepProgress(OnboardingStepId? stepId) {
+    final readiness = _onboardingReadiness;
+    if (readiness == null) {
+      return null;
+    }
+    if (stepId == null) {
+      return readiness.activeStep;
+    }
+    for (final step in readiness.steps) {
+      if (step.definition.id == stepId) {
+        return step;
+      }
+    }
+    return null;
   }
 
   Future<void> _completeOnboarding() async {
@@ -681,16 +705,15 @@ class _OnboardingOverlay extends StatelessWidget {
   final String? message;
   final Future<void> Function() onClose;
   final VoidCallback onOpenSettings;
-  final Future<void> Function() onPrimaryAction;
-  final Future<void> Function()? onSecondaryAction;
-  final Future<void> Function() onSkip;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
   final Future<void> Function() onRefresh;
   final Future<void> Function() onComplete;
 
   @override
   Widget build(BuildContext context) {
     final activeReadiness = readiness;
-    final activeStep = activeReadiness?.activeStep;
     final Widget onboardingContent;
     if (activeReadiness == null) {
       onboardingContent = const Text(
@@ -707,12 +730,9 @@ class _OnboardingOverlay extends StatelessWidget {
         onOpenSettings: onOpenSettings,
         onComplete: onComplete,
       );
-    } else if (activeStep == null) {
-      onboardingContent = const Text('Onboarding en cours de vérification...');
     } else {
-      onboardingContent = _OnboardingStepContent(
+      onboardingContent = _OnboardingOverviewContent(
         readiness: activeReadiness,
-        step: activeStep,
         isBusy: isBusy,
         onPrimaryAction: onPrimaryAction,
         onSecondaryAction: onSecondaryAction,
@@ -828,10 +848,9 @@ class _OnboardingOverlay extends StatelessWidget {
   }
 }
 
-class _OnboardingStepContent extends StatelessWidget {
-  const _OnboardingStepContent({
+class _OnboardingOverviewContent extends StatelessWidget {
+  const _OnboardingOverviewContent({
     required this.readiness,
-    required this.step,
     required this.isBusy,
     required this.onPrimaryAction,
     required this.onSecondaryAction,
@@ -841,65 +860,71 @@ class _OnboardingStepContent extends StatelessWidget {
   });
 
   final OnboardingReadiness readiness;
-  final OnboardingStepProgress step;
   final bool isBusy;
-  final Future<void> Function() onPrimaryAction;
-  final Future<void> Function()? onSecondaryAction;
-  final Future<void> Function() onSkip;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
   final Future<void> Function() onRefresh;
   final VoidCallback onOpenSettings;
 
   @override
   Widget build(BuildContext context) {
-    final definition = step.definition;
-    final statusColor = step.satisfied ? AppColors.success : AppColors.warning;
-    final status = step.satisfied ? 'OK' : 'En attente';
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(
-              step.satisfied ? Icons.check_circle : Icons.schedule,
-              color: statusColor,
-            ),
-            AppGaps.horizontalX2,
-            Expanded(
-              child: Text(
-                '${definition.title} • Étape ${readiness.currentStep + 1}/${readiness.steps.length}',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ),
-            AppTag(
-              label: definition.category == OnboardingStepCategory.mandatory
-                  ? 'Obligatoire'
-                  : 'Optionnel',
-            ),
-          ],
+        Text(
+          'Choisis les usages que tu veux activer',
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         AppGaps.x1,
         Text(
-          '${definition.description}. Status: $status',
+          'Chaque module est indépendant. Active seulement ce dont tu as besoin maintenant.',
           style: Theme.of(context).textTheme.labelMedium,
         ),
         AppGaps.x2,
-        Text(definition.why),
-        AppGaps.x1,
-        _OnboardingPathHint(
-          icon: Icons.location_on_outlined,
-          title: 'Où la trouver',
-          text: definition.whereToFind,
+        _OnboardingUseCaseCard(
+          icon: Icons.keyboard_voice_outlined,
+          title: 'Micro et voice',
+          subtitle: 'Dictée vocale et injection assistée.',
+          steps: _stepsFor(OnboardingStepGroup.voice),
+          isBusy: isBusy,
+          onPrimaryAction: onPrimaryAction,
+          onSecondaryAction: onSecondaryAction,
+          onSkip: onSkip,
         ),
-        if (step.blockerReason != null) ...[
-          AppGaps.x2,
-          AppBannerCard(
-            icon: Icons.report_gmailerrorred_outlined,
-            title: 'Blocage détecté',
-            message: step.blockerReason!,
-            accentColor: Theme.of(context).colorScheme.error,
-          ),
-        ],
+        AppGaps.x2,
+        _OnboardingUseCaseCard(
+          icon: Icons.keyboard_outlined,
+          title: 'Clavier',
+          subtitle: 'Clavier Android WinFlowz et options liées.',
+          steps: _stepsFor(OnboardingStepGroup.keyboard),
+          isBusy: isBusy,
+          onPrimaryAction: onPrimaryAction,
+          onSecondaryAction: onSecondaryAction,
+          onSkip: onSkip,
+        ),
+        AppGaps.x2,
+        _OnboardingUseCaseCard(
+          icon: Icons.content_paste_outlined,
+          title: 'Clipboard',
+          subtitle: 'Historique et synchronisation du clipboard clavier.',
+          steps: _stepsFor(OnboardingStepGroup.clipboard),
+          isBusy: isBusy,
+          onPrimaryAction: onPrimaryAction,
+          onSecondaryAction: onSecondaryAction,
+          onSkip: onSkip,
+        ),
+        AppGaps.x2,
+        _OnboardingUseCaseCard(
+          icon: Icons.open_in_new_outlined,
+          title: 'Compléments',
+          subtitle: 'Options hors parcours principal.',
+          steps: _stepsFor(OnboardingStepGroup.extras),
+          isBusy: isBusy,
+          onPrimaryAction: onPrimaryAction,
+          onSecondaryAction: onSecondaryAction,
+          onSkip: onSkip,
+        ),
         AppGaps.x2,
         Wrap(
           spacing: AppSpacing.x2,
@@ -912,29 +937,11 @@ class _OnboardingStepContent extends StatelessWidget {
                 height: 24,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            else if (!step.satisfied)
-              FilledButton.icon(
-                onPressed: () => onPrimaryAction(),
-                icon: const Icon(Icons.play_arrow_outlined),
-                label: Text(definition.openActionLabel),
-              )
             else
               FilledButton.tonalIcon(
                 onPressed: () => onRefresh(),
                 icon: const Icon(Icons.refresh_outlined),
-                label: const Text('Re-vérifier'),
-              ),
-            if (!isBusy && onSecondaryAction != null)
-              OutlinedButton.icon(
-                onPressed: () => onSecondaryAction?.call(),
-                icon: const Icon(Icons.keyboard_alt_outlined),
-                label: Text(definition.secondaryActionLabel ?? ''),
-              ),
-            if (!isBusy && !step.isMandatory)
-              TextButton.icon(
-                onPressed: () => onSkip(),
-                icon: const Icon(Icons.skip_next_outlined),
-                label: const Text('Passer cette option'),
+                label: const Text('Re-vérifier les accès'),
               ),
             if (!isBusy)
               OutlinedButton.icon(
@@ -945,6 +952,159 @@ class _OnboardingStepContent extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+
+  List<OnboardingStepProgress> _stepsFor(OnboardingStepGroup group) {
+    return readiness.steps
+        .where((step) => step.definition.group == group)
+        .toList(growable: false);
+  }
+}
+
+class _OnboardingUseCaseCard extends StatelessWidget {
+  const _OnboardingUseCaseCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.steps,
+    required this.isBusy,
+    required this.onPrimaryAction,
+    required this.onSecondaryAction,
+    required this.onSkip,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final List<OnboardingStepProgress> steps;
+  final bool isBusy;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final completed = steps.where((step) => step.completed).length;
+    return AppSectionCard(
+      title: title,
+      subtitle: '$subtitle $completed/${steps.length} activé(s).',
+      leading: Icon(icon),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final step in steps) ...[
+            _OnboardingPermissionRow(
+              step: step,
+              isBusy: isBusy,
+              onPrimaryAction: onPrimaryAction,
+              onSecondaryAction: onSecondaryAction,
+              onSkip: onSkip,
+            ),
+            if (step != steps.last)
+              Divider(color: theme.colorScheme.outlineVariant),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _OnboardingPermissionRow extends StatelessWidget {
+  const _OnboardingPermissionRow({
+    required this.step,
+    required this.isBusy,
+    required this.onPrimaryAction,
+    required this.onSecondaryAction,
+    required this.onSkip,
+  });
+
+  final OnboardingStepProgress step;
+  final bool isBusy;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    final definition = step.definition;
+    final color = step.completed ? AppColors.success : AppColors.warning;
+    final status = step.completed ? 'Actif ou ignoré' : 'À configurer si utile';
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.x1),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                step.completed
+                    ? Icons.check_circle
+                    : Icons.radio_button_unchecked,
+                color: color,
+              ),
+              AppGaps.horizontalX2,
+              Expanded(
+                child: Text(
+                  definition.title,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              AppTag(label: status),
+            ],
+          ),
+          AppGaps.x1,
+          Text(definition.description),
+          AppGaps.x1,
+          Text(definition.why, style: Theme.of(context).textTheme.bodySmall),
+          if (step.blockerReason != null && !step.skipped) ...[
+            AppGaps.x1,
+            Text(
+              step.blockerReason!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ],
+          AppGaps.x2,
+          Wrap(
+            spacing: AppSpacing.x2,
+            runSpacing: AppSpacing.x2,
+            children: [
+              if (!step.satisfied && !step.skipped)
+                FilledButton.icon(
+                  onPressed: isBusy
+                      ? null
+                      : () => onPrimaryAction(definition.id),
+                  icon: const Icon(Icons.play_arrow_outlined),
+                  label: Text(definition.openActionLabel),
+                )
+              else
+                FilledButton.tonalIcon(
+                  onPressed: isBusy
+                      ? null
+                      : () => onPrimaryAction(definition.id),
+                  icon: const Icon(Icons.tune_outlined),
+                  label: const Text('Modifier'),
+                ),
+              if (definition.secondaryActionLabel != null)
+                OutlinedButton.icon(
+                  onPressed: isBusy
+                      ? null
+                      : () => onSecondaryAction?.call(definition.id),
+                  icon: const Icon(Icons.keyboard_alt_outlined),
+                  label: Text(definition.secondaryActionLabel!),
+                ),
+              TextButton.icon(
+                onPressed: isBusy ? null : () => onSkip(definition.id),
+                icon: const Icon(Icons.skip_next_outlined),
+                label: const Text('Pas maintenant'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -964,23 +1124,16 @@ class _OnboardingCompletionContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mandatory = readiness.steps
-        .where((step) => step.isMandatory)
-        .toList(growable: false);
-    final recommended = readiness.steps
-        .where((step) => step.isRecommended)
-        .toList(growable: false);
-    final mandatoryDone = mandatory.where((step) => step.completed).length;
-    final recommendedDone = recommended.where((step) => step.completed).length;
+    final completed = readiness.steps.where((step) => step.completed).length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const AppBannerCard(
           icon: Icons.check_circle_outline,
-          title: 'Les prérequis sont prêts',
+          title: 'Configuration terminée',
           message:
-              'WinFlowz a validé les accès principaux. Tu peux terminer maintenant ou revoir les réglages.',
+              'Les modules que tu as choisis sont prêts. Tu peux terminer maintenant ou revoir les réglages.',
           accentColor: AppColors.success,
         ),
         AppGaps.x2,
@@ -988,16 +1141,14 @@ class _OnboardingCompletionContent extends StatelessWidget {
           spacing: AppSpacing.x2,
           runSpacing: AppSpacing.x2,
           children: [
-            AppTag(label: 'Obligatoire $mandatoryDone/${mandatory.length}'),
-            AppTag(label: 'Optionnel $recommendedDone/${recommended.length}'),
+            AppTag(label: 'Modules $completed/${readiness.steps.length}'),
+            const AppTag(label: 'Tout est optionnel'),
           ],
         ),
         AppGaps.x2,
         for (final step in readiness.steps)
           _OnboardingPathHint(
-            icon: step.isMandatory
-                ? Icons.lock_outline
-                : Icons.lightbulb_outline,
+            icon: Icons.lightbulb_outline,
             title: step.definition.title,
             text: step.completed
                 ? 'OK'

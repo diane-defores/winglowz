@@ -1,7 +1,9 @@
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../keyboard/domain/keyboard_models.dart';
 
-enum OnboardingStepCategory { mandatory, recommended }
+enum OnboardingStepCategory { recommended }
+
+enum OnboardingStepGroup { voice, keyboard, clipboard, extras }
 
 enum OnboardingStepId {
   keyboardIme,
@@ -20,6 +22,7 @@ class OnboardingStepDefinition {
     required this.description,
     required this.why,
     required this.category,
+    required this.group,
     required this.openActionLabel,
     required this.whereToFind,
     this.secondaryActionLabel,
@@ -30,6 +33,7 @@ class OnboardingStepDefinition {
   final String description;
   final String why;
   final OnboardingStepCategory category;
+  final OnboardingStepGroup group;
   final String openActionLabel;
   final String whereToFind;
   final String? secondaryActionLabel;
@@ -52,13 +56,12 @@ class OnboardingStepProgress {
 
   bool get completed => satisfied || skipped || !supported;
 
-  bool get isMandatory =>
-      definition.category == OnboardingStepCategory.mandatory;
+  bool get isMandatory => false;
 
   bool get isRecommended =>
       definition.category == OnboardingStepCategory.recommended;
 
-  bool get requiresAction => supported && !completed && isMandatory;
+  bool get requiresAction => supported && !completed;
 }
 
 class OnboardingReadiness {
@@ -75,9 +78,7 @@ class OnboardingReadiness {
   final bool onboardingCompleted;
 
   bool get hasPendingMandatory {
-    return steps
-        .where((step) => step.isMandatory)
-        .any((step) => !step.completed);
+    return false;
   }
 
   bool get hasPendingRecommended {
@@ -87,9 +88,7 @@ class OnboardingReadiness {
   }
 
   bool get allMandatoryCompleted {
-    return steps
-        .where((step) => step.isMandatory)
-        .every((step) => step.completed);
+    return true;
   }
 
   bool get allStepsCompleted {
@@ -97,7 +96,7 @@ class OnboardingReadiness {
   }
 
   bool get shouldShowCompletion {
-    return platformSupported && allMandatoryCompleted && allStepsCompleted;
+    return platformSupported && allStepsCompleted;
   }
 
   bool get shouldShowOnboarding {
@@ -120,7 +119,8 @@ const _stepDefinitions = <OnboardingStepDefinition>[
         'Active et sélectionne WinFlowz keyboard comme clavier Android.',
     why:
         'C’est le socle du produit: le clavier reste utile même si la dictée, le clipboard ou l’overlay sont ignorés.',
-    category: OnboardingStepCategory.mandatory,
+    category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.keyboard,
     openActionLabel: 'Activer le clavier',
     secondaryActionLabel: 'Choisir le clavier',
     whereToFind:
@@ -133,6 +133,7 @@ const _stepDefinitions = <OnboardingStepDefinition>[
     why:
         'Utile pour retrouver les copies récentes depuis le clavier; optionnel si tu veux seulement taper.',
     category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.clipboard,
     openActionLabel: 'Activer le clipboard clavier',
     whereToFind: 'WinFlowz → Settings → Keyboard clipboard sync intent',
   ),
@@ -143,6 +144,7 @@ const _stepDefinitions = <OnboardingStepDefinition>[
     why:
         'Indispensable pour dicter; optionnel si tu veux utiliser uniquement la saisie clavier.',
     category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.voice,
     openActionLabel: 'Ouvrir les permissions micro',
     whereToFind:
         'Réglages Android → Applications → WinFlowz → Autorisations → Microphone',
@@ -154,6 +156,7 @@ const _stepDefinitions = <OnboardingStepDefinition>[
     why:
         'Améliore certains cas d’injection directe, mais le clavier reste utilisable sans ce service.',
     category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.voice,
     openActionLabel: 'Ouvrir Accessibilité',
     whereToFind: 'Réglages Android → Accessibilité → Service WinFlowz',
   ),
@@ -164,6 +167,7 @@ const _stepDefinitions = <OnboardingStepDefinition>[
     why:
         'Cet accès permet au clavier d’afficher le titre en cours et d’ouvrir l’app qui lit le son.',
     category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.keyboard,
     openActionLabel: 'Ouvrir Accès aux notifications',
     whereToFind:
         'Réglages Android → Applications → Accès spécial → Accès aux notifications → WinFlowz media access',
@@ -175,6 +179,7 @@ const _stepDefinitions = <OnboardingStepDefinition>[
     why:
         'Cet accès permet aux boutons Bri- et Bri+ du clavier d’ajuster la luminosité.',
     category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.keyboard,
     openActionLabel: 'Ouvrir Modifier les paramètres système',
     whereToFind:
         'Réglages Android → Applications → Accès spécial → Modifier les paramètres système → WinFlowz',
@@ -186,6 +191,7 @@ const _stepDefinitions = <OnboardingStepDefinition>[
     why:
         'L’overlay est désormais un complément: il sert aux usages hors clavier, pas au parcours principal.',
     category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.extras,
     openActionLabel: 'Activer l’overlay',
     whereToFind:
         'Réglages Android → Applications → WinFlowz → Autorisations → Afficher les fenêtres',

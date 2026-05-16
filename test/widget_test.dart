@@ -398,13 +398,17 @@ void main() {
   testWidgets('settings can resume onboarding overlay', (tester) async {
     final previousPlatform = debugDefaultTargetPlatformOverride;
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
     _installAndroidBridgeMocks();
 
     try {
       await tester.pumpWidget(_appShellTestWidget());
-      await tester.pump();
+      await _pumpNavigationFrame(tester);
 
       expect(find.text('Raw text'), findsOneWidget);
+      expect(find.text('Configuration WinFlowz'), findsOneWidget);
+      await tester.tap(find.byTooltip('Fermer (reprendre plus tard)'));
+      await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
       await tester.tap(find.byIcon(Icons.settings_outlined).last);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
@@ -421,9 +425,12 @@ void main() {
 
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
       expect(
-        find.text('Clavier WinFlowz keyboard • Étape 1/7'),
+        find.text('Choisis les usages que tu veux activer'),
         findsOneWidget,
       );
+      expect(find.text('Micro et voice'), findsOneWidget);
+      expect(find.text('Clavier'), findsOneWidget);
+      expect(find.text('Clipboard'), findsWidgets);
 
       await tester.tap(find.byTooltip('Fermer (reprendre plus tard)'));
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
@@ -432,6 +439,8 @@ void main() {
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
     }
   });
 
@@ -478,6 +487,12 @@ void main() {
 
     await tester.pumpWidget(_appShellTestWidget());
     await _pumpNavigationFrame(tester);
+
+    final closeOnboarding = find.byTooltip('Fermer (reprendre plus tard)');
+    if (closeOnboarding.evaluate().isNotEmpty) {
+      await tester.tap(closeOnboarding);
+      await tester.pumpAndSettle(const Duration(milliseconds: 300));
+    }
 
     expect(find.text('WinFlowz • Voice'), findsOneWidget);
     expect(find.text('Raw text'), findsOneWidget);

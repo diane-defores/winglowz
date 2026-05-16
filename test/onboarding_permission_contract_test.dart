@@ -32,7 +32,7 @@ void main() {
     });
   }
 
-  test('starts with the keyboard before optional capabilities', () {
+  test('exposes voice keyboard and clipboard as optional modules', () {
     final readiness = evaluateOnboardingReadiness(
       isPlatformSupported: true,
       overlayStatus: overlayStatus,
@@ -41,8 +41,8 @@ void main() {
       onboardingCompleted: false,
     );
 
-    expect(readiness.activeStep?.definition.id, OnboardingStepId.keyboardIme);
-    expect(readiness.activeStep?.isMandatory, isTrue);
+    expect(readiness.hasPendingMandatory, isFalse);
+    expect(readiness.steps.every((step) => !step.isMandatory), isTrue);
     expect(readiness.steps.map((step) => step.definition.id), [
       OnboardingStepId.keyboardIme,
       OnboardingStepId.keyboardClipboard,
@@ -52,9 +52,23 @@ void main() {
       OnboardingStepId.brightnessSystemSettings,
       OnboardingStepId.overlay,
     ]);
+    expect(
+      readiness.steps
+          .where((step) => step.definition.group == OnboardingStepGroup.voice)
+          .map((step) => step.definition.id),
+      [OnboardingStepId.microphoneForDictation, OnboardingStepId.accessibility],
+    );
+    expect(
+      readiness.steps
+          .where(
+            (step) => step.definition.group == OnboardingStepGroup.clipboard,
+          )
+          .map((step) => step.definition.id),
+      [OnboardingStepId.keyboardClipboard],
+    );
   });
 
-  test('keeps overlay optional and last after keyboard-only setup', () {
+  test('keeps overlay optional and last after selected setup', () {
     final readiness = evaluateOnboardingReadiness(
       isPlatformSupported: true,
       overlayStatus: overlayStatus,
@@ -68,7 +82,6 @@ void main() {
       brightnessSkipped: true,
     );
 
-    expect(readiness.allMandatoryCompleted, isTrue);
     expect(readiness.activeStep?.definition.id, OnboardingStepId.overlay);
     expect(readiness.activeStep?.isMandatory, isFalse);
     expect(readiness.shouldShowCompletion, isFalse);
