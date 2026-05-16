@@ -607,6 +607,6 @@ class KeyboardStateStore(private val context: Context) {
         const val KEYBOARD_HEIGHT_MIN = 0.85f
         const val KEYBOARD_HEIGHT_MAX = 1.20f
         const val KEYBOARD_HEIGHT_DEFAULT = 1.0f
-        const val DEFAULT_ACTION_BAR_LONG_PRESS_BEHAVIOR = "pin_action"
+        const val DEFAULT_ACTION_BAR_LONG_PRESS_BEHAVIOR = "attach_context_row"
     }
 }

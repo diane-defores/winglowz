@@ -21,7 +21,7 @@ class KeyboardActionRenderer {
                         item
                     }
                 },
-            horizontalScrollable = row.visiblePageKeyCount != null || row.items.size > 10,
+            horizontalScrollable = row.visiblePageKeyCount != null || row.pagedHorizontal,
             pagedHorizontalScrollable = row.pagedHorizontal,
             visiblePageKeyCount = row.visiblePageKeyCount,
         )

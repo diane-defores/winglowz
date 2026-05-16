@@ -3,6 +3,7 @@ package com.winflowz_app.winflowz_app.ime
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionBarState
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardAttachedActionRowState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -194,13 +195,11 @@ class KeyboardLayoutBuilderTest {
         val labels = panelRows.flatMap { row -> row.keys.map { it.label } }
 
         assertEquals(4, snapshot.panelRowCount)
-        assertTrue(labels.take(4).containsAll(listOf("All", "Copy", "Cut", "Paste")))
+        assertTrue(labels.take(4).containsAll(listOf("All", "Undo", "Redo", "Clip")))
         assertTrue(labels.containsAll(listOf("Del←", "Del→", "DelW←", "DelW→")))
         assertTrue(labels.containsAll(listOf("⏫", "↑", "⏬", "↓")))
         assertTrue(panelActions.contains(KeyboardKeyAction.SelectAll))
-        assertTrue(panelActions.contains(KeyboardKeyAction.CopySelection))
-        assertTrue(panelActions.contains(KeyboardKeyAction.CutSelection))
-        assertTrue(panelActions.contains(KeyboardKeyAction.PasteClipboard))
+        assertTrue(panelActions.contains(KeyboardKeyAction.ToggleClipboardPanel))
         assertTrue(panelActions.contains(KeyboardKeyAction.Undo))
         assertTrue(panelActions.contains(KeyboardKeyAction.Redo))
         assertTrue(panelActions.contains(KeyboardKeyAction.NavigateLineUp))
@@ -214,6 +213,35 @@ class KeyboardLayoutBuilderTest {
         assertTrue(panelActions.none { it == KeyboardKeyAction.Text || it == KeyboardKeyAction.KeyValue })
         assertTrue(snapshot.rows.drop(1 + snapshot.panelRowCount).any { row ->
             row.keys.any { it.action == KeyboardKeyAction.Text || it.action == KeyboardKeyAction.KeyValue }
+        })
+    }
+
+    @Test
+    fun `symbol mode exposes escape key`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Symbols,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        assertTrue(snapshot.rows.any { row ->
+            row.keys.any { it.label == "Esc" && it.action == KeyboardKeyAction.Escape }
         })
     }
 
@@ -526,6 +554,38 @@ class KeyboardLayoutBuilderTest {
         assertTrue(snapshot.rows[1].pagedHorizontalScrollable)
         assertEquals(10, snapshot.rows[1].visiblePageKeyCount)
         assertTrue(snapshot.rows[0].keys.any { it.label == "123" && it.active })
+    }
+
+    @Test
+    fun `main action bar keeps all actions distributed without horizontal scrolling`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                    actionBarState = KeyboardActionBarState(),
+                ),
+            )
+
+        val mainActionRow = snapshot.rows.first()
+        assertEquals("action-row-main", mainActionRow.rowId)
+        assertFalse(mainActionRow.horizontalScrollable)
+        assertFalse(mainActionRow.pagedHorizontalScrollable)
+        assertTrue(mainActionRow.keys.map { it.label }.containsAll(listOf("ABC", "123", "Acc", "#+=", "Nav", "Prefs")))
     }
 
     @Test

@@ -1,5 +1,8 @@
 package com.winflowz_app.winflowz_app.ime
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Canvas
@@ -18,14 +21,18 @@ import android.view.MotionEvent
 import android.view.SoundEffectConstants
 import android.view.View
 import android.view.View.MeasureSpec
+import android.view.animation.DecelerateInterpolator
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionBarController
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionBarState
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionCatalog
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionEnvironment
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionLongPressBehavior
 import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.hypot
 import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 private data class NativeKeyboardColors(
     val background: Int,
@@ -199,10 +206,13 @@ class WinFlowzKeyboardView(
     private var slidingSpace = false
     private var lastSlideStep = 0
     private var scrollingHorizontalRow = false
-    private var horizontalPageGestureConsumed = false
     private var lastHorizontalScrollX = 0f
+    private var activeHorizontalRowId: String? = null
+    private var horizontalGestureStartOffset = 0f
     private val horizontalRowScrollOffsetById = mutableMapOf<String, Float>()
     private val horizontalRowMaxOffsetById = mutableMapOf<String, Float>()
+    private val horizontalRowPageWidthById = mutableMapOf<String, Float>()
+    private val horizontalRowAnimatorById = mutableMapOf<String, ValueAnimator>()
     private var scrollingVerticalPanel = false
     private var lastVerticalScrollY = 0f
     private var verticalPanelScrollOffset = 0f
@@ -295,6 +305,8 @@ class WinFlowzKeyboardView(
     private val repeatDelayMs = 72L
     private val spaceSlideStartPx = dp(18f)
     private val spaceSlideStepPx = dp(34f)
+    private val horizontalSnapDurationMs = 190L
+    private val horizontalSnapInterpolator = DecelerateInterpolator(1.8f)
 
     private val longPressRunnable =
         Runnable {
@@ -702,6 +714,9 @@ class WinFlowzKeyboardView(
         gestureMaxDistance = 0f
         activePointerId = pointerId
         activeKeyId = hit.key.id
+        if (hit.rowScrollable && !hit.rowId.isNullOrBlank()) {
+            cancelHorizontalRowAnimation(hit.rowId)
+        }
         longPressTriggered = false
         slidingSpace = false
         lastSlideStep = 0
@@ -731,6 +746,9 @@ class WinFlowzKeyboardView(
             return true
         }
         if (slidingSpace || scrollingHorizontalRow || scrollingVerticalPanel || longPressTriggered) {
+            if (scrollingHorizontalRow) {
+                finishHorizontalRowScroll()
+            }
             debugGestureText = "up key=${key.id} consumed slide=$slidingSpace scroll=$scrollingHorizontalRow vscroll=$scrollingVerticalPanel long=$longPressTriggered"
             resetGesture()
             invalidate()
@@ -759,6 +777,9 @@ class WinFlowzKeyboardView(
     private fun cancelGesture(reason: String) {
         removeCallbacks(longPressRunnable)
         stopRepeat()
+        if (scrollingHorizontalRow) {
+            finishHorizontalRowScroll()
+        }
         resetGesture()
         debugGestureText = reason
         invalidate()
@@ -773,8 +794,9 @@ class WinFlowzKeyboardView(
         slidingSpace = false
         lastSlideStep = 0
         scrollingHorizontalRow = false
-        horizontalPageGestureConsumed = false
         lastHorizontalScrollX = 0f
+        activeHorizontalRowId = null
+        horizontalGestureStartOffset = 0f
         scrollingVerticalPanel = false
         lastVerticalScrollY = 0f
     }
@@ -810,8 +832,13 @@ class WinFlowzKeyboardView(
             }
             longPressTriggered = true
             setActionBarState(result.nextState)
+            if (key.actionDescriptorId == "numbers" && layoutMode == KeyboardLayoutMode.Numbers) {
+                layoutMode = KeyboardLayoutMode.Letters
+                panelMode = KeyboardPanelMode.None
+                shifted = false
+            }
             result.status?.let { setStatus(it) }
-            horizontalRowScrollOffsetById.clear()
+            clearHorizontalRowScrollState()
             reconcileActionBarState()
             refreshLayout()
         } else if (key.action == KeyboardKeyAction.Shift) {
@@ -892,41 +919,138 @@ class WinFlowzKeyboardView(
             return
         }
         removeCallbacks(longPressRunnable)
-        if (!scrollingHorizontalRow) {
-            scrollingHorizontalRow = true
-            lastHorizontalScrollX = x
-        }
-        val currentOffset = horizontalRowScrollOffsetById[rowId] ?: 0f
         val maxOffset = horizontalRowMaxOffsetById[rowId] ?: 0f
-        if (frame.isPagedScrollableRowFrame()) {
-            if (!horizontalPageGestureConsumed && abs(dxFromStart) >= dp(36f)) {
-                val pageWidth = max(dp(1f), frame.rowVisibleWidth)
-                val direction = if (dxFromStart < 0f) 1f else -1f
-                val next = (currentOffset + direction * pageWidth).coerceIn(0f, maxOffset)
-                if (next != currentOffset) {
-                    horizontalRowScrollOffsetById[rowId] = next
-                    setActionBarState(
-                        actionBarController.setRowPage(
-                            rowId = rowId,
-                            page = (next / pageWidth).toInt(),
-                            state = actionBarState,
-                            environment = actionEnvironment(),
-                        ),
-                    )
-                    invalidate()
-                }
-                horizontalPageGestureConsumed = true
-            }
-            lastHorizontalScrollX = x
+        if (maxOffset <= 0f) {
             return
         }
+        val currentOffset = horizontalRowScrollOffsetById[rowId] ?: 0f
+        if (!scrollingHorizontalRow) {
+            scrollingHorizontalRow = true
+            activeHorizontalRowId = rowId
+            horizontalGestureStartOffset = currentOffset
+            lastHorizontalScrollX = gestureStartX
+            cancelHorizontalRowAnimation(rowId)
+        }
         val delta = lastHorizontalScrollX - x
-        val next = (currentOffset + delta).coerceIn(0f, maxOffset)
+        val next = resistedHorizontalOffset(currentOffset + delta, maxOffset)
         if (next != currentOffset) {
             horizontalRowScrollOffsetById[rowId] = next
-            invalidate()
+            postInvalidateOnAnimation()
         }
         lastHorizontalScrollX = x
+    }
+
+    private fun finishHorizontalRowScroll() {
+        val rowId = activeHorizontalRowId ?: gestureStartFrame?.rowId ?: return
+        val maxOffset = horizontalRowMaxOffsetById[rowId] ?: 0f
+        val currentOffset = horizontalRowScrollOffsetById[rowId] ?: 0f
+        val frame = gestureStartFrame
+        if (frame.isPagedScrollableRowFrame()) {
+            val pageWidth = max(dp(1f), horizontalRowPageWidthById[rowId] ?: frame?.rowVisibleWidth ?: width.toFloat())
+            val maxPage = ceil(maxOffset / pageWidth).toInt().coerceAtLeast(0)
+            val startPage = (horizontalGestureStartOffset / pageWidth).roundToInt().coerceIn(0, maxPage)
+            val dragDistance = currentOffset - horizontalGestureStartOffset
+            val threshold = min(pageWidth * 0.22f, dp(96f))
+            val targetPage =
+                if (abs(dragDistance) >= threshold) {
+                    startPage + if (dragDistance > 0f) 1 else -1
+                } else {
+                    (currentOffset.coerceIn(0f, maxOffset) / pageWidth).roundToInt()
+                }.coerceIn(0, maxPage)
+            val targetOffset = pageOffset(targetPage, pageWidth, maxOffset)
+            setActionBarState(
+                actionBarController.setRowPage(
+                    rowId = rowId,
+                    page = targetPage,
+                    state = actionBarState,
+                    environment = actionEnvironment(),
+                ),
+            )
+            animateHorizontalRowOffset(rowId, currentOffset, targetOffset)
+            return
+        }
+        val targetOffset = currentOffset.coerceIn(0f, maxOffset)
+        animateHorizontalRowOffset(rowId, currentOffset, targetOffset)
+    }
+
+    private fun resistedHorizontalOffset(
+        rawOffset: Float,
+        maxOffset: Float,
+    ): Float {
+        val overscrollLimit = dp(42f)
+        return when {
+            rawOffset < 0f -> (rawOffset * 0.34f).coerceAtLeast(-overscrollLimit)
+            rawOffset > maxOffset -> (maxOffset + (rawOffset - maxOffset) * 0.34f).coerceAtMost(maxOffset + overscrollLimit)
+            else -> rawOffset
+        }
+    }
+
+    private fun pageOffset(
+        page: Int,
+        pageWidth: Float,
+        maxOffset: Float,
+    ): Float {
+        return (page.coerceAtLeast(0) * pageWidth).coerceIn(0f, maxOffset)
+    }
+
+    private fun animateHorizontalRowOffset(
+        rowId: String,
+        fromOffset: Float,
+        toOffset: Float,
+    ) {
+        cancelHorizontalRowAnimation(rowId)
+        if (abs(fromOffset - toOffset) < 0.5f) {
+            horizontalRowScrollOffsetById[rowId] = toOffset
+            postInvalidateOnAnimation()
+            return
+        }
+        horizontalRowScrollOffsetById[rowId] = fromOffset
+        val animator =
+            ValueAnimator.ofFloat(fromOffset, toOffset).apply {
+                duration = horizontalSnapDurationMs
+                interpolator = horizontalSnapInterpolator
+                addUpdateListener { animation ->
+                    horizontalRowScrollOffsetById[rowId] = animation.animatedValue as Float
+                    postInvalidateOnAnimation()
+                }
+                addListener(
+                    object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            if (horizontalRowAnimatorById[rowId] === animation) {
+                                horizontalRowAnimatorById.remove(rowId)
+                                horizontalRowScrollOffsetById[rowId] = toOffset
+                                postInvalidateOnAnimation()
+                            }
+                        }
+
+                        override fun onAnimationCancel(animation: Animator) {
+                            if (horizontalRowAnimatorById[rowId] === animation) {
+                                horizontalRowAnimatorById.remove(rowId)
+                            }
+                        }
+                    },
+                )
+            }
+        horizontalRowAnimatorById[rowId] = animator
+        animator.start()
+    }
+
+    private fun cancelHorizontalRowAnimation(rowId: String?) {
+        if (rowId.isNullOrBlank()) {
+            horizontalRowAnimatorById.values.toList().forEach { it.cancel() }
+            horizontalRowAnimatorById.clear()
+            return
+        }
+        horizontalRowAnimatorById.remove(rowId)?.cancel()
+    }
+
+    private fun clearHorizontalRowScrollState() {
+        cancelHorizontalRowAnimation(null)
+        horizontalRowScrollOffsetById.clear()
+        horizontalRowPageWidthById.clear()
+        horizontalRowMaxOffsetById.clear()
+        activeHorizontalRowId = null
+        horizontalGestureStartOffset = 0f
     }
 
     private fun handleVerticalPanelScroll(
@@ -1041,12 +1165,27 @@ class WinFlowzKeyboardView(
         val contentWidth = keyWidths.sum() + keyGap() * max(0, row.keys.size - 1)
         val maxOffset = max(0f, contentWidth - width)
         horizontalRowMaxOffsetById[rowId] = maxOffset
+        horizontalRowPageWidthById[rowId] = max(dp(1f), width)
         if (row.pagedHorizontalScrollable) {
-            val pageWidth = max(dp(1f), width)
+            val pageWidth = horizontalRowPageWidthById[rowId] ?: max(dp(1f), width)
             val page = actionBarState.rowPageById[rowId] ?: 0
-            horizontalRowScrollOffsetById[rowId] = (page * pageWidth).coerceIn(0f, maxOffset)
+            val targetOffset = pageOffset(page, pageWidth, maxOffset)
+            val isActiveGesture = scrollingHorizontalRow && activeHorizontalRowId == rowId
+            val isAnimating = horizontalRowAnimatorById.containsKey(rowId)
+            val currentOffset = horizontalRowScrollOffsetById[rowId]
+            if (currentOffset == null || (!isActiveGesture && !isAnimating && abs(currentOffset - targetOffset) > 0.5f)) {
+                horizontalRowScrollOffsetById[rowId] = targetOffset
+            }
         }
-        val rowOffset = (horizontalRowScrollOffsetById[rowId] ?: 0f).coerceIn(0f, maxOffset)
+        val isActiveGesture = scrollingHorizontalRow && activeHorizontalRowId == rowId
+        val isAnimating = horizontalRowAnimatorById.containsKey(rowId)
+        val rawRowOffset = horizontalRowScrollOffsetById[rowId] ?: 0f
+        val rowOffset =
+            if (isActiveGesture || isAnimating) {
+                rawRowOffset
+            } else {
+                rawRowOffset.coerceIn(0f, maxOffset)
+            }
         horizontalRowScrollOffsetById[rowId] = rowOffset
 
         val clipSave = canvas.save()
@@ -1560,7 +1699,7 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.Voice -> callbacks.onVoice()
         }
         if (previousMode != layoutMode || previousPanel != panelMode) {
-            horizontalRowScrollOffsetById.clear()
+            clearHorizontalRowScrollState()
             verticalPanelScrollOffset = 0f
         }
         reconcileActionBarState()
@@ -1698,14 +1837,14 @@ class WinFlowzKeyboardView(
     }
 
     private fun togglePanel(target: KeyboardPanelMode) {
-        horizontalRowScrollOffsetById.clear()
+        clearHorizontalRowScrollState()
         verticalPanelScrollOffset = 0f
         panelMode = if (panelMode == target) KeyboardPanelMode.None else target
         reconcileActionBarState()
     }
 
     private fun toggleClipboardPanel() {
-        horizontalRowScrollOffsetById.clear()
+        clearHorizontalRowScrollState()
         verticalPanelScrollOffset = 0f
         panelMode =
             if (panelMode == KeyboardPanelMode.Clipboard || panelMode == KeyboardPanelMode.ClipboardFull) {

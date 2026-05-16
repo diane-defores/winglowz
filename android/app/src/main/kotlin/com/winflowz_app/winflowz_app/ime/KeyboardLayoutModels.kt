@@ -929,7 +929,11 @@ object KeyboardLayoutBuilder {
         return listOf(
             KeyboardRowSpec(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "=").map { textKey(it) }),
             KeyboardRowSpec(listOf("_", "\\", "|", "~", "<", ">", "$", "€", "£", "¥").map { textKey(it) }, leadingWeight = 0.3f),
-            KeyboardRowSpec(listOf(".", ",", "?", "!", "'", "`", "•").map { textKey(it) }, leadingWeight = 1.2f),
+            KeyboardRowSpec(
+                listOf(KeyboardKeySpec("esc-symbols", "Esc", KeyboardKeyAction.Escape)) +
+                    listOf(".", ",", "?", "!", "'", "`", "•").map { textKey(it) },
+                leadingWeight = 0.7f,
+            ),
         )
     }
 

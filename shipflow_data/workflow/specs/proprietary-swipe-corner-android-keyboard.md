@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-05-09"
 created_at: "2026-05-09 15:32:50 UTC"
 updated: "2026-05-16"
-updated_at: "2026-05-16 12:16:33 UTC"
+updated_at: "2026-05-16 12:44:20 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -979,6 +979,7 @@ Stop conditions:
 | 2026-05-16 11:47:47 UTC | sf-ready | GPT-5 Codex | Evaluated the action-bar architecture readiness gate, refreshed stale dependency versions and next-step/status metadata, and confirmed the slice is unambiguous enough for implementation. | ready | /sf-start Proprietary Swipe-Corner Android Keyboard action-bar architecture |
 | 2026-05-16 12:11:41 UTC | sf-start | GPT-5.3 Codex | Implemented shared native action-bar architecture across IME actions with descriptor/catalog/state/controller/row-provider/renderer contracts, paged attached rows, private-mode sensitive-action masking, adaptive-usage gating, and integration in keyboard view/layout/service/store/tests. | implemented | /sf-verify Proprietary Swipe-Corner Android Keyboard action-bar architecture |
 | 2026-05-16 12:16:33 UTC | sf-verify | GPT-5 Codex | Verified the native action-bar architecture slice locally, fixed remaining Navigation-panel clipboard action leakage into the Clip entry point, reran whitespace and Kotlin compile checks, and identified remaining proof gaps: AAPT2-blocked unit test on ARM64, missing Android device QA, and Settings UI exposure for long-press behavior. | partial | CI/Blacksmith x86_64 test/build proof plus Android device QA for action rows |
+| 2026-05-16 12:44:20 UTC | sf-fix | GPT-5 Codex | Fixed Android real-device regression from action-bar architecture: restored the main action row to non-scrollable compact distribution, kept explicit context rows paged, and changed default long press to attach contextual rows instead of pin/unpin. | fixed-pending-verify | /sf-test --retest BUG-2026-05-16-006 on Android real device |
 
 # Current Chantier Flow
 
@@ -986,6 +987,7 @@ Stop conditions:
 - sf-ready: ready as of 2026-05-16 11:47:47 UTC for the action-bar architecture slice
 - sf-start: implemented 2026-05-16 12:11:41 UTC for the native action-bar architecture slice (Taches 10-11), with Kotlin compile proof and pending hosted/manual verification.
 - sf-verify: partial as of 2026-05-16 12:16:33 UTC; local diff hygiene and Kotlin compile pass, but full unit test/build proof on x86_64 CI plus Android real-device QA remain required.
+- sf-fix: fixed-pending-verify as of 2026-05-16 12:44:20 UTC for `BUG-2026-05-16-006`; Android device retest and Blacksmith/x86_64 proof remain required.
 - sf-end: deferred as of 2026-05-11 03:15:38 UTC; session closed as partial because compile/device evidence is still missing
 - sf-ship: shipped on 2026-05-11 15:12:10 UTC for the current parity/FlutterWeb preview slice; not a final Android native readiness ship
 

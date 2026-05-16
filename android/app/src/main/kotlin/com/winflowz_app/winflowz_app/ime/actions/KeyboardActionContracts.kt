@@ -15,7 +15,7 @@ enum class KeyboardActionLongPressBehavior(
 
     companion object {
         fun fromRaw(raw: String?): KeyboardActionLongPressBehavior {
-            return entries.firstOrNull { it.wireValue == raw } ?: PinAction
+            return entries.firstOrNull { it.wireValue == raw } ?: AttachContextRow
         }
     }
 }
@@ -76,7 +76,7 @@ data class KeyboardActionBarState(
     val attachedRows: List<KeyboardAttachedActionRowState> = emptyList(),
     val rowPageById: Map<String, Int> = emptyMap(),
     val adaptiveUsageScoreById: Map<String, Long> = emptyMap(),
-    val longPressBehavior: KeyboardActionLongPressBehavior = KeyboardActionLongPressBehavior.PinAction,
+    val longPressBehavior: KeyboardActionLongPressBehavior = KeyboardActionLongPressBehavior.AttachContextRow,
 )
 
 data class KeyboardActionEnvironment(
