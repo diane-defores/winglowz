@@ -429,8 +429,17 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Micro et voice'), findsOneWidget);
+      expect(find.text('Clavier'), findsNothing);
+
+      final nextButton = find.text('Suivant');
+      await tester.ensureVisible(nextButton);
+      await tester.tap(nextButton);
+      await tester.pumpAndSettle(const Duration(milliseconds: 300));
       expect(find.text('Clavier'), findsOneWidget);
-      expect(find.text('Clipboard'), findsWidgets);
+      expect(
+        find.text('Historique et synchronisation du clipboard clavier.'),
+        findsNothing,
+      );
 
       await tester.tap(find.byTooltip('Fermer (reprendre plus tard)'));
       await tester.pumpAndSettle(const Duration(milliseconds: 300));

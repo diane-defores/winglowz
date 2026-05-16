@@ -68,6 +68,25 @@ void main() {
     );
   });
 
+  test('skipped steps are completed but not active', () {
+    final readiness = evaluateOnboardingReadiness(
+      isPlatformSupported: true,
+      overlayStatus: overlayStatus,
+      keyboardStatus: keyboardStatus(),
+      persistedStep: 0,
+      onboardingCompleted: false,
+      clipboardSkipped: true,
+    );
+
+    final clipboardStep = readiness.steps.singleWhere(
+      (step) => step.definition.id == OnboardingStepId.keyboardClipboard,
+    );
+
+    expect(clipboardStep.skipped, isTrue);
+    expect(clipboardStep.completed, isTrue);
+    expect(clipboardStep.satisfied, isFalse);
+  });
+
   test('keeps overlay optional and last after selected setup', () {
     final readiness = evaluateOnboardingReadiness(
       isPlatformSupported: true,

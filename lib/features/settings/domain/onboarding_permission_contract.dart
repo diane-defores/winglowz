@@ -235,13 +235,11 @@ OnboardingReadiness evaluateOnboardingReadiness({
       brightnessSkipped: brightnessSkipped,
       overlaySkipped: overlaySkipped,
     );
-    final satisfied = skipped
-        ? true
-        : _isStepSatisfied(
-            definition: definition,
-            overlayStatus: overlayStatus,
-            keyboardStatus: keyboardStatus,
-          );
+    final satisfied = _isStepSatisfied(
+      definition: definition,
+      overlayStatus: overlayStatus,
+      keyboardStatus: keyboardStatus,
+    );
 
     steps.add(
       OnboardingStepProgress(

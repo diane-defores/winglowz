@@ -848,7 +848,7 @@ class _OnboardingOverlay extends StatelessWidget {
   }
 }
 
-class _OnboardingOverviewContent extends StatelessWidget {
+class _OnboardingOverviewContent extends StatefulWidget {
   const _OnboardingOverviewContent({
     required this.readiness,
     required this.isBusy,
@@ -868,7 +868,44 @@ class _OnboardingOverviewContent extends StatelessWidget {
   final VoidCallback onOpenSettings;
 
   @override
+  State<_OnboardingOverviewContent> createState() =>
+      _OnboardingOverviewContentState();
+}
+
+class _OnboardingOverviewContentState
+    extends State<_OnboardingOverviewContent> {
+  var _pageIndex = 0;
+
+  static const _pages = <_OnboardingUseCasePage>[
+    _OnboardingUseCasePage(
+      group: OnboardingStepGroup.voice,
+      icon: Icons.keyboard_voice_outlined,
+      title: 'Micro et voice',
+      subtitle: 'Dictée vocale et injection assistée.',
+    ),
+    _OnboardingUseCasePage(
+      group: OnboardingStepGroup.keyboard,
+      icon: Icons.keyboard_outlined,
+      title: 'Clavier',
+      subtitle: 'Clavier Android WinFlowz et options liées.',
+    ),
+    _OnboardingUseCasePage(
+      group: OnboardingStepGroup.clipboard,
+      icon: Icons.content_paste_outlined,
+      title: 'Clipboard',
+      subtitle: 'Historique et synchronisation du clipboard clavier.',
+    ),
+    _OnboardingUseCasePage(
+      group: OnboardingStepGroup.extras,
+      icon: Icons.open_in_new_outlined,
+      title: 'Compléments',
+      subtitle: 'Options hors parcours principal.',
+    ),
+  ];
+
+  @override
   Widget build(BuildContext context) {
+    final page = _pages[_pageIndex];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -882,48 +919,17 @@ class _OnboardingOverviewContent extends StatelessWidget {
           style: Theme.of(context).textTheme.labelMedium,
         ),
         AppGaps.x2,
-        _OnboardingUseCaseCard(
-          icon: Icons.keyboard_voice_outlined,
-          title: 'Micro et voice',
-          subtitle: 'Dictée vocale et injection assistée.',
-          steps: _stepsFor(OnboardingStepGroup.voice),
-          isBusy: isBusy,
-          onPrimaryAction: onPrimaryAction,
-          onSecondaryAction: onSecondaryAction,
-          onSkip: onSkip,
-        ),
+        _OnboardingProgressDots(count: _pages.length, index: _pageIndex),
         AppGaps.x2,
         _OnboardingUseCaseCard(
-          icon: Icons.keyboard_outlined,
-          title: 'Clavier',
-          subtitle: 'Clavier Android WinFlowz et options liées.',
-          steps: _stepsFor(OnboardingStepGroup.keyboard),
-          isBusy: isBusy,
-          onPrimaryAction: onPrimaryAction,
-          onSecondaryAction: onSecondaryAction,
-          onSkip: onSkip,
-        ),
-        AppGaps.x2,
-        _OnboardingUseCaseCard(
-          icon: Icons.content_paste_outlined,
-          title: 'Clipboard',
-          subtitle: 'Historique et synchronisation du clipboard clavier.',
-          steps: _stepsFor(OnboardingStepGroup.clipboard),
-          isBusy: isBusy,
-          onPrimaryAction: onPrimaryAction,
-          onSecondaryAction: onSecondaryAction,
-          onSkip: onSkip,
-        ),
-        AppGaps.x2,
-        _OnboardingUseCaseCard(
-          icon: Icons.open_in_new_outlined,
-          title: 'Compléments',
-          subtitle: 'Options hors parcours principal.',
-          steps: _stepsFor(OnboardingStepGroup.extras),
-          isBusy: isBusy,
-          onPrimaryAction: onPrimaryAction,
-          onSecondaryAction: onSecondaryAction,
-          onSkip: onSkip,
+          icon: page.icon,
+          title: page.title,
+          subtitle: page.subtitle,
+          steps: _stepsFor(page.group),
+          isBusy: widget.isBusy,
+          onPrimaryAction: widget.onPrimaryAction,
+          onSecondaryAction: widget.onSecondaryAction,
+          onSkip: widget.onSkip,
         ),
         AppGaps.x2,
         Wrap(
@@ -931,21 +937,35 @@ class _OnboardingOverviewContent extends StatelessWidget {
           runSpacing: AppSpacing.x2,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            if (isBusy)
+            OutlinedButton.icon(
+              onPressed: widget.isBusy || _pageIndex == 0
+                  ? null
+                  : () => setState(() => _pageIndex -= 1),
+              icon: const Icon(Icons.arrow_back_outlined),
+              label: const Text('Précédent'),
+            ),
+            FilledButton.tonalIcon(
+              onPressed: widget.isBusy || _pageIndex == _pages.length - 1
+                  ? null
+                  : () => setState(() => _pageIndex += 1),
+              icon: const Icon(Icons.arrow_forward_outlined),
+              label: const Text('Suivant'),
+            ),
+            if (widget.isBusy)
               const SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             else
-              FilledButton.tonalIcon(
-                onPressed: () => onRefresh(),
+              OutlinedButton.icon(
+                onPressed: () => widget.onRefresh(),
                 icon: const Icon(Icons.refresh_outlined),
                 label: const Text('Re-vérifier les accès'),
               ),
-            if (!isBusy)
+            if (!widget.isBusy)
               OutlinedButton.icon(
-                onPressed: onOpenSettings,
+                onPressed: widget.onOpenSettings,
                 icon: const Icon(Icons.settings_outlined),
                 label: const Text('Paramètres'),
               ),
@@ -956,9 +976,52 @@ class _OnboardingOverviewContent extends StatelessWidget {
   }
 
   List<OnboardingStepProgress> _stepsFor(OnboardingStepGroup group) {
-    return readiness.steps
+    return widget.readiness.steps
         .where((step) => step.definition.group == group)
         .toList(growable: false);
+  }
+}
+
+class _OnboardingUseCasePage {
+  const _OnboardingUseCasePage({
+    required this.group,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final OnboardingStepGroup group;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+}
+
+class _OnboardingProgressDots extends StatelessWidget {
+  const _OnboardingProgressDots({required this.count, required this.index});
+
+  final int count;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        for (var i = 0; i < count; i++) ...[
+          Container(
+            width: i == index ? 20 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: i == index
+                  ? colorScheme.primary
+                  : colorScheme.outlineVariant,
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
+          if (i != count - 1) const SizedBox(width: AppSpacing.x1),
+        ],
+      ],
+    );
   }
 }
 
@@ -986,10 +1049,11 @@ class _OnboardingUseCaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final completed = steps.where((step) => step.completed).length;
+    final active = steps.where((step) => step.satisfied).length;
+    final skipped = steps.where((step) => step.skipped).length;
     return AppSectionCard(
       title: title,
-      subtitle: '$subtitle $completed/${steps.length} activé(s).',
+      subtitle: '$subtitle $active actif(s), $skipped ignoré(s).',
       leading: Icon(icon),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1029,8 +1093,23 @@ class _OnboardingPermissionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final definition = step.definition;
-    final color = step.completed ? AppColors.success : AppColors.warning;
-    final status = step.completed ? 'Actif ou ignoré' : 'À configurer si utile';
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = step.satisfied
+        ? AppColors.success
+        : step.skipped
+        ? colorScheme.outline
+        : AppColors.warning;
+    final icon = step.satisfied
+        ? Icons.check_circle
+        : step.skipped
+        ? Icons.do_not_disturb_on_outlined
+        : Icons.radio_button_unchecked;
+    final isResolved = step.satisfied || step.skipped;
+    final status = step.satisfied
+        ? 'Actif'
+        : step.skipped
+        ? 'Ignoré'
+        : _configureHint(definition.id);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.x1),
       child: Column(
@@ -1038,20 +1117,32 @@ class _OnboardingPermissionRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                step.completed
-                    ? Icons.check_circle
-                    : Icons.radio_button_unchecked,
-                color: color,
-              ),
+              Icon(icon, color: color),
               AppGaps.horizontalX2,
               Expanded(
-                child: Text(
-                  definition.title,
-                  style: Theme.of(context).textTheme.titleSmall,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      definition.title,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    AppGaps.x1,
+                    if (isResolved)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: AppTag(label: status),
+                      )
+                    else
+                      Text(
+                        status,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
                 ),
               ),
-              AppTag(label: status),
             ],
           ),
           AppGaps.x1,
@@ -1072,7 +1163,7 @@ class _OnboardingPermissionRow extends StatelessWidget {
             spacing: AppSpacing.x2,
             runSpacing: AppSpacing.x2,
             children: [
-              if (!step.satisfied && !step.skipped)
+              if (!step.satisfied)
                 FilledButton.icon(
                   onPressed: isBusy
                       ? null
@@ -1099,13 +1190,32 @@ class _OnboardingPermissionRow extends StatelessWidget {
               TextButton.icon(
                 onPressed: isBusy ? null : () => onSkip(definition.id),
                 icon: const Icon(Icons.skip_next_outlined),
-                label: const Text('Pas maintenant'),
+                label: Text(step.skipped ? 'Garder ignoré' : 'Pas maintenant'),
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  String _configureHint(OnboardingStepId id) {
+    return switch (id) {
+      OnboardingStepId.keyboardIme =>
+        'À configurer si tu veux utiliser le clavier',
+      OnboardingStepId.keyboardClipboard =>
+        'À configurer si tu veux synchroniser le clipboard',
+      OnboardingStepId.microphoneForDictation =>
+        'À configurer si tu veux utiliser la transcription vocale',
+      OnboardingStepId.accessibility =>
+        'À configurer si tu veux améliorer l’injection du texte',
+      OnboardingStepId.mediaSessionAccess =>
+        'À configurer si tu veux contrôler les médias depuis le clavier',
+      OnboardingStepId.brightnessSystemSettings =>
+        'À configurer si tu veux que WinFlowz gère ta luminosité',
+      OnboardingStepId.overlay =>
+        'À configurer si tu veux utiliser la bulle flottante',
+    };
   }
 }
 
