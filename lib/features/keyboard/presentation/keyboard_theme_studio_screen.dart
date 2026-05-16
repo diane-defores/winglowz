@@ -224,415 +224,451 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
     final safeBottomPadding = mediaQuery.viewPadding.bottom;
     return Scaffold(
       appBar: AppBar(title: const Text('Keyboard Theme Studio')),
-      body: ListView(
-        padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + safeBottomPadding),
-        children: [
-          AppSectionCard(
-            title: 'Preview',
-            subtitle: 'Draft-only simulation before native save.',
-            child: _ThemeDraftPreview(theme: _draft),
-          ),
-          const SizedBox(height: 12),
-          _StudioSection(
-            title: 'Preset',
-            subtitle: 'Set a base then adjust gradient and key colors.',
-            child: DropdownButtonFormField<String>(
-              key: ValueKey('theme-preset-${_draft.presetId}'),
-              initialValue: _draft.presetId,
-              items: KeyboardThemePresetCatalog.presets
-                  .map(
-                    (preset) => DropdownMenuItem<String>(
-                      value: preset.id,
-                      child: Text(preset.name),
-                    ),
-                  )
-                  .toList(growable: false),
-              onChanged: (value) {
-                if (value == null) return;
-                setState(
-                  () => _draft = KeyboardThemePresetCatalog.configFor(value),
-                );
-              },
+      body: CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _StickyPreviewHeaderDelegate(
+              theme: _draft,
+              topPadding: 8,
             ),
           ),
-          const SizedBox(height: 12),
-          _StudioSection(
-            title: 'Background',
-            subtitle: 'Use a flat background or gradient.',
-            child: Column(
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + safeBottomPadding),
+            sliver: SliverList.list(
               children: [
-                SwitchListTile.adaptive(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Gradient background'),
-                  value: _draft.useGradient,
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(useGradient: value),
+                _StudioSection(
+                  title: 'Preset',
+                  subtitle: 'Set a base then adjust gradient and key colors.',
+                  child: DropdownButtonFormField<String>(
+                    key: ValueKey('theme-preset-${_draft.presetId}'),
+                    initialValue: _draft.presetId,
+                    items: KeyboardThemePresetCatalog.presets
+                        .map(
+                          (preset) => DropdownMenuItem<String>(
+                            value: preset.id,
+                            child: Text(preset.name),
+                          ),
+                        )
+                        .toList(growable: false),
+                    onChanged: (value) {
+                      if (value == null) return;
+                      setState(
+                        () => _draft = KeyboardThemePresetCatalog.configFor(
+                          value,
+                        ),
+                      );
+                    },
                   ),
                 ),
-                DropdownButtonFormField<KeyboardThemeGradientStyle>(
-                  key: ValueKey('theme-gradient-${_draft.gradientStyle.name}'),
-                  initialValue: _draft.gradientStyle,
-                  decoration: const InputDecoration(
-                    labelText: 'Gradient style',
-                  ),
-                  items: KeyboardThemeGradientStyle.values
-                      .map(
-                        (style) => DropdownMenuItem(
-                          value: style,
-                          child: Text(_gradientLabel(style)),
+                const SizedBox(height: 12),
+                _StudioSection(
+                  title: 'Background',
+                  subtitle: 'Use a flat background or gradient.',
+                  child: Column(
+                    children: [
+                      SwitchListTile.adaptive(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Gradient background'),
+                        value: _draft.useGradient,
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(useGradient: value),
                         ),
-                      )
-                      .toList(growable: false),
-                  onChanged: _draft.useGradient
-                      ? (style) {
-                          if (style == null) return;
+                      ),
+                      DropdownButtonFormField<KeyboardThemeGradientStyle>(
+                        key: ValueKey(
+                          'theme-gradient-${_draft.gradientStyle.name}',
+                        ),
+                        initialValue: _draft.gradientStyle,
+                        decoration: const InputDecoration(
+                          labelText: 'Gradient style',
+                        ),
+                        items: KeyboardThemeGradientStyle.values
+                            .map(
+                              (style) => DropdownMenuItem(
+                                value: style,
+                                child: Text(_gradientLabel(style)),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged: _draft.useGradient
+                            ? (style) {
+                                if (style == null) return;
+                                setState(
+                                  () => _draft = _draft.copyWith(
+                                    gradientStyle: style,
+                                  ),
+                                );
+                              }
+                            : null,
+                      ),
+                      SwitchListTile.adaptive(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Image background'),
+                        value: _draft.useImage,
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(useImage: value),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: OutlinedButton.icon(
+                          onPressed: _importImage,
+                          icon: const Icon(Icons.image_outlined),
+                          label: const Text('Import image'),
+                        ),
+                      ),
+                      if (_draft.backgroundImagePath != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            'Image: ${_draft.backgroundImagePath}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      _ColorField(
+                        label: 'Background start',
+                        value: _draft.backgroundStartColor,
+                        onChanged: (color) => setState(
+                          () => _draft = _draft.copyWith(
+                            backgroundStartColor: color,
+                          ),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Background end',
+                        value: _draft.backgroundEndColor,
+                        onChanged: (color) => setState(
+                          () => _draft = _draft.copyWith(
+                            backgroundEndColor: color,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _StudioSection(
+                  title: 'Keys',
+                  subtitle:
+                      'Primary colors applied by the native keyboard renderer.',
+                  child: Column(
+                    key: ValueKey(
+                      'theme-keys-${_draft.keyColor}-${_draft.specialKeyColor}-${_draft.activeKeyColor}-${_draft.pressedKeyColor}-${_draft.textColor}-${_draft.cornerTextColor}-${_draft.statusTextColor}',
+                    ),
+                    children: [
+                      _ColorField(
+                        label: 'Key color',
+                        value: _draft.keyColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(keyColor: c),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Special key',
+                        value: _draft.specialKeyColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(specialKeyColor: c),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Active key',
+                        value: _draft.activeKeyColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(activeKeyColor: c),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Pressed key',
+                        value: _draft.pressedKeyColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(pressedKeyColor: c),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Text',
+                        value: _draft.textColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(textColor: c),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Corner text',
+                        value: _draft.cornerTextColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(cornerTextColor: c),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Status text',
+                        value: _draft.statusTextColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(statusTextColor: c),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _StudioSection(
+                  title: 'Spacing',
+                  subtitle:
+                      'Control touch density: no gap for larger targets, airy gap for visual style.',
+                  initiallyExpanded: false,
+                  child: Column(
+                    children: [
+                      _SliderField(
+                        label: 'Key gap',
+                        value: _draft.keyHorizontalGap,
+                        min: 0,
+                        max: 14,
+                        divisions: 14,
+                        valueLabel: '${_draft.keyHorizontalGap.round()} px',
+                        onChanged: (value) => setState(
+                          () =>
+                              _draft = _draft.copyWith(keyHorizontalGap: value),
+                        ),
+                      ),
+                      _SliderField(
+                        label: 'Row gap',
+                        value: _draft.rowVerticalGap,
+                        min: 0,
+                        max: 16,
+                        divisions: 16,
+                        valueLabel: '${_draft.rowVerticalGap.round()} px',
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(rowVerticalGap: value),
+                        ),
+                      ),
+                      _SliderField(
+                        label: 'Key width',
+                        value: _draft.keyWidthScale,
+                        min: 0.75,
+                        max: 1,
+                        divisions: 25,
+                        valueLabel: '${(_draft.keyWidthScale * 100).round()}%',
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(keyWidthScale: value),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _StudioSection(
+                  title: 'Borders & shadows',
+                  subtitle: 'Rounded keys, thin borders and bounded shadows.',
+                  initiallyExpanded: false,
+                  child: Column(
+                    children: [
+                      _ColorField(
+                        label: 'Border',
+                        value: _draft.borderColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(borderColor: c),
+                        ),
+                      ),
+                      _ColorField(
+                        label: 'Shadow',
+                        value: _draft.shadowColor,
+                        onChanged: (c) => setState(
+                          () => _draft = _draft.copyWith(shadowColor: c),
+                        ),
+                      ),
+                      _SliderField(
+                        label: 'Border',
+                        value: _draft.borderWidth,
+                        min: 0,
+                        max: 4,
+                        divisions: 8,
+                        valueLabel:
+                            '${_draft.borderWidth.toStringAsFixed(1)} px',
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(borderWidth: value),
+                        ),
+                      ),
+                      _SliderField(
+                        label: 'Radius',
+                        value: _draft.keyRadius,
+                        min: 0,
+                        max: 24,
+                        divisions: 12,
+                        valueLabel: '${_draft.keyRadius.round()} px',
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(keyRadius: value),
+                        ),
+                      ),
+                      _SliderField(
+                        label: 'Blur',
+                        value: _draft.shadowBlur,
+                        min: 0,
+                        max: 18,
+                        divisions: 9,
+                        valueLabel: '${_draft.shadowBlur.round()} px',
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(shadowBlur: value),
+                        ),
+                      ),
+                      _SliderField(
+                        label: 'Offset',
+                        value: _draft.shadowOffsetY,
+                        min: -4,
+                        max: 10,
+                        divisions: 14,
+                        valueLabel: '${_draft.shadowOffsetY.round()} px',
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(shadowOffsetY: value),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _StudioSection(
+                  title: 'Effects',
+                  subtitle:
+                      'Short native press effects, reduced in private fields.',
+                  child: Column(
+                    children: [
+                      DropdownButtonFormField<KeyboardThemePressEffect>(
+                        key: ValueKey(
+                          'theme-effect-${_draft.pressEffect.name}',
+                        ),
+                        initialValue: _draft.pressEffect,
+                        decoration: const InputDecoration(
+                          labelText: 'Press effect',
+                        ),
+                        items: KeyboardThemePressEffect.values
+                            .map(
+                              (effect) => DropdownMenuItem(
+                                value: effect,
+                                child: Text(_effectLabel(effect)),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged: (effect) {
+                          if (effect == null) return;
+                          setState(
+                            () => _draft = _draft.copyWith(pressEffect: effect),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<KeyboardThemeEffectEasing>(
+                        key: ValueKey(
+                          'theme-easing-${_draft.effectEasing.name}',
+                        ),
+                        initialValue: _draft.effectEasing,
+                        decoration: const InputDecoration(labelText: 'Easing'),
+                        items: KeyboardThemeEffectEasing.values
+                            .map(
+                              (easing) => DropdownMenuItem(
+                                value: easing,
+                                child: Text(_easingLabel(easing)),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged: (easing) {
+                          if (easing == null) return;
                           setState(
                             () =>
-                                _draft = _draft.copyWith(gradientStyle: style),
+                                _draft = _draft.copyWith(effectEasing: easing),
                           );
-                        }
-                      : null,
-                ),
-                SwitchListTile.adaptive(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Image background'),
-                  value: _draft.useImage,
-                  onChanged: (value) =>
-                      setState(() => _draft = _draft.copyWith(useImage: value)),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: OutlinedButton.icon(
-                    onPressed: _importImage,
-                    icon: const Icon(Icons.image_outlined),
-                    label: const Text('Import image'),
-                  ),
-                ),
-                if (_draft.backgroundImagePath != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      'Image: ${_draft.backgroundImagePath}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                _ColorField(
-                  label: 'Background start',
-                  value: _draft.backgroundStartColor,
-                  onChanged: (color) => setState(
-                    () => _draft = _draft.copyWith(backgroundStartColor: color),
-                  ),
-                ),
-                _ColorField(
-                  label: 'Background end',
-                  value: _draft.backgroundEndColor,
-                  onChanged: (color) => setState(
-                    () => _draft = _draft.copyWith(backgroundEndColor: color),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _StudioSection(
-            title: 'Keys',
-            subtitle: 'Primary colors applied by the native keyboard renderer.',
-            child: Column(
-              key: ValueKey(
-                'theme-keys-${_draft.keyColor}-${_draft.specialKeyColor}-${_draft.activeKeyColor}-${_draft.pressedKeyColor}-${_draft.textColor}-${_draft.cornerTextColor}-${_draft.statusTextColor}',
-              ),
-              children: [
-                _ColorField(
-                  label: 'Key color',
-                  value: _draft.keyColor,
-                  onChanged: (c) =>
-                      setState(() => _draft = _draft.copyWith(keyColor: c)),
-                ),
-                _ColorField(
-                  label: 'Special key',
-                  value: _draft.specialKeyColor,
-                  onChanged: (c) => setState(
-                    () => _draft = _draft.copyWith(specialKeyColor: c),
-                  ),
-                ),
-                _ColorField(
-                  label: 'Active key',
-                  value: _draft.activeKeyColor,
-                  onChanged: (c) => setState(
-                    () => _draft = _draft.copyWith(activeKeyColor: c),
-                  ),
-                ),
-                _ColorField(
-                  label: 'Pressed key',
-                  value: _draft.pressedKeyColor,
-                  onChanged: (c) => setState(
-                    () => _draft = _draft.copyWith(pressedKeyColor: c),
-                  ),
-                ),
-                _ColorField(
-                  label: 'Text',
-                  value: _draft.textColor,
-                  onChanged: (c) =>
-                      setState(() => _draft = _draft.copyWith(textColor: c)),
-                ),
-                _ColorField(
-                  label: 'Corner text',
-                  value: _draft.cornerTextColor,
-                  onChanged: (c) => setState(
-                    () => _draft = _draft.copyWith(cornerTextColor: c),
-                  ),
-                ),
-                _ColorField(
-                  label: 'Status text',
-                  value: _draft.statusTextColor,
-                  onChanged: (c) => setState(
-                    () => _draft = _draft.copyWith(statusTextColor: c),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _StudioSection(
-            title: 'Spacing',
-            subtitle:
-                'Control touch density: no gap for larger targets, airy gap for visual style.',
-            initiallyExpanded: false,
-            child: Column(
-              children: [
-                _SliderField(
-                  label: 'Key gap',
-                  value: _draft.keyHorizontalGap,
-                  min: 0,
-                  max: 14,
-                  divisions: 14,
-                  valueLabel: '${_draft.keyHorizontalGap.round()} px',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(keyHorizontalGap: value),
-                  ),
-                ),
-                _SliderField(
-                  label: 'Row gap',
-                  value: _draft.rowVerticalGap,
-                  min: 0,
-                  max: 16,
-                  divisions: 16,
-                  valueLabel: '${_draft.rowVerticalGap.round()} px',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(rowVerticalGap: value),
-                  ),
-                ),
-                _SliderField(
-                  label: 'Key width',
-                  value: _draft.keyWidthScale,
-                  min: 0.75,
-                  max: 1,
-                  divisions: 25,
-                  valueLabel: '${(_draft.keyWidthScale * 100).round()}%',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(keyWidthScale: value),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _StudioSection(
-            title: 'Borders & shadows',
-            subtitle: 'Rounded keys, thin borders and bounded shadows.',
-            initiallyExpanded: false,
-            child: Column(
-              children: [
-                _ColorField(
-                  label: 'Border',
-                  value: _draft.borderColor,
-                  onChanged: (c) =>
-                      setState(() => _draft = _draft.copyWith(borderColor: c)),
-                ),
-                _ColorField(
-                  label: 'Shadow',
-                  value: _draft.shadowColor,
-                  onChanged: (c) =>
-                      setState(() => _draft = _draft.copyWith(shadowColor: c)),
-                ),
-                _SliderField(
-                  label: 'Border',
-                  value: _draft.borderWidth,
-                  min: 0,
-                  max: 4,
-                  divisions: 8,
-                  valueLabel: '${_draft.borderWidth.toStringAsFixed(1)} px',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(borderWidth: value),
-                  ),
-                ),
-                _SliderField(
-                  label: 'Radius',
-                  value: _draft.keyRadius,
-                  min: 0,
-                  max: 24,
-                  divisions: 12,
-                  valueLabel: '${_draft.keyRadius.round()} px',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(keyRadius: value),
-                  ),
-                ),
-                _SliderField(
-                  label: 'Blur',
-                  value: _draft.shadowBlur,
-                  min: 0,
-                  max: 18,
-                  divisions: 9,
-                  valueLabel: '${_draft.shadowBlur.round()} px',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(shadowBlur: value),
-                  ),
-                ),
-                _SliderField(
-                  label: 'Offset',
-                  value: _draft.shadowOffsetY,
-                  min: -4,
-                  max: 10,
-                  divisions: 14,
-                  valueLabel: '${_draft.shadowOffsetY.round()} px',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(shadowOffsetY: value),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _StudioSection(
-            title: 'Effects',
-            subtitle: 'Short native press effects, reduced in private fields.',
-            child: Column(
-              children: [
-                DropdownButtonFormField<KeyboardThemePressEffect>(
-                  key: ValueKey('theme-effect-${_draft.pressEffect.name}'),
-                  initialValue: _draft.pressEffect,
-                  decoration: const InputDecoration(labelText: 'Press effect'),
-                  items: KeyboardThemePressEffect.values
-                      .map(
-                        (effect) => DropdownMenuItem(
-                          value: effect,
-                          child: Text(_effectLabel(effect)),
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      _SliderField(
+                        label: 'Intensity',
+                        value: _draft.effectIntensity,
+                        min: 0,
+                        max: 1,
+                        divisions: 10,
+                        valueLabel: _draft.effectIntensity.toStringAsFixed(1),
+                        onChanged: (value) => setState(
+                          () =>
+                              _draft = _draft.copyWith(effectIntensity: value),
                         ),
-                      )
-                      .toList(growable: false),
-                  onChanged: (effect) {
-                    if (effect == null) return;
-                    setState(
-                      () => _draft = _draft.copyWith(pressEffect: effect),
-                    );
-                  },
-                ),
-                const SizedBox(height: 8),
-                DropdownButtonFormField<KeyboardThemeEffectEasing>(
-                  key: ValueKey('theme-easing-${_draft.effectEasing.name}'),
-                  initialValue: _draft.effectEasing,
-                  decoration: const InputDecoration(labelText: 'Easing'),
-                  items: KeyboardThemeEffectEasing.values
-                      .map(
-                        (easing) => DropdownMenuItem(
-                          value: easing,
-                          child: Text(_easingLabel(easing)),
+                      ),
+                      _SliderField(
+                        label: 'Duration',
+                        value: _draft.effectDurationMs.toDouble(),
+                        min: 80,
+                        max: 600,
+                        divisions: 13,
+                        valueLabel: '${_draft.effectDurationMs} ms',
+                        onChanged: (value) => setState(
+                          () => _draft = _draft.copyWith(
+                            effectDurationMs: value.round(),
+                          ),
                         ),
-                      )
-                      .toList(growable: false),
-                  onChanged: (easing) {
-                    if (easing == null) return;
-                    setState(
-                      () => _draft = _draft.copyWith(effectEasing: easing),
-                    );
-                  },
-                ),
-                const SizedBox(height: 8),
-                _SliderField(
-                  label: 'Intensity',
-                  value: _draft.effectIntensity,
-                  min: 0,
-                  max: 1,
-                  divisions: 10,
-                  valueLabel: _draft.effectIntensity.toStringAsFixed(1),
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(effectIntensity: value),
+                      ),
+                    ],
                   ),
                 ),
-                _SliderField(
-                  label: 'Duration',
-                  value: _draft.effectDurationMs.toDouble(),
-                  min: 80,
-                  max: 600,
-                  divisions: 13,
-                  valueLabel: '${_draft.effectDurationMs} ms',
-                  onChanged: (value) => setState(
-                    () => _draft = _draft.copyWith(
-                      effectDurationMs: value.round(),
+                const SizedBox(height: 12),
+                _StudioSection(
+                  title: 'Import / export',
+                  subtitle:
+                      'Theme JSON excludes image bytes and stays local-only.',
+                  initiallyExpanded: false,
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      OutlinedButton.icon(
+                        key: const Key('theme-import-json'),
+                        onPressed: _importJson,
+                        icon: const Icon(Icons.upload_file_outlined),
+                        label: const Text('Import JSON'),
+                      ),
+                      OutlinedButton.icon(
+                        key: const Key('theme-export-json-button'),
+                        onPressed: _exportJson,
+                        icon: const Icon(Icons.data_object_outlined),
+                        label: const Text('Export JSON'),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _ValidationPanel(validation: _validation),
+                if (_message != null) ...[
+                  const SizedBox(height: 12),
+                  Text(_message!),
+                ],
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _dirty
+                            ? () => setState(() => _draft = _saved)
+                            : null,
+                        child: const Text('Discard'),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _saving ? null : _reset,
+                        child: const Text('Reset'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: _saving || !_validation.canSave
+                            ? null
+                            : _save,
+                        child: const Text('Save'),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 12),
-          _StudioSection(
-            title: 'Import / export',
-            subtitle: 'Theme JSON excludes image bytes and stays local-only.',
-            initiallyExpanded: false,
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  key: const Key('theme-import-json'),
-                  onPressed: _importJson,
-                  icon: const Icon(Icons.upload_file_outlined),
-                  label: const Text('Import JSON'),
-                ),
-                OutlinedButton.icon(
-                  key: const Key('theme-export-json-button'),
-                  onPressed: _exportJson,
-                  icon: const Icon(Icons.data_object_outlined),
-                  label: const Text('Export JSON'),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _ValidationPanel(validation: _validation),
-          if (_message != null) ...[
-            const SizedBox(height: 12),
-            Text(_message!),
-          ],
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _dirty
-                      ? () => setState(() => _draft = _saved)
-                      : null,
-                  child: const Text('Discard'),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _saving ? null : _reset,
-                  child: const Text('Reset'),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: FilledButton(
-                  onPressed: _saving || !_validation.canSave ? null : _save,
-                  child: const Text('Save'),
-                ),
-              ),
-            ],
           ),
         ],
       ),
@@ -713,6 +749,76 @@ class _ValidationPanel extends StatelessWidget {
       title: validation.canSave ? 'Theme warnings' : 'Theme needs fixes',
       subtitle: [...validation.errors, ...validation.warnings].join('\n'),
       icon: validation.canSave ? Icons.info_outline : Icons.error_outline,
+    );
+  }
+}
+
+class _StickyPreviewHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _StickyPreviewHeaderDelegate({required this.theme, required this.topPadding});
+
+  final KeyboardThemeConfig theme;
+  final double topPadding;
+
+  @override
+  double get minExtent => maxExtent;
+
+  @override
+  double get maxExtent => topPadding + 260;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, topPadding, 16, 6),
+        child: _PreviewSectionCard(theme: theme),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _StickyPreviewHeaderDelegate oldDelegate) {
+    return oldDelegate.theme != theme || oldDelegate.topPadding != topPadding;
+  }
+}
+
+class _PreviewSectionCard extends StatelessWidget {
+  const _PreviewSectionCard({required this.theme});
+
+  final KeyboardThemeConfig theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final subtitleStyle = Theme.of(context).textTheme.bodySmall;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Preview', style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Draft-only simulation before native save.',
+                    textAlign: TextAlign.end,
+                    style: subtitleStyle,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Expanded(child: _ThemeDraftPreview(theme: theme)),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1012,7 +1118,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
                             : null),
                 ),
                 child: SizedBox(
-                  height: 36,
+                  height: 30,
                   child: Center(
                     child: Text(
                       label,

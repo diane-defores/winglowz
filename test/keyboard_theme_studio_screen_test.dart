@@ -152,10 +152,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     final importSection = find.text('Import / export');
-    await tester.scrollUntilVisible(
+    await tester.dragUntilVisible(
       importSection,
-      500,
-      scrollable: find.byType(Scrollable).first,
+      find.byType(CustomScrollView),
+      const Offset(0, -300),
     );
     await tester.tap(importSection);
     await tester.pumpAndSettle();
