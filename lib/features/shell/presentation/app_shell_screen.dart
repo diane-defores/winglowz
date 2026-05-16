@@ -46,6 +46,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   int _index = 0;
   bool _onboardingVisible = false;
   bool _onboardingDismissed = false;
+  bool _onboardingOpenedManually = false;
   bool _onboardingBusy = false;
   final List<int> _tabHistory = [0];
   OnboardingReadiness? _onboardingReadiness;
@@ -154,6 +155,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
         );
         _onboardingVisible = false;
         _onboardingDismissed = true;
+        _onboardingOpenedManually = false;
       });
       return;
     }
@@ -198,7 +200,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
         if (readiness.shouldShowOnboarding && !_onboardingDismissed) {
           _onboardingVisible = true;
         }
-        if (!readiness.shouldShowOnboarding) {
+        if (!readiness.shouldShowOnboarding && !_onboardingOpenedManually) {
           _onboardingVisible = false;
           _onboardingDismissed = true;
         }
@@ -361,6 +363,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       setState(() {
         _onboardingVisible = false;
         _onboardingDismissed = true;
+        _onboardingOpenedManually = false;
       });
       await _refreshOnboardingState();
     } finally {
@@ -383,6 +386,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     setState(() {
       _onboardingVisible = false;
       _onboardingDismissed = true;
+      _onboardingOpenedManually = false;
     });
   }
 
@@ -399,6 +403,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
           setState(() {
             _onboardingDismissed = false;
             _onboardingVisible = true;
+            _onboardingOpenedManually = true;
           });
           _refreshOnboardingState();
         },
@@ -651,7 +656,7 @@ class _OnboardingOverlay extends StatelessWidget {
               child: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.x3,
+                    horizontal: AppSpacing.x2,
                     vertical: AppSpacing.x2,
                   ),
                   child: LayoutBuilder(

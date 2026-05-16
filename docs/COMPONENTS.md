@@ -69,6 +69,12 @@ This inventory separates:
   reads and writes the native `winflowz_app/keyboard` corner config when
   Android IME is available, and clearly stays in simulation mode on unsupported
   platforms.
+- `KeyboardThemeStudioScreen`:
+  dedicated keyboard theme editor with draft/save/discard/reset, live draft
+  preview, collapsible sections, the full v1 preset catalog, JSON import/export,
+  contrast/performance validation, border/radius/shadow controls,
+  linear/radial gradients, press-effect/easing controls, and Android-native
+  persistence through `AndroidKeyboardBridge`.
 - `PermissionCards`:
   platform-specific permission status + recovery actions.
 

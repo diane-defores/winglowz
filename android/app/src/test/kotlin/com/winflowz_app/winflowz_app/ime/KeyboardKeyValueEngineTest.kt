@@ -58,10 +58,17 @@ class KeyboardKeyValueEngineTest {
                 KeyboardKeyValue.text("z"),
                 setOf(KeyboardSystemModifier.Ctrl),
             )
+        val ctrlJ =
+            KeyboardKeyModifier.apply(
+                KeyboardKeyValue.text("j"),
+                setOf(KeyboardSystemModifier.Ctrl),
+            )
 
         assertEquals("A", shifted.text)
         assertEquals(KeyboardKeyValueKind.KeyEvent, controlled.kind)
         assertEquals(KeyEvent.KEYCODE_Z, controlled.keyCode)
+        assertEquals(KeyboardKeyValueKind.KeyEvent, ctrlJ.kind)
+        assertEquals(KeyEvent.KEYCODE_J, ctrlJ.keyCode)
     }
 
     @Test

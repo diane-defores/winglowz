@@ -75,6 +75,7 @@ enum class KeyboardKeyAction {
     MediaPlayPause,
     MediaNext,
     MediaNowPlaying,
+    OpenMediaApp,
     InsertSnippetOne,
     OpenWinFlowzSettings,
     OpenThemeSettings,
@@ -177,6 +178,7 @@ data class KeyboardLayoutRequest(
     val snippetsAllowed: Boolean,
     val snippets: List<KeyboardTextRule> = emptyList(),
     val suggestions: List<String>,
+    val numberRowPinned: Boolean = false,
     val mediaNowPlayingLabel: String? = null,
     val cornerConfig: KeyboardCornerConfig = KeyboardCornerConfig(),
     val fieldPolicy: KeyboardFieldPolicy = KeyboardSecurityPolicy.evaluate(null, KeyboardStateStore.PRIVACY_AUTO),
@@ -201,7 +203,12 @@ object KeyboardLayoutBuilder {
 
         val rows = mutableListOf<KeyboardRowSpec>()
         rows.add(actionRow(request, effectiveMode))
-        val suggestionRows = if (request.panel.suppressesTypingRows()) emptyList() else suggestionRows(request)
+        val suggestionRows =
+            if (request.panel.suppressesTypingRows()) {
+                emptyList()
+            } else {
+                pinnedNumberRows(request, effectiveMode) + suggestionRows(request)
+            }
         rows.addAll(suggestionRows)
         val panelRows = panelRows(request)
         rows.addAll(panelRows)
@@ -252,7 +259,7 @@ object KeyboardLayoutBuilder {
             keys =
                 listOf(
                     modeKey("ABC", KeyboardKeyAction.ModeLetters, mode == KeyboardLayoutMode.Letters),
-                    modeKey("123", KeyboardKeyAction.ModeNumbers, mode == KeyboardLayoutMode.Numbers),
+                    modeKey("123", KeyboardKeyAction.ModeNumbers, mode == KeyboardLayoutMode.Numbers || request.numberRowPinned),
                     panelKey("Acc", KeyboardKeyAction.ToggleAccentPanel, request.panel == KeyboardPanelMode.Accents),
                     modeKey("#+=", KeyboardKeyAction.ModeSymbols, mode == KeyboardLayoutMode.Symbols),
                     panelKey("Nav", KeyboardKeyAction.ToggleNavigationPanel, request.panel == KeyboardPanelMode.Navigation),
@@ -292,6 +299,29 @@ object KeyboardLayoutBuilder {
         )
     }
 
+    private fun pinnedNumberRows(
+        request: KeyboardLayoutRequest,
+        mode: KeyboardLayoutMode,
+    ): List<KeyboardRowSpec> {
+        if (!request.numberRowPinned || mode == KeyboardLayoutMode.Numbers || request.fieldContext.isNumericEntry()) {
+            return emptyList()
+        }
+        return listOf(
+            KeyboardRowSpec(
+                keys =
+                    "1234567890".map { digit ->
+                        KeyboardKeySpec(
+                            id = "pinned-number-$digit",
+                            label = digit.toString(),
+                            action = KeyboardKeyAction.Text,
+                            keyValue = KeyboardKeyValue.text(digit.toString()),
+                            weight = 0.9f,
+                        )
+                    },
+            ),
+        )
+    }
+
     private fun panelRows(request: KeyboardLayoutRequest): List<KeyboardRowSpec> {
         return when (request.panel) {
             KeyboardPanelMode.None -> emptyList()
@@ -323,11 +353,13 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(
                 keys =
                     listOf(
-                        KeyboardKeySpec("nav-paragraph-up", "Para↑", KeyboardKeyAction.NavigateParagraphUp, weight = 1.3f),
-                        KeyboardKeySpec("nav-line-up", "Line↑", KeyboardKeyAction.NavigateLineUp, weight = 1.3f),
+                        KeyboardKeySpec("nav-del-before", "Del←", KeyboardKeyAction.Backspace),
+                        KeyboardKeySpec("nav-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp, weight = 1.1f),
+                        KeyboardKeySpec("nav-line-up", "↑", KeyboardKeyAction.NavigateLineUp, weight = 1.1f),
+                        KeyboardKeySpec("nav-del-after", "Del→", KeyboardKeyAction.ForwardDelete, weight = 1.1f),
                     ),
-                leadingWeight = 1.5f,
-                trailingWeight = 1.5f,
+                leadingWeight = 0.35f,
+                trailingWeight = 0.35f,
             ),
             KeyboardRowSpec(
                 keys =
@@ -343,20 +375,13 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(
                 keys =
                     listOf(
-                        KeyboardKeySpec("nav-line-down", "Line↓", KeyboardKeyAction.NavigateLineDown, weight = 1.3f),
-                        KeyboardKeySpec("nav-paragraph-down", "Para↓", KeyboardKeyAction.NavigateParagraphDown, weight = 1.3f),
-                    ),
-                leadingWeight = 1.5f,
-                trailingWeight = 1.5f,
-            ),
-            KeyboardRowSpec(
-                keys =
-                    listOf(
-                        KeyboardKeySpec("nav-del-before", "Del←", KeyboardKeyAction.Backspace),
                         KeyboardKeySpec("nav-del-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore, weight = 1.2f),
-                        KeyboardKeySpec("nav-del-after", "Del→", KeyboardKeyAction.ForwardDelete, weight = 1.1f),
+                        KeyboardKeySpec("nav-paragraph-down", "⏬", KeyboardKeyAction.NavigateParagraphDown, weight = 1.1f),
+                        KeyboardKeySpec("nav-line-down", "↓", KeyboardKeyAction.NavigateLineDown, weight = 1.1f),
                         KeyboardKeySpec("nav-del-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter, weight = 1.2f),
                     ),
+                leadingWeight = 0.35f,
+                trailingWeight = 0.35f,
             ),
         )
     }
@@ -475,7 +500,7 @@ object KeyboardLayoutBuilder {
                             KeyboardKeySpec("media-play", ">||", KeyboardKeyAction.MediaPlayPause, weight = 1.2f),
                             KeyboardKeySpec("media-next", "Next", KeyboardKeyAction.MediaNext),
                             KeyboardKeySpec("media-now", "Now", KeyboardKeyAction.MediaNowPlaying),
-                            KeyboardKeySpec("media-close", "Close", KeyboardKeyAction.ClosePanel),
+                            KeyboardKeySpec("media-open-app", "App", KeyboardKeyAction.OpenMediaApp),
                         ),
                 ),
             )

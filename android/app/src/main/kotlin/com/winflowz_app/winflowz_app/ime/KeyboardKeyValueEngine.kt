@@ -312,8 +312,28 @@ object KeyboardKeyModifier {
         val keyCode =
             when (value.text.lowercase()) {
                 "a" -> KeyEvent.KEYCODE_A
+                "b" -> KeyEvent.KEYCODE_B
                 "c" -> KeyEvent.KEYCODE_C
+                "d" -> KeyEvent.KEYCODE_D
+                "e" -> KeyEvent.KEYCODE_E
+                "f" -> KeyEvent.KEYCODE_F
+                "g" -> KeyEvent.KEYCODE_G
+                "h" -> KeyEvent.KEYCODE_H
+                "i" -> KeyEvent.KEYCODE_I
+                "j" -> KeyEvent.KEYCODE_J
+                "k" -> KeyEvent.KEYCODE_K
+                "l" -> KeyEvent.KEYCODE_L
+                "m" -> KeyEvent.KEYCODE_M
+                "n" -> KeyEvent.KEYCODE_N
+                "o" -> KeyEvent.KEYCODE_O
+                "p" -> KeyEvent.KEYCODE_P
+                "q" -> KeyEvent.KEYCODE_Q
+                "r" -> KeyEvent.KEYCODE_R
+                "s" -> KeyEvent.KEYCODE_S
+                "t" -> KeyEvent.KEYCODE_T
+                "u" -> KeyEvent.KEYCODE_U
                 "v" -> KeyEvent.KEYCODE_V
+                "w" -> KeyEvent.KEYCODE_W
                 "x" -> KeyEvent.KEYCODE_X
                 "y" -> KeyEvent.KEYCODE_Y
                 "z" -> KeyEvent.KEYCODE_Z

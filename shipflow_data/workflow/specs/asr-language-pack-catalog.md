@@ -6,8 +6,8 @@ project: "winflowz_app"
 created: "2026-05-14"
 created_at: "2026-05-14 22:30:00 UTC"
 updated: "2026-05-15"
-updated_at: "2026-05-15 09:10:00 UTC"
-status: reviewed
+updated_at: "2026-05-15 19:19:39 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
@@ -50,7 +50,7 @@ evidence:
   - "User decision 2026-05-14: do not bundle all models in the APK; downloading after install is preferred."
   - "Current code already includes Android IME voice capture through KeyboardVoiceController using Android SpeechRecognizer, proving a fallback path exists but not a local-model catalog."
   - "Current code already exposes Settings and diagnostics surfaces for keyboard and overlay status, which can host pack-management state."
-next_step: "/sf-ready shipflow_data/workflow/specs/asr-language-pack-catalog.md"
+next_step: "/sf-start ASR Language Pack Catalog"
 ---
 
 # Title
@@ -59,7 +59,7 @@ ASR Language Pack Catalog
 
 # Status
 
-Reviewed (not ready). This spec defines the product and implementation contract for downloadable on-device ASR language packs used by the WinFlowz Android keyboard. It exists to turn the current high-level local-first direction into a concrete catalog, installation, fallback, diagnostics, and benchmarking plan that an implementation agent can execute without inventing policy later.
+Ready. This spec defines the product and implementation contract for downloadable on-device ASR language packs used by the WinFlowz Android keyboard. It exists to turn the current high-level local-first direction into a concrete catalog, installation, fallback, diagnostics, and benchmarking plan that an implementation agent can execute without inventing policy later.
 
 # User Story
 
@@ -113,6 +113,43 @@ Le produit veut devenir keyboard-first et local-first, mais aujourd'hui il n'exi
 
 Introduire un catalogue de packs de langue ASR versionne, telechargeable et gratuit, alimente par metadonnees produit verificables et consomme par deux surfaces: le clavier Android pour le choix runtime/fallback, et Settings pour l'installation/maintenance. Le catalogue doit separer clairement le statut marketing d'une langue, le statut technique d'un pack, la compatibilite appareil, et la politique fallback, afin que le produit puisse etendre sa couverture linguistique sans gonfler l'APK ni mentir sur la qualite offline.
 
+# Data Contract
+
+`LanguagePackCatalogEntry` doit exposer les champs obligatoires suivants:
+
+- `pack_id`: identifiant stable unique, format lowercase `engine.language.region.variant.version` sans espace.
+- `language_tag`: tag BCP-47 normalise (`fr-FR`, `en-US`, `hi-IN`), distinct de la langue UI.
+- `display_name`: libelle user-facing localise ou fallback anglais.
+- `engine`: enum stable (`android_speech_recognizer`, `sherpa_onnx`, `whisper_cpp`, `vosk`, `cloud_fallback`, `unavailable`).
+- `engine_version`: version moteur ou `unknown` si le fallback systeme Android ne l'expose pas.
+- `model_version`: version modele ou `none` pour fallback systeme/cloud sans artefact local.
+- `quality_tier`: enum `recommended`, `standard`, `experimental`, `fallbackOnly`.
+- `runtime_mode`: enum `local`, `android_fallback`, `cloud_fallback`, `unavailable`.
+- `fallback_policy`: enum `prefer_local`, `android_then_cloud_auto`, `cloud_auto_only`, `unavailable`.
+- `download_url`: URL HTTPS ou `none` si aucun artefact local n'est telechargeable.
+- `download_size_mb`: entier positif ou `0` si aucun artefact local.
+- `installed_size_mb`: entier positif ou `0` si aucun artefact local.
+- `sha256`: checksum hex lowercase obligatoire pour tout artefact local, `none` sinon.
+- `signature`: signature ou reference de signature obligatoire pour tout artefact local, `none` sinon.
+- `license_id`: identifiant de licence; ne peut pas etre `unknown` pour un pack `recommended`.
+- `commercial_distribution_allowed`: booleen; doit etre `true` pour tout pack `recommended`.
+- `min_android_sdk`, `supported_abis`, `min_ram_mb`, `requires_streaming`, `supports_offline`: champs de compatibilite obligatoires.
+- `benchmark_status`: enum `unbenchmarked`, `candidate`, `benchmarking`, `passed`, `failed`.
+- `benchmark_evidence`: chemin doc local ou `none`; obligatoire et non-`none` pour `recommended`.
+- `updated_at`: timestamp UTC ISO-8601 du catalogue.
+
+`InstalledLanguagePack` doit exposer les champs obligatoires suivants:
+
+- `pack_id`, `language_tag`, `engine`, `model_version`.
+- `install_state`: enum `not_installed`, `queued`, `downloading`, `paused_insufficient_storage`, `verifying`, `installed`, `update_available`, `failed_download`, `failed_verification`, `blocked_incompatible_device`, `blocked_insufficient_storage`, `corrupted`, `removed`.
+- `runtime_mode`: enum `local`, `android_fallback`, `cloud_fallback`, `unavailable`.
+- `fallback_reason`: enum `none`, `missing_pack`, `incompatible_device`, `insufficient_storage`, `runtime_load_failed`, `runtime_timeout`, `verification_failed`, `unsupported_language`, `cloud_auto_policy`, `user_disabled_cloud`.
+- `download_progress`: entier `0..100`.
+- `installed_size_mb`, `required_mb`, `available_mb`.
+- `checksum_verified`: booleen.
+- `installed_at`, `last_verified_at`, `last_error_at`: timestamps UTC ISO-8601 ou `none`.
+- `last_error_code`: code stable ou `none`; ne contient jamais de secret, audio, transcription brute ni chemin local complet.
+
 # Scope In
 
 - Definir le format `LanguagePackCatalogEntry` et l'etat `InstalledLanguagePack`.
@@ -142,13 +179,19 @@ Introduire un catalogue de packs de langue ASR versionne, telechargeable et grat
 - Le clavier ne doit jamais perdre sa reactivite parce qu'un chargement modele bloque le thread UI.
 - Le produit doit utiliser les ressources du telephone avant tout worker WinFlowz quand un pack local compatible est installe.
 - Aucun fallback cloud ne doit etre silencieux; l'utilisatrice doit comprendre quel mode elle utilise.
-- Le fallback cloud est autorise en mode auto apres echec local ou indisponibilite locale, mais toujours avec indication explicite du mode actif.
+- Le fallback cloud est autorise en mode auto apres echec local ou indisponibilite locale, mais seulement si l'utilisatrice a active le parametre `allow_cloud_fallback`.
+- Avant toute capture susceptible d'utiliser le cloud, l'UI doit afficher le mode actif `cloud_fallback`; apres capture, les diagnostics doivent conserver `runtime_mode=cloud_fallback` et `fallback_reason=cloud_auto_policy`.
+- Si `allow_cloud_fallback=false`, un echec local ou Android fallback doit aboutir a un etat recuperable `unavailable`, jamais a un envoi cloud.
+- Donnees cloud autorisees: uniquement l'audio necessaire a la transcription et les metadonnees minimales `language_tag`, `engine`, `runtime_mode`, `fallback_reason`; aucune cle API utilisateur, aucun chemin local, aucun pack checksum complet, aucun texte de diagnostic verbeux ne doit etre transmis.
+- Logs cloud interdits: audio brut, transcription brute avant affichage utilisatrice, cle API, token, chemin local complet, identifiant appareil persistant non necessaire.
+- Le parametre `allow_cloud_fallback` doit etre modifiable dans Settings et son etat doit etre visible dans les diagnostics.
 - Les retries automatiques doivent etre bornes et observables (pas de boucle infinie), avec un maximum de `3` retries automatiques par operation.
-- Politique capacite disque (deterministe): un install preflight est autorise uniquement si `free_space_mb >= max(2 * download_size_mb, installed_size_mb + 512)`.
+- Politique capacite disque (deterministe): un install preflight est autorise uniquement si `pack_size_mb <= 5%` de la capacite totale ET `free_space_mb >= max(3 * download_size_mb, installed_size_mb + 1536)`.
 - Si le preflight espace disque echoue, l'etat doit devenir `blocked_insufficient_storage` avec l'espace requis et l'espace disponible visibles; aucun telechargement ne demarre.
 - Si l'espace disque devient insuffisant en cours de telechargement, l'operation passe en `paused_insufficient_storage`, le fichier temporaire reste reprenable, et l'UI propose `Retry` apres liberation d'espace.
 - Chaque transition d'etat doit etre idempotente.
 - Les diagnostics ne doivent jamais contenir audio brut, cle API, token, ni chemin local complet sensible.
+- Toute entree de catalogue non conforme au `Data Contract` doit etre rejetee avec etat recuperable `catalog_invalid_entry`; elle ne peut pas etre proposee a l'installation ni servir a un claim GTM.
 - Les metadonnees de licence doivent faire partie du contrat de catalogue et pas d'une note externe ad hoc.
 - Les claims publics AppSumo/LTD doivent etre derives des statuts du catalogue et non l'inverse.
 
@@ -292,7 +335,10 @@ Fresh external docs:
 - [ ] CA 11 : Given un diagnostic voix est emis, when il est persiste ou affiche, then il contient uniquement des metadonnees techniques autorisees et jamais d'audio brut ni secret.
 - [ ] CA 12 : Given une operation `download`, `verify`, `install` ou `remove` echoue, when la politique de reprise s'applique, then au plus `3` retries automatiques sont effectues avant un etat d'echec recuperable explicite.
 - [ ] CA 13 : Given le local est indisponible ou echoue, when le fallback cloud auto est active, then l'UI affiche explicitement le mode `cloud_fallback`.
-- [ ] CA 14 : Given `free_space_mb < max(2 * download_size_mb, installed_size_mb + 512)`, when l'utilisatrice lance l'installation d'un pack, then le systeme refuse le demarrage avec `blocked_insufficient_storage`, affiche `required_mb` et `available_mb`, et n'ecrit aucun etat `downloading`.
+- [ ] CA 14 : Given `pack_size_mb > 5%` de la capacite totale OU `free_space_mb < max(3 * download_size_mb, installed_size_mb + 1536)`, when l'utilisatrice lance l'installation d'un pack, then le systeme refuse le demarrage avec `blocked_insufficient_storage`, affiche `required_mb` et `available_mb`, et n'ecrit aucun etat `downloading`.
+- [ ] CA 15 : Given une entree catalogue manque un champ obligatoire du `Data Contract` ou contient un enum invalide, when le catalogue est charge, then cette entree est rejetee avec `catalog_invalid_entry` et n'apparait ni comme installable ni comme `recommended`.
+- [ ] CA 16 : Given `allow_cloud_fallback=false`, when aucun runtime local ou Android fallback ne peut transcrire, then WinFlowz affiche `unavailable` avec action de recuperation et n'envoie aucune donnee cloud.
+- [ ] CA 17 : Given `allow_cloud_fallback=true` et le local est indisponible ou echoue, when le fallback cloud auto est utilise, then l'UI affiche `cloud_fallback`, les diagnostics exposent `fallback_reason=cloud_auto_policy`, et les logs excluent audio brut, transcription brute, secrets, tokens et chemins locaux complets.
 
 # Test Strategy
 
@@ -337,14 +383,20 @@ None.
 | 2026-05-15 08:35:00 UTC | sf-spec | GPT-5 Codex | Applied user decisions: cloud fallback auto mode, local runtime timeout `10s`, retries cap `3`, and matching acceptance criteria updates. | Remaining blocker: disk-capacity policy thresholds still to be fixed in spec. | /sf-spec ASR Language Pack Catalog |
 | 2026-05-15 09:05:00 UTC | sf-ready | GPT-5 Codex | Re-ran readiness gate on structure, metadata, behavior contract traceability, adversarial abuse cases, security posture, language doctrine, and documentation freshness obligations. | Not ready: internal contract language doctrine still inconsistent and disk-capacity/installability policy remains under-specified for deterministic implementation and verification. | /sf-spec ASR Language Pack Catalog |
 | 2026-05-15 09:10:00 UTC | sf-spec | GPT-5 Codex | Resolved readiness blockers by adding deterministic storage policy (preflight threshold, blocked/paused states, explicit observable fields) and clarifying language doctrine handling for localized prose with English anchors. | Spec updated for readiness re-check. | /sf-ready shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-15 18:04:26 UTC | sf-spec | GPT-5 Codex | Performed follow-up normalization pass: confirmed deterministic storage policy coverage in constraints/error/acceptance, cleaned trace consistency, and kept next step on readiness gate rerun. | Spec maintained in reviewed state, ready for `/sf-ready` rerun. | /sf-ready shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-15 18:08:42 UTC | sf-build | GPT-5 Codex | Lifecycle orchestration requested (`termine`): performed chantier check and governance gate precheck; build could not proceed to implementation because readiness gate has not passed yet on the updated spec. | Rerouted to readiness rerun before any `sf-start/sf-verify/sf-end/sf-ship`. | /sf-ready shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-15 18:30:02 UTC | sf-ready | GPT-5 Codex | Re-ran readiness gate after the latest spec corrections, checking structure, metadata, behavior contract traceability, adversarial failure modes, language doctrine, freshness obligations, and security posture. | Not ready: the pack data contract is still too implicit for deterministic implementation, and cloud fallback `auto` still lacks explicit consent/trust boundaries for secure execution. | /sf-spec ASR Language Pack Catalog |
+| 2026-05-15 19:16:15 UTC | sf-ready | GPT-5 Codex | Re-ran readiness gate after storage-threshold update, checking structure, user-story traceability, data-contract determinism, adversarial bypasses, cloud fallback security, language doctrine, and freshness obligations. | Not ready: storage policy is now deterministic, but the pack data contract remains under-specified and cloud fallback `auto` still needs explicit consent/trust-boundary rules. | /sf-spec ASR Language Pack Catalog |
+| 2026-05-15 19:18:30 UTC | sf-spec | GPT-5 Codex | Resolved readiness blockers by adding explicit `LanguagePackCatalogEntry` and `InstalledLanguagePack` data contracts, catalog validation failure behavior, and cloud fallback consent/trust-boundary rules. | Spec updated for readiness re-check. | /sf-ready shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-15 19:19:39 UTC | sf-ready | GPT-5 Codex | Re-ran readiness gate after data contract and cloud fallback trust-boundary corrections. | Ready: structure, metadata, user-story traceability, data contract, adversarial cases, security posture, language doctrine, and freshness obligations are sufficient for first implementation. | /sf-start ASR Language Pack Catalog |
 
 # Current Chantier Flow
 
-- `sf-spec`: done - spec updated with deterministic storage policy and language doctrine clarification.
-- `sf-ready`: not ready - re-run required after latest spec corrections.
-- `sf-start`: not launched - implementation should begin only after readiness gate.
+- `sf-spec`: done - latest draft captured the current product direction, deterministic storage policy, data contract, cloud fallback trust boundary, and language doctrine note.
+- `sf-ready`: ready - readiness gate passed after data contract and cloud fallback trust-boundary corrections.
+- `sf-start`: next - implementation may begin from the ready spec.
 - `sf-verify`: not launched - runtime, diagnostics, and GTM coherence remain to be verified after coding.
 - `sf-end`: not launched - closeout depends on implementation and verification.
 - `sf-ship`: not launched - shipping is blocked on benchmark-backed language claims and implementation proof.
 
-Next command: `/sf-ready shipflow_data/workflow/specs/asr-language-pack-catalog.md`
+Next command: `/sf-start ASR Language Pack Catalog`

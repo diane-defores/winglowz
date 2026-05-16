@@ -4,6 +4,7 @@ import android.content.Context
 import android.provider.Settings
 import android.view.inputmethod.InputMethodInfo
 import android.view.inputmethod.InputMethodManager
+import java.io.File
 import java.util.Locale
 import org.json.JSONArray
 import org.json.JSONObject
@@ -23,6 +24,18 @@ class KeyboardStateStore(private val context: Context) {
     var mediaControlsEnabled: Boolean
         get() = preferences.getBoolean(KEY_MEDIA_CONTROLS_ENABLED, true)
         set(value) = preferences.edit().putBoolean(KEY_MEDIA_CONTROLS_ENABLED, value).apply()
+
+    var themeMode: String
+        get() = preferences.getString(KEY_THEME_MODE, THEME_SYSTEM) ?: THEME_SYSTEM
+        set(value) {
+            val normalized =
+                if (value in setOf(THEME_SYSTEM, THEME_LIGHT, THEME_DARK)) {
+                    value
+                } else {
+                    THEME_SYSTEM
+                }
+            preferences.edit().putString(KEY_THEME_MODE, normalized).apply()
+        }
 
     var layoutProfile: KeyboardLayoutProfile
         get() = KeyboardLayoutProfile.fromRaw(preferences.getString(KEY_LAYOUT_PROFILE, KeyboardLayoutProfile.QWERTY.name))
@@ -87,6 +100,25 @@ class KeyboardStateStore(private val context: Context) {
         }
 
     fun buildStatusMap(): Map<String, Any> {
+        val theme = themeConfig()
+        val rawThemeConfig = preferences.getString(KEY_THEME_CONFIG, null)
+        val themeConfigSize = rawThemeConfig?.length ?: 0
+        val backgroundSource =
+            when {
+                theme.useImage && !theme.backgroundImagePath.isNullOrBlank() -> "image"
+                theme.useGradient && theme.gradientStyle == "radial" -> "gradient_radial"
+                theme.useGradient -> "gradient_linear"
+                else -> "solid"
+            }
+        val fallbackStatus =
+            when {
+                theme.useImage && !theme.backgroundImagePath.isNullOrBlank() &&
+                    !File(theme.backgroundImagePath).exists()
+                -> "image_missing_fallback"
+                rawThemeConfig == null && themeMode != THEME_SYSTEM -> "theme_mode_migrated"
+                rawThemeConfig == null -> "default_preset"
+                else -> "none"
+            }
         return mapOf(
             "supported" to true,
             "enabled" to isInputMethodEnabled(),
@@ -94,6 +126,12 @@ class KeyboardStateStore(private val context: Context) {
             "voiceEnabled" to voiceEnabled,
             "clipboardSyncDesired" to clipboardSyncDesired,
             "mediaControlsEnabled" to mediaControlsEnabled,
+            "themeMode" to themeMode,
+            "themePresetId" to theme.presetId,
+            "themePressEffect" to theme.pressEffect,
+            "themeBackgroundSource" to backgroundSource,
+            "themeConfigSize" to themeConfigSize,
+            "themeFallbackStatus" to fallbackStatus,
             "layoutProfile" to layoutProfile.name,
             "cornerModeEnabled" to cornerModeEnabled,
             "cornerPresetId" to cornerConfig().presetId,
@@ -156,6 +194,70 @@ class KeyboardStateStore(private val context: Context) {
 
     fun cornerConfig(): KeyboardCornerConfig {
         return KeyboardCornerConfig.fromJson(preferences.getString(KEY_CORNER_CONFIG, null))
+    }
+
+    fun themeConfig(): KeyboardThemeConfig {
+        val raw = preferences.getString(KEY_THEME_CONFIG, null)
+        val parsed = KeyboardThemeConfig.fromJson(raw)
+        if (preferences.contains(KEY_THEME_CONFIG)) {
+            return parsed
+        }
+        return when (themeMode) {
+            THEME_LIGHT -> parsed.copy(presetId = "winflowz_light")
+            THEME_DARK -> parsed.copy(
+                presetId = "winflowz_dark",
+                backgroundStartColor = android.graphics.Color.parseColor("#121815"),
+                backgroundEndColor = android.graphics.Color.parseColor("#121815"),
+                keyColor = android.graphics.Color.parseColor("#232B27"),
+                specialKeyColor = android.graphics.Color.parseColor("#2E3833"),
+                activeKeyColor = android.graphics.Color.parseColor("#36B384"),
+                pressedKeyColor = android.graphics.Color.parseColor("#43524B"),
+                textColor = android.graphics.Color.parseColor("#EBF2EE"),
+                statusTextColor = android.graphics.Color.parseColor("#CCD9D2"),
+            )
+            else -> parsed.copy(presetId = "system")
+        }
+    }
+
+    fun replaceThemeConfig(config: KeyboardThemeConfig): KeyboardThemeConfig {
+        val previous = themeConfig()
+        val validated = config.validated()
+        val encoded = validated.toJson()
+        if (encoded.length > MAX_THEME_CONFIG_JSON_LENGTH) {
+            throw IllegalArgumentException("Theme config is too large")
+        }
+        cleanupReplacedThemeImage(previous.backgroundImagePath, validated.backgroundImagePath)
+        preferences.edit().putString(KEY_THEME_CONFIG, encoded).apply()
+        return validated
+    }
+
+    fun resetThemeConfig(): KeyboardThemeConfig {
+        val previous = themeConfig()
+        preferences.edit().remove(KEY_THEME_CONFIG).apply()
+        cleanupReplacedThemeImage(previous.backgroundImagePath, null)
+        return themeConfig()
+    }
+
+    private fun cleanupReplacedThemeImage(previousPath: String?, nextPath: String?) {
+        val before = previousPath?.trim().orEmpty()
+        if (before.isEmpty()) {
+            return
+        }
+        val after = nextPath?.trim().orEmpty()
+        if (before == after) {
+            return
+        }
+        val baseDirectory = File(context.filesDir, "keyboard_themes")
+        val previousFile = File(before)
+        if (!baseDirectory.exists() || !previousFile.exists()) {
+            return
+        }
+        val managedPath = runCatching { previousFile.canonicalPath }.getOrNull() ?: return
+        val basePath = runCatching { baseDirectory.canonicalPath }.getOrNull() ?: return
+        if (!managedPath.startsWith(basePath + File.separator)) {
+            return
+        }
+        runCatching { previousFile.delete() }
     }
 
     fun replaceCornerConfig(config: KeyboardCornerConfig): KeyboardCornerConfig {
@@ -302,6 +404,7 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_VOICE_ENABLED = "voice_enabled"
         const val KEY_CLIPBOARD_SYNC_DESIRED = "clipboard_sync_desired"
         const val KEY_MEDIA_CONTROLS_ENABLED = "media_controls_enabled"
+        const val KEY_THEME_MODE = "theme_mode"
         const val KEY_LAYOUT_PROFILE = "layout_profile"
         const val KEY_CORNER_MODE_ENABLED = "corner_mode_enabled"
         const val KEY_DEBUG_TOUCH_OVERLAY_ENABLED = "debug_touch_overlay_enabled"
@@ -319,12 +422,17 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_TEXT_EXPANSION_DICTIONARY = "text_expansion_dictionary"
         const val KEY_CLIPBOARD_ENTRIES = "clipboard_entries"
         const val KEY_CORNER_CONFIG = "corner_config"
+        const val KEY_THEME_CONFIG = "theme_config"
         const val EMOJI_RECENT_SEPARATOR = "|"
         const val MAX_TEXT_RULES = 300
         const val MAX_CLIPBOARD_ENTRIES = 60
         const val MAX_CORNER_CONFIG_JSON_LENGTH = 24000
+        const val MAX_THEME_CONFIG_JSON_LENGTH = 48000
         const val PRIVACY_AUTO = "auto"
         const val PRIVACY_STRICT = "strict"
         const val PRIVACY_STANDARD = "standard"
+        const val THEME_SYSTEM = "system"
+        const val THEME_LIGHT = "light"
+        const val THEME_DARK = "dark"
     }
 }

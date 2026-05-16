@@ -5,12 +5,14 @@ class _AppearanceSection extends StatelessWidget {
     required this.themeMode,
     required this.syncStateLabel,
     required this.syncStateDetail,
+    required this.onOpenKeyboardThemeStudio,
     required this.onChanged,
   });
 
   final AppThemeMode themeMode;
   final String syncStateLabel;
   final String syncStateDetail;
+  final VoidCallback onOpenKeyboardThemeStudio;
   final ValueChanged<AppThemeMode> onChanged;
 
   @override
@@ -46,6 +48,15 @@ class _AppearanceSection extends StatelessWidget {
           ),
           AppGaps.x2,
           Text(syncStateDetail, style: Theme.of(context).textTheme.bodySmall),
+          AppGaps.x2,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: onOpenKeyboardThemeStudio,
+              icon: const Icon(Icons.palette_outlined),
+              label: const Text('Keyboard Theme Studio'),
+            ),
+          ),
         ],
       ),
     );
@@ -77,8 +88,13 @@ class _BackendProviderSection extends StatelessWidget {
         children: [
           Text(detail, style: Theme.of(context).textTheme.bodySmall),
           AppGaps.x3,
-          SelectableText(diagnosticText),
-          AppGaps.x3,
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: EdgeInsets.zero,
+            title: const Text('Logs & diagnostic'),
+            subtitle: const Text('Afficher/masquer le bloc complet'),
+            children: [SelectableText(diagnosticText), AppGaps.x3],
+          ),
           OutlinedButton.icon(
             onPressed: onCopyDiagnostic,
             icon: const Icon(Icons.copy_outlined),
@@ -224,6 +240,7 @@ class _KeyboardSettingsSection extends StatelessWidget {
     required this.onOpenInputSettings,
     required this.onShowPicker,
     required this.onOpenCornerShortcuts,
+    required this.onOpenKeyboardThemeStudio,
     required this.onPreferenceChanged,
   });
 
@@ -233,6 +250,7 @@ class _KeyboardSettingsSection extends StatelessWidget {
   final VoidCallback onOpenInputSettings;
   final VoidCallback onShowPicker;
   final VoidCallback onOpenCornerShortcuts;
+  final VoidCallback onOpenKeyboardThemeStudio;
   final _KeyboardPreferenceChanged onPreferenceChanged;
 
   String get _enabledLanguages {
@@ -309,6 +327,17 @@ class _KeyboardSettingsSection extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          Padding(
+            padding: AppInsets.keyboardControls,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: busy ? null : onOpenKeyboardThemeStudio,
+                icon: const Icon(Icons.palette_outlined),
+                label: const Text('Keyboard Theme Studio'),
+              ),
             ),
           ),
           SwitchListTile(

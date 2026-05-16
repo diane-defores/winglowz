@@ -191,8 +191,10 @@ class KeyboardLayoutBuilderTest {
         val panelActions = panelRows.flatMap { row -> row.keys.map { it.action } }
         val labels = panelRows.flatMap { row -> row.keys.map { it.label } }
 
-        assertEquals(5, snapshot.panelRowCount)
+        assertEquals(4, snapshot.panelRowCount)
         assertTrue(labels.take(4).containsAll(listOf("All", "Copy", "Cut", "Paste")))
+        assertTrue(labels.containsAll(listOf("Del←", "Del→", "DelW←", "DelW→")))
+        assertTrue(labels.containsAll(listOf("⏫", "↑", "⏬", "↓")))
         assertTrue(panelActions.contains(KeyboardKeyAction.SelectAll))
         assertTrue(panelActions.contains(KeyboardKeyAction.CopySelection))
         assertTrue(panelActions.contains(KeyboardKeyAction.CutSelection))
@@ -399,6 +401,7 @@ class KeyboardLayoutBuilderTest {
         assertTrue(actions.contains(KeyboardKeyAction.MediaPlayPause))
         assertTrue(actions.contains(KeyboardKeyAction.MediaNext))
         assertTrue(actions.contains(KeyboardKeyAction.MediaNowPlaying))
+        assertTrue(actions.contains(KeyboardKeyAction.OpenMediaApp))
         assertEquals("Daft Punk - Digital Love", panelRows[1].keys.single().label)
     }
 
@@ -478,6 +481,36 @@ class KeyboardLayoutBuilderTest {
         assertEquals(1, snapshot.suggestionRowCount)
         assertEquals(KeyboardKeyAction.InsertSuggestion, snapshot.rows[1].keys.first().action)
         assertEquals("bonjour", snapshot.rows[1].keys.first().suggestion)
+    }
+
+    @Test
+    fun `pinned number row appears above typing rows`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                    numberRowPinned = true,
+                ),
+            )
+
+        assertEquals(1, snapshot.suggestionRowCount)
+        assertEquals("1234567890", snapshot.rows[1].keys.joinToString(separator = "") { it.label })
+        assertTrue(snapshot.rows[0].keys.any { it.label == "123" && it.active })
     }
 
     @Test

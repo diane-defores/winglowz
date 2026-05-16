@@ -94,10 +94,7 @@ class OnboardingReadiness {
   }
 
   bool get shouldShowCompletion {
-    return platformSupported &&
-        allMandatoryCompleted &&
-        allStepsCompleted &&
-        !onboardingCompleted;
+    return platformSupported && allMandatoryCompleted && allStepsCompleted;
   }
 
   bool get shouldShowOnboarding {
@@ -265,9 +262,7 @@ bool _isStepSatisfied({
 }) {
   switch (definition.id) {
     case OnboardingStepId.overlay:
-      return overlayStatus.overlayPermissionGranted &&
-          overlayStatus.enabled &&
-          overlayStatus.running;
+      return overlayStatus.overlayPermissionGranted && overlayStatus.enabled;
     case OnboardingStepId.accessibility:
       return overlayStatus.accessibilityPermissionGranted;
     case OnboardingStepId.keyboardIme:
@@ -288,9 +283,6 @@ String? _stepBlockerReason({
     }
     if (!overlayStatus.enabled) {
       return 'Overlay autorisé mais désactivé: active la bulle WinFlowz.';
-    }
-    if (!overlayStatus.running) {
-      return 'Overlay activé mais service arrêté: démarre la bulle WinFlowz.';
     }
     return null;
   }

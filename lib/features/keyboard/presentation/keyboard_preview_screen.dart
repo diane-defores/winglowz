@@ -245,6 +245,9 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
           }
         });
         break;
+      case KeyboardPreviewKeyAction.openMediaApp:
+        _setStatus('Would open the current media app on Android.');
+        break;
       case KeyboardPreviewKeyAction.keyboardPicker:
         _setStatus('Keyboard picker is Android-only.');
         break;

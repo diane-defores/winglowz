@@ -1,6 +1,8 @@
 package com.winflowz_app.winflowz_app.ime
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.content.Context
 import android.view.inputmethod.InputMethodSubtype
@@ -11,7 +13,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.winflowz_app.winflowz_app.MainActivity
 
-class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Callbacks {
+class WinFlowzInputMethodService :
+    InputMethodService(),
+    WinFlowzKeyboardView.Callbacks,
+    SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var stateStore: KeyboardStateStore
     private lateinit var mediaController: KeyboardMediaController
     private lateinit var clipboardController: KeyboardClipboardController
@@ -25,6 +30,8 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
     override fun onCreate() {
         super.onCreate()
         stateStore = KeyboardStateStore(this)
+        getSharedPreferences(KeyboardStateStore.PREFERENCES_NAME, Context.MODE_PRIVATE)
+            .registerOnSharedPreferenceChangeListener(this)
         mediaController = KeyboardMediaController(this)
         clipboardController = KeyboardClipboardController(this)
         voiceController =
@@ -51,6 +58,22 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
                     }
                 },
             )
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (stateStore.themeMode == KeyboardStateStore.THEME_SYSTEM) {
+            applyRuntimePreferencesToView()
+        }
+    }
+
+    override fun onSharedPreferenceChanged(
+        sharedPreferences: SharedPreferences?,
+        key: String?,
+    ) {
+        if (key == KeyboardStateStore.KEY_THEME_MODE || key == KeyboardStateStore.KEY_THEME_CONFIG) {
+            applyRuntimePreferencesToView()
+        }
     }
 
     override fun onCreateInputView(): View {
@@ -142,6 +165,8 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
     }
 
     override fun onDestroy() {
+        getSharedPreferences(KeyboardStateStore.PREFERENCES_NAME, Context.MODE_PRIVATE)
+            .unregisterOnSharedPreferenceChangeListener(this)
         voiceController.destroy()
         super.onDestroy()
     }
@@ -175,6 +200,10 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
             refreshTypingAssistantState(editor)
             return deleted
         }
+        val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, 0)
+        if (sent) {
+            return true
+        }
         val deleted = editor.deleteCodePointsBefore(1)
         if (!deleted.applied) {
             showStatus("Delete rejected by field")
@@ -194,14 +223,13 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
             refreshTypingAssistantState(editor)
             return deleted
         }
-        val deleted = editor.deleteCodePointsAfter(1)
-        if (deleted.applied) {
-            refreshTypingAssistantState(editor)
+        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, 0)
+        if (sent) {
             return true
         }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, 0)
+        val deleted = editor.deleteCodePointsAfter(1)
         refreshTypingAssistantState(editor)
-        return sent
+        return deleted.applied
     }
 
     override fun onDeleteWordBefore(): Boolean {
@@ -213,6 +241,10 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
             val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
             refreshTypingAssistantState(editor)
             return deleted
+        }
+        val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+        if (sent) {
+            return true
         }
         val before = editor.textBeforeCursor(128)?.toString().orEmpty()
         if (before.isEmpty()) {
@@ -247,6 +279,10 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
             refreshTypingAssistantState(editor)
             return deleted
         }
+        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+        if (sent) {
+            return true
+        }
         val after = editor.textAfterCursor(128)?.toString().orEmpty()
         if (after.isEmpty()) {
             return false
@@ -261,13 +297,8 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
         val segment = after.substring(0, index.coerceAtLeast(1))
         val codePointCount = segment.codePointCount(0, segment.length)
         val deleted = editor.deleteCodePointsAfter(codePointCount)
-        if (deleted.applied) {
-            refreshTypingAssistantState(editor)
-            return true
-        }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
         refreshTypingAssistantState(editor)
-        return sent
+        return deleted.applied
     }
 
     override fun onEnter(): Boolean {
@@ -427,8 +458,13 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
     }
 
     override fun onThemeSettings() {
-        onSettings()
-        showStatus("Open WinFlowz Appearance settings")
+        val intent =
+            Intent(this, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra("openRoute", "/keyboard/theme")
+            }
+        startActivity(intent)
+        showStatus("Open WinFlowz Keyboard Theme Studio")
     }
 
     override fun onKeyboardPicker() {
@@ -469,6 +505,14 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
             return "Now playing: media controls disabled"
         }
         return mediaController.nowPlayingLabel()
+    }
+
+    override fun onOpenMediaApp() {
+        if (!stateStore.mediaControlsEnabled) {
+            showStatus("Media controls disabled")
+            return
+        }
+        showStatus(mediaController.openActiveMediaApp())
     }
 
     override fun onNavigateCharLeft(): Boolean = sendSoftKey(KeyEvent.KEYCODE_DPAD_LEFT, 0)
@@ -602,6 +646,8 @@ class WinFlowzInputMethodService : InputMethodService(), WinFlowzKeyboardView.Ca
             englishLanguage = stateStore.englishLanguageEnabled,
             doubleSpacePeriod = stateStore.doubleSpacePeriodEnabled,
             punctuationAutoSpacing = stateStore.punctuationAutoSpacingEnabled,
+            themeMode = stateStore.themeMode,
+            themeConfig = stateStore.themeConfig(),
             recents = emojiRecents,
             clipboardEntries = clipboardEntriesForKeyboard(),
             snippets = stateStore.snippetRules(),

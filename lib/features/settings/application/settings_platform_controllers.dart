@@ -23,6 +23,7 @@ class SettingsKeyboardController {
     bool? voiceEnabled,
     bool? clipboardSyncDesired,
     bool? mediaControlsEnabled,
+    String? themeMode,
     KeyboardLayoutProfile? layoutProfile,
     bool? cornerModeEnabled,
     bool? debugTouchOverlayEnabled,
@@ -42,6 +43,7 @@ class SettingsKeyboardController {
           clipboardSyncDesired ?? current.clipboardSyncDesired,
       mediaControlsEnabled:
           mediaControlsEnabled ?? current.mediaControlsEnabled,
+      themeMode: themeMode ?? current.themeMode,
       layoutProfile: layoutProfile ?? current.layoutProfile,
       cornerModeEnabled: cornerModeEnabled ?? current.cornerModeEnabled,
       debugTouchOverlayEnabled:

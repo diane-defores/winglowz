@@ -106,6 +106,7 @@ class AndroidKeyboardBridge {
     required bool voiceEnabled,
     required bool clipboardSyncDesired,
     required bool mediaControlsEnabled,
+    String? themeMode,
     required KeyboardLayoutProfile layoutProfile,
     required bool cornerModeEnabled,
     required bool debugTouchOverlayEnabled,
@@ -129,6 +130,7 @@ class AndroidKeyboardBridge {
       'voiceEnabled': voiceEnabled,
       'clipboardSyncDesired': clipboardSyncDesired,
       'mediaControlsEnabled': mediaControlsEnabled,
+      'themeMode': themeMode,
       'layoutProfile': layoutProfile.name,
       'cornerModeEnabled': cornerModeEnabled,
       'debugTouchOverlayEnabled': debugTouchOverlayEnabled,
@@ -143,6 +145,73 @@ class AndroidKeyboardBridge {
       'privacyMode': privacyMode.name,
     });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
+  }
+
+  static Future<AndroidKeyboardStatus> setThemeMode(String themeMode) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: 'Android keyboard IME is not supported on this platform.',
+      );
+    }
+    final raw = await _invoke<Map<Object?, Object?>>('setKeyboardThemeMode', {
+      'themeMode': themeMode,
+    });
+    return AndroidKeyboardStatus.fromMap(raw ?? const {});
+  }
+
+  static Future<KeyboardThemeConfig> getKeyboardThemeConfig() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return KeyboardThemeConfig.defaults();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>('getKeyboardThemeConfig');
+    return KeyboardThemeConfig.fromMap(raw ?? const {});
+  }
+
+  static Future<KeyboardThemeConfig> setKeyboardThemeConfig(
+    KeyboardThemeConfig config,
+  ) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: 'Android keyboard IME is not supported on this platform.',
+      );
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'setKeyboardThemeConfig',
+      config.toMap(),
+    );
+    return KeyboardThemeConfig.fromMap(raw ?? const {});
+  }
+
+  static Future<KeyboardThemeConfig> resetKeyboardThemeConfig() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return KeyboardThemeConfig.defaults();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'resetKeyboardThemeConfig',
+    );
+    return KeyboardThemeConfig.fromMap(raw ?? const {});
+  }
+
+  static Future<Map<String, Object?>> importKeyboardThemeImage() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: 'Android keyboard IME is not supported on this platform.',
+      );
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'importKeyboardThemeImage',
+    );
+    final result = <String, Object?>{};
+    for (final entry in (raw ?? const {}).entries) {
+      final key = entry.key;
+      if (key is String) {
+        result[key] = entry.value;
+      }
+    }
+    return result;
   }
 
   static Future<void> setSnippetRules(

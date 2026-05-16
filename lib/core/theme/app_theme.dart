@@ -535,7 +535,19 @@ class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
-          return null;
+          return isDark ? colorScheme.onSurface : colorScheme.surface;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return colorScheme.primary.withValues(alpha: isDark ? 0.45 : 0.4);
+          }
+          return colorScheme.onSurface.withValues(alpha: isDark ? 0.28 : 0.24);
+        }),
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return colorScheme.primary.withValues(alpha: isDark ? 0.7 : 0.5);
+          }
+          return colorScheme.outline;
         }),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(

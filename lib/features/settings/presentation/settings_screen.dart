@@ -19,6 +19,7 @@ import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../keyboard/domain/keyboard_models.dart';
 import '../../keyboard/presentation/keyboard_corner_shortcuts_screen.dart';
+import '../../keyboard/presentation/keyboard_theme_studio_screen.dart';
 import '../../snippets/application/snippet_store_provider.dart';
 import '../domain/onboarding_permission_contract.dart';
 import '../domain/settings_store.dart';
@@ -95,6 +96,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _keyboardBusy = false;
   UserSettingsSnapshot? _onboardingSettings;
   String? _message;
+  final Map<String, bool> _expandedSections = {
+    'appearance': true,
+    'backend': false,
+    'keys': true,
+    'platform': false,
+    'keyboard': false,
+    'overlay': false,
+  };
 
   @override
   void initState() {
@@ -282,6 +291,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const KeyboardCornerShortcutsScreen(),
+      ),
+    );
+    if (mounted) {
+      await _loadKeyboardState();
+    }
+  }
+
+  Future<void> _openKeyboardThemeStudio() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const KeyboardThemeStudioScreen(),
       ),
     );
     if (mounted) {
@@ -749,6 +769,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'voice_enabled=${status.voiceEnabled}',
       'clipboard_sync_desired=${status.clipboardSyncDesired}',
       'media_controls=${status.mediaControlsEnabled}',
+      'theme=${status.themeMode}',
+      'theme_preset=${status.themePresetId}',
+      'theme_effect=${status.themePressEffect}',
+      'theme_background=${status.themeBackgroundSource}',
+      'theme_config_size=${status.themeConfigSize}',
+      'theme_fallback=${status.themeFallbackStatus}',
       'layout=${status.layoutProfile.name}',
       'corner_mode=${status.cornerModeEnabled}',
       'corner_preset=${status.cornerPresetId}',
@@ -816,6 +842,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  Widget _collapsibleSection({
+    required String id,
+    required String title,
+    required Widget child,
+  }) {
+    final expanded = _expandedSections[id] ?? false;
+    return Card(
+      child: ExpansionTile(
+        key: PageStorageKey<String>('settings_section_$id'),
+        initiallyExpanded: expanded,
+        onExpansionChanged: (value) {
+          setState(() => _expandedSections[id] = value);
+        },
+        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.x3),
+        childrenPadding: const EdgeInsets.fromLTRB(
+          AppSpacing.x2,
+          0,
+          AppSpacing.x2,
+          AppSpacing.x2,
+        ),
+        title: Text(title, style: Theme.of(context).textTheme.titleSmall),
+        children: [child],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     AppDiagnostics.record('screen_build', 'Settings');
@@ -845,53 +897,79 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onResume: widget.onResumeOnboarding!,
             readiness: onboardingReadiness,
           ),
-        _AppearanceSection(
-          themeMode: themeMode,
-          syncStateLabel: _appearanceSyncLabel(authAsync),
-          syncStateDetail: _appearanceSyncDetail(authAsync),
-          onChanged: (mode) {
-            ref.read(appThemeModeProvider.notifier).setMode(mode);
-          },
+        _collapsibleSection(
+          id: 'appearance',
+          title: 'Appearance',
+          child: _AppearanceSection(
+            themeMode: themeMode,
+            syncStateLabel: _appearanceSyncLabel(authAsync),
+            syncStateDetail: _appearanceSyncDetail(authAsync),
+            onOpenKeyboardThemeStudio: _openKeyboardThemeStudio,
+            onChanged: (mode) {
+              ref.read(appThemeModeProvider.notifier).setMode(mode);
+            },
+          ),
         ),
-        _BackendProviderSection(
-          summary: FirebaseBootstrap.isConfigured
-              ? 'Firebase is configured as the first backend adapter.'
-              : 'Remote sync is not configured. WinFlowz runs in local mode.',
-          detail: _appearanceSyncDetail(authAsync),
-          diagnosticText: _backendDiagnosticText(),
-          onCopyDiagnostic: _copyBackendDiagnostic,
+        _collapsibleSection(
+          id: 'backend',
+          title: 'Backend Provider',
+          child: _BackendProviderSection(
+            summary: FirebaseBootstrap.isConfigured
+                ? 'Firebase is configured as the first backend adapter.'
+                : 'Remote sync is not configured. WinFlowz runs in local mode.',
+            detail: _appearanceSyncDetail(authAsync),
+            diagnosticText: _backendDiagnosticText(),
+            onCopyDiagnostic: _copyBackendDiagnostic,
+          ),
         ),
-        _SecretsSection(
-          storageStatusAsync: storageStatusAsync,
-          openAiController: _openAiController,
-          anthropicController: _anthropicController,
-          message: _message,
-          saving: _saving,
-          onSave: _saveSecrets,
-          onSignOut: _signOut,
+        _collapsibleSection(
+          id: 'keys',
+          title: 'Local AI Keys',
+          child: _SecretsSection(
+            storageStatusAsync: storageStatusAsync,
+            openAiController: _openAiController,
+            anthropicController: _anthropicController,
+            message: _message,
+            saving: _saving,
+            onSave: _saveSecrets,
+            onSignOut: _signOut,
+          ),
         ),
-        const _PlatformCapabilitiesSection(),
+        _collapsibleSection(
+          id: 'platform',
+          title: 'Platform Capabilities',
+          child: const _PlatformCapabilitiesSection(),
+        ),
         if (PlatformCapabilities.keyboardImeSupported)
-          _KeyboardSettingsSection(
-            status: keyboardStatus,
-            busy: _keyboardBusy,
-            onRefresh: _loadKeyboardState,
-            onOpenInputSettings: _openKeyboardSettings,
-            onShowPicker: _showKeyboardPicker,
-            onOpenCornerShortcuts: _openCornerShortcuts,
-            onPreferenceChanged: _setKeyboardPreferences,
+          _collapsibleSection(
+            id: 'keyboard',
+            title: 'WinFlowz Keyboard',
+            child: _KeyboardSettingsSection(
+              status: keyboardStatus,
+              busy: _keyboardBusy,
+              onRefresh: _loadKeyboardState,
+              onOpenInputSettings: _openKeyboardSettings,
+              onShowPicker: _showKeyboardPicker,
+              onOpenCornerShortcuts: _openCornerShortcuts,
+              onOpenKeyboardThemeStudio: _openKeyboardThemeStudio,
+              onPreferenceChanged: _setKeyboardPreferences,
+            ),
           ),
         if (PlatformCapabilities.overlaySupported)
-          _OverlaySettingsSection(
-            status: overlayStatus,
-            busy: _overlayBusy,
-            onToggle: _toggleOverlay,
-            onAppearanceChanged: _setOverlayAppearance,
-            onOpenOverlaySettings: _openOverlaySettings,
-            onOpenAccessibilitySettings: _openAccessibilitySettings,
-            onStart: _startOverlay,
-            onStop: _stopOverlay,
-            onCancel: _cancelOverlay,
+          _collapsibleSection(
+            id: 'overlay',
+            title: 'Android Overlay',
+            child: _OverlaySettingsSection(
+              status: overlayStatus,
+              busy: _overlayBusy,
+              onToggle: _toggleOverlay,
+              onAppearanceChanged: _setOverlayAppearance,
+              onOpenOverlaySettings: _openOverlaySettings,
+              onOpenAccessibilitySettings: _openAccessibilitySettings,
+              onStart: _startOverlay,
+              onStop: _stopOverlay,
+              onCancel: _cancelOverlay,
+            ),
           ),
       ],
     );

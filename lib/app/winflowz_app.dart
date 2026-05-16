@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/platform/android_keyboard_bridge.dart';
+import '../core/platform/platform_capabilities.dart';
 import '../core/router/app_router.dart';
 import '../core/theme/app_theme.dart';
 import '../features/settings/application/settings_store_provider.dart';
@@ -25,6 +27,7 @@ class AppThemeModeController extends Notifier<AppThemeMode> {
 
   void setMode(AppThemeMode value) {
     state = value;
+    _syncKeyboardThemeMode(value);
     Future<void>.microtask(() async {
       final localStore = ref.read(localSettingsStoreProvider);
       final activeStore = ref.read(settingsStoreProvider);
@@ -55,7 +58,23 @@ class AppThemeModeController extends Notifier<AppThemeMode> {
 
   Future<void> _load() async {
     final settings = await ref.read(settingsStoreProvider).load();
-    state = AppThemeMode.fromThemeMode(settings.themeMode);
+    final loadedMode = AppThemeMode.fromThemeMode(settings.themeMode);
+    state = loadedMode;
+    _syncKeyboardThemeMode(loadedMode);
+  }
+
+  void _syncKeyboardThemeMode(AppThemeMode value) {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    Future<void>.microtask(() async {
+      try {
+        await AndroidKeyboardBridge.setThemeMode(value.name);
+      } catch (_) {
+        // The app theme must remain usable even if the Android IME is disabled
+        // or not reachable yet. Settings status refresh will surface failures.
+      }
+    });
   }
 }
 

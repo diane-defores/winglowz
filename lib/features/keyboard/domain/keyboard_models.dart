@@ -23,6 +23,517 @@ enum KeyboardLayoutProfile {
   }
 }
 
+enum KeyboardThemePressEffect {
+  none,
+  scale,
+  pulse,
+  shake,
+  ripple,
+  glow,
+  confettiLite,
+  fireworksLite;
+
+  static KeyboardThemePressEffect fromName(String value) {
+    return KeyboardThemePressEffect.values.firstWhere(
+      (effect) => effect.name == value,
+      orElse: () => KeyboardThemePressEffect.none,
+    );
+  }
+}
+
+enum KeyboardThemeGradientStyle {
+  linear,
+  radial;
+
+  static KeyboardThemeGradientStyle fromName(String value) {
+    return KeyboardThemeGradientStyle.values.firstWhere(
+      (style) => style.name == value,
+      orElse: () => KeyboardThemeGradientStyle.linear,
+    );
+  }
+}
+
+enum KeyboardThemeEffectEasing {
+  easeOut,
+  linear,
+  spring;
+
+  static KeyboardThemeEffectEasing fromName(String value) {
+    return KeyboardThemeEffectEasing.values.firstWhere(
+      (easing) => easing.name == value,
+      orElse: () => KeyboardThemeEffectEasing.easeOut,
+    );
+  }
+}
+
+class KeyboardThemePreset {
+  const KeyboardThemePreset({
+    required this.id,
+    required this.name,
+    required this.description,
+  });
+
+  final String id;
+  final String name;
+  final String description;
+}
+
+class KeyboardThemePresetCatalog {
+  const KeyboardThemePresetCatalog._();
+
+  static const system = 'system';
+  static const winflowzLight = 'winflowz_light';
+  static const winflowzDark = 'winflowz_dark';
+  static const neonTerminal = 'neon_terminal';
+  static const glassMint = 'glass_mint';
+  static const sunsetGradient = 'sunset_gradient';
+  static const midnightAurora = 'midnight_aurora';
+  static const paperInk = 'paper_ink';
+  static const pixelCandy = 'pixel_candy';
+  static const minimalContrast = 'minimal_contrast';
+
+  static const presets = [
+    KeyboardThemePreset(
+      id: system,
+      name: 'System',
+      description: 'Follows the current app and Android theme.',
+    ),
+    KeyboardThemePreset(
+      id: winflowzLight,
+      name: 'WinFlowz Light',
+      description: 'Clean light keyboard with green action keys.',
+    ),
+    KeyboardThemePreset(
+      id: winflowzDark,
+      name: 'WinFlowz Dark',
+      description: 'Dark low-glare WinFlowz palette.',
+    ),
+    KeyboardThemePreset(
+      id: neonTerminal,
+      name: 'Neon Terminal',
+      description: 'Deep terminal background with electric accents.',
+    ),
+    KeyboardThemePreset(
+      id: glassMint,
+      name: 'Glass Mint',
+      description: 'Soft translucent mint with rounded glass keys.',
+    ),
+    KeyboardThemePreset(
+      id: sunsetGradient,
+      name: 'Sunset Gradient',
+      description: 'Warm gradient with coral active keys.',
+    ),
+    KeyboardThemePreset(
+      id: midnightAurora,
+      name: 'Midnight Aurora',
+      description: 'Radial aurora glow on a midnight base.',
+    ),
+    KeyboardThemePreset(
+      id: paperInk,
+      name: 'Paper Ink',
+      description: 'Paper-like background and high-contrast ink keys.',
+    ),
+    KeyboardThemePreset(
+      id: pixelCandy,
+      name: 'Pixel Candy',
+      description: 'Playful candy colors with crisp borders.',
+    ),
+    KeyboardThemePreset(
+      id: minimalContrast,
+      name: 'Minimal Contrast',
+      description: 'Simple high-contrast palette for readability.',
+    ),
+  ];
+
+  static KeyboardThemeConfig configFor(String presetId) {
+    final base = KeyboardThemeConfig.defaults().copyWith(
+      presetId: presetId,
+      useImage: false,
+      backgroundImagePath: null,
+      pressEffect: KeyboardThemePressEffect.none,
+    );
+    return switch (presetId) {
+      system => KeyboardThemeConfig.defaults(),
+      winflowzLight => base,
+      winflowzDark => base.copyWith(
+        backgroundStartColor: 0xFF121815,
+        backgroundEndColor: 0xFF121815,
+        keyColor: 0xFF232B27,
+        specialKeyColor: 0xFF2E3833,
+        activeKeyColor: 0xFF36B384,
+        pressedKeyColor: 0xFF43524B,
+        textColor: 0xFFEBF2EE,
+        cornerTextColor: 0xFFB7C8BF,
+        statusTextColor: 0xFFCCD9D2,
+        borderColor: 0xFF516158,
+        shadowColor: 0x66000000,
+      ),
+      neonTerminal => base.copyWith(
+        backgroundStartColor: 0xFF07120F,
+        backgroundEndColor: 0xFF12241E,
+        useGradient: true,
+        keyColor: 0xFF0D1C18,
+        specialKeyColor: 0xFF143127,
+        activeKeyColor: 0xFF00F5A0,
+        pressedKeyColor: 0xFF1D4D3C,
+        textColor: 0xFFE9FFF6,
+        cornerTextColor: 0xFF7CFFD3,
+        statusTextColor: 0xFFB8FFE8,
+        borderColor: 0xFF00A76E,
+        shadowColor: 0x8800F5A0,
+        shadowBlur: 7,
+        pressEffect: KeyboardThemePressEffect.glow,
+      ),
+      glassMint => base.copyWith(
+        backgroundStartColor: 0xFFDFFAF0,
+        backgroundEndColor: 0xFFBEEBD9,
+        useGradient: true,
+        keyColor: 0xCCFFFFFF,
+        specialKeyColor: 0xBFE5FFF6,
+        activeKeyColor: 0xFF168765,
+        pressedKeyColor: 0xFFD0EEE3,
+        textColor: 0xFF17342B,
+        cornerTextColor: 0xFF4F7C6C,
+        statusTextColor: 0xFF254C3F,
+        borderColor: 0x80FFFFFF,
+        keyRadius: 14,
+        shadowBlur: 9,
+      ),
+      sunsetGradient => base.copyWith(
+        backgroundStartColor: 0xFFFFC371,
+        backgroundEndColor: 0xFFFF5F6D,
+        useGradient: true,
+        keyColor: 0xFFFFF8EB,
+        specialKeyColor: 0xFFFFDEB8,
+        activeKeyColor: 0xFF8A1F3D,
+        pressedKeyColor: 0xFFFFCFB0,
+        textColor: 0xFF3B1820,
+        cornerTextColor: 0xFF754252,
+        statusTextColor: 0xFF471D28,
+        borderColor: 0x33FFFFFF,
+        pressEffect: KeyboardThemePressEffect.pulse,
+      ),
+      midnightAurora => base.copyWith(
+        backgroundStartColor: 0xFF07111F,
+        backgroundEndColor: 0xFF204B6D,
+        useGradient: true,
+        gradientStyle: KeyboardThemeGradientStyle.radial,
+        keyColor: 0xFF111C2E,
+        specialKeyColor: 0xFF1E2E48,
+        activeKeyColor: 0xFF64D2FF,
+        pressedKeyColor: 0xFF2D4667,
+        textColor: 0xFFEAF7FF,
+        cornerTextColor: 0xFFA7DFFF,
+        statusTextColor: 0xFFD7F0FF,
+        borderColor: 0xFF3B6D8D,
+        shadowColor: 0x995BD6FF,
+        pressEffect: KeyboardThemePressEffect.ripple,
+      ),
+      paperInk => base.copyWith(
+        backgroundStartColor: 0xFFF5EFE2,
+        backgroundEndColor: 0xFFF5EFE2,
+        keyColor: 0xFFFFFCF4,
+        specialKeyColor: 0xFFE9DDC9,
+        activeKeyColor: 0xFF2D2A26,
+        pressedKeyColor: 0xFFE1D2BB,
+        textColor: 0xFF1D1A16,
+        cornerTextColor: 0xFF6A5D4A,
+        statusTextColor: 0xFF40382D,
+        borderColor: 0xFFB9A98F,
+        shadowColor: 0x33000000,
+        shadowBlur: 3,
+      ),
+      pixelCandy => base.copyWith(
+        backgroundStartColor: 0xFFFFE0F1,
+        backgroundEndColor: 0xFFD4F1FF,
+        useGradient: true,
+        keyColor: 0xFFFFFFFF,
+        specialKeyColor: 0xFFFFC6E2,
+        activeKeyColor: 0xFF005A9C,
+        pressedKeyColor: 0xFFFFD166,
+        textColor: 0xFF15213A,
+        cornerTextColor: 0xFF37527A,
+        statusTextColor: 0xFF1A3150,
+        borderColor: 0xFF15213A,
+        borderWidth: 1.5,
+        keyRadius: 5,
+        shadowBlur: 1,
+        pressEffect: KeyboardThemePressEffect.confettiLite,
+      ),
+      minimalContrast => base.copyWith(
+        backgroundStartColor: 0xFF000000,
+        backgroundEndColor: 0xFF000000,
+        keyColor: 0xFFFFFFFF,
+        specialKeyColor: 0xFFE8E8E8,
+        activeKeyColor: 0xFFFFFF00,
+        pressedKeyColor: 0xFFCFCFCF,
+        textColor: 0xFF000000,
+        cornerTextColor: 0xFF303030,
+        statusTextColor: 0xFFFFFFFF,
+        borderColor: 0xFFFFFFFF,
+        borderWidth: 1,
+        shadowBlur: 0,
+      ),
+      _ => KeyboardThemeConfig.defaults(),
+    };
+  }
+}
+
+class KeyboardThemeConfig {
+  const KeyboardThemeConfig({
+    required this.version,
+    required this.presetId,
+    required this.backgroundStartColor,
+    required this.backgroundEndColor,
+    required this.useGradient,
+    required this.gradientStyle,
+    required this.useImage,
+    required this.backgroundImagePath,
+    required this.keyColor,
+    required this.specialKeyColor,
+    required this.activeKeyColor,
+    required this.pressedKeyColor,
+    required this.textColor,
+    required this.cornerTextColor,
+    required this.statusTextColor,
+    required this.borderColor,
+    required this.borderWidth,
+    required this.keyRadius,
+    required this.shadowColor,
+    required this.shadowBlur,
+    required this.shadowOffsetY,
+    required this.pressEffect,
+    required this.effectIntensity,
+    required this.effectDurationMs,
+    required this.effectEasing,
+  });
+
+  final int version;
+  final String presetId;
+  final int backgroundStartColor;
+  final int backgroundEndColor;
+  final bool useGradient;
+  final KeyboardThemeGradientStyle gradientStyle;
+  final bool useImage;
+  final String? backgroundImagePath;
+  final int keyColor;
+  final int specialKeyColor;
+  final int activeKeyColor;
+  final int pressedKeyColor;
+  final int textColor;
+  final int cornerTextColor;
+  final int statusTextColor;
+  final int borderColor;
+  final double borderWidth;
+  final double keyRadius;
+  final int shadowColor;
+  final double shadowBlur;
+  final double shadowOffsetY;
+  final KeyboardThemePressEffect pressEffect;
+  final double effectIntensity;
+  final int effectDurationMs;
+  final KeyboardThemeEffectEasing effectEasing;
+
+  factory KeyboardThemeConfig.defaults() {
+    return const KeyboardThemeConfig(
+      version: 1,
+      presetId: KeyboardThemePresetCatalog.system,
+      backgroundStartColor: 0xFFEEF1EE,
+      backgroundEndColor: 0xFFEEF1EE,
+      useGradient: false,
+      gradientStyle: KeyboardThemeGradientStyle.linear,
+      useImage: false,
+      backgroundImagePath: null,
+      keyColor: 0xFFFFFFFF,
+      specialKeyColor: 0xFFE0E6E3,
+      activeKeyColor: 0xFF17795D,
+      pressedKeyColor: 0xFFCADAD3,
+      textColor: 0xFF1D2320,
+      cornerTextColor: 0xFF5C6762,
+      statusTextColor: 0xFF333D38,
+      borderColor: 0x00000000,
+      borderWidth: 0,
+      keyRadius: 8,
+      shadowColor: 0x33000000,
+      shadowBlur: 4,
+      shadowOffsetY: 1,
+      pressEffect: KeyboardThemePressEffect.none,
+      effectIntensity: 0.35,
+      effectDurationMs: 170,
+      effectEasing: KeyboardThemeEffectEasing.easeOut,
+    );
+  }
+
+  factory KeyboardThemeConfig.fromMap(Map<Object?, Object?> map) {
+    int asColor(Object? value, int fallback) {
+      if (value is num) {
+        return value.toInt();
+      }
+      if (value is String) {
+        final normalized = value.replaceFirst('#', '');
+        final parsed = int.tryParse(normalized, radix: 16);
+        if (parsed != null) {
+          return normalized.length <= 6 ? (0xFF000000 | parsed) : parsed;
+        }
+      }
+      return fallback;
+    }
+
+    final defaults = KeyboardThemeConfig.defaults();
+    return KeyboardThemeConfig(
+      version: (map['version'] as num?)?.toInt() ?? 1,
+      presetId: map['presetId'] as String? ?? defaults.presetId,
+      backgroundStartColor: asColor(
+        map['backgroundStartColor'],
+        defaults.backgroundStartColor,
+      ),
+      backgroundEndColor: asColor(
+        map['backgroundEndColor'],
+        defaults.backgroundEndColor,
+      ),
+      useGradient: map['useGradient'] as bool? ?? defaults.useGradient,
+      gradientStyle: KeyboardThemeGradientStyle.fromName(
+        map['gradientStyle'] as String? ?? defaults.gradientStyle.name,
+      ),
+      useImage: map['useImage'] as bool? ?? defaults.useImage,
+      backgroundImagePath: map['backgroundImagePath'] as String?,
+      keyColor: asColor(map['keyColor'], defaults.keyColor),
+      specialKeyColor: asColor(
+        map['specialKeyColor'],
+        defaults.specialKeyColor,
+      ),
+      activeKeyColor: asColor(map['activeKeyColor'], defaults.activeKeyColor),
+      pressedKeyColor: asColor(
+        map['pressedKeyColor'],
+        defaults.pressedKeyColor,
+      ),
+      textColor: asColor(map['textColor'], defaults.textColor),
+      cornerTextColor: asColor(
+        map['cornerTextColor'],
+        defaults.cornerTextColor,
+      ),
+      statusTextColor: asColor(
+        map['statusTextColor'],
+        defaults.statusTextColor,
+      ),
+      borderColor: asColor(map['borderColor'], defaults.borderColor),
+      borderWidth:
+          ((map['borderWidth'] as num?)?.toDouble() ?? defaults.borderWidth)
+              .clamp(0.0, 4.0),
+      keyRadius: ((map['keyRadius'] as num?)?.toDouble() ?? defaults.keyRadius)
+          .clamp(0.0, 24.0),
+      shadowColor: asColor(map['shadowColor'], defaults.shadowColor),
+      shadowBlur:
+          ((map['shadowBlur'] as num?)?.toDouble() ?? defaults.shadowBlur)
+              .clamp(0.0, 18.0),
+      shadowOffsetY:
+          ((map['shadowOffsetY'] as num?)?.toDouble() ?? defaults.shadowOffsetY)
+              .clamp(-4.0, 10.0),
+      pressEffect: KeyboardThemePressEffect.fromName(
+        map['pressEffect'] as String? ?? defaults.pressEffect.name,
+      ),
+      effectIntensity:
+          ((map['effectIntensity'] as num?)?.toDouble() ??
+                  defaults.effectIntensity)
+              .clamp(0.0, 1.0),
+      effectDurationMs:
+          ((map['effectDurationMs'] as num?)?.toInt() ??
+                  defaults.effectDurationMs)
+              .clamp(80, 600),
+      effectEasing: KeyboardThemeEffectEasing.fromName(
+        map['effectEasing'] as String? ?? defaults.effectEasing.name,
+      ),
+    );
+  }
+
+  Map<String, Object?> toMap() {
+    return {
+      'version': version,
+      'presetId': presetId,
+      'backgroundStartColor': backgroundStartColor,
+      'backgroundEndColor': backgroundEndColor,
+      'useGradient': useGradient,
+      'gradientStyle': gradientStyle.name,
+      'useImage': useImage,
+      if (backgroundImagePath != null)
+        'backgroundImagePath': backgroundImagePath,
+      'keyColor': keyColor,
+      'specialKeyColor': specialKeyColor,
+      'activeKeyColor': activeKeyColor,
+      'pressedKeyColor': pressedKeyColor,
+      'textColor': textColor,
+      'cornerTextColor': cornerTextColor,
+      'statusTextColor': statusTextColor,
+      'borderColor': borderColor,
+      'borderWidth': borderWidth,
+      'keyRadius': keyRadius,
+      'shadowColor': shadowColor,
+      'shadowBlur': shadowBlur,
+      'shadowOffsetY': shadowOffsetY,
+      'pressEffect': pressEffect.name,
+      'effectIntensity': effectIntensity,
+      'effectDurationMs': effectDurationMs,
+      'effectEasing': effectEasing.name,
+    };
+  }
+
+  KeyboardThemeConfig copyWith({
+    int? version,
+    String? presetId,
+    int? backgroundStartColor,
+    int? backgroundEndColor,
+    bool? useGradient,
+    KeyboardThemeGradientStyle? gradientStyle,
+    bool? useImage,
+    String? backgroundImagePath,
+    int? keyColor,
+    int? specialKeyColor,
+    int? activeKeyColor,
+    int? pressedKeyColor,
+    int? textColor,
+    int? cornerTextColor,
+    int? statusTextColor,
+    int? borderColor,
+    double? borderWidth,
+    double? keyRadius,
+    int? shadowColor,
+    double? shadowBlur,
+    double? shadowOffsetY,
+    KeyboardThemePressEffect? pressEffect,
+    double? effectIntensity,
+    int? effectDurationMs,
+    KeyboardThemeEffectEasing? effectEasing,
+  }) {
+    return KeyboardThemeConfig(
+      version: version ?? this.version,
+      presetId: presetId ?? this.presetId,
+      backgroundStartColor: backgroundStartColor ?? this.backgroundStartColor,
+      backgroundEndColor: backgroundEndColor ?? this.backgroundEndColor,
+      useGradient: useGradient ?? this.useGradient,
+      gradientStyle: gradientStyle ?? this.gradientStyle,
+      useImage: useImage ?? this.useImage,
+      backgroundImagePath: backgroundImagePath ?? this.backgroundImagePath,
+      keyColor: keyColor ?? this.keyColor,
+      specialKeyColor: specialKeyColor ?? this.specialKeyColor,
+      activeKeyColor: activeKeyColor ?? this.activeKeyColor,
+      pressedKeyColor: pressedKeyColor ?? this.pressedKeyColor,
+      textColor: textColor ?? this.textColor,
+      cornerTextColor: cornerTextColor ?? this.cornerTextColor,
+      statusTextColor: statusTextColor ?? this.statusTextColor,
+      borderColor: borderColor ?? this.borderColor,
+      borderWidth: borderWidth ?? this.borderWidth,
+      keyRadius: keyRadius ?? this.keyRadius,
+      shadowColor: shadowColor ?? this.shadowColor,
+      shadowBlur: shadowBlur ?? this.shadowBlur,
+      shadowOffsetY: shadowOffsetY ?? this.shadowOffsetY,
+      pressEffect: pressEffect ?? this.pressEffect,
+      effectIntensity: effectIntensity ?? this.effectIntensity,
+      effectDurationMs: effectDurationMs ?? this.effectDurationMs,
+      effectEasing: effectEasing ?? this.effectEasing,
+    );
+  }
+}
+
 enum KeyboardCornerSlot {
   topLeft,
   topRight,
@@ -57,6 +568,83 @@ class KeyboardConfigurableKeyCatalog {
   const KeyboardConfigurableKeyCatalog._();
 
   static const keys = [
+    KeyboardConfigurableKey(
+      id: 'mode-ABC',
+      label: 'ABC',
+      row: -1,
+      special: true,
+      description: 'Letters mode action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'mode-123',
+      label: '123',
+      row: -1,
+      special: true,
+      description: 'Numbers mode action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'panel-Acc',
+      label: 'Acc',
+      row: -1,
+      special: true,
+      description: 'Accent panel action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'mode-#+=',
+      label: '#+=',
+      row: -1,
+      special: true,
+      description: 'Symbols mode action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'panel-Nav',
+      label: 'Nav',
+      row: -1,
+      special: true,
+      description: 'Navigation panel action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'panel-Emoji',
+      label: 'Emoji',
+      row: -1,
+      special: true,
+      description: 'Emoji panel action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'panel-Clip',
+      label: 'Clip',
+      row: -1,
+      special: true,
+      description: 'Clipboard panel action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'panel-Snip',
+      label: 'Snip',
+      row: -1,
+      special: true,
+      description: 'Snippets panel action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'panel-Media',
+      label: 'Media',
+      row: -1,
+      special: true,
+      description: 'Media panel action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'panel-Prefs',
+      label: 'Prefs',
+      row: -1,
+      special: true,
+      description: 'Keyboard preferences panel action',
+    ),
+    KeyboardConfigurableKey(
+      id: 'voice',
+      label: 'Mic',
+      row: -1,
+      special: true,
+      description: 'Voice action',
+    ),
     KeyboardConfigurableKey(id: 'letter-q', label: 'Q', row: 0),
     KeyboardConfigurableKey(id: 'letter-w', label: 'W', row: 0),
     KeyboardConfigurableKey(id: 'letter-e', label: 'E', row: 0),
@@ -735,6 +1323,12 @@ class AndroidKeyboardStatus {
     required this.voiceEnabled,
     required this.clipboardSyncDesired,
     required this.mediaControlsEnabled,
+    required this.themeMode,
+    required this.themePresetId,
+    required this.themePressEffect,
+    required this.themeBackgroundSource,
+    required this.themeConfigSize,
+    required this.themeFallbackStatus,
     required this.layoutProfile,
     required this.cornerModeEnabled,
     required this.cornerPresetId,
@@ -756,6 +1350,12 @@ class AndroidKeyboardStatus {
   final bool voiceEnabled;
   final bool clipboardSyncDesired;
   final bool mediaControlsEnabled;
+  final String themeMode;
+  final String themePresetId;
+  final String themePressEffect;
+  final String themeBackgroundSource;
+  final int themeConfigSize;
+  final String themeFallbackStatus;
   final KeyboardLayoutProfile layoutProfile;
   final bool cornerModeEnabled;
   final String cornerPresetId;
@@ -778,6 +1378,12 @@ class AndroidKeyboardStatus {
       voiceEnabled: false,
       clipboardSyncDesired: false,
       mediaControlsEnabled: false,
+      themeMode: 'system',
+      themePresetId: 'system',
+      themePressEffect: 'none',
+      themeBackgroundSource: 'solid',
+      themeConfigSize: 0,
+      themeFallbackStatus: 'not_supported',
       layoutProfile: KeyboardLayoutProfile.qwerty,
       cornerModeEnabled: false,
       cornerPresetId: KeyboardCornerPresetCatalog.frenchAccents,
@@ -802,6 +1408,12 @@ class AndroidKeyboardStatus {
       voiceEnabled: map['voiceEnabled'] as bool? ?? true,
       clipboardSyncDesired: map['clipboardSyncDesired'] as bool? ?? false,
       mediaControlsEnabled: map['mediaControlsEnabled'] as bool? ?? true,
+      themeMode: map['themeMode'] as String? ?? 'system',
+      themePresetId: map['themePresetId'] as String? ?? 'system',
+      themePressEffect: map['themePressEffect'] as String? ?? 'none',
+      themeBackgroundSource: map['themeBackgroundSource'] as String? ?? 'solid',
+      themeConfigSize: (map['themeConfigSize'] as num?)?.toInt() ?? 0,
+      themeFallbackStatus: map['themeFallbackStatus'] as String? ?? 'unknown',
       layoutProfile: KeyboardLayoutProfile.fromName(
         map['layoutProfile'] as String? ?? KeyboardLayoutProfile.qwerty.name,
       ),
@@ -833,6 +1445,7 @@ class AndroidKeyboardStatus {
     bool? voiceEnabled,
     bool? clipboardSyncDesired,
     bool? mediaControlsEnabled,
+    String? themeMode,
     KeyboardLayoutProfile? layoutProfile,
     bool? cornerModeEnabled,
     bool? debugTouchOverlayEnabled,
@@ -850,6 +1463,7 @@ class AndroidKeyboardStatus {
       'voiceEnabled': voiceEnabled ?? this.voiceEnabled,
       'clipboardSyncDesired': clipboardSyncDesired ?? this.clipboardSyncDesired,
       'mediaControlsEnabled': mediaControlsEnabled ?? this.mediaControlsEnabled,
+      'themeMode': themeMode ?? this.themeMode,
       'layoutProfile': (layoutProfile ?? this.layoutProfile).name,
       'cornerModeEnabled': cornerModeEnabled ?? this.cornerModeEnabled,
       'debugTouchOverlayEnabled':

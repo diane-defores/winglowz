@@ -1,11 +1,19 @@
 package com.winflowz_app.winflowz_app.ime
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Paint
+import android.graphics.RadialGradient
 import android.graphics.RectF
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.graphics.Typeface
+import android.os.SystemClock
+import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.SoundEffectConstants
@@ -14,6 +22,55 @@ import android.view.View.MeasureSpec
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
+
+private data class NativeKeyboardColors(
+    val background: Int,
+    val privateBackground: Int,
+    val key: Int,
+    val specialKey: Int,
+    val activeKey: Int,
+    val pressedKey: Int,
+    val disabledKey: Int,
+    val text: Int,
+    val activeText: Int,
+    val disabledText: Int,
+    val secondaryText: Int,
+    val statusText: Int,
+) {
+    companion object {
+        val Light =
+            NativeKeyboardColors(
+                background = Color.rgb(238, 241, 238),
+                privateBackground = Color.rgb(246, 232, 226),
+                key = Color.WHITE,
+                specialKey = Color.rgb(224, 230, 227),
+                activeKey = Color.rgb(23, 121, 93),
+                pressedKey = Color.rgb(202, 218, 211),
+                disabledKey = Color.rgb(214, 217, 215),
+                text = Color.rgb(29, 35, 32),
+                activeText = Color.WHITE,
+                disabledText = Color.rgb(123, 130, 126),
+                secondaryText = Color.rgb(92, 103, 98),
+                statusText = Color.rgb(51, 61, 56),
+            )
+
+        val Dark =
+            NativeKeyboardColors(
+                background = Color.rgb(18, 24, 21),
+                privateBackground = Color.rgb(42, 28, 27),
+                key = Color.rgb(35, 43, 39),
+                specialKey = Color.rgb(46, 56, 51),
+                activeKey = Color.rgb(54, 179, 132),
+                pressedKey = Color.rgb(67, 82, 75),
+                disabledKey = Color.rgb(30, 36, 33),
+                text = Color.rgb(235, 242, 238),
+                activeText = Color.rgb(8, 20, 15),
+                disabledText = Color.rgb(108, 119, 113),
+                secondaryText = Color.rgb(168, 181, 174),
+                statusText = Color.rgb(204, 217, 210),
+            )
+    }
+}
 
 class WinFlowzKeyboardView(
     context: Context,
@@ -45,6 +102,7 @@ class WinFlowzKeyboardView(
         fun onMediaPrevious()
         fun onMediaNext()
         fun onMediaNowPlaying(): String
+        fun onOpenMediaApp()
         fun onNavigateCharLeft(): Boolean
         fun onNavigateCharRight(): Boolean
         fun onNavigateWordLeft(): Boolean
@@ -76,6 +134,17 @@ class WinFlowzKeyboardView(
     )
 
     private var shifted = false
+    private var shiftLocked = false
+    private var numberRowPinned = false
+    private var themeMode = KeyboardStateStore.THEME_SYSTEM
+    private var themeConfig = KeyboardThemeConfig()
+    private var themeImagePath: String? = null
+    private var themeBitmap: Bitmap? = null
+    private var nativeColors = NativeKeyboardColors.Light
+    private var resolvedTextColor = NativeKeyboardColors.Light.text
+    private var resolvedCornerTextColor = NativeKeyboardColors.Light.secondaryText
+    private var resolvedStatusTextColor = NativeKeyboardColors.Light.statusText
+    private var resolvedKeyRadius = resources.displayMetrics.density * 8f
     private var layoutMode = KeyboardLayoutMode.Letters
     private var panelMode = KeyboardPanelMode.None
     private var layoutProfile = KeyboardLayoutProfile.QWERTY
@@ -124,6 +193,7 @@ class WinFlowzKeyboardView(
     private var layoutSnapshot = buildSnapshot()
 
     private val density = resources.displayMetrics.density
+    private val pressEffects = KeyboardPressEffects(density) { SystemClock.uptimeMillis() }
     private val outerPadding = dp(8f)
     private val keyGap = dp(5f)
     private val keyRadius = dp(8f)
@@ -134,38 +204,47 @@ class WinFlowzKeyboardView(
     private val panelRowHeight = dp(42f)
 
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(238, 241, 238)
+        color = NativeKeyboardColors.Light.background
     }
     private val privateBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(246, 232, 226)
+        color = NativeKeyboardColors.Light.privateBackground
     }
     private val keyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE
+        color = NativeKeyboardColors.Light.key
     }
     private val specialKeyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(224, 230, 227)
+        color = NativeKeyboardColors.Light.specialKey
     }
     private val activeKeyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(23, 121, 93)
+        color = NativeKeyboardColors.Light.activeKey
     }
     private val pressedKeyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(202, 218, 211)
+        color = NativeKeyboardColors.Light.pressedKey
+    }
+    private val keyBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.STROKE
+        strokeWidth = 0f
+    }
+    private val keyShadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.FILL
     }
     private val disabledKeyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(214, 217, 215)
+        color = NativeKeyboardColors.Light.disabledKey
     }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(29, 35, 32)
+        color = NativeKeyboardColors.Light.text
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
     private val secondaryTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(92, 103, 98)
+        color = NativeKeyboardColors.Light.secondaryText
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
     private val statusPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(51, 61, 56)
+        color = NativeKeyboardColors.Light.statusText
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
@@ -225,6 +304,7 @@ class WinFlowzKeyboardView(
         isClickable = true
         isFocusable = true
         setBackgroundColor(Color.TRANSPARENT)
+        applyThemeMode(themeMode)
     }
 
     fun applyPolicy(policy: KeyboardFieldPolicy) {
@@ -256,6 +336,8 @@ class WinFlowzKeyboardView(
         englishLanguage: Boolean,
         doubleSpacePeriod: Boolean,
         punctuationAutoSpacing: Boolean,
+        themeMode: String,
+        themeConfig: KeyboardThemeConfig,
         recents: List<String>,
         clipboardEntries: List<KeyboardClipboardEntry>,
         snippets: List<KeyboardTextRule>,
@@ -272,6 +354,12 @@ class WinFlowzKeyboardView(
         englishLanguageEnabled = englishLanguage
         doubleSpacePeriodEnabled = doubleSpacePeriod
         punctuationAutoSpacingEnabled = punctuationAutoSpacing
+        this.themeConfig = themeConfig
+        if (themeImagePath != themeConfig.backgroundImagePath) {
+            themeImagePath = themeConfig.backgroundImagePath
+            themeBitmap = decodeThemeBitmap(themeImagePath)
+        }
+        applyThemeMode(themeMode)
         this.clipboardEntries = clipboardEntries
         this.snippets = snippets
         this.cornerConfig = cornerConfig
@@ -280,6 +368,59 @@ class WinFlowzKeyboardView(
             emojiCategory = KeyboardEmojiCategory.Smileys
         }
         refreshLayout()
+    }
+
+    private fun applyThemeMode(mode: String) {
+        themeMode =
+            if (mode in setOf(
+                    KeyboardStateStore.THEME_SYSTEM,
+                    KeyboardStateStore.THEME_LIGHT,
+                    KeyboardStateStore.THEME_DARK,
+                )
+            ) {
+                mode
+            } else {
+                KeyboardStateStore.THEME_SYSTEM
+            }
+        nativeColors =
+            if (themeMode == KeyboardStateStore.THEME_DARK ||
+                (themeMode == KeyboardStateStore.THEME_SYSTEM && isSystemDark())
+            ) {
+                NativeKeyboardColors.Dark
+            } else {
+                NativeKeyboardColors.Light
+            }
+        val defaultBackground =
+            if (themeConfig.presetId == "system") {
+                nativeColors.background
+            } else {
+                themeConfig.backgroundStartColor
+            }
+        backgroundPaint.shader = null
+        backgroundPaint.color = defaultBackground
+        privateBackgroundPaint.color = nativeColors.privateBackground
+        keyPaint.color = if (themeConfig.presetId == "system") nativeColors.key else themeConfig.keyColor
+        specialKeyPaint.color = if (themeConfig.presetId == "system") nativeColors.specialKey else themeConfig.specialKeyColor
+        activeKeyPaint.color = if (themeConfig.presetId == "system") nativeColors.activeKey else themeConfig.activeKeyColor
+        pressedKeyPaint.color = if (themeConfig.presetId == "system") nativeColors.pressedKey else themeConfig.pressedKeyColor
+        disabledKeyPaint.color = nativeColors.disabledKey
+        resolvedTextColor = if (themeConfig.presetId == "system") nativeColors.text else themeConfig.textColor
+        resolvedCornerTextColor =
+            if (themeConfig.presetId == "system") nativeColors.secondaryText else themeConfig.cornerTextColor
+        resolvedStatusTextColor =
+            if (themeConfig.presetId == "system") nativeColors.statusText else themeConfig.statusTextColor
+        resolvedKeyRadius = if (themeConfig.presetId == "system") keyRadius else dp(themeConfig.keyRadius)
+        keyBorderPaint.color = if (themeConfig.presetId == "system") Color.TRANSPARENT else themeConfig.borderColor
+        keyBorderPaint.strokeWidth = if (themeConfig.presetId == "system") 0f else dp(themeConfig.borderWidth)
+        keyShadowPaint.color = if (themeConfig.presetId == "system") Color.TRANSPARENT else themeConfig.shadowColor
+        textPaint.color = resolvedTextColor
+        secondaryTextPaint.color = resolvedCornerTextColor
+        statusPaint.color = resolvedStatusTextColor
+    }
+
+    private fun isSystemDark(): Boolean {
+        return (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
     }
 
     fun applyInputContext(
@@ -295,7 +436,7 @@ class WinFlowzKeyboardView(
         autoCapitalized: Boolean,
         candidates: List<String>,
     ) {
-        if (layoutMode == KeyboardLayoutMode.Letters && shifted != autoCapitalized) {
+        if (layoutMode == KeyboardLayoutMode.Letters && !shiftLocked && shifted != autoCapitalized) {
             shifted = autoCapitalized
         }
         suggestions = candidates.take(3)
@@ -316,6 +457,31 @@ class WinFlowzKeyboardView(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         keyFrames.clear()
+        if (!fieldPolicy.privateMode && themeConfig.useGradient && themeConfig.presetId != "system" && !themeConfig.useImage) {
+            backgroundPaint.shader =
+                if (themeConfig.gradientStyle == "radial") {
+                    RadialGradient(
+                        width * 0.28f,
+                        height * 0.18f,
+                        max(width, height).toFloat(),
+                        themeConfig.backgroundEndColor,
+                        themeConfig.backgroundStartColor,
+                        Shader.TileMode.CLAMP,
+                    )
+                } else {
+                    LinearGradient(
+                        0f,
+                        0f,
+                        width.toFloat(),
+                        height.toFloat(),
+                        themeConfig.backgroundStartColor,
+                        themeConfig.backgroundEndColor,
+                        Shader.TileMode.CLAMP,
+                    )
+                }
+        } else {
+            backgroundPaint.shader = null
+        }
         canvas.drawRect(
             0f,
             0f,
@@ -323,6 +489,11 @@ class WinFlowzKeyboardView(
             height.toFloat(),
             if (fieldPolicy.privateMode) privateBackgroundPaint else backgroundPaint,
         )
+        if (!fieldPolicy.privateMode && themeConfig.useImage) {
+            themeBitmap?.let { bitmap ->
+                canvas.drawBitmap(bitmap, null, RectF(0f, 0f, width.toFloat(), height.toFloat()), null)
+            }
+        }
 
         val left = outerPadding
         val right = width - outerPadding
@@ -335,6 +506,10 @@ class WinFlowzKeyboardView(
             val rowHeight = rowHeightFor(index)
             drawRow(canvas, row, left, y, right - left, rowHeight)
             y += rowHeight + keyGap
+        }
+
+        if (pressEffects.draw(canvas, resolvedKeyRadius, activeKeyPaint.color)) {
+            postInvalidateOnAnimation()
         }
 
         if (debugTouchOverlayEnabled) {
@@ -499,8 +674,14 @@ class WinFlowzKeyboardView(
             postDelayed(repeatRunnable, repeatDelayMs)
         } else if (key.action == KeyboardKeyAction.Shift) {
             longPressTriggered = true
+            shiftLocked = true
             shifted = true
-            setStatus("Shift held")
+            setStatus("Shift locked")
+            refreshLayout()
+        } else if (key.action == KeyboardKeyAction.ModeNumbers) {
+            longPressTriggered = true
+            numberRowPinned = !numberRowPinned
+            setStatus(if (numberRowPinned) "Number row pinned" else "Number row hidden")
             refreshLayout()
         } else if (key.action == KeyboardKeyAction.ToggleClipboardPanel) {
             longPressTriggered = true
@@ -508,12 +689,28 @@ class WinFlowzKeyboardView(
             panelMode = KeyboardPanelMode.ClipboardFull
             setStatus("Clipboard history")
             refreshLayout()
+        } else if (dispatchLongPressShortcut(key)) {
+            longPressTriggered = true
         } else {
             invalidate()
             return
         }
         performKeyboardHaptic(HapticFeedbackConstants.LONG_PRESS)
         invalidate()
+    }
+
+    private fun dispatchLongPressShortcut(key: KeyboardKeySpec): Boolean {
+        if (cornerModeEnabled && allowsCornerGesture(key)) {
+            val shortcut = key.cornerAssignments.topLeft
+            if (shortcut != null) {
+                if (!dispatchKeyValue(shortcut.value, GestureSelection.TopLeft, clearModifiersAfter = true)) {
+                    setStatus("Long press shortcut unavailable")
+                }
+                return true
+            }
+        }
+        dispatch(key, GestureSelection.PrimaryTap)
+        return true
     }
 
     private fun stopRepeat() {
@@ -582,6 +779,14 @@ class WinFlowzKeyboardView(
     private fun isSpaceKey(key: KeyboardKeySpec): Boolean {
         return key.action == KeyboardKeyAction.Text &&
             (key.glyph?.primary == " " || key.keyValue?.text == " ")
+    }
+
+    private fun decodeThemeBitmap(path: String?): Bitmap? {
+        val source = path?.trim().orEmpty()
+        if (source.isEmpty()) {
+            return null
+        }
+        return runCatching { BitmapFactory.decodeFile(source) }.getOrNull()
     }
 
     private fun drawStatus(canvas: Canvas, top: Float, contentWidth: Float) {
@@ -658,15 +863,25 @@ class WinFlowzKeyboardView(
             key.action == KeyboardKeyAction.Text -> keyPaint
             else -> specialKeyPaint
         }
-        canvas.drawRoundRect(rect, keyRadius, keyRadius, paint)
+        if (!fieldPolicy.privateMode && themeConfig.presetId != "system" && themeConfig.shadowBlur > 0f) {
+            val shadowRect = RectF(rect).apply {
+                offset(0f, dp(themeConfig.shadowOffsetY))
+                inset(-dp(themeConfig.shadowBlur) * 0.18f, -dp(themeConfig.shadowBlur) * 0.10f)
+            }
+            canvas.drawRoundRect(shadowRect, resolvedKeyRadius, resolvedKeyRadius, keyShadowPaint)
+        }
+        canvas.drawRoundRect(rect, resolvedKeyRadius, resolvedKeyRadius, paint)
+        if (!fieldPolicy.privateMode && keyBorderPaint.strokeWidth > 0f && Color.alpha(keyBorderPaint.color) > 0) {
+            canvas.drawRoundRect(rect, resolvedKeyRadius, resolvedKeyRadius, keyBorderPaint)
+        }
 
         textPaint.color =
             if (key.active || isActiveModifierKey(key)) {
-                Color.WHITE
+                nativeColors.activeText
             } else if (key.enabled) {
-                Color.rgb(29, 35, 32)
+                resolvedTextColor
             } else {
-                Color.rgb(123, 130, 126)
+                nativeColors.disabledText
             }
         textPaint.textSize = keyTextSize(key)
         val baseline = rect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
@@ -689,7 +904,7 @@ class WinFlowzKeyboardView(
         assignments: KeyboardCornerAssignments,
     ) {
         secondaryTextPaint.textSize = sp(9f)
-        secondaryTextPaint.color = Color.rgb(92, 103, 98)
+        secondaryTextPaint.color = resolvedCornerTextColor
         assignments.topLeft?.let {
             canvas.drawText(it.label, rect.left + dp(10f), rect.top + dp(12f), secondaryTextPaint)
         }
@@ -727,6 +942,7 @@ class WinFlowzKeyboardView(
             performKeyboardHaptic(HapticFeedbackConstants.REJECT)
             return
         }
+        triggerPressEffect(key)
         performKeyboardHaptic(HapticFeedbackConstants.KEYBOARD_TAP)
         performKeySound()
         if (selection != GestureSelection.PrimaryTap) {
@@ -780,7 +996,14 @@ class WinFlowzKeyboardView(
                     setStatus("Enter action unavailable")
                 }
             }
-            KeyboardKeyAction.Shift -> shifted = !shifted
+            KeyboardKeyAction.Shift -> {
+                if (shiftLocked) {
+                    shiftLocked = false
+                    shifted = false
+                } else {
+                    shifted = !shifted
+                }
+            }
             KeyboardKeyAction.ModeLetters -> {
                 layoutMode = KeyboardLayoutMode.Letters
                 panelMode = KeyboardPanelMode.None
@@ -878,6 +1101,7 @@ class WinFlowzKeyboardView(
                 }
                 refreshLayout()
             }
+            KeyboardKeyAction.OpenMediaApp -> callbacks.onOpenMediaApp()
             KeyboardKeyAction.InsertSnippetOne -> {
                 val snippet = key.suggestion
                 if (snippet.isNullOrBlank()) {
@@ -1023,6 +1247,30 @@ class WinFlowzKeyboardView(
         }
     }
 
+    private fun triggerPressEffect(key: KeyboardKeySpec) {
+        val frame = gestureStartFrame?.takeIf { it.key.id == key.id } ?: return
+        val spec =
+            if (systemAnimationsEnabled()) {
+                KeyboardPressEffectPolicy.resolve(themeConfig, fieldPolicy.privateMode)
+            } else {
+                KeyboardPressEffectSpec(
+                    effect = "none",
+                    durationMs = themeConfig.effectDurationMs,
+                    intensity = themeConfig.effectIntensity,
+                    easing = themeConfig.effectEasing,
+                )
+            }
+        if (pressEffects.trigger(key.id, frame.rect, spec)) {
+            postInvalidateOnAnimation()
+        }
+    }
+
+    private fun systemAnimationsEnabled(): Boolean {
+        return runCatching {
+            Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f
+        }.getOrDefault(true)
+    }
+
     private fun dispatchKeyValue(
         value: KeyboardKeyValue,
         selection: GestureSelection,
@@ -1074,7 +1322,14 @@ class WinFlowzKeyboardView(
 
     private fun toggleSystemModifier(modifier: KeyboardSystemModifier) {
         when (modifier) {
-            KeyboardSystemModifier.Shift -> shifted = !shifted
+            KeyboardSystemModifier.Shift -> {
+                if (shiftLocked) {
+                    shiftLocked = false
+                    shifted = false
+                } else {
+                    shifted = !shifted
+                }
+            }
             KeyboardSystemModifier.Ctrl,
             KeyboardSystemModifier.Alt,
             KeyboardSystemModifier.Fn,
@@ -1092,7 +1347,7 @@ class WinFlowzKeyboardView(
 
     private fun clearTransientModifiers() {
         activeSystemModifiers.clear()
-        if (shifted && layoutSnapshot.mode == KeyboardLayoutMode.Letters) {
+        if (!shiftLocked && shifted && layoutSnapshot.mode == KeyboardLayoutMode.Letters) {
             shifted = false
         }
     }
@@ -1176,6 +1431,7 @@ class WinFlowzKeyboardView(
                 snippetsAllowed = fieldPolicy.snippetsAllowed,
                 snippets = snippets,
                 suggestions = suggestions,
+                numberRowPinned = numberRowPinned,
                 mediaNowPlayingLabel = mediaNowPlayingLabel,
                 cornerConfig = cornerConfig,
                 fieldPolicy = fieldPolicy,
@@ -1252,7 +1508,7 @@ class WinFlowzKeyboardView(
 
     private fun drawDebugOverlay(canvas: Canvas) {
         keyFrames.forEach { frame ->
-            canvas.drawRoundRect(frame.rect, keyRadius, keyRadius, debugStrokePaint)
+            canvas.drawRoundRect(frame.rect, resolvedKeyRadius, resolvedKeyRadius, debugStrokePaint)
         }
         val dx = gestureLatestX - gestureStartX
         val dy = gestureLatestY - gestureStartY

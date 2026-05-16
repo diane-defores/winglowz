@@ -154,7 +154,7 @@ class InputConnectionEditor(
                 metaState,
                 KeyCharacterMap.VIRTUAL_KEYBOARD,
                 0,
-                KeyEvent.FLAG_SOFT_KEYBOARD,
+                KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE,
             )
         val up =
             KeyEvent(
@@ -166,7 +166,7 @@ class InputConnectionEditor(
                 metaState,
                 KeyCharacterMap.VIRTUAL_KEYBOARD,
                 0,
-                KeyEvent.FLAG_SOFT_KEYBOARD,
+                KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE,
             )
         return if (connection.sendKeyEvent(down) && connection.sendKeyEvent(up)) {
             KeyboardEditorResult.Applied

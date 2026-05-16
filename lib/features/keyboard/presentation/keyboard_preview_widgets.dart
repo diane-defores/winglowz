@@ -937,28 +937,76 @@ class KeyboardPreviewSnapshot {
     return KeyboardPreviewRow(
       height: AppKeyboardPreview.rowHeightMini,
       keys: [
-        _modeKey('ABC', KeyboardPreviewMode.letters),
-        _modeKey('123', KeyboardPreviewMode.numbers),
-        _panelKey('Acc', KeyboardPreviewPanel.accents),
-        _modeKey('#+=', KeyboardPreviewMode.symbols),
-        _panelKey('Nav', KeyboardPreviewPanel.navigation),
-        _panelKey('Emoji', KeyboardPreviewPanel.emoji),
-        _panelKey(
-          'Clip',
-          KeyboardPreviewPanel.clipboard,
-          enabled: !privateMode,
-          activeOverride:
-              panel == KeyboardPreviewPanel.clipboard ||
-              panel == KeyboardPreviewPanel.clipboardFull,
+        _withCorners(
+          keyId: 'mode-ABC',
+          specialKey: true,
+          key: _modeKey('ABC', KeyboardPreviewMode.letters),
         ),
-        _panelKey('Snip', KeyboardPreviewPanel.snippets, enabled: !privateMode),
-        _panelKey('Media', KeyboardPreviewPanel.media),
-        _panelKey('Prefs', KeyboardPreviewPanel.settings),
-        const KeyboardPreviewKey(
-          label: 'Mic',
-          special: true,
-          action: KeyboardPreviewKeyAction.unsupported,
-          unsupportedReason: 'Voice dictation simulation is not wired here',
+        _withCorners(
+          keyId: 'mode-123',
+          specialKey: true,
+          key: _modeKey('123', KeyboardPreviewMode.numbers),
+        ),
+        _withCorners(
+          keyId: 'panel-Acc',
+          specialKey: true,
+          key: _panelKey('Acc', KeyboardPreviewPanel.accents),
+        ),
+        _withCorners(
+          keyId: 'mode-#+=',
+          specialKey: true,
+          key: _modeKey('#+=', KeyboardPreviewMode.symbols),
+        ),
+        _withCorners(
+          keyId: 'panel-Nav',
+          specialKey: true,
+          key: _panelKey('Nav', KeyboardPreviewPanel.navigation),
+        ),
+        _withCorners(
+          keyId: 'panel-Emoji',
+          specialKey: true,
+          key: _panelKey('Emoji', KeyboardPreviewPanel.emoji),
+        ),
+        _withCorners(
+          keyId: 'panel-Clip',
+          specialKey: true,
+          key: _panelKey(
+            'Clip',
+            KeyboardPreviewPanel.clipboard,
+            enabled: !privateMode,
+            activeOverride:
+                panel == KeyboardPreviewPanel.clipboard ||
+                panel == KeyboardPreviewPanel.clipboardFull,
+          ),
+        ),
+        _withCorners(
+          keyId: 'panel-Snip',
+          specialKey: true,
+          key: _panelKey(
+            'Snip',
+            KeyboardPreviewPanel.snippets,
+            enabled: !privateMode,
+          ),
+        ),
+        _withCorners(
+          keyId: 'panel-Media',
+          specialKey: true,
+          key: _panelKey('Media', KeyboardPreviewPanel.media),
+        ),
+        _withCorners(
+          keyId: 'panel-Prefs',
+          specialKey: true,
+          key: _panelKey('Prefs', KeyboardPreviewPanel.settings),
+        ),
+        _withCorners(
+          keyId: 'voice',
+          specialKey: true,
+          key: const KeyboardPreviewKey(
+            label: 'Mic',
+            special: true,
+            action: KeyboardPreviewKeyAction.unsupported,
+            unsupportedReason: 'Voice dictation simulation is not wired here',
+          ),
         ),
       ],
     );
@@ -1027,11 +1075,17 @@ class KeyboardPreviewSnapshot {
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightRegular,
             keys: [
-              _unsupportedKey('Para↑', weight: 1.3),
-              _unsupportedKey('Line↑', weight: 1.3),
+              const KeyboardPreviewKey(
+                label: 'Del←',
+                special: true,
+                action: KeyboardPreviewKeyAction.backspace,
+              ),
+              _unsupportedKey('⏫', weight: 1.1),
+              _unsupportedKey('↑', weight: 1.1),
+              _unsupportedKey('Del→', weight: 1.1),
             ],
-            leadingWeight: 1.5,
-            trailingWeight: 1.5,
+            leadingWeight: .35,
+            trailingWeight: .35,
           ),
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightRegular,
@@ -1047,24 +1101,13 @@ class KeyboardPreviewSnapshot {
           KeyboardPreviewRow(
             height: AppKeyboardPreview.rowHeightRegular,
             keys: [
-              _unsupportedKey('Line↓', weight: 1.3),
-              _unsupportedKey('Para↓', weight: 1.3),
-            ],
-            leadingWeight: 1.5,
-            trailingWeight: 1.5,
-          ),
-          KeyboardPreviewRow(
-            height: AppKeyboardPreview.rowHeightCompact,
-            keys: [
-              KeyboardPreviewKey(
-                label: 'Del←',
-                special: true,
-                action: KeyboardPreviewKeyAction.backspace,
-              ),
               _unsupportedKey('DelW←', weight: 1.2),
-              _unsupportedKey('Del→', weight: 1.1),
+              _unsupportedKey('⏬', weight: 1.1),
+              _unsupportedKey('↓', weight: 1.1),
               _unsupportedKey('DelW→', weight: 1.2),
             ],
+            leadingWeight: .35,
+            trailingWeight: .35,
           ),
         ];
       case KeyboardPreviewPanel.accents:
@@ -1211,9 +1254,9 @@ class KeyboardPreviewSnapshot {
                 action: KeyboardPreviewKeyAction.mediaNowPlaying,
               ),
               const KeyboardPreviewKey(
-                label: 'Close',
+                label: 'App',
                 special: true,
-                action: KeyboardPreviewKeyAction.closePanel,
+                action: KeyboardPreviewKeyAction.openMediaApp,
               ),
             ],
           ),
@@ -1731,6 +1774,7 @@ enum KeyboardPreviewKeyAction {
   enter,
   shift,
   mediaNowPlaying,
+  openMediaApp,
   keyboardPicker,
   openAppSettings,
   openThemeSettings,

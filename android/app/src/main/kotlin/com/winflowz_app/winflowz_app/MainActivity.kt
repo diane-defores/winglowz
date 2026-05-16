@@ -4,17 +4,22 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.Manifest
 import android.provider.Settings
 import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
+import java.io.File
+import java.util.UUID
 import com.winflowz_app.winflowz_app.ime.KeyboardClipboardEventQueue
 import com.winflowz_app.winflowz_app.ime.KeyboardCornerConfig
 import com.winflowz_app.winflowz_app.ime.KeyboardCornerConfigException
 import com.winflowz_app.winflowz_app.ime.KeyboardLayoutProfile
 import com.winflowz_app.winflowz_app.ime.KeyboardStateStore
+import com.winflowz_app.winflowz_app.ime.KeyboardThemeConfig
 import com.winflowz_app.winflowz_app.ime.KeyboardTextRule
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -27,9 +32,13 @@ class MainActivity : FlutterActivity() {
     private val keyOverlayEnabled = "overlay_enabled"
     private val keyOverlaySizeScale = "overlay_size_scale"
     private val keyOverlayOpacity = "overlay_opacity"
+    private val keyOpenRoute = "openRoute"
+    private val requestPickThemeImage = 4607
+    private var pendingKeyboardImageResult: MethodChannel.Result? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        handleRouteIntent(intent, flutterEngine)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
             .setMethodCallHandler { call, result ->
@@ -302,6 +311,9 @@ class MainActivity : FlutterActivity() {
                         call.argument<Boolean>("mediaControlsEnabled")?.let {
                             keyboardState.mediaControlsEnabled = it
                         }
+                        call.argument<String>("themeMode")?.let {
+                            keyboardState.themeMode = it
+                        }
                         call.argument<String>("layoutProfile")?.let {
                             keyboardState.layoutProfile = KeyboardLayoutProfile.fromRaw(it)
                         }
@@ -340,6 +352,53 @@ class MainActivity : FlutterActivity() {
                         }
                         result.success(keyboardState.buildStatusMap())
                     }
+                    "setKeyboardThemeMode" -> {
+                        keyboardState.themeMode = call.argument<String>("themeMode").orEmpty()
+                        result.success(keyboardState.buildStatusMap())
+                    }
+                    "getKeyboardThemeConfig" -> {
+                        result.success(keyboardState.themeConfig().toMap())
+                    }
+                    "setKeyboardThemeConfig" -> {
+                        val rawConfig = call.arguments as? Map<*, *>
+                        if (rawConfig == null) {
+                            result.error(
+                                "KEYBOARD_THEME_CONFIG_INVALID",
+                                "Theme config payload must be a map.",
+                                null,
+                            )
+                            return@setMethodCallHandler
+                        }
+                        try {
+                            val config = KeyboardThemeConfig.fromMap(rawConfig)
+                            result.success(keyboardState.replaceThemeConfig(config).toMap())
+                        } catch (error: IllegalArgumentException) {
+                            result.error(
+                                "KEYBOARD_THEME_CONFIG_INVALID",
+                                error.message ?: "Theme config is invalid.",
+                                null,
+                            )
+                        }
+                    }
+                    "resetKeyboardThemeConfig" -> {
+                        result.success(keyboardState.resetThemeConfig().toMap())
+                    }
+                    "importKeyboardThemeImage" -> {
+                        if (pendingKeyboardImageResult != null) {
+                            result.error(
+                                "KEYBOARD_THEME_IMAGE_BUSY",
+                                "Another image import is already running.",
+                                null,
+                            )
+                            return@setMethodCallHandler
+                        }
+                        pendingKeyboardImageResult = result
+                        val pickIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                            addCategory(Intent.CATEGORY_OPENABLE)
+                            type = "image/*"
+                        }
+                        startActivityForResult(pickIntent, requestPickThemeImage)
+                    }
                     "setKeyboardSnippetRules" -> {
                         keyboardState.replaceSnippetRules(keyboardTextRulesFromArgument(call.arguments))
                         result.success(true)
@@ -351,6 +410,105 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun copyKeyboardThemeImageToPrivateStorage(uri: Uri): String {
+        val bounds =
+            BitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+        contentResolver.openInputStream(uri).use { input ->
+            requireNotNull(input) { "Image stream unavailable." }
+            BitmapFactory.decodeStream(input, null, bounds)
+        }
+        require(bounds.outWidth > 0 && bounds.outHeight > 0) { "Selected file is not a decodable image." }
+        val maxDimension = 1600
+        val sampleSize = calculateImageSampleSize(bounds.outWidth, bounds.outHeight, maxDimension)
+        val bitmapOptions =
+            BitmapFactory.Options().apply {
+                inSampleSize = sampleSize
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+            }
+        val bitmap =
+            contentResolver.openInputStream(uri).use { input ->
+                requireNotNull(input) { "Image stream unavailable." }
+                BitmapFactory.decodeStream(input, null, bitmapOptions)
+            }
+        requireNotNull(bitmap) { "Unable to decode selected image." }
+        val directory = File(filesDir, "keyboard_themes").apply { mkdirs() }
+        val destination = File(directory, "theme_${UUID.randomUUID()}.png")
+        destination.outputStream().use { output ->
+            require(bitmap.compress(Bitmap.CompressFormat.PNG, 92, output)) {
+                "Unable to encode keyboard image."
+            }
+        }
+        bitmap.recycle()
+        if (destination.length() > 8L * 1024L * 1024L) {
+            destination.delete()
+            throw IllegalArgumentException("Image exceeds 8MB limit.")
+        }
+        return destination.absolutePath
+    }
+
+    private fun calculateImageSampleSize(width: Int, height: Int, maxDimension: Int): Int {
+        var sample = 1
+        var nextWidth = width
+        var nextHeight = height
+        while (nextWidth / 2 >= maxDimension || nextHeight / 2 >= maxDimension) {
+            sample *= 2
+            nextWidth /= 2
+            nextHeight /= 2
+        }
+        return sample
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != requestPickThemeImage) {
+            return
+        }
+        val callback = pendingKeyboardImageResult
+        pendingKeyboardImageResult = null
+        if (callback == null) {
+            return
+        }
+        if (resultCode != RESULT_OK) {
+            callback.error("KEYBOARD_THEME_IMAGE_CANCELLED", "Image selection cancelled.", null)
+            return
+        }
+        val uri = data?.data
+        if (uri == null) {
+            callback.error("KEYBOARD_THEME_IMAGE_IMPORT_FAILED", "No image returned by picker.", null)
+            return
+        }
+        runCatching { copyKeyboardThemeImageToPrivateStorage(uri) }
+            .onSuccess { path ->
+                callback.success(mapOf("path" to path, "imported" to true))
+            }.onFailure { error ->
+                callback.error(
+                    "KEYBOARD_THEME_IMAGE_IMPORT_FAILED",
+                    error.message ?: "Unable to import image.",
+                    null,
+                )
+            }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        flutterEngine?.let { handleRouteIntent(intent, it) }
+    }
+
+    private fun handleRouteIntent(
+        intent: Intent?,
+        engine: FlutterEngine,
+    ) {
+        val route = intent?.getStringExtra(keyOpenRoute)?.trim().orEmpty()
+        if (route.isEmpty()) {
+            return
+        }
+        engine.navigationChannel.pushRoute(route)
     }
 
     private fun keyboardTextRulesFromArgument(argument: Any?): List<KeyboardTextRule> {
