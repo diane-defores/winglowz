@@ -1601,6 +1601,7 @@ class WinFlowzKeyboardView(
                     setStatus("Snippet rejected by field")
                 }
             }
+            KeyboardKeyAction.OpenWinFlowzSnippets -> callbacks.onSnippets()
             KeyboardKeyAction.OpenWinFlowzSettings -> callbacks.onSettings()
             KeyboardKeyAction.OpenThemeSettings -> callbacks.onThemeSettings()
             KeyboardKeyAction.ShowKeyboardPicker -> callbacks.onKeyboardPicker()

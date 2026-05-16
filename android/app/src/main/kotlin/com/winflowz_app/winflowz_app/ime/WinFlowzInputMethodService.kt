@@ -458,8 +458,15 @@ class WinFlowzInputMethodService :
             showStatus("Snippets disabled for private field")
             return
         }
-        onSettings()
-        showStatus("Open WinFlowz snippets from the app")
+        runServiceSafely("openSnippets") {
+            val intent =
+                Intent(this, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra("openRoute", "/snippets")
+                }
+            startActivity(intent)
+            showStatus("Open WinFlowz snippets")
+        }
     }
 
     override fun onSettings() {

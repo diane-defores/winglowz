@@ -398,7 +398,7 @@ class KeyboardLayoutBuilderTest {
         assertTrue(panelRow.horizontalScrollable)
         assertTrue(panelRow.keys.any { it.label == "j'arrive" && it.suggestion == "j'arrive" })
         assertTrue(panelRow.keys.any { it.label == "Mon adresse est" && it.suggestion == "Mon adresse est" })
-        assertTrue(panelRow.keys.any { it.label == "App" })
+        assertTrue(panelRow.keys.any { it.label == "App" && it.action == KeyboardKeyAction.OpenWinFlowzSnippets })
         assertTrue(panelRow.keys.any { it.label == "Close" })
     }
 
@@ -590,6 +590,7 @@ class KeyboardLayoutBuilderTest {
         assertFalse(mainActionRow.horizontalScrollable)
         assertFalse(mainActionRow.pagedHorizontalScrollable)
         assertTrue(mainActionRow.keys.map { it.label }.containsAll(listOf("ABC", "123", "Acc", "#+=", "Nav", "Prefs")))
+        assertTrue(mainActionRow.keys.any { it.label == "Snip" && it.action == KeyboardKeyAction.OpenWinFlowzSnippets })
     }
 
     @Test

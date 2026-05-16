@@ -92,6 +92,7 @@ enum class KeyboardKeyAction {
     BrightnessDown,
     BrightnessUp,
     InsertSnippetOne,
+    OpenWinFlowzSnippets,
     OpenWinFlowzSettings,
     OpenThemeSettings,
     ShowKeyboardPicker,
@@ -676,7 +677,7 @@ object KeyboardLayoutBuilder {
                         KeyboardKeySpec(
                             id = "snippet-open",
                             label = "App",
-                            action = KeyboardKeyAction.OpenWinFlowzSettings,
+                            action = KeyboardKeyAction.OpenWinFlowzSnippets,
                             weight = 1.2f,
                         ),
                         KeyboardKeySpec("snippet-close", "Close", KeyboardKeyAction.ClosePanel),
