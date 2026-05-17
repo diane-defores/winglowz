@@ -62,8 +62,52 @@ void main() {
     },
   );
 
+  test('install preflight blocks unsupported ABI before queueing', () {
+    final entry = LanguagePackCatalogEntry.fromMap(_validLocalPack());
+    final decision = LanguagePackInstallPreflight.evaluate(
+      entry: entry,
+      device: const LanguagePackDeviceProfile(
+        androidSdk: 35,
+        primaryAbi: 'armeabi-v7a',
+        totalCapacityMb: 65536,
+        freeSpaceMb: 8192,
+        ramMb: 6144,
+      ),
+    );
+
+    expect(decision.allowed, isFalse);
+    expect(
+      decision.installState,
+      InstalledLanguagePackState.blockedIncompatibleDevice,
+    );
+    expect(decision.reason, LanguagePackFallbackReason.incompatibleDevice);
+    expect(decision.errorCode, 'blocked_unsupported_abi');
+  });
+
+  test(
+    'install preflight allows compatible device with sufficient storage',
+    () {
+      final entry = LanguagePackCatalogEntry.fromMap(_validLocalPack());
+      final decision = LanguagePackInstallPreflight.evaluate(
+        entry: entry,
+        device: const LanguagePackDeviceProfile(
+          androidSdk: 35,
+          primaryAbi: 'arm64-v8a',
+          totalCapacityMb: 65536,
+          freeSpaceMb: 8192,
+          ramMb: 6144,
+        ),
+      );
+
+      expect(decision.allowed, isTrue);
+      expect(decision.installState, InstalledLanguagePackState.queued);
+      expect(decision.requiredMb, 1684);
+      expect(decision.availableMb, 8192);
+    },
+  );
+
   test('catalog provider defaults cloud fallback to explicit opt-in', () {
-    final container = ProviderContainer();
+    final container = _newContainer();
     addTearDown(container.dispose);
 
     final state = container.read(languagePackCatalogProvider);
@@ -74,7 +118,7 @@ void main() {
   });
 
   test('install state machine does not mark installed before verification', () {
-    final container = ProviderContainer();
+    final container = _newContainer();
     addTearDown(container.dispose);
 
     final notifier = container.read(languagePackCatalogProvider.notifier);
@@ -120,7 +164,7 @@ void main() {
   });
 
   test('queue install is idempotent for in-flight installs', () {
-    final container = ProviderContainer();
+    final container = _newContainer();
     addTearDown(container.dispose);
 
     final notifier = container.read(languagePackCatalogProvider.notifier);
@@ -140,8 +184,68 @@ void main() {
     expect(second.downloadProgress, first.downloadProgress);
   });
 
+  test('provider preflight blocks incompatible device without downloading', () {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+
+    final queued = notifier.queueInstallAfterPreflight(
+      entry: entry,
+      device: const LanguagePackDeviceProfile(
+        androidSdk: 25,
+        primaryAbi: 'arm64-v8a',
+        totalCapacityMb: 65536,
+        freeSpaceMb: 8192,
+        ramMb: 6144,
+      ),
+    );
+
+    final installed = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+    expect(queued, isFalse);
+    expect(
+      installed.installState,
+      InstalledLanguagePackState.blockedIncompatibleDevice,
+    );
+    expect(
+      installed.fallbackReason,
+      LanguagePackFallbackReason.incompatibleDevice,
+    );
+    expect(installed.lastErrorCode, 'blocked_min_android_sdk');
+  });
+
+  test('provider preflight queues compatible installs with required space', () {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+
+    final queued = notifier.queueInstallAfterPreflight(
+      entry: entry,
+      device: const LanguagePackDeviceProfile(
+        androidSdk: 35,
+        primaryAbi: 'arm64-v8a',
+        totalCapacityMb: 65536,
+        freeSpaceMb: 8192,
+        ramMb: 6144,
+      ),
+    );
+
+    final installed = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+    expect(queued, isTrue);
+    expect(installed.installState, InstalledLanguagePackState.queued);
+    expect(installed.requiredMb, 1684);
+    expect(installed.availableMb, 8192);
+  });
+
   test('retry limit is capped at three attempts', () {
-    final container = ProviderContainer();
+    final container = _newContainer();
     addTearDown(container.dispose);
 
     final notifier = container.read(languagePackCatalogProvider.notifier);
@@ -167,43 +271,287 @@ void main() {
     expect(state.installedStateFor(entry).lastErrorCode, 'retry_limit_reached');
   });
 
-  test('state repository persists installed packs and cloud fallback', () {
-    final repository = InMemoryLanguagePackCatalogStateRepository();
-
-    final firstContainer = ProviderContainer(
-      overrides: [
-        languagePackCatalogStateRepositoryProvider.overrideWithValue(
-          repository,
-        ),
-      ],
+  test('local state serializes installed packs and cloud fallback', () {
+    final entry = LanguagePackCatalogEntry.fromMap(_validLocalPack());
+    final installed = InstalledLanguagePack.notInstalled(entry).copyWith(
+      installState: InstalledLanguagePackState.installed,
+      runtimeMode: LanguagePackRuntimeMode.local,
+      fallbackReason: LanguagePackFallbackReason.none,
+      downloadProgress: 100,
+      installedSizeMb: entry.installedSizeMb,
+      checksumVerified: true,
+      installedAt: DateTime.utc(2026, 5, 17, 12),
+      lastVerifiedAt: DateTime.utc(2026, 5, 17, 12),
+      lastErrorCode: 'none',
     );
-    final entry = _firstInstallableEntry(firstContainer);
-    final firstNotifier = firstContainer.read(
-      languagePackCatalogProvider.notifier,
+    final localState = LanguagePackCatalogLocalState(
+      installedPacks: {entry.packId: installed},
+      retryCounts: {entry.packId: 2},
+      allowCloudFallback: true,
     );
 
-    firstNotifier.setAllowCloudFallback(true);
-    firstNotifier.queueInstall(entry);
-    firstNotifier.startDownload(entry);
-    firstNotifier.updateDownloadProgress(entry, 100);
-    firstNotifier.markInstalled(entry);
-    firstContainer.dispose();
+    final restored = LanguagePackCatalogLocalState.fromMap(localState.toMap());
 
-    final secondContainer = ProviderContainer(
-      overrides: [
-        languagePackCatalogStateRepositoryProvider.overrideWithValue(
-          repository,
-        ),
-      ],
+    expect(restored.allowCloudFallback, isTrue);
+    expect(restored.retryCounts[entry.packId], 2);
+    expect(
+      restored.installedPacks[entry.packId]?.installState,
+      InstalledLanguagePackState.installed,
     );
-    addTearDown(secondContainer.dispose);
-    final secondState = secondContainer.read(languagePackCatalogProvider);
-    final installed = secondState.installedStateFor(entry);
-
-    expect(secondState.allowCloudFallback, isTrue);
-    expect(installed.installState, InstalledLanguagePackState.installed);
-    expect(installed.checksumVerified, isTrue);
+    expect(restored.installedPacks[entry.packId]?.checksumVerified, isTrue);
   });
+
+  test(
+    'state repository persists installed packs and cloud fallback',
+    () async {
+      final repository = InMemoryLanguagePackCatalogStateRepository();
+
+      final firstContainer = ProviderContainer(
+        overrides: [
+          languagePackCatalogStateRepositoryProvider.overrideWithValue(
+            repository,
+          ),
+        ],
+      );
+      final entry = _firstInstallableEntry(firstContainer);
+      final firstNotifier = firstContainer.read(
+        languagePackCatalogProvider.notifier,
+      );
+
+      firstNotifier.setAllowCloudFallback(true);
+      firstNotifier.queueInstall(entry);
+      firstNotifier.startDownload(entry);
+      firstNotifier.updateDownloadProgress(entry, 100);
+      firstNotifier.markInstalled(entry);
+      await Future<void>.delayed(Duration.zero);
+      firstContainer.dispose();
+
+      final secondContainer = ProviderContainer(
+        overrides: [
+          languagePackCatalogStateRepositoryProvider.overrideWithValue(
+            repository,
+          ),
+        ],
+      );
+      addTearDown(secondContainer.dispose);
+      await secondContainer
+          .read(languagePackCatalogProvider.notifier)
+          .hydratePersistedState();
+      final secondState = secondContainer.read(languagePackCatalogProvider);
+      final installed = secondState.installedStateFor(entry);
+
+      expect(secondState.allowCloudFallback, isTrue);
+      expect(installed.installState, InstalledLanguagePackState.installed);
+      expect(installed.checksumVerified, isTrue);
+    },
+  );
+
+  test(
+    'install orchestration reaches installed on compatible device',
+    () async {
+      final container = _newContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(languagePackCatalogProvider.notifier);
+      final entry = _firstInstallableEntry(container);
+      final installed = await notifier.installPackWithPreflight(
+        entry: entry,
+        device: const LanguagePackDeviceProfile(
+          androidSdk: 35,
+          primaryAbi: 'arm64-v8a',
+          totalCapacityMb: 65536,
+          freeSpaceMb: 8192,
+          ramMb: 6144,
+        ),
+      );
+
+      final state = container
+          .read(languagePackCatalogProvider)
+          .installedStateFor(entry);
+      expect(installed, isTrue);
+      expect(state.installState, InstalledLanguagePackState.installed);
+      expect(state.downloadProgress, 100);
+      expect(state.checksumVerified, isTrue);
+    },
+  );
+
+  test(
+    'explicit fallback selects unavailable when cloud is off and no android path',
+    () {
+      final container = _newContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(languagePackCatalogProvider.notifier);
+      final applied = notifier.setExplicitFallbackForLanguage('fr-FR');
+      final entry = _firstInstallableEntry(container);
+      final state = container
+          .read(languagePackCatalogProvider)
+          .installedStateFor(entry);
+
+      expect(applied, isTrue);
+      expect(state.runtimeMode, LanguagePackRuntimeMode.unavailable);
+      expect(
+        state.fallbackReason,
+        LanguagePackFallbackReason.userDisabledCloud,
+      );
+    },
+  );
+
+  test('explicit fallback selects cloud_fallback when cloud is allowed', () {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    notifier.setAllowCloudFallback(true);
+    final applied = notifier.setExplicitFallbackForLanguage('fr-FR');
+    final entry = _firstInstallableEntry(container);
+    final state = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(applied, isTrue);
+    expect(state.runtimeMode, LanguagePackRuntimeMode.cloudFallback);
+    expect(state.fallbackReason, LanguagePackFallbackReason.cloudAutoPolicy);
+  });
+
+  test('mark update then corrupted transitions from installed pack', () async {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+    await notifier.installPackWithPreflight(
+      entry: entry,
+      device: const LanguagePackDeviceProfile(
+        androidSdk: 35,
+        primaryAbi: 'arm64-v8a',
+        totalCapacityMb: 65536,
+        freeSpaceMb: 8192,
+        ramMb: 6144,
+      ),
+    );
+
+    final updated = notifier.markUpdateAvailable(entry);
+    expect(updated, isTrue);
+    expect(
+      container
+          .read(languagePackCatalogProvider)
+          .installedStateFor(entry)
+          .installState,
+      InstalledLanguagePackState.updateAvailable,
+    );
+
+    final corrupted = notifier.markCorrupted(entry);
+    final state = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+    expect(corrupted, isTrue);
+    expect(state.installState, InstalledLanguagePackState.corrupted);
+    expect(state.runtimeMode, LanguagePackRuntimeMode.unavailable);
+  });
+
+  test('retry can recover from corrupted state', () async {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+    await notifier.installPackWithPreflight(
+      entry: entry,
+      device: const LanguagePackDeviceProfile(
+        androidSdk: 35,
+        primaryAbi: 'arm64-v8a',
+        totalCapacityMb: 65536,
+        freeSpaceMb: 8192,
+        ramMb: 6144,
+      ),
+    );
+    notifier.markCorrupted(entry);
+
+    final retried = await notifier.retryInstallWithPreflight(
+      entry: entry,
+      device: const LanguagePackDeviceProfile(
+        androidSdk: 35,
+        primaryAbi: 'arm64-v8a',
+        totalCapacityMb: 65536,
+        freeSpaceMb: 8192,
+        ramMb: 6144,
+      ),
+    );
+    final state = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(retried, isTrue);
+    expect(state.installState, InstalledLanguagePackState.installed);
+    expect(
+      container.read(languagePackCatalogProvider).retryCounts[entry.packId],
+      1,
+    );
+  });
+
+  test('native runtime status event updates installed pack runtime', () async {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+    await notifier.installPackWithPreflight(
+      entry: entry,
+      device: const LanguagePackDeviceProfile(
+        androidSdk: 35,
+        primaryAbi: 'arm64-v8a',
+        totalCapacityMb: 65536,
+        freeSpaceMb: 8192,
+        ramMb: 6144,
+      ),
+    );
+
+    final applied = notifier.applyNativeRuntimeStatus(
+      runtimeState: 'android_fallback',
+      fallbackReason: 'runtime_load_failed',
+      activePackId: entry.packId,
+      lastErrorCode: 'speech_error_7',
+      languageTag: entry.languageTag,
+      engine: 'android_speech_recognizer',
+      observedAtUtc: DateTime.utc(2026, 5, 17, 15, 40),
+    );
+    final state = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(applied, isTrue);
+    expect(state.installState, InstalledLanguagePackState.installed);
+    expect(state.runtimeMode, LanguagePackRuntimeMode.androidFallback);
+    expect(state.fallbackReason, LanguagePackFallbackReason.runtimeLoadFailed);
+    expect(state.lastErrorCode, 'speech_error_7');
+  });
+
+  test(
+    'native runtime status event uses language+engine when pack id is none',
+    () {
+      final container = _newContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(languagePackCatalogProvider.notifier);
+      final applied = notifier.applyNativeRuntimeStatus(
+        runtimeState: 'cloud_fallback',
+        fallbackReason: 'cloud_auto_policy',
+        activePackId: 'none',
+        lastErrorCode: 'none',
+        languageTag: 'fr-FR',
+        engine: 'sherpa_onnx',
+      );
+      final entry = _firstInstallableEntry(container);
+      final state = container
+          .read(languagePackCatalogProvider)
+          .installedStateFor(entry);
+
+      expect(applied, isTrue);
+      expect(state.runtimeMode, LanguagePackRuntimeMode.cloudFallback);
+      expect(state.fallbackReason, LanguagePackFallbackReason.cloudAutoPolicy);
+    },
+  );
 }
 
 Map<Object?, Object?> _validLocalPack() => {
@@ -240,4 +588,14 @@ LanguagePackCatalogEntry _firstInstallableEntry(ProviderContainer container) {
       .catalog
       .entries
       .firstWhere((entry) => entry.isInstallable);
+}
+
+ProviderContainer _newContainer() {
+  return ProviderContainer(
+    overrides: [
+      languagePackCatalogStateRepositoryProvider.overrideWithValue(
+        InMemoryLanguagePackCatalogStateRepository(),
+      ),
+    ],
+  );
 }

@@ -487,6 +487,40 @@ class LanguagePackStorageDecision {
   final LanguagePackFallbackReason reason;
 }
 
+class LanguagePackDeviceProfile {
+  const LanguagePackDeviceProfile({
+    required this.androidSdk,
+    required this.primaryAbi,
+    required this.totalCapacityMb,
+    required this.freeSpaceMb,
+    required this.ramMb,
+  });
+
+  final int androidSdk;
+  final String primaryAbi;
+  final int totalCapacityMb;
+  final int freeSpaceMb;
+  final int ramMb;
+}
+
+class LanguagePackInstallPreflightDecision {
+  const LanguagePackInstallPreflightDecision({
+    required this.allowed,
+    required this.installState,
+    required this.reason,
+    required this.requiredMb,
+    required this.availableMb,
+    required this.errorCode,
+  });
+
+  final bool allowed;
+  final InstalledLanguagePackState installState;
+  final LanguagePackFallbackReason reason;
+  final int requiredMb;
+  final int availableMb;
+  final String errorCode;
+}
+
 class LanguagePackStoragePolicy {
   const LanguagePackStoragePolicy._();
 
@@ -509,6 +543,79 @@ class LanguagePackStoragePolicy {
       reason: allowed
           ? LanguagePackFallbackReason.none
           : LanguagePackFallbackReason.insufficientStorage,
+    );
+  }
+}
+
+class LanguagePackInstallPreflight {
+  const LanguagePackInstallPreflight._();
+
+  static LanguagePackInstallPreflightDecision evaluate({
+    required LanguagePackCatalogEntry entry,
+    required LanguagePackDeviceProfile device,
+  }) {
+    if (!entry.isInstallable) {
+      return const LanguagePackInstallPreflightDecision(
+        allowed: false,
+        installState: InstalledLanguagePackState.blockedIncompatibleDevice,
+        reason: LanguagePackFallbackReason.unsupportedLanguage,
+        requiredMb: 0,
+        availableMb: 0,
+        errorCode: 'pack_not_installable',
+      );
+    }
+    if (device.androidSdk < entry.minAndroidSdk) {
+      return LanguagePackInstallPreflightDecision(
+        allowed: false,
+        installState: InstalledLanguagePackState.blockedIncompatibleDevice,
+        reason: LanguagePackFallbackReason.incompatibleDevice,
+        requiredMb: entry.installedSizeMb,
+        availableMb: device.freeSpaceMb,
+        errorCode: 'blocked_min_android_sdk',
+      );
+    }
+    if (!entry.supportedAbis.contains(device.primaryAbi)) {
+      return LanguagePackInstallPreflightDecision(
+        allowed: false,
+        installState: InstalledLanguagePackState.blockedIncompatibleDevice,
+        reason: LanguagePackFallbackReason.incompatibleDevice,
+        requiredMb: entry.installedSizeMb,
+        availableMb: device.freeSpaceMb,
+        errorCode: 'blocked_unsupported_abi',
+      );
+    }
+    if (device.ramMb < entry.minRamMb) {
+      return LanguagePackInstallPreflightDecision(
+        allowed: false,
+        installState: InstalledLanguagePackState.blockedIncompatibleDevice,
+        reason: LanguagePackFallbackReason.incompatibleDevice,
+        requiredMb: entry.installedSizeMb,
+        availableMb: device.freeSpaceMb,
+        errorCode: 'blocked_min_ram',
+      );
+    }
+    final storage = LanguagePackStoragePolicy.evaluate(
+      entry: entry,
+      totalCapacityMb: device.totalCapacityMb,
+      freeSpaceMb: device.freeSpaceMb,
+    );
+    if (!storage.allowed) {
+      return LanguagePackInstallPreflightDecision(
+        allowed: false,
+        installState: InstalledLanguagePackState.blockedInsufficientStorage,
+        reason: storage.reason,
+        requiredMb: storage.requiredMb,
+        availableMb: storage.availableMb,
+        errorCode: 'blocked_insufficient_storage',
+      );
+    }
+    return LanguagePackInstallPreflightDecision(
+      allowed: true,
+      installState: InstalledLanguagePackState.queued,
+      reason: LanguagePackFallbackReason.none,
+      requiredMb: storage.requiredMb,
+      availableMb: storage.availableMb,
+      errorCode: 'none',
     );
   }
 }

@@ -371,6 +371,20 @@ class AndroidKeyboardBridge {
         .toList(growable: false);
   }
 
+  static Future<List<AndroidKeyboardVoiceRuntimeEvent>>
+  drainKeyboardVoiceRuntimeEvents() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return const <AndroidKeyboardVoiceRuntimeEvent>[];
+    }
+    final raw = await _invoke<List<Object?>>('drainKeyboardVoiceRuntimeEvents');
+    return (raw ?? const <Object?>[])
+        .whereType<Map<Object?, Object?>>()
+        .map(AndroidKeyboardVoiceRuntimeEvent.fromMap)
+        .where((event) => event != null)
+        .cast<AndroidKeyboardVoiceRuntimeEvent>()
+        .toList(growable: false);
+  }
+
   static Future<T?> _invoke<T>(String method, [Object? arguments]) async {
     try {
       return await _channel.invokeMethod<T>(method, arguments);
@@ -499,6 +513,64 @@ class AndroidKeyboardVoiceEvent {
           ? source.trim()
           : 'keyboard',
       durationMs: durationMs is num ? durationMs.toInt().clamp(0, 1 << 31) : 0,
+      capturedAtUtc: DateTime.fromMillisecondsSinceEpoch(
+        capturedAtEpochMillis.toInt(),
+        isUtc: true,
+      ),
+    );
+  }
+}
+
+class AndroidKeyboardVoiceRuntimeEvent {
+  const AndroidKeyboardVoiceRuntimeEvent({
+    required this.runtimeState,
+    required this.fallbackReason,
+    required this.activePackId,
+    required this.lastErrorCode,
+    required this.languageTag,
+    required this.engine,
+    required this.source,
+    required this.capturedAtUtc,
+  });
+
+  final String runtimeState;
+  final String fallbackReason;
+  final String activePackId;
+  final String lastErrorCode;
+  final String languageTag;
+  final String engine;
+  final String source;
+  final DateTime capturedAtUtc;
+
+  static AndroidKeyboardVoiceRuntimeEvent? fromMap(Map<Object?, Object?> map) {
+    final runtimeState = map['runtime_state'];
+    final fallbackReason = map['fallback_reason'];
+    final activePackId = map['active_pack_id'];
+    final lastErrorCode = map['last_error_code'];
+    final languageTag = map['language_tag'];
+    final engine = map['engine'];
+    final source = map['source'];
+    final capturedAtEpochMillis = map['captured_at_epoch_millis'];
+    if (runtimeState is! String ||
+        fallbackReason is! String ||
+        activePackId is! String ||
+        lastErrorCode is! String ||
+        languageTag is! String ||
+        engine is! String ||
+        source is! String ||
+        capturedAtEpochMillis is! num) {
+      return null;
+    }
+    return AndroidKeyboardVoiceRuntimeEvent(
+      runtimeState: runtimeState.trim().isEmpty ? 'unavailable' : runtimeState,
+      fallbackReason: fallbackReason.trim().isEmpty
+          ? 'unsupported_language'
+          : fallbackReason,
+      activePackId: activePackId.trim().isEmpty ? 'none' : activePackId,
+      lastErrorCode: lastErrorCode.trim().isEmpty ? 'none' : lastErrorCode,
+      languageTag: languageTag.trim().isEmpty ? 'und' : languageTag,
+      engine: engine.trim().isEmpty ? 'unavailable' : engine,
+      source: source.trim().isEmpty ? 'ime_voice_controller' : source,
       capturedAtUtc: DateTime.fromMillisecondsSinceEpoch(
         capturedAtEpochMillis.toInt(),
         isUtc: true,

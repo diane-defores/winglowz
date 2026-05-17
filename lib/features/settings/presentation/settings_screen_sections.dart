@@ -1007,18 +1007,22 @@ class _OnDeviceSpeechSection extends StatelessWidget {
     required this.keyboardStatus,
     required this.onRefresh,
     required this.onAllowCloudFallbackChanged,
-    required this.onQueueInstall,
+    required this.onInstall,
+    required this.onRetryInstall,
+    required this.onMarkUpdateAvailable,
+    required this.onMarkCorrupted,
     required this.onRemove,
-    required this.onBlockByStorage,
   });
 
   final LanguagePackCatalogState state;
   final AndroidKeyboardStatus? keyboardStatus;
   final VoidCallback onRefresh;
   final ValueChanged<bool> onAllowCloudFallbackChanged;
-  final ValueChanged<LanguagePackCatalogEntry> onQueueInstall;
+  final Future<bool> Function(LanguagePackCatalogEntry entry) onInstall;
+  final Future<bool> Function(LanguagePackCatalogEntry entry) onRetryInstall;
+  final bool Function(LanguagePackCatalogEntry entry) onMarkUpdateAvailable;
+  final bool Function(LanguagePackCatalogEntry entry) onMarkCorrupted;
   final ValueChanged<LanguagePackCatalogEntry> onRemove;
-  final ValueChanged<LanguagePackCatalogEntry> onBlockByStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -1073,9 +1077,12 @@ class _OnDeviceSpeechSection extends StatelessWidget {
               entry: entry,
               installed: state.installedStateFor(entry),
               allowCloudFallback: state.allowCloudFallback,
-              onQueueInstall: () => onQueueInstall(entry),
+              retriesUsed: state.retryCounts[entry.packId] ?? 0,
+              onInstall: () => onInstall(entry),
+              onRetryInstall: () => onRetryInstall(entry),
+              onMarkUpdateAvailable: () => onMarkUpdateAvailable(entry),
+              onMarkCorrupted: () => onMarkCorrupted(entry),
               onRemove: () => onRemove(entry),
-              onBlockByStorage: () => onBlockByStorage(entry),
             ),
             AppGaps.x2,
           ],
@@ -1090,17 +1097,23 @@ class _LanguagePackTile extends StatelessWidget {
     required this.entry,
     required this.installed,
     required this.allowCloudFallback,
-    required this.onQueueInstall,
+    required this.retriesUsed,
+    required this.onInstall,
+    required this.onRetryInstall,
+    required this.onMarkUpdateAvailable,
+    required this.onMarkCorrupted,
     required this.onRemove,
-    required this.onBlockByStorage,
   });
 
   final LanguagePackCatalogEntry entry;
   final InstalledLanguagePack installed;
   final bool allowCloudFallback;
-  final VoidCallback onQueueInstall;
+  final int retriesUsed;
+  final Future<bool> Function() onInstall;
+  final Future<bool> Function() onRetryInstall;
+  final bool Function() onMarkUpdateAvailable;
+  final bool Function() onMarkCorrupted;
   final VoidCallback onRemove;
-  final VoidCallback onBlockByStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -1143,11 +1156,46 @@ class _LanguagePackTile extends StatelessWidget {
               'benchmark=${entry.benchmarkStatus.wireName} | offline=${entry.supportsOffline} | cloud_auto_allowed=$allowCloudFallback',
               style: theme.textTheme.bodySmall,
             ),
+            AppGaps.x1,
+            Text(
+              'progress=${installed.downloadProgress}% | retries=$retriesUsed/3 | checksum=${installed.checksumVerified}',
+              style: theme.textTheme.bodySmall,
+            ),
             if (installed.installState ==
                 InstalledLanguagePackState.blockedInsufficientStorage) ...[
               AppGaps.x1,
               Text(
                 'Storage blocked: required=${installed.requiredMb}MB, available=${installed.availableMb}MB.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            if (installed.installState ==
+                InstalledLanguagePackState.blockedIncompatibleDevice) ...[
+              AppGaps.x1,
+              Text(
+                'Device blocked: ${installed.lastErrorCode}. This pack cannot be queued on the current device profile.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            if (installed.installState ==
+                InstalledLanguagePackState.updateAvailable) ...[
+              AppGaps.x1,
+              Text(
+                'Update available: reinstall this pack to refresh local model files.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ],
+            if (installed.installState ==
+                InstalledLanguagePackState.corrupted) ...[
+              AppGaps.x1,
+              Text(
+                'Corrupted pack detected: retry install to recover local runtime.',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.error,
                 ),
@@ -1159,14 +1207,58 @@ class _LanguagePackTile extends StatelessWidget {
               runSpacing: AppSpacing.x2,
               children: [
                 OutlinedButton.icon(
-                  onPressed: entry.isInstallable ? onQueueInstall : null,
+                  onPressed: entry.isInstallable
+                      ? () async {
+                          await onInstall();
+                        }
+                      : null,
                   icon: const Icon(Icons.download_outlined),
-                  label: const Text('Queue install'),
+                  label: const Text('Install now'),
                 ),
                 OutlinedButton.icon(
-                  onPressed: entry.isInstallable ? onBlockByStorage : null,
-                  icon: const Icon(Icons.sd_storage_outlined),
-                  label: const Text('Simulate storage block'),
+                  onPressed:
+                      installed.installState ==
+                              InstalledLanguagePackState.failedDownload ||
+                          installed.installState ==
+                              InstalledLanguagePackState.failedVerification ||
+                          installed.installState ==
+                              InstalledLanguagePackState
+                                  .blockedInsufficientStorage ||
+                          installed.installState ==
+                              InstalledLanguagePackState
+                                  .pausedInsufficientStorage ||
+                          installed.installState ==
+                              InstalledLanguagePackState.corrupted
+                      ? () async {
+                          await onRetryInstall();
+                        }
+                      : null,
+                  icon: const Icon(Icons.refresh_outlined),
+                  label: const Text('Retry'),
+                ),
+                OutlinedButton.icon(
+                  onPressed:
+                      installed.installState ==
+                          InstalledLanguagePackState.installed
+                      ? () {
+                          onMarkUpdateAvailable();
+                        }
+                      : null,
+                  icon: const Icon(Icons.system_update_alt_outlined),
+                  label: const Text('Mark update'),
+                ),
+                OutlinedButton.icon(
+                  onPressed:
+                      installed.installState ==
+                              InstalledLanguagePackState.installed ||
+                          installed.installState ==
+                              InstalledLanguagePackState.updateAvailable
+                      ? () {
+                          onMarkCorrupted();
+                        }
+                      : null,
+                  icon: const Icon(Icons.warning_amber_outlined),
+                  label: const Text('Mark corrupted'),
                 ),
                 OutlinedButton.icon(
                   onPressed: onRemove,

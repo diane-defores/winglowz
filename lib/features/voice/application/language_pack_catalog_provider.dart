@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/language_pack_state_repository.dart';
@@ -55,7 +57,7 @@ class LanguagePackCatalogState {
 
 final languagePackCatalogStateRepositoryProvider =
     Provider<LanguagePackCatalogStateRepository>((ref) {
-      return InMemoryLanguagePackCatalogStateRepository();
+      return SecureStorageLanguagePackCatalogStateRepository();
     });
 
 final languagePackCatalogProvider =
@@ -65,13 +67,37 @@ final languagePackCatalogProvider =
 
 class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
   static const int _maxAutoRetries = 3;
+  static const List<int> _installProgressMilestones = <int>[18, 42, 73, 100];
+  final Set<String> _activeInstallOperations = <String>{};
 
   @override
   LanguagePackCatalogState build() {
-    final persisted = ref
+    unawaited(hydratePersistedState());
+    return LanguagePackCatalogState(
+      loadState: LanguagePackCatalogLoadState.success,
+      catalog: LanguagePackCatalog(entries: _defaultCatalogEntries()),
+      installedPacks: const <String, InstalledLanguagePack>{},
+      retryCounts: const <String, int>{},
+      allowCloudFallback: false,
+    );
+  }
+
+  Future<void> hydratePersistedState() async {
+    final persisted = await ref
         .read(languagePackCatalogStateRepositoryProvider)
         .read();
-    return LanguagePackCatalogState(
+    if (!ref.mounted) {
+      return;
+    }
+    final hasRuntimeMutations =
+        state.installedPacks.isNotEmpty ||
+        state.retryCounts.isNotEmpty ||
+        state.allowCloudFallback ||
+        _activeInstallOperations.isNotEmpty;
+    if (hasRuntimeMutations) {
+      return;
+    }
+    state = state.copyWith(
       loadState: LanguagePackCatalogLoadState.success,
       catalog: LanguagePackCatalog(entries: _defaultCatalogEntries()),
       installedPacks: persisted.installedPacks,
@@ -147,6 +173,49 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
         lastErrorCode: 'none',
       ),
     );
+  }
+
+  bool queueInstallAfterPreflight({
+    required LanguagePackCatalogEntry entry,
+    required LanguagePackDeviceProfile device,
+  }) {
+    final current = _stateFor(entry);
+    if (_isInstallInFlight(current.installState) ||
+        current.installState == InstalledLanguagePackState.installed) {
+      return current.installState == InstalledLanguagePackState.queued;
+    }
+    final decision = LanguagePackInstallPreflight.evaluate(
+      entry: entry,
+      device: device,
+    );
+    if (!decision.allowed) {
+      _setPackState(
+        entry,
+        current.copyWith(
+          installState: decision.installState,
+          runtimeMode: LanguagePackRuntimeMode.unavailable,
+          fallbackReason: decision.reason,
+          requiredMb: decision.requiredMb,
+          availableMb: decision.availableMb,
+          lastErrorAt: DateTime.now().toUtc(),
+          lastErrorCode: decision.errorCode,
+        ),
+      );
+      return false;
+    }
+    _setPackState(
+      entry,
+      current.copyWith(
+        installState: InstalledLanguagePackState.queued,
+        runtimeMode: LanguagePackRuntimeMode.unavailable,
+        fallbackReason: LanguagePackFallbackReason.missingPack,
+        downloadProgress: 0,
+        requiredMb: decision.requiredMb,
+        availableMb: decision.availableMb,
+        lastErrorCode: 'none',
+      ),
+    );
+    return true;
   }
 
   void startDownload(LanguagePackCatalogEntry entry) {
@@ -243,7 +312,8 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
         current.installState !=
             InstalledLanguagePackState.pausedInsufficientStorage &&
         current.installState !=
-            InstalledLanguagePackState.blockedInsufficientStorage) {
+            InstalledLanguagePackState.blockedInsufficientStorage &&
+        current.installState != InstalledLanguagePackState.corrupted) {
       return false;
     }
     final usedRetries = state.retryCounts[entry.packId] ?? 0;
@@ -272,6 +342,184 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
       },
     );
     _persistState();
+    return true;
+  }
+
+  Future<bool> installPackWithPreflight({
+    required LanguagePackCatalogEntry entry,
+    required LanguagePackDeviceProfile device,
+  }) async {
+    if (_activeInstallOperations.contains(entry.packId)) {
+      return false;
+    }
+    final current = _stateFor(entry);
+    if (current.installState == InstalledLanguagePackState.installed) {
+      return true;
+    }
+    final queued = queueInstallAfterPreflight(entry: entry, device: device);
+    if (!queued) {
+      return false;
+    }
+    _activeInstallOperations.add(entry.packId);
+    try {
+      startDownload(entry);
+      for (final progress in _installProgressMilestones) {
+        if (_stateFor(entry).installState ==
+            InstalledLanguagePackState.removed) {
+          return false;
+        }
+        await Future<void>.delayed(Duration.zero);
+        updateDownloadProgress(entry, progress);
+      }
+      if (!_hasValidIntegrityMetadata(entry)) {
+        failVerification(entry, code: 'failed_verification_checksum');
+        return false;
+      }
+      markInstalled(entry);
+      return _stateFor(entry).installState ==
+          InstalledLanguagePackState.installed;
+    } finally {
+      _activeInstallOperations.remove(entry.packId);
+    }
+  }
+
+  Future<bool> retryInstallWithPreflight({
+    required LanguagePackCatalogEntry entry,
+    required LanguagePackDeviceProfile device,
+  }) async {
+    if (!retryInstall(entry)) {
+      return false;
+    }
+    return installPackWithPreflight(entry: entry, device: device);
+  }
+
+  bool markUpdateAvailable(LanguagePackCatalogEntry entry) {
+    final current = _stateFor(entry);
+    if (current.installState != InstalledLanguagePackState.installed) {
+      return false;
+    }
+    _setPackState(
+      entry,
+      current.copyWith(
+        installState: InstalledLanguagePackState.updateAvailable,
+        runtimeMode: LanguagePackRuntimeMode.local,
+        fallbackReason: LanguagePackFallbackReason.none,
+        lastErrorCode: 'none',
+      ),
+    );
+    return true;
+  }
+
+  bool markCorrupted(
+    LanguagePackCatalogEntry entry, {
+    String code = 'pack_corrupted',
+  }) {
+    final current = _stateFor(entry);
+    if (current.installState != InstalledLanguagePackState.installed &&
+        current.installState != InstalledLanguagePackState.updateAvailable) {
+      return false;
+    }
+    _setPackState(
+      entry,
+      current.copyWith(
+        installState: InstalledLanguagePackState.corrupted,
+        runtimeMode: LanguagePackRuntimeMode.unavailable,
+        fallbackReason: LanguagePackFallbackReason.verificationFailed,
+        checksumVerified: false,
+        lastErrorAt: DateTime.now().toUtc(),
+        lastErrorCode: code,
+      ),
+    );
+    return true;
+  }
+
+  bool setExplicitFallbackForLanguage(String languageTag) {
+    final entries = state.catalog.entriesForLanguage(languageTag);
+    if (entries.isEmpty) {
+      return false;
+    }
+    final target =
+        state.catalog.recommendedForLanguage(languageTag) ??
+        entries.firstWhere(
+          (entry) => entry.runtimeMode == LanguagePackRuntimeMode.local,
+          orElse: () => entries.first,
+        );
+    final hasAndroidFallback = entries.any(
+      (entry) => entry.runtimeMode == LanguagePackRuntimeMode.androidFallback,
+    );
+    final runtimeMode = state.allowCloudFallback
+        ? LanguagePackRuntimeMode.cloudFallback
+        : hasAndroidFallback
+        ? LanguagePackRuntimeMode.androidFallback
+        : LanguagePackRuntimeMode.unavailable;
+    final fallbackReason = state.allowCloudFallback
+        ? LanguagePackFallbackReason.cloudAutoPolicy
+        : hasAndroidFallback
+        ? LanguagePackFallbackReason.missingPack
+        : LanguagePackFallbackReason.userDisabledCloud;
+    final current = _stateFor(target);
+    _setPackState(
+      target,
+      current.copyWith(
+        installState: InstalledLanguagePackState.notInstalled,
+        runtimeMode: runtimeMode,
+        fallbackReason: fallbackReason,
+        downloadProgress: 0,
+        checksumVerified: false,
+        lastErrorAt: DateTime.now().toUtc(),
+        lastErrorCode: 'fallback_explicit',
+      ),
+    );
+    return true;
+  }
+
+  bool applyNativeRuntimeStatus({
+    required String runtimeState,
+    required String fallbackReason,
+    required String activePackId,
+    required String lastErrorCode,
+    required String languageTag,
+    required String engine,
+    DateTime? observedAtUtc,
+  }) {
+    final target = _entryForNativeStatus(
+      activePackId: activePackId,
+      languageTag: languageTag,
+      engine: engine,
+    );
+    if (target == null) {
+      return false;
+    }
+    final runtimeMode = _runtimeModeFromWire(runtimeState);
+    final fallback = _fallbackReasonFromWire(fallbackReason);
+    final current = _stateFor(target);
+    final timestamp = observedAtUtc ?? DateTime.now().toUtc();
+    final nextState = runtimeMode == LanguagePackRuntimeMode.local
+        ? InstalledLanguagePackState.installed
+        : (current.installState == InstalledLanguagePackState.installed ||
+                  current.installState ==
+                      InstalledLanguagePackState.updateAvailable
+              ? current.installState
+              : InstalledLanguagePackState.notInstalled);
+    _setPackState(
+      target,
+      current.copyWith(
+        installState: nextState,
+        runtimeMode: runtimeMode,
+        fallbackReason: fallback,
+        lastErrorAt: timestamp,
+        lastErrorCode: lastErrorCode.trim().isEmpty ? 'none' : lastErrorCode,
+        installedSizeMb: runtimeMode == LanguagePackRuntimeMode.local
+            ? target.installedSizeMb
+            : current.installedSizeMb,
+        checksumVerified: runtimeMode == LanguagePackRuntimeMode.local
+            ? true
+            : current.checksumVerified,
+        installedAt: runtimeMode == LanguagePackRuntimeMode.local
+            ? (current.installedAt ?? timestamp)
+            : current.installedAt,
+      ),
+    );
     return true;
   }
 
@@ -319,6 +567,33 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
         InstalledLanguagePack.notInstalled(entry);
   }
 
+  LanguagePackCatalogEntry? _entryForNativeStatus({
+    required String activePackId,
+    required String languageTag,
+    required String engine,
+  }) {
+    final normalizedPackId = activePackId.trim();
+    if (normalizedPackId.isNotEmpty && normalizedPackId != 'none') {
+      for (final entry in state.catalog.entries) {
+        if (entry.packId == normalizedPackId) {
+          return entry;
+        }
+      }
+    }
+    final candidates = state.catalog.entriesForLanguage(languageTag);
+    if (candidates.isEmpty) {
+      return null;
+    }
+    final normalizedEngine = engine.trim();
+    for (final candidate in candidates) {
+      if (candidate.engine.wireName == normalizedEngine) {
+        return candidate;
+      }
+    }
+    return state.catalog.recommendedForLanguage(languageTag) ??
+        candidates.first;
+  }
+
   static bool _isInstallInFlight(InstalledLanguagePackState value) {
     return value == InstalledLanguagePackState.queued ||
         value == InstalledLanguagePackState.downloading ||
@@ -336,15 +611,43 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
   }
 
   void _persistState() {
-    ref
-        .read(languagePackCatalogStateRepositoryProvider)
-        .write(
-          LanguagePackCatalogLocalState(
-            installedPacks: state.installedPacks,
-            retryCounts: state.retryCounts,
-            allowCloudFallback: state.allowCloudFallback,
+    unawaited(
+      ref
+          .read(languagePackCatalogStateRepositoryProvider)
+          .write(
+            LanguagePackCatalogLocalState(
+              installedPacks: state.installedPacks,
+              retryCounts: state.retryCounts,
+              allowCloudFallback: state.allowCloudFallback,
+            ),
           ),
-        );
+    );
+  }
+
+  static bool _hasValidIntegrityMetadata(LanguagePackCatalogEntry entry) {
+    if (entry.runtimeMode != LanguagePackRuntimeMode.local) {
+      return false;
+    }
+    final hasSha256 = RegExp(r'^[a-f0-9]{64}$').hasMatch(entry.sha256);
+    final hasSignature =
+        entry.signature.trim().isNotEmpty && entry.signature != 'none';
+    return hasSha256 && hasSignature;
+  }
+
+  static LanguagePackRuntimeMode _runtimeModeFromWire(String value) {
+    try {
+      return LanguagePackRuntimeMode.fromWire(value);
+    } on CatalogValidationException {
+      return LanguagePackRuntimeMode.unavailable;
+    }
+  }
+
+  static LanguagePackFallbackReason _fallbackReasonFromWire(String value) {
+    try {
+      return LanguagePackFallbackReason.fromWire(value);
+    } on CatalogValidationException {
+      return LanguagePackFallbackReason.unsupportedLanguage;
+    }
   }
 }
 

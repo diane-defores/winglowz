@@ -943,8 +943,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'entries=${state.catalog.entries.length}',
       'allow_cloud_fallback=${state.allowCloudFallback}',
       'installed=${installed.isEmpty ? 'none' : installed}',
+      'retry_counts=${state.retryCounts.isEmpty ? 'none' : state.retryCounts}',
       'last_error=${_sanitizeDiagnostic(state.lastErrorCode ?? 'none')}',
     ].join('; ');
+  }
+
+  LanguagePackDeviceProfile _deviceProfileFromKeyboardStatus(
+    AndroidKeyboardStatus status,
+  ) {
+    if (!status.supported) {
+      return const LanguagePackDeviceProfile(
+        androidSdk: 0,
+        primaryAbi: 'unsupported',
+        totalCapacityMb: 0,
+        freeSpaceMb: 0,
+        ramMb: 0,
+      );
+    }
+    return LanguagePackDeviceProfile(
+      androidSdk: status.deviceAndroidSdk,
+      primaryAbi: status.devicePrimaryAbi,
+      totalCapacityMb: status.deviceTotalCapacityMb,
+      freeSpaceMb: status.deviceFreeSpaceMb,
+      ramMb: status.deviceRamMb,
+    );
   }
 
   String _sanitizeDiagnostic(Object? value) {
@@ -1138,25 +1160,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onAllowCloudFallbackChanged: (value) => ref
                 .read(languagePackCatalogProvider.notifier)
                 .setAllowCloudFallback(value),
-            onQueueInstall: (entry) => ref
+            onInstall: (entry) => ref
                 .read(languagePackCatalogProvider.notifier)
-                .queueInstall(entry),
+                .installPackWithPreflight(
+                  entry: entry,
+                  device: _deviceProfileFromKeyboardStatus(
+                    keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
+                  ),
+                ),
+            onRetryInstall: (entry) => ref
+                .read(languagePackCatalogProvider.notifier)
+                .retryInstallWithPreflight(
+                  entry: entry,
+                  device: _deviceProfileFromKeyboardStatus(
+                    keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
+                  ),
+                ),
+            onMarkUpdateAvailable: (entry) => ref
+                .read(languagePackCatalogProvider.notifier)
+                .markUpdateAvailable(entry),
+            onMarkCorrupted: (entry) => ref
+                .read(languagePackCatalogProvider.notifier)
+                .markCorrupted(entry),
             onRemove: (entry) =>
                 ref.read(languagePackCatalogProvider.notifier).remove(entry),
-            onBlockByStorage: (entry) {
-              final decision = LanguagePackStoragePolicy.evaluate(
-                entry: entry,
-                totalCapacityMb: 4096,
-                freeSpaceMb: 512,
-              );
-              ref
-                  .read(languagePackCatalogProvider.notifier)
-                  .markInstallBlockedByStorage(
-                    entry: entry,
-                    requiredMb: decision.requiredMb,
-                    availableMb: decision.availableMb,
-                  );
-            },
           ),
         ),
         if (PlatformCapabilities.overlaySupported)

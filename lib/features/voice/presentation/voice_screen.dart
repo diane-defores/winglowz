@@ -9,9 +9,12 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../../core/widgets/local_mode_notice.dart';
+import '../../keyboard/domain/keyboard_models.dart';
 import '../../settings/application/settings_store_provider.dart';
+import '../application/language_pack_catalog_provider.dart';
 import '../application/transcription_store.dart';
 import '../application/transcription_store_provider.dart';
+import '../domain/language_pack_catalog.dart';
 import '../domain/transcription_draft.dart';
 
 class VoiceScreen extends ConsumerStatefulWidget {
@@ -25,6 +28,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   bool _busy = false;
   bool _overlayBusy = false;
   AndroidOverlayStatus? _overlayStatus;
+  AndroidKeyboardStatus? _keyboardStatus;
   String? _message;
   List<TranscriptionRecord> _items = const [];
 
@@ -33,6 +37,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
     super.initState();
     Future<void>.microtask(_load);
     Future<void>.microtask(_loadOverlayStatus);
+    Future<void>.microtask(_loadKeyboardStatus);
   }
 
   @override
@@ -43,6 +48,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   Future<void> _load() async {
     setState(() => _busy = true);
     try {
+      await _syncKeyboardVoiceRuntimeEvents();
       final store = ref.read(transcriptionStoreProvider);
       await _importKeyboardVoiceEvents(store);
       final rows = await store.list();
@@ -66,6 +72,34 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
         setState(() => _busy = false);
       }
     }
+  }
+
+  Future<void> _syncKeyboardVoiceRuntimeEvents() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    final events =
+        await AndroidKeyboardBridge.drainKeyboardVoiceRuntimeEvents();
+    if (events.isEmpty) {
+      return;
+    }
+    final notifier = ref.read(languagePackCatalogProvider.notifier);
+    for (final event in events) {
+      notifier.applyNativeRuntimeStatus(
+        runtimeState: event.runtimeState,
+        fallbackReason: event.fallbackReason,
+        activePackId: event.activePackId,
+        lastErrorCode: event.lastErrorCode,
+        languageTag: event.languageTag,
+        engine: event.engine,
+        observedAtUtc: event.capturedAtUtc,
+      );
+    }
+    await _loadKeyboardStatus();
+    AppDiagnostics.record(
+      'voice_runtime_events_import',
+      'events=${events.length}',
+    );
   }
 
   Future<void> _importKeyboardVoiceEvents(TranscriptionStore store) async {
@@ -114,6 +148,100 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
       }
       setState(() => _message = 'Overlay status error: $error');
     }
+  }
+
+  Future<void> _loadKeyboardStatus() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    try {
+      final status = await AndroidKeyboardBridge.getStatus();
+      if (!mounted) {
+        return;
+      }
+      setState(() => _keyboardStatus = status);
+    } on AndroidKeyboardBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Keyboard status error (${error.code}): ${error.message}',
+      );
+    }
+  }
+
+  LanguagePackDeviceProfile _deviceProfile() {
+    final status = _keyboardStatus ?? AndroidKeyboardStatus.unsupported();
+    return LanguagePackDeviceProfile(
+      androidSdk: status.deviceAndroidSdk,
+      primaryAbi: status.devicePrimaryAbi,
+      totalCapacityMb: status.deviceTotalCapacityMb,
+      freeSpaceMb: status.deviceFreeSpaceMb,
+      ramMb: status.deviceRamMb,
+    );
+  }
+
+  String _activeLanguageTag() {
+    final raw = _keyboardStatus?.voiceLanguageTag.trim();
+    if (raw == null || raw.isEmpty || raw.toLowerCase() == 'und') {
+      return 'fr-FR';
+    }
+    return raw;
+  }
+
+  bool _isLocalPackInstalled(
+    LanguagePackCatalogState catalogState,
+    LanguagePackCatalogEntry entry,
+  ) {
+    final installed = catalogState.installedStateFor(entry);
+    return (installed.installState == InstalledLanguagePackState.installed ||
+            installed.installState ==
+                InstalledLanguagePackState.updateAvailable) &&
+        installed.runtimeMode == LanguagePackRuntimeMode.local;
+  }
+
+  Future<void> _installRecommendedPack(
+    LanguagePackCatalogEntry entry,
+    LanguagePackCatalogState catalogState,
+  ) async {
+    final notifier = ref.read(languagePackCatalogProvider.notifier);
+    final installStateBefore = catalogState
+        .installedStateFor(entry)
+        .installState;
+    final installed =
+        installStateBefore == InstalledLanguagePackState.failedDownload ||
+            installStateBefore ==
+                InstalledLanguagePackState.failedVerification ||
+            installStateBefore ==
+                InstalledLanguagePackState.blockedInsufficientStorage ||
+            installStateBefore == InstalledLanguagePackState.corrupted
+        ? await notifier.retryInstallWithPreflight(
+            entry: entry,
+            device: _deviceProfile(),
+          )
+        : await notifier.installPackWithPreflight(
+            entry: entry,
+            device: _deviceProfile(),
+          );
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _message = installed
+          ? 'Local pack installed for ${entry.languageTag}.'
+          : 'Install failed or blocked for ${entry.languageTag}.';
+    });
+  }
+
+  void _useExplicitFallback(String languageTag) {
+    final notifier = ref.read(languagePackCatalogProvider.notifier);
+    final applied = notifier.setExplicitFallbackForLanguage(languageTag);
+    setState(() {
+      _message = applied
+          ? 'Explicit fallback enabled for $languageTag.'
+          : 'No fallback path available for $languageTag.';
+    });
   }
 
   Future<void> _startOverlay() async {
@@ -301,6 +429,14 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   @override
   Widget build(BuildContext context) {
     AppDiagnostics.record('screen_build', 'Voice');
+    final catalogState = ref.watch(languagePackCatalogProvider);
+    final activeLanguageTag = _activeLanguageTag();
+    final recommendedEntry = catalogState.catalog.recommendedForLanguage(
+      activeLanguageTag,
+    );
+    final shouldShowNoPackPrompt =
+        recommendedEntry != null &&
+        !_isLocalPackInstalled(catalogState, recommendedEntry);
     final overlayStatus = _overlayStatus;
     final overlayRecording = overlayStatus?.serviceState == 'recording';
     final latest = _items.isEmpty ? null : _items.first;
@@ -309,6 +445,19 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
       children: [
         const LocalModeNotice(surface: 'Voice'),
         const LocalModeNoticeGap(),
+        if (shouldShowNoPackPrompt)
+          _MicroWithoutPackPromptCard(
+            languageTag: activeLanguageTag,
+            allowCloudFallback: catalogState.allowCloudFallback,
+            installedState: catalogState.installedStateFor(recommendedEntry),
+            onInstall: _busy
+                ? null
+                : () => _installRecommendedPack(recommendedEntry, catalogState),
+            onUseFallback: _busy
+                ? null
+                : () => _useExplicitFallback(activeLanguageTag),
+          ),
+        if (shouldShowNoPackPrompt) AppGaps.x2,
         AppSectionCard(
           title: 'Capture automatique',
           subtitle:
@@ -377,6 +526,65 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
             onDelete: _busy ? null : () => _delete(item.id),
           ),
       ],
+    );
+  }
+}
+
+class _MicroWithoutPackPromptCard extends StatelessWidget {
+  const _MicroWithoutPackPromptCard({
+    required this.languageTag,
+    required this.allowCloudFallback,
+    required this.installedState,
+    required this.onInstall,
+    required this.onUseFallback,
+  });
+
+  final String languageTag;
+  final bool allowCloudFallback;
+  final InstalledLanguagePack installedState;
+  final VoidCallback? onInstall;
+  final VoidCallback? onUseFallback;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final fallbackLabel = allowCloudFallback
+        ? 'cloud_fallback (explicit)'
+        : 'android_fallback / unavailable';
+    return AppSectionCard(
+      title: 'Keyboard mic: local pack missing',
+      subtitle:
+          'No local pack is installed for $languageTag. Choose install now or explicit fallback before dictation.',
+      leading: Icon(
+        Icons.priority_high_outlined,
+        color: theme.colorScheme.primary,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'state=${installedState.installState.wireName} | fallback=$fallbackLabel | retries_hint=3 max',
+            style: theme.textTheme.bodySmall,
+          ),
+          AppGaps.x2,
+          Wrap(
+            spacing: AppSpacing.x2,
+            runSpacing: AppSpacing.x2,
+            children: [
+              FilledButton.icon(
+                onPressed: onInstall,
+                icon: const Icon(Icons.download_outlined),
+                label: const Text('Install local pack'),
+              ),
+              OutlinedButton.icon(
+                onPressed: onUseFallback,
+                icon: const Icon(Icons.alt_route_outlined),
+                label: const Text('Use explicit fallback'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

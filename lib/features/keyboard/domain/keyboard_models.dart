@@ -1658,6 +1658,11 @@ class AndroidKeyboardStatus {
     required this.voiceEngine,
     required this.voiceFallbackReason,
     required this.voiceLastErrorCode,
+    required this.deviceAndroidSdk,
+    required this.devicePrimaryAbi,
+    required this.deviceTotalCapacityMb,
+    required this.deviceFreeSpaceMb,
+    required this.deviceRamMb,
   });
 
   final bool supported;
@@ -1705,6 +1710,11 @@ class AndroidKeyboardStatus {
   final String voiceEngine;
   final String voiceFallbackReason;
   final String voiceLastErrorCode;
+  final int deviceAndroidSdk;
+  final String devicePrimaryAbi;
+  final int deviceTotalCapacityMb;
+  final int deviceFreeSpaceMb;
+  final int deviceRamMb;
 
   factory AndroidKeyboardStatus.unsupported() {
     return AndroidKeyboardStatus(
@@ -1753,6 +1763,11 @@ class AndroidKeyboardStatus {
       voiceEngine: 'unavailable',
       voiceFallbackReason: 'unsupported_language',
       voiceLastErrorCode: 'keyboard_unsupported',
+      deviceAndroidSdk: 0,
+      devicePrimaryAbi: 'unsupported',
+      deviceTotalCapacityMb: 0,
+      deviceFreeSpaceMb: 0,
+      deviceRamMb: 0,
     );
   }
 
@@ -1837,6 +1852,19 @@ class AndroidKeyboardStatus {
       voiceFallbackReason:
           map['voiceFallbackReason'] as String? ?? 'unsupported_language',
       voiceLastErrorCode: map['voiceLastErrorCode'] as String? ?? 'none',
+      deviceAndroidSdk: (map['deviceAndroidSdk'] as num?)?.toInt() ?? 0,
+      devicePrimaryAbi: map['devicePrimaryAbi'] as String? ?? 'unknown',
+      deviceTotalCapacityMb:
+          ((map['deviceTotalCapacityMb'] as num?)?.toInt() ?? 0).clamp(
+            0,
+            1 << 30,
+          ),
+      deviceFreeSpaceMb: ((map['deviceFreeSpaceMb'] as num?)?.toInt() ?? 0)
+          .clamp(0, 1 << 30),
+      deviceRamMb: ((map['deviceRamMb'] as num?)?.toInt() ?? 0).clamp(
+        0,
+        1 << 30,
+      ),
     );
   }
 

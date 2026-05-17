@@ -16,6 +16,7 @@ import java.io.File
 import java.util.UUID
 import com.winflowz_app.winflowz_app.ime.KeyboardClipboardEventQueue
 import com.winflowz_app.winflowz_app.ime.KeyboardVoiceEventQueue
+import com.winflowz_app.winflowz_app.ime.KeyboardVoiceRuntimeEventQueue
 import com.winflowz_app.winflowz_app.ime.KeyboardCornerConfig
 import com.winflowz_app.winflowz_app.ime.KeyboardCornerConfigException
 import com.winflowz_app.winflowz_app.ime.KeyboardLayoutProfile
@@ -344,6 +345,9 @@ class MainActivity : FlutterActivity() {
                     }
                     "drainKeyboardVoiceEvents" -> {
                         result.success(KeyboardVoiceEventQueue.drain())
+                    }
+                    "drainKeyboardVoiceRuntimeEvents" -> {
+                        result.success(KeyboardVoiceRuntimeEventQueue.drain())
                     }
                     "openInputMethodSettings" -> {
                         openInputMethodSettings()

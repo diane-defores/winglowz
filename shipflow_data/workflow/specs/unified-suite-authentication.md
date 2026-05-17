@@ -483,6 +483,7 @@ Resolved decisions:
 | 2026-05-17 11:52:48 UTC | sf-spec | GPT-5 Codex | Updated spec from canonical WinFlowz suite auth decision | Provider gate, first proof pair and product ID canon resolved; spec moved to reviewed for readiness gate | `/sf-ready shipflow_data/workflow/specs/unified-suite-authentication.md` |
 | 2026-05-17 13:09:59 UTC | sf-docs | GPT-5 Codex | Corrected VoiceFlowz / VoiceFlows naming across suite auth docs | VoiceFlowz is now documented as legacy naming for WinFlowz app; separate `voiceflowz` product id removed from the auth spec | `/sf-ready shipflow_data/workflow/specs/unified-suite-authentication.md` |
 | 2026-05-17 13:13:31 UTC | sf-ready | GPT-5 Codex | Re-evaluated readiness after provider and VoiceFlowz corrections | Not ready: WinFlowz Formation repo/backend path is unavailable locally, active app docs still conflict with Clerk suite identity, and dependency versions need refresh | `/sf-spec unified-suite-authentication readiness fixes` |
+| 2026-05-17 21:14:55 UTC | sf-backlog | GPT-5 Codex | Recorded OpenAuth as a future identity-provider review item | Deferred to 2028; current Clerk central identity + Firebase Android bridge decision remains unchanged | `/sf-spec unified-suite-authentication readiness fixes` |
 
 # Current Chantier Flow
 

@@ -1,8 +1,10 @@
 package com.winflowz_app.winflowz_app.ime
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.ComponentName
 import android.os.Build
+import android.os.StatFs
 import android.provider.Settings
 import android.view.inputmethod.InputMethodInfo
 import android.view.inputmethod.InputMethodManager
@@ -240,12 +242,22 @@ class KeyboardStateStore(private val context: Context) {
         fallbackReason: String,
         lastErrorCode: String,
     ) {
-        voiceRuntimeMode = runtimeMode
-        voiceLanguageTag = languageTag
-        voicePackId = packId
-        voiceEngine = engine
-        voiceFallbackReason = fallbackReason
-        voiceLastErrorCode = lastErrorCode
+        val status =
+            KeyboardVoiceRuntimeStatus.normalized(
+                runtimeMode = runtimeMode,
+                languageTag = languageTag,
+                packId = packId,
+                engine = engine,
+                fallbackReason = fallbackReason,
+                lastErrorCode = lastErrorCode,
+            )
+        voiceRuntimeMode = status.runtimeMode
+        voiceLanguageTag = status.languageTag
+        voicePackId = status.packId
+        voiceEngine = status.engine
+        voiceFallbackReason = status.fallbackReason
+        voiceLastErrorCode = status.lastErrorCode
+        KeyboardVoiceRuntimeEventQueue.enqueue(status)
     }
 
     fun clearKeyboardDiagnostics() {
@@ -324,7 +336,38 @@ class KeyboardStateStore(private val context: Context) {
             "voiceEngine" to voiceEngine,
             "voiceFallbackReason" to voiceFallbackReason,
             "voiceLastErrorCode" to voiceLastErrorCode,
+            "deviceAndroidSdk" to Build.VERSION.SDK_INT,
+            "devicePrimaryAbi" to (Build.SUPPORTED_ABIS.firstOrNull() ?: "unknown"),
+            "deviceTotalCapacityMb" to deviceTotalCapacityMb(),
+            "deviceFreeSpaceMb" to deviceFreeSpaceMb(),
+            "deviceRamMb" to deviceRamMb(),
         )
+    }
+
+    private fun deviceTotalCapacityMb(): Int {
+        return runCatching {
+            val stats = StatFs(context.filesDir.absolutePath)
+            val totalBytes = stats.totalBytes.coerceAtLeast(0L)
+            (totalBytes / BYTES_PER_MB).toInt()
+        }.getOrDefault(0)
+    }
+
+    private fun deviceFreeSpaceMb(): Int {
+        return runCatching {
+            val stats = StatFs(context.filesDir.absolutePath)
+            val freeBytes = stats.availableBytes.coerceAtLeast(0L)
+            (freeBytes / BYTES_PER_MB).toInt()
+        }.getOrDefault(0)
+    }
+
+    private fun deviceRamMb(): Int {
+        return runCatching {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+            val info = ActivityManager.MemoryInfo()
+            manager?.getMemoryInfo(info)
+            val totalRamBytes = info.totalMem.coerceAtLeast(0L)
+            (totalRamBytes / BYTES_PER_MB).toInt()
+        }.getOrDefault(0)
     }
 
     fun setStatusBarConfig(config: KeyboardStatusBarConfig): KeyboardStatusBarConfig {
@@ -876,6 +919,7 @@ class KeyboardStateStore(private val context: Context) {
         const val MEDIA_VOLUME_STEP_PERCENT_DEFAULT = 5
         const val MEDIA_BRIGHTNESS_STEP_PERCENT_DEFAULT = 10
         const val DEFAULT_ACTION_BAR_LONG_PRESS_BEHAVIOR = "attach_context_row"
+        const val BYTES_PER_MB = 1024L * 1024L
 
         fun normalizeActionRowHeightScale(value: Float): Float {
             return when {

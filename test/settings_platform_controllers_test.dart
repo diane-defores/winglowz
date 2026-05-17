@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:winflowz_app/core/platform/android_keyboard_bridge.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
 import 'package:winflowz_app/features/settings/application/settings_platform_controllers.dart';
 
@@ -129,6 +130,23 @@ void main() {
     expect(status.keyboardRecoveryCount, 3);
   });
 
+  test('AndroidKeyboardStatus parses device profile fields', () {
+    final status = AndroidKeyboardStatus.fromMap({
+      'supported': true,
+      'deviceAndroidSdk': 35,
+      'devicePrimaryAbi': 'arm64-v8a',
+      'deviceTotalCapacityMb': 24576,
+      'deviceFreeSpaceMb': 8192,
+      'deviceRamMb': 6144,
+    });
+
+    expect(status.deviceAndroidSdk, 35);
+    expect(status.devicePrimaryAbi, 'arm64-v8a');
+    expect(status.deviceTotalCapacityMb, 24576);
+    expect(status.deviceFreeSpaceMb, 8192);
+    expect(status.deviceRamMb, 6144);
+  });
+
   test('AndroidKeyboardStatus parses status bar config defaults', () {
     final status = AndroidKeyboardStatus.fromMap({
       'supported': true,
@@ -240,4 +258,37 @@ void main() {
       expect(call.arguments, containsPair('tipsLastResetAtMs', 1715930001111));
     },
   );
+
+  test('AndroidKeyboardBridge drains native runtime status events', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_keyboardChannel, (call) async {
+          if (call.method != 'drainKeyboardVoiceRuntimeEvents') {
+            return null;
+          }
+          return <Object?>[
+            <Object?, Object?>{
+              'runtime_state': 'android_fallback',
+              'fallback_reason': 'missing_pack',
+              'active_pack_id': 'none',
+              'last_error_code': 'none',
+              'language_tag': 'fr-FR',
+              'engine': 'android_speech_recognizer',
+              'source': 'ime_voice_controller',
+              'captured_at_epoch_millis': 1715930001111,
+            },
+          ];
+        });
+
+    final events =
+        await AndroidKeyboardBridge.drainKeyboardVoiceRuntimeEvents();
+
+    expect(events, hasLength(1));
+    expect(events.first.runtimeState, 'android_fallback');
+    expect(events.first.fallbackReason, 'missing_pack');
+    expect(events.first.activePackId, 'none');
+    expect(events.first.lastErrorCode, 'none');
+    expect(events.first.languageTag, 'fr-FR');
+    expect(events.first.engine, 'android_speech_recognizer');
+  });
 }
