@@ -89,3 +89,32 @@ Android exposes offline preference flags, but the platform documentation says re
 Start with `sherpa-onnx + Whisper multilingual` for the first French-capable prototype. Add Vosk French as a tiny fallback benchmark. Keep SenseVoice/FunASR on the watchlist for future high-performance models, especially if we find or train a French-capable export that is legally clean for commercial distribution.
 
 For a global LTD launch, this should become a free language-pack catalog rather than a paid marketplace. Packs should be install-on-demand by locale, because bundling every model would make the APK too large and would still disappoint users if quality varies by language. The current packaging recommendation is to ship no heavyweight ASR model inside the APK, then offer download after install through first-run suggestions, first microphone use, and Settings. Each pack needs explicit language, engine, model, size, license, and quality tier metadata before it is marketed.
+
+## Benchmark Gate And MVP Language Matrix
+
+No language may move to `recommended` until it has a benchmark row with:
+
+- device class: low-end and mid-range Android hardware names;
+- ABI and RAM: exact `supported_abis`, measured RAM pressure, and cold model load time;
+- latency: first partial result latency, final result latency, and real-time factor;
+- quality: short dictation WER or manual transcript score on product-relevant prompts;
+- responsiveness: confirmation that the IME UI thread remains responsive during load and capture;
+- storage: download size, installed size, and storage preflight result;
+- license: model/code license ID and commercial distribution decision;
+- diagnostics: observed `runtime_mode`, `fallback_reason`, `pack_id`, and `engine`.
+
+Initial MVP matrix:
+
+| Language | First status | Candidate path | Shipping constraint |
+| --- | --- | --- | --- |
+| `fr-FR` | `candidate` | `sherpa_onnx` + Whisper multilingual candidate, Vosk small French fallback benchmark | Do not claim offline recommended until low-end and mid-range Android benchmarks pass. |
+| `en-US` | `fallbackOnly` | Android `SpeechRecognizer` fallback first, local pack after benchmark | Must be labeled fallback-only until a local model row passes. |
+| `es-ES` | `candidate` | Whisper multilingual through `sherpa_onnx` | Candidate only; no AppSumo/LTD offline claim yet. |
+| `de-DE` | `candidate` | Whisper multilingual through `sherpa_onnx` | Candidate only; no offline quality promise yet. |
+| `pt-BR` | `candidate` | Whisper multilingual through `sherpa_onnx` | Candidate only; validate regional language tag separately. |
+| `it-IT` | `candidate` | Whisper multilingual through `sherpa_onnx` | Candidate only; benchmark before marketing. |
+| `hi-IN` | `fallbackOnly` | Research local model availability and Android fallback behavior | Must remain fallback-only until model/license/perf evidence exists. |
+| `ar` | `fallbackOnly` | Research dialect coverage before selecting a pack | Must not be marketed as generic Arabic offline support. |
+| `zh-CN` | `candidate` | SenseVoice/FunASR watchlist plus Whisper comparison | License review required before commercial distribution. |
+| `ja-JP` | `candidate` | SenseVoice/FunASR watchlist plus Whisper comparison | License and device benchmark required. |
+| `ko-KR` | `candidate` | SenseVoice/FunASR watchlist plus Whisper comparison | License and device benchmark required. |

@@ -144,7 +144,9 @@ class _DiagnosticLogPanel extends StatefulWidget {
 }
 
 class _DiagnosticLogPanelState extends State<_DiagnosticLogPanel> {
-  final ScrollController _controller = ScrollController(keepScrollOffset: false);
+  final ScrollController _controller = ScrollController(
+    keepScrollOffset: false,
+  );
 
   @override
   void dispose() {
@@ -999,10 +1001,215 @@ class _KeyboardThemeMiniKey extends StatelessWidget {
   }
 }
 
+class _OnDeviceSpeechSection extends StatelessWidget {
+  const _OnDeviceSpeechSection({
+    required this.state,
+    required this.keyboardStatus,
+    required this.onRefresh,
+    required this.onAllowCloudFallbackChanged,
+    required this.onQueueInstall,
+    required this.onRemove,
+    required this.onBlockByStorage,
+  });
+
+  final LanguagePackCatalogState state;
+  final AndroidKeyboardStatus? keyboardStatus;
+  final VoidCallback onRefresh;
+  final ValueChanged<bool> onAllowCloudFallbackChanged;
+  final ValueChanged<LanguagePackCatalogEntry> onQueueInstall;
+  final ValueChanged<LanguagePackCatalogEntry> onRemove;
+  final ValueChanged<LanguagePackCatalogEntry> onBlockByStorage;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = state.catalog.entries;
+    return AppSectionCard(
+      title: 'On-device speech',
+      subtitle:
+          'Install only the local packs you need. Android or cloud fallback is always labeled explicitly.',
+      leading: const Icon(Icons.record_voice_over_outlined),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Runtime status'),
+            subtitle: Text(
+              'runtime=${keyboardStatus?.voiceRuntimeMode ?? 'unavailable'} | '
+              'language=${keyboardStatus?.voiceLanguageTag ?? 'und'} | '
+              'pack=${keyboardStatus?.voicePackId ?? 'none'} | '
+              'engine=${keyboardStatus?.voiceEngine ?? 'unavailable'} | '
+              'fallback=${keyboardStatus?.voiceFallbackReason ?? 'unsupported_language'}',
+            ),
+            trailing: IconButton(
+              tooltip: 'Refresh speech catalog',
+              onPressed: onRefresh,
+              icon: const Icon(Icons.refresh),
+            ),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: state.allowCloudFallback,
+            onChanged: onAllowCloudFallbackChanged,
+            title: const Text('Allow cloud fallback'),
+            subtitle: const Text(
+              'When off, WinFlowz must show unavailable instead of sending speech to cloud fallback.',
+            ),
+          ),
+          if (state.hasError || state.isStale)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.warning_amber_outlined),
+              title: Text(
+                state.isStale ? 'Catalog stale' : 'Catalog unavailable',
+              ),
+              subtitle: Text(
+                state.lastErrorMessage ?? 'Retry loading the local catalog.',
+              ),
+            ),
+          AppGaps.x2,
+          for (final entry in entries) ...[
+            _LanguagePackTile(
+              entry: entry,
+              installed: state.installedStateFor(entry),
+              allowCloudFallback: state.allowCloudFallback,
+              onQueueInstall: () => onQueueInstall(entry),
+              onRemove: () => onRemove(entry),
+              onBlockByStorage: () => onBlockByStorage(entry),
+            ),
+            AppGaps.x2,
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _LanguagePackTile extends StatelessWidget {
+  const _LanguagePackTile({
+    required this.entry,
+    required this.installed,
+    required this.allowCloudFallback,
+    required this.onQueueInstall,
+    required this.onRemove,
+    required this.onBlockByStorage,
+  });
+
+  final LanguagePackCatalogEntry entry;
+  final InstalledLanguagePack installed;
+  final bool allowCloudFallback;
+  final VoidCallback onQueueInstall;
+  final VoidCallback onRemove;
+  final VoidCallback onBlockByStorage;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final statusLine = [
+      'engine=${entry.engine.wireName}',
+      'quality=${entry.qualityTier.wireName}',
+      'runtime=${entry.runtimeMode.wireName}',
+      'fallback=${entry.fallbackPolicy.wireName}',
+      'license=${entry.licenseId}',
+      'download=${entry.downloadSizeMb}MB',
+      'installed=${entry.installedSizeMb}MB',
+      'state=${installed.installState.wireName}',
+    ].join(' | ');
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(AppSpacing.x2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.x2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    entry.displayName,
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ),
+                _SpeechPill(label: entry.qualityTier.wireName),
+              ],
+            ),
+            AppGaps.x1,
+            Text(statusLine, style: theme.textTheme.bodySmall),
+            AppGaps.x1,
+            Text(
+              'benchmark=${entry.benchmarkStatus.wireName} | offline=${entry.supportsOffline} | cloud_auto_allowed=$allowCloudFallback',
+              style: theme.textTheme.bodySmall,
+            ),
+            if (installed.installState ==
+                InstalledLanguagePackState.blockedInsufficientStorage) ...[
+              AppGaps.x1,
+              Text(
+                'Storage blocked: required=${installed.requiredMb}MB, available=${installed.availableMb}MB.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            AppGaps.x2,
+            Wrap(
+              spacing: AppSpacing.x2,
+              runSpacing: AppSpacing.x2,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: entry.isInstallable ? onQueueInstall : null,
+                  icon: const Icon(Icons.download_outlined),
+                  label: const Text('Queue install'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: entry.isInstallable ? onBlockByStorage : null,
+                  icon: const Icon(Icons.sd_storage_outlined),
+                  label: const Text('Simulate storage block'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onRemove,
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Remove'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SpeechPill extends StatelessWidget {
+  const _SpeechPill({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.x2,
+          vertical: AppSpacing.x1,
+        ),
+        child: Text(label, style: Theme.of(context).textTheme.labelSmall),
+      ),
+    );
+  }
+}
+
 String _normalizedPresetId(String presetId) {
   return switch (presetId) {
     KeyboardThemePresetCatalog.winflowzLight ||
-    KeyboardThemePresetCatalog.winflowzDark => KeyboardThemePresetCatalog.winflowz,
+    KeyboardThemePresetCatalog.winflowzDark =>
+      KeyboardThemePresetCatalog.winflowz,
     _ => presetId,
   };
 }

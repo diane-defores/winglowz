@@ -24,6 +24,8 @@ import '../../snippets/application/snippet_store_provider.dart';
 import '../domain/onboarding_permission_contract.dart';
 import '../domain/settings_store.dart';
 import '../../voice/application/transcription_store_provider.dart';
+import '../../voice/application/language_pack_catalog_provider.dart';
+import '../../voice/domain/language_pack_catalog.dart';
 import '../application/settings_platform_controllers.dart';
 import '../application/settings_store_provider.dart';
 import '../data/secure_secret_store.dart';
@@ -118,6 +120,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     'keys': true,
     'platform': false,
     'keyboard': false,
+    'voice_packs': true,
     'overlay': false,
   };
 
@@ -754,6 +757,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'overlay_status: ${_overlayDiagnostic()}',
       'keyboard_status: ${_keyboardDiagnostic()}',
       'keyboard_last_error: ${_sanitizeDiagnostic(_keyboardStatus?.lastKeyboardError ?? 'none')}',
+      'voice_catalog_status: ${_voiceCatalogDiagnostic(ref.read(languagePackCatalogProvider))}',
       'recent_events: ${_recentEventsDiagnostic()}',
       'settings_message: ${_sanitizeDiagnostic(_message ?? 'none')}',
     ];
@@ -915,9 +919,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'punct_spacing=${status.punctuationAutoSpacingEnabled}',
       'privacy_mode=${status.privacyMode.name}',
       'recovery_count=${status.keyboardRecoveryCount}',
+      'voice_runtime=${status.voiceRuntimeMode}',
+      'voice_language=${status.voiceLanguageTag}',
+      'voice_pack=${status.voicePackId}',
+      'voice_engine=${status.voiceEngine}',
+      'voice_fallback_reason=${status.voiceFallbackReason}',
+      'voice_last_error_code=${status.voiceLastErrorCode}',
       'last_error_at=${status.lastKeyboardErrorAt ?? 'none'}',
       'last_error=${_sanitizeDiagnostic(status.lastKeyboardError ?? 'none')}',
       'busy=$_keyboardBusy',
+    ].join('; ');
+  }
+
+  String _voiceCatalogDiagnostic(LanguagePackCatalogState state) {
+    final installed = state.installedPacks.values
+        .map(
+          (pack) =>
+              '${pack.packId}:${pack.installState.wireName}:${pack.runtimeMode.wireName}:${pack.fallbackReason.wireName}',
+        )
+        .join(',');
+    return [
+      'load_state=${state.loadState.name}',
+      'entries=${state.catalog.entries.length}',
+      'allow_cloud_fallback=${state.allowCloudFallback}',
+      'installed=${installed.isEmpty ? 'none' : installed}',
+      'last_error=${_sanitizeDiagnostic(state.lastErrorCode ?? 'none')}',
     ].join('; ');
   }
 
@@ -1027,6 +1053,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final keyboardStatus = _keyboardStatus;
     final themeMode = ref.watch(appThemeModeProvider);
     final authAsync = ref.watch(authSessionProvider);
+    final voiceCatalogState = ref.watch(languagePackCatalogProvider);
     return _settingsList(
       sections: [
         if (widget.onResumeOnboarding != null)
@@ -1100,6 +1127,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onPreferenceChanged: _setKeyboardPreferences,
             ),
           ),
+        _collapsibleSection(
+          id: 'voice_packs',
+          title: 'On-device Speech',
+          child: _OnDeviceSpeechSection(
+            state: voiceCatalogState,
+            keyboardStatus: keyboardStatus,
+            onRefresh: () =>
+                ref.read(languagePackCatalogProvider.notifier).refresh(),
+            onAllowCloudFallbackChanged: (value) => ref
+                .read(languagePackCatalogProvider.notifier)
+                .setAllowCloudFallback(value),
+            onQueueInstall: (entry) => ref
+                .read(languagePackCatalogProvider.notifier)
+                .queueInstall(entry),
+            onRemove: (entry) =>
+                ref.read(languagePackCatalogProvider.notifier).remove(entry),
+            onBlockByStorage: (entry) {
+              final decision = LanguagePackStoragePolicy.evaluate(
+                entry: entry,
+                totalCapacityMb: 4096,
+                freeSpaceMb: 512,
+              );
+              ref
+                  .read(languagePackCatalogProvider.notifier)
+                  .markInstallBlockedByStorage(
+                    entry: entry,
+                    requiredMb: decision.requiredMb,
+                    availableMb: decision.availableMb,
+                  );
+            },
+          ),
+        ),
         if (PlatformCapabilities.overlaySupported)
           _collapsibleSection(
             id: 'overlay',

@@ -200,6 +200,54 @@ class KeyboardStateStore(private val context: Context) {
     val keyboardRecoveryCount: Int
         get() = preferences.getInt(KEY_KEYBOARD_RECOVERY_COUNT, 0)
 
+    var voiceRuntimeMode: String
+        get() = preferences.getString(KEY_VOICE_RUNTIME_MODE, VOICE_RUNTIME_UNAVAILABLE) ?: VOICE_RUNTIME_UNAVAILABLE
+        set(value) {
+            val normalized =
+                if (value in setOf(VOICE_RUNTIME_LOCAL, VOICE_RUNTIME_ANDROID_FALLBACK, VOICE_RUNTIME_CLOUD_FALLBACK, VOICE_RUNTIME_UNAVAILABLE)) {
+                    value
+                } else {
+                    VOICE_RUNTIME_UNAVAILABLE
+                }
+            preferences.edit().putString(KEY_VOICE_RUNTIME_MODE, normalized).apply()
+        }
+
+    var voiceLanguageTag: String
+        get() = preferences.getString(KEY_VOICE_LANGUAGE_TAG, Locale.getDefault().toLanguageTag()) ?: Locale.getDefault().toLanguageTag()
+        set(value) = preferences.edit().putString(KEY_VOICE_LANGUAGE_TAG, value.take(32)).apply()
+
+    var voicePackId: String
+        get() = preferences.getString(KEY_VOICE_PACK_ID, "none") ?: "none"
+        set(value) = preferences.edit().putString(KEY_VOICE_PACK_ID, value.take(96)).apply()
+
+    var voiceEngine: String
+        get() = preferences.getString(KEY_VOICE_ENGINE, "android_speech_recognizer") ?: "android_speech_recognizer"
+        set(value) = preferences.edit().putString(KEY_VOICE_ENGINE, value.take(48)).apply()
+
+    var voiceFallbackReason: String
+        get() = preferences.getString(KEY_VOICE_FALLBACK_REASON, "missing_pack") ?: "missing_pack"
+        set(value) = preferences.edit().putString(KEY_VOICE_FALLBACK_REASON, value.take(48)).apply()
+
+    var voiceLastErrorCode: String
+        get() = preferences.getString(KEY_VOICE_LAST_ERROR_CODE, "none") ?: "none"
+        set(value) = preferences.edit().putString(KEY_VOICE_LAST_ERROR_CODE, value.take(64)).apply()
+
+    fun updateVoiceRuntimeStatus(
+        runtimeMode: String,
+        languageTag: String,
+        packId: String,
+        engine: String,
+        fallbackReason: String,
+        lastErrorCode: String,
+    ) {
+        voiceRuntimeMode = runtimeMode
+        voiceLanguageTag = languageTag
+        voicePackId = packId
+        voiceEngine = engine
+        voiceFallbackReason = fallbackReason
+        voiceLastErrorCode = lastErrorCode
+    }
+
     fun clearKeyboardDiagnostics() {
         preferences
             .edit()
@@ -270,6 +318,12 @@ class KeyboardStateStore(private val context: Context) {
             "lastKeyboardError" to (lastKeyboardError ?: ""),
             "lastKeyboardErrorAt" to (lastKeyboardErrorAt ?: ""),
             "keyboardRecoveryCount" to keyboardRecoveryCount,
+            "voiceRuntimeMode" to voiceRuntimeMode,
+            "voiceLanguageTag" to voiceLanguageTag,
+            "voicePackId" to voicePackId,
+            "voiceEngine" to voiceEngine,
+            "voiceFallbackReason" to voiceFallbackReason,
+            "voiceLastErrorCode" to voiceLastErrorCode,
         )
     }
 
@@ -790,6 +844,16 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_LAST_KEYBOARD_ERROR = "last_keyboard_error"
         const val KEY_LAST_KEYBOARD_ERROR_AT = "last_keyboard_error_at"
         const val KEY_KEYBOARD_RECOVERY_COUNT = "keyboard_recovery_count"
+        const val KEY_VOICE_RUNTIME_MODE = "voice_runtime_mode"
+        const val KEY_VOICE_LANGUAGE_TAG = "voice_language_tag"
+        const val KEY_VOICE_PACK_ID = "voice_pack_id"
+        const val KEY_VOICE_ENGINE = "voice_engine"
+        const val KEY_VOICE_FALLBACK_REASON = "voice_fallback_reason"
+        const val KEY_VOICE_LAST_ERROR_CODE = "voice_last_error_code"
+        const val VOICE_RUNTIME_LOCAL = "local"
+        const val VOICE_RUNTIME_ANDROID_FALLBACK = "android_fallback"
+        const val VOICE_RUNTIME_CLOUD_FALLBACK = "cloud_fallback"
+        const val VOICE_RUNTIME_UNAVAILABLE = "unavailable"
         const val EMOJI_RECENT_SEPARATOR = "|"
         const val MAX_TEXT_RULES = 300
         const val MAX_CLIPBOARD_ENTRIES = 60

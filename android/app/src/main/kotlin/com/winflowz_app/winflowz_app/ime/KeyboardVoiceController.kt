@@ -13,6 +13,7 @@ import java.util.Locale
 
 class KeyboardVoiceController(
     private val context: Context,
+    private val stateStore: KeyboardStateStore,
     private val onState: (String) -> Unit,
     private val onResult: (String) -> Unit,
 ) {
@@ -30,6 +31,7 @@ class KeyboardVoiceController(
             return
         }
         if (!hasAudioPermission()) {
+            recordUnavailable("permission_denied")
             onState("Microphone permission required")
             return
         }
@@ -37,9 +39,12 @@ class KeyboardVoiceController(
         manualStopRequested = false
         latestPartialResult = ""
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
+            recordUnavailable("android_speech_unavailable")
             onState("Speech recognition unavailable")
             return
         }
+        recordAndroidFallback("none")
+        onState("Using Android speech fallback")
         val speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         recognizer = speechRecognizer
         speechRecognizer.setRecognitionListener(object : RecognitionListener {
@@ -70,8 +75,10 @@ class KeyboardVoiceController(
                     onResult(fallback)
                     onState("Inserted dictation")
                 } else if (wasPaused) {
+                    recordAndroidFallback("none")
                     onState("Dictation paused")
                 } else {
+                    recordAndroidFallback("runtime_load_failed")
                     onState("Dictation failed")
                 }
             }
@@ -89,11 +96,14 @@ class KeyboardVoiceController(
                 }
                 destroy()
                 if (best.isNotEmpty()) {
+                    recordAndroidFallback("none")
                     onResult(best)
                     onState(if (wasPaused) "Dictation paused" else "Inserted dictation")
                 } else if (wasPaused) {
+                    recordAndroidFallback("none")
                     onState("Dictation paused")
                 } else {
+                    recordAndroidFallback("missing_pack")
                     onState("No speech detected")
                 }
             }
@@ -171,6 +181,28 @@ class KeyboardVoiceController(
     fun destroy() {
         recognizer?.destroy()
         recognizer = null
+    }
+
+    private fun recordAndroidFallback(lastErrorCode: String) {
+        stateStore.updateVoiceRuntimeStatus(
+            runtimeMode = "android_fallback",
+            languageTag = Locale.getDefault().toLanguageTag(),
+            packId = "none",
+            engine = "android_speech_recognizer",
+            fallbackReason = if (lastErrorCode == "none") "missing_pack" else lastErrorCode,
+            lastErrorCode = lastErrorCode,
+        )
+    }
+
+    private fun recordUnavailable(lastErrorCode: String) {
+        stateStore.updateVoiceRuntimeStatus(
+            runtimeMode = "unavailable",
+            languageTag = Locale.getDefault().toLanguageTag(),
+            packId = "none",
+            engine = "android_speech_recognizer",
+            fallbackReason = "unsupported_language",
+            lastErrorCode = lastErrorCode,
+        )
     }
 
     private fun hasAudioPermission(): Boolean {

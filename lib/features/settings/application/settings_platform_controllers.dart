@@ -37,6 +37,12 @@ class SettingsKeyboardController {
       'status_bar_modules=${status.statusBarConfig.modules.map((module) => module.name).join(',')}',
       'status_bar_tips=${status.statusBarConfig.tipLevel.name}',
       'recoveries=${status.keyboardRecoveryCount}',
+      'voice_runtime=${status.voiceRuntimeMode}',
+      'voice_language=${status.voiceLanguageTag}',
+      'voice_pack=${status.voicePackId}',
+      'voice_engine=${status.voiceEngine}',
+      'voice_fallback=${status.voiceFallbackReason}',
+      'voice_last_error=${status.voiceLastErrorCode}',
       'last_error_at=${status.lastKeyboardErrorAt ?? 'none'}',
       'last_error=${SensitiveRedactor.redact(status.lastKeyboardError ?? 'none')}',
     ].join('; ');

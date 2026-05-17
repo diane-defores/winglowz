@@ -1652,6 +1652,12 @@ class AndroidKeyboardStatus {
     required this.lastKeyboardError,
     required this.lastKeyboardErrorAt,
     required this.keyboardRecoveryCount,
+    required this.voiceRuntimeMode,
+    required this.voiceLanguageTag,
+    required this.voicePackId,
+    required this.voiceEngine,
+    required this.voiceFallbackReason,
+    required this.voiceLastErrorCode,
   });
 
   final bool supported;
@@ -1693,6 +1699,12 @@ class AndroidKeyboardStatus {
   final String? lastKeyboardError;
   final String? lastKeyboardErrorAt;
   final int keyboardRecoveryCount;
+  final String voiceRuntimeMode;
+  final String voiceLanguageTag;
+  final String voicePackId;
+  final String voiceEngine;
+  final String voiceFallbackReason;
+  final String voiceLastErrorCode;
 
   factory AndroidKeyboardStatus.unsupported() {
     return AndroidKeyboardStatus(
@@ -1735,6 +1747,12 @@ class AndroidKeyboardStatus {
       lastKeyboardError: null,
       lastKeyboardErrorAt: null,
       keyboardRecoveryCount: 0,
+      voiceRuntimeMode: 'unavailable',
+      voiceLanguageTag: 'und',
+      voicePackId: 'none',
+      voiceEngine: 'unavailable',
+      voiceFallbackReason: 'unsupported_language',
+      voiceLastErrorCode: 'keyboard_unsupported',
     );
   }
 
@@ -1812,6 +1830,13 @@ class AndroidKeyboardStatus {
       lastKeyboardErrorAt: _nonEmptyString(map['lastKeyboardErrorAt']),
       keyboardRecoveryCount:
           (map['keyboardRecoveryCount'] as num?)?.toInt() ?? 0,
+      voiceRuntimeMode: map['voiceRuntimeMode'] as String? ?? 'unavailable',
+      voiceLanguageTag: map['voiceLanguageTag'] as String? ?? 'und',
+      voicePackId: map['voicePackId'] as String? ?? 'none',
+      voiceEngine: map['voiceEngine'] as String? ?? 'unavailable',
+      voiceFallbackReason:
+          map['voiceFallbackReason'] as String? ?? 'unsupported_language',
+      voiceLastErrorCode: map['voiceLastErrorCode'] as String? ?? 'none',
     );
   }
 

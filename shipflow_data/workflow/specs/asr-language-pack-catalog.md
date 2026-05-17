@@ -5,8 +5,8 @@ artifact_version: "0.1.0"
 project: "winflowz_app"
 created: "2026-05-14"
 created_at: "2026-05-14 22:30:00 UTC"
-updated: "2026-05-15"
-updated_at: "2026-05-15 19:19:39 UTC"
+updated: "2026-05-17"
+updated_at: "2026-05-17 13:26:48 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -389,13 +389,16 @@ None.
 | 2026-05-15 19:16:15 UTC | sf-ready | GPT-5 Codex | Re-ran readiness gate after storage-threshold update, checking structure, user-story traceability, data-contract determinism, adversarial bypasses, cloud fallback security, language doctrine, and freshness obligations. | Not ready: storage policy is now deterministic, but the pack data contract remains under-specified and cloud fallback `auto` still needs explicit consent/trust-boundary rules. | /sf-spec ASR Language Pack Catalog |
 | 2026-05-15 19:18:30 UTC | sf-spec | GPT-5 Codex | Resolved readiness blockers by adding explicit `LanguagePackCatalogEntry` and `InstalledLanguagePack` data contracts, catalog validation failure behavior, and cloud fallback consent/trust-boundary rules. | Spec updated for readiness re-check. | /sf-ready shipflow_data/workflow/specs/asr-language-pack-catalog.md |
 | 2026-05-15 19:19:39 UTC | sf-ready | GPT-5 Codex | Re-ran readiness gate after data contract and cloud fallback trust-boundary corrections. | Ready: structure, metadata, user-story traceability, data contract, adversarial cases, security posture, language doctrine, and freshness obligations are sufficient for first implementation. | /sf-start ASR Language Pack Catalog |
+| 2026-05-17 13:26:48 UTC | sf-start | GPT-5 Codex | Implemented first ASR catalog slice: Dart catalog/domain contract, local-first Riverpod provider, Settings "On-device speech" section, IME voice runtime diagnostics, explicit Android fallback status, and benchmark MVP matrix. | Partial: first implementation slice is in place and locally validated; remaining work includes real download manager, local ASR runtime integration, first-micro prompt flow, update/corruption handling, and Android device QA. | /sf-start ASR Language Pack Catalog |
+| 2026-05-17 13:36:32 UTC | sf-start | GPT-5 Codex | Implemented a safer Flutter install-state manager slice: testable local repository, idempotent per-pack transitions (`queued/downloading/verifying/installed`), guarded `markInstalled` (no false installed before verification), bounded retries (`max=3`), and provider tests for persistence and failure paths. | Partial: install-state lifecycle safety is now covered in Flutter state + tests, but no real model download/runtime execution is wired yet and first-micro onboarding/update/corruption flows remain. | /sf-start ASR Language Pack Catalog |
+| 2026-05-17 13:39:03 UTC | sf-verify | GPT-5 Codex | Verified the implemented ASR catalog slices against the current spec scope: Flutter catalog/domain/provider state machine, Settings visibility, IME diagnostic wiring, local checks, and Android Kotlin compile surface. | Partial: focused tests, `flutter analyze`, diff hygiene, and Kotlin compile pass when resource processing is skipped; full verification is blocked by missing real download/runtime integration, first-micro flow, durable app restart persistence, Android device QA, and local AAPT2 runner incompatibility for full debug resources. | /sf-start ASR Language Pack Catalog |
 
 # Current Chantier Flow
 
 - `sf-spec`: done - latest draft captured the current product direction, deterministic storage policy, data contract, cloud fallback trust boundary, and language doctrine note.
 - `sf-ready`: ready - readiness gate passed after data contract and cloud fallback trust-boundary corrections.
-- `sf-start`: next - implementation may begin from the ready spec.
-- `sf-verify`: not launched - runtime, diagnostics, and GTM coherence remain to be verified after coding.
+- `sf-start`: partial - first implementation slice plus install-state hardening are in place (idempotent transitions, retry cap, guarded install, provider persistence tests), but real download/runtime wiring and first-use orchestration are still pending.
+- `sf-verify`: partial - current implementation slices pass local Flutter checks and Kotlin compile surface, but full chantier verification still needs real download/runtime behavior, first-micro orchestration, durable persistence proof, and Android device/CI QA.
 - `sf-end`: not launched - closeout depends on implementation and verification.
 - `sf-ship`: not launched - shipping is blocked on benchmark-backed language claims and implementation proof.
 

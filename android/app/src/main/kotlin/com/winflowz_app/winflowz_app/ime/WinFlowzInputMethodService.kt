@@ -39,6 +39,7 @@ class WinFlowzInputMethodService :
         voiceController =
             KeyboardVoiceController(
                 context = this,
+                stateStore = stateStore,
                 onState = { message -> keyboardView?.setStatus(message) },
                 onResult = { text ->
                     val editor = editor()
