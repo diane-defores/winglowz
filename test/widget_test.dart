@@ -703,7 +703,11 @@ void main() {
       await tester.pumpWidget(_keyboardPreviewTestWidget());
       await tester.pumpAndSettle();
 
-      await _tapVisible(tester, find.text('Nav'));
+      await _selectDropdownOption(
+        tester,
+        const Key('keyboard-preview-panel-dropdown'),
+        'Navigation',
+      );
 
       expect(find.text('All'), findsOneWidget);
       expect(find.text('Copy'), findsOneWidget);
