@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "winflowz"
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-05-17"
 status: "reviewed"
 source_skill: sf-docs
 scope: "file"
@@ -14,7 +14,7 @@ risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "Astro 5"
+  - "Astro 6"
   - "Vercel"
   - "Clerk"
   - "Convex"
@@ -22,8 +22,8 @@ linked_systems:
   - "Resend"
 depends_on:
   - "CLAUDE.md"
-  - "GUIDELINES.md"
-  - "ARCHITECTURE.md"
+  - "shipflow_data/technical/guidelines.md"
+  - "shipflow_data/technical/architecture.md"
 supersedes: []
 evidence:
   - "package.json"
@@ -49,13 +49,13 @@ WinFlowz is a bilingual Astro application for Windows-focused productivity conte
 ## First Places to Read
 
 1. `CLAUDE.md` for the local MCP/context workflow expected in this repo.
-2. `GUIDELINES.md` for product and routing constraints.
-3. `ARCHITECTURE.md` for system boundaries and runtime flows.
-4. `CONTEXT.md` for a concise directory and feature map.
+2. `shipflow_data/technical/guidelines.md` for product and routing constraints.
+3. `shipflow_data/technical/architecture.md` for system boundaries and runtime flows.
+4. `shipflow_data/technical/context.md` for a concise directory and feature map.
 
 ## Stack Summary
 
-- Frontend: Astro 5, Tailwind, MDX, React islands
+- Frontend: Astro 6, Tailwind, MDX, React islands
 - Deployment: Vercel server output
 - Auth: Clerk middleware and webhook sync
 - Data: Convex schema, queries, mutations, HTTP actions

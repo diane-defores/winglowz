@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: winflowz
 created: "2026-04-25"
-updated: "2026-04-27"
+updated: "2026-05-17"
 status: reviewed
 source_skill: sf-docs
 scope: file
@@ -14,15 +14,15 @@ risk_level: medium
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - "Astro 5"
+  - "Astro 6"
   - "Vercel"
   - "Clerk"
   - "Convex"
   - "Polar"
   - "Resend"
 depends_on:
-  - "GUIDELINES.md"
-  - "ARCHITECTURE.md"
+  - "shipflow_data/technical/guidelines.md"
+  - "shipflow_data/technical/architecture.md"
 supersedes: []
 evidence:
   - "package.json"
@@ -36,13 +36,13 @@ next_step: "pnpm build:check"
 
 ## Repository Execution Contract
 
-This repository is an Astro 5 server application with bilingual routing, Clerk auth, Convex state, Polar checkout, and Resend newsletter flows.
+This repository is an Astro 6 server application with bilingual routing, Clerk auth, Convex state, Polar checkout, and Resend newsletter flows.
 
 Use this file as the short operating contract before changing code or docs.
 
 ## Stack Snapshot
 
-- Framework: Astro 5 (`output: "server"`)
+- Framework: Astro 6 (`output: "server"`)
 - Deployment adapter: Vercel (`@astrojs/vercel`)
 - Auth: Clerk middleware + webhook forwarding
 - Backend/state: Convex (`users`, `apiKeys`, `features`)
@@ -52,8 +52,8 @@ Use this file as the short operating contract before changing code or docs.
 
 ## First Files To Inspect
 
-1. `GUIDELINES.md`
-2. `ARCHITECTURE.md`
+1. `shipflow_data/technical/guidelines.md`
+2. `shipflow_data/technical/architecture.md`
 3. `src/middleware/index.ts`
 4. `src/middleware/i18n.ts`
 5. `src/pages/api/polar/checkout.ts`

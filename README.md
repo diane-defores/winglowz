@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: winflowz
 created: "2026-04-25"
-updated: "2026-04-27"
+updated: "2026-05-17"
 status: reviewed
 source_skill: sf-docs
 scope: readme
@@ -16,8 +16,10 @@ docs_impact: yes
 linked_systems: []
 depends_on: []
 supersedes: []
-evidence: []
-next_step: /sf-docs audit README.md
+evidence:
+  - package.json
+  - shipflow_data/
+next_step: /sf-docs update
 ---
 # WinFlowz
 
@@ -37,7 +39,7 @@ Production: https://winflowz.com
 
 Requirements:
 
-- Node.js 20+
+- Node.js 22.12+
 - pnpm
 
 Install and run:
@@ -51,7 +53,7 @@ The local dev server runs on `http://localhost:3011`.
 
 ## Tech Stack
 
-- Astro 5
+- Astro 6
 - Astro Starlight
 - Tailwind CSS 3
 - React islands
@@ -136,12 +138,15 @@ Common commands:
 ## Documentation
 
 - [CLAUDE.md](./CLAUDE.md) — agent workflow and context rules
-- [BUSINESS.md](./BUSINESS.md) — business contract centered on `Windows Mastery`
-- [BRANDING.md](./BRANDING.md) — brand voice and claim policy
-- [PRODUCT.md](./PRODUCT.md) — product scope and user journey
-- [GTM.md](./GTM.md) — go-to-market structure
-- [CONTENT_MAP.md](./CONTENT_MAP.md) — content routing map
-- [GUIDELINES.md](./GUIDELINES.md) — project-specific engineering guidelines
+- [AGENT.md](./AGENT.md) — short repo execution contract
+- [shipflow_data/business/business.md](./shipflow_data/business/business.md) — business contract centered on `Windows Mastery`
+- [shipflow_data/business/branding.md](./shipflow_data/business/branding.md) — brand voice and claim policy
+- [shipflow_data/business/product.md](./shipflow_data/business/product.md) — product scope and user journey
+- [shipflow_data/business/gtm.md](./shipflow_data/business/gtm.md) — go-to-market structure
+- [shipflow_data/editorial/content-map.md](./shipflow_data/editorial/content-map.md) — content routing map
+- [shipflow_data/technical/guidelines.md](./shipflow_data/technical/guidelines.md) — project-specific engineering guidelines
+- [shipflow_data/technical/architecture.md](./shipflow_data/technical/architecture.md) — system boundaries and integrations
+- [shipflow_data/technical/context.md](./shipflow_data/technical/context.md) — repository context map
 - [docs/DESIGN_SPECIFICATION.md](./docs/DESIGN_SPECIFICATION.md) — design system notes
 - [docs/COMPONENT_CLASSES.md](./docs/COMPONENT_CLASSES.md) — reusable CSS class reference
 

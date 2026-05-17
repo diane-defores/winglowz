@@ -2,9 +2,9 @@
 artifact: gtm_context
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "winflowz"
-created: "2026-04-26"
-updated: "2026-04-27"
+project: winflowz
+created: "2026-05-17"
+updated: "2026-05-17"
 status: reviewed
 source_skill: sf-docs
 scope: gtm
@@ -18,90 +18,72 @@ proof_points: "Windows-only positioning, bilingual content structure, gated cour
 security_impact: unknown
 docs_impact: yes
 evidence:
-  - "README.md"
-  - "BUSINESS.md"
-  - "BRANDING.md"
-  - "GUIDELINES.md"
-  - "CONTENT_GUIDELINES.md"
-  - "src/content/blog/"
-  - "src/content/docs/"
-  - "src/content/products/"
+  - src/content/blog/
+  - src/content/docs/
+  - src/content/products/
+  - src/pages/[...lang]/[windows_mastery].astro
 linked_artifacts:
-  - "BUSINESS.md"
-  - "BRANDING.md"
-  - "PRODUCT.md"
-  - "CONTENT_MAP.md"
+  - shipflow_data/business/business.md
+  - shipflow_data/business/branding.md
+  - shipflow_data/business/product.md
+  - shipflow_data/editorial/content-map.md
 depends_on:
-  - "BUSINESS.md"
-  - "BRANDING.md"
-  - "PRODUCT.md"
-supersedes: []
-next_review: "2026-05-26"
-next_step: "/sf-docs audit GTM.md"
+  - shipflow_data/business/business.md
+  - shipflow_data/business/branding.md
+  - shipflow_data/business/product.md
+supersedes:
+  - GTM.md
+next_review: "2026-06-17"
+next_step: "/sf-docs update"
 ---
-
 # GTM Context
 
 ## Target Segment
 
-Primary segment:
-
 - Windows-first professionals and independents with recurring workflow friction
 - learners who value operational systems over generic productivity content
-- bilingual audience (`en`/`fr`) on core commercial routes
+- bilingual audiences on core commercial routes
 
 ## Core Offer
 
-GTM is centered on:
-
-- `Windows Mastery` as flagship commercial offer
-- free educational content for discovery and qualification
-- gated learning surfaces for activated users
-- companion product pages as ecosystem extension, not positioning replacement
+- `Windows Mastery` is the flagship commercial offer.
+- Free educational content supports discovery and qualification.
+- Gated learning surfaces support activated users.
+- Companion product pages extend the ecosystem without replacing the flagship narrative.
 
 ## Positioning
 
-WinFlowz positioning:
-
 - Windows-first productivity guidance with practical implementation
 - structured learning path instead of disconnected app recommendations
-- commercial narrative led by one flagship offer (`Windows Mastery`)
+- commercial narrative led by one flagship offer
 
 ## Acquisition Channels
 
-Observed channels in this repo:
-
-- SEO via bilingual educational content (`src/content/blog/`)
-- offer and catalog pages (`/windows-mastery`, `/products`, localized counterparts)
-- newsletter capture and lifecycle surfaces (`/api/newsletter/*`)
-- product-oriented pages and documentation that move qualified users toward activation
+- SEO via bilingual educational content in `src/content/blog/`
+- offer and catalog pages under `/windows-mastery`, `/products`, and localized counterparts
+- newsletter capture and lifecycle surfaces under `/api/newsletter/*`
+- product-oriented pages and docs that move qualified users toward activation
 
 ## Conversion Path
 
 1. Acquire via educational or product-intent content.
 2. Qualify via Windows-specific framing and practical examples.
-3. Route to flagship offer page (`Windows Mastery`) or product catalog.
+3. Route to the flagship offer page or product catalog.
 4. Trigger account and checkout flow where relevant.
-5. Activate users into gated training/docs and related surfaces.
+5. Activate users into gated training and docs.
 
 ## Proof Available In Repo
 
 - bilingual routes and content structure
 - explicit `Windows Mastery` route family
-- authentication and purchase-related API surface references in repo structure
-- docs/products/blog collections aligned to one brand
+- authentication and purchase-related API surface references
+- docs, products, and blog collections aligned to one brand
 
-Not claimed here:
-
-- customer counts
-- conversion benchmarks
-- revenue metrics
-- paid channel performance
-
-## GTM KPIs (Definitions Only)
+## GTM KPIs
 
 - qualified organic traffic to flagship and high-intent pages
 - visit-to-lead conversion
-- visit-to-purchase conversion on flagship route
+- visit-to-purchase conversion on flagship routes
 - post-purchase activation into gated surfaces
 - retention in premium learning journeys
+
