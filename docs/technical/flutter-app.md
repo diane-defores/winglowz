@@ -100,9 +100,9 @@ Clipboard UI
 - Clipboard UI, application APIs and domain models must not import Supabase adapters.
 - Android native code emits platform actions/events; backend writes go through the Flutter product API or an equivalent store contract.
 - Keyboard clipboard bridge events are imported by Flutter before listing clipboard items; sensitive automatic content can be rejected by the store without user confirmation.
-- Keyboard corner config models in `lib/features/keyboard/domain/keyboard_models.dart` mirror the native preset/override wire shape. Unsupported platforms may simulate defaults but must not claim that Android IME preferences were changed.
+- Keyboard corner config models in `lib/features/keyboard/domain/keyboard_models.dart` mirror the native preset/override wire shape. Kotlin native owns functional preset tables; Flutter keeps preset ids/names as DTO/UI fallback and resolves only explicit overrides.
 - `KeyboardCornerShortcutsScreen` edits corner shortcuts as a draft. It must not call the native save bridge until the user explicitly saves, and unsupported platforms must remain simulation-only.
-- `KeyboardPreviewScreen` and `KeyboardCornerSelectablePreview` can render corner presets and simulate simple text-like corner outputs. Native Android key events, field policy enforcement, persistence, and system dispatch still require Android IME validation.
+- `KeyboardPreviewScreen` and `KeyboardCornerSelectablePreview` can render explicit override shortcuts and simulate simple text-like override outputs. They do not recreate native preset defaults; Android key events, field policy enforcement, persistence, preset resolution, and system dispatch still require Android IME validation.
 
 ## Failure Modes
 
@@ -135,7 +135,7 @@ flutter test
 ## Reader Checklist
 
 - `lib/core/platform/**` changed -> verify native channel contract and Settings UI.
-- `lib/features/keyboard/domain/keyboard_models.dart` or keyboard preview changed -> verify preset parsing, override precedence, private-mode filtering, and widget tests for preview rendering.
+- `lib/features/keyboard/domain/keyboard_models.dart` or keyboard preview changed -> verify preset id parsing, explicit override precedence, private-mode filtering, and widget tests for preview rendering.
 - `lib/features/keyboard/presentation/keyboard_corner_shortcuts_screen.dart` changed -> verify draft/save separation, private-mode warnings, snippet search, import/export safety, and unsupported-platform copy.
 - Domain model source allowlist changed -> verify SQL constraints and tests.
 - Repository metadata changed -> verify backend adapter docs and security rules/tests.

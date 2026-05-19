@@ -61,7 +61,7 @@ evidence:
   - "firestore.rules currently scopes WinFlowz app data under users/{uid} and denies cross-user access."
   - "Official Firebase, Google Identity Platform, Auth0, and Clerk docs checked 2026-05-17 for shared app resources, custom claims limits, tenant boundaries, SSO, and cross-origin session token behavior."
   - "Canonical decision documented 2026-05-17 in /home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md: Clerk central identity, Firebase Android bridge, server-owned entitlements."
-next_step: "/sf-spec unified-suite-authentication readiness fixes"
+next_step: "/sf-start unified-suite-authentication"
 ---
 
 # Title
@@ -70,7 +70,7 @@ Unified WinFlowz Suite Authentication
 
 # Status
 
-Reviewed, but not ready for `/sf-start` after the 2026-05-17 13:13 UTC readiness gate. The product direction and provider gate are explicit: Clerk is the long-term suite identity provider, Firebase Auth remains the WinFlowz Android app adapter for now, and a server-owned bridge maps Firebase users to `global_user_id`. The first proof pair is WinFlowz Formation plus the WinFlowz Android app, but the WinFlowz Formation implementation repository/backend path was not available in the local workspace during readiness review, and active local docs still contain Clerk-as-legacy wording that must be reconciled before implementation starts.
+Ready for `/sf-start` after the 2026-05-19 readiness gate. The product direction and provider gate are explicit: Clerk is the long-term suite identity provider, Firebase Auth remains the WinFlowz Android app adapter for now, and a server-owned bridge maps Firebase users to `global_user_id`. The first proof pair is WinFlowz Formation plus the WinFlowz Android app. The WinFlowz Formation repository is available at `/home/claude/winflowz`, and active app docs now distinguish legacy direct app-stack Clerk from Clerk as suite identity provider.
 
 # User Story
 
@@ -227,6 +227,7 @@ L'implémentation doit être progressive. La première tranche ne migre pas tous
 - `/home/claude/shipflow_data/specs/master-auth-playbook.md`: standard transverse d'un propriétaire de session par runtime.
 - `/home/claude/shipflow_data/projects/VoiceFlowz/TASKS.md`: legacy tracker for the app now known as WinFlowz app; trace historique "Configure Clerk for auth (shared with WinFlowz)".
 - `/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md`: décision canonique du projet principal WinFlowz.
+- `/home/claude/winflowz`: WinFlowz Formation repo; Astro 6 with Clerk, Polar, Convex, checkout and entitlement surfaces.
 
 ## Fresh External Docs Checked
 
@@ -254,9 +255,9 @@ Fresh-docs verdict: `fresh-docs checked`. The docs support the architecture dire
 
 # Links & Consequences
 
-- `docs/DECISIONS.md`: needs a local pointer clarifying that Firebase remains the app's current adapter while Clerk is the suite identity target.
-- `shipflow_data/technical/architecture.md`: needs a "Suite Identity" section or linked doc separating global identity from product data.
-- `shipflow_data/technical/guidelines.md`: must allow a provider bridge or central provider decision without violating the app's backend-agnostic rule.
+- `docs/DECISIONS.md`: now clarifies that Firebase remains the app's current adapter while Clerk is the suite identity target.
+- `shipflow_data/technical/architecture.md`: now separates direct Android app auth from suite identity bridge.
+- `shipflow_data/technical/guidelines.md`: now allows Clerk as suite identity without reviving the old app stack.
 - `firestore.rules`: may need product namespace and entitlement checks if WinFlowz app begins using shared suite IDs or shared entitlement docs.
 - `lib/features/auth/domain/auth_session_store.dart`: may need `globalUserId`, `suiteAccountStatus`, and provider metadata separate from Firebase `uid`.
 - `lib/features/auth/application/auth_session_provider.dart`: may need a `SuiteIdentitySession` adapter or bridge.
@@ -324,7 +325,7 @@ Update or create:
   - Notes : utiliser `ProductId` allowlist, pas une string libre venue du client.
 
 - [ ] Tâche 4 : Auditer les comptes et IDs existants avant linking
-  - Fichiers : `/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md`, docs d'audit redigées du repo WinFlowz Formation quand disponible.
+  - Fichiers : `/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md`, `/home/claude/winflowz/convex/schema.ts`, `/home/claude/winflowz/convex/users.ts`, `/home/claude/winflowz/convex/http.ts`, `/home/claude/winflowz/src/pages/api/clerk/webhook.ts`, `/home/claude/winflowz/src/pages/api/polar/checkout.ts`
   - Action : lister sources utilisateurs et paiements: Firebase Auth, Clerk users, Convex users/course entitlements, Polar customer/subscription/order ids, TubeFlow users et YouTube OAuth grants.
   - User story link : empêche merge silencieux et perte d'accès.
   - Depends on : Tâche 2.
@@ -332,7 +333,7 @@ Update or create:
   - Notes : utiliser des comptes de test ou métriques agrégées; ne pas commit de PII.
 
 - [ ] Tâche 5 : Implémenter ou spécifier le registre d'entitlements serveur
-  - Fichiers : repo WinFlowz Formation/Convex quand disponible, `/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md`, docs API/backend du registre.
+  - Fichiers : `/home/claude/winflowz/convex/schema.ts`, `/home/claude/winflowz/convex/http.ts`, `/home/claude/winflowz/convex/polar.ts`, `/home/claude/winflowz/convex/users.ts`, `/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md`, docs API/backend du registre.
   - Action : créer ou spécifier la source de vérité `product_entitlements` avec writes idempotents depuis Polar/Clerk Billing futur/app stores/grants manuels et reads contrôlés côté serveur.
   - User story link : un compte peut exister sans accès produit.
   - Depends on : Tâche 2, Tâche 4.
@@ -348,7 +349,7 @@ Update or create:
   - Notes : ne pas remplacer Firebase Auth dans cette première tranche; adapter derrière contrat backend-agnostic.
 
 - [ ] Tâche 7 : Adapter WinFlowz Formation checkout/account au contrat suite
-  - Fichiers : repo/site WinFlowz concerné; docs site; endpoint Polar webhook.
+  - Fichiers : `/home/claude/winflowz/src/pages/api/polar/checkout.ts`, `/home/claude/winflowz/src/pages/api/polar/webhook.ts`, `/home/claude/winflowz/src/pages/api/clerk/webhook.ts`, `/home/claude/winflowz/convex/http.ts`, `/home/claude/winflowz/convex/users.ts`, `/home/claude/winflowz/src/utils/courseGating.ts`, `/home/claude/winflowz/shipflow_data/technical/architecture.md`.
   - Action : mapper Clerk/Convex/Polar ou provider choisi vers `global_user_id`, créer/mettre à jour entitlement formation, et afficher état compte/access.
   - User story link : un acheteur formation devient compte suite sans accès automatique aux apps.
   - Depends on : Tâche 5.
@@ -448,6 +449,9 @@ Update or create:
   - `shipflow_data/technical/architecture.md`;
   - `/home/claude/shipflow_data/specs/master-auth-playbook.md`;
   - `/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md`;
+  - `/home/claude/winflowz/AGENT.md`;
+  - `/home/claude/winflowz/shipflow_data/technical/architecture.md`;
+  - `/home/claude/winflowz/shipflow_data/technical/context-function-tree.md`;
   - current Clerk, Firebase, Convex and billing docs relevant to the implementation slice.
 - Start with docs/contract alignment, then code the smallest bridge/entitlement slice.
 - Keep the first implementation slice narrow: WinFlowz Formation plus WinFlowz Android app.
@@ -457,7 +461,7 @@ Update or create:
 - Use separate dev/staging/prod providers, callbacks, webhook secrets and test users.
 - Stop conditions:
   - provider verdict diverges from the canonical WinFlowz decision;
-  - WinFlowz Formation repo or backend path is unavailable for the first proof pair;
+  - WinFlowz Formation repo or backend path becomes unavailable for the first proof pair;
   - account linking requires real user PII export without a redaction plan;
   - a backend can only enforce entitlements client-side;
   - webhook signature verification is unavailable;
@@ -484,14 +488,15 @@ Resolved decisions:
 | 2026-05-17 13:09:59 UTC | sf-docs | GPT-5 Codex | Corrected VoiceFlowz / VoiceFlows naming across suite auth docs | VoiceFlowz is now documented as legacy naming for WinFlowz app; separate `voiceflowz` product id removed from the auth spec | `/sf-ready shipflow_data/workflow/specs/unified-suite-authentication.md` |
 | 2026-05-17 13:13:31 UTC | sf-ready | GPT-5 Codex | Re-evaluated readiness after provider and VoiceFlowz corrections | Not ready: WinFlowz Formation repo/backend path is unavailable locally, active app docs still conflict with Clerk suite identity, and dependency versions need refresh | `/sf-spec unified-suite-authentication readiness fixes` |
 | 2026-05-17 21:14:55 UTC | sf-backlog | GPT-5 Codex | Recorded OpenAuth as a future identity-provider review item | Deferred to 2028; current Clerk central identity + Firebase Android bridge decision remains unchanged | `/sf-spec unified-suite-authentication readiness fixes` |
+| 2026-05-19 18:56:43 UTC | sf-ready | GPT-5 Codex | Re-evaluated readiness after `/home/claude/winflowz` became available and app docs were reconciled | Ready: first proof pair paths exist, Clerk legacy wording is scoped to old app stack, and dependency versions are refreshed | `/sf-start unified-suite-authentication` |
 
 # Current Chantier Flow
 
 - sf-spec: done, reviewed after provider-decision update.
-- sf-ready: not ready; readiness fixes required before implementation.
+- sf-ready: ready.
 - sf-start: not started.
 - sf-verify: not started.
 - sf-end: not started.
 - sf-ship: not started.
 
-Next command: `/sf-spec unified-suite-authentication readiness fixes`.
+Next command: `/sf-start unified-suite-authentication`.

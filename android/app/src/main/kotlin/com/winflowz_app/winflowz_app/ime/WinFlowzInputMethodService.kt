@@ -745,7 +745,7 @@ class WinFlowzInputMethodService :
     override fun onCornerModeChanged(enabled: Boolean) {
         stateStore.cornerModeEnabled = enabled
         applyRuntimePreferencesToView()
-        showStatus(if (enabled) "Corner mode enabled" else "Corner mode disabled")
+        showStatus(if (enabled) "Swipe gestures enabled" else "Swipe gestures disabled")
     }
 
     override fun onDebugTouchOverlayChanged(enabled: Boolean) {
@@ -776,7 +776,7 @@ class WinFlowzInputMethodService :
     override fun onSpecialKeyCornersChanged(enabled: Boolean) {
         stateStore.specialKeyCornersEnabled = enabled
         applyRuntimePreferencesToView()
-        showStatus(if (enabled) "Special key corners enabled" else "Special key corners disabled")
+        showStatus(if (enabled) "Special key gestures enabled" else "Special key gestures disabled")
     }
 
     override fun onFrenchLanguageChanged(enabled: Boolean) {

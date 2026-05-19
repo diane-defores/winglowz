@@ -48,6 +48,60 @@ class KeyboardGestureClassifierTest {
     }
 
     @Test
+    fun `classifies cardinal up swipe`() {
+        val selection =
+            KeyboardGestureClassifier.classify(
+                sample =
+                    GestureSample(
+                        startX = 100f,
+                        startY = 100f,
+                        endX = 102f,
+                        endY = 58f,
+                        maxDistanceFromStart = 46f,
+                    ),
+                thresholds = thresholds,
+            )
+
+        assertEquals(GestureSelection.Up, selection)
+    }
+
+    @Test
+    fun `classifies cardinal left swipe`() {
+        val selection =
+            KeyboardGestureClassifier.classify(
+                sample =
+                    GestureSample(
+                        startX = 100f,
+                        startY = 100f,
+                        endX = 54f,
+                        endY = 96f,
+                        maxDistanceFromStart = 46f,
+                    ),
+                thresholds = thresholds,
+            )
+
+        assertEquals(GestureSelection.Left, selection)
+    }
+
+    @Test
+    fun `classifies ambiguous sector as canceled`() {
+        val selection =
+            KeyboardGestureClassifier.classify(
+                sample =
+                    GestureSample(
+                        startX = 100f,
+                        startY = 100f,
+                        endX = 126f,
+                        endY = 87f,
+                        maxDistanceFromStart = 31f,
+                    ),
+                thresholds = thresholds,
+            )
+
+        assertEquals(GestureSelection.Canceled, selection)
+    }
+
+    @Test
     fun `classifies return to center as canceled`() {
         val selection =
             KeyboardGestureClassifier.classify(

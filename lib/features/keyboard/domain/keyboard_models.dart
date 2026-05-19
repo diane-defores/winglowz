@@ -805,16 +805,30 @@ class KeyboardThemeConfig {
 }
 
 enum KeyboardCornerSlot {
+  up,
+  right,
+  down,
+  left,
   topLeft,
   topRight,
   bottomLeft,
   bottomRight;
 
+  static KeyboardCornerSlot? tryFromName(String value) {
+    final normalized = value.trim();
+    if (normalized.isEmpty) {
+      return null;
+    }
+    for (final slot in KeyboardCornerSlot.values) {
+      if (slot.name.toLowerCase() == normalized.toLowerCase()) {
+        return slot;
+      }
+    }
+    return null;
+  }
+
   static KeyboardCornerSlot fromName(String value) {
-    return KeyboardCornerSlot.values.firstWhere(
-      (slot) => slot.name == value,
-      orElse: () => KeyboardCornerSlot.topLeft,
-    );
+    return tryFromName(value) ?? KeyboardCornerSlot.topLeft;
   }
 }
 
@@ -1054,10 +1068,13 @@ class AndroidKeyboardCornerShortcut {
     );
   }
 
-  factory AndroidKeyboardCornerShortcut.fromMap(Map<Object?, Object?> map) {
+  factory AndroidKeyboardCornerShortcut.fromMap(
+    Map<Object?, Object?> map, {
+    KeyboardCornerSlot? slot,
+  }) {
     return AndroidKeyboardCornerShortcut(
       keyId: map['keyId'] as String? ?? '',
-      slot: KeyboardCornerSlot.fromName(map['slot'] as String? ?? ''),
+      slot: slot ?? KeyboardCornerSlot.fromName(map['slot'] as String? ?? ''),
       expression: map['expression'] as String? ?? '',
       label: map['label'] as String?,
       sensitive: map['sensitive'] as bool? ?? false,
@@ -1419,7 +1436,16 @@ class AndroidKeyboardCornerConfig {
       overrides: rawOverrides is List<Object?>
           ? rawOverrides
                 .whereType<Map<Object?, Object?>>()
-                .map(AndroidKeyboardCornerShortcut.fromMap)
+                .map((map) {
+                  final slot = KeyboardCornerSlot.tryFromName(
+                    map['slot'] as String? ?? '',
+                  );
+                  if (slot == null) {
+                    return null;
+                  }
+                  return AndroidKeyboardCornerShortcut.fromMap(map, slot: slot);
+                })
+                .whereType<AndroidKeyboardCornerShortcut>()
                 .where(
                   (shortcut) =>
                       shortcut.keyId.trim().isNotEmpty &&
@@ -1483,22 +1509,8 @@ class KeyboardCornerPresetCatalog {
       id: developerSymbols,
       name: 'Developer symbols',
     ),
-    AndroidKeyboardCornerPreset(id: none, name: 'No corners'),
+    AndroidKeyboardCornerPreset(id: none, name: 'No gestures'),
   ];
-
-  static List<AndroidKeyboardCornerShortcut> shortcutsFor(String presetId) {
-    return switch (presetId) {
-      frenchAccents => _smartFrenchShortcuts,
-      punctuation => _punctuationShortcuts,
-      frenchPunctuation => [
-        ..._frenchAccentShortcuts,
-        ..._punctuationShortcuts,
-      ],
-      developerSymbols => _developerShortcuts,
-      none => const [],
-      _ => _smartFrenchShortcuts,
-    };
-  }
 
   static Map<KeyboardCornerSlot, AndroidKeyboardCornerShortcut> resolvedForKey({
     required AndroidKeyboardCornerConfig config,
@@ -1512,11 +1524,6 @@ class KeyboardCornerPresetCatalog {
       return const {};
     }
     final resolved = <KeyboardCornerSlot, AndroidKeyboardCornerShortcut>{};
-    for (final shortcut in shortcutsFor(config.presetId)) {
-      if (shortcut.keyId == keyId && _allowedInPreview(shortcut, privateMode)) {
-        resolved[shortcut.slot] = shortcut;
-      }
-    }
     for (final shortcut in config.overrides) {
       if (shortcut.keyId != keyId) {
         continue;
@@ -1545,98 +1552,6 @@ class KeyboardCornerPresetCatalog {
         !expression.contains('snippet') &&
         !expression.contains('voice');
   }
-
-  static AndroidKeyboardCornerShortcut _shortcut(
-    String keyId,
-    KeyboardCornerSlot slot,
-    String expression, {
-    String? label,
-    bool sensitive = false,
-  }) {
-    return AndroidKeyboardCornerShortcut(
-      keyId: keyId,
-      slot: slot,
-      expression: expression,
-      label: label,
-      sensitive: sensitive,
-    );
-  }
-
-  static final _frenchAccentShortcuts = [
-    _shortcut('letter-a', KeyboardCornerSlot.topLeft, 'à'),
-    _shortcut('letter-a', KeyboardCornerSlot.topRight, 'â'),
-    _shortcut('letter-e', KeyboardCornerSlot.topLeft, 'é'),
-    _shortcut('letter-e', KeyboardCornerSlot.topRight, 'è'),
-    _shortcut('letter-e', KeyboardCornerSlot.bottomLeft, 'ê'),
-    _shortcut('letter-e', KeyboardCornerSlot.bottomRight, 'ë'),
-    _shortcut('letter-i', KeyboardCornerSlot.topLeft, 'î'),
-    _shortcut('letter-i', KeyboardCornerSlot.topRight, 'ï'),
-    _shortcut('letter-o', KeyboardCornerSlot.topLeft, 'ô'),
-    _shortcut('letter-o', KeyboardCornerSlot.topRight, 'œ'),
-    _shortcut('letter-u', KeyboardCornerSlot.topLeft, 'ù'),
-    _shortcut('letter-u', KeyboardCornerSlot.topRight, 'û'),
-    _shortcut('letter-u', KeyboardCornerSlot.bottomLeft, 'ü'),
-    _shortcut('letter-c', KeyboardCornerSlot.topLeft, 'ç'),
-  ];
-
-  static final _smartFrenchShortcuts = [
-    ..._frenchAccentShortcuts,
-    ..._punctuationShortcuts,
-  ];
-
-  static final _punctuationShortcuts = [
-    _shortcut('letter-j', KeyboardCornerSlot.topLeft, ','),
-    _shortcut('letter-j', KeyboardCornerSlot.topRight, '.'),
-    _shortcut('letter-j', KeyboardCornerSlot.bottomLeft, '?'),
-    _shortcut('letter-j', KeyboardCornerSlot.bottomRight, '!'),
-    _shortcut('letter-k', KeyboardCornerSlot.topLeft, r"'\''", label: "'"),
-    _shortcut('letter-k', KeyboardCornerSlot.topRight, '"'),
-    _shortcut('letter-k', KeyboardCornerSlot.bottomLeft, '('),
-    _shortcut('letter-k', KeyboardCornerSlot.bottomRight, ')'),
-    _shortcut('letter-l', KeyboardCornerSlot.topLeft, ':'),
-    _shortcut('letter-l', KeyboardCornerSlot.topRight, ';'),
-    _shortcut('letter-l', KeyboardCornerSlot.bottomLeft, r'$'),
-    _shortcut('letter-l', KeyboardCornerSlot.bottomRight, '€'),
-    _shortcut(
-      'letter-h',
-      KeyboardCornerSlot.topLeft,
-      'action:NavigateLineUp',
-      label: '↑',
-    ),
-    _shortcut(
-      'letter-h',
-      KeyboardCornerSlot.topRight,
-      'action:NavigateCharRight',
-      label: '→',
-    ),
-    _shortcut(
-      'letter-h',
-      KeyboardCornerSlot.bottomLeft,
-      'action:NavigateCharLeft',
-      label: '←',
-    ),
-    _shortcut(
-      'letter-h',
-      KeyboardCornerSlot.bottomRight,
-      'action:NavigateLineDown',
-      label: '↓',
-    ),
-  ];
-
-  static final _developerShortcuts = [
-    _shortcut('letter-f', KeyboardCornerSlot.topLeft, '/'),
-    _shortcut('letter-f', KeyboardCornerSlot.topRight, r'\'),
-    _shortcut('letter-f', KeyboardCornerSlot.bottomLeft, '|'),
-    _shortcut('letter-f', KeyboardCornerSlot.bottomRight, '~'),
-    _shortcut('letter-g', KeyboardCornerSlot.topLeft, '{'),
-    _shortcut('letter-g', KeyboardCornerSlot.topRight, '}'),
-    _shortcut('letter-g', KeyboardCornerSlot.bottomLeft, '['),
-    _shortcut('letter-g', KeyboardCornerSlot.bottomRight, ']'),
-    _shortcut('letter-h', KeyboardCornerSlot.topLeft, '<'),
-    _shortcut('letter-h', KeyboardCornerSlot.topRight, '>'),
-    _shortcut('letter-h', KeyboardCornerSlot.bottomLeft, '='),
-    _shortcut('letter-h', KeyboardCornerSlot.bottomRight, '_'),
-  ];
 }
 
 class AndroidKeyboardStatus {

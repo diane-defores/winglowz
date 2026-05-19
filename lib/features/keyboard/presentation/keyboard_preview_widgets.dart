@@ -100,7 +100,7 @@ class _PreviewControls extends StatelessWidget {
                   fieldKey: const Key(
                     'keyboard-preview-corner-preset-dropdown',
                   ),
-                  label: 'Corners',
+                  label: 'Gestures',
                   value: value.cornerConfig.presetId,
                   values: KeyboardCornerPresetCatalog.presets
                       .map((preset) => preset.id)
@@ -121,7 +121,7 @@ class _PreviewControls extends StatelessWidget {
                   selected: value.corners,
                   onSelected: actions.onCornersChanged,
                   avatar: const Icon(Icons.open_in_full_outlined),
-                  label: const Text('Corners'),
+                  label: const Text('Gestures'),
                 ),
                 FilterChip(
                   selected: value.privateMode,
@@ -398,6 +398,26 @@ class _KeyCap extends StatelessWidget {
           ),
           child: Stack(
             children: [
+              if (keySpec.upShortcut != null)
+                _EdgeLabel(
+                  text: keySpec.upShortcut!.displayLabel,
+                  alignment: Alignment.topCenter,
+                ),
+              if (keySpec.rightShortcut != null)
+                _EdgeLabel(
+                  text: keySpec.rightShortcut!.displayLabel,
+                  alignment: Alignment.centerRight,
+                ),
+              if (keySpec.downShortcut != null)
+                _EdgeLabel(
+                  text: keySpec.downShortcut!.displayLabel,
+                  alignment: Alignment.bottomCenter,
+                ),
+              if (keySpec.leftShortcut != null)
+                _EdgeLabel(
+                  text: keySpec.leftShortcut!.displayLabel,
+                  alignment: Alignment.centerLeft,
+                ),
               if (keySpec.topLeftShortcut != null)
                 _CornerLabel(
                   text: keySpec.topLeftShortcut!.displayLabel,
@@ -635,6 +655,30 @@ class _CornerLabel extends StatelessWidget {
   }
 }
 
+class _EdgeLabel extends StatelessWidget {
+  const _EdgeLabel({required this.text, required this.alignment});
+
+  final String text;
+  final Alignment alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: alignment,
+      child: Padding(
+        padding: const EdgeInsets.all(AppKeyboardPreview.cornerLabelPadding),
+        child: Text(
+          text,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: AppColors.keyboardCornerLabel,
+            fontWeight: AppFontWeights.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class KeyboardCornerSelectablePreview extends StatelessWidget {
   const KeyboardCornerSelectablePreview({
     super.key,
@@ -773,7 +817,7 @@ class _SelectableCornerKeyCap extends StatelessWidget {
         button: true,
         selected: selected,
         label: 'Keyboard key ${keySpec.label}',
-        hint: 'Selects this key for corner shortcut editing',
+        hint: 'Selects this key for gesture shortcut editing',
         child: Material(
           color: Colors.transparent,
           child: InkWell(
@@ -791,6 +835,18 @@ class _SelectableCornerKeyCap extends StatelessWidget {
               ),
               child: Stack(
                 children: [
+                  _CornerTapTarget(
+                    slot: KeyboardCornerSlot.up,
+                    selected: selected && selectedSlot == KeyboardCornerSlot.up,
+                    shortcut: shortcuts[KeyboardCornerSlot.up],
+                    keyLabel: keySpec.label,
+                    focusOrder: focusOrder + .05,
+                    alignment: Alignment.topCenter,
+                    onTap: () {
+                      onKeySelected(keySpec.id);
+                      onSlotSelected(KeyboardCornerSlot.up);
+                    },
+                  ),
                   _CornerTapTarget(
                     slot: KeyboardCornerSlot.topLeft,
                     selected:
@@ -815,6 +871,32 @@ class _SelectableCornerKeyCap extends StatelessWidget {
                     onTap: () {
                       onKeySelected(keySpec.id);
                       onSlotSelected(KeyboardCornerSlot.topRight);
+                    },
+                  ),
+                  _CornerTapTarget(
+                    slot: KeyboardCornerSlot.left,
+                    selected:
+                        selected && selectedSlot == KeyboardCornerSlot.left,
+                    shortcut: shortcuts[KeyboardCornerSlot.left],
+                    keyLabel: keySpec.label,
+                    focusOrder: focusOrder + .25,
+                    alignment: Alignment.centerLeft,
+                    onTap: () {
+                      onKeySelected(keySpec.id);
+                      onSlotSelected(KeyboardCornerSlot.left);
+                    },
+                  ),
+                  _CornerTapTarget(
+                    slot: KeyboardCornerSlot.right,
+                    selected:
+                        selected && selectedSlot == KeyboardCornerSlot.right,
+                    shortcut: shortcuts[KeyboardCornerSlot.right],
+                    keyLabel: keySpec.label,
+                    focusOrder: focusOrder + .26,
+                    alignment: Alignment.centerRight,
+                    onTap: () {
+                      onKeySelected(keySpec.id);
+                      onSlotSelected(KeyboardCornerSlot.right);
                     },
                   ),
                   _CornerTapTarget(
@@ -843,6 +925,19 @@ class _SelectableCornerKeyCap extends StatelessWidget {
                     onTap: () {
                       onKeySelected(keySpec.id);
                       onSlotSelected(KeyboardCornerSlot.bottomRight);
+                    },
+                  ),
+                  _CornerTapTarget(
+                    slot: KeyboardCornerSlot.down,
+                    selected:
+                        selected && selectedSlot == KeyboardCornerSlot.down,
+                    shortcut: shortcuts[KeyboardCornerSlot.down],
+                    keyLabel: keySpec.label,
+                    focusOrder: focusOrder + .45,
+                    alignment: Alignment.bottomCenter,
+                    onTap: () {
+                      onKeySelected(keySpec.id);
+                      onSlotSelected(KeyboardCornerSlot.down);
                     },
                   ),
                   Center(
@@ -897,14 +992,21 @@ class _CornerTapTarget extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final slotLabel = _cornerSlotLabel(slot);
+    final directional = switch (slot) {
+      KeyboardCornerSlot.up ||
+      KeyboardCornerSlot.right ||
+      KeyboardCornerSlot.down ||
+      KeyboardCornerSlot.left => true,
+      _ => false,
+    };
     return FocusTraversalOrder(
       order: NumericFocusOrder(focusOrder),
       child: Semantics(
         button: true,
         selected: selected,
-        label: '$slotLabel corner on $keyLabel',
+        label: '$slotLabel gesture on $keyLabel',
         value: shortcut?.displayLabel ?? 'Default tap',
-        hint: 'Selects this corner shortcut for editing',
+        hint: 'Selects this gesture shortcut for editing',
         child: FocusableActionDetector(
           mouseCursor: SystemMouseCursors.click,
           shortcuts: const <ShortcutActivator, Intent>{
@@ -926,8 +1028,8 @@ class _CornerTapTarget extends StatelessWidget {
               radius: 18,
               onTap: onTap,
               child: Container(
-                width: 34,
-                height: 24,
+                width: directional ? 42 : 34,
+                height: directional ? 20 : 24,
                 alignment: alignment,
                 padding: const EdgeInsets.all(
                   AppKeyboardPreview.cornerLabelPadding,
@@ -960,6 +1062,10 @@ class _CornerTapTarget extends StatelessWidget {
 
 String _cornerSlotLabel(KeyboardCornerSlot slot) {
   return switch (slot) {
+    KeyboardCornerSlot.up => 'Up',
+    KeyboardCornerSlot.right => 'Right',
+    KeyboardCornerSlot.down => 'Down',
+    KeyboardCornerSlot.left => 'Left',
     KeyboardCornerSlot.topLeft => 'Top left',
     KeyboardCornerSlot.topRight => 'Top right',
     KeyboardCornerSlot.bottomLeft => 'Bottom left',
@@ -1442,13 +1548,13 @@ class KeyboardPreviewSnapshot {
             height: AppKeyboardPreview.rowHeightCompact,
             keys: [
               KeyboardPreviewKey(
-                label: corners ? 'Corners on' : 'Corners off',
+                label: corners ? 'Gestures on' : 'Gestures off',
                 special: true,
                 active: corners,
                 weight: 1.2,
                 action: KeyboardPreviewKeyAction.unsupported,
                 unsupportedReason:
-                    'Use the Corners chip above for simulation toggles',
+                    'Use the Gestures chip above for simulation toggles',
               ),
               const KeyboardPreviewKey(
                 label: '2sp on',
@@ -1465,7 +1571,7 @@ class KeyboardPreviewSnapshot {
                 unsupportedReason: 'Native punctuation spacing toggle',
               ),
               KeyboardPreviewKey(
-                label: specialCorners ? 'Special on' : 'Special off',
+                label: specialCorners ? 'Special G on' : 'Special G off',
                 special: true,
                 active: specialCorners,
                 weight: 1.2,
@@ -1899,6 +2005,10 @@ class KeyboardPreviewSnapshot {
       specialKey: specialKey,
     );
     return key.copyWith(
+      upShortcut: resolved[KeyboardCornerSlot.up],
+      rightShortcut: resolved[KeyboardCornerSlot.right],
+      downShortcut: resolved[KeyboardCornerSlot.down],
+      leftShortcut: resolved[KeyboardCornerSlot.left],
       topLeftShortcut: resolved[KeyboardCornerSlot.topLeft],
       topRightShortcut: resolved[KeyboardCornerSlot.topRight],
       bottomLeftShortcut: resolved[KeyboardCornerSlot.bottomLeft],
@@ -1962,6 +2072,10 @@ class KeyboardPreviewKey {
     this.modeTarget,
     this.panelTarget,
     this.unsupportedReason,
+    this.upShortcut,
+    this.rightShortcut,
+    this.downShortcut,
+    this.leftShortcut,
     this.topLeftShortcut,
     this.topRightShortcut,
     this.bottomLeftShortcut,
@@ -1979,12 +2093,20 @@ class KeyboardPreviewKey {
   final KeyboardPreviewMode? modeTarget;
   final KeyboardPreviewPanel? panelTarget;
   final String? unsupportedReason;
+  final AndroidKeyboardCornerShortcut? upShortcut;
+  final AndroidKeyboardCornerShortcut? rightShortcut;
+  final AndroidKeyboardCornerShortcut? downShortcut;
+  final AndroidKeyboardCornerShortcut? leftShortcut;
   final AndroidKeyboardCornerShortcut? topLeftShortcut;
   final AndroidKeyboardCornerShortcut? topRightShortcut;
   final AndroidKeyboardCornerShortcut? bottomLeftShortcut;
   final AndroidKeyboardCornerShortcut? bottomRightShortcut;
 
   KeyboardPreviewKey copyWith({
+    AndroidKeyboardCornerShortcut? upShortcut,
+    AndroidKeyboardCornerShortcut? rightShortcut,
+    AndroidKeyboardCornerShortcut? downShortcut,
+    AndroidKeyboardCornerShortcut? leftShortcut,
     AndroidKeyboardCornerShortcut? topLeftShortcut,
     AndroidKeyboardCornerShortcut? topRightShortcut,
     AndroidKeyboardCornerShortcut? bottomLeftShortcut,
@@ -2002,6 +2124,10 @@ class KeyboardPreviewKey {
       modeTarget: modeTarget,
       panelTarget: panelTarget,
       unsupportedReason: unsupportedReason,
+      upShortcut: upShortcut ?? this.upShortcut,
+      rightShortcut: rightShortcut ?? this.rightShortcut,
+      downShortcut: downShortcut ?? this.downShortcut,
+      leftShortcut: leftShortcut ?? this.leftShortcut,
       topLeftShortcut: topLeftShortcut ?? this.topLeftShortcut,
       topRightShortcut: topRightShortcut ?? this.topRightShortcut,
       bottomLeftShortcut: bottomLeftShortcut ?? this.bottomLeftShortcut,

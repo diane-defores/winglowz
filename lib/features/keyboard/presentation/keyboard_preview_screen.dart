@@ -282,8 +282,8 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
         setState(() {
           _specialCorners = !_specialCorners;
           _status = _specialCorners
-              ? 'Special key corners on.'
-              : 'Special key corners off.';
+              ? 'Special key gestures on.'
+              : 'Special key gestures off.';
         });
         break;
       case KeyboardPreviewKeyAction.toggleFrench:
@@ -349,11 +349,11 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
         expression.contains(',keyevent:') ||
         expression.contains(',action:') ||
         expression.contains(',modifier:')) {
-      _setStatus('Native-only corner action: ${shortcut.displayLabel}.');
+      _setStatus('Native-only gesture action: ${shortcut.displayLabel}.');
       return;
     }
     final text = _textFromCornerExpression(shortcut.expression);
-    _insertText(text, status: 'Corner shortcut inserted "$text".');
+    _insertText(text, status: 'Gesture shortcut inserted "$text".');
   }
 
   String _textFromCornerExpression(String expression) {
@@ -428,7 +428,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
             }),
             onCornersChanged: (value) => setState(() {
               _corners = value;
-              _status = value ? 'Corners enabled.' : 'Corners disabled.';
+              _status = value ? 'Gestures enabled.' : 'Gestures disabled.';
             }),
             onDebugChanged: (value) => setState(() {
               _debug = value;
@@ -436,7 +436,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
             }),
             onCornerPresetChanged: (value) => setState(() {
               _cornerConfig = _cornerConfig.copyWith(presetId: value);
-              _status = 'Preview corner preset: $value.';
+              _status = 'Preview gesture preset: $value.';
             }),
           ),
         ),

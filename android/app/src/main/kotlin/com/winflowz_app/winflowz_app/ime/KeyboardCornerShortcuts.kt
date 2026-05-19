@@ -4,6 +4,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 enum class KeyboardCornerSlot(val wireName: String) {
+    Up("up"),
+    Right("right"),
+    Down("down"),
+    Left("left"),
     TopLeft("topLeft"),
     TopRight("topRight"),
     BottomLeft("bottomLeft"),
@@ -17,6 +21,10 @@ enum class KeyboardCornerSlot(val wireName: String) {
 
         fun fromSelection(selection: GestureSelection): KeyboardCornerSlot? {
             return when (selection) {
+                GestureSelection.Up -> Up
+                GestureSelection.Right -> Right
+                GestureSelection.Down -> Down
+                GestureSelection.Left -> Left
                 GestureSelection.TopLeft -> TopLeft
                 GestureSelection.TopRight -> TopRight
                 GestureSelection.BottomLeft -> BottomLeft
@@ -26,8 +34,13 @@ enum class KeyboardCornerSlot(val wireName: String) {
                 -> null
             }
         }
+
+        val directionalSlots: List<KeyboardCornerSlot> = listOf(Up, Right, Down, Left)
+        val cornerSlots: List<KeyboardCornerSlot> = listOf(TopLeft, TopRight, BottomLeft, BottomRight)
     }
 }
+
+typealias KeyboardGestureSlot = KeyboardCornerSlot
 
 data class KeyboardCornerShortcut(
     val keyId: String,
@@ -36,6 +49,7 @@ data class KeyboardCornerShortcut(
     val label: String? = null,
     val sensitive: Boolean = false,
     val disabled: Boolean = false,
+    val layoutProfiles: Set<KeyboardLayoutProfile>? = null,
 ) {
     fun parsedValue(): KeyboardKeyValue {
         return KeyboardKeyValueParser.parse(expression)
@@ -101,27 +115,47 @@ data class KeyboardCornerShortcut(
 }
 
 data class KeyboardCornerAssignment(
-    val slot: KeyboardCornerSlot,
+    val slot: KeyboardGestureSlot,
     val value: KeyboardKeyValue,
     val label: String,
     val sensitive: Boolean = false,
 )
 
 data class KeyboardCornerAssignments(
+    val up: KeyboardCornerAssignment? = null,
+    val right: KeyboardCornerAssignment? = null,
+    val down: KeyboardCornerAssignment? = null,
+    val left: KeyboardCornerAssignment? = null,
     val topLeft: KeyboardCornerAssignment? = null,
     val topRight: KeyboardCornerAssignment? = null,
     val bottomLeft: KeyboardCornerAssignment? = null,
     val bottomRight: KeyboardCornerAssignment? = null,
 ) {
-    fun isEmpty(): Boolean = topLeft == null && topRight == null && bottomLeft == null && bottomRight == null
+    fun isEmpty(): Boolean =
+        up == null &&
+            right == null &&
+            down == null &&
+            left == null &&
+            topLeft == null &&
+            topRight == null &&
+            bottomLeft == null &&
+            bottomRight == null
 
     fun forSelection(selection: GestureSelection): KeyboardCornerAssignment? {
-        return when (KeyboardCornerSlot.fromSelection(selection)) {
+        val slot = KeyboardCornerSlot.fromSelection(selection) ?: return null
+        return forSlot(slot)
+    }
+
+    fun forSlot(slot: KeyboardGestureSlot): KeyboardCornerAssignment? {
+        return when (slot) {
+            KeyboardCornerSlot.Up -> up
+            KeyboardCornerSlot.Right -> right
+            KeyboardCornerSlot.Down -> down
+            KeyboardCornerSlot.Left -> left
             KeyboardCornerSlot.TopLeft -> topLeft
             KeyboardCornerSlot.TopRight -> topRight
             KeyboardCornerSlot.BottomLeft -> bottomLeft
             KeyboardCornerSlot.BottomRight -> bottomRight
-            null -> null
         }
     }
 
@@ -129,12 +163,20 @@ data class KeyboardCornerAssignments(
         val Empty = KeyboardCornerAssignments()
 
         fun from(assignments: List<KeyboardCornerAssignment>): KeyboardCornerAssignments {
+            var up: KeyboardCornerAssignment? = null
+            var right: KeyboardCornerAssignment? = null
+            var down: KeyboardCornerAssignment? = null
+            var left: KeyboardCornerAssignment? = null
             var topLeft: KeyboardCornerAssignment? = null
             var topRight: KeyboardCornerAssignment? = null
             var bottomLeft: KeyboardCornerAssignment? = null
             var bottomRight: KeyboardCornerAssignment? = null
             assignments.forEach { assignment ->
                 when (assignment.slot) {
+                    KeyboardCornerSlot.Up -> up = assignment
+                    KeyboardCornerSlot.Right -> right = assignment
+                    KeyboardCornerSlot.Down -> down = assignment
+                    KeyboardCornerSlot.Left -> left = assignment
                     KeyboardCornerSlot.TopLeft -> topLeft = assignment
                     KeyboardCornerSlot.TopRight -> topRight = assignment
                     KeyboardCornerSlot.BottomLeft -> bottomLeft = assignment
@@ -142,6 +184,10 @@ data class KeyboardCornerAssignments(
                 }
             }
             return KeyboardCornerAssignments(
+                up = up,
+                right = right,
+                down = down,
+                left = left,
                 topLeft = topLeft,
                 topRight = topRight,
                 bottomLeft = bottomLeft,
@@ -265,7 +311,7 @@ object KeyboardCornerPresets {
             KeyboardCornerPreset(PUNCTUATION, "Punctuation + navigation", punctuationShortcuts()),
             KeyboardCornerPreset(FRENCH_PUNCTUATION, "French accents + punctuation", frenchAccentShortcuts() + punctuationShortcuts()),
             KeyboardCornerPreset(DEVELOPER_SYMBOLS, "Developer symbols", developerShortcuts()),
-            KeyboardCornerPreset(NONE, "No corners", emptyList()),
+            KeyboardCornerPreset(NONE, "No gestures", emptyList()),
         )
 
     fun preset(id: String): KeyboardCornerPreset {
@@ -303,6 +349,48 @@ object KeyboardCornerPresets {
 
     private fun punctuationShortcuts(): List<KeyboardCornerShortcut> {
         return listOf(
+            shortcut("letter-r", KeyboardCornerSlot.Up, "1"),
+            shortcut("letter-t", KeyboardCornerSlot.Up, "2"),
+            shortcut("letter-y", KeyboardCornerSlot.Up, "3"),
+            shortcut("letter-f", KeyboardCornerSlot.Up, "4"),
+            shortcut("letter-g", KeyboardCornerSlot.Up, "5"),
+            shortcut("letter-h", KeyboardCornerSlot.Up, "6"),
+            shortcut("letter-x", KeyboardCornerSlot.Up, "7"),
+            shortcut("letter-c", KeyboardCornerSlot.Up, "8"),
+            shortcut("letter-v", KeyboardCornerSlot.Up, "9"),
+            shortcut("letter-b", KeyboardCornerSlot.Up, "0"),
+            shortcut(
+                "letter-w",
+                KeyboardCornerSlot.Up,
+                "action:NavigateLineUp",
+                label = "↑",
+                layoutProfiles = setOf(KeyboardLayoutProfile.QWERTY),
+            ),
+            shortcut(
+                "letter-w",
+                KeyboardCornerSlot.Down,
+                "action:NavigateLineDown",
+                label = "↓",
+                layoutProfiles = setOf(KeyboardLayoutProfile.QWERTY),
+            ),
+            shortcut(
+                "letter-z",
+                KeyboardCornerSlot.Up,
+                "action:NavigateLineUp",
+                label = "↑",
+                layoutProfiles = setOf(KeyboardLayoutProfile.AZERTY),
+            ),
+            shortcut(
+                "letter-z",
+                KeyboardCornerSlot.Down,
+                "action:NavigateLineDown",
+                label = "↓",
+                layoutProfiles = setOf(KeyboardLayoutProfile.AZERTY),
+            ),
+            shortcut("letter-s", KeyboardCornerSlot.Left, "action:NavigateCharLeft", label = "←"),
+            shortcut("letter-s", KeyboardCornerSlot.Right, "action:NavigateCharRight", label = "→"),
+            shortcut("letter-n", KeyboardCornerSlot.TopLeft, "-"),
+            shortcut("letter-n", KeyboardCornerSlot.TopRight, "_"),
             shortcut("letter-j", KeyboardCornerSlot.TopLeft, ","),
             shortcut("letter-j", KeyboardCornerSlot.TopRight, "."),
             shortcut("letter-j", KeyboardCornerSlot.BottomLeft, "?"),
@@ -315,10 +403,6 @@ object KeyboardCornerPresets {
             shortcut("letter-l", KeyboardCornerSlot.TopRight, ";"),
             shortcut("letter-l", KeyboardCornerSlot.BottomLeft, "\$"),
             shortcut("letter-l", KeyboardCornerSlot.BottomRight, "€"),
-            shortcut("letter-h", KeyboardCornerSlot.TopLeft, "action:NavigateLineUp", label = "↑"),
-            shortcut("letter-h", KeyboardCornerSlot.TopRight, "action:NavigateCharRight", label = "→"),
-            shortcut("letter-h", KeyboardCornerSlot.BottomLeft, "action:NavigateCharLeft", label = "←"),
-            shortcut("letter-h", KeyboardCornerSlot.BottomRight, "action:NavigateLineDown", label = "↓"),
         )
     }
 
@@ -345,6 +429,7 @@ object KeyboardCornerPresets {
         expression: String,
         label: String? = null,
         sensitive: Boolean = false,
+        layoutProfiles: Set<KeyboardLayoutProfile>? = null,
     ): KeyboardCornerShortcut {
         return KeyboardCornerShortcut(
             keyId = keyId,
@@ -352,6 +437,7 @@ object KeyboardCornerPresets {
             expression = expression,
             label = label,
             sensitive = sensitive,
+            layoutProfiles = layoutProfiles,
         )
     }
 }
@@ -376,6 +462,7 @@ object KeyboardCornerShortcutResolver {
         cornerModeEnabled: Boolean,
         specialKeyCornersEnabled: Boolean,
         fieldPolicy: KeyboardFieldPolicy,
+        layoutProfile: KeyboardLayoutProfile,
     ): KeyboardCornerAssignments {
         if (!cornerModeEnabled || !allowsCornerGesture(key, specialKeyCornersEnabled)) {
             return KeyboardCornerAssignments.Empty
@@ -383,7 +470,7 @@ object KeyboardCornerShortcutResolver {
 
         val bySlot = linkedMapOf<KeyboardCornerSlot, KeyboardCornerShortcut>()
         KeyboardCornerPresets.preset(config.presetId).shortcuts
-            .filter { it.keyId == key.id }
+            .filter { it.keyId == key.id && it.matchesLayout(layoutProfile) }
             .forEach { bySlot[it.slot] = it }
         config.overrides
             .filter { it.keyId == key.id }
@@ -423,6 +510,10 @@ object KeyboardCornerShortcutResolver {
         specialKeyCornersEnabled: Boolean,
     ): Boolean {
         return (key.action == KeyboardKeyAction.Text && key.id != "space") || specialKeyCornersEnabled
+    }
+
+    private fun KeyboardCornerShortcut.matchesLayout(layoutProfile: KeyboardLayoutProfile): Boolean {
+        return layoutProfiles?.contains(layoutProfile) ?: true
     }
 
     private fun isAllowedForPolicy(

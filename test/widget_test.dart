@@ -265,7 +265,7 @@ void main() {
     expect(privateResolved[KeyboardCornerSlot.topLeft], isNull);
   });
 
-  test('smart french default corner preset favors french punctuation', () {
+  test('dart corner presets do not resolve native defaults', () {
     final config = AndroidKeyboardCornerConfig.defaults();
     final aKey = KeyboardCornerPresetCatalog.resolvedForKey(
       config: config,
@@ -274,40 +274,39 @@ void main() {
       specialKeyCornersEnabled: false,
       privateMode: false,
     );
-    final hKey = KeyboardCornerPresetCatalog.resolvedForKey(
+    final rKey = KeyboardCornerPresetCatalog.resolvedForKey(
       config: config,
-      keyId: 'letter-h',
+      keyId: 'letter-r',
       cornersEnabled: true,
       specialKeyCornersEnabled: false,
       privateMode: false,
     );
-    final lKey = KeyboardCornerPresetCatalog.resolvedForKey(
-      config: config,
-      keyId: 'letter-l',
-      cornersEnabled: true,
-      specialKeyCornersEnabled: false,
-      privateMode: false,
+    expect(config.presetId, KeyboardCornerPresetCatalog.frenchAccents);
+    expect(aKey, isEmpty);
+    expect(rKey, isEmpty);
+  });
+
+  test('explicit corner override still resolves without preset defaults', () {
+    const shortcut = AndroidKeyboardCornerShortcut(
+      keyId: 'letter-w',
+      slot: KeyboardCornerSlot.up,
+      expression: 'action:NavigateLineUp',
+      label: '↑',
     );
-    final sKey = KeyboardCornerPresetCatalog.resolvedForKey(
+    final config = AndroidKeyboardCornerConfig.defaults().copyWith(
+      overrides: const [shortcut],
+    );
+
+    final resolved = KeyboardCornerPresetCatalog.resolvedForKey(
       config: config,
-      keyId: 'letter-s',
+      keyId: 'letter-w',
       cornersEnabled: true,
       specialKeyCornersEnabled: false,
       privateMode: false,
     );
 
-    expect(aKey[KeyboardCornerSlot.topLeft]?.displayLabel, 'à');
-    expect(aKey[KeyboardCornerSlot.bottomLeft], isNull);
-    expect(lKey[KeyboardCornerSlot.topLeft]?.displayLabel, ':');
-    expect(lKey[KeyboardCornerSlot.topRight]?.displayLabel, ';');
-    expect(lKey[KeyboardCornerSlot.bottomLeft]?.displayLabel, r'$');
-    expect(lKey[KeyboardCornerSlot.bottomRight]?.displayLabel, '€');
-    expect(hKey[KeyboardCornerSlot.topLeft]?.displayLabel, '↑');
-    expect(
-      hKey[KeyboardCornerSlot.bottomRight]?.expression,
-      'action:NavigateLineDown',
-    );
-    expect(sKey, isEmpty);
+    expect(resolved, hasLength(1));
+    expect(resolved[KeyboardCornerSlot.up], shortcut);
   });
 
   test('android keyboard clipboard event parses native bridge maps', () {
@@ -820,7 +819,7 @@ void main() {
     },
   );
 
-  testWidgets('keyboard preview resolves configurable corner presets', (
+  testWidgets('keyboard preview does not simulate native corner presets', (
     tester,
   ) async {
     _useLargeViewport(tester);
@@ -831,12 +830,12 @@ void main() {
     await tester.pumpWidget(_keyboardPreviewTestWidget());
     await tester.pumpAndSettle();
 
-    expect(find.text('à'), findsOneWidget);
+    expect(find.text('à'), findsNothing);
 
     await tester.longPress(find.text('a').first);
     await tester.pumpAndSettle();
-    expect(_simulatedBufferText(tester), 'à|');
-    expect(_simulatedStatusText(tester), contains('Corner shortcut'));
+    expect(_simulatedBufferText(tester), 'a|');
+    expect(_simulatedStatusText(tester), contains('Inserted'));
 
     await _selectDropdownOption(
       tester,
@@ -844,7 +843,7 @@ void main() {
       'Punctuation + navigation',
     );
 
-    expect(find.text('?'), findsOneWidget);
+    expect(find.text('?'), findsNothing);
     expect(find.text('à'), findsNothing);
   });
 
@@ -947,8 +946,8 @@ void main() {
     expect(find.text('Suggest on'), findsOneWidget);
     expect(find.text('FR on'), findsOneWidget);
     expect(find.text('EN on'), findsOneWidget);
-    expect(find.text('Special off'), findsOneWidget);
-    expect(find.text('Corners on'), findsOneWidget);
+    expect(find.text('Special G off'), findsOneWidget);
+    expect(find.text('Gestures on'), findsOneWidget);
     expect(find.text('2sp on'), findsOneWidget);
     expect(find.text('Punc on'), findsOneWidget);
     expect(find.text('Debug off'), findsOneWidget);

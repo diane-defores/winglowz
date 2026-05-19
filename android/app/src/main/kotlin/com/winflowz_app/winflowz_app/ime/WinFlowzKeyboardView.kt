@@ -2219,18 +2219,37 @@ class WinFlowzKeyboardView(
     ) {
         secondaryTextPaint.textSize = sp(9f)
         secondaryTextPaint.color = resolvedCornerTextColor
+        val previousAlign = secondaryTextPaint.textAlign
+        secondaryTextPaint.textAlign = Paint.Align.CENTER
+        assignments.up?.let {
+            canvas.drawText(it.label, rect.centerX(), rect.top + dp(11f), secondaryTextPaint)
+        }
+        assignments.down?.let {
+            canvas.drawText(it.label, rect.centerX(), rect.bottom - dp(7f), secondaryTextPaint)
+        }
+        secondaryTextPaint.textAlign = Paint.Align.LEFT
+        assignments.left?.let {
+            canvas.drawText(it.label, rect.left + dp(8f), rect.centerY() + dp(3f), secondaryTextPaint)
+        }
+        secondaryTextPaint.textAlign = Paint.Align.RIGHT
+        assignments.right?.let {
+            canvas.drawText(it.label, rect.right - dp(8f), rect.centerY() + dp(3f), secondaryTextPaint)
+        }
+        secondaryTextPaint.textAlign = Paint.Align.LEFT
         assignments.topLeft?.let {
             canvas.drawText(it.label, rect.left + dp(10f), rect.top + dp(12f), secondaryTextPaint)
-        }
-        assignments.topRight?.let {
-            canvas.drawText(it.label, rect.right - dp(10f), rect.top + dp(12f), secondaryTextPaint)
         }
         assignments.bottomLeft?.let {
             canvas.drawText(it.label, rect.left + dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
         }
+        secondaryTextPaint.textAlign = Paint.Align.RIGHT
+        assignments.topRight?.let {
+            canvas.drawText(it.label, rect.right - dp(10f), rect.top + dp(12f), secondaryTextPaint)
+        }
         assignments.bottomRight?.let {
             canvas.drawText(it.label, rect.right - dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
         }
+        secondaryTextPaint.textAlign = previousAlign
     }
 
     private fun effectiveGestureSelection(
@@ -2296,7 +2315,7 @@ class WinFlowzKeyboardView(
         if (selection != GestureSelection.PrimaryTap) {
             val cornerValue = keyValueForSelection(key, selection)
             if (cornerValue == null || !dispatchKeyValue(cornerValue, selection, clearModifiersAfter = true)) {
-                setStatus("Corner shortcut unavailable")
+                setStatus("Gesture shortcut unavailable")
             }
             return
         }
@@ -2523,7 +2542,7 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.ToggleCornerMode -> {
                 cornerModeEnabled = !cornerModeEnabled
                 callbacks.onCornerModeChanged(cornerModeEnabled)
-                setStatus(if (cornerModeEnabled) "Corner swipe enabled" else "Corner swipe disabled")
+                setStatus(if (cornerModeEnabled) "Swipe gestures enabled" else "Swipe gestures disabled")
             }
             KeyboardKeyAction.ToggleLayoutProfile -> {
                 layoutProfile =
@@ -2558,7 +2577,7 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.ToggleSpecialKeyCorners -> {
                 specialKeyCornersEnabled = !specialKeyCornersEnabled
                 callbacks.onSpecialKeyCornersChanged(specialKeyCornersEnabled)
-                setStatus(if (specialKeyCornersEnabled) "Special key corners on" else "Special key corners off")
+                setStatus(if (specialKeyCornersEnabled) "Special key gestures on" else "Special key gestures off")
             }
             KeyboardKeyAction.ToggleFrenchLanguage -> {
                 frenchLanguageEnabled = !frenchLanguageEnabled

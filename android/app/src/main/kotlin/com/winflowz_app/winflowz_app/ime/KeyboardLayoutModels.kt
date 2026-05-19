@@ -372,6 +372,7 @@ object KeyboardLayoutBuilder {
                                 cornerModeEnabled = request.cornerModeEnabled,
                                 specialKeyCornersEnabled = request.specialKeyCornersEnabled,
                                 fieldPolicy = request.fieldPolicy,
+                                layoutProfile = request.layoutProfile,
                             ),
                     )
                 },
@@ -939,7 +940,7 @@ object KeyboardLayoutBuilder {
                     listOf(
                         KeyboardKeySpec(
                             id = "setting-corners",
-                            label = if (request.cornerModeEnabled) "Corners on" else "Corners off",
+                            label = if (request.cornerModeEnabled) "Gestures on" else "Gestures off",
                             action = KeyboardKeyAction.ToggleCornerMode,
                             active = request.cornerModeEnabled,
                             weight = 1.2f,
@@ -958,7 +959,7 @@ object KeyboardLayoutBuilder {
                         ),
                         KeyboardKeySpec(
                             id = "setting-special-corners",
-                            label = if (request.specialKeyCornersEnabled) "Special on" else "Special off",
+                            label = if (request.specialKeyCornersEnabled) "Special G on" else "Special G off",
                             action = KeyboardKeyAction.ToggleSpecialKeyCorners,
                             active = request.specialKeyCornersEnabled,
                             weight = 1.2f,

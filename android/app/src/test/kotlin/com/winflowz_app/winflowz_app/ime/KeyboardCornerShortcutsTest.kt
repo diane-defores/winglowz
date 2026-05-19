@@ -10,7 +10,13 @@ class KeyboardCornerShortcutsTest {
     fun `smart french corners are the default preset`() {
         val aKey = keyById("letter-a")
         val eKey = keyById("letter-e")
+        val rKey = keyById("letter-r")
+        val cKey = keyById("letter-c")
         val hKey = keyById("letter-h")
+        val wKey = keyById("letter-w")
+        val sKey = keyById("letter-s")
+        val bKey = keyById("letter-b")
+        val nKey = keyById("letter-n")
         val jKey = keyById("letter-j")
         val lKey = keyById("letter-l")
 
@@ -19,17 +25,29 @@ class KeyboardCornerShortcutsTest {
         assertEquals("à", aKey.cornerAssignments.topLeft?.value?.text)
         assertNull(aKey.cornerAssignments.bottomLeft)
         assertEquals("é", eKey.cornerAssignments.topLeft?.label)
+        assertEquals("1", rKey.cornerAssignments.up?.label)
+        assertEquals("8", cKey.cornerAssignments.up?.label)
+        assertEquals("6", hKey.cornerAssignments.up?.label)
+        assertEquals("0", bKey.cornerAssignments.up?.label)
+        assertEquals("-", nKey.cornerAssignments.topLeft?.label)
+        assertEquals("_", nKey.cornerAssignments.topRight?.label)
         assertEquals("?", jKey.cornerAssignments.bottomLeft?.label)
         assertEquals("!", jKey.cornerAssignments.bottomRight?.label)
         assertEquals(":", lKey.cornerAssignments.topLeft?.label)
         assertEquals(";", lKey.cornerAssignments.topRight?.label)
         assertEquals("\$", lKey.cornerAssignments.bottomLeft?.label)
         assertEquals("€", lKey.cornerAssignments.bottomRight?.label)
-        assertEquals("↑", hKey.cornerAssignments.topLeft?.label)
-        assertEquals("→", hKey.cornerAssignments.topRight?.label)
-        assertEquals("←", hKey.cornerAssignments.bottomLeft?.label)
-        assertEquals("↓", hKey.cornerAssignments.bottomRight?.label)
-        assertEquals(KeyboardKeyAction.NavigateLineUp, hKey.cornerAssignments.topLeft?.value?.action)
+        assertNull(hKey.cornerAssignments.topLeft)
+        assertNull(hKey.cornerAssignments.topRight)
+        assertNull(hKey.cornerAssignments.bottomLeft)
+        assertNull(hKey.cornerAssignments.bottomRight)
+        assertEquals("↑", wKey.cornerAssignments.up?.label)
+        assertEquals("↓", wKey.cornerAssignments.down?.label)
+        assertEquals("←", sKey.cornerAssignments.left?.label)
+        assertEquals("→", sKey.cornerAssignments.right?.label)
+        assertEquals(KeyboardKeyAction.NavigateLineUp, wKey.cornerAssignments.up?.value?.action)
+        assertEquals(KeyboardKeyAction.NavigateCharLeft, sKey.cornerAssignments.left?.value?.action)
+        assertEquals(KeyboardKeyAction.NavigateCharRight, sKey.cornerAssignments.right?.value?.action)
     }
 
     @Test
@@ -56,10 +74,13 @@ class KeyboardCornerShortcutsTest {
     @Test
     fun `smart french corners also resolve on azerty layout`() {
         val aKey = keyById("letter-a", layoutProfile = KeyboardLayoutProfile.AZERTY)
-        val hKey = keyById("letter-h", layoutProfile = KeyboardLayoutProfile.AZERTY)
+        val zKey = keyById("letter-z", layoutProfile = KeyboardLayoutProfile.AZERTY)
+        val wKey = keyById("letter-w", layoutProfile = KeyboardLayoutProfile.AZERTY)
 
         assertEquals("à", aKey.cornerAssignments.topLeft?.label)
-        assertEquals("↓", hKey.cornerAssignments.bottomRight?.label)
+        assertNull(wKey.cornerAssignments.down)
+        assertEquals("↑", zKey.cornerAssignments.up?.label)
+        assertEquals("↓", zKey.cornerAssignments.down?.label)
     }
 
     @Test
@@ -112,6 +133,29 @@ class KeyboardCornerShortcutsTest {
 
         assertEquals(KeyboardCornerPresets.FRENCH_ACCENTS, config.presetId)
         assertTrue(config.overrides.isEmpty())
+    }
+
+    @Test
+    fun `new directional slots parse from json map`() {
+        val config =
+            KeyboardCornerConfig.fromMap(
+                mapOf(
+                    "presetId" to KeyboardCornerPresets.NONE,
+                    "overrides" to
+                        listOf(
+                            mapOf(
+                                "keyId" to "letter-h",
+                                "slot" to "up",
+                                "expression" to "action:NavigateLineUp",
+                                "label" to "↑",
+                            ),
+                        ),
+                ),
+            )
+
+        val resolved = keyById("letter-h", config = config)
+        assertEquals("↑", resolved.cornerAssignments.up?.label)
+        assertEquals(KeyboardKeyAction.NavigateLineUp, resolved.cornerAssignments.up?.value?.action)
     }
 
     private fun keyById(

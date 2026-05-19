@@ -111,7 +111,7 @@ void main() {
       )[KeyboardCornerSlot.topLeft],
       isNull,
     );
-    expect(resetKey.draftConfig.overrides, hasLength(4));
+    expect(resetKey.draftConfig.overrides, hasLength(8));
     expect(
       resetKey.draftConfig.overrides.every((item) => item.disabled),
       isTrue,
@@ -157,7 +157,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('corner-preview-key-letter-e')));
       await tester.pumpAndSettle();
-      expect(find.textContaining('E corners'), findsOneWidget);
+      expect(find.textContaining('E gestures'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('corner-action-é')));
       await tester.pumpAndSettle();
@@ -178,7 +178,7 @@ void main() {
     });
   });
 
-  testWidgets('visual editor reset corner hides inherited preset shortcut', (
+  testWidgets('visual editor reset corner hides staged override shortcut', (
     tester,
   ) async {
     await _runAsAndroid(tester, () async {
@@ -189,6 +189,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('corner-preview-key-letter-e')));
       await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('corner-action-é')));
+      await tester.pumpAndSettle();
 
       final topLeftE = find.byKey(const Key('corner-preview-slot-topLeft-E'));
       expect(
@@ -196,7 +198,7 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.widgetWithText(OutlinedButton, 'Reset corner'));
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Reset slot'));
       await tester.pumpAndSettle();
 
       expect(
@@ -233,7 +235,9 @@ void main() {
     });
   });
 
-  testWidgets('corner preview exposes semantic corner targets', (tester) async {
+  testWidgets('corner preview exposes semantic gesture targets', (
+    tester,
+  ) async {
     final semantics = tester.ensureSemantics();
     try {
       await _runAsAndroid(tester, () async {
@@ -243,10 +247,14 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(_semanticWidget('Keyboard key Q'), findsOneWidget);
-        expect(_semanticWidget('Top left corner on Q'), findsOneWidget);
-        expect(_semanticWidget('Top right corner on Q'), findsOneWidget);
-        expect(_semanticWidget('Bottom left corner on Q'), findsOneWidget);
-        expect(_semanticWidget('Bottom right corner on Q'), findsOneWidget);
+        expect(_semanticWidget('Up gesture on Q'), findsOneWidget);
+        expect(_semanticWidget('Right gesture on Q'), findsOneWidget);
+        expect(_semanticWidget('Down gesture on Q'), findsOneWidget);
+        expect(_semanticWidget('Left gesture on Q'), findsOneWidget);
+        expect(_semanticWidget('Top left gesture on Q'), findsOneWidget);
+        expect(_semanticWidget('Top right gesture on Q'), findsOneWidget);
+        expect(_semanticWidget('Bottom left gesture on Q'), findsOneWidget);
+        expect(_semanticWidget('Bottom right gesture on Q'), findsOneWidget);
       });
     } finally {
       semantics.dispose();

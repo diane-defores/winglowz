@@ -22,6 +22,19 @@ class KeyboardCornerShortcutsScreen extends ConsumerStatefulWidget {
 
 class _KeyboardCornerShortcutsScreenState
     extends ConsumerState<KeyboardCornerShortcutsScreen> {
+  static const _directionSlots = [
+    KeyboardCornerSlot.up,
+    KeyboardCornerSlot.right,
+    KeyboardCornerSlot.down,
+    KeyboardCornerSlot.left,
+  ];
+  static const _cornerSlots = [
+    KeyboardCornerSlot.topLeft,
+    KeyboardCornerSlot.topRight,
+    KeyboardCornerSlot.bottomLeft,
+    KeyboardCornerSlot.bottomRight,
+  ];
+
   final _searchController = TextEditingController();
   final _advancedExpressionController = TextEditingController();
   final _advancedLabelController = TextEditingController();
@@ -75,7 +88,7 @@ class _KeyboardCornerShortcutsScreenState
       }
       setState(() {
         _message =
-            'Unable to load native corner shortcuts (${error.code}): ${error.message}';
+            'Unable to load native gesture shortcuts (${error.code}): ${error.message}';
       });
     } catch (error) {
       if (!mounted) {
@@ -184,7 +197,7 @@ class _KeyboardCornerShortcutsScreenState
           selectedKeyId: _draft.selectedKeyId,
           selectedSlot: _draft.selectedSlot,
         );
-        _message = 'Corner shortcuts saved to Android keyboard.';
+        _message = 'Gesture shortcuts saved to Android keyboard.';
       });
     } on AndroidKeyboardBridgeException catch (error) {
       if (!mounted) {
@@ -222,28 +235,30 @@ class _KeyboardCornerShortcutsScreenState
   void _resetCorner() {
     setState(() {
       _draft = _draft.resetCorner(_draft.selectedKeyId, _draft.selectedSlot);
-      _message = 'Selected corner cleared in draft.';
+      _message = 'Selected gesture slot cleared in draft.';
     });
     _syncAdvancedEditor();
   }
 
   Future<void> _resetKey() async {
-    final count = _selectedKeyShortcuts().length;
+    final count = _draft.draftConfig.overrides
+        .where((shortcut) => shortcut.keyId == _draft.selectedKeyId)
+        .length;
     if (count == 0) {
-      setState(() => _message = 'This key has no corners to reset.');
+      setState(() => _message = 'This key has no gesture slots to reset.');
       return;
     }
     final confirmed = await _confirm(
       title: 'Reset key?',
       body:
-          'This clears $count corner shortcut(s) from the selected key draft.',
+          'This clears $count gesture shortcut(s) from the selected key draft.',
     );
     if (!confirmed || !mounted) {
       return;
     }
     setState(() {
       _draft = _draft.resetKey(_draft.selectedKeyId);
-      _message = 'Selected key corners cleared in draft.';
+      _message = 'Selected key gesture slots cleared in draft.';
     });
     _syncAdvancedEditor();
   }
@@ -252,7 +267,7 @@ class _KeyboardCornerShortcutsScreenState
     final confirmed = await _confirm(
       title: 'Reset all shortcuts?',
       body:
-          'This resets the draft to native defaults. Nothing changes in Android until Save.',
+          'This resets the draft to the selected native preset with no Flutter overrides. Nothing changes in Android until Save.',
     );
     if (!confirmed || !mounted) {
       return;
@@ -295,7 +310,7 @@ class _KeyboardCornerShortcutsScreenState
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Export corner config'),
+        title: const Text('Export gesture config'),
         content: SizedBox(width: 560, child: SelectableText(encoded)),
         actions: [
           TextButton(
@@ -312,7 +327,7 @@ class _KeyboardCornerShortcutsScreenState
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Import corner config'),
+        title: const Text('Import gesture config'),
         content: SizedBox(
           width: 560,
           child: TextField(
@@ -425,7 +440,7 @@ class _KeyboardCornerShortcutsScreenState
   void _simulateSelectedCorner() {
     final shortcut = _selectedShortcut();
     if (shortcut == null) {
-      setState(() => _message = 'No shortcut on this corner.');
+      setState(() => _message = 'No shortcut on this gesture slot.');
       return;
     }
     if (_nativeOnly(shortcut.expression)) {
@@ -478,7 +493,7 @@ class _KeyboardCornerShortcutsScreenState
         }
         final discard = await _confirm(
           title: 'Discard draft?',
-          body: 'You have unsaved corner shortcut changes.',
+          body: 'You have unsaved gesture shortcut changes.',
         );
         if (discard && context.mounted) {
           Navigator.of(context).pop();
@@ -486,7 +501,7 @@ class _KeyboardCornerShortcutsScreenState
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Corner shortcuts'),
+          title: const Text('Gesture shortcuts'),
           actions: [
             TextButton.icon(
               onPressed: _saving || !_draft.dirty ? null : _discardDraft,
@@ -559,7 +574,7 @@ class _KeyboardCornerShortcutsScreenState
                                 setState(() {
                                   _privateMode = value;
                                   _message = value
-                                      ? 'Private preview: sensitive corners are shown as blocked.'
+                                      ? 'Private preview: sensitive gestures are shown as blocked.'
                                       : 'Private preview off.';
                                 });
                               },
@@ -598,15 +613,35 @@ class _KeyboardCornerShortcutsScreenState
                   ),
                   AppGaps.x3,
                   _Section(
-                    title: '${selectedKey.label} corners',
+                    title: '${selectedKey.label} gestures',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Text('Directions'),
+                        AppGaps.x1,
                         Wrap(
                           spacing: AppSpacing.x2,
                           runSpacing: AppSpacing.x2,
                           children: [
-                            for (final slot in KeyboardCornerSlot.values)
+                            for (final slot in _directionSlots)
+                              ChoiceChip(
+                                key: Key('corner-slot-${slot.name}'),
+                                selected: slot == _draft.selectedSlot,
+                                onSelected: (_) => _selectSlot(slot),
+                                label: Text(
+                                  '${_slotLabel(slot)}: ${_shortcutLabel(slot)}',
+                                ),
+                              ),
+                          ],
+                        ),
+                        AppGaps.x2,
+                        const Text('Corners'),
+                        AppGaps.x1,
+                        Wrap(
+                          spacing: AppSpacing.x2,
+                          runSpacing: AppSpacing.x2,
+                          children: [
+                            for (final slot in _cornerSlots)
                               ChoiceChip(
                                 key: Key('corner-slot-${slot.name}'),
                                 selected: slot == _draft.selectedSlot,
@@ -631,7 +666,7 @@ class _KeyboardCornerShortcutsScreenState
                             OutlinedButton.icon(
                               onPressed: _resetCorner,
                               icon: const Icon(Icons.clear_outlined),
-                              label: const Text('Reset corner'),
+                              label: const Text('Reset slot'),
                             ),
                             OutlinedButton.icon(
                               onPressed: _resetKey,
@@ -669,7 +704,7 @@ class _KeyboardCornerShortcutsScreenState
                           decoration: const InputDecoration(
                             prefixIcon: Icon(Icons.search),
                             labelText:
-                                'Search accents, punctuation, actions or snippets',
+                                'Search accents, punctuation, gestures or snippets',
                           ),
                         ),
                         AppGaps.x3,
@@ -712,7 +747,7 @@ class _KeyboardCornerShortcutsScreenState
                             TextField(
                               controller: _advancedLabelController,
                               decoration: const InputDecoration(
-                                labelText: 'Short corner label',
+                                labelText: 'Short gesture label',
                               ),
                             ),
                             AppGaps.x2,
@@ -782,6 +817,10 @@ class _KeyboardCornerShortcutsScreenState
 
   String _slotLabel(KeyboardCornerSlot slot) {
     return switch (slot) {
+      KeyboardCornerSlot.up => 'Up',
+      KeyboardCornerSlot.right => 'Right',
+      KeyboardCornerSlot.down => 'Down',
+      KeyboardCornerSlot.left => 'Left',
       KeyboardCornerSlot.topLeft => 'Top left',
       KeyboardCornerSlot.topRight => 'Top right',
       KeyboardCornerSlot.bottomLeft => 'Bottom left',
@@ -930,7 +969,7 @@ class _WarningLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final warnings = <String>[];
     if (shortcut == null) {
-      warnings.add('Default tap: no corner action.');
+      warnings.add('Default tap: no gesture action.');
     } else {
       final expression = shortcut!.expression.toLowerCase();
       if (shortcut!.sensitive && privateMode) {
@@ -942,14 +981,14 @@ class _WarningLine extends StatelessWidget {
         warnings.add('Native-only action.');
       }
       if (specialKey) {
-        warnings.add('Special-key corners require the Android setting.');
+        warnings.add('Special-key gestures require the Android setting.');
       }
     }
     return AppBannerCard(
       icon: warnings.isEmpty ? Icons.check_circle_outline : Icons.info_outline,
-      title: warnings.isEmpty ? 'Corner status' : 'Corner warnings',
+      title: warnings.isEmpty ? 'Gesture status' : 'Gesture warnings',
       message: warnings.isEmpty
-          ? 'This corner inherits the active preset without extra warnings.'
+          ? 'Explicit override active without extra warnings.'
           : warnings.join(' '),
       accentColor: warnings.isEmpty
           ? AppColors.success

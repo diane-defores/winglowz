@@ -378,7 +378,7 @@ class _KeyboardSettingsSection extends StatelessWidget {
               'enabled=${status?.enabled ?? false} | '
               'active=${status?.active ?? false} | '
               'layout=${status?.layoutProfile.name ?? 'qwerty'} | '
-              'corners=${status?.cornerModeEnabled ?? false} | '
+              'gestures=${status?.cornerModeEnabled ?? false} | '
               'languages=$_enabledLanguages | '
               'privacy=${status?.privacyMode.name ?? 'auto'}',
             ),
@@ -573,16 +573,16 @@ class _KeyboardSettingsSection extends StatelessWidget {
             onChanged: busy
                 ? null
                 : (value) => onPreferenceChanged(cornerModeEnabled: value),
-            title: const Text('Swipe-corner mode'),
+            title: const Text('Swipe gestures'),
             subtitle: const Text(
-              'When enabled, key swipes toward corners insert secondary characters.',
+              'When enabled, key swipes can trigger directional and corner shortcuts.',
             ),
           ),
           ListTile(
             leading: const Icon(Icons.open_in_full_outlined),
-            title: const Text('Corner shortcuts'),
+            title: const Text('Gesture shortcuts'),
             subtitle: Text(
-              'Preset=${status?.cornerPresetId ?? KeyboardCornerPresetCatalog.frenchAccents}. Configure per-key corner actions.',
+              'Preset=${status?.cornerPresetId ?? KeyboardCornerPresetCatalog.frenchAccents}. Configure per-key gesture actions.',
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: busy ? null : onOpenCornerShortcuts,
@@ -722,9 +722,9 @@ class _KeyboardSettingsSection extends StatelessWidget {
                 ? null
                 : (value) =>
                       onPreferenceChanged(specialKeyCornersEnabled: value),
-            title: const Text('Special-key corner gestures'),
+            title: const Text('Special-key gesture shortcuts'),
             subtitle: const Text(
-              'Allows swipe-corner alternates on non-letter keys when corner mode is enabled.',
+              'Allows swipe gesture shortcuts on non-letter keys when swipe gestures are enabled.',
             ),
           ),
           SwitchListTile(
