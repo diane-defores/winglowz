@@ -243,6 +243,8 @@ class WinFlowzKeyboardView(
     private val horizontalRowPageWidthById = mutableMapOf<String, Float>()
     private val horizontalRowPageById = mutableMapOf<String, Int>()
     private val horizontalRowAnimatorById = mutableMapOf<String, ValueAnimator>()
+    private val horizontalRowVisualProgressById = mutableMapOf<String, Float>()
+    private val horizontalRowVisualAnimatorById = mutableMapOf<String, ValueAnimator>()
     private var scrollingVerticalPanel = false
     private var lastVerticalScrollY = 0f
     private var verticalPanelScrollOffset = 0f
@@ -308,6 +310,10 @@ class WinFlowzKeyboardView(
         color = Color.argb(180, 255, 255, 255)
         style = Paint.Style.FILL
     }
+    private val horizontalEdgeAffordancePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.FILL
+    }
     private val pinnedBadgePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.rgb(255, 255, 255)
         style = Paint.Style.FILL
@@ -352,6 +358,7 @@ class WinFlowzKeyboardView(
         textAlign = Paint.Align.LEFT
         typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
     }
+    private val scrollVisualRect = RectF()
 
     private val gestureThresholds =
         GestureThresholds(
@@ -364,6 +371,8 @@ class WinFlowzKeyboardView(
     private val spaceSlideStartPx = dp(18f)
     private val spaceSlideStepPx = dp(34f)
     private val horizontalSnapDurationMs = 340L
+    private val horizontalRowVisualInDurationMs = 95L
+    private val horizontalRowVisualOutDurationMs = 180L
     private val horizontalSnapInterpolator = OvershootInterpolator(0.85f)
 
     private val longPressRunnable =
@@ -843,6 +852,7 @@ class WinFlowzKeyboardView(
         if (debugTouchOverlayEnabled) {
             drawDebugOverlay(canvas)
         }
+        pruneHorizontalRowVisualState()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -1142,6 +1152,7 @@ class WinFlowzKeyboardView(
             horizontalGestureStartOffset = currentOffset
             lastHorizontalScrollX = gestureStartX
             cancelHorizontalRowAnimation(rowId)
+            animateHorizontalRowVisualProgress(rowId, 1f, horizontalRowVisualInDurationMs, removeWhenZero = false)
         }
         if (frame.isPagedScrollableRowFrame()) {
             val pageWidth = max(dp(1f), horizontalRowPageWidthById[rowId] ?: frame?.rowVisibleWidth ?: width.toFloat())
@@ -1196,10 +1207,12 @@ class WinFlowzKeyboardView(
                     ),
                 )
             }
+            animateHorizontalRowVisualProgress(rowId, 0f, horizontalRowVisualOutDurationMs, removeWhenZero = true)
             animateHorizontalRowOffset(rowId, currentOffset, targetOffset)
             return
         }
         val targetOffset = currentOffset.coerceIn(0f, maxOffset)
+        animateHorizontalRowVisualProgress(rowId, 0f, horizontalRowVisualOutDurationMs, removeWhenZero = true)
         animateHorizontalRowOffset(rowId, currentOffset, targetOffset)
     }
 
@@ -1265,6 +1278,58 @@ class WinFlowzKeyboardView(
         animator.start()
     }
 
+    private fun animateHorizontalRowVisualProgress(
+        rowId: String,
+        toProgress: Float,
+        durationMs: Long,
+        removeWhenZero: Boolean,
+    ) {
+        val target = toProgress.coerceIn(0f, 1f)
+        val from = horizontalRowVisualProgressById[rowId] ?: 0f
+        horizontalRowVisualAnimatorById.remove(rowId)?.cancel()
+        if (abs(from - target) < 0.01f) {
+            if (removeWhenZero && target <= 0f) {
+                horizontalRowVisualProgressById.remove(rowId)
+            } else {
+                horizontalRowVisualProgressById[rowId] = target
+            }
+            postInvalidateOnAnimation()
+            return
+        }
+        horizontalRowVisualProgressById[rowId] = from
+        val animator =
+            ValueAnimator.ofFloat(from, target).apply {
+                duration = durationMs
+                addUpdateListener { animation ->
+                    horizontalRowVisualProgressById[rowId] = animation.animatedValue as Float
+                    postInvalidateOnAnimation()
+                }
+                addListener(
+                    object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            if (horizontalRowVisualAnimatorById[rowId] === animation) {
+                                horizontalRowVisualAnimatorById.remove(rowId)
+                                if (removeWhenZero && target <= 0f) {
+                                    horizontalRowVisualProgressById.remove(rowId)
+                                } else {
+                                    horizontalRowVisualProgressById[rowId] = target
+                                }
+                                postInvalidateOnAnimation()
+                            }
+                        }
+
+                        override fun onAnimationCancel(animation: Animator) {
+                            if (horizontalRowVisualAnimatorById[rowId] === animation) {
+                                horizontalRowVisualAnimatorById.remove(rowId)
+                            }
+                        }
+                    },
+                )
+            }
+        horizontalRowVisualAnimatorById[rowId] = animator
+        animator.start()
+    }
+
     private fun cancelHorizontalRowAnimation(rowId: String?) {
         if (rowId.isNullOrBlank()) {
             horizontalRowAnimatorById.values.toList().forEach { it.cancel() }
@@ -1276,12 +1341,37 @@ class WinFlowzKeyboardView(
 
     private fun clearHorizontalRowScrollState() {
         cancelHorizontalRowAnimation(null)
+        clearHorizontalRowVisualState()
         horizontalRowScrollOffsetById.clear()
         horizontalRowPageWidthById.clear()
         horizontalRowMaxOffsetById.clear()
+        scrollingHorizontalRow = false
         activeHorizontalRowId = null
         horizontalGestureStartOffset = 0f
         horizontalGestureDragDx = 0f
+    }
+
+    private fun clearHorizontalRowVisualState() {
+        horizontalRowVisualAnimatorById.values.toList().forEach { it.cancel() }
+        horizontalRowVisualAnimatorById.clear()
+        horizontalRowVisualProgressById.clear()
+    }
+
+    private fun pruneHorizontalRowVisualState() {
+        if (horizontalRowVisualProgressById.isEmpty() && horizontalRowVisualAnimatorById.isEmpty()) {
+            return
+        }
+        val visibleScrollableRows = horizontalRowMaxOffsetById.filterValues { it > 0f }.keys
+        val staleRows = (horizontalRowVisualProgressById.keys + horizontalRowVisualAnimatorById.keys)
+            .filterNot { it in visibleScrollableRows }
+        staleRows.forEach { rowId ->
+            horizontalRowVisualAnimatorById.remove(rowId)?.cancel()
+            horizontalRowVisualProgressById.remove(rowId)
+            if (activeHorizontalRowId == rowId) {
+                activeHorizontalRowId = null
+                scrollingHorizontalRow = false
+            }
+        }
     }
 
     private fun handleVerticalPanelScroll(
@@ -1519,6 +1609,11 @@ class WinFlowzKeyboardView(
                 rawRowOffset.coerceIn(0f, maxOffset)
             }
         horizontalRowScrollOffsetById[rowId] = rowOffset
+        val visualProgress = horizontalRowVisualProgress(rowId, row, width, maxOffset)
+        val keyWidthShrink = 0.10f * visualProgress
+        val keyHeightShrink = 0.18f * visualProgress
+        val radiusScale = 1f - 0.16f * visualProgress
+        val textScale = 1f - 0.10f * visualProgress
 
         val clipSave = canvas.save()
         canvas.clipRect(left, top, left + width, top + height)
@@ -1537,11 +1632,119 @@ class WinFlowzKeyboardView(
                         rowVisibleWidth = width,
                     ),
                 )
-                drawKey(canvas, key, rect)
+                val visualRect =
+                    if (visualProgress > 0f) {
+                        scrollVisualRect.set(rect)
+                        scrollVisualRect.inset(
+                            scrollVisualRect.width() * keyWidthShrink / 2f,
+                            scrollVisualRect.height() * keyHeightShrink / 2f,
+                        )
+                        scrollVisualRect
+                    } else {
+                        rect
+                    }
+                drawKey(canvas, key, visualRect, radiusScale = radiusScale, textScale = textScale)
             }
             x += keyWidth + keyGap()
         }
+        drawHorizontalRowEdgeAffordances(canvas, left, top, width, height, rowOffset, maxOffset, visualProgress)
         canvas.restoreToCount(clipSave)
+    }
+
+    private fun horizontalRowVisualProgress(
+        rowId: String,
+        row: KeyboardRowSpec,
+        width: Float,
+        maxOffset: Float,
+    ): Float {
+        val baseProgress = (horizontalRowVisualProgressById[rowId] ?: 0f).coerceIn(0f, 1f)
+        if (baseProgress <= 0f || !row.pagedHorizontalScrollable || activeHorizontalRowId != rowId || maxOffset <= 0f) {
+            return baseProgress
+        }
+        val pageWidth = max(dp(1f), horizontalRowPageWidthById[rowId] ?: width)
+        val threshold = min(pageWidth * 0.22f, dp(96f))
+        val snapHint = ((abs(horizontalGestureDragDx) - threshold) / max(dp(1f), threshold)).coerceIn(0f, 1f)
+        return baseProgress * (1f - snapHint * 0.14f)
+    }
+
+    private fun drawHorizontalRowEdgeAffordances(
+        canvas: Canvas,
+        left: Float,
+        top: Float,
+        width: Float,
+        height: Float,
+        rowOffset: Float,
+        maxOffset: Float,
+        visualProgress: Float,
+    ) {
+        if (maxOffset <= 0f) {
+            return
+        }
+        val edgeWidth = min(width * 0.16f, dp(34f))
+        val activeProgress = visualProgress.coerceIn(0f, 1f)
+        val fadeAlphaBase = (24f + 96f * activeProgress).roundToInt().coerceIn(0, 120)
+        val handleAlphaBase = (64f + 72f * activeProgress).roundToInt().coerceIn(0, 136)
+        val leftHidden = (rowOffset / dp(36f)).coerceIn(0f, 1f)
+        val rightHidden = ((maxOffset - rowOffset) / dp(36f)).coerceIn(0f, 1f)
+        val leftAlpha = (fadeAlphaBase * leftHidden).roundToInt()
+        val rightAlpha = (fadeAlphaBase * rightHidden).roundToInt()
+        val leftHandleAlpha = (handleAlphaBase * leftHidden).roundToInt()
+        val rightHandleAlpha = (handleAlphaBase * rightHidden).roundToInt()
+        val edgeColor = if (colorBrightness(backgroundPaint.color) > 0.5f) Color.BLACK else Color.WHITE
+        val stripWidth = edgeWidth / 3f
+        if (leftAlpha > 0) {
+            for (index in 0 until 3) {
+                val alpha = (leftAlpha * (3 - index) / 3f).roundToInt()
+                horizontalEdgeAffordancePaint.color =
+                    Color.argb(alpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
+                canvas.drawRect(
+                    left + stripWidth * index,
+                    top,
+                    left + stripWidth * (index + 1),
+                    top + height,
+                    horizontalEdgeAffordancePaint,
+                )
+            }
+        }
+        if (leftHandleAlpha > 0) {
+            horizontalEdgeAffordancePaint.color =
+                Color.argb(leftHandleAlpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
+            val handleWidth = dp(2.5f)
+            val handleHeight = min(max(dp(1f), height - dp(10f)), max(dp(18f), height * 0.48f))
+            val handleLeft = left + dp(2.5f)
+            val handleTop = top + (height - handleHeight) / 2f
+            scrollVisualRect.set(handleLeft, handleTop, handleLeft + handleWidth, handleTop + handleHeight)
+            canvas.drawRoundRect(scrollVisualRect, handleWidth / 2f, handleWidth / 2f, horizontalEdgeAffordancePaint)
+        }
+        if (rightAlpha > 0) {
+            for (index in 0 until 3) {
+                val alpha = (rightAlpha * (index + 1) / 3f).roundToInt()
+                val stripLeft = left + width - edgeWidth + stripWidth * index
+                horizontalEdgeAffordancePaint.color =
+                    Color.argb(alpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
+                canvas.drawRect(
+                    stripLeft,
+                    top,
+                    stripLeft + stripWidth,
+                    top + height,
+                    horizontalEdgeAffordancePaint,
+                )
+            }
+        }
+        if (rightHandleAlpha > 0) {
+            horizontalEdgeAffordancePaint.color =
+                Color.argb(rightHandleAlpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
+            val handleWidth = dp(2.5f)
+            val handleHeight = min(max(dp(1f), height - dp(10f)), max(dp(18f), height * 0.48f))
+            val handleRight = left + width - dp(2.5f)
+            val handleTop = top + (height - handleHeight) / 2f
+            scrollVisualRect.set(handleRight - handleWidth, handleTop, handleRight, handleTop + handleHeight)
+            canvas.drawRoundRect(scrollVisualRect, handleWidth / 2f, handleWidth / 2f, horizontalEdgeAffordancePaint)
+        }
+    }
+
+    private fun colorBrightness(color: Int): Float {
+        return (Color.red(color) * 0.299f + Color.green(color) * 0.587f + Color.blue(color) * 0.114f) / 255f
     }
 
     private fun drawVerticalPanelScrollbar(
@@ -1632,6 +1835,8 @@ class WinFlowzKeyboardView(
         canvas: Canvas,
         key: KeyboardKeySpec,
         rect: RectF,
+        radiusScale: Float = 1f,
+        textScale: Float = 1f,
     ) {
         key.themePreviewConfig?.let { previewConfig ->
             drawThemePreviewKey(canvas, key, rect, previewConfig)
@@ -1646,16 +1851,17 @@ class WinFlowzKeyboardView(
             key.action == KeyboardKeyAction.Text || usesNeutralKeyboardSurface(key) -> keyPaint
             else -> specialKeyPaint
         }
+        val drawRadius = resolvedKeyRadius * radiusScale.coerceIn(0.75f, 1f)
         if (!fieldPolicy.privateMode && themeConfig.presetId != "system" && themeConfig.shadowBlur > 0f) {
             val shadowRect = RectF(rect).apply {
                 offset(0f, dp(themeConfig.shadowOffsetY))
                 inset(-dp(themeConfig.shadowBlur) * 0.18f, -dp(themeConfig.shadowBlur) * 0.10f)
             }
-            canvas.drawRoundRect(shadowRect, resolvedKeyRadius, resolvedKeyRadius, keyShadowPaint)
+            canvas.drawRoundRect(shadowRect, drawRadius, drawRadius, keyShadowPaint)
         }
-        canvas.drawRoundRect(rect, resolvedKeyRadius, resolvedKeyRadius, paint)
+        canvas.drawRoundRect(rect, drawRadius, drawRadius, paint)
         if (!fieldPolicy.privateMode && keyBorderPaint.strokeWidth > 0f && Color.alpha(keyBorderPaint.color) > 0) {
-            canvas.drawRoundRect(rect, resolvedKeyRadius, resolvedKeyRadius, keyBorderPaint)
+            canvas.drawRoundRect(rect, drawRadius, drawRadius, keyBorderPaint)
         }
 
         if (voiceRecordingActive && key.action == KeyboardKeyAction.Voice) {
@@ -1674,7 +1880,7 @@ class WinFlowzKeyboardView(
             } else {
                 nativeColors.disabledText
             }
-        textPaint.textSize = keyTextSize(key)
+        textPaint.textSize = keyTextSize(key) * textScale.coerceIn(0.86f, 1f)
         val baseline = rect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
         canvas.drawText(displayLabel(key), rect.centerX(), baseline, textPaint)
 
@@ -2818,6 +3024,7 @@ class WinFlowzKeyboardView(
 
     private fun refreshLayout() {
         runKeyboardSafely("refreshLayout") {
+            clearHorizontalRowVisualState()
             layoutSnapshot = buildSnapshot()
             requestLayout()
             invalidate()
@@ -2848,6 +3055,7 @@ class WinFlowzKeyboardView(
             stopRepeat()
             removeCallbacks(longPressRunnable)
             resetGesture()
+            clearHorizontalRowScrollState()
             val source =
                 when {
                     themeConfig.useImage -> "image"

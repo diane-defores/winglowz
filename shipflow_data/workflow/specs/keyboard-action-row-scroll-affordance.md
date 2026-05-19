@@ -6,8 +6,8 @@ project: "winflowz_app"
 created: "2026-05-19"
 created_at: "2026-05-19 14:46:49 UTC"
 updated: "2026-05-19"
-updated_at: "2026-05-19 14:46:49 UTC"
-status: draft
+updated_at: "2026-05-19 18:00:37 UTC"
+status: implemented-pending-android-qa
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
@@ -39,14 +39,14 @@ evidence:
   - "User request 2026-05-19: near the end of the page gesture, the row should begin growing back, then snap to normal size and either stay on the current page or move to the next/previous page on release."
   - "Local code: android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzKeyboardView.kt centralizes horizontal scroll gesture handling, snap animation, row drawing, and row scroll state."
   - "Local code: android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/actions/KeyboardActionCatalog.kt and KeyboardActionRenderer.kt decide which action rows become paged horizontal rows."
-next_step: "/sf-ready Keyboard Action Row Scroll Affordance"
+next_step: "Blacksmith Android validation and Diane physical-device QA for action-row scroll affordance"
 ---
 
 ## Title
 Keyboard Action Row Scroll Affordance
 
 ## Status
-Draft. Ready for `/sf-ready Keyboard Action Row Scroll Affordance` after review.
+Implemented locally. Flutter analyzer passed on 2026-05-19. Android IME validation still requires Blacksmith/GitHub Actions and Diane physical-device QA because local Android builds, Gradle tasks, installs and APK validation are forbidden on this VM.
 
 ## User Story
 En tant qu'utilisatrice du clavier WinFlowz sur Android, je veux que les lignes d'action scrollables indiquent clairement quand le scroll commence, où il reste du contenu et sur quelle page la ligne va se repositionner, afin de comprendre le geste sans ambiguïté visuelle.
@@ -256,14 +256,16 @@ Ajouter un état visuel de scroll row-level dans `WinFlowzKeyboardView`: une ani
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-19 14:46:49 UTC | sf-spec | GPT-5 Codex | Created spec for clearer horizontal action-row scroll affordance in the Android keyboard. | Draft spec created. | `/sf-ready Keyboard Action Row Scroll Affordance` |
+| 2026-05-19 17:40:21 UTC | sf-build | GPT-5 Codex + worker subagent | Implemented row-level scroll visual progress, key shrink, edge affordance fades, snap return and cleanup in `WinFlowzKeyboardView.kt`; ran `flutter analyze`. | Implemented locally; Flutter analyzer passed. Android validation not run locally by guardrail. | Blacksmith Android validation and Diane physical-device QA. |
+| 2026-05-19 18:00:37 UTC | sf-build | GPT-5 Codex + worker subagent | Added a resting scroll affordance so hidden left/right content is indicated before the user starts dragging. | Implemented locally; `flutter analyze` and `git diff --check` passed. | Blacksmith Android validation and Diane physical-device QA. |
 
 ## Current Chantier Flow
 
 | Step | Status | Notes |
 |------|--------|-------|
 | sf-spec | done | Draft created from Diane's requested interaction behavior and local code inspection. |
-| sf-ready | next | Validate scope, open questions and acceptance criteria before implementation. |
-| sf-start | pending | Implement after readiness gate. |
-| sf-verify | pending | Verify checks, CI and physical-device QA evidence. |
+| sf-ready | bypassed | User asked ShipFlow to proceed and required subagents; implementation stayed within the existing scoped spec. |
+| sf-start | done | Worker subagent implemented the Kotlin scroll affordance in `WinFlowzKeyboardView.kt`. |
+| sf-verify | partial | `flutter analyze` passed; Android compile/IME behavior proof remains Blacksmith and physical-device QA. |
 | sf-end | pending | Close docs/changelog/test log after validation. |
 | sf-ship | pending | Commit/push/deploy only if explicitly requested or lifecycle requires it. |
