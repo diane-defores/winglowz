@@ -1,10 +1,10 @@
 ---
 artifact: architecture_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "WinFlowz"
 created: "2026-04-26"
-updated: "2026-05-09"
+updated: "2026-05-19"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "architecture"
@@ -22,6 +22,7 @@ linked_systems:
   - "Flutter"
   - "Backend-agnostic stores"
   - "Firebase first adapter"
+  - "Clerk suite identity"
   - "Android overlay services"
 external_dependencies:
   - "flutter_riverpod"
@@ -29,7 +30,8 @@ external_dependencies:
   - "record"
   - "speech_to_text"
 invariants:
-  - "Target implementation is Flutter with backend-agnostic data contracts, not Expo/Convex/Clerk/Supabase-coupled product code."
+  - "Target implementation is Flutter with backend-agnostic data contracts, not Expo/Convex/Supabase-coupled product code or direct Clerk Flutter/native app auth before proof."
+  - "Clerk is valid as suite identity through a server-owned bridge; Firebase Auth remains the Android app adapter for now."
   - "All remote user data access is authorized by the selected adapter's auth and security rules."
   - "Android overlay stays native and exposes a stable Flutter bridge."
 depends_on:
@@ -57,7 +59,7 @@ Current codebase reference:
 
 - Expo / React Native app shell with `expo-router`.
 - Convex schema/functions for transcriptions, clipboard, snippets, dictionary.
-- Clerk dependency present but not integrated in runtime auth flow.
+- Clerk dependency present but not integrated in the legacy app runtime auth flow.
 - Android overlay implemented as native Kotlin Expo module bridge.
 - `TEMP_USER_ID`/`local-user` pattern used in legacy data flow.
 
@@ -100,6 +102,11 @@ Firebase first adapter
   -> Cloud Firestore
   -> Security Rules
   -> optional realtime listeners
+
+Suite identity bridge
+  -> Clerk owns suite/web identity
+  -> Firebase uid maps to global_user_id through server-owned bridge
+  -> product_entitlements decide access
 
 Android native
   -> overlay foreground service
@@ -155,7 +162,8 @@ Flutter integrates this through a narrow bridge interface; feature logic stays i
 
 ## Cross-cutting invariants
 
-- No target design decision may depend on Convex/Clerk/Expo or Supabase-specific coupling.
+- No Android app target design decision may depend on Convex/Expo or Supabase-specific coupling.
+- Do not use direct Clerk Flutter/native app auth as production target until a dedicated proof passes; Clerk remains the suite identity provider through the bridge.
 - API keys (OpenAI/Anthropic) remain local device secrets.
 - Remote adapters store product data, not user API keys.
 - Platform limitations are explicit in UI and docs.

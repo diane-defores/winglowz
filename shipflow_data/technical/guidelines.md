@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "WinFlowz"
 created: "2026-03-18"
-updated: "2026-05-09"
+updated: "2026-05-19"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "guidelines"
@@ -22,6 +22,7 @@ linked_systems:
   - "Flutter"
   - "Backend-agnostic stores"
   - "Firebase first adapter"
+  - "Clerk suite identity"
   - "Android native overlay"
 depends_on:
   - "shipflow_data/technical/architecture.md@0.1.0"
@@ -38,9 +39,10 @@ For implementation and documentation decisions, use:
 
 - Flutter client + backend-agnostic data/settings contracts as target baseline.
 - Firebase Auth + Firestore is the first remote adapter for the Android MVP.
+- Clerk is the suite identity provider for web/account surfaces, bridged to the app through server-owned `global_user_id` mapping and entitlements.
 
-Do not present Convex, Clerk, Expo/React Native, or Supabase-coupled product code as target implementation.
-They are legacy references for migration parity only.
+Do not present the old Convex/Clerk/Expo/React Native app stack or Supabase-coupled product code as the Android app target implementation.
+Those app-stack references are legacy for migration parity only. This does not forbid Clerk as the suite-level identity provider.
 
 ## Legacy handling during migration
 
@@ -52,7 +54,7 @@ Allowed:
 
 Not allowed:
 
-- introducing new target features on Convex/Clerk/Expo/Supabase-coupled paths,
+- introducing new Android app target features on Convex/Expo/Supabase-coupled paths or direct Clerk Flutter/native paths before a dedicated proof,
 - adding new long-term contracts that depend on `TEMP_USER_ID`.
 
 ## Data and security guidelines
@@ -63,6 +65,7 @@ Not allowed:
 4. OpenAI and Anthropic keys stay in local secure storage only.
 5. Never write API keys to remote data stores, logs, or analytics payloads.
 6. Never persist empty/whitespace transcriptions.
+7. Suite access must use server-owned entitlements; a Clerk account alone does not grant product access.
 
 ## API and schema change guidelines
 
@@ -70,6 +73,7 @@ Not allowed:
 - Keep data and security contracts explicit.
 - For realtime behavior, document scope and ordering assumptions.
 - Mark any Convex or Supabase references as legacy-only compatibility notes unless they describe the current adapter under active migration.
+- When documenting auth, distinguish "Clerk as suite identity" from "Clerk Flutter/native as direct Android app auth", which remains unproven.
 
 ## Flutter implementation guidelines
 

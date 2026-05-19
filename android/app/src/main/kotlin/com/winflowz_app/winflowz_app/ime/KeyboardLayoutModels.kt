@@ -167,6 +167,7 @@ data class KeyboardKeySpec(
     val glyph: KeyboardKeyGlyph? = null,
     val keyValue: KeyboardKeyValue? = null,
     val weight: Float = 1f,
+    val span: Int? = null,
     val enabled: Boolean = true,
     val active: Boolean = false,
     val pinned: Boolean = false,
@@ -182,6 +183,8 @@ data class KeyboardRowSpec(
     val keys: List<KeyboardKeySpec>,
     val leadingWeight: Float = 0f,
     val trailingWeight: Float = leadingWeight,
+    val leadingSpan: Int? = null,
+    val trailingSpan: Int? = null,
     val horizontalScrollable: Boolean = false,
     val pagedHorizontalScrollable: Boolean = false,
     val visiblePageKeyCount: Int? = null,
@@ -430,7 +433,7 @@ object KeyboardLayoutBuilder {
                             KeyboardKeySpec("nav-del-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter),
                             KeyboardKeySpec("nav-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp),
                             KeyboardKeySpec("nav-line-up", "↑", KeyboardKeyAction.NavigateLineUp),
-                            KeyboardKeySpec("nav-start", "Début", KeyboardKeyAction.NavigateLineStart, weight = 1.15f),
+                            KeyboardKeySpec("nav-start", "Début", KeyboardKeyAction.NavigateLineStart),
                         ),
                 ),
                 KeyboardRowSpec(
@@ -500,7 +503,7 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(listOf(
                 KeyboardKeySpec("nav-mode-select-all", "All", KeyboardKeyAction.SelectAll),
                 KeyboardKeySpec("nav-mode-copy", "Copy", KeyboardKeyAction.CopySelection),
-                KeyboardKeySpec("nav-mode-start", "Début", KeyboardKeyAction.NavigateLineStart, weight = 1.15f),
+                KeyboardKeySpec("nav-mode-start", "Début", KeyboardKeyAction.NavigateLineStart),
                 KeyboardKeySpec("nav-mode-end", "Fin", KeyboardKeyAction.NavigateLineEnd),
                 KeyboardKeySpec("nav-mode-line-up", "↑", KeyboardKeyAction.NavigateLineUp),
                 KeyboardKeySpec("nav-mode-del", "Del", KeyboardKeyAction.Backspace),
@@ -508,8 +511,8 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(listOf(
                 KeyboardKeySpec("nav-mode-cut", "Cut", KeyboardKeyAction.CutSelection),
                 KeyboardKeySpec("nav-mode-paste", "Paste", KeyboardKeyAction.PasteClipboard),
-                KeyboardKeySpec("nav-mode-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft, weight = 1.15f),
-                KeyboardKeySpec("nav-mode-word-right", "Word→", KeyboardKeyAction.NavigateWordRight, weight = 1.15f),
+                KeyboardKeySpec("nav-mode-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft),
+                KeyboardKeySpec("nav-mode-word-right", "Word→", KeyboardKeyAction.NavigateWordRight),
                 KeyboardKeySpec("nav-mode-line-down", "↓", KeyboardKeyAction.NavigateLineDown),
                 KeyboardKeySpec("nav-mode-forward-del", "Del→", KeyboardKeyAction.ForwardDelete),
             )),
@@ -519,7 +522,7 @@ object KeyboardLayoutBuilder {
                 KeyboardKeySpec("nav-mode-redo", "Redo", KeyboardKeyAction.Redo),
                 KeyboardKeySpec("nav-mode-left", "←", KeyboardKeyAction.NavigateCharLeft),
                 KeyboardKeySpec("nav-mode-right", "→", KeyboardKeyAction.NavigateCharRight),
-                textKey("Espace", " ", weight = 2f),
+                textKey("Espace", " ", span = 2, weight = 2f),
             )),
         )
     }
@@ -529,7 +532,7 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(listOf(
                 KeyboardKeySpec("nav-mode-select-all", "All", KeyboardKeyAction.SelectAll),
                 KeyboardKeySpec("nav-mode-copy", "Copy", KeyboardKeyAction.CopySelection),
-                KeyboardKeySpec("nav-mode-start", "Début", KeyboardKeyAction.NavigateLineStart, weight = 1.15f),
+                KeyboardKeySpec("nav-mode-start", "Début", KeyboardKeyAction.NavigateLineStart),
                 KeyboardKeySpec("nav-mode-end", "Fin", KeyboardKeyAction.NavigateLineEnd),
                 KeyboardKeySpec("nav-mode-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp),
                 KeyboardKeySpec("nav-mode-line-up", "↑", KeyboardKeyAction.NavigateLineUp),
@@ -537,16 +540,16 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(listOf(
                 KeyboardKeySpec("nav-mode-cut", "Cut", KeyboardKeyAction.CutSelection),
                 KeyboardKeySpec("nav-mode-paste", "Paste", KeyboardKeyAction.PasteClipboard),
-                KeyboardKeySpec("nav-mode-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft, weight = 1.15f),
-                KeyboardKeySpec("nav-mode-word-right", "Word→", KeyboardKeyAction.NavigateWordRight, weight = 1.15f),
+                KeyboardKeySpec("nav-mode-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft),
+                KeyboardKeySpec("nav-mode-word-right", "Word→", KeyboardKeyAction.NavigateWordRight),
                 KeyboardKeySpec("nav-mode-paragraph-down", "⏬", KeyboardKeyAction.NavigateParagraphDown),
                 KeyboardKeySpec("nav-mode-line-down", "↓", KeyboardKeyAction.NavigateLineDown),
             )),
             KeyboardRowSpec(listOf(
                 KeyboardKeySpec("nav-mode-undo", "Undo", KeyboardKeyAction.Undo),
                 KeyboardKeySpec("nav-mode-redo", "Redo", KeyboardKeyAction.Redo),
-                KeyboardKeySpec("nav-mode-delete-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore, weight = 1.1f),
-                KeyboardKeySpec("nav-mode-delete-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter, weight = 1.1f),
+                KeyboardKeySpec("nav-mode-delete-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore),
+                KeyboardKeySpec("nav-mode-delete-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter),
                 KeyboardKeySpec("nav-mode-left", "←", KeyboardKeyAction.NavigateCharLeft),
                 KeyboardKeySpec("nav-mode-right", "→", KeyboardKeyAction.NavigateCharRight),
             )),
@@ -1128,7 +1131,7 @@ object KeyboardLayoutBuilder {
             keys =
                 listOf(shiftKey("Maj", shifted)) +
                     chars.map { letterKey(it) } +
-                    KeyboardKeySpec("del-letter-row", "Del", KeyboardKeyAction.Backspace, weight = 1.2f),
+                    KeyboardKeySpec("del-letter-row", "Del", KeyboardKeyAction.Backspace, span = 2),
         )
     }
 
@@ -1147,35 +1150,35 @@ object KeyboardLayoutBuilder {
         return listOf(
             KeyboardRowSpec(
                 listOf(
-                    textKey("@", weight = 0.9f),
-                    textKey("+", weight = 0.9f),
-                    textKey("1", weight = 1.1f),
-                    textKey("2", weight = 1.1f),
-                    textKey("3", weight = 1.1f),
-                    textKey("-", weight = 0.9f),
-                    textKey("#", weight = 0.9f),
+                    textKey("@"),
+                    textKey("+"),
+                    textKey("1"),
+                    textKey("2"),
+                    textKey("3"),
+                    textKey("-"),
+                    textKey("#"),
                 ),
             ),
             KeyboardRowSpec(
                 listOf(
-                    textKey("?", weight = 0.9f),
-                    textKey("*", weight = 0.9f),
-                    textKey("4", weight = 1.1f),
-                    textKey("5", weight = 1.1f),
-                    textKey("6", weight = 1.1f),
-                    textKey("/", weight = 0.9f),
-                    textKey("!", weight = 0.9f),
+                    textKey("?"),
+                    textKey("*"),
+                    textKey("4"),
+                    textKey("5"),
+                    textKey("6"),
+                    textKey("/"),
+                    textKey("!"),
                 ),
             ),
             KeyboardRowSpec(
                 listOf(
-                    textKey(":", weight = 0.9f),
-                    textKey(".", weight = 0.9f),
-                    textKey("7", weight = 1.1f),
-                    textKey("8", weight = 1.1f),
-                    textKey("9", weight = 1.1f),
-                    textKey("0", weight = 0.9f),
-                    textKey(";", weight = 0.9f),
+                    textKey(":"),
+                    textKey("."),
+                    textKey("7"),
+                    textKey("8"),
+                    textKey("9"),
+                    textKey("0"),
+                    textKey(";"),
                 ),
             ),
         )
@@ -1183,9 +1186,21 @@ object KeyboardLayoutBuilder {
 
     private fun accentRows(): List<KeyboardRowSpec> {
         return listOf(
-            KeyboardRowSpec(listOf("à", "â", "ä", "ç", "é", "è", "ê", "ë").map { textKey(it) }, leadingWeight = 0.4f),
-            KeyboardRowSpec(listOf("î", "ï", "ô", "ö", "ù", "û", "ü", "ÿ").map { textKey(it) }, leadingWeight = 0.4f),
-            KeyboardRowSpec(listOf("œ", "æ", "ñ", "’", "—").map { textKey(it, weight = 1.2f) }, leadingWeight = 1.6f),
+            KeyboardRowSpec(
+                listOf("à", "â", "ä", "ç", "é", "è", "ê", "ë").map { textKey(it) },
+                leadingSpan = 1,
+                trailingSpan = 1,
+            ),
+            KeyboardRowSpec(
+                listOf("î", "ï", "ô", "ö", "ù", "û", "ü", "ÿ").map { textKey(it) },
+                leadingSpan = 1,
+                trailingSpan = 1,
+            ),
+            KeyboardRowSpec(
+                listOf("œ", "æ", "ñ", "’", "—").map { textKey(it) },
+                leadingSpan = 2,
+                trailingSpan = 3,
+            ),
         )
     }
 
@@ -1197,8 +1212,8 @@ object KeyboardLayoutBuilder {
             KeyboardRowSpec(
                 listOf(KeyboardKeySpec("esc-symbols", "Esc", KeyboardKeyAction.Escape)) +
                     page[2].map { textKey(it) } +
-                    KeyboardKeySpec("del-symbol-row", "Del", KeyboardKeyAction.Backspace, weight = 1.2f),
-                leadingWeight = 0.5f,
+                    KeyboardKeySpec("del-symbol-row", "Del", KeyboardKeyAction.Backspace, span = 2),
+                leadingSpan = 1,
             ),
         )
     }
@@ -1287,9 +1302,9 @@ object KeyboardLayoutBuilder {
                         KeyboardKeySpec("tab-letter-control", "Tab", KeyboardKeyAction.InsertTab),
                         KeyboardKeySpec("esc-letter-control", "Échap", KeyboardKeyAction.Escape),
                         textKey(leftSymbol),
-                        textKey("Espace", " ", weight = 3f),
+                        textKey("Espace", " ", weight = 3f, span = 3),
                         textKey(rightSymbol),
-                        KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.3f),
+                        KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
                     ),
             )
         }
@@ -1308,17 +1323,17 @@ object KeyboardLayoutBuilder {
                     if (mode == KeyboardLayoutMode.Symbols) {
                         listOf(
                             textKey(leftSymbol),
-                            textKey("Espace", " ", weight = 3f),
+                            textKey("Espace", " ", weight = 3f, span = 3),
                             textKey(rightSymbol),
-                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.3f),
+                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
                         )
                     } else {
                         listOf(
                             textKey(leftSymbol),
-                            textKey("Espace", " ", weight = 3f),
+                            textKey("Espace", " ", weight = 3f, span = 3),
                             textKey(rightSymbol),
-                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, weight = 1.3f),
-                            KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, weight = 1.2f),
+                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
+                            KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, span = 2),
                         )
                     },
         )
@@ -1333,7 +1348,7 @@ object KeyboardLayoutBuilder {
             label = label,
             action = KeyboardKeyAction.Shift,
             keyValue = KeyboardKeyValue.modifier(KeyboardSystemModifier.Shift, label),
-            weight = 1.2f,
+            span = 2,
             active = active,
         )
     }
@@ -1386,6 +1401,7 @@ object KeyboardLayoutBuilder {
         label: String,
         output: String = label,
         weight: Float = 1f,
+        span: Int? = null,
     ): KeyboardKeySpec {
         val value = KeyboardKeyValue.text(output, label)
         return KeyboardKeySpec(
@@ -1395,6 +1411,7 @@ object KeyboardLayoutBuilder {
             glyph = KeyboardKeyGlyph(primary = output),
             keyValue = value,
             weight = weight,
+            span = span,
         )
     }
 
@@ -1418,7 +1435,6 @@ object KeyboardLayoutBuilder {
             label = parsed.renderLabel(),
             action = KeyboardKeyAction.KeyValue,
             keyValue = parsed,
-            weight = 0.9f,
         )
     }
 

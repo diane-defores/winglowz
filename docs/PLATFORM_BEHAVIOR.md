@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-04-27"
-updated: "2026-05-14"
+updated: "2026-05-19"
 status: "reviewed"
 source_skill: "sf-spec"
 scope: "platform_behavior"
@@ -20,6 +20,7 @@ evidence:
   - "shipflow_data/workflow/specs/android-ime-winflowz_app-keyboard.md"
   - "lib/core/platform/platform_capabilities.dart"
   - "android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzInputMethodService.kt"
+  - "shipflow_data/workflow/specs/keyboard-stable-grid-touch-geometry.md"
 next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-migration.md"
 ---
 
@@ -48,6 +49,7 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 
 - WinFlowz keyboard is declared as an Android `InputMethodService` and is configurable from Settings through the `winflowz_app/keyboard` MethodChannel.
 - The keyboard provides a native Canvas layout engine with QWERTY/AZERTY profiles, explicit clipboard copy/paste actions, Android speech recognition, and media keys (previous/play-pause/next).
+- Main keyboard rows use a stable logical grid: standard keys occupy one cell, deliberate exceptions occupy whole-cell spans, and visual gaps/radius/shadows are separated from the tactile hit area so gaps do not become dead zones.
 - Tap and swipe-corner classification is local and deterministic: tap emits the primary glyph, configurable corner swipes dispatch typed `KeyboardKeyValue` actions when corner mode is enabled, and return-to-center cancels the gesture.
 - Corner shortcuts are configured per stable key id and corner slot through local Android preferences. The default `Smart French` preset combines useful French accents, common punctuation, `$`/`€`, and directional navigation corners; additional presets cover punctuation + navigation, combined French punctuation, developer symbols, and no-corner mode.
 - User corner overrides can insert text, key events, actions, modifiers, or macros through the native parser. Private fields still suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros.
@@ -56,7 +58,7 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 - A minimal Navigation panel is available for cursor/edit actions: char left/right, word left/right, line start/end, delete char, and delete word-left with fallback feedback when host context is insufficient.
 - A lightweight Emoji panel is available with local categories and local recents; recents are not updated in private/sensitive fields.
 - Basic input corrections are available as toggles: double-space-to-period and punctuation auto-spacing, with exclusions for private/email/url/phone fields.
-- Optional touch-debug overlay can show key bounds, gesture direction/threshold/action diagnostics, and never includes typed content.
+- Optional touch-debug overlay can show tactile and visual key bounds, gesture direction/threshold/action diagnostics, and never includes typed content.
 - Password, OTP, `noPersonalizedLearning`, and host-marked private fields force private mode: dictation, clipboard capture, snippets, sync intent, and learning are disabled while basic typing remains available.
 - Minimal panels are available directly in the keyboard: clipboard (copy/paste/pins), media (prev/play-pause/next), snippets (single quick insert + app handoff), and settings (corners toggle + layout toggle + app handoff).
 - FlutterWeb keyboard preview and the visual corner editor can simulate corner presets and simple text/snippet-style corner insertions for visual review. They are not proof of native Android key events, IME field policy, native persistence, or system-level dispatch.

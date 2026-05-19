@@ -1,10 +1,10 @@
 ---
 artifact: decision_log
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "WinFlowz"
 created: "2026-04-26"
-updated: "2026-05-09"
+updated: "2026-05-19"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "product_and_platform"
@@ -21,10 +21,30 @@ evidence:
   - "../docs/MIGRATION_FLUTTER.md"
 supersedes:
   - "2026-04-26 long-term platform direction"
-next_step: "execute Android-first backend-agnostic migration with Firebase as first adapter"
+next_step: "/sf-ready shipflow_data/workflow/specs/unified-suite-authentication.md"
 ---
 
 # Decisions — WinFlowz
+
+## 2026-05-19 — Suite identity exception for Clerk (reviewed)
+
+### Decision
+
+The "Clerk is legacy" rule applies only to direct target implementation inside the WinFlowz Android app repo. It does not forbid Clerk as the suite identity provider.
+
+Current identity split:
+
+1. Clerk is the long-term central identity provider for the WinFlowz suite and the WinFlowz Formation web/account surface.
+2. Firebase Auth remains the WinFlowz Android app auth adapter for now.
+3. A server-owned bridge maps Firebase `uid` and Clerk user id to `global_user_id`.
+4. Product access is controlled by server-owned entitlements, not by account existence.
+
+### Consequences
+
+- Do not migrate the Android app directly to Clerk Flutter/native until Android device QA proves that path.
+- Do not treat the old Expo/Convex/Clerk app stack as the Android target.
+- Do treat Clerk as active suite identity context when working on `unified-suite-authentication`.
+- Keep `winflowz_app` product data behind backend-neutral stores and Firebase/Firestore adapter boundaries until a later spec changes that.
 
 ## 2026-05-09 — Backend abstraction and Android-first execution (reviewed)
 
@@ -58,13 +78,13 @@ WinFlowz implementation target is now explicit and binding:
 2. Backend target: **Supabase** (Auth + Postgres + RLS + Realtime).
 3. Day 1 platform target: **Android, iOS, macOS, Windows, Linux, web**.
 4. Android overlay remains native Kotlin, exposed to Flutter through plugin/platform-channel contracts.
-5. Convex, Clerk, Expo/React Native are **legacy references only** during migration and are not valid target architecture choices.
+5. Convex, Clerk, Expo/React Native are **legacy references only** for the old app implementation during migration and are not valid direct Android app target architecture choices.
 
 ### Current stance
 
 - This replaces the prior directional (non-committal) platform note.
 - This decision is reviewed and ready for execution workstreams.
-- Any implementation or doc that presents Convex/Clerk/Expo as target is out of date.
+- Any implementation or doc that presents the old Convex/Clerk/Expo app stack as the Android app target is out of date. Clerk remains valid as the suite identity provider under the 2026-05-19 decision.
 
 ### Rationale
 

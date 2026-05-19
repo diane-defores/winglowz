@@ -1,7 +1,7 @@
 ---
 artifact: technical_decision_pointer
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "WinFlowz App"
 created: "2026-05-17"
 updated: "2026-05-17"
@@ -20,7 +20,7 @@ linked_systems:
   - "Firestore"
 depends_on:
   - artifact: "/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.0.1"
     required_status: "reviewed"
 supersedes: []
 evidence:

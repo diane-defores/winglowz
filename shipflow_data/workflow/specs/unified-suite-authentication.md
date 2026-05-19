@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.0.2"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
-updated: "2026-05-17"
-updated_at: "2026-05-17 13:13:31 UTC"
-status: reviewed
+updated: "2026-05-19"
+updated_at: "2026-05-19 18:56:43 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "unified-suite-authentication"
@@ -31,16 +31,16 @@ linked_systems:
   - "Google Play / App Store future purchases"
 depends_on:
   - artifact: "docs/explorations/2026-05-16-unified-suite-auth.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.0.1"
     required_status: "draft"
   - artifact: "docs/DECISIONS.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.0.1"
     required_status: "reviewed"
   - artifact: "shipflow_data/technical/architecture.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.0.1"
     required_status: "reviewed"
   - artifact: "shipflow_data/technical/guidelines.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.0.1"
     required_status: "reviewed"
   - artifact: "shipflow_data/workflow/specs/firebase-backend-agnostic-migration.md"
     artifact_version: "1.0.0"
@@ -49,7 +49,7 @@ depends_on:
     artifact_version: "0.1.0"
     required_status: "draft"
   - artifact: "/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.0.1"
     required_status: "reviewed"
 supersedes: []
 evidence:

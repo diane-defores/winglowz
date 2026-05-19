@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-16"
+updated: "2026-05-19"
 status: draft
 source_skill: sf-docs
 scope: "android-native"
@@ -26,6 +26,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Mapped before Android IME native implementation."
+  - "Updated for stable grid/touch geometry implementation."
 next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
@@ -113,6 +114,8 @@ Keyboard clipboard action
 - Ctrl, Alt and Fn are exposed as modifier keys in the control row. They latch for the next key-value dispatch, then clear; Fn currently ships with a conservative built-in navigation modmap for `h/j/k/l`.
 - Touch handling tracks the active pointer id, ignores secondary pointers without dispatching duplicate keys, supports long-press repeat for destructive/navigation actions, and uses horizontal spacebar sliding for cursor movement. It still does not implement full multi-finger modifier chords or selection sliders.
 - Protected gestures keep priority over corners: space slider, horizontal scroll rows, long press/repeat, and return-to-center cancellation must not dispatch a configured corner.
+- Keyboard geometry separates stable grid slots, visual key rectangles, and tactile hit rectangles. Main modes should use whole-cell spans for deliberate exceptions such as Space, Enter, Shift, or Delete; theme gaps, radius, shadows, and width scaling affect the visual rectangle, not the tactile grid cell.
+- The touch-debug overlay distinguishes tactile bounds from visual key bounds so fast-typing misses, covered gaps, and scroll/panel clipping can be inspected without logging typed content.
 
 ## Failure Modes
 
@@ -135,6 +138,10 @@ clipboard text, dictated text, raw audio, tokens, or provider payloads.
 ./gradlew :app:compileDebugKotlin
 flutter build apk --debug
 ```
+
+Do not run the Android/Gradle/build commands above on the shared Codex VM.
+For this environment, use allowed local checks such as `flutter analyze` and
+route native Android compile/package proof through Blacksmith/GitHub Actions.
 
 Manual Android validation is still required for IME visibility, typing,
 clipboard, dictation, media keys, and OEM behavior.

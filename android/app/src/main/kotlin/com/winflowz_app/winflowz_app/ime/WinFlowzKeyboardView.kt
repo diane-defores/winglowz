@@ -156,7 +156,9 @@ class WinFlowzKeyboardView(
 
     private data class KeyFrame(
         val key: KeyboardKeySpec,
-        val rect: RectF,
+        val slotRect: RectF,
+        val visualRect: RectF,
+        val touchRect: RectF,
         val rowId: String? = null,
         val rowScrollable: Boolean = false,
         val rowPagedScrollable: Boolean = false,
@@ -350,6 +352,11 @@ class WinFlowzKeyboardView(
     }
     private val debugStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.rgb(216, 32, 32)
+        style = Paint.Style.STROKE
+        strokeWidth = dp(1f)
+    }
+    private val debugVisualStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.argb(180, 25, 86, 235)
         style = Paint.Style.STROKE
         strokeWidth = dp(1f)
     }
@@ -1543,19 +1550,28 @@ class WinFlowzKeyboardView(
             return
         }
 
-        val totalWeight =
-            row.keys.sumOf { it.weight.toDouble() }.toFloat() + row.leadingWeight + row.trailingWeight
-        val usableWidth = width - keyGap() * max(0, row.keys.size - 1)
-        val unit = usableWidth / totalWeight
-        var x = left + unit * row.leadingWeight
-        row.keys.forEach { key ->
-            val slotWidth = unit * key.weight
-            val keyWidth = slotWidth * keyWidthScale()
-            val keyLeft = x + (slotWidth - keyWidth) / 2f
-            val rect = RectF(keyLeft, top, keyLeft + keyWidth, top + height)
-            keyFrames.add(KeyFrame(key, rect, rowId = row.rowId))
-            drawKey(canvas, key, rect)
-            x += slotWidth + keyGap()
+        val geometry =
+            KeyboardGridLayoutEngine.layoutFixedRow(
+                row = row,
+                left = left,
+                top = top,
+                width = width,
+                height = height,
+                keyGap = keyGap(),
+                keyWidthScale = keyWidthScale(),
+                touchBottomExtension = rowGap(),
+            )
+        geometry.forEach { cell ->
+            keyFrames.add(
+                KeyFrame(
+                    key = cell.key,
+                    slotRect = cell.slotRect,
+                    visualRect = cell.visualRect,
+                    touchRect = cell.touchRect,
+                    rowId = row.rowId,
+                ),
+            )
+            drawKey(canvas, cell.key, cell.visualRect)
         }
     }
 
@@ -1566,6 +1582,7 @@ class WinFlowzKeyboardView(
         top: Float,
         width: Float,
         height: Float,
+        touchClipRect: RectF? = null,
     ) {
         val rowId = row.rowId ?: "scroll-row-${top.toInt()}"
         val visibleCount = row.visiblePageKeyCount
@@ -1617,35 +1634,47 @@ class WinFlowzKeyboardView(
 
         val clipSave = canvas.save()
         canvas.clipRect(left, top, left + width, top + height)
-        var x = left - rowOffset
-        row.keys.forEachIndexed { index, key ->
-            val keyWidth = keyWidths[index]
-            val rect = RectF(x, top, x + keyWidth, top + height)
-            if (rect.right >= left && rect.left <= left + width) {
+        val viewportRect = RectF(left, top, left + width, top + height + rowGap())
+        val geometry =
+            KeyboardGridLayoutEngine.layoutScrollableRow(
+                row = row,
+                keyWidths = keyWidths,
+                rowOffset = rowOffset,
+                left = left,
+                top = top,
+                height = height,
+                keyGap = keyGap(),
+                keyWidthScale = keyWidthScale(),
+                touchClipRect = touchClipRect ?: viewportRect,
+                touchBottomExtension = rowGap(),
+            )
+        geometry.forEach { cell ->
+            if (cell.slotRect.right >= left && cell.slotRect.left <= left + width) {
+                val drawRect =
+                    if (visualProgress > 0f) {
+                        scrollVisualRect.set(cell.visualRect)
+                        scrollVisualRect.inset(
+                            scrollVisualRect.width() * keyWidthShrink / 2f,
+                            scrollVisualRect.height() * keyHeightShrink / 2f,
+                        )
+                        RectF(scrollVisualRect)
+                    } else {
+                        RectF(cell.visualRect)
+                    }
                 keyFrames.add(
                     KeyFrame(
-                        key = key,
-                        rect = rect,
+                        key = cell.key,
+                        slotRect = RectF(cell.slotRect),
+                        visualRect = drawRect,
+                        touchRect = RectF(cell.touchRect),
                         rowId = rowId,
                         rowScrollable = true,
                         rowPagedScrollable = row.pagedHorizontalScrollable,
                         rowVisibleWidth = width,
                     ),
                 )
-                val visualRect =
-                    if (visualProgress > 0f) {
-                        scrollVisualRect.set(rect)
-                        scrollVisualRect.inset(
-                            scrollVisualRect.width() * keyWidthShrink / 2f,
-                            scrollVisualRect.height() * keyHeightShrink / 2f,
-                        )
-                        scrollVisualRect
-                    } else {
-                        rect
-                    }
-                drawKey(canvas, key, visualRect, radiusScale = radiusScale, textScale = textScale)
+                drawKey(canvas, cell.key, drawRect, radiusScale = radiusScale, textScale = textScale)
             }
-            x += keyWidth + keyGap()
         }
         drawHorizontalRowEdgeAffordances(canvas, left, top, width, height, rowOffset, maxOffset, visualProgress)
         canvas.restoreToCount(clipSave)
@@ -1791,10 +1820,11 @@ class WinFlowzKeyboardView(
 
         val clipSave = canvas.save()
         canvas.clipRect(left, top, left + width, top + height)
+        val panelViewport = RectF(left, top, left + width, top + height)
         var y = top - verticalPanelScrollOffset
         panelRows.forEach { row ->
             if (y + panelRowHeight >= top && y <= top + height) {
-                drawPanelScrollRow(canvas, row, left, y, width, panelRowHeight)
+                drawPanelScrollRow(canvas, row, left, y, width, panelRowHeight, panelViewport)
             }
             y += panelRowHeight + rowGap()
         }
@@ -1809,25 +1839,37 @@ class WinFlowzKeyboardView(
         top: Float,
         width: Float,
         height: Float,
+        touchClipRect: RectF? = null,
     ) {
         if (row.horizontalScrollable) {
-            drawScrollableRow(canvas, row, left, top, width, height)
+            drawScrollableRow(canvas, row, left, top, width, height, touchClipRect)
             return
         }
 
-        val totalWeight =
-            row.keys.sumOf { it.weight.toDouble() }.toFloat() + row.leadingWeight + row.trailingWeight
-        val usableWidth = width - keyGap() * max(0, row.keys.size - 1)
-        val unit = usableWidth / totalWeight
-        var x = left + unit * row.leadingWeight
-        row.keys.forEach { key ->
-            val slotWidth = unit * key.weight
-            val keyWidth = slotWidth * keyWidthScale()
-            val keyLeft = x + (slotWidth - keyWidth) / 2f
-            val rect = RectF(keyLeft, top, keyLeft + keyWidth, top + height)
-            keyFrames.add(KeyFrame(key, rect, rowId = row.rowId, panelScrollable = true))
-            drawKey(canvas, key, rect)
-            x += slotWidth + keyGap()
+        val geometry =
+            KeyboardGridLayoutEngine.layoutFixedRow(
+                row = row,
+                left = left,
+                top = top,
+                width = width,
+                height = height,
+                keyGap = keyGap(),
+                keyWidthScale = keyWidthScale(),
+                touchClipRect = touchClipRect,
+                touchBottomExtension = rowGap(),
+            )
+        geometry.forEach { cell ->
+            keyFrames.add(
+                KeyFrame(
+                    key = cell.key,
+                    slotRect = cell.slotRect,
+                    visualRect = cell.visualRect,
+                    touchRect = cell.touchRect,
+                    rowId = row.rowId,
+                    panelScrollable = true,
+                ),
+            )
+            drawKey(canvas, cell.key, cell.visualRect)
         }
     }
 
@@ -2653,7 +2695,7 @@ class WinFlowzKeyboardView(
     private fun triggerPressEffect(key: KeyboardKeySpec) {
         val frame = gestureStartFrame?.takeIf { it.key.id == key.id } ?: return
         val spec = KeyboardPressEffectPolicy.resolve(themeConfig, fieldPolicy.privateMode)
-        if (pressEffects.trigger(key.id, frame.rect, spec)) {
+        if (pressEffects.trigger(key.id, frame.visualRect, spec)) {
             postInvalidateOnAnimation()
         }
     }
@@ -2890,7 +2932,7 @@ class WinFlowzKeyboardView(
     }
 
     private fun hitTest(x: Float, y: Float): KeyFrame? {
-        return keyFrames.firstOrNull { it.rect.contains(x, y) }
+        return keyFrames.firstOrNull { it.touchRect.width() > 0f && it.touchRect.height() > 0f && it.touchRect.contains(x, y) }
     }
 
     private fun rowHeightFor(index: Int): Float {
@@ -3002,7 +3044,8 @@ class WinFlowzKeyboardView(
 
     private fun drawDebugOverlay(canvas: Canvas) {
         keyFrames.forEach { frame ->
-            canvas.drawRoundRect(frame.rect, resolvedKeyRadius, resolvedKeyRadius, debugStrokePaint)
+            canvas.drawRoundRect(frame.touchRect, resolvedKeyRadius, resolvedKeyRadius, debugStrokePaint)
+            canvas.drawRoundRect(frame.visualRect, resolvedKeyRadius, resolvedKeyRadius, debugVisualStrokePaint)
         }
         val dx = gestureLatestX - gestureStartX
         val dy = gestureLatestY - gestureStartY

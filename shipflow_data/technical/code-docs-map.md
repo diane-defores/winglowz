@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-08"
+updated: "2026-05-19"
 status: draft
 source_skill: sf-docs
 scope: "code-docs-map"
@@ -22,6 +22,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Bootstrapped before Android IME implementation."
+  - "Updated Android native validation mapping for local VM guardrails and Blacksmith proof."
 next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
@@ -34,7 +35,7 @@ next_step: "/sf-docs technical audit"
 | `lib/features/clipboard/application/**`, `lib/features/clipboard/domain/**`, `lib/features/clipboard/data/**` | Clipboard product API and stores | `docs/technical/flutter-app.md` | `flutter analyze`; `flutter test test/clipboard_domain_test.dart test/clipboard_history_api_test.dart test/in_memory_clipboard_history_store_test.dart` | Clipboard product contract, local store, sensitivity, dedupe, source, sync state, or backend-agnostic API changes |
 | `lib/data/supabase/**` | Supabase provider adapters | `docs/technical/supabase-data.md` | `flutter test test/supabase_clipboard_store_test.dart`; Supabase smoke tests when DB is available | Provider payloads, table mapping, RLS-sensitive metadata, or adapter contract changes |
 | `.github/workflows/**`, `firebase.json`, `firestore.rules`, `firestore.indexes.json` | Firebase CI deploy and Firestore config | `docs/technical/firebase-cli-foundation.md`; `docs/technical/firebase-oidc-ci-playbook.md` | Trigger GitHub workflow; verify `Deploy Firestore Rules and Indexes` job; optional local `firebase deploy --only firestore --project <id>` | OIDC/WIF auth, Firebase deploy command, CI secrets, IAM assumptions, rules/indexes, or Firestore API enablement changes |
-| `android/app/src/main/**` | Android native | `docs/technical/android-native.md` | `./gradlew :app:compileDebugKotlin` or `flutter build apk --debug` on supported host | Manifest/service/permission, MethodChannel, overlay, IME, media, clipboard, accessibility, or lifecycle changes |
+| `android/app/src/main/**` | Android native | `docs/technical/android-native.md` | `flutter analyze` locally; Blacksmith/GitHub Actions for Android compile/package proof | Manifest/service/permission, MethodChannel, overlay, IME, media, clipboard, accessibility, layout geometry, or lifecycle changes |
 | `lib/features/keyboard/presentation/keyboard_theme_studio_screen.dart`, `lib/features/keyboard/domain/keyboard_models.dart`, `lib/features/keyboard/domain/keyboard_theme_validation.dart`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardThemeModels.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardPressEffects.kt` | Keyboard Theme Studio | `docs/technical/android-native.md`; `docs/COMPONENTS.md` | `flutter test test/keyboard_theme_studio_screen_test.dart test/keyboard_theme_validation_test.dart`; `./gradlew :app:compileDebugKotlin -x :app:processDebugResources` | Theme contract, preset catalog, JSON import/export, native renderer, background import/downsample path, preview/simulation, press effects, validation, or MethodChannel changes |
 | `supabase/migrations/**`, `supabase/tests/**` | Supabase data | `docs/technical/supabase-data.md` | Supabase migration apply and `supabase/tests/rls_smoke.sql` against a linked project | Table, policy, constraint, RLS, realtime, repository metadata, or smoke-test changes |
 | `docs/**`, `README.md`, `shipflow_data/business/product.md`, `shipflow_data/business/business.md` | Documentation | `docs/technical/code-docs-map.md` plus target doc | Markdown review and relevant code checks | User-visible platform capability, setup, verification, API, or security promise changes |
