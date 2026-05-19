@@ -385,6 +385,69 @@ class AndroidKeyboardBridge {
         .toList(growable: false);
   }
 
+  static Future<AndroidKeyboardStatus> setKeyboardVoiceRuntimeConfig({
+    required String languageTag,
+    required String packId,
+    required String engine,
+    String? modelArtifactPath,
+  }) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return AndroidKeyboardStatus.unsupported();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'setKeyboardVoiceRuntimeConfig',
+      {
+        'languageTag': languageTag,
+        'packId': packId,
+        'engine': engine,
+        'modelArtifactPath': modelArtifactPath,
+      },
+    );
+    return AndroidKeyboardStatus.fromMap(raw ?? const {});
+  }
+
+  static Future<AndroidKeyboardStatus> setKeyboardVoiceModelArtifact({
+    required String modelArtifactPath,
+    String? languageTag,
+    String? packId,
+    String? engine,
+  }) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return AndroidKeyboardStatus.unsupported();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'setKeyboardVoiceModelArtifact',
+      {
+        'modelArtifactPath': modelArtifactPath,
+        'languageTag': languageTag,
+        'packId': packId,
+        'engine': engine,
+      },
+    );
+    return AndroidKeyboardStatus.fromMap(raw ?? const {});
+  }
+
+  static Future<AndroidKeyboardStatus> probeKeyboardLocalRuntimePath({
+    required String languageTag,
+    required String packId,
+    required String engine,
+    String? modelArtifactPath,
+  }) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return AndroidKeyboardStatus.unsupported();
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'probeKeyboardLocalRuntimePath',
+      {
+        'languageTag': languageTag,
+        'packId': packId,
+        'engine': engine,
+        'modelArtifactPath': modelArtifactPath,
+      },
+    );
+    return AndroidKeyboardStatus.fromMap(raw ?? const {});
+  }
+
   static Future<T?> _invoke<T>(String method, [Object? arguments]) async {
     try {
       return await _channel.invokeMethod<T>(method, arguments);

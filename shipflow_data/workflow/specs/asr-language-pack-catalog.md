@@ -5,8 +5,8 @@ artifact_version: "0.1.0"
 project: "winflowz_app"
 created: "2026-05-14"
 created_at: "2026-05-14 22:30:00 UTC"
-updated: "2026-05-17"
-updated_at: "2026-05-17 16:20:31 UTC"
+updated: "2026-05-18"
+updated_at: "2026-05-18 18:43:18 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -50,7 +50,7 @@ evidence:
   - "User decision 2026-05-14: do not bundle all models in the APK; downloading after install is preferred."
   - "Current code already includes Android IME voice capture through KeyboardVoiceController using Android SpeechRecognizer, proving a fallback path exists but not a local-model catalog."
   - "Current code already exposes Settings and diagnostics surfaces for keyboard and overlay status, which can host pack-management state."
-next_step: "/sf-start ASR Language Pack Catalog"
+next_step: "/sf-ci-build Android APK for ASR Language Pack Catalog"
 ---
 
 # Title
@@ -256,7 +256,7 @@ Fresh external docs:
 
 # Implementation Tasks
 
-- [ ] Tache 1 : Introduire le contrat de catalogue de packs de langue
+- [x] Tache 1 : Introduire le contrat de catalogue de packs de langue
   - Fichier : `lib/features/voice/domain/language_pack_catalog.dart`
   - Action : Creer les modeles Dart `LanguagePackCatalogEntry`, `InstalledLanguagePack`, enums de qualite, statut installation, mode offline et politique fallback, avec serialisation stable.
   - User story link : permet de representer les packs et leur fallback de facon explicite pour l'utilisatrice.
@@ -264,7 +264,7 @@ Fresh external docs:
   - Validate with : tests unitaires de mapping JSON/Map et comparaison de priorite.
   - Notes : utiliser des identifiants stables et une convention compatible avec un futur catalogue distant ou embarque.
 
-- [ ] Tache 2 : Ajouter un store/catalog provider local-first
+- [x] Tache 2 : Ajouter un store/catalog provider local-first
   - Fichier : `lib/features/voice/application/language_pack_catalog_provider.dart`
   - Action : Definir le provider Riverpod et l'interface de chargement/rafraichissement du catalogue, avec etat `loading/success/error/stale`.
   - User story link : permet a Settings et au clavier de partager la meme source de verite.
@@ -272,7 +272,7 @@ Fresh external docs:
   - Validate with : tests de provider sur etats initiaux, erreur et rafraichissement.
   - Notes : ne pas faire dependre le domaine directement d'un transport reseau ou d'un SDK de download.
 
-- [ ] Tache 3 : Introduire l'etat natif de packs et du moteur vocal
+- [x] Tache 3 : Introduire l'etat natif de packs et du moteur vocal
   - Fichier : `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardVoiceController.kt`
   - Action : Refactorer le controleur actuel en facade moteur qui expose le runtime effectif, la langue active, le pack choisi, la derniere erreur moteur et les chemins `local` versus `android_fallback`.
   - User story link : garantit que la dictee clavier peut distinguer local et fallback.
@@ -280,7 +280,7 @@ Fresh external docs:
   - Validate with : tests natifs unitaires ou de logique sur selection moteur et fallback.
   - Notes : l'implementation locale concrete peut rester stubbee au debut, mais l'API interne doit etre definitive.
 
-- [ ] Tache 4 : Exposer le statut packs via le bridge Android clavier
+- [x] Tache 4 : Exposer le statut packs via le bridge Android clavier
   - Fichier : `lib/core/platform/android_keyboard_bridge.dart`
   - Action : Ajouter les structures et methodes de bridge pour lire le statut de packs, le mode runtime effectif et les actions d'installation/suppression si elles restent orchestrees cote Flutter.
   - User story link : rend le statut visible et actionnable dans l'app.
@@ -288,7 +288,7 @@ Fresh external docs:
   - Validate with : sanity check sur mapping des payloads MethodChannel.
   - Notes : suivre le style du bridge overlay existant pour les erreurs et le status summary.
 
-- [ ] Tache 5 : Ajouter la section "On-device speech" dans Settings
+- [x] Tache 5 : Ajouter la section "On-device speech" dans Settings
   - Fichier : `lib/features/settings/presentation/settings_screen.dart`
   - Action : Afficher packs installes/disponibles, taille, licence, niveau qualite, mise a jour, suppression et fallback configure.
   - User story link : permet a l'utilisatrice de gerer ses langues sans quitter l'app.
@@ -296,7 +296,7 @@ Fresh external docs:
   - Validate with : test widget ou verification manuelle structuree du rendu et des etats vides/erreur.
   - Notes : l'UI doit etre explicite sur ce qui est local, experimental, fallback-only ou indisponible.
 
-- [ ] Tache 6 : Etendre l'onboarding et le premier usage micro
+- [x] Tache 6 : Etendre l'onboarding et le premier usage micro
   - Fichier : `lib/features/shell/presentation/app_shell_screen.dart`
   - Action : Inserer le prompt de pack recommande au premier usage micro et ajuster l'onboarding pour demander un pack local ou un fallback accepte, sans rendre l'overlay obligatoire.
   - User story link : evite l'effet "micro casse" lors du premier usage.
@@ -304,7 +304,7 @@ Fresh external docs:
   - Validate with : scenarios manuels premier lancement/premier micro/pas de pack compatible.
   - Notes : garder les transitions d'onboarding recuperables et diagnostiquables.
 
-- [ ] Tache 7 : Ajouter les diagnostics de catalogue et de runtime voix
+- [x] Tache 7 : Ajouter les diagnostics de catalogue et de runtime voix
   - Fichier : `lib/features/settings/presentation/settings_screen.dart`
   - Action : Etendre le diagnostic texte et les breadcrumbs pour inclure `pack_id`, `engine`, `quality_tier`, `runtime_mode`, `fallback_reason`, `install_state`.
   - User story link : permet de comprendre pourquoi une langue fonctionne ou non.
@@ -312,7 +312,7 @@ Fresh external docs:
   - Validate with : sanity check du texte diagnostic et des evenements en usage nominal et erreur.
   - Notes : ne jamais journaliser l'audio brut ni des chemins sensibles complets.
 
-- [ ] Tache 8 : Formaliser le protocole de benchmark et la matrice MVP langues
+- [x] Tache 8 : Formaliser le protocole de benchmark et la matrice MVP langues
   - Fichier : `shipflow_data/workflow/specs/on-device-asr-free-options-research.md`
   - Action : Ajouter ou lier une grille normalisee de benchmark par langue/appareil et une matrice des premieres langues candidates au statut `candidate`, `benchmarking`, `recommended` ou `fallbackOnly`.
   - User story link : protege l'utilisatrice contre des promesses de support langue non verifiees.
@@ -399,14 +399,26 @@ None.
 | 2026-05-17 15:28:09 UTC | continue | GPT-5 Codex | Ran final local continuation checks on the implemented ASR catalog slices (`flutter test` targeted suites + `flutter analyze`) and refreshed chantier tracking for closure status. | Local verification passed for current slices; chantier remains partial because real download manager/runtime, first-micro orchestration, and Android device QA are still outside implemented scope. | /sf-start ASR Language Pack Catalog |
 | 2026-05-17 15:44:55 UTC | sf-build | GPT-5 Codex | Orchestrated delegated execution with subagent for remaining ASR scope slice: install orchestration with preflight/download/verify path, first-micro no-pack prompt and explicit fallback action, minimal update/corruption transitions, plus targeted tests; then re-verified locally. | Partial: delegated implementation and local verification passed for the new slice, but native runtime/download integration and Android device/CI proof remain pending for full chantier completion. | /sf-start ASR Language Pack Catalog |
 | 2026-05-17 16:20:31 UTC | sf-build | GPT-5 Codex | Orchestrated a second delegated wave focused on native Android runtime bridging: added IME runtime event queue, MainActivity bridge drain API, Dart bridge/event types, provider native-status ingestion, and tests for event propagation; then re-verified locally. | Partial: native runtime/fallback status now flows from IME to Flutter and tests pass, but real local-ASR engine/download-manager execution and Android device/CI proof are still pending for full chantier completion. | /sf-start ASR Language Pack Catalog |
+| 2026-05-17 21:32:01 UTC | sf-build | GPT-5 Codex | Orchestrated a third delegated native wave: added explicit IME `local` runtime path with deterministic state phases (`local_loading` -> `local_active` or fallback), exposed runtime config/probe bridge APIs, synchronized Flutter/provider handling, and expanded tests for local-vs-fallback behavior. | Partial: local runtime path is now native and observable end-to-end via bridge/status events, but true local-ASR engine inference and Android device/CI proof remain pending for chantier completion. | /sf-start ASR Language Pack Catalog |
+| 2026-05-17 21:39:59 UTC | continue | GPT-5 Codex | Continued pilotage after delegated waves: confirmed no local-ASR engine dependency is currently wired in project manifests, kept chantier state explicit, and routed the next execution step to `sf-start` for real engine/download-manager integration plus device/CI proof. | No fake closure: chantier remains partial until real local-ASR inference path and Android device/CI evidence exist. | /sf-start ASR Language Pack Catalog |
+| 2026-05-17 21:48:55 UTC | continue | GPT-5 Codex | Continued with delegated implementation prep for real `sherpa_onnx` wiring: added explicit native `sherpa_engine_not_linked` error contract, deterministic fallback preservation, and bridge/provider tests asserting local-vs-fallback propagation without introducing heavy engine dependencies yet. | Partial: integration contract is now explicit and test-covered, but actual sherpa runtime linkage/inference and Android device/CI proof are still pending. | /sf-start ASR Language Pack Catalog |
+| 2026-05-17 22:06:26 UTC | continue | GPT-5 Codex | Continued with delegated runtime-contract hardening: added persistent `modelArtifactPath` in installed-pack state, bridged artifact-path config Flutter->IME native, enforced native path validation (`local_model_path_missing`/`local_model_path_invalid`) before fallback, and extended tests for end-to-end error propagation. | Partial: model-artifact wiring and deterministic native validation are now in place and locally verified, but true sherpa runtime linkage/inference plus Android device/CI proof remain pending. | /sf-start ASR Language Pack Catalog |
+| 2026-05-18 05:15:50 UTC | sf-verify | GPT-5 Codex | Verified the current ASR Language Pack Catalog slice against the spec contract after targeted local checks: Flutter analyzer clean, targeted Flutter tests pass, and the Dart/Kotlin status bridge remains coherent for catalog, preflight, and fallback paths. | Partial: local proof is strong for the implemented slice, but Android device QA and real local-ASR engine/download proof are still missing, so the chantier is not fully verified. | /sf-start ASR Language Pack Catalog |
+| 2026-05-18 07:16:21 UTC | sf-build | GPT-5 Codex | Orchestrated a delegated continuation and re-verification pass from user request, including local test/analyze execution and run-state reconciliation. | Partial: targeted Flutter verification remains green, but Android device QA and real local-ASR engine/download integration are still missing for full chantier completion. | /sf-verify shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-18 09:04:20 UTC | sf-verify | GPT-5 Codex | Performed delegated `sf-verify` continuation with timeout instrumentation, native state propagation tests, and status mapping adjustments. | Partial: local startup timeout now emits `runtime_timeout` fallback reason, status propagation is exercised locally, and deterministic preflight/storage/fallback/idempotence remains verified. Remaining blockers are stubbed local runtime engine linkage (`sherpa_engine_not_linked`) and missing Android device/CI proof. | /sf-verify shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-18 12:28:00 UTC | sf-start | GPT-5 Codex | Continued first-spec execution with delegated Kotlin hardening: emitted explicit native `runtime_timeout` runtime event (`runtime_state=runtime_timeout`) before deterministic fallback, then re-ran targeted Flutter verification (`language_pack_catalog_test`, `settings_platform_controllers_test`) and `flutter analyze`. | Partial: local contract and timeout observability are stronger and verified locally, but real local-ASR engine inference/linkage and Android device/CI proof are still required for chantier completion. | /sf-verify shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-18 16:55:00 UTC | sf-start | GPT-5 Codex | Continued first-spec implementation by replacing hardcoded local-engine fallback gating with dynamic linkage detection (`KeyboardLocalEngineSupport`) and injectable validation hooks in `KeyboardLocalRuntimePath`, including positive-path unit coverage for `sherpa_onnx` engine-linked scenarios. Re-ran targeted Flutter tests and analyzer. | Partial: local engine linkage detection is now runtime-driven and testable, but true local-ASR inference/runtime execution and Android device/CI proof remain pending. | /sf-verify shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-18 17:44:00 UTC | sf-start | GPT-5 Codex | Continued first-spec implementation by adding a native local voice engine contract (`KeyboardLocalVoiceEngine`), wiring it into `KeyboardVoiceController`, preserving fallback reasons after Android fallback success, and refusing unsupported local engines with stable diagnostics instead of exposing fake local success. Checked current `sherpa-onnx` official docs for Android/Kotlin integration constraints. | Partial: local engine selection now has an explicit runtime adapter boundary and safe failure behavior, but the actual Sherpa JNI/audio-recognition implementation still needs Android CI/device work. | /sf-start ASR Language Pack Catalog |
+| 2026-05-18 18:02:43 UTC | sf-start | GPT-5 Codex | Reconciled the first-spec scope against the implemented code and local proof: catalogue/domain contract, provider state machine, install preflight/storage policy, explicit cloud opt-in, first-micro no-pack prompt, Settings section, diagnostics, native bridge/runtime status propagation, timeout/fallback mapping, and benchmark matrix are implemented. Confirmed that real ASR engine inference is explicitly out of scope for this catalogue spec and belongs to `asr-local-runtime-engine-integration.md`. Re-ran targeted Flutter tests and analyzer. | Implemented for this spec scope: local catalogue and runtime-selection contract are in place; remaining real Sherpa/audio inference work is a separate runtime-engine chantier, while Android device/CI proof remains for `sf-verify`. | /sf-verify shipflow_data/workflow/specs/asr-language-pack-catalog.md |
+| 2026-05-18 18:43:18 UTC | sf-verify | GPT-5 Codex | Verified the first-spec scope after reconciliation: checked contract boundaries, code surfaces, bug files, docs coherence, targeted Flutter tests, analyzer, and whitespace hygiene. Did not run Android/Gradle locally because project guardrails require Blacksmith/GitHub Actions plus physical-device QA for APK/IME behavior. | Partial: `sf-start` remains implemented for the catalogue spec scope and local proof is green, but ship-readiness is not fully verified until Android CI/device evidence covers IME first-micro, install/fallback, timeout diagnostics, and no silent cloud fallback on a real APK. | /sf-ci-build Android APK for ASR Language Pack Catalog |
 
 # Current Chantier Flow
 
 - `sf-spec`: done - latest draft captured the current product direction, deterministic storage policy, data contract, cloud fallback trust boundary, and language doctrine note.
 - `sf-ready`: ready - readiness gate passed after data contract and cloud fallback trust-boundary corrections.
-- `sf-start`: partial - first implementation slice, install-state hardening, durable Flutter persistence, deterministic install preflight, Settings preflight wiring, Android device-metric profile plumbing, app-side install orchestration, first-micro no-pack prompt, minimal update/corruption transitions, and native IME runtime-event bridging are in place, but real local-ASR engine/download-manager execution is still pending.
-- `sf-verify`: partial - current implementation slices pass local Flutter checks (`flutter test` targeted + `flutter analyze`) and include native-runtime event propagation tests, but full chantier verification still needs Android device/CI QA evidence and end-to-end proof with a real local-ASR runtime path.
-- `sf-end`: not launched - closeout depends on implementation and verification.
-- `sf-ship`: not launched - shipping is blocked on benchmark-backed language claims and implementation proof.
+- `sf-start`: implemented - catalogue/domain contract, local-first provider, durable pack state, deterministic SDK/ABI/RAM/storage preflight, install/retry/update/corruption state transitions, explicit cloud fallback consent, Settings "On-device Speech" management, first-micro no-pack prompt, native bridge/runtime status propagation, timeout/fallback diagnostics, runtime adapter boundary, and benchmark MVP matrix are in place. Real ASR engine inference is intentionally outside this catalogue spec and is tracked by `shipflow_data/workflow/specs/asr-local-runtime-engine-integration.md`.
+- `sf-verify`: partial - local Flutter checks pass for the catalogue/runtime-selection contract and `git diff --check` is clean, but Android CI/device proof is still missing for APK/IME behavior. The separate runtime-engine spec is draft and remains out of scope for this catalogue verification.
+- `sf-end`: not launched - closeout depends on Android CI/device proof or an explicit decision to close with that proof gap documented.
+- `sf-ship`: not launched - shipping is blocked on Android APK/IME proof and benchmark-backed language claims.
 
-Next command: `/sf-start ASR Language Pack Catalog`
+Next command: `/sf-ci-build Android APK for ASR Language Pack Catalog`

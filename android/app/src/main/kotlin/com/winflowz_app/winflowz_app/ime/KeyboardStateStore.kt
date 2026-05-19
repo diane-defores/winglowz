@@ -234,6 +234,13 @@ class KeyboardStateStore(private val context: Context) {
         get() = preferences.getString(KEY_VOICE_LAST_ERROR_CODE, "none") ?: "none"
         set(value) = preferences.edit().putString(KEY_VOICE_LAST_ERROR_CODE, value.take(64)).apply()
 
+    var voiceModelArtifactPath: String
+        get() = preferences.getString(KEY_VOICE_MODEL_ARTIFACT_PATH, "none") ?: "none"
+        set(value) {
+            val normalized = value.trim().ifBlank { "none" }.take(512)
+            preferences.edit().putString(KEY_VOICE_MODEL_ARTIFACT_PATH, normalized).apply()
+        }
+
     fun updateVoiceRuntimeStatus(
         runtimeMode: String,
         languageTag: String,
@@ -258,6 +265,20 @@ class KeyboardStateStore(private val context: Context) {
         voiceFallbackReason = status.fallbackReason
         voiceLastErrorCode = status.lastErrorCode
         KeyboardVoiceRuntimeEventQueue.enqueue(status)
+    }
+
+    fun setVoiceRuntimeConfig(
+        languageTag: String,
+        packId: String,
+        engine: String,
+        modelArtifactPath: String? = null,
+    ) {
+        voiceLanguageTag = languageTag
+        voicePackId = packId
+        voiceEngine = engine
+        if (modelArtifactPath != null) {
+            voiceModelArtifactPath = modelArtifactPath
+        }
     }
 
     fun clearKeyboardDiagnostics() {
@@ -334,6 +355,7 @@ class KeyboardStateStore(private val context: Context) {
             "voiceLanguageTag" to voiceLanguageTag,
             "voicePackId" to voicePackId,
             "voiceEngine" to voiceEngine,
+            "voiceModelArtifactPath" to voiceModelArtifactPath,
             "voiceFallbackReason" to voiceFallbackReason,
             "voiceLastErrorCode" to voiceLastErrorCode,
             "deviceAndroidSdk" to Build.VERSION.SDK_INT,
@@ -891,6 +913,7 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_VOICE_LANGUAGE_TAG = "voice_language_tag"
         const val KEY_VOICE_PACK_ID = "voice_pack_id"
         const val KEY_VOICE_ENGINE = "voice_engine"
+        const val KEY_VOICE_MODEL_ARTIFACT_PATH = "voice_model_artifact_path"
         const val KEY_VOICE_FALLBACK_REASON = "voice_fallback_reason"
         const val KEY_VOICE_LAST_ERROR_CODE = "voice_last_error_code"
         const val VOICE_RUNTIME_LOCAL = "local"

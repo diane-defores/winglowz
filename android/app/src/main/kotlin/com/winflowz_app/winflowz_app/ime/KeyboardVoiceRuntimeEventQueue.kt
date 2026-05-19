@@ -7,6 +7,7 @@ object KeyboardVoiceRuntimeEventQueue {
     @Synchronized
     fun enqueue(
         status: KeyboardVoiceRuntimeStatus,
+        runtimeStateOverride: String? = null,
         source: String = "ime_voice_controller",
         capturedAtEpochMillis: Long = System.currentTimeMillis(),
     ) {
@@ -15,7 +16,7 @@ object KeyboardVoiceRuntimeEventQueue {
         }
         events.addLast(
             mapOf(
-                "runtime_state" to status.runtimeMode,
+                "runtime_state" to (runtimeStateOverride?.trim()?.ifBlank { status.runtimeMode } ?: status.runtimeMode),
                 "fallback_reason" to status.fallbackReason,
                 "active_pack_id" to status.packId,
                 "last_error_code" to status.lastErrorCode,

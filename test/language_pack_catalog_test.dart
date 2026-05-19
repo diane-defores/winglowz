@@ -372,6 +372,7 @@ void main() {
       expect(state.installState, InstalledLanguagePackState.installed);
       expect(state.downloadProgress, 100);
       expect(state.checksumVerified, isTrue);
+      expect(state.modelArtifactPath, startsWith('/data/user/0/'));
     },
   );
 
@@ -528,6 +529,73 @@ void main() {
   });
 
   test(
+    'native runtime timeout keeps pack installed and records runtime_timeout fallback',
+    () async {
+      final container = _newContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(languagePackCatalogProvider.notifier);
+      final entry = _firstInstallableEntry(container);
+      await notifier.installPackWithPreflight(
+        entry: entry,
+        device: const LanguagePackDeviceProfile(
+          androidSdk: 35,
+          primaryAbi: 'arm64-v8a',
+          totalCapacityMb: 65536,
+          freeSpaceMb: 8192,
+          ramMb: 6144,
+        ),
+      );
+
+      final applied = notifier.applyNativeRuntimeStatus(
+        runtimeState: 'runtime_timeout',
+        fallbackReason: 'runtime_timeout',
+        activePackId: entry.packId,
+        lastErrorCode: 'speech_error_timeout',
+        languageTag: entry.languageTag,
+        engine: entry.engine.wireName,
+      );
+      final state = container
+          .read(languagePackCatalogProvider)
+          .installedStateFor(entry);
+
+      expect(applied, isTrue);
+      expect(state.installState, InstalledLanguagePackState.installed);
+      expect(state.runtimeMode, LanguagePackRuntimeMode.unavailable);
+      expect(state.fallbackReason, LanguagePackFallbackReason.runtimeTimeout);
+      expect(state.lastErrorCode, 'speech_error_timeout');
+    },
+  );
+
+  test(
+    'native local timeout resolves to unavailable runtime via language+engine fallback',
+    () {
+      final container = _newContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(languagePackCatalogProvider.notifier);
+      final entry = _firstInstallableEntry(container);
+
+      final applied = notifier.applyNativeRuntimeStatus(
+        runtimeState: 'local_timeout',
+        fallbackReason: 'runtime_timeout',
+        activePackId: 'none',
+        lastErrorCode: 'local_runtime_timeout',
+        languageTag: entry.languageTag,
+        engine: entry.engine.wireName,
+      );
+      final state = container
+          .read(languagePackCatalogProvider)
+          .installedStateFor(entry);
+
+      expect(applied, isTrue);
+      expect(state.runtimeMode, LanguagePackRuntimeMode.unavailable);
+      expect(state.fallbackReason, LanguagePackFallbackReason.runtimeTimeout);
+      expect(state.lastErrorCode, 'local_runtime_timeout');
+    },
+  );
+
+  test(
     'native runtime status event uses language+engine when pack id is none',
     () {
       final container = _newContainer();
@@ -552,6 +620,119 @@ void main() {
       expect(state.fallbackReason, LanguagePackFallbackReason.cloudAutoPolicy);
     },
   );
+
+  test('native runtime local phases move from loading to active', () {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+    final loadingApplied = notifier.applyNativeRuntimeStatus(
+      runtimeState: 'local_loading',
+      fallbackReason: 'none',
+      activePackId: entry.packId,
+      lastErrorCode: 'none',
+      languageTag: entry.languageTag,
+      engine: entry.engine.wireName,
+    );
+    final loadingState = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(loadingApplied, isTrue);
+    expect(loadingState.installState, InstalledLanguagePackState.verifying);
+    expect(loadingState.runtimeMode, LanguagePackRuntimeMode.unavailable);
+    expect(loadingState.lastErrorCode, 'local_loading');
+
+    final activeApplied = notifier.applyNativeRuntimeStatus(
+      runtimeState: 'local_active',
+      fallbackReason: 'none',
+      activePackId: entry.packId,
+      lastErrorCode: 'none',
+      languageTag: entry.languageTag,
+      engine: entry.engine.wireName,
+    );
+    final activeState = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(activeApplied, isTrue);
+    expect(activeState.installState, InstalledLanguagePackState.installed);
+    expect(activeState.runtimeMode, LanguagePackRuntimeMode.local);
+    expect(activeState.fallbackReason, LanguagePackFallbackReason.none);
+  });
+
+  test('native fallback keeps sherpa not linked error code', () {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+
+    final applied = notifier.applyNativeRuntimeStatus(
+      runtimeState: 'android_fallback',
+      fallbackReason: 'runtime_load_failed',
+      activePackId: 'none',
+      lastErrorCode: 'sherpa_engine_not_linked',
+      languageTag: entry.languageTag,
+      engine: 'sherpa_onnx',
+      observedAtUtc: DateTime.utc(2026, 5, 17, 16, 8),
+    );
+    final state = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(applied, isTrue);
+    expect(state.runtimeMode, LanguagePackRuntimeMode.androidFallback);
+    expect(state.fallbackReason, LanguagePackFallbackReason.runtimeLoadFailed);
+    expect(state.lastErrorCode, 'sherpa_engine_not_linked');
+  });
+
+  test('native fallback keeps local model path missing error code', () {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+
+    final applied = notifier.applyNativeRuntimeStatus(
+      runtimeState: 'android_fallback',
+      fallbackReason: 'runtime_load_failed',
+      activePackId: 'none',
+      lastErrorCode: 'local_model_path_missing',
+      languageTag: entry.languageTag,
+      engine: 'sherpa_onnx',
+    );
+    final state = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(applied, isTrue);
+    expect(state.runtimeMode, LanguagePackRuntimeMode.androidFallback);
+    expect(state.lastErrorCode, 'local_model_path_missing');
+  });
+
+  test('provider can persist explicit model artifact path', () {
+    final container = _newContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(languagePackCatalogProvider.notifier);
+    final entry = _firstInstallableEntry(container);
+    final applied = notifier.setModelArtifactPath(
+      entry,
+      modelArtifactPath:
+          '/data/user/0/com.winflowz_app.winflowz_app/files/asr/fr_fr/model.bundle',
+    );
+    final state = container
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+
+    expect(applied, isTrue);
+    expect(
+      state.modelArtifactPath,
+      '/data/user/0/com.winflowz_app.winflowz_app/files/asr/fr_fr/model.bundle',
+    );
+  });
 }
 
 Map<Object?, Object?> _validLocalPack() => {

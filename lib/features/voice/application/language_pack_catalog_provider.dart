@@ -490,11 +490,14 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
     if (target == null) {
       return false;
     }
-    final runtimeMode = _runtimeModeFromWire(runtimeState);
+    final runtimePhase = runtimeState.trim();
+    final runtimeMode = _runtimeModeFromWire(runtimePhase);
     final fallback = _fallbackReasonFromWire(fallbackReason);
     final current = _stateFor(target);
     final timestamp = observedAtUtc ?? DateTime.now().toUtc();
-    final nextState = runtimeMode == LanguagePackRuntimeMode.local
+    final nextState = runtimePhase == 'local_loading'
+        ? InstalledLanguagePackState.verifying
+        : runtimeMode == LanguagePackRuntimeMode.local
         ? InstalledLanguagePackState.installed
         : (current.installState == InstalledLanguagePackState.installed ||
                   current.installState ==
@@ -506,9 +509,13 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
       current.copyWith(
         installState: nextState,
         runtimeMode: runtimeMode,
-        fallbackReason: fallback,
+        fallbackReason: runtimePhase == 'local_loading'
+            ? LanguagePackFallbackReason.none
+            : fallback,
         lastErrorAt: timestamp,
-        lastErrorCode: lastErrorCode.trim().isEmpty ? 'none' : lastErrorCode,
+        lastErrorCode: runtimePhase == 'local_loading'
+            ? 'local_loading'
+            : (lastErrorCode.trim().isEmpty ? 'none' : lastErrorCode),
         installedSizeMb: runtimeMode == LanguagePackRuntimeMode.local
             ? target.installedSizeMb
             : current.installedSizeMb,
@@ -518,6 +525,11 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
         installedAt: runtimeMode == LanguagePackRuntimeMode.local
             ? (current.installedAt ?? timestamp)
             : current.installedAt,
+        modelArtifactPath: runtimeMode == LanguagePackRuntimeMode.local
+            ? (current.modelArtifactPath == 'none'
+                  ? _defaultModelArtifactPathFor(target)
+                  : current.modelArtifactPath)
+            : current.modelArtifactPath,
       ),
     );
     return true;
@@ -540,6 +552,7 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
         installedAt: DateTime.now().toUtc(),
         lastVerifiedAt: DateTime.now().toUtc(),
         lastErrorCode: 'none',
+        modelArtifactPath: _defaultModelArtifactPathFor(entry),
       ),
     );
   }
@@ -556,10 +569,26 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
           runtimeMode: LanguagePackRuntimeMode.unavailable,
           fallbackReason: LanguagePackFallbackReason.missingPack,
           lastErrorCode: 'none',
+          modelArtifactPath: 'none',
         ),
       },
     );
     _persistState();
+  }
+
+  bool setModelArtifactPath(
+    LanguagePackCatalogEntry entry, {
+    required String modelArtifactPath,
+  }) {
+    final current = _stateFor(entry);
+    final normalized = modelArtifactPath.trim();
+    _setPackState(
+      entry,
+      current.copyWith(
+        modelArtifactPath: normalized.isEmpty ? 'none' : normalized,
+      ),
+    );
+    return true;
   }
 
   InstalledLanguagePack _stateFor(LanguagePackCatalogEntry entry) {
@@ -635,6 +664,15 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
   }
 
   static LanguagePackRuntimeMode _runtimeModeFromWire(String value) {
+    if (value == 'local_loading') {
+      return LanguagePackRuntimeMode.unavailable;
+    }
+    if (value == 'runtime_timeout' || value == 'local_timeout') {
+      return LanguagePackRuntimeMode.unavailable;
+    }
+    if (value == 'local_active') {
+      return LanguagePackRuntimeMode.local;
+    }
     try {
       return LanguagePackRuntimeMode.fromWire(value);
     } on CatalogValidationException {
@@ -648,6 +686,11 @@ class LanguagePackCatalogNotifier extends Notifier<LanguagePackCatalogState> {
     } on CatalogValidationException {
       return LanguagePackFallbackReason.unsupportedLanguage;
     }
+  }
+
+  static String _defaultModelArtifactPathFor(LanguagePackCatalogEntry entry) {
+    final language = entry.languageTag.toLowerCase().replaceAll('-', '_');
+    return '/data/user/0/com.winflowz_app.winflowz_app/files/asr/$language/${entry.packId}/model.bundle';
   }
 }
 

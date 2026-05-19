@@ -291,4 +291,299 @@ void main() {
     expect(events.first.languageTag, 'fr-FR');
     expect(events.first.engine, 'android_speech_recognizer');
   });
+
+  test(
+    'AndroidKeyboardBridge drains native runtime timeout status event',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_keyboardChannel, (call) async {
+            if (call.method != 'drainKeyboardVoiceRuntimeEvents') {
+              return null;
+            }
+            return <Object?>[
+              <Object?, Object?>{
+                'runtime_state': 'runtime_timeout',
+                'fallback_reason': 'runtime_timeout',
+                'active_pack_id': 'none',
+                'last_error_code': 'speech_error_timeout',
+                'language_tag': 'fr-FR',
+                'engine': 'android_speech_recognizer',
+                'source': 'ime_voice_controller',
+                'captured_at_epoch_millis': 1715930003333,
+              },
+            ];
+          });
+
+      final events =
+          await AndroidKeyboardBridge.drainKeyboardVoiceRuntimeEvents();
+
+      expect(events, hasLength(1));
+      expect(events.first.runtimeState, 'runtime_timeout');
+      expect(events.first.fallbackReason, 'runtime_timeout');
+      expect(events.first.lastErrorCode, 'speech_error_timeout');
+      expect(events.first.activePackId, 'none');
+      expect(events.first.languageTag, 'fr-FR');
+      expect(events.first.engine, 'android_speech_recognizer');
+    },
+  );
+
+  test(
+    'AndroidKeyboardBridge drains native local timeout status event',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_keyboardChannel, (call) async {
+            if (call.method != 'drainKeyboardVoiceRuntimeEvents') {
+              return null;
+            }
+            return <Object?>[
+              <Object?, Object?>{
+                'runtime_state': 'local_timeout',
+                'fallback_reason': 'runtime_timeout',
+                'active_pack_id': 'none',
+                'last_error_code': 'speech_error_local_timeout',
+                'language_tag': 'fr-FR',
+                'engine': 'sherpa_onnx',
+                'source': 'ime_local_runtime',
+                'captured_at_epoch_millis': 1715930004444,
+              },
+            ];
+          });
+
+      final events =
+          await AndroidKeyboardBridge.drainKeyboardVoiceRuntimeEvents();
+
+      expect(events, hasLength(1));
+      expect(events.first.runtimeState, 'local_timeout');
+      expect(events.first.fallbackReason, 'runtime_timeout');
+      expect(events.first.lastErrorCode, 'speech_error_local_timeout');
+      expect(events.first.source, 'ime_local_runtime');
+    },
+  );
+
+  test(
+    'AndroidKeyboardBridge drains sherpa not linked runtime fallback event',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_keyboardChannel, (call) async {
+            if (call.method != 'drainKeyboardVoiceRuntimeEvents') {
+              return null;
+            }
+            return <Object?>[
+              <Object?, Object?>{
+                'runtime_state': 'android_fallback',
+                'fallback_reason': 'runtime_load_failed',
+                'active_pack_id': 'none',
+                'last_error_code': 'sherpa_engine_not_linked',
+                'language_tag': 'fr-FR',
+                'engine': 'android_speech_recognizer',
+                'source': 'ime_local_runtime',
+                'captured_at_epoch_millis': 1715930002222,
+              },
+            ];
+          });
+
+      final events =
+          await AndroidKeyboardBridge.drainKeyboardVoiceRuntimeEvents();
+
+      expect(events, hasLength(1));
+      expect(events.first.runtimeState, 'android_fallback');
+      expect(events.first.fallbackReason, 'runtime_load_failed');
+      expect(events.first.lastErrorCode, 'sherpa_engine_not_linked');
+      expect(events.first.source, 'ime_local_runtime');
+    },
+  );
+
+  test('AndroidKeyboardBridge sets native local runtime config', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_keyboardChannel, (call) async {
+          if (call.method != 'setKeyboardVoiceRuntimeConfig') {
+            return null;
+          }
+          return <Object?, Object?>{
+            'supported': true,
+            'voiceRuntimeMode': 'unavailable',
+            'voiceLanguageTag': call.arguments['languageTag'],
+            'voicePackId': call.arguments['packId'],
+            'voiceEngine': call.arguments['engine'],
+            'voiceModelArtifactPath': call.arguments['modelArtifactPath'],
+            'voiceFallbackReason': 'missing_pack',
+            'voiceLastErrorCode': 'none',
+          };
+        });
+
+    final status = await AndroidKeyboardBridge.setKeyboardVoiceRuntimeConfig(
+      languageTag: 'fr-FR',
+      packId: 'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+      engine: 'sherpa_onnx',
+      modelArtifactPath:
+          '/data/user/0/com.winflowz_app.winflowz_app/files/asr/fr_fr/model.bundle',
+    );
+
+    expect(status.voiceLanguageTag, 'fr-FR');
+    expect(
+      status.voicePackId,
+      'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+    );
+    expect(status.voiceEngine, 'sherpa_onnx');
+  });
+
+  test('AndroidKeyboardBridge pushes model artifact path only', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_keyboardChannel, (call) async {
+          if (call.method != 'setKeyboardVoiceModelArtifact') {
+            return null;
+          }
+          return <Object?, Object?>{
+            'supported': true,
+            'voiceRuntimeMode': 'unavailable',
+            'voiceLanguageTag': call.arguments['languageTag'] ?? 'fr-FR',
+            'voicePackId': call.arguments['packId'] ?? 'none',
+            'voiceEngine': call.arguments['engine'] ?? 'sherpa_onnx',
+            'voiceModelArtifactPath': call.arguments['modelArtifactPath'],
+            'voiceFallbackReason': 'missing_pack',
+            'voiceLastErrorCode': 'none',
+          };
+        });
+
+    final status = await AndroidKeyboardBridge.setKeyboardVoiceModelArtifact(
+      modelArtifactPath:
+          '/data/user/0/com.winflowz_app.winflowz_app/files/asr/fr_fr/model.bundle',
+      languageTag: 'fr-FR',
+      packId: 'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+      engine: 'sherpa_onnx',
+    );
+
+    expect(status.voiceLanguageTag, 'fr-FR');
+    expect(
+      status.voicePackId,
+      'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+    );
+  });
+
+  test('AndroidKeyboardBridge probes local runtime path', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_keyboardChannel, (call) async {
+          if (call.method != 'probeKeyboardLocalRuntimePath') {
+            return null;
+          }
+          return <Object?, Object?>{
+            'supported': true,
+            'voiceRuntimeMode': 'local',
+            'voiceLanguageTag': call.arguments['languageTag'],
+            'voicePackId': call.arguments['packId'],
+            'voiceEngine': call.arguments['engine'],
+            'voiceFallbackReason': 'none',
+            'voiceLastErrorCode': 'none',
+          };
+        });
+
+    final status = await AndroidKeyboardBridge.probeKeyboardLocalRuntimePath(
+      languageTag: 'fr-FR',
+      packId: 'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+      engine: 'sherpa_onnx',
+      modelArtifactPath:
+          '/data/user/0/com.winflowz_app.winflowz_app/files/asr/fr_fr/model.bundle',
+    );
+
+    expect(status.voiceRuntimeMode, 'local');
+    expect(status.voiceFallbackReason, 'none');
+  });
+
+  test(
+    'AndroidKeyboardBridge surfaces sherpa not linked fallback status',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_keyboardChannel, (call) async {
+            if (call.method != 'probeKeyboardLocalRuntimePath') {
+              return null;
+            }
+            return <Object?, Object?>{
+              'supported': true,
+              'voiceRuntimeMode': 'android_fallback',
+              'voiceLanguageTag': call.arguments['languageTag'],
+              'voicePackId': 'none',
+              'voiceEngine': 'android_speech_recognizer',
+              'voiceFallbackReason': 'runtime_load_failed',
+              'voiceLastErrorCode': 'sherpa_engine_not_linked',
+            };
+          });
+
+      final status = await AndroidKeyboardBridge.probeKeyboardLocalRuntimePath(
+        languageTag: 'fr-FR',
+        packId: 'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+        engine: 'sherpa_onnx',
+        modelArtifactPath:
+            '/data/user/0/com.winflowz_app.winflowz_app/files/asr/fr_fr/model.bundle',
+      );
+
+      expect(status.voiceRuntimeMode, 'android_fallback');
+      expect(status.voiceFallbackReason, 'runtime_load_failed');
+      expect(status.voiceLastErrorCode, 'sherpa_engine_not_linked');
+    },
+  );
+
+  test('AndroidKeyboardBridge surfaces missing model path error', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_keyboardChannel, (call) async {
+          if (call.method != 'probeKeyboardLocalRuntimePath') {
+            return null;
+          }
+          return <Object?, Object?>{
+            'supported': true,
+            'voiceRuntimeMode': 'android_fallback',
+            'voiceLanguageTag': call.arguments['languageTag'],
+            'voicePackId': 'none',
+            'voiceEngine': 'android_speech_recognizer',
+            'voiceFallbackReason': 'runtime_load_failed',
+            'voiceLastErrorCode': 'local_model_path_missing',
+          };
+        });
+
+    final status = await AndroidKeyboardBridge.probeKeyboardLocalRuntimePath(
+      languageTag: 'fr-FR',
+      packId: 'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+      engine: 'sherpa_onnx',
+      modelArtifactPath: 'none',
+    );
+
+    expect(status.voiceRuntimeMode, 'android_fallback');
+    expect(status.voiceLastErrorCode, 'local_model_path_missing');
+  });
+
+  test('AndroidKeyboardBridge surfaces invalid model path error', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_keyboardChannel, (call) async {
+          if (call.method != 'probeKeyboardLocalRuntimePath') {
+            return null;
+          }
+          return <Object?, Object?>{
+            'supported': true,
+            'voiceRuntimeMode': 'android_fallback',
+            'voiceLanguageTag': call.arguments['languageTag'],
+            'voicePackId': 'none',
+            'voiceEngine': 'android_speech_recognizer',
+            'voiceFallbackReason': 'runtime_load_failed',
+            'voiceLastErrorCode': 'local_model_path_invalid',
+          };
+        });
+
+    final status = await AndroidKeyboardBridge.probeKeyboardLocalRuntimePath(
+      languageTag: 'fr-FR',
+      packId: 'sherpa_onnx.fr-fr.whisper_candidate.2026_05_15',
+      engine: 'sherpa_onnx',
+      modelArtifactPath: '../tmp/model.onnx',
+    );
+
+    expect(status.voiceRuntimeMode, 'android_fallback');
+    expect(status.voiceLastErrorCode, 'local_model_path_invalid');
+  });
 }

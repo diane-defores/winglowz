@@ -345,6 +345,7 @@ class InstalledLanguagePack {
     required this.lastVerifiedAt,
     required this.lastErrorAt,
     required this.lastErrorCode,
+    required this.modelArtifactPath,
   });
 
   final String packId;
@@ -363,6 +364,7 @@ class InstalledLanguagePack {
   final DateTime? lastVerifiedAt;
   final DateTime? lastErrorAt;
   final String lastErrorCode;
+  final String modelArtifactPath;
 
   factory InstalledLanguagePack.fromMap(Map<Object?, Object?> map) {
     return InstalledLanguagePack(
@@ -391,6 +393,7 @@ class InstalledLanguagePack {
       lastVerifiedAt: _optionalDateTime(map, 'last_verified_at'),
       lastErrorAt: _optionalDateTime(map, 'last_error_at'),
       lastErrorCode: _requiredString(map, 'last_error_code'),
+      modelArtifactPath: _optionalArtifactPath(map['model_artifact_path']),
     );
   }
 
@@ -416,6 +419,7 @@ class InstalledLanguagePack {
       lastVerifiedAt: null,
       lastErrorAt: null,
       lastErrorCode: 'none',
+      modelArtifactPath: 'none',
     );
   }
 
@@ -436,6 +440,7 @@ class InstalledLanguagePack {
     'last_verified_at': lastVerifiedAt?.toUtc().toIso8601String() ?? 'none',
     'last_error_at': lastErrorAt?.toUtc().toIso8601String() ?? 'none',
     'last_error_code': lastErrorCode,
+    'model_artifact_path': modelArtifactPath,
   };
 
   InstalledLanguagePack copyWith({
@@ -451,6 +456,7 @@ class InstalledLanguagePack {
     DateTime? lastVerifiedAt,
     DateTime? lastErrorAt,
     String? lastErrorCode,
+    String? modelArtifactPath,
   }) {
     return InstalledLanguagePack(
       packId: packId,
@@ -469,7 +475,16 @@ class InstalledLanguagePack {
       lastVerifiedAt: lastVerifiedAt ?? this.lastVerifiedAt,
       lastErrorAt: lastErrorAt ?? this.lastErrorAt,
       lastErrorCode: lastErrorCode ?? this.lastErrorCode,
+      modelArtifactPath:
+          modelArtifactPath == null
+          ? this.modelArtifactPath
+          : _optionalArtifactPath(modelArtifactPath),
     );
+  }
+
+  static String _optionalArtifactPath(Object? raw) {
+    final value = raw is String ? raw.trim() : '';
+    return value.isEmpty ? 'none' : value;
   }
 }
 

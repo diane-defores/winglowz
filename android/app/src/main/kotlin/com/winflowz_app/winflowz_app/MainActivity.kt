@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.Manifest
 import android.provider.Settings
+import android.speech.SpeechRecognizer
 import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
 import java.io.File
@@ -348,6 +349,96 @@ class MainActivity : FlutterActivity() {
                     }
                     "drainKeyboardVoiceRuntimeEvents" -> {
                         result.success(KeyboardVoiceRuntimeEventQueue.drain())
+                    }
+                    "setKeyboardVoiceRuntimeConfig" -> {
+                        val languageTag = call.argument<String>("languageTag").orEmpty().ifBlank { "und" }
+                        val packId = call.argument<String>("packId").orEmpty().ifBlank { "none" }
+                        val engine = call.argument<String>("engine").orEmpty().ifBlank { "unavailable" }
+                        val modelArtifactPath = call.argument<String>("modelArtifactPath")
+                        keyboardState.setVoiceRuntimeConfig(
+                            languageTag = languageTag,
+                            packId = packId,
+                            engine = engine,
+                            modelArtifactPath = modelArtifactPath,
+                        )
+                        result.success(keyboardState.buildStatusMap())
+                    }
+                    "setKeyboardVoiceModelArtifact" -> {
+                        val modelArtifactPath = call.argument<String>("modelArtifactPath").orEmpty()
+                        val languageTag = call.argument<String>("languageTag")
+                        val packId = call.argument<String>("packId")
+                        val engine = call.argument<String>("engine")
+                        keyboardState.setVoiceRuntimeConfig(
+                            languageTag = languageTag?.ifBlank { keyboardState.voiceLanguageTag } ?: keyboardState.voiceLanguageTag,
+                            packId = packId?.ifBlank { keyboardState.voicePackId } ?: keyboardState.voicePackId,
+                            engine = engine?.ifBlank { keyboardState.voiceEngine } ?: keyboardState.voiceEngine,
+                            modelArtifactPath = modelArtifactPath,
+                        )
+                        result.success(keyboardState.buildStatusMap())
+                    }
+                    "probeKeyboardLocalRuntimePath" -> {
+                        val languageTag = call.argument<String>("languageTag").orEmpty().ifBlank { keyboardState.voiceLanguageTag }
+                        val packId = call.argument<String>("packId").orEmpty().ifBlank { keyboardState.voicePackId }
+                        val engine = call.argument<String>("engine").orEmpty().ifBlank { keyboardState.voiceEngine }
+                        val modelArtifactPath = call.argument<String>("modelArtifactPath")
+                        keyboardState.setVoiceRuntimeConfig(
+                            languageTag = languageTag,
+                            packId = packId,
+                            engine = engine,
+                            modelArtifactPath = modelArtifactPath,
+                        )
+                        val loading =
+                            com.winflowz_app.winflowz_app.ime.KeyboardVoiceRuntimeStatus.normalized(
+                                runtimeMode = "local",
+                                languageTag = languageTag,
+                                packId = packId,
+                                engine = engine,
+                                fallbackReason = "none",
+                                lastErrorCode = "none",
+                            )
+                        KeyboardVoiceRuntimeEventQueue.enqueue(
+                            status = loading,
+                            runtimeStateOverride = "local_loading",
+                            source = "flutter_probe",
+                        )
+                        val validation =
+                            com.winflowz_app.winflowz_app.ime.KeyboardLocalRuntimePath.validate(
+                                packId = packId,
+                                engine = engine,
+                                modelArtifactPath = keyboardState.voiceModelArtifactPath,
+                                androidFallbackAvailable = SpeechRecognizer.isRecognitionAvailable(this),
+                            )
+                        if (validation.canStartLocal) {
+                            keyboardState.updateVoiceRuntimeStatus(
+                                runtimeMode = "local",
+                                languageTag = languageTag,
+                                packId = packId,
+                                engine = engine,
+                                fallbackReason = "none",
+                                lastErrorCode = "none",
+                            )
+                            KeyboardVoiceRuntimeEventQueue.enqueue(
+                                status = loading,
+                                runtimeStateOverride = "local_active",
+                                source = "flutter_probe",
+                            )
+                        } else {
+                            val fallbackEngine =
+                                if (validation.fallbackRuntimeMode == "android_fallback") {
+                                    "android_speech_recognizer"
+                                } else {
+                                    "unavailable"
+                                }
+                            keyboardState.updateVoiceRuntimeStatus(
+                                runtimeMode = validation.fallbackRuntimeMode,
+                                languageTag = languageTag,
+                                packId = if (validation.fallbackRuntimeMode == "android_fallback") "none" else packId,
+                                engine = fallbackEngine,
+                                fallbackReason = validation.fallbackReason,
+                                lastErrorCode = validation.errorCode,
+                            )
+                        }
+                        result.success(keyboardState.buildStatusMap())
                     }
                     "openInputMethodSettings" -> {
                         openInputMethodSettings()

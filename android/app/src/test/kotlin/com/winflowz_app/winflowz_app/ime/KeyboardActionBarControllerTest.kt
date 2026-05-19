@@ -120,6 +120,25 @@ class KeyboardActionBarControllerTest {
     }
 
     @Test
+    fun `navigation pinned row keeps arrows on first page before tab`() {
+        val snapshot =
+            controller.buildRenderSnapshot(
+                state = KeyboardActionBarState(pinnedActionIds = setOf("navigation")),
+                environment = environment(),
+            )
+
+        val navigationRow = snapshot.attachedRows.single { it.dedupeKey == "navigation" }
+        val firstPageLabels = navigationRow.items.take(navigationRow.visiblePageKeyCount ?: 0).map { it.label }
+
+        assertEquals(10, navigationRow.visiblePageKeyCount)
+        assertEquals(
+            listOf("←", "→", "Début", "Fin", "Word←", "Word→", "Del←", "Del→", "↑", "↓"),
+            firstPageLabels,
+        )
+        assertTrue(navigationRow.items.indexOfFirst { it.label == "Tab" } >= 10)
+    }
+
+    @Test
     fun `pinned action rows only scroll when they exceed alphabet slots`() {
         val overflowingActionIds = listOf("numbers", "symbols", "accents", "navigation", "emoji", "media")
 

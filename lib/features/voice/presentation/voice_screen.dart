@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -224,6 +226,24 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
             entry: entry,
             device: _deviceProfile(),
           );
+    if (installed) {
+      final installedPack = ref
+          .read(languagePackCatalogProvider)
+          .installedStateFor(entry);
+      await AndroidKeyboardBridge.setKeyboardVoiceRuntimeConfig(
+        languageTag: entry.languageTag,
+        packId: entry.packId,
+        engine: entry.engine.wireName,
+        modelArtifactPath: installedPack.modelArtifactPath,
+      );
+      await AndroidKeyboardBridge.probeKeyboardLocalRuntimePath(
+        languageTag: entry.languageTag,
+        packId: entry.packId,
+        engine: entry.engine.wireName,
+        modelArtifactPath: installedPack.modelArtifactPath,
+      );
+      await _syncKeyboardVoiceRuntimeEvents();
+    }
     if (!mounted) {
       return;
     }
@@ -237,6 +257,14 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   void _useExplicitFallback(String languageTag) {
     final notifier = ref.read(languagePackCatalogProvider.notifier);
     final applied = notifier.setExplicitFallbackForLanguage(languageTag);
+    unawaited(
+      AndroidKeyboardBridge.probeKeyboardLocalRuntimePath(
+        languageTag: languageTag,
+        packId: 'none',
+        engine: 'android_speech_recognizer',
+        modelArtifactPath: 'none',
+      ).then((_) => _syncKeyboardVoiceRuntimeEvents()),
+    );
     setState(() {
       _message = applied
           ? 'Explicit fallback enabled for $languageTag.'
