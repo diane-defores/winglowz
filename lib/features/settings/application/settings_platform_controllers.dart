@@ -31,6 +31,7 @@ class SettingsKeyboardController {
       'theme_preset=${status.themePresetId}',
       'theme_fallback=${status.themeFallbackStatus}',
       'compact=${status.compactModeEnabled}',
+      'auto_close_modes=${status.autoCloseModesEnabled}',
       'height=${status.keyboardHeightScale}',
       'action_height=${status.actionRowHeightScale}',
       'status_bar_mode=${status.statusBarConfig.mode.name}',
@@ -96,6 +97,7 @@ class SettingsKeyboardController {
     double? keyboardHeightScale,
     double? actionRowHeightScale,
     bool? compactModeEnabled,
+    bool? autoCloseModesEnabled,
     KeyboardPrivacyMode? privacyMode,
   }) {
     return AndroidKeyboardBridge.setPreferences(
@@ -132,6 +134,8 @@ class SettingsKeyboardController {
       actionRowHeightScale:
           actionRowHeightScale ?? current.actionRowHeightScale,
       compactModeEnabled: compactModeEnabled ?? current.compactModeEnabled,
+      autoCloseModesEnabled:
+          autoCloseModesEnabled ?? current.autoCloseModesEnabled,
       privacyMode: privacyMode ?? current.privacyMode,
     );
   }

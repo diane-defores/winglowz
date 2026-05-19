@@ -691,6 +691,16 @@ class _KeyboardSettingsSection extends StatelessWidget {
             ),
           ),
           SwitchListTile(
+            value: status?.autoCloseModesEnabled ?? true,
+            onChanged: busy
+                ? null
+                : (value) => onPreferenceChanged(autoCloseModesEnabled: value),
+            title: const Text('Auto-close modes'),
+            subtitle: const Text(
+              'Returns to ABC after one key in numbers, symbols, accents, or emoji mode.',
+            ),
+          ),
+          SwitchListTile(
             value: status?.keyVibrationEnabled ?? true,
             onChanged: busy
                 ? null

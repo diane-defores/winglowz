@@ -1644,6 +1644,7 @@ class AndroidKeyboardStatus {
     required this.keyboardHeightScale,
     required this.actionRowHeightScale,
     required this.compactModeEnabled,
+    required this.autoCloseModesEnabled,
     required this.privacyMode,
     required this.statusBarConfig,
     required this.accountLabel,
@@ -1696,6 +1697,7 @@ class AndroidKeyboardStatus {
   final double keyboardHeightScale;
   final double actionRowHeightScale;
   final bool compactModeEnabled;
+  final bool autoCloseModesEnabled;
   final KeyboardPrivacyMode privacyMode;
   final KeyboardStatusBarConfig statusBarConfig;
   final String? accountLabel;
@@ -1749,6 +1751,7 @@ class AndroidKeyboardStatus {
       keyboardHeightScale: 1,
       actionRowHeightScale: 1,
       compactModeEnabled: false,
+      autoCloseModesEnabled: true,
       privacyMode: KeyboardPrivacyMode.auto,
       statusBarConfig: KeyboardStatusBarConfig.defaults(),
       accountLabel: null,
@@ -1827,6 +1830,7 @@ class AndroidKeyboardStatus {
         (map['actionRowHeightScale'] as num?)?.toDouble() ?? 1,
       ),
       compactModeEnabled: map['compactModeEnabled'] as bool? ?? false,
+      autoCloseModesEnabled: map['autoCloseModesEnabled'] as bool? ?? true,
       privacyMode: KeyboardPrivacyMode.fromName(
         map['privacyMode'] as String? ?? KeyboardPrivacyMode.auto.name,
       ),
@@ -1892,6 +1896,7 @@ class AndroidKeyboardStatus {
     bool? doubleSpacePeriodEnabled,
     bool? punctuationAutoSpacingEnabled,
     double? actionRowHeightScale,
+    bool? autoCloseModesEnabled,
     KeyboardPrivacyMode? privacyMode,
     KeyboardStatusBarConfig? statusBarConfig,
   }) {
@@ -1923,6 +1928,8 @@ class AndroidKeyboardStatus {
       'punctuationAutoSpacingEnabled':
           punctuationAutoSpacingEnabled ?? this.punctuationAutoSpacingEnabled,
       'actionRowHeightScale': actionRowHeightScale ?? this.actionRowHeightScale,
+      'autoCloseModesEnabled':
+          autoCloseModesEnabled ?? this.autoCloseModesEnabled,
       'privacyMode': (privacyMode ?? this.privacyMode).name,
       'statusBarConfig': (statusBarConfig ?? this.statusBarConfig).toMap(),
     };

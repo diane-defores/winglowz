@@ -632,18 +632,6 @@ class WinFlowzInputMethodService :
         runMediaAction { mediaController.stop() }
     }
 
-    override fun onMediaShuffle() {
-        runMediaAction { mediaController.shuffle() }
-    }
-
-    override fun onMediaLoop() {
-        runMediaAction { mediaController.loop() }
-    }
-
-    override fun onMediaDiagnostics() {
-        runMediaAction { mediaController.diagnostics() }
-    }
-
     override fun onVolumeDown() {
         runMediaAction { mediaController.volumeDown(stateStore.mediaVolumeStepPercent) }
     }
@@ -848,6 +836,7 @@ class WinFlowzInputMethodService :
                 keyboardHeightScale = stateStore.keyboardHeightScale,
                 actionRowHeightScale = stateStore.actionRowHeightScale,
                 compactMode = stateStore.compactModeEnabled,
+                autoCloseModes = stateStore.autoCloseModesEnabled,
                 themeMode = stateStore.themeMode,
                 themeConfig = stateStore.themeConfig(),
                 recents = emojiRecents,

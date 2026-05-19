@@ -517,6 +517,9 @@ class MainActivity : FlutterActivity() {
                         call.argument<Boolean>("compactModeEnabled")?.let {
                             keyboardState.compactModeEnabled = it
                         }
+                        call.argument<Boolean>("autoCloseModesEnabled")?.let {
+                            keyboardState.autoCloseModesEnabled = it
+                        }
                         call.argument<String>("actionBarLongPressBehavior")?.let {
                             keyboardState.actionBarLongPressBehavior = KeyboardActionLongPressBehavior.fromRaw(it)
                         }

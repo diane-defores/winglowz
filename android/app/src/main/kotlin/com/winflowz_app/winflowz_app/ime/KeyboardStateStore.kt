@@ -123,6 +123,10 @@ class KeyboardStateStore(private val context: Context) {
         get() = preferences.getBoolean(KEY_COMPACT_MODE_ENABLED, false)
         set(value) = preferences.edit().putBoolean(KEY_COMPACT_MODE_ENABLED, value).apply()
 
+    var autoCloseModesEnabled: Boolean
+        get() = preferences.getBoolean(KEY_AUTO_CLOSE_MODES_ENABLED, true)
+        set(value) = preferences.edit().putBoolean(KEY_AUTO_CLOSE_MODES_ENABLED, value).apply()
+
     var actionBarLongPressBehavior: KeyboardActionLongPressBehavior
         get() = KeyboardActionLongPressBehavior.fromRaw(
             preferences.getString(KEY_ACTION_BAR_LONG_PRESS_BEHAVIOR, DEFAULT_ACTION_BAR_LONG_PRESS_BEHAVIOR),
@@ -342,6 +346,7 @@ class KeyboardStateStore(private val context: Context) {
             "keyboardHeightScale" to keyboardHeightScale,
             "actionRowHeightScale" to actionRowHeightScale,
             "compactModeEnabled" to compactModeEnabled,
+            "autoCloseModesEnabled" to autoCloseModesEnabled,
             "actionBarLongPressBehavior" to actionBarLongPressBehavior.wireValue,
             "privacyMode" to privacyMode,
             "statusBarConfig" to statusBarConfig.toMap(),
@@ -893,6 +898,7 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_KEYBOARD_HEIGHT_SCALE = "keyboard_height_scale"
         const val KEY_ACTION_ROW_HEIGHT_SCALE = "action_row_height_scale"
         const val KEY_COMPACT_MODE_ENABLED = "compact_mode_enabled"
+        const val KEY_AUTO_CLOSE_MODES_ENABLED = "auto_close_modes_enabled"
         const val KEY_ACTION_BAR_STATE = "action_bar_state"
         const val KEY_ACTION_BAR_LONG_PRESS_BEHAVIOR = "action_bar_long_press_behavior"
         const val KEY_EMOJI_RECENTS = "emoji_recents"

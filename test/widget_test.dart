@@ -56,6 +56,7 @@ void _installAndroidBridgeMocks() {
           'keySoundEnabled': false,
           'spellingSuggestionsEnabled': true,
           'specialKeyCornersEnabled': false,
+          'autoCloseModesEnabled': true,
           'frenchLanguageEnabled': true,
           'englishLanguageEnabled': true,
         };

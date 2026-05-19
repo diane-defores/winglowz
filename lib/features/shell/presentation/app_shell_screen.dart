@@ -297,6 +297,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
           keyboardHeightScale: status.keyboardHeightScale,
           actionRowHeightScale: status.actionRowHeightScale,
           compactModeEnabled: status.compactModeEnabled,
+          autoCloseModesEnabled: status.autoCloseModesEnabled,
           privacyMode: status.privacyMode,
         );
       } else if (step.id == OnboardingStepId.accessibility) {

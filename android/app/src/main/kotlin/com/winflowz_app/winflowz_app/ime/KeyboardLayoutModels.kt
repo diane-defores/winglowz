@@ -93,9 +93,6 @@ enum class KeyboardKeyAction {
     MediaNowPlaying,
     OpenMediaApp,
     MediaStop,
-    MediaShuffle,
-    MediaLoop,
-    MediaDiagnostics,
     VolumeDown,
     VolumeUp,
     BrightnessDown,
@@ -712,9 +709,6 @@ object KeyboardLayoutBuilder {
                     add(KeyboardKeySpec("media-volume-up", "Vol+", KeyboardKeyAction.VolumeUp))
                     add(KeyboardKeySpec("media-brightness-down", "Bri-", KeyboardKeyAction.BrightnessDown))
                     add(KeyboardKeySpec("media-brightness-up", "Bri+", KeyboardKeyAction.BrightnessUp))
-                    add(KeyboardKeySpec("media-shuffle", "Shuffle", KeyboardKeyAction.MediaShuffle, weight = 1.2f))
-                    add(KeyboardKeySpec("media-loop", "Loop", KeyboardKeyAction.MediaLoop))
-                    add(KeyboardKeySpec("media-diagnostics", "Diag", KeyboardKeyAction.MediaDiagnostics))
                 } else {
                     add(KeyboardKeySpec("media-now", "Now", KeyboardKeyAction.MediaNowPlaying))
                     add(KeyboardKeySpec("media-open-app", "App", KeyboardKeyAction.OpenMediaApp))
@@ -748,9 +742,6 @@ object KeyboardLayoutBuilder {
                 KeyboardRowSpec(
                     keys =
                         listOf(
-                            KeyboardKeySpec("media-shuffle", "Shuffle", KeyboardKeyAction.MediaShuffle, weight = 1.2f),
-                            KeyboardKeySpec("media-loop", "Loop", KeyboardKeyAction.MediaLoop),
-                            KeyboardKeySpec("media-diagnostics", "Diag", KeyboardKeyAction.MediaDiagnostics),
                             KeyboardKeySpec("media-status", "Media controls", KeyboardKeyAction.MediaNowPlaying, weight = 1.6f),
                         ),
                 ),

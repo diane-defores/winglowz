@@ -122,9 +122,6 @@ class WinFlowzKeyboardView(
         fun onMediaNowPlaying(): String
         fun onOpenMediaApp()
         fun onMediaStop()
-        fun onMediaShuffle()
-        fun onMediaLoop()
-        fun onMediaDiagnostics()
         fun onVolumeDown()
         fun onVolumeUp()
         fun onBrightnessDown()
@@ -195,6 +192,7 @@ class WinFlowzKeyboardView(
     private var keyboardHeightScale = KeyboardStateStore.KEYBOARD_HEIGHT_DEFAULT
     private var actionRowHeightScale = KeyboardStateStore.ACTION_ROW_HEIGHT_DEFAULT
     private var compactModeEnabled = false
+    private var autoCloseModesEnabled = true
     private var emojiCategory = KeyboardEmojiCategory.Recents
     private var recentEmojis = emptyList<String>()
     private var fieldPolicy = KeyboardSecurityPolicy.evaluate(null, KeyboardStateStore.PRIVACY_AUTO)
@@ -428,6 +426,7 @@ class WinFlowzKeyboardView(
         keyboardHeightScale: Float,
         actionRowHeightScale: Float,
         compactMode: Boolean,
+        autoCloseModes: Boolean,
         themeMode: String,
         themeConfig: KeyboardThemeConfig,
         recents: List<String>,
@@ -462,6 +461,7 @@ class WinFlowzKeyboardView(
         )
         this.actionRowHeightScale = KeyboardStateStore.normalizeActionRowHeightScale(actionRowHeightScale)
         compactModeEnabled = compactMode
+        autoCloseModesEnabled = autoCloseModes
         this.themeConfig = themeConfig
         if (themeImagePath != themeConfig.backgroundImagePath) {
             themeImagePath = themeConfig.backgroundImagePath
@@ -1858,6 +1858,7 @@ class WinFlowzKeyboardView(
                 if (!dispatchKeyValue(keyValue, selection, clearModifiersAfter = true)) {
                     setStatus("Key unavailable")
                 }
+                autoCloseModeAfterTextInput(keyValue.text != null)
             }
             KeyboardKeyAction.Text -> {
                 val keyValue = keyValueForSelection(commandKey, selection) ?: return
@@ -1870,6 +1871,7 @@ class WinFlowzKeyboardView(
                     val output = keyValue.text ?: return
                     callbacks.onEmojiInserted(output)
                 }
+                autoCloseModeAfterTextInput(keyValue.text != null)
             }
             KeyboardKeyAction.Backspace -> {
                 if (!callbacks.onBackspace()) {
@@ -2032,9 +2034,6 @@ class WinFlowzKeyboardView(
             }
             KeyboardKeyAction.OpenMediaApp -> callbacks.onOpenMediaApp()
             KeyboardKeyAction.MediaStop -> callbacks.onMediaStop()
-            KeyboardKeyAction.MediaShuffle -> callbacks.onMediaShuffle()
-            KeyboardKeyAction.MediaLoop -> callbacks.onMediaLoop()
-            KeyboardKeyAction.MediaDiagnostics -> callbacks.onMediaDiagnostics()
             KeyboardKeyAction.VolumeDown -> callbacks.onVolumeDown()
             KeyboardKeyAction.VolumeUp -> callbacks.onVolumeUp()
             KeyboardKeyAction.BrightnessDown -> callbacks.onBrightnessDown()
@@ -2202,6 +2201,24 @@ class WinFlowzKeyboardView(
         }
         reconcileActionBarState()
         refreshLayout()
+    }
+
+    private fun autoCloseModeAfterTextInput(insertedText: Boolean) {
+        if (!autoCloseModesEnabled || !insertedText) {
+            return
+        }
+        val shouldCloseLayoutMode =
+            layoutMode == KeyboardLayoutMode.Numbers ||
+                layoutMode == KeyboardLayoutMode.Symbols ||
+                layoutMode == KeyboardLayoutMode.Accents
+        val shouldCloseTypingPanel =
+            panelMode == KeyboardPanelMode.Emoji ||
+                panelMode == KeyboardPanelMode.Accents
+        if (!shouldCloseLayoutMode && !shouldCloseTypingPanel) {
+            return
+        }
+        layoutMode = KeyboardLayoutMode.Letters
+        panelMode = KeyboardPanelMode.None
     }
 
     private fun performKeyboardHaptic(feedbackConstant: Int) {

@@ -204,6 +204,7 @@ class AndroidKeyboardBridge {
     required double keyboardHeightScale,
     required double actionRowHeightScale,
     required bool compactModeEnabled,
+    required bool autoCloseModesEnabled,
     required KeyboardPrivacyMode privacyMode,
   }) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
@@ -237,6 +238,7 @@ class AndroidKeyboardBridge {
         actionRowHeightScale,
       ),
       'compactModeEnabled': compactModeEnabled,
+      'autoCloseModesEnabled': autoCloseModesEnabled,
       'privacyMode': privacyMode.name,
     });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});

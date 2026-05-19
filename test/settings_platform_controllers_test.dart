@@ -47,6 +47,7 @@ void main() {
         'englishLanguageEnabled': true,
         'doubleSpacePeriodEnabled': true,
         'punctuationAutoSpacingEnabled': false,
+        'autoCloseModesEnabled': true,
         'actionRowHeightScale': 0.6,
         'privacyMode': 'auto',
         'lastKeyboardError': 'token=[REDACTED_SECRET]',
@@ -59,6 +60,7 @@ void main() {
         layoutProfile: KeyboardLayoutProfile.azerty,
         clipboardSyncDesired: true,
         privacyMode: KeyboardPrivacyMode.strict,
+        autoCloseModesEnabled: false,
       );
 
       expect(status.layoutProfile, KeyboardLayoutProfile.azerty);
@@ -67,6 +69,7 @@ void main() {
       expect(status.mediaBrightnessStepPercent, 20);
       expect(status.actionRowHeightScale, 0.6);
       expect(status.privacyMode, KeyboardPrivacyMode.strict);
+      expect(status.autoCloseModesEnabled, isFalse);
       expect(status.voiceEnabled, isTrue);
       expect(calls.single.method, 'setKeyboardPreferences');
       expect(calls.single.arguments, containsPair('layoutProfile', 'azerty'));
@@ -84,6 +87,10 @@ void main() {
         containsPair('mediaBrightnessStepPercent', 20),
       );
       expect(calls.single.arguments, containsPair('actionRowHeightScale', 0.6));
+      expect(
+        calls.single.arguments,
+        containsPair('autoCloseModesEnabled', false),
+      );
     },
   );
 

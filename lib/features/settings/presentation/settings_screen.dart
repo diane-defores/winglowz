@@ -60,6 +60,7 @@ typedef _KeyboardPreferenceChanged =
       double? keyboardHeightScale,
       double? actionRowHeightScale,
       bool? compactModeEnabled,
+      bool? autoCloseModesEnabled,
       KeyboardPrivacyMode? privacyMode,
     });
 
@@ -368,6 +369,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     double? keyboardHeightScale,
     double? actionRowHeightScale,
     bool? compactModeEnabled,
+    bool? autoCloseModesEnabled,
     KeyboardPrivacyMode? privacyMode,
   }) async {
     final current = _keyboardStatus ?? AndroidKeyboardStatus.unsupported();
@@ -394,6 +396,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         keyboardHeightScale: keyboardHeightScale,
         actionRowHeightScale: actionRowHeightScale,
         compactModeEnabled: compactModeEnabled,
+        autoCloseModesEnabled: autoCloseModesEnabled,
         privacyMode: privacyMode,
       );
       if (!mounted) {
