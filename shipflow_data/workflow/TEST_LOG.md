@@ -164,3 +164,21 @@ Environment: Android APK on real phone.
   - git diff --check: PASS
   - ./gradlew :app:testDebugUnitTest --tests '*KeyboardVoiceRuntimeStatusTest': BLOCKED locally by AAPT2 runner incompatibility before unit test execution; CI/Blacksmith required for Android proof.
 - Follow-up: /sf-ship Android ASR catalogue physical-device QA fixes, then /sf-test Android ASR catalogue APK physical-device retest
+
+## 2026-05-20 - Android ASR fallback push-to-stop follow-up
+
+- Scope: spec shipflow_data/workflow/specs/asr-language-pack-catalog.md
+- Source: sf-fix
+- Status: fix-attempted; Android APK retest pending
+- Bug pointer: BUG-2026-05-20-001 -> shipflow_data/workflow/bugs/BUG-2026-05-20-001.md
+- User report: action-bar Mic starts recording animation and shows `Android speech fallback: listening (missing_pack)`, but stops after a few seconds instead of waiting for the user to press Mic again.
+- Fix applied:
+  - Removed app-side 10s Android fallback timeout.
+  - Increased Android SpeechRecognizer segment window hints.
+  - Treats Android no-match/speech-timeout and non-manual final results as internal segments, restarts fallback while the WinFlowz session remains active, and inserts accumulated text only on explicit stop.
+- Follow-up: /sf-ship BUG-2026-05-20-001, then /sf-test --retest BUG-2026-05-20-001 on Android real device
+- Local validation after fix:
+  - flutter analyze: PASS
+  - flutter test test/language_pack_catalog_test.dart test/settings_platform_controllers_test.dart test/widget_test.dart: PASS
+  - git diff --check: PASS
+  - cd android && ./gradlew :app:compileDebugKotlin -x :app:processDebugResources: PASS

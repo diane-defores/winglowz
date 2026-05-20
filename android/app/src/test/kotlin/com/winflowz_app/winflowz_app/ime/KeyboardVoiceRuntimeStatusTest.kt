@@ -17,6 +17,46 @@ class KeyboardVoiceRuntimeStatusTest {
     }
 
     @Test
+    fun `android fallback merge waits for manual stop without duplicating final partial`() {
+        assertEquals(
+            "bonjour tout le monde",
+            KeyboardVoiceController.mergedAndroidFallbackText(
+                listOf("bonjour"),
+                "tout le monde",
+            ),
+        )
+        assertEquals(
+            "bonjour",
+            KeyboardVoiceController.mergedAndroidFallbackText(
+                listOf("bonjour"),
+                "bonjour",
+            ),
+        )
+    }
+
+    @Test
+    fun `android fallback continues after silence errors`() {
+        assertEquals(
+            true,
+            KeyboardVoiceController.shouldContinueAndroidFallbackAfterError(
+                android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT,
+            ),
+        )
+        assertEquals(
+            true,
+            KeyboardVoiceController.shouldContinueAndroidFallbackAfterError(
+                android.speech.SpeechRecognizer.ERROR_NO_MATCH,
+            ),
+        )
+        assertEquals(
+            false,
+            KeyboardVoiceController.shouldContinueAndroidFallbackAfterError(
+                android.speech.SpeechRecognizer.ERROR_CLIENT,
+            ),
+        )
+    }
+
+    @Test
     fun `voice runtime status exposes explicit diagnostic map`() {
         val status =
             KeyboardVoiceRuntimeStatus.normalized(

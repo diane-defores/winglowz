@@ -6,7 +6,7 @@ project: "winflowz_app"
 created: "2026-05-14"
 created_at: "2026-05-14 22:30:00 UTC"
 updated: "2026-05-19"
-updated_at: "2026-05-19 12:49:42 UTC"
+updated_at: "2026-05-20 09:16:59 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -50,7 +50,7 @@ evidence:
   - "User decision 2026-05-14: do not bundle all models in the APK; downloading after install is preferred."
   - "Current code already includes Android IME voice capture through KeyboardVoiceController using Android SpeechRecognizer, proving a fallback path exists but not a local-model catalog."
   - "Current code already exposes Settings and diagnostics surfaces for keyboard and overlay status, which can host pack-management state."
-next_step: "/sf-prod Android APK build for ASR catalogue QA fixes"
+next_step: "/sf-ship BUG-2026-05-20-001"
 ---
 
 # Title
@@ -415,14 +415,15 @@ None.
 | 2026-05-19 11:29:41 UTC | sf-test | GPT-5 Codex | Logged Android physical-device QA from APK sha `37116dd` run `26091472372`: Settings catalogue visible with French/Hindi/English; diagnostic confirms cloud fallback disabled and Android SpeechRecognizer fallback metadata; action-bar mic dictation works but fallback mode is not visible enough; Hindi remove action appears no-op; overlay still blocks the interface. | Failed QA with actionable bugs: opened `BUG-2026-05-19-001` for keyboard mic fallback explanation, opened `BUG-2026-05-19-002` for Hindi remove no-op, and reopened `BUG-2026-05-11-001` for overlay behavior. | /sf-fix Android ASR catalogue physical-device QA failures |
 | 2026-05-19 12:31:35 UTC | sf-fix | GPT-5 Codex | Fixed Android ASR catalogue physical-device QA failures that could be handled directly: persistent IME Android-fallback status copy, no misleading remove action for absent/removed packs, and overlay non-focusable/touch-modal flags plus honest Settings start copy. | Fix attempted: Flutter analyzer and targeted tests pass; local Android Gradle unit command is blocked by local AAPT2 runner incompatibility, so Android proof must come from Blacksmith APK and physical-device retest. | /sf-ship Android ASR catalogue physical-device QA fixes |
 | 2026-05-19 12:49:42 UTC | sf-ship | GPT-5 Codex | Quick-shipped ASR catalogue physical-device QA fixes for CI/APK iteration after local checks. | Shipped for iteration: commit/push will trigger Blacksmith Android build; linked bugs remain `fix-attempted` and require APK retest before closure. | /sf-prod Android APK build for ASR catalogue QA fixes |
+| 2026-05-20 09:16:59 UTC | sf-fix | GPT-5 Codex | Fixed follow-up Android real-device report that keyboard Mic fallback visibly starts but stops after a few seconds before the user presses Mic again. | Fix attempted: Android fallback no longer has an app-side 10s timeout, treats SpeechRecognizer callbacks as segments, restarts fallback after silence/no-match, and only inserts accumulated text on explicit user stop. | /sf-ship BUG-2026-05-20-001 |
 
 # Current Chantier Flow
 
 - `sf-spec`: done - latest draft captured the current product direction, deterministic storage policy, data contract, cloud fallback trust boundary, and language doctrine note.
 - `sf-ready`: ready - readiness gate passed after data contract and cloud fallback trust-boundary corrections.
 - `sf-start`: implemented - catalogue/domain contract, local-first provider, durable pack state, deterministic SDK/ABI/RAM/storage preflight, install/retry/update/corruption state transitions, explicit cloud fallback consent, Settings "On-device Speech" management, first-micro no-pack prompt, native bridge/runtime status propagation, timeout/fallback diagnostics, runtime adapter boundary, and benchmark MVP matrix are in place. Real ASR engine inference is intentionally outside this catalogue spec and is tracked by `shipflow_data/workflow/specs/asr-local-runtime-engine-integration.md`.
-- `sf-verify`: partial - local Flutter checks pass and Android CI/Blacksmith produced a debug APK artifact; physical-device QA failures now have fix attempts, but Android CI/APK proof and real-device retest are still required before closure. The separate runtime-engine spec is draft and remains out of scope for this catalogue verification.
+- `sf-verify`: partial - local Flutter checks pass and Android CI/Blacksmith produced a debug APK artifact; physical-device QA failures now have fix attempts, including follow-up push-to-stop fallback behavior, but Android CI/APK proof and real-device retest are still required before closure. The separate runtime-engine spec is draft and remains out of scope for this catalogue verification.
 - `sf-end`: not launched - closeout depends on CI/APK proof and physical-device retest for the QA fixes.
 - `sf-ship`: quick-shipped - QA fixes pushed for CI/APK iteration only; not a final product-complete ship because linked bugs remain pending physical-device retest.
 
-Next command: `/sf-prod Android APK build for ASR catalogue QA fixes`
+Next command: `/sf-ship BUG-2026-05-20-001`
