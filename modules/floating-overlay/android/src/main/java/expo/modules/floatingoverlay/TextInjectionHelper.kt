@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.view.accessibility.AccessibilityNodeInfo
-import android.widget.Toast
 
 object TextInjectionHelper {
 
@@ -18,7 +17,6 @@ object TextInjectionHelper {
 
         // Tier 2: Clipboard fallback
         copyToClipboard(context, text)
-        Toast.makeText(context, "Text copied — paste it manually", Toast.LENGTH_SHORT).show()
         return false
     }
 

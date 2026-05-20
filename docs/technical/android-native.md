@@ -86,8 +86,8 @@ Keyboard clipboard action
 - Password, OTP, `noPersonalizedLearning`, and app-marked sensitive fields must disable voice capture, clipboard sync, snippets, and learning behavior.
 - Base media control sends generic play/pause key events only; it must not read metadata without explicit richer permission.
 - Keyboard preferences are persisted in `KeyboardStateStore` and round-tripped through `winflowz_app/keyboard`:
-  - `layoutProfile`: `QWERTY` / `AZERTY`
-  - `cornerModeEnabled`: `true` / `false`
+  - `layoutProfile`: `QWERTY` / `AZERTY`, default `AZERTY`
+  - `cornerModeEnabled`: `true` / `false`, default `true`
   - `cornerConfig`: versioned JSON with a preset id and per-key/per-slot overrides (`up/down/left/right` plus legacy `topLeft/topRight/bottomLeft/bottomRight`)
   - `themeConfig`: versioned JSON (`version`, `presetId`, colors, linear/radial gradient style, border/radius/shadow values, local image reference, press-effect/easing metadata) persisted under `KEY_THEME_CONFIG` with size cap (48 KB)
   - `privacyMode`: `auto` / `strict` / `standard`

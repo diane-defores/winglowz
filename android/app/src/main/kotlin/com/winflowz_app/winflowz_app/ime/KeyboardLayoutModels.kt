@@ -14,7 +14,7 @@ enum class KeyboardLayoutProfile {
 
     companion object {
         fun fromRaw(raw: String?): KeyboardLayoutProfile {
-            return values().firstOrNull { it.name.equals(raw, ignoreCase = true) } ?: QWERTY
+            return values().firstOrNull { it.name.equals(raw, ignoreCase = true) } ?: AZERTY
         }
     }
 }

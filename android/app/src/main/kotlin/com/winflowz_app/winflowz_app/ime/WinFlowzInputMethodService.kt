@@ -10,7 +10,6 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import com.winflowz_app.winflowz_app.MainActivity
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionBarState
 
@@ -1076,7 +1075,6 @@ class WinFlowzInputMethodService :
 
     private fun showStatus(message: String) {
         keyboardView?.setStatus(message)
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showInlineStatus(message: String) {
@@ -1107,7 +1105,6 @@ class WinFlowzInputMethodService :
                 error = error,
             )
             keyboardView?.setStatus("Keyboard recovered")
-            Toast.makeText(this, "Keyboard recovered", Toast.LENGTH_SHORT).show()
             null
         }
     }

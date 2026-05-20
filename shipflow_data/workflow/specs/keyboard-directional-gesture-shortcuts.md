@@ -318,6 +318,7 @@ Generaliser le modele de corners en modele de gesture slots a huit directions, t
 | 2026-05-19 21:18:49 UTC | sf-build | GPT-5 Codex integrator | Reviewed worker changes, removed default diagonal arrow mappings from `H` so arrows use cardinal slots only, and reran allowed local checks including full `flutter test`. | implemented-pending-android-qa | Blacksmith/GitHub Actions Android validation and Diane physical-device QA |
 | 2026-05-19 21:55:47 UTC | direct preset update | GPT-5 Codex + explorer subagent | Updated Smart French/punctuation presets for numeric up-gestures, layout-aware arrow gestures on `W`/`Z` + `S`, and `-`/`_` on `N`; synced Kotlin/Dart/docs/tests. | implemented-pending-android-qa | Allowed local checks, then Android CI/physical QA |
 | 2026-05-19 22:37:37 UTC | sf-build | GPT-5 Codex | Removed Dart functional preset tables/resolution, kept preset ids/names as DTO/UI fallback, updated Flutter tests and docs for Kotlin-native source of truth. | implemented-local-verified | Android CI/Blacksmith and Diane physical-device QA |
+| 2026-05-19 23:45:16 UTC | direct default update | GPT-5 Codex + explorer subagent | Changed default keyboard layout to AZERTY and enabled gesture/corner mode by default across native state, view fallback, Flutter DTO fallback, preview default, docs, and tests. | implemented-local-verified | Android CI/Blacksmith and Diane physical-device QA |
 
 ## Current Chantier Flow
 

@@ -48,7 +48,7 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 ## Android Keyboard IME
 
 - WinFlowz keyboard is declared as an Android `InputMethodService` and is configurable from Settings through the `winflowz_app/keyboard` MethodChannel.
-- The keyboard provides a native Canvas layout engine with QWERTY/AZERTY profiles, explicit clipboard copy/paste actions, Android speech recognition, and media keys (previous/play-pause/next).
+- The keyboard provides a native Canvas layout engine with QWERTY/AZERTY profiles, defaulting to AZERTY with swipe gestures enabled, explicit clipboard copy/paste actions, Android speech recognition, and media keys (previous/play-pause/next).
 - Main keyboard rows use a stable logical grid: standard keys occupy one cell, deliberate exceptions occupy whole-cell spans, and visual gaps/radius/shadows are separated from the tactile hit area so gaps do not become dead zones.
 - Tap and swipe gesture classification is local and deterministic: tap emits the primary glyph; directional (`up/down/left/right`) and corner (`topLeft/topRight/bottomLeft/bottomRight`) swipes dispatch typed `KeyboardKeyValue` actions when swipe gestures are enabled; return-to-center cancels the gesture.
 - Gesture shortcuts are configured per stable key id and gesture slot through local Android preferences. Legacy JSON slot names (`topLeft/topRight/bottomLeft/bottomRight`) remain valid; directional slots (`up/down/left/right`) are additive. Kotlin native owns the functional preset tables and runtime resolution. Flutter carries preset ids/names, DTOs, settings drafts, import/export, and a light visual editor, but it must not recreate native preset defaults.

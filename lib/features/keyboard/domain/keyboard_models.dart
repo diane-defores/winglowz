@@ -20,7 +20,7 @@ enum KeyboardLayoutProfile {
   static KeyboardLayoutProfile fromName(String value) {
     return KeyboardLayoutProfile.values.firstWhere(
       (profile) => profile.name == value.toLowerCase(),
-      orElse: () => KeyboardLayoutProfile.qwerty,
+      orElse: () => KeyboardLayoutProfile.azerty,
     );
   }
 }
@@ -1679,8 +1679,8 @@ class AndroidKeyboardStatus {
       themeBackgroundSource: 'solid',
       themeConfigSize: 0,
       themeFallbackStatus: 'not_supported',
-      layoutProfile: KeyboardLayoutProfile.qwerty,
-      cornerModeEnabled: false,
+      layoutProfile: KeyboardLayoutProfile.azerty,
+      cornerModeEnabled: true,
       cornerPresetId: KeyboardCornerPresetCatalog.frenchAccents,
       debugTouchOverlayEnabled: false,
       keyVibrationEnabled: true,
@@ -1744,9 +1744,9 @@ class AndroidKeyboardStatus {
       themeConfigSize: (map['themeConfigSize'] as num?)?.toInt() ?? 0,
       themeFallbackStatus: map['themeFallbackStatus'] as String? ?? 'unknown',
       layoutProfile: KeyboardLayoutProfile.fromName(
-        map['layoutProfile'] as String? ?? KeyboardLayoutProfile.qwerty.name,
+        map['layoutProfile'] as String? ?? KeyboardLayoutProfile.azerty.name,
       ),
-      cornerModeEnabled: map['cornerModeEnabled'] as bool? ?? false,
+      cornerModeEnabled: map['cornerModeEnabled'] as bool? ?? true,
       cornerPresetId:
           map['cornerPresetId'] as String? ??
           KeyboardCornerPresetCatalog.frenchAccents,

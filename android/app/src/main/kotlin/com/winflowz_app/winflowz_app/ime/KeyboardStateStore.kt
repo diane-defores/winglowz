@@ -57,11 +57,11 @@ class KeyboardStateStore(private val context: Context) {
         }
 
     var layoutProfile: KeyboardLayoutProfile
-        get() = KeyboardLayoutProfile.fromRaw(preferences.getString(KEY_LAYOUT_PROFILE, KeyboardLayoutProfile.QWERTY.name))
+        get() = KeyboardLayoutProfile.fromRaw(preferences.getString(KEY_LAYOUT_PROFILE, DEFAULT_LAYOUT_PROFILE.name))
         set(value) = preferences.edit().putString(KEY_LAYOUT_PROFILE, value.name).apply()
 
     var cornerModeEnabled: Boolean
-        get() = preferences.getBoolean(KEY_CORNER_MODE_ENABLED, false)
+        get() = preferences.getBoolean(KEY_CORNER_MODE_ENABLED, DEFAULT_CORNER_MODE_ENABLED)
         set(value) = preferences.edit().putBoolean(KEY_CORNER_MODE_ENABLED, value).apply()
 
     var debugTouchOverlayEnabled: Boolean
@@ -929,6 +929,8 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_THEME_MODE = "theme_mode"
         const val KEY_LAYOUT_PROFILE = "layout_profile"
         const val KEY_CORNER_MODE_ENABLED = "corner_mode_enabled"
+        val DEFAULT_LAYOUT_PROFILE = KeyboardLayoutProfile.AZERTY
+        const val DEFAULT_CORNER_MODE_ENABLED = true
         const val KEY_DEBUG_TOUCH_OVERLAY_ENABLED = "debug_touch_overlay_enabled"
         const val KEY_KEY_VIBRATION_ENABLED = "key_vibration_enabled"
         const val KEY_KEY_SOUND_ENABLED = "key_sound_enabled"

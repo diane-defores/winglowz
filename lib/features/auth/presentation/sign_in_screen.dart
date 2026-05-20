@@ -172,12 +172,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       return;
     }
     await Clipboard.setData(ClipboardData(text: detail));
-    if (!mounted) {
-      return;
-    }
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Détail technique copié.')));
   }
 
   String? _validateEmail(String? value) {

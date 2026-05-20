@@ -221,6 +221,8 @@ void main() {
     expect(status.actionRowHeightScale, 0.3);
     expect(status.privacyMode, KeyboardPrivacyMode.strict);
     expect(status.cornerPresetId, 'developer_symbols');
+    expect(status.layoutProfile, KeyboardLayoutProfile.azerty);
+    expect(status.cornerModeEnabled, isTrue);
     expect(
       status.toPreferencesMap(mediaControlsEnabled: false),
       containsPair('mediaControlsEnabled', false),
@@ -940,7 +942,7 @@ void main() {
     expect(find.text('Keyboard'), findsOneWidget);
     expect(find.text('App'), findsOneWidget);
     expect(find.text('Theme'), findsOneWidget);
-    expect(find.text('QWERTY'), findsWidgets);
+    expect(find.text('AZERTY'), findsWidgets);
     expect(find.text('Vibe on'), findsOneWidget);
     expect(find.text('Sound off'), findsOneWidget);
     expect(find.text('Suggest on'), findsOneWidget);

@@ -60,7 +60,7 @@ class KeyboardPreviewScreen extends StatefulWidget {
 }
 
 class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
-  KeyboardLayoutProfile _profile = KeyboardLayoutProfile.qwerty;
+  KeyboardLayoutProfile _profile = KeyboardLayoutProfile.azerty;
   KeyboardPreviewFieldContext _fieldContext = KeyboardPreviewFieldContext.text;
   KeyboardPreviewPanel _panel = KeyboardPreviewPanel.none;
   KeyboardPreviewMode _mode = KeyboardPreviewMode.letters;

@@ -181,8 +181,8 @@ class WinFlowzKeyboardView(
     private var layoutMode = KeyboardLayoutMode.Letters
     private var symbolPage = 0
     private var panelMode = KeyboardPanelMode.None
-    private var layoutProfile = KeyboardLayoutProfile.QWERTY
-    private var cornerModeEnabled = false
+    private var layoutProfile = KeyboardStateStore.DEFAULT_LAYOUT_PROFILE
+    private var cornerModeEnabled = KeyboardStateStore.DEFAULT_CORNER_MODE_ENABLED
     private var debugTouchOverlayEnabled = false
     private var keyVibrationEnabled = true
     private var keySoundEnabled = false
