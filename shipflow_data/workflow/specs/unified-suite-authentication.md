@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.14"
+artifact_version: "1.0.15"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
 updated: "2026-05-22"
-updated_at: "2026-05-22 13:17:05 UTC"
+updated_at: "2026-05-22 21:09:18 UTC"
 status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -66,7 +66,7 @@ evidence:
   - "Production endpoint preflight 2026-05-22: winflowz-app and www.winflowz.com are reachable, but deployed Formation bridge endpoints `/api/bridge/firebase` and `/api/bridge/sync` return 404, so the real suite-auth smoke is blocked until deploy."
   - "Production env verification 2026-05-22: both Vercel deployments are Ready, but `winflowz` lacks Clerk/suite-auth runtime env and `winflowz-app` has no production env variables."
   - "Endpoint middleware fix 2026-05-22: Formation bridge/webhook/newsletter endpoints now bypass Clerk middleware and CORS is allowlist-based with `SUITE_API_ALLOWED_ORIGINS`; production still requires push/redeploy and env configuration."
-next_step: "push/redeploy Formation middleware fix, configure production env vars, then /sf-prod winflowz"
+next_step: "push/redeploy Formation and Android CI env propagation, then /sf-prod winflowz plus GitHub Actions Android retest"
 ---
 
 # Title
@@ -519,6 +519,7 @@ Resolved decisions:
 | 2026-05-22 09:14:16 UTC | sf-test + sf-auth-debug | GPT-5 Codex | Ran non-secret deployed endpoint preflight for the first suite-auth smoke pair | Blocked: app and Formation roots respond, but deployed Formation bridge endpoints return 404, so real auth/session smoke cannot start until the bridge scope is shipped/deployed | `/sf-ship unified-suite-authentication bridge scope`, then `/sf-prod winflowz`, then `/sf-test unified-suite-authentication --prod` |
 | 2026-05-22 11:56:37 UTC | sf-prod | GPT-5 Codex | Rechecked production deployments and redacted env/runtime signals after push | Blocked: deployments are Ready, but `winflowz` lacks Clerk publishable key and suite-auth env vars, and `winflowz-app` has no production env vars | configure Vercel env vars for `winflowz` and `winflowz-app`, redeploy, then `/sf-prod winflowz` |
 | 2026-05-22 13:17:05 UTC | sf-auth-debug | GPT-5 Codex | Investigated bridge endpoint 500s and patched Formation middleware/CORS | Partial fixed locally: bridge/webhook/newsletter endpoints bypass Clerk and local bridge requests now return controlled JSON config errors instead of Clerk middleware crashes; production still needs push/redeploy and env vars | push/redeploy Formation fix, configure env vars, then `/sf-prod winflowz` |
+| 2026-05-22 21:09:18 UTC | sf-ship | GPT-5 Codex | Prepared quick ship for Android CI suite bridge env propagation and Formation deployment support after env setup | Partial: local checks passed, but hosted proof still requires push, GitHub Actions Android CI, Vercel redeploy, and manual Android/device smoke | `/sf-prod winflowz`, GitHub Actions Android retest, then suite-auth smoke |
 
 # Current Chantier Flow
 
@@ -527,10 +528,10 @@ Resolved decisions:
 - sf-start: partial via sf-build; bridge-api, firestore-entitlement-enforcement, revocation-mirror-sync and revoked-token-policy tranches implemented.
 - sf-verify: not started.
 - sf-end: not started.
-- sf-ship: not started.
+- sf-ship: partial quick ship prepared on 2026-05-22; hosted Vercel/GitHub Actions proof still pending.
 - support-runbook: done via sf-build delegated docs worker; canonical operator guide added in the main project docs and surfaced from the app docs.
 - smoke-readiness: partial via sf-build delegated docs worker; Task 10 log exists, but real deployed proof is not captured yet.
 - sf-test/sf-auth-debug: partial fixed locally on 2026-05-22; deployed Formation endpoints previously failed before route code because Clerk middleware required a missing publishable key.
 - sf-prod: still blocked on 2026-05-22 until the Formation fix is pushed/redeployed and production Vercel env variables are configured for both `winflowz` and `winflowz-app`.
 
-Next command: push/redeploy the Formation middleware fix, configure Vercel env vars for `winflowz` and `winflowz-app`, then `/sf-prod winflowz`.
+Next command: push/redeploy the Formation and Android CI env propagation changes, then `/sf-prod winflowz` plus GitHub Actions Android retest.
