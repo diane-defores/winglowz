@@ -96,7 +96,7 @@ Typed collections in `src/content/config.ts` define valid shapes for:
 
 ### Request orchestration layer
 
-`src/middleware/index.ts` sequences Clerk middleware first, then application middleware that routes `/api/*` through CORS handling and other requests through i18n handling.
+`src/middleware/index.ts` runs Clerk middleware only for Clerk-owned pages and APIs that need `locals.auth()`. Server-owned endpoints that authenticate themselves (`/api/bridge/*`, webhook proxies, and newsletter APIs) bypass Clerk first, then route `/api/*` through CORS handling. Other requests use i18n handling.
 
 ### Integration API layer
 

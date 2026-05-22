@@ -108,6 +108,7 @@ Copy `.env.example` to `.env` and fill the values required by your environment.
 - `SITE`
 - `PUBLIC_SITE_URL`
 - `PUBLIC_CONVEX_URL`
+- `SUITE_API_ALLOWED_ORIGINS` (comma-separated browser origins allowed to call API routes, including the WinFlowz app web origin)
 - `PORT`
 
 ### Firebase Admin bridge
@@ -131,6 +132,8 @@ The bridge also writes a server-owned Firestore mirror at `suiteAccess/{firebase
 
 ### Clerk
 
+- `PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
 - `CLERK_WEBHOOK_SECRET`
 
 ### Polar
