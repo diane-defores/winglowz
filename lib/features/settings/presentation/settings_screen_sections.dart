@@ -1232,6 +1232,15 @@ class _LanguagePackTile extends StatelessWidget {
                 ),
               ),
             ],
+            if (!entry.isInstallable) ...[
+              AppGaps.x1,
+              Text(
+                'Status-only row: this language has no downloadable local pack in the current catalog.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
             AppGaps.x2,
             Wrap(
               spacing: AppSpacing.x2,

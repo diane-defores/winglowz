@@ -183,6 +183,30 @@ Environment: Android APK on real phone.
   - git diff --check: PASS
   - cd android && ./gradlew :app:compileDebugKotlin -x :app:processDebugResources: PASS
 
+## 2026-05-22 - Android ASR fallback and speech-pack action retest
+
+- Scope: spec shipflow_data/workflow/specs/asr-language-pack-catalog.md
+- Source: sf-test -> sf-fix
+- Status: failed retest, fix-attempted again; Android APK retest pending
+- Bug pointers:
+  - BUG-2026-05-20-001 -> keyboard mic Android fallback still auto-stops with `failed (runtime_load_failed)`
+  - BUG-2026-05-19-002 -> speech-pack rows/actions still appear grayed or silent on real device
+- User report:
+  - Action-bar Mic shows `Android speech fallback: failed (runtime_load_failed)` and still stops without explicit user stop.
+  - Pressing again before the auto-stop can stop it manually.
+  - Package details/actions appear grayed; install appears to do nothing; logs mention `Runtime Unavailable`.
+- Fix applied:
+  - Android fallback now retries `ERROR_CLIENT` / `ERROR_RECOGNIZER_BUSY` as bounded delayed restarts instead of immediately failing the user-facing session.
+  - Second mic tap now stops the active fallback session even while a restart is pending.
+  - Settings install/retry now gives visible success/blocked feedback, syncs successful installs to the keyboard runtime config, probes native runtime status, and reloads keyboard diagnostics.
+  - Non-installable fallback/unavailable catalogue rows now state that they are status-only rows with no downloadable local pack.
+- Local validation:
+  - flutter analyze: PASS
+  - flutter test test/language_pack_catalog_test.dart test/settings_platform_controllers_test.dart test/widget_test.dart: PASS
+  - git diff --check: PASS
+  - cd android && ./gradlew :app:compileDebugKotlin -x :app:processDebugResources: PASS
+- Follow-up: /sf-ship BUG-2026-05-20-001 BUG-2026-05-19-002, then /sf-test Android ASR catalogue APK physical-device retest
+
 ## 2026-05-21 - Task 10 - WinFlowz suite authentication smoke readiness
 
 - Scope: spec shipflow_data/workflow/specs/unified-suite-authentication.md, Task 10
@@ -232,3 +256,34 @@ Environment: Android APK on real phone.
 - Bug pointer: none; current code changes appear not deployed, so this is a deployment/proof blocker rather than a confirmed runtime bug.
 - Evidence pointer: redacted command evidence from 2026-05-22 sf-test/sf-auth-debug run; no tokens, cookies, or secrets sent.
 - Follow-up: ship/deploy the bounded suite-auth bridge scope, run `/sf-prod winflowz`, then rerun `/sf-test unified-suite-authentication --prod`.
+
+## 2026-05-22 - WinFlowz suite auth production env verification
+
+- Scope: spec shipflow_data/workflow/specs/unified-suite-authentication.md, Task 10
+- Environment: Vercel production projects `winflowz` and `winflowz-app`
+- Tester: Codex
+- Source: sf-prod
+- Status: blocked
+- Confidence: high
+- Result summary: Both Vercel deployments are `Ready`, but runtime/env verification fails. `winflowz` has no Clerk publishable key configured and the bridge endpoints return 500 with Clerk middleware error `Publishable key is missing`; Vercel env listing for `winflowz` shows only old plugin/YouTube/Supabase variables, not the suite-auth Clerk/Convex/Firebase/Polar variables. `winflowz-app` has no production env variables, including no `SUITE_IDENTITY_BRIDGE_URL` or Firebase web config variables.
+- Bug pointer: none; this is the existing suite-auth deployment blocker, not a separate code bug yet.
+- Evidence pointer: Vercel deployment IDs `dpl_pUXyznYzN11EVBnmoQNNKUvg5s9Z` for `winflowz` and `dpl_8SYHy8d8xNR16Qj17vfYSkwUwWYJ` for `winflowz-app`; Vercel env names and redacted runtime logs only, no secret values captured.
+- Follow-up: configure required Vercel env vars for both projects, redeploy, then rerun `/sf-prod winflowz` and `/sf-test unified-suite-authentication --prod`.
+
+## 2026-05-22 - WinFlowz suite auth endpoint middleware fix
+
+- Scope: spec shipflow_data/workflow/specs/unified-suite-authentication.md, Task 10
+- Environment: local Formation repo `/home/claude/winflowz`; production still requires push/redeploy
+- Tester: Codex
+- Source: sf-auth-debug
+- Status: partial-fixed-local
+- Confidence: high
+- Result summary: Formation middleware now bypasses Clerk for server-owned endpoints that authenticate themselves (`/api/bridge/*`, webhook proxies, and newsletter APIs). `/api/polar/checkout` still goes through Clerk because it needs `locals.auth()`. CORS is now allowlist-based through `SUITE_API_ALLOWED_ORIGINS` instead of relying on a single site origin.
+- Local proof:
+  - `pnpm vitest run tests/middleware/authRouting.test.ts`: PASS
+  - `pnpm build:check`: PASS
+  - `pnpm test:unit`: PASS
+  - Local `POST http://127.0.0.1:3011/api/bridge/firebase` without Clerk secrets returned JSON `503 bridge_secret_not_configured`, proving the route now fails inside the bridge controller instead of crashing in Clerk middleware.
+  - Local `POST` with allowed origin `http://localhost:4321` reflected that origin; disallowed origin did not receive `Access-Control-Allow-Origin`.
+- Manual action needed from Diane: configure the real production env names/values, including Clerk keys, suite bridge/Firebase/Convex vars, and `SUITE_API_ALLOWED_ORIGINS` with the WinFlowz app web origin.
+- Follow-up: push/redeploy the Formation patch, then rerun `/sf-prod winflowz` and `/sf-test unified-suite-authentication --prod`.

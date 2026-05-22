@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.12"
+artifact_version: "1.0.14"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
-updated: "2026-05-21"
-updated_at: "2026-05-22 09:14:16 UTC"
+updated: "2026-05-22"
+updated_at: "2026-05-22 13:17:05 UTC"
 status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -64,7 +64,9 @@ evidence:
   - "Canonical support runbook added 2026-05-21 in the main WinFlowz docs and linked from the app docs."
   - "Task 10 smoke-readiness log added 2026-05-21 in shipflow_data/workflow/TEST_LOG.md; final proof remains blocked until deployed Firebase/Convex/Firestore evidence exists."
   - "Production endpoint preflight 2026-05-22: winflowz-app and www.winflowz.com are reachable, but deployed Formation bridge endpoints `/api/bridge/firebase` and `/api/bridge/sync` return 404, so the real suite-auth smoke is blocked until deploy."
-next_step: "/sf-build unified-suite-authentication continue"
+  - "Production env verification 2026-05-22: both Vercel deployments are Ready, but `winflowz` lacks Clerk/suite-auth runtime env and `winflowz-app` has no production env variables."
+  - "Endpoint middleware fix 2026-05-22: Formation bridge/webhook/newsletter endpoints now bypass Clerk middleware and CORS is allowlist-based with `SUITE_API_ALLOWED_ORIGINS`; production still requires push/redeploy and env configuration."
+next_step: "push/redeploy Formation middleware fix, configure production env vars, then /sf-prod winflowz"
 ---
 
 # Title
@@ -394,6 +396,8 @@ Update or create:
   - Notes : sans ce proof, ne pas annoncer l'auth suite comme shipped.
   - Progress 2026-05-21 : smoke-readiness log ajouté dans `shipflow_data/workflow/TEST_LOG.md`; le smoke est défini comme preuve minimale end-to-end WinFlowz Formation + WinFlowz app, et la checklist sépare preuves locales, environnement déployé et actions manuelles Diane.
   - Progress 2026-05-22 : preflight production non-secret effectué; `winflowz-app.vercel.app` et `www.winflowz.com` répondent, mais les endpoints Formation `/api/bridge/firebase` et `/api/bridge/sync` retournent 404. Le smoke réel reste bloqué par déploiement.
+  - Progress 2026-05-22 : après push, les endpoints Formation répondent 500 et les logs Vercel montrent `Publishable key is missing` côté Clerk. Les variables Vercel production requises pour `winflowz` et `winflowz-app` ne sont pas configurées.
+  - Progress 2026-05-22 : fix local ajouté dans `/home/claude/winflowz` pour que `/api/bridge/*`, les webhooks et les APIs newsletter bypassent Clerk; `/api/polar/checkout` reste Clerk-authentifié. Preuve locale: le bridge répond maintenant par erreur JSON contrôlée sans secrets Clerk, et le CORS reflète seulement les origines autorisées.
 
 # Acceptance Criteria
 
@@ -513,6 +517,8 @@ Resolved decisions:
 | 2026-05-21 16:53:06 UTC | sf-build | GPT-5 Codex + delegated agent | Added the canonical support runbook, linked it from the main suite auth decision and app pointer, and kept the operator copy redacted. | Partial: support triage is documented; remaining gaps are real Firebase/Convex/Firestore deployed smoke, deployed sync env proof and final suite auth verification | `/sf-build unified-suite-authentication continue` |
 | 2026-05-21 19:30:41 UTC | sf-build | GPT-5 Codex + delegated agent | Added the redacted Task 10 smoke-readiness log and linked it from the app suite-auth pointer | Partial: local docs/proof checklist exists; final verification is blocked until deployed Firebase/Convex/Firestore smoke and manual redacted evidence exist | manual deployed smoke, then `/sf-build unified-suite-authentication continue` |
 | 2026-05-22 09:14:16 UTC | sf-test + sf-auth-debug | GPT-5 Codex | Ran non-secret deployed endpoint preflight for the first suite-auth smoke pair | Blocked: app and Formation roots respond, but deployed Formation bridge endpoints return 404, so real auth/session smoke cannot start until the bridge scope is shipped/deployed | `/sf-ship unified-suite-authentication bridge scope`, then `/sf-prod winflowz`, then `/sf-test unified-suite-authentication --prod` |
+| 2026-05-22 11:56:37 UTC | sf-prod | GPT-5 Codex | Rechecked production deployments and redacted env/runtime signals after push | Blocked: deployments are Ready, but `winflowz` lacks Clerk publishable key and suite-auth env vars, and `winflowz-app` has no production env vars | configure Vercel env vars for `winflowz` and `winflowz-app`, redeploy, then `/sf-prod winflowz` |
+| 2026-05-22 13:17:05 UTC | sf-auth-debug | GPT-5 Codex | Investigated bridge endpoint 500s and patched Formation middleware/CORS | Partial fixed locally: bridge/webhook/newsletter endpoints bypass Clerk and local bridge requests now return controlled JSON config errors instead of Clerk middleware crashes; production still needs push/redeploy and env vars | push/redeploy Formation fix, configure env vars, then `/sf-prod winflowz` |
 
 # Current Chantier Flow
 
@@ -524,6 +530,7 @@ Resolved decisions:
 - sf-ship: not started.
 - support-runbook: done via sf-build delegated docs worker; canonical operator guide added in the main project docs and surfaced from the app docs.
 - smoke-readiness: partial via sf-build delegated docs worker; Task 10 log exists, but real deployed proof is not captured yet.
-- sf-test/sf-auth-debug: blocked on 2026-05-22 because deployed Formation bridge endpoints return 404.
+- sf-test/sf-auth-debug: partial fixed locally on 2026-05-22; deployed Formation endpoints previously failed before route code because Clerk middleware required a missing publishable key.
+- sf-prod: still blocked on 2026-05-22 until the Formation fix is pushed/redeployed and production Vercel env variables are configured for both `winflowz` and `winflowz-app`.
 
-Next command: `/sf-ship unified-suite-authentication bridge scope`, then `/sf-prod winflowz`, then `/sf-test unified-suite-authentication --prod`.
+Next command: push/redeploy the Formation middleware fix, configure Vercel env vars for `winflowz` and `winflowz-app`, then `/sf-prod winflowz`.

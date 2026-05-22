@@ -49,9 +49,27 @@ class KeyboardVoiceRuntimeStatusTest {
             ),
         )
         assertEquals(
-            false,
+            true,
             KeyboardVoiceController.shouldContinueAndroidFallbackAfterError(
                 android.speech.SpeechRecognizer.ERROR_CLIENT,
+            ),
+        )
+        assertEquals(
+            true,
+            KeyboardVoiceController.shouldContinueAndroidFallbackAfterError(
+                android.speech.SpeechRecognizer.ERROR_RECOGNIZER_BUSY,
+            ),
+        )
+        assertEquals(
+            true,
+            KeyboardVoiceController.isAndroidFallbackRuntimeRestartError(
+                android.speech.SpeechRecognizer.ERROR_CLIENT,
+            ),
+        )
+        assertEquals(
+            false,
+            KeyboardVoiceController.isAndroidFallbackRuntimeRestartError(
+                android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT,
             ),
         )
     }

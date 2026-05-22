@@ -23,6 +23,8 @@ class KeyboardVoiceController(
     companion object {
         const val LOCAL_RUNTIME_STARTUP_TIMEOUT_MS = 10_000L
         const val ANDROID_FALLBACK_SEGMENT_WINDOW_MS = 60_000L
+        const val ANDROID_FALLBACK_RESTART_DELAY_MS = 350L
+        const val ANDROID_FALLBACK_MAX_RUNTIME_RESTARTS = 3
 
         fun androidFallbackStatus(
             phase: String,
@@ -38,7 +40,14 @@ class KeyboardVoiceController(
 
         fun shouldContinueAndroidFallbackAfterError(error: Int): Boolean {
             return error == SpeechRecognizer.ERROR_NO_MATCH ||
-                error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT
+                error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT ||
+                error == SpeechRecognizer.ERROR_CLIENT ||
+                error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY
+        }
+
+        fun isAndroidFallbackRuntimeRestartError(error: Int): Boolean {
+            return error == SpeechRecognizer.ERROR_CLIENT ||
+                error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY
         }
 
         fun mergedAndroidFallbackText(
@@ -76,6 +85,8 @@ class KeyboardVoiceController(
     private val localRuntimeStartupTimeoutHandler = Handler(Looper.getMainLooper())
     private var localRuntimeStartupTimeoutTask: Runnable? = null
     private var localRuntimeStartupTimeoutFired = false
+    private var androidFallbackRestartTask: Runnable? = null
+    private var androidFallbackRuntimeRestartErrors = 0
     private var listening = false
     private var pauseRequested = false
     private var manualStopRequested = false
@@ -89,11 +100,15 @@ class KeyboardVoiceController(
 
     fun start() {
         if (listening) {
-            cancel()
+            stop()
             return
         }
         if (localRuntimeActive) {
             stopLocalRuntime()
+            return
+        }
+        if (active || recognizer != null || androidFallbackRestartTask != null) {
+            stop()
             return
         }
         if (!hasAudioPermission()) {
@@ -107,6 +122,7 @@ class KeyboardVoiceController(
         manualStopRequested = false
         latestPartialResult = ""
         committedAndroidFallbackSegments.clear()
+        androidFallbackRuntimeRestartErrors = 0
         val localStartDecision = tryStartLocalRuntimePath()
         when (localStartDecision.result) {
             LocalRuntimeStartResult.StartedLocal -> return
@@ -237,6 +253,7 @@ class KeyboardVoiceController(
         speechRecognizer.setRecognitionListener(
             object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {
+                    androidFallbackRuntimeRestartErrors = 0
                     listening = true
                     setActive(true)
                     onState(androidFallbackStatus("listening", activeAndroidFallbackReason))
@@ -283,6 +300,16 @@ class KeyboardVoiceController(
                         recordAndroidFallback("none")
                         onState(androidFallbackStatus("paused", fallbackReason))
                     } else if (shouldContinueAndroidFallbackAfterError(error)) {
+                        if (
+                            isAndroidFallbackRuntimeRestartError(error) &&
+                            ++androidFallbackRuntimeRestartErrors >
+                                ANDROID_FALLBACK_MAX_RUNTIME_RESTARTS
+                        ) {
+                            setActive(false)
+                            recordAndroidFallback("runtime_load_failed")
+                            onState(androidFallbackStatus("failed", "runtime_load_failed"))
+                            return
+                        }
                         appendAndroidFallbackSegment(fallback)
                         restartAndroidFallback(fallbackReason)
                     } else {
@@ -314,6 +341,7 @@ class KeyboardVoiceController(
                         recordAndroidFallback("runtime_timeout", "runtime_timeout")
                         onState(androidFallbackStatus("timeout", "runtime_timeout"))
                     } else if (!wasPaused && !wasManualStop) {
+                        androidFallbackRuntimeRestartErrors = 0
                         appendAndroidFallbackSegment(best)
                         restartAndroidFallback(fallbackReason)
                     } else if (best.isNotEmpty()) {
@@ -396,9 +424,21 @@ class KeyboardVoiceController(
             return
         }
         onState(androidFallbackStatus("listening", fallbackReason))
-        startAndroidFallback(
-            lastErrorCode = "none",
-            fallbackReasonOverride = fallbackReason,
+        clearAndroidFallbackRestart()
+        val restartTask = Runnable {
+            androidFallbackRestartTask = null
+            if (!active || manualStopRequested || pauseRequested) {
+                return@Runnable
+            }
+            startAndroidFallback(
+                lastErrorCode = "none",
+                fallbackReasonOverride = fallbackReason,
+            )
+        }
+        androidFallbackRestartTask = restartTask
+        localRuntimeStartupTimeoutHandler.postDelayed(
+            restartTask,
+            ANDROID_FALLBACK_RESTART_DELAY_MS,
         )
     }
 
@@ -644,8 +684,16 @@ class KeyboardVoiceController(
     }
 
     private fun clearAndroidFallbackTimeout() {
+        clearAndroidFallbackRestart()
         localRuntimeStartupTimeoutFired = false
         clearLocalRuntimeStartupTimeout()
+    }
+
+    private fun clearAndroidFallbackRestart() {
+        androidFallbackRestartTask?.let {
+            localRuntimeStartupTimeoutHandler.removeCallbacks(it)
+        }
+        androidFallbackRestartTask = null
     }
 
     private fun setActive(value: Boolean) {

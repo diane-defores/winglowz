@@ -1000,6 +1000,98 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  Future<bool> _installSpeechPack(
+    LanguagePackCatalogEntry entry,
+    AndroidKeyboardStatus? keyboardStatus,
+  ) async {
+    final notifier = ref.read(languagePackCatalogProvider.notifier);
+    final device = _deviceProfileFromKeyboardStatus(
+      keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
+    );
+    final installed = await notifier.installPackWithPreflight(
+      entry: entry,
+      device: device,
+    );
+    await _syncSpeechPackRuntime(entry, installed);
+    return installed;
+  }
+
+  Future<bool> _retrySpeechPackInstall(
+    LanguagePackCatalogEntry entry,
+    AndroidKeyboardStatus? keyboardStatus,
+  ) async {
+    final notifier = ref.read(languagePackCatalogProvider.notifier);
+    final device = _deviceProfileFromKeyboardStatus(
+      keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
+    );
+    final installed = await notifier.retryInstallWithPreflight(
+      entry: entry,
+      device: device,
+    );
+    await _syncSpeechPackRuntime(entry, installed);
+    return installed;
+  }
+
+  Future<void> _syncSpeechPackRuntime(
+    LanguagePackCatalogEntry entry,
+    bool installed,
+  ) async {
+    final packState = ref
+        .read(languagePackCatalogProvider)
+        .installedStateFor(entry);
+    if (!installed) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Speech pack blocked for ${entry.languageTag}: ${packState.lastErrorCode}.',
+      );
+      return;
+    }
+    try {
+      await AndroidKeyboardBridge.setKeyboardVoiceRuntimeConfig(
+        languageTag: entry.languageTag,
+        packId: entry.packId,
+        engine: entry.engine.wireName,
+        modelArtifactPath: packState.modelArtifactPath,
+      );
+      await AndroidKeyboardBridge.probeKeyboardLocalRuntimePath(
+        languageTag: entry.languageTag,
+        packId: entry.packId,
+        engine: entry.engine.wireName,
+        modelArtifactPath: packState.modelArtifactPath,
+      );
+      await _loadKeyboardState();
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Speech pack installed for ${entry.languageTag}. Runtime status updated.',
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Speech pack installed, but keyboard runtime sync failed: $error',
+      );
+    }
+  }
+
+  void _removeSpeechPack(LanguagePackCatalogEntry entry) {
+    final removed = ref
+        .read(languagePackCatalogProvider.notifier)
+        .remove(entry);
+    setState(
+      () => _message = removed
+          ? 'Speech pack removed for ${entry.languageTag}.'
+          : 'No installed speech pack to remove for ${entry.languageTag}.',
+    );
+  }
+
   String _sanitizeDiagnostic(Object? value) {
     return SensitiveRedactor.redact(value);
   }
@@ -1193,30 +1285,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onAllowCloudFallbackChanged: (value) => ref
                 .read(languagePackCatalogProvider.notifier)
                 .setAllowCloudFallback(value),
-            onInstall: (entry) => ref
-                .read(languagePackCatalogProvider.notifier)
-                .installPackWithPreflight(
-                  entry: entry,
-                  device: _deviceProfileFromKeyboardStatus(
-                    keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
-                  ),
-                ),
-            onRetryInstall: (entry) => ref
-                .read(languagePackCatalogProvider.notifier)
-                .retryInstallWithPreflight(
-                  entry: entry,
-                  device: _deviceProfileFromKeyboardStatus(
-                    keyboardStatus ?? AndroidKeyboardStatus.unsupported(),
-                  ),
-                ),
+            onInstall: (entry) => _installSpeechPack(entry, keyboardStatus),
+            onRetryInstall: (entry) =>
+                _retrySpeechPackInstall(entry, keyboardStatus),
             onMarkUpdateAvailable: (entry) => ref
                 .read(languagePackCatalogProvider.notifier)
                 .markUpdateAvailable(entry),
             onMarkCorrupted: (entry) => ref
                 .read(languagePackCatalogProvider.notifier)
                 .markCorrupted(entry),
-            onRemove: (entry) =>
-                ref.read(languagePackCatalogProvider.notifier).remove(entry),
+            onRemove: _removeSpeechPack,
           ),
         ),
         if (PlatformCapabilities.overlaySupported)
