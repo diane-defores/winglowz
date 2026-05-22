@@ -9,7 +9,14 @@ type CourseUser = {
 	courseEntitlements?: string[]
 }
 
+type FormationAccess = {
+	hasAccess: boolean
+	source?: string
+	user?: CourseUser | null
+}
+
 export const COURSE_ENTITLEMENT = 'winflowz-training'
+const CANONICAL_FORMATION_PRODUCT_ID = 'winflowz_formation'
 
 export function isFormationSlug(slug: string) {
 	return (
@@ -110,6 +117,22 @@ export async function getCourseAccess(context: APIContext) {
 
 	try {
 		const convex = new ConvexHttpClient(convexUrl)
+		try {
+			const access = (await convex.query('users:getFormationAccessByClerkId' as never, {
+				clerkId: auth.userId,
+			} as never)) as FormationAccess | null
+
+			if (typeof access?.hasAccess === 'boolean') {
+				return {
+					isAuthenticated: true,
+					hasAccess: access.hasAccess,
+					user: access.user ?? null,
+				}
+			}
+		} catch {
+			// Fallback to legacy local calculation for older Convex deployments.
+		}
+
 		const user = (await convex.query('users:getByClerkId' as never, {
 			clerkId: auth.userId,
 		} as never)) as CourseUser | null
@@ -119,7 +142,10 @@ export async function getCourseAccess(context: APIContext) {
 			subscriptionStatus === 'active' || subscriptionStatus === 'trialing'
 		const hasAccess =
 			user?.role === 'admin' ||
-			Boolean(user?.courseEntitlements?.includes(COURSE_ENTITLEMENT)) ||
+			Boolean(
+				user?.courseEntitlements?.includes(COURSE_ENTITLEMENT) ||
+					user?.courseEntitlements?.includes(CANONICAL_FORMATION_PRODUCT_ID),
+			) ||
 			(Boolean(user?.subscriptionTier) && hasActiveSubscription)
 
 		return {

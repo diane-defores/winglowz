@@ -96,6 +96,8 @@ winflowz/
 - `/dashboard/*` — authenticated surfaces
 - `/api/newsletter/*` — newsletter subscribe and unsubscribe
 - `/api/polar/*` — checkout/webhook surfaces
+- `/api/bridge/firebase` — Firebase ID token bridge to suite identity snapshot
+- `/api/bridge/sync` — internal entitlement mirror sync by `globalUserId` + shared secret
 
 ## Environment Variables
 
@@ -108,6 +110,25 @@ Copy `.env.example` to `.env` and fill the values required by your environment.
 - `PUBLIC_CONVEX_URL`
 - `PORT`
 
+### Firebase Admin bridge
+
+For `POST /api/bridge/firebase`, the backend verifies Firebase ID tokens with Firebase Admin SDK using revocation checks (`checkRevoked=true`) and fails closed when config is missing.
+
+- `FIREBASE_SERVICE_ACCOUNT_JSON` (recommended single env var, no secrets in repo)
+- `FIREBASE_PROJECT_ID` (fallback split config)
+- `FIREBASE_CLIENT_EMAIL` (fallback split config)
+- `FIREBASE_PRIVATE_KEY` (fallback split config, keep escaped newlines)
+- `SUITE_BRIDGE_CONVEX_SECRET` (shared secret required by the Convex bridge mutation)
+- `SUITE_BRIDGE_SYNC_SECRET` (optional override; defaults to `SUITE_BRIDGE_CONVEX_SECRET`)
+
+`POST /api/bridge/sync` accepts only:
+- header `x-suite-bridge-secret` with the shared secret;
+- JSON body `{ "globalUserId": "..." }`.
+
+It recomputes entitlements from Convex (`productEntitlements` source of truth), discovers linked Firebase identity accounts, and writes server-owned Firestore `suiteAccess/{firebaseUid}` documents.
+
+The bridge also writes a server-owned Firestore mirror at `suiteAccess/{firebaseUid}` after Convex entitlement lookup. WinFlowz app Firestore rules use that mirror to allow or deny `winflowz_app` data under `users/{uid}`.
+
 ### Clerk
 
 - `CLERK_WEBHOOK_SECRET`
@@ -119,6 +140,7 @@ Copy `.env.example` to `.env` and fill the values required by your environment.
 - `POLAR_WINFLOWZ_PRODUCT_ID`
 - `POLAR_WEBHOOK_SECRET`
 - `POLAR_SERVER`
+- `SUITE_BRIDGE_SYNC_URL` (used by Convex Polar webhook handling to call `/api/bridge/sync`)
 
 ### Resend
 

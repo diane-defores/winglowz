@@ -15,6 +15,8 @@ type CheckoutUser = {
 	polarCustomerId?: string
 }
 
+const FORMATION_PRODUCT_ID = 'winflowz_formation'
+
 export const prerender = false
 
 export const GET: APIRoute = async ({ url, locals, redirect }) => {
@@ -75,7 +77,9 @@ export const GET: APIRoute = async ({ url, locals, redirect }) => {
 			customerId: user.polarCustomerId,
 			externalCustomerId: auth.userId,
 			metadata: {
+				productId: FORMATION_PRODUCT_ID,
 				entitlement: COURSE_ENTITLEMENT,
+				clerkId: auth.userId,
 				lessonSlug: lesson,
 				privatePath,
 			},

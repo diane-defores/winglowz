@@ -4,7 +4,32 @@ import { internal } from "./_generated/api";
 
 const http = httpRouter();
 
-const COURSE_ENTITLEMENT = "winflowz-training";
+async function syncSuiteAccessMirror(globalUserId: string) {
+  const syncUrl = process.env.SUITE_BRIDGE_SYNC_URL;
+  const syncSecret = cleanString(process.env.SUITE_BRIDGE_SYNC_SECRET) ??
+    cleanString(process.env.SUITE_BRIDGE_CONVEX_SECRET);
+
+  if (!syncUrl) {
+    throw new Error("suite_bridge_sync_url_not_configured");
+  }
+  if (!syncSecret) {
+    throw new Error("suite_bridge_sync_secret_not_configured");
+  }
+
+  const response = await fetch(syncUrl, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-suite-bridge-secret": syncSecret,
+    },
+    body: JSON.stringify({ globalUserId }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`suite_bridge_sync_failed:${response.status}:${body.slice(0, 240)}`);
+  }
+}
 
 http.route({
   path: "/polar/events",
@@ -59,55 +84,203 @@ http.route({
 
     try {
       const event = JSON.parse(body);
-      const productId = process.env.POLAR_WINFLOWZ_PRODUCT_ID;
+      const environment = process.env.POLAR_SERVER === "sandbox" ? "sandbox" : "production";
 
       if (event.type === "subscription.created" || event.type === "subscription.updated") {
         const subscription = event.data;
-        const customerId = subscription.customer_id;
-        const status = subscription.status;
-        const tier = subscription.product?.name || "pro";
+        const customerId = cleanString(subscription.customer_id);
+        const status = cleanString(subscription.status);
+        const tier = cleanString(subscription.product?.name) ?? "pro";
 
-        await ctx.runMutation(internal.polar.updateSubscription, {
-          polarCustomerId: customerId,
-          subscriptionStatus: status,
-          subscriptionTier: tier,
-        });
+        if (customerId && status) {
+          await ctx.runMutation(internal.polar.updateSubscription, {
+            polarCustomerId: customerId,
+            subscriptionStatus: status,
+            subscriptionTier: tier,
+            environment,
+            sourceRef: cleanString(subscription.id) || undefined,
+          });
+        }
+      }
+
+      if (event.type === "subscription.revoked" || event.type === "subscription.updated") {
+        const subscription = event.data;
+        const shouldRevoke = event.type === "subscription.revoked" ||
+          isEffectiveSubscriptionRevocation(subscription);
+
+        if (shouldRevoke) {
+          const eventId = cleanString(event.id);
+          const subscriptionId = cleanString(subscription.id);
+          const logicalProductId = firstNonEmptyString(
+            getMetadataValue(subscription.metadata ?? {}, "productId"),
+            getMetadataValue(subscription.metadata ?? {}, "entitlement"),
+            getMetadataValue(subscription.product?.metadata ?? {}, "productId"),
+            getMetadataValue(subscription.product?.metadata ?? {}, "entitlement"),
+          );
+          const idempotencyKey = eventId
+            ? ["polar", event.type, eventId].join(":")
+            : ["polar", event.type, webhookId, subscriptionId ?? "unknown"].join(":");
+
+          const accessChangeResult = await ctx.runMutation(internal.polar.processFormationAccessChange, {
+            eventType: event.type,
+            eventId: eventId || undefined,
+            webhookId,
+            idempotencyKey,
+            sourceRef: subscriptionId || cleanString(subscription.product_id) || undefined,
+            environment,
+            productId: logicalProductId || undefined,
+            customerEmail: cleanString(subscription.customer?.email) || undefined,
+            polarCustomerId: cleanString(subscription.customer_id) || undefined,
+            metadata: compactObject({
+              ...(subscription.metadata ?? {}),
+              entitlement: firstNonEmptyString(
+                getMetadataValue(subscription.metadata ?? {}, "entitlement"),
+                getMetadataValue(subscription.product?.metadata ?? {}, "entitlement"),
+              ),
+              productId: logicalProductId,
+              sourceProductId: cleanString(subscription.product_id),
+              clerkId: firstNonEmptyString(
+                getMetadataValue(subscription.metadata ?? {}, "clerkId"),
+                cleanString(subscription.customer?.external_id),
+              ),
+              globalUserId: getMetadataValue(subscription.metadata ?? {}, "globalUserId"),
+            }),
+            externalCustomerId: cleanString(subscription.customer?.external_id) || undefined,
+            status: "revoked",
+            reason: event.type === "subscription.revoked" ? "subscription_revoked" : "subscription_updated_revoked",
+          });
+          const globalUserId = cleanString(
+            (accessChangeResult as { globalUserId?: unknown }).globalUserId
+          );
+          if (globalUserId) {
+            await syncSuiteAccessMirror(globalUserId);
+          }
+        }
       }
 
       if (event.type === "checkout.completed") {
         const checkout = event.data;
-        const customerEmail = checkout.customer_email;
-        const customerId = checkout.customer_id;
+        const customerId = cleanString(checkout.customer_id);
+        const metadata = checkout.metadata ?? {};
+        const clerkId = firstNonEmptyString(
+          getMetadataValue(metadata, "clerkId"),
+          cleanString(checkout.external_customer_id),
+          cleanString(checkout.customer?.external_id),
+        );
+        const globalUserId = getMetadataValue(metadata, "globalUserId");
 
-        if (customerEmail && customerId) {
+        if (customerId) {
           await ctx.runMutation(internal.polar.linkCustomer, {
-            email: customerEmail,
             polarCustomerId: customerId,
+            clerkId: clerkId || undefined,
+            globalUserId: globalUserId || undefined,
+            sourceRef: cleanString(checkout.id) || undefined,
+            environment,
           });
         }
       }
 
       if (event.type === "order.paid") {
         const order = event.data;
-        const customerEmail = order.customer?.email;
-        const customerId = order.customer_id;
-        const matchesFormation =
-          order.metadata?.entitlement === COURSE_ENTITLEMENT ||
-          (productId ? order.product_id === productId : false);
+        const orderId = cleanString(order.id);
+        const eventId = cleanString(event.id);
+        const productId = firstNonEmptyString(
+          getMetadataValue(order.metadata ?? {}, "productId"),
+          getMetadataValue(order.metadata ?? {}, "entitlement"),
+          getMetadataValue(order.subscription?.metadata ?? {}, "productId"),
+          getMetadataValue(order.subscription?.metadata ?? {}, "entitlement"),
+        );
+        const entitlement = getMetadataValue(order.metadata ?? {}, "entitlement");
+        const logicalProductId = productId ?? entitlement ?? undefined;
+        const idempotencyKey = eventId
+          ? ["polar", "order.paid", eventId].join(":")
+          : ["polar", "order.paid", webhookId, orderId ?? "unknown"].join(":");
 
-        if (customerEmail && matchesFormation) {
-          await ctx.runMutation(internal.polar.grantCourseAccess, {
-            email: customerEmail,
-            entitlement: COURSE_ENTITLEMENT,
-            polarCustomerId: customerId || undefined,
-          });
+        const orderPaidResult = await ctx.runMutation(internal.polar.processOrderPaid, {
+          eventId: eventId || undefined,
+          webhookId,
+          idempotencyKey,
+          sourceRef: orderId || undefined,
+          environment,
+          productId: logicalProductId || undefined,
+          plan: cleanString(order.product?.name) || undefined,
+          customerEmail: cleanString(order.customer?.email) || undefined,
+          polarCustomerId: cleanString(order.customer_id) || undefined,
+          metadata: compactObject({
+            ...(order.metadata ?? {}),
+            entitlement: entitlement,
+            productId: logicalProductId,
+            sourceProductId: cleanString(order.product_id),
+            clerkId: firstNonEmptyString(
+              getMetadataValue(order.metadata ?? {}, "clerkId"),
+              cleanString(order.customer?.external_id),
+            ),
+            globalUserId: getMetadataValue(order.metadata ?? {}, "globalUserId"),
+          }),
+          externalCustomerId: cleanString(order.customer?.external_id) || undefined,
+        });
+        const globalUserId = cleanString(
+          (orderPaidResult as { globalUserId?: unknown }).globalUserId
+        );
+        if (globalUserId) {
+          await syncSuiteAccessMirror(globalUserId);
+        }
+      }
+
+      if (event.type === "order.refunded") {
+        const order = event.data;
+        const orderId = cleanString(order.id);
+        const eventId = cleanString(event.id);
+        const logicalProductId = firstNonEmptyString(
+          getMetadataValue(order.metadata ?? {}, "productId"),
+          getMetadataValue(order.metadata ?? {}, "entitlement"),
+          getMetadataValue(order.subscription?.metadata ?? {}, "productId"),
+          getMetadataValue(order.subscription?.metadata ?? {}, "entitlement"),
+        );
+        const idempotencyKey = eventId
+          ? ["polar", "order.refunded", eventId].join(":")
+          : ["polar", "order.refunded", webhookId, orderId ?? "unknown"].join(":");
+
+        const refundResult = await ctx.runMutation(internal.polar.processFormationAccessChange, {
+          eventType: "order.refunded",
+          eventId: eventId || undefined,
+          webhookId,
+          idempotencyKey,
+          sourceRef: orderId || cleanString(order.product_id) || undefined,
+          environment,
+          productId: logicalProductId || undefined,
+          customerEmail: cleanString(order.customer?.email) || undefined,
+          polarCustomerId: cleanString(order.customer_id) || undefined,
+          metadata: compactObject({
+            ...(order.metadata ?? {}),
+            entitlement: firstNonEmptyString(
+              getMetadataValue(order.metadata ?? {}, "entitlement"),
+              getMetadataValue(order.subscription?.metadata ?? {}, "entitlement"),
+            ),
+            productId: logicalProductId,
+            sourceProductId: cleanString(order.product_id),
+            clerkId: firstNonEmptyString(
+              getMetadataValue(order.metadata ?? {}, "clerkId"),
+              cleanString(order.customer?.external_id),
+            ),
+            globalUserId: getMetadataValue(order.metadata ?? {}, "globalUserId"),
+          }),
+          externalCustomerId: cleanString(order.customer?.external_id) || undefined,
+          status: "refunded",
+          reason: "order_refunded",
+        });
+        const globalUserId = cleanString(
+          (refundResult as { globalUserId?: unknown }).globalUserId
+        );
+        if (globalUserId) {
+          await syncSuiteAccessMirror(globalUserId);
         }
       }
 
       return new Response("OK", { status: 200 });
     } catch (error) {
       console.error("Polar webhook handling failed:", error);
-      return new Response("Invalid payload", { status: 400 });
+      return new Response("Webhook handling failed", { status: 500 });
     }
   }),
 });
@@ -172,6 +345,8 @@ http.route({
             email: event.data.email_addresses?.[0]?.email_address ?? "",
             name: [event.data.first_name, event.data.last_name].filter(Boolean).join(" ") || undefined,
             imageUrl: event.data.image_url || undefined,
+            environment: "production",
+            sourceRef: svixId,
           });
           break;
         }
@@ -214,3 +389,76 @@ function uint8ArrayToBase64(bytes: Uint8Array): string {
 }
 
 export default http;
+
+function cleanString(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function firstNonEmptyString(...values: Array<string | null>): string | null {
+  for (const value of values) {
+    if (value) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function getMetadataValue(metadata: unknown, key: string): string | null {
+  if (!metadata || typeof metadata !== "object") {
+    return null;
+  }
+  return cleanString((metadata as Record<string, unknown>)[key]);
+}
+
+function compactObject(value: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(value).filter((entry) => entry[1] !== null && entry[1] !== undefined)
+  );
+}
+
+function isEffectiveSubscriptionRevocation(subscription: Record<string, unknown>) {
+  const status = cleanString(subscription.status)?.toLowerCase();
+  const cancelAtPeriodEnd = subscription.cancel_at_period_end === true;
+  const hasEndedAt = Boolean(cleanString(subscription.ended_at));
+  const hasEndsAt = Boolean(cleanString(subscription.ends_at));
+  const hasCanceledAt = Boolean(cleanString(subscription.canceled_at));
+
+  if (status === "active" || status === "trialing") {
+    return hasEndedAt;
+  }
+
+  if (cancelAtPeriodEnd && !hasEndedAt && !hasEndsAt) {
+    return false;
+  }
+
+  if (!status) {
+    return hasEndedAt || hasEndsAt;
+  }
+
+  const immediateRevokeStatuses = new Set([
+    "revoked",
+    "unpaid",
+    "canceled",
+    "cancelled",
+    "expired",
+    "incomplete_expired",
+  ]);
+
+  if (immediateRevokeStatuses.has(status)) {
+    return true;
+  }
+
+  if (hasEndedAt || hasEndsAt) {
+    return true;
+  }
+
+  if (hasCanceledAt && status !== "active" && status !== "trialing") {
+    return true;
+  }
+
+  return false;
+}
