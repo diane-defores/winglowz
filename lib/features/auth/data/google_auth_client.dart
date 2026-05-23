@@ -1,6 +1,65 @@
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../domain/auth_failure.dart';
+
+class GoogleAuthRuntimeConfig {
+  const GoogleAuthRuntimeConfig({
+    required this.webClientId,
+    required this.isWeb,
+    required this.targetPlatform,
+  });
+
+  factory GoogleAuthRuntimeConfig.fromEnvironment({
+    String webClientId = const String.fromEnvironment(
+      webClientIdEnvironmentName,
+    ),
+    bool? isWeb,
+    TargetPlatform? targetPlatform,
+  }) {
+    return GoogleAuthRuntimeConfig(
+      webClientId: webClientId,
+      isWeb: isWeb ?? kIsWeb,
+      targetPlatform: targetPlatform ?? defaultTargetPlatform,
+    );
+  }
+
+  static const webClientIdEnvironmentName = 'FIREBASE_WEB_CLIENT_ID';
+
+  final String webClientId;
+  final bool isWeb;
+  final TargetPlatform targetPlatform;
+
+  String? get normalizedWebClientId {
+    final normalized = webClientId.trim();
+    return normalized.isEmpty ? null : normalized;
+  }
+
+  bool get requiresServerClientId =>
+      !isWeb && targetPlatform == TargetPlatform.android;
+
+  String? get clientId => isWeb ? normalizedWebClientId : null;
+
+  String? get serverClientId =>
+      requiresServerClientId ? normalizedWebClientId : null;
+
+  List<String> get missingEnvironmentNames => [
+    if (requiresServerClientId && normalizedWebClientId == null)
+      webClientIdEnvironmentName,
+  ];
+
+  void ensurePlatformConfiguration() {
+    if (missingEnvironmentNames.isEmpty) {
+      return;
+    }
+    throw AuthFailure.googleConfiguration(
+      code: 'missing-server-client-id',
+      detail:
+          'Google Sign-In requires $webClientIdEnvironmentName '
+          'as the Android serverClientId.',
+    );
+  }
+}
 
 class GoogleAuthResult {
   const GoogleAuthResult({required this.idToken});
@@ -17,10 +76,14 @@ abstract class GoogleAuthClient {
 }
 
 class PluginGoogleAuthClient implements GoogleAuthClient {
-  PluginGoogleAuthClient({GoogleSignIn? googleSignIn})
-    : _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+  PluginGoogleAuthClient({
+    GoogleSignIn? googleSignIn,
+    GoogleAuthRuntimeConfig? config,
+  }) : _googleSignIn = googleSignIn ?? GoogleSignIn.instance,
+       _config = config ?? GoogleAuthRuntimeConfig.fromEnvironment();
 
   final GoogleSignIn _googleSignIn;
+  final GoogleAuthRuntimeConfig _config;
   var _initialized = false;
 
   @override
@@ -28,7 +91,11 @@ class PluginGoogleAuthClient implements GoogleAuthClient {
     if (_initialized) {
       return;
     }
-    await _googleSignIn.initialize();
+    _config.ensurePlatformConfiguration();
+    await _googleSignIn.initialize(
+      clientId: _config.clientId,
+      serverClientId: _config.serverClientId,
+    );
     _initialized = true;
   }
 

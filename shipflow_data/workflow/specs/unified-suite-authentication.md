@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.18"
+artifact_version: "1.0.21"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
 updated: "2026-05-23"
-updated_at: "2026-05-23 08:57:59 UTC"
+updated_at: "2026-05-23 10:31:17 UTC"
 status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -66,7 +66,10 @@ evidence:
   - "Production endpoint preflight 2026-05-22: winflowz-app and www.winflowz.com are reachable, but deployed Formation bridge endpoints `/api/bridge/firebase` and `/api/bridge/sync` return 404, so the real suite-auth smoke is blocked until deploy."
   - "Production env verification 2026-05-22: both Vercel deployments are Ready, but `winflowz` lacks Clerk/suite-auth runtime env and `winflowz-app` has no production env variables."
   - "Endpoint middleware fix 2026-05-22: Formation bridge/webhook/newsletter endpoints now bypass Clerk middleware and CORS is allowlist-based with `SUITE_API_ALLOWED_ORIGINS`; production still requires push/redeploy and env configuration."
-next_step: "perform Android suite-auth smoke on physical device, then continue deployed suite-auth verification"
+  - "Android device auth debug 2026-05-23: Google Sign-In failed with `clientConfigurationError` because the APK did not receive a Google OAuth Web client ID as Android `serverClientId`."
+  - "Android device auth debug 2026-05-23: email account creation failed with Firebase `CONFIGURATION_NOT_FOUND`; CLI evidence shows `identitytoolkit.googleapis.com` is enabled on `winflowz-dev` but not on prod project `winflowz`."
+  - "Android device auth debug 2026-05-23: password manager detected the password field but not email; the sign-in form now groups autofill fields and exposes email as both `username` and `email`."
+next_step: "enable Firebase Authentication/sign-in providers on `winflowz`, set FIREBASE_WEB_CLIENT_ID in GitHub Actions, ship the Android auth config patch, rebuild the APK, then rerun Android physical-device suite-auth smoke"
 ---
 
 # Title
@@ -523,6 +526,9 @@ Resolved decisions:
 | 2026-05-22 21:25:12 UTC | sf-prod | GPT-5 Codex | Verified latest Android CI run after suite-auth build-env push | Partial: Flutter analyze, Flutter tests and debug APK artifact succeeded; Firestore rules/index deploy failed with Service Usage IAM 403 before deploy | grant `roles/serviceusage.serviceUsageConsumer` to the GitHub Firebase deploy service account, rerun CI, then Android smoke |
 | 2026-05-23 08:52:14 UTC | sf-prod | GPT-5 Codex | Reran the failed Firestore deploy job after WIF/service-account setup | Still blocked: WIF authentication succeeds, but Firebase CLI still receives Service Usage IAM 403 when checking `firestore.googleapis.com` | add `roles/serviceusage.serviceUsageConsumer` on the `winflowz` project IAM for `github-actions-firebase-deploy@winflowz.iam.gserviceaccount.com`, then rerun failed jobs |
 | 2026-05-23 08:57:59 UTC | sf-prod | GPT-5 Codex | Fixed production Firebase CI via CLI and reran Android CI | Passed: repo-level WIF secrets now point to prod, Firestore API is enabled, Firestore rules/indexes deploy passed, and Android debug APK artifact remains available | Android physical-device suite-auth smoke |
+| 2026-05-23 10:14:48 UTC | sf-auth-debug | GPT-5 Codex | Investigated Android Google Sign-In `clientConfigurationError` from physical-device smoke and patched runtime/CI config | Fixed locally: Google Sign-In now receives `FIREBASE_WEB_CLIENT_ID` as Android `serverClientId`; Android APK CI now fails fast if that value is missing; docs/tests updated | add `FIREBASE_WEB_CLIENT_ID` to GitHub Actions, push/rebuild APK, then rerun Android physical-device Google smoke |
+| 2026-05-23 10:20:19 UTC | sf-auth-debug | GPT-5 Codex | Investigated Firebase Auth signup `CONFIGURATION_NOT_FOUND` and tightened APK config validation | Fixed locally: app now maps `CONFIGURATION_NOT_FOUND` to Firebase configuration failure, and Android CI validates Firebase Auth services/config before building an APK | enable Firebase Authentication on prod `winflowz`, add `FIREBASE_WEB_CLIENT_ID`, push/rebuild APK, then rerun Android physical-device auth smoke |
+| 2026-05-23 10:31:17 UTC | sf-auth-debug | GPT-5 Codex | Investigated password-manager email-field detection during Android auth smoke | Fixed locally: sign-in form now uses an `AutofillGroup`, email field exposes `username` + `email` hints with email keyboard/no capitalization, password field keeps password autofill, and widget coverage asserts the metadata | enable Firebase Authentication on prod `winflowz`, add `FIREBASE_WEB_CLIENT_ID`, push/rebuild APK, then rerun Android physical-device auth smoke |
 
 # Current Chantier Flow
 
@@ -534,7 +540,7 @@ Resolved decisions:
 - sf-ship: partial quick ship prepared on 2026-05-22; hosted Vercel/GitHub Actions proof still pending.
 - support-runbook: done via sf-build delegated docs worker; canonical operator guide added in the main project docs and surfaced from the app docs.
 - smoke-readiness: partial via sf-build delegated docs worker; Task 10 log exists, but real deployed proof is not captured yet.
-- sf-test/sf-auth-debug: partial fixed locally on 2026-05-22; deployed Formation endpoints previously failed before route code because Clerk middleware required a missing publishable key.
+- sf-test/sf-auth-debug: partial fixed locally on 2026-05-23; deployed Formation endpoint middleware is fixed locally, Android Google Sign-In config now passes the Web OAuth client ID as `serverClientId`, Android CI validates Firebase Auth project config before APK build, and the login form exposes stronger password-manager autofill metadata.
 - sf-prod: passed for Android CI on 2026-05-23; analyze, tests, debug APK upload, and Firestore rules/index deploy are green.
 
-Next command: perform Android physical-device suite-auth smoke, then continue deployed suite-auth verification.
+Next command: enable Firebase Authentication/sign-in providers on prod `winflowz`, add `FIREBASE_WEB_CLIENT_ID` to GitHub Actions, ship/rebuild the APK, then perform Android physical-device suite-auth smoke.

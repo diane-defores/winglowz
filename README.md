@@ -76,10 +76,12 @@ Local mode is not a cloud-auth bypass. It keeps the app usable locally, while
 remote sync stays unavailable until a Firebase session exists.
 
 Google Sign-In on Android requires the Firebase Android app package name,
-enabled Google provider, a valid web OAuth client/server client ID path from
-`google-services.json`, and the debug/release SHA fingerprints for the signing
-key used by the APK. Missing or mismatched SHA/client configuration can surface
-as a canceled Google flow, so treat those cases as setup failures during QA.
+enabled Google provider, `FIREBASE_WEB_CLIENT_ID` passed as the Google Sign-In
+`serverClientId`, and the debug/release SHA fingerprints for the signing key
+used by the APK. `FIREBASE_WEB_CLIENT_ID` is the OAuth 2.0 **Web client ID**
+ending in `.apps.googleusercontent.com`; it is not the Firebase Android app id.
+Missing or mismatched SHA/client configuration can surface as a canceled Google
+flow, so treat those cases as setup failures during QA.
 
 ## Sentry Runtime Defines
 
@@ -100,6 +102,8 @@ view hierarchy disabled, and build tags from `WINFLOWZ_APP_BUILD_*` defines.
 ## GitHub Actions / Blacksmith APK
 
 The Android CI workflow runs on Blacksmith and uses GitHub Secrets for build-time configuration.
+It also validates that the target Firebase project has Firebase Auth services and
+project auth config enabled before producing an APK.
 
 Add these repository secrets in GitHub: **Settings -> Secrets and variables -> Actions -> Repository secrets**.
 
@@ -113,6 +117,7 @@ Prepare these Firebase names now for the MVP adapter (do not introduce Doppler):
 - `FIREBASE_DEV_MESSAGING_SENDER_ID`
 - `FIREBASE_DEV_AUTH_DOMAIN`
 - `FIREBASE_DEV_STORAGE_BUCKET`
+- `FIREBASE_WEB_CLIENT_ID` (OAuth Web client ID used as Android Google Sign-In `serverClientId`)
 - `SENTRY_DSN` (optional crash reporting)
 - `SENTRY_ENVIRONMENT` (optional, for example `debug`, `staging`, `production`)
 

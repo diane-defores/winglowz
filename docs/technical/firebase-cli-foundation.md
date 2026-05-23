@@ -99,8 +99,11 @@ Google provider verification checklist:
 - Download/regenerate `google-services.json` after provider, OAuth client, or
   fingerprint changes.
 - Confirm the generated config includes the web OAuth client used by
-  `google_sign_in` for ID-token authentication, or document any explicit
-  `serverClientId` override.
+  `google_sign_in` for ID-token authentication, or pass that OAuth 2.0 Web
+  client ID explicitly as `FIREBASE_WEB_CLIENT_ID`.
+- `FIREBASE_WEB_CLIENT_ID` is the Web OAuth client ID ending in
+  `.apps.googleusercontent.com`; it is used as Android Google Sign-In
+  `serverClientId`, not as a Firebase Android app id.
 - Run one Android smoke after each provider/SHA/client change; a Google flow
   reported as `canceled` after account selection may still be configuration
   failure, not user intent.
@@ -117,7 +120,8 @@ flutter run \
   --dart-define=FIREBASE_DEV_APP_ID="$FIREBASE_DEV_APP_ID" \
   --dart-define=FIREBASE_DEV_MESSAGING_SENDER_ID="$FIREBASE_DEV_MESSAGING_SENDER_ID" \
   --dart-define=FIREBASE_DEV_AUTH_DOMAIN="$FIREBASE_DEV_AUTH_DOMAIN" \
-  --dart-define=FIREBASE_DEV_STORAGE_BUCKET="$FIREBASE_DEV_STORAGE_BUCKET"
+  --dart-define=FIREBASE_DEV_STORAGE_BUCKET="$FIREBASE_DEV_STORAGE_BUCKET" \
+  --dart-define=FIREBASE_WEB_CLIENT_ID="$FIREBASE_WEB_CLIENT_ID"
 ```
 
 Runtime adapters currently use:
@@ -148,9 +152,16 @@ Use repository secrets (do not introduce Doppler):
 - `FIREBASE_DEV_MESSAGING_SENDER_ID` — message sender id for Android client config
 - `FIREBASE_DEV_AUTH_DOMAIN` — auth domain for client config
 - `FIREBASE_DEV_STORAGE_BUCKET` — storage bucket for client config
+- `FIREBASE_WEB_CLIENT_ID` — OAuth 2.0 Web client ID used as Android Google
+  Sign-In `serverClientId`
 
 These secret names are prepared for Blacksmith environment injection with local fallback logic
 enabled in the app when Firebase runtime is missing.
+
+The APK workflow validates the target Firebase Auth config before building. The
+project in `FIREBASE_PROJECT_ID` must have `identitytoolkit.googleapis.com` and
+`securetoken.googleapis.com` enabled, and the Identity Toolkit project config
+must be readable.
 
 ## CI deploy setup
 

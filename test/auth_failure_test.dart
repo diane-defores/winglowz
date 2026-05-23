@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:winflowz_app/features/auth/data/google_auth_client.dart';
@@ -26,6 +27,18 @@ void main() {
     expect(failure.userMessage, 'Email ou mot de passe incorrect.');
   });
 
+  test('maps firebase configuration not found as configuration failure', () {
+    final failure = AuthFailure.firebase(
+      code: 'unknown',
+      message: 'An internal error has occurred. [ CONFIGURATION_NOT_FOUND ]',
+      signup: true,
+    );
+
+    expect(failure.kind, AuthFailureKind.firebaseConfiguration);
+    expect(failure.category, 'auth_firebase_configuration');
+    expect(failure.userMessage, contains('configuration Firebase'));
+  });
+
   test('maps google canceled config hints as configuration failure', () {
     final failure = GoogleAuthFailureMapper.fromException(
       const GoogleSignInException(
@@ -48,5 +61,57 @@ void main() {
 
     expect(failure.kind, AuthFailureKind.googleCanceled);
     expect(failure.reportToSentry, isFalse);
+  });
+
+  test('requires web OAuth client id as Android server client id', () {
+    const config = GoogleAuthRuntimeConfig(
+      webClientId: ' ',
+      isWeb: false,
+      targetPlatform: TargetPlatform.android,
+    );
+
+    expect(config.missingEnvironmentNames, [
+      GoogleAuthRuntimeConfig.webClientIdEnvironmentName,
+    ]);
+    expect(
+      config.ensurePlatformConfiguration,
+      throwsA(
+        isA<AuthFailure>()
+            .having(
+              (failure) => failure.kind,
+              'kind',
+              AuthFailureKind.googleConfiguration,
+            )
+            .having(
+              (failure) => failure.code,
+              'code',
+              'missing-server-client-id',
+            ),
+      ),
+    );
+  });
+
+  test('uses web OAuth client id as Android server client id', () {
+    const config = GoogleAuthRuntimeConfig(
+      webClientId: ' 123.apps.googleusercontent.com ',
+      isWeb: false,
+      targetPlatform: TargetPlatform.android,
+    );
+
+    expect(config.missingEnvironmentNames, isEmpty);
+    expect(config.serverClientId, '123.apps.googleusercontent.com');
+    expect(config.clientId, isNull);
+  });
+
+  test('uses web OAuth client id as web client id only', () {
+    const config = GoogleAuthRuntimeConfig(
+      webClientId: '123.apps.googleusercontent.com',
+      isWeb: true,
+      targetPlatform: TargetPlatform.android,
+    );
+
+    expect(config.missingEnvironmentNames, isEmpty);
+    expect(config.clientId, '123.apps.googleusercontent.com');
+    expect(config.serverClientId, isNull);
   });
 }

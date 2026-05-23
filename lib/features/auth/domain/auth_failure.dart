@@ -81,6 +81,18 @@ class AuthFailure implements Exception {
     required String? message,
     required bool signup,
   }) {
+    final normalizedMessage = message ?? '';
+    if (_isFirebaseConfigurationMessage(normalizedMessage)) {
+      return AuthFailure(
+        kind: AuthFailureKind.firebaseConfiguration,
+        userMessage:
+            'La configuration Firebase de cette version est invalide. Le détail technique peut être copié pour correction.',
+        category: 'auth_firebase_configuration',
+        code: code,
+        supportDetail: message,
+      );
+    }
+
     switch (code) {
       case 'invalid-email':
         return AuthFailure(
@@ -190,6 +202,13 @@ class AuthFailure implements Exception {
           supportDetail: message,
         );
     }
+  }
+
+  static bool _isFirebaseConfigurationMessage(String message) {
+    final normalized = message.toLowerCase();
+    return normalized.contains('configuration_not_found') ||
+        normalized.contains('configuration not found') ||
+        normalized.contains('auth configuration');
   }
 
   static AuthFailure googleCanceled({String? detail}) {

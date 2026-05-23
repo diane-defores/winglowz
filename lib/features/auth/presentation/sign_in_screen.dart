@@ -218,94 +218,106 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   title: 'Connexion',
                   subtitle:
                       'Accède à ton espace de dictée, clipboard et snippets.',
-                  child: Form(
-                    key: _formKey,
-                    autovalidateMode: _autovalidateMode,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          enabled: !_busy,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          autofillHints: const [AutofillHints.email],
-                          autocorrect: false,
-                          validator: _validateEmail,
-                          decoration: const InputDecoration(labelText: 'Email'),
-                        ),
-                        AppGaps.x3,
-                        TextFormField(
-                          controller: _passwordController,
-                          enabled: !_busy,
-                          obscureText: true,
-                          textInputAction: TextInputAction.done,
-                          autofillHints: const [AutofillHints.password],
-                          validator: _validatePassword,
-                          onFieldSubmitted: (_) {
-                            if (!_busy) {
-                              _submit(signup: false);
-                            }
-                          },
-                          decoration: const InputDecoration(
-                            labelText: 'Mot de passe',
+                  child: AutofillGroup(
+                    child: Form(
+                      key: _formKey,
+                      autovalidateMode: _autovalidateMode,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          TextFormField(
+                            key: const ValueKey('auth-email-field'),
+                            controller: _emailController,
+                            enabled: !_busy,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            autofillHints: const [
+                              AutofillHints.username,
+                              AutofillHints.email,
+                            ],
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            textCapitalization: TextCapitalization.none,
+                            validator: _validateEmail,
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                            ),
                           ),
-                        ),
-                        AppGaps.x4,
-                        if (_error != null) ...[
-                          AppBannerCard(
-                            icon: Icons.error_outline,
-                            title: 'Connexion impossible',
-                            message: _error!,
-                            accentColor: Theme.of(context).colorScheme.error,
-                            action: _errorDetail == null
-                                ? null
-                                : TextButton.icon(
-                                    onPressed: _copyErrorDetail,
-                                    icon: const Icon(Icons.copy_outlined),
-                                    label: const Text('Copier le détail'),
-                                  ),
+                          AppGaps.x3,
+                          TextFormField(
+                            key: const ValueKey('auth-password-field'),
+                            controller: _passwordController,
+                            enabled: !_busy,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            autofillHints: const [AutofillHints.password],
+                            enableSuggestions: false,
+                            validator: _validatePassword,
+                            onFieldSubmitted: (_) {
+                              if (!_busy) {
+                                _submit(signup: false);
+                              }
+                            },
+                            decoration: const InputDecoration(
+                              labelText: 'Mot de passe',
+                            ),
+                          ),
+                          AppGaps.x4,
+                          if (_error != null) ...[
+                            AppBannerCard(
+                              icon: Icons.error_outline,
+                              title: 'Connexion impossible',
+                              message: _error!,
+                              accentColor: Theme.of(context).colorScheme.error,
+                              action: _errorDetail == null
+                                  ? null
+                                  : TextButton.icon(
+                                      onPressed: _copyErrorDetail,
+                                      icon: const Icon(Icons.copy_outlined),
+                                      label: const Text('Copier le détail'),
+                                    ),
+                            ),
+                            AppGaps.x2,
+                          ],
+                          Row(
+                            children: [
+                              Expanded(
+                                child: FilledButton(
+                                  onPressed: _busy
+                                      ? null
+                                      : () => _submit(signup: false),
+                                  child: const Text('Se connecter'),
+                                ),
+                              ),
+                              AppGaps.horizontalX3,
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: _busy
+                                      ? null
+                                      : () => _submit(signup: true),
+                                  child: const Text('Créer un compte'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          AppGaps.x3,
+                          OutlinedButton(
+                            onPressed: _busy ? null : _continueLocally,
+                            child: const Text('Continuer en local'),
                           ),
                           AppGaps.x2,
-                        ],
-                        Row(
-                          children: [
-                            Expanded(
-                              child: FilledButton(
-                                onPressed: _busy
-                                    ? null
-                                    : () => _submit(signup: false),
-                                child: const Text('Se connecter'),
-                              ),
-                            ),
-                            AppGaps.horizontalX3,
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: _busy
-                                    ? null
-                                    : () => _submit(signup: true),
-                                child: const Text('Créer un compte'),
-                              ),
-                            ),
-                          ],
-                        ),
-                        AppGaps.x3,
-                        OutlinedButton(
-                          onPressed: _busy ? null : _continueLocally,
-                          child: const Text('Continuer en local'),
-                        ),
-                        AppGaps.x2,
-                        OutlinedButton.icon(
-                          onPressed: _busy ? null : _signInWithGoogle,
-                          icon: const Icon(Icons.login_outlined),
-                          label: const Text('Continuer avec Google'),
-                        ),
-                        if (_busy)
-                          const Padding(
-                            padding: AppInsets.progress,
-                            child: Center(child: CircularProgressIndicator()),
+                          OutlinedButton.icon(
+                            onPressed: _busy ? null : _signInWithGoogle,
+                            icon: const Icon(Icons.login_outlined),
+                            label: const Text('Continuer avec Google'),
                           ),
-                      ],
+                          if (_busy)
+                            const Padding(
+                              padding: AppInsets.progress,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

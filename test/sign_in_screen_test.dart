@@ -81,6 +81,42 @@ Widget _testWidget(AuthSessionStore store) {
 }
 
 void main() {
+  testWidgets('auth fields expose password-manager autofill metadata', (
+    tester,
+  ) async {
+    final store = _ThrowingAuthSessionStore();
+    await tester.pumpWidget(_testWidget(store));
+
+    expect(find.byType(AutofillGroup), findsOneWidget);
+
+    final emailField = tester.widget<EditableText>(
+      find.descendant(
+        of: find.byKey(const ValueKey('auth-email-field')),
+        matching: find.byType(EditableText),
+      ),
+    );
+    expect(emailField.keyboardType, TextInputType.emailAddress);
+    expect(emailField.textInputAction, TextInputAction.next);
+    expect(emailField.autofillHints, [
+      AutofillHints.username,
+      AutofillHints.email,
+    ]);
+    expect(emailField.autocorrect, isFalse);
+    expect(emailField.enableSuggestions, isFalse);
+    expect(emailField.textCapitalization, TextCapitalization.none);
+
+    final passwordField = tester.widget<EditableText>(
+      find.descendant(
+        of: find.byKey(const ValueKey('auth-password-field')),
+        matching: find.byType(EditableText),
+      ),
+    );
+    expect(passwordField.obscureText, isTrue);
+    expect(passwordField.textInputAction, TextInputAction.done);
+    expect(passwordField.autofillHints, [AutofillHints.password]);
+    expect(passwordField.enableSuggestions, isFalse);
+  });
+
   testWidgets('sign in validates fields before calling auth', (tester) async {
     final store = _ThrowingAuthSessionStore();
     await tester.pumpWidget(_testWidget(store));
