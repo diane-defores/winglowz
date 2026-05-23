@@ -42,7 +42,7 @@ repair_termux_curl() {
 
 mkdir -p "$tmp_dir"
 repair_termux_curl
-curl -fsSL https://raw.githubusercontent.com/dianedef/dotfiles/6e74b34/install-termux.sh -o "$tmp_file"
+curl -fsSL https://raw.githubusercontent.com/dianedef/dotfiles/c6dd006/install-termux.sh -o "$tmp_file"
 exec sh "$tmp_file"
 `;
 
