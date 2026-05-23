@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.15"
+artifact_version: "1.0.18"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
-updated: "2026-05-22"
-updated_at: "2026-05-22 21:09:18 UTC"
+updated: "2026-05-23"
+updated_at: "2026-05-23 08:57:59 UTC"
 status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -66,7 +66,7 @@ evidence:
   - "Production endpoint preflight 2026-05-22: winflowz-app and www.winflowz.com are reachable, but deployed Formation bridge endpoints `/api/bridge/firebase` and `/api/bridge/sync` return 404, so the real suite-auth smoke is blocked until deploy."
   - "Production env verification 2026-05-22: both Vercel deployments are Ready, but `winflowz` lacks Clerk/suite-auth runtime env and `winflowz-app` has no production env variables."
   - "Endpoint middleware fix 2026-05-22: Formation bridge/webhook/newsletter endpoints now bypass Clerk middleware and CORS is allowlist-based with `SUITE_API_ALLOWED_ORIGINS`; production still requires push/redeploy and env configuration."
-next_step: "push/redeploy Formation and Android CI env propagation, then /sf-prod winflowz plus GitHub Actions Android retest"
+next_step: "perform Android suite-auth smoke on physical device, then continue deployed suite-auth verification"
 ---
 
 # Title
@@ -520,6 +520,9 @@ Resolved decisions:
 | 2026-05-22 11:56:37 UTC | sf-prod | GPT-5 Codex | Rechecked production deployments and redacted env/runtime signals after push | Blocked: deployments are Ready, but `winflowz` lacks Clerk publishable key and suite-auth env vars, and `winflowz-app` has no production env vars | configure Vercel env vars for `winflowz` and `winflowz-app`, redeploy, then `/sf-prod winflowz` |
 | 2026-05-22 13:17:05 UTC | sf-auth-debug | GPT-5 Codex | Investigated bridge endpoint 500s and patched Formation middleware/CORS | Partial fixed locally: bridge/webhook/newsletter endpoints bypass Clerk and local bridge requests now return controlled JSON config errors instead of Clerk middleware crashes; production still needs push/redeploy and env vars | push/redeploy Formation fix, configure env vars, then `/sf-prod winflowz` |
 | 2026-05-22 21:09:18 UTC | sf-ship | GPT-5 Codex | Prepared quick ship for Android CI suite bridge env propagation and Formation deployment support after env setup | Partial: local checks passed, but hosted proof still requires push, GitHub Actions Android CI, Vercel redeploy, and manual Android/device smoke | `/sf-prod winflowz`, GitHub Actions Android retest, then suite-auth smoke |
+| 2026-05-22 21:25:12 UTC | sf-prod | GPT-5 Codex | Verified latest Android CI run after suite-auth build-env push | Partial: Flutter analyze, Flutter tests and debug APK artifact succeeded; Firestore rules/index deploy failed with Service Usage IAM 403 before deploy | grant `roles/serviceusage.serviceUsageConsumer` to the GitHub Firebase deploy service account, rerun CI, then Android smoke |
+| 2026-05-23 08:52:14 UTC | sf-prod | GPT-5 Codex | Reran the failed Firestore deploy job after WIF/service-account setup | Still blocked: WIF authentication succeeds, but Firebase CLI still receives Service Usage IAM 403 when checking `firestore.googleapis.com` | add `roles/serviceusage.serviceUsageConsumer` on the `winflowz` project IAM for `github-actions-firebase-deploy@winflowz.iam.gserviceaccount.com`, then rerun failed jobs |
+| 2026-05-23 08:57:59 UTC | sf-prod | GPT-5 Codex | Fixed production Firebase CI via CLI and reran Android CI | Passed: repo-level WIF secrets now point to prod, Firestore API is enabled, Firestore rules/indexes deploy passed, and Android debug APK artifact remains available | Android physical-device suite-auth smoke |
 
 # Current Chantier Flow
 
@@ -532,6 +535,6 @@ Resolved decisions:
 - support-runbook: done via sf-build delegated docs worker; canonical operator guide added in the main project docs and surfaced from the app docs.
 - smoke-readiness: partial via sf-build delegated docs worker; Task 10 log exists, but real deployed proof is not captured yet.
 - sf-test/sf-auth-debug: partial fixed locally on 2026-05-22; deployed Formation endpoints previously failed before route code because Clerk middleware required a missing publishable key.
-- sf-prod: still blocked on 2026-05-22 until the Formation fix is pushed/redeployed and production Vercel env variables are configured for both `winflowz` and `winflowz-app`.
+- sf-prod: passed for Android CI on 2026-05-23; analyze, tests, debug APK upload, and Firestore rules/index deploy are green.
 
-Next command: push/redeploy the Formation and Android CI env propagation changes, then `/sf-prod winflowz` plus GitHub Actions Android retest.
+Next command: perform Android physical-device suite-auth smoke, then continue deployed suite-auth verification.
