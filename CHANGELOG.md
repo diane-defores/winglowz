@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Added persistent local clipboard history for local/offline mode, including reload-safe deduplication, search, direct copy back to the system clipboard, and corruption-tolerant recovery tests.
 - Wired the Android IME key-value engine into the live keyboard layout and dispatch path, including parsed text keys, Ctrl/Alt/Fn modifier keys, key-event dispatch, macro dispatch support and an Fn navigation modmap.
 - Added Android IME key-value engine foundations inspired by the reference keyboard: typed key values, parser support for text/keyevent/action/modifier/macro payloads, Shift/Ctrl modifier handling, modmap overrides, and native unit-test coverage.
 - Added Android IME touch foundations for pointer-id tracking, secondary pointer suppression, long-press repeat on destructive/navigation keys, and horizontal spacebar sliding for cursor movement.

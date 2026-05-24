@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-05-08"
 created_at: "2026-05-08 17:48:07 UTC"
-updated: "2026-05-08"
-updated_at: "2026-05-08 19:22:40 UTC"
+updated: "2026-05-24"
+updated_at: "2026-05-24 11:20:01 UTC"
 status: ready
 source_skill: sf-build
 source_model: "GPT-5 Codex"
@@ -248,6 +248,13 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
   - Depends on : Tâches 1-4.
   - Validate with : revue Markdown + `rg` ciblé sur formulations Supabase.
 
+- [x] Tâche 8 : Rendre l'historique local persistant et ergonomique
+  - Fichiers : `lib/features/clipboard/data/persistent_clipboard_history_store.dart`, `lib/features/clipboard/data/in_memory_clipboard_history_store.dart`, `lib/features/clipboard/application/clipboard_store_provider.dart`, `lib/features/clipboard/presentation/clipboard_screen.dart`, `test/persistent_clipboard_history_store_test.dart`, `test/local_mode_store_provider_test.dart`
+  - Action : Remplacer le fallback clipboard volatil par un store local persistant via secure storage, préserver la déduplication automatique après reload, ajouter recherche et recopie directe vers le presse-papiers système.
+  - User story link : l'historique clipboard reste utilisable sans backend distant et devient exploitable au quotidien.
+  - Depends on : Tâches 1-6.
+  - Validate with : `flutter analyze`, `flutter test`, tests ciblés clipboard/local mode.
+
 # Acceptance Criteria
 
 - [x] AC 1 : Given l'écran clipboard Flutter, when il liste/ajoute/pin/supprime, then il appelle `ClipboardHistoryApi` et n'importe pas `lib/data/supabase`.
@@ -257,6 +264,8 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
 - [x] AC 5 : Given aucun backend distant n'est disponible, when l'utilisateur ouvre le clipboard, then un store local ou un message backend-generic permet un état récupérable sans dépendance Supabase visible.
 - [x] AC 6 : Given Android/IME capture un item, when le raccord est fait, then l'événement ne référence pas Supabase et respecte source, device, hash, sensibilité et sync state du domaine.
 - [x] AC 7 : Given la spec Android IME est relue, when elle mentionne sync clipboard, then elle passe par l'API/store backend-agnostic ou nomme Supabase comme adaptateur seulement.
+- [x] AC 8 : Given l'utilisateur est en local mode ou sans accès cloud, when il redémarre l'app ou recrée le store local, then les items clipboard locaux, pins, edits et déduplications automatiques restent disponibles.
+- [x] AC 9 : Given un historique long, when l'utilisateur cherche ou veut réutiliser un item, then l'écran permet de filtrer l'historique et de recopier l'item vers le presse-papiers système.
 
 # Test Strategy
 
@@ -273,6 +282,11 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
   - upsert automatique dans/hors fenêtre de déduplication
   - contenu sensible sans confirmation
   - séparation par compte/device si le store local ajoute le user scope
+- Tests store local persistant:
+  - restauration après recréation du store
+  - persistance pin/edit/delete
+  - déduplication automatique durable
+  - récupération après payload corrompu
 - Tests futurs Android/IME:
   - MethodChannel ou bridge event sans import Supabase
   - private field/sensitive content gating
@@ -337,7 +351,8 @@ None.
 | 2026-05-08 17:57:25 UTC | sf-verify | GPT-5 Codex | Ran Dart format, Flutter analyze, Flutter tests and diff whitespace check for the backend-agnostic clipboard API/store work | partial: local checks pass; Android/IME bridge and live Supabase validation remain pending | /sf-start shipflow_data/workflow/specs/clipboard-backend-agnostic-api.md task 6 |
 | 2026-05-08 19:22:40 UTC | sf-start | GPT-5 Codex | Implemented native in-memory keyboard clipboard event queue, MethodChannel drain, Flutter importer, clipboard screen drain, and tests for backend-agnostic IME clipboard events | implemented | /sf-verify shipflow_data/workflow/specs/clipboard-backend-agnostic-api.md |
 | 2026-05-08 19:22:40 UTC | sf-verify | GPT-5 Codex | Ran Dart format, Flutter analyze, Flutter tests, Android debug build attempt and diff whitespace check | partial: Flutter checks pass; Android build blocked by missing Android SDK/ANDROID_HOME and device QA remains pending | /sf-test Android IME clipboard bridge on Android SDK/device |
+| 2026-05-24 11:20:01 UTC | sf-build | GPT-5 Codex | Added secure persistent local clipboard history, search, copy action, docs alignment and tests for local fallback durability | implemented: Flutter checks pass; Android physical-device QA still pending | /sf-test Android IME clipboard bridge on Android SDK/device |
 
 # Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ✅ -> sf-verify partial -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ✅ -> sf-verify ✅ -> sf-end partial -> sf-ship ⏳

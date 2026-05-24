@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-14"
+updated: "2026-05-24"
 status: draft
 source_skill: sf-docs
 scope: "flutter-app"
@@ -53,7 +53,7 @@ unavailable on non-Android platforms.
 | `lib/features/**/domain/**` | Feature models | Keep validation allowlists aligned with SQL constraints. |
 | `lib/features/clipboard/application/**` | Clipboard product API and provider composition | Keep UI and future Android bridges pointed at `ClipboardHistoryApi`, not provider repositories. |
 | `lib/features/clipboard/domain/**` | Backend-neutral clipboard sources, sync state, sensitivity and dedupe contracts | Keep provider names, SQL columns and native Android details out of the domain. |
-| `lib/features/clipboard/data/**` | Local/offline clipboard stores | Do not claim durable persistence unless a storage backend has been selected. |
+| `lib/features/clipboard/data/**` | Local/offline clipboard stores | Local fallback history is persisted through secure storage; keep provider adapters outside this module. |
 | `lib/data/supabase/**` | Legacy Supabase adapter implementations | Keep compiling until Firebase parity exists; do not add new target behavior here. |
 | `lib/data/firebase/**` | Firebase adapter implementations | Keep Firebase behind backend-agnostic stores and Firestore Security Rules. |
 | `test/**` | Dart/widget tests | Cover model validation and bridge parsing when native contracts change. |
@@ -83,7 +83,7 @@ Clipboard UI
   -> AndroidKeyboardBridge.drainKeyboardClipboardEvents
   -> ClipboardHistoryApi
   -> ClipboardHistoryStore
-  -> local/offline store or provider adapter
+  -> secure local persistent store or provider adapter
 ```
 
 ## Invariants
@@ -98,6 +98,7 @@ Clipboard UI
 - Android-only controls render only when `PlatformCapabilities.isAndroid` is true.
 - Domain model source allowlists must match database constraints.
 - Clipboard UI, application APIs and domain models must not import Supabase adapters.
+- Signed-out, local fallback, and entitlement-missing sessions keep clipboard history usable through `PersistentClipboardHistoryStore`.
 - Android native code emits platform actions/events; backend writes go through the Flutter product API or an equivalent store contract.
 - Keyboard clipboard bridge events are imported by Flutter before listing clipboard items; sensitive automatic content can be rejected by the store without user confirmation.
 - Keyboard corner config models in `lib/features/keyboard/domain/keyboard_models.dart` mirror the native preset/override wire shape. Kotlin native owns functional preset tables; Flutter keeps preset ids/names as DTO/UI fallback and resolves only explicit overrides.
@@ -107,7 +108,7 @@ Clipboard UI
 ## Failure Modes
 
 - Native channel unavailable: show a recoverable Settings message instead of crashing.
-- Remote backend not configured: keep local UI usable with the local clipboard store where available and display configuration state for cloud sync.
+- Remote backend not configured: keep local UI usable with the secure persistent clipboard store and display configuration state for cloud sync.
 - Auth provider unavailable or misconfigured: show a recoverable French auth
   message, keep support detail redacted/copyable only when useful, and do not
   publish a partial signed-in state.
@@ -139,7 +140,7 @@ flutter test
 - `lib/features/keyboard/presentation/keyboard_corner_shortcuts_screen.dart` changed -> verify draft/save separation, private-mode warnings, snippet search, import/export safety, and unsupported-platform copy.
 - Domain model source allowlist changed -> verify SQL constraints and tests.
 - Repository metadata changed -> verify backend adapter docs and security rules/tests.
-- Clipboard API/store changed -> verify no feature UI imports `lib/data/supabase`, run clipboard tests and update provider docs.
+- Clipboard API/store changed -> verify no feature UI imports `lib/data/supabase`, run clipboard tests including persistent local history, and update provider docs.
 - Auth adapter/router/sign-in changed -> run auth failure, sign-in, router guard,
   full Flutter tests, and the Android auth smoke before claiming ship readiness.
 

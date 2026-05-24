@@ -8,12 +8,12 @@ import '../../auth/domain/product_entitlement.dart';
 import '../data/firebase_clipboard_history_store.dart';
 import 'clipboard_history_api.dart';
 import 'keyboard_clipboard_event_importer.dart';
-import '../data/in_memory_clipboard_history_store.dart';
+import '../data/persistent_clipboard_history_store.dart';
 import '../domain/clipboard_store.dart';
 
 final localClipboardHistoryStoreProvider =
-    Provider<InMemoryClipboardHistoryStore>(
-      (ref) => InMemoryClipboardHistoryStore(),
+    Provider<PersistentClipboardHistoryStore>(
+      (ref) => PersistentClipboardHistoryStore(),
     );
 
 final clipboardStoreProvider = Provider<ClipboardHistoryStore>((ref) {

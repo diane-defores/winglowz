@@ -3,12 +3,17 @@ import '../domain/clipboard_normalizer.dart';
 import '../domain/clipboard_store.dart';
 
 class InMemoryClipboardHistoryStore implements ClipboardHistoryStore {
-  InMemoryClipboardHistoryStore({DateTime Function()? clock})
-    : _clock = clock ?? DateTime.now;
+  InMemoryClipboardHistoryStore({
+    DateTime Function()? clock,
+    Iterable<ClipboardItemRecord> initialItems = const <ClipboardItemRecord>[],
+    int? initialNextId,
+  }) : _clock = clock ?? DateTime.now,
+       _items = initialItems.toList(growable: true),
+       _nextId = initialNextId ?? _nextIdFromItems(initialItems);
 
   final DateTime Function() _clock;
-  final List<ClipboardItemRecord> _items = <ClipboardItemRecord>[];
-  var _nextId = 1;
+  final List<ClipboardItemRecord> _items;
+  int _nextId;
 
   @override
   Future<List<ClipboardItemRecord>> list() async {
@@ -23,6 +28,12 @@ class InMemoryClipboardHistoryStore implements ClipboardHistoryStore {
       return b.lastSeenAt.compareTo(a.lastSeenAt);
     });
     return visible;
+  }
+
+  List<ClipboardItemRecord> snapshot({bool includeDeleted = false}) {
+    return _items
+        .where((item) => includeDeleted || item.deletedAt == null)
+        .toList(growable: false);
   }
 
   @override
@@ -320,5 +331,20 @@ class InMemoryClipboardHistoryStore implements ClipboardHistoryStore {
       return value;
     }
     return value.substring(0, 180);
+  }
+
+  static int _nextIdFromItems(Iterable<ClipboardItemRecord> items) {
+    var highest = 0;
+    for (final item in items) {
+      final id = item.id;
+      if (!id.startsWith('local-')) {
+        continue;
+      }
+      final parsed = int.tryParse(id.substring('local-'.length));
+      if (parsed != null && parsed > highest) {
+        highest = parsed;
+      }
+    }
+    return highest + 1;
   }
 }

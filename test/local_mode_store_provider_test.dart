@@ -6,7 +6,7 @@ import 'package:winflowz_app/features/auth/application/suite_identity_provider.d
 import 'package:winflowz_app/features/auth/domain/auth_session_store.dart';
 import 'package:winflowz_app/features/auth/domain/suite_identity.dart';
 import 'package:winflowz_app/features/clipboard/application/clipboard_store_provider.dart';
-import 'package:winflowz_app/features/clipboard/data/in_memory_clipboard_history_store.dart';
+import 'package:winflowz_app/features/clipboard/data/persistent_clipboard_history_store.dart';
 import 'package:winflowz_app/features/dictionary/application/dictionary_store_provider.dart';
 import 'package:winflowz_app/features/dictionary/data/in_memory_dictionary_store.dart';
 import 'package:winflowz_app/features/settings/application/settings_store_provider.dart';
@@ -33,7 +33,7 @@ void main() {
     );
     expect(
       container.read(clipboardStoreProvider),
-      isA<InMemoryClipboardHistoryStore>(),
+      isA<PersistentClipboardHistoryStore>(),
     );
     expect(container.read(snippetStoreProvider), isA<InMemorySnippetStore>());
     expect(
@@ -76,7 +76,7 @@ void main() {
       );
       expect(
         container.read(clipboardStoreProvider),
-        isA<InMemoryClipboardHistoryStore>(),
+        isA<PersistentClipboardHistoryStore>(),
       );
       expect(container.read(snippetStoreProvider), isA<InMemorySnippetStore>());
       expect(

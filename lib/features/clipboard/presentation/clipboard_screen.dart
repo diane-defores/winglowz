@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 
 import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/theme/app_theme.dart';
@@ -21,6 +22,7 @@ class ClipboardScreen extends ConsumerStatefulWidget {
 
 class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   final _contentController = TextEditingController();
+  final _searchController = TextEditingController();
   ClipboardCanonicalSource _source = ClipboardCanonicalSource.manual;
   bool _busy = false;
   String? _message;
@@ -30,13 +32,16 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   void initState() {
     super.initState();
     _contentController.addListener(_handleContentChanged);
+    _searchController.addListener(_handleContentChanged);
     Future<void>.microtask(_load);
   }
 
   @override
   void dispose() {
     _contentController.removeListener(_handleContentChanged);
+    _searchController.removeListener(_handleContentChanged);
     _contentController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -232,6 +237,13 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
     }
   }
 
+  Future<void> _copyToSystemClipboard(ClipboardItemRecord item) async {
+    await Clipboard.setData(ClipboardData(text: item.content));
+    if (mounted) {
+      setState(() => _message = 'Item clipboard copié.');
+    }
+  }
+
   Future<void> _remove(String id) async {
     final settings = await ref.read(settingsStoreProvider).load();
     if (!mounted) {
@@ -278,6 +290,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
         .where((item) => item.syncState == ClipboardSyncState.pending)
         .length;
     final latest = _items.isEmpty ? null : _items.first;
+    final visibleItems = _filteredItems();
     return ListView(
       padding: AppInsets.screen,
       children: [
@@ -372,16 +385,45 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
         AppGaps.x4,
         const AppEntityListHeader(title: 'Clipboard items'),
         AppGaps.x2,
+        TextField(
+          controller: _searchController,
+          enabled: _items.isNotEmpty,
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.search),
+            labelText: 'Search history',
+            hintText: 'Texte, source, sync...',
+          ),
+        ),
+        AppGaps.x2,
         if (_items.isEmpty) const _EmptyClipboardState(),
-        for (final item in _items)
+        if (_items.isNotEmpty && visibleItems.isEmpty)
+          const _EmptyClipboardSearchState(),
+        for (final item in visibleItems)
           _ClipboardItemTile(
             item: item,
+            onCopy: _busy ? null : () => _copyToSystemClipboard(item),
             onEdit: _busy ? null : () => _edit(item),
             onTogglePin: _busy ? null : () => _togglePin(item),
             onDelete: _busy ? null : () => _remove(item.id),
           ),
       ],
     );
+  }
+
+  List<ClipboardItemRecord> _filteredItems() {
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      return _items;
+    }
+    return _items
+        .where((item) {
+          final source = _sourceLabel(_sourceFrom(item)).toLowerCase();
+          final sync = _syncLabel(item.syncState).toLowerCase();
+          return item.content.toLowerCase().contains(query) ||
+              source.contains(query) ||
+              sync.contains(query);
+        })
+        .toList(growable: false);
   }
 }
 
@@ -696,15 +738,44 @@ class _EmptyClipboardState extends StatelessWidget {
   }
 }
 
+class _EmptyClipboardSearchState extends StatelessWidget {
+  const _EmptyClipboardSearchState();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Card(
+      child: Padding(
+        padding: AppInsets.card,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.search_off, color: colorScheme.primary),
+            AppGaps.horizontalX3,
+            Expanded(
+              child: Text(
+                'Aucun item ne correspond à cette recherche.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ClipboardItemTile extends StatelessWidget {
   const _ClipboardItemTile({
     required this.item,
+    required this.onCopy,
     required this.onEdit,
     required this.onTogglePin,
     required this.onDelete,
   });
 
   final ClipboardItemRecord item;
+  final VoidCallback? onCopy;
   final VoidCallback? onEdit;
   final VoidCallback? onTogglePin;
   final VoidCallback? onDelete;
@@ -739,6 +810,11 @@ class _ClipboardItemTile extends StatelessWidget {
                 Wrap(
                   spacing: AppIconMetrics.listActionSpacing,
                   children: [
+                    IconButton(
+                      tooltip: 'Copier',
+                      onPressed: onCopy,
+                      icon: const Icon(Icons.content_copy),
+                    ),
                     IconButton(
                       tooltip: 'Modifier',
                       onPressed: onEdit,

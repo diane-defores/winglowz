@@ -5,6 +5,15 @@
 
 ---
 
+## Active
+
+🟢 [WinFlowzApp] task: Verify persistent local clipboard fallback, search, and copy action | status: done | area: clipboard-local | id: wfz-clipboard-persistent-local-verify
+🟠 [WinFlowzApp] task: Push or ship the verified persistent local clipboard fallback changes | status: todo | area: clipboard-local | id: wfz-clipboard-persistent-local-ship
+🟠 [WinFlowzApp] task: Retest Android IME clipboard bridge on physical device after APK/CI handoff | status: todo | area: clipboard-ime | id: wfz-ime-clipboard-device-qa
+🟠 [WinFlowzApp] task: Redeploy the Flutter web auth patch and rerun Google plus email/password smoke on app.winflowz.com | status: todo | area: suite-auth | id: wfz-suite-auth-web-smoke
+
+---
+
 ## Migration Verification
 
 | Pri | Task | Status |
@@ -17,7 +26,7 @@
 | 🟠 | Detach Supabase runtime target path (`task 7`) while preserving legacy compile compatibility until the final parity decision | ✅ done — Supabase removed from active bootstrap/providers/diagnostics; legacy adapters/tests remain in-place for compile compatibility |
 | ⚪ | Retire or archive Supabase schema/tests after Firebase adapter parity is specified | 💤 deferred |
 | ⚪ | Validate auth, transcriptions, snippets, dictionary, clipboard sync, and settings against a real Firebase environment | 💤 deferred — after Firebase adapter setup |
-| 🟠 | Build Android IME WinFlowz keyboard progressively: base native keyboard, Settings bridge, privacy gate, clipboard, media, docs, Android device QA | 🔄 in progress — custom swipe-corner keyboard, Settings bridge, privacy gate, native panels, reference-keyboard foundation/editing parity roadmap, IME subtype/lifecycle/context slice, selection/InputConnection editor slice, advanced editing actions, auto-capitalization, current-word suggestions, Snippets/Dictionary text-expander sync, key-value/parser/modifier/modmap foundations now wired into live text/keyevent/action/macro dispatch with Ctrl/Alt/Fn keys and Fn navigation modmap, touch pointer/long-press/repeat/spacebar-slider foundations, FlutterWeb/Vercel keyboard preview, Keyboard Theme Studio kickoff (draft/save/reset + native theme config + gradient/key colors path), and local `:app:compileDebugKotlin` proof implemented; full Gradle packaging is blocked on this aarch64 runner by x86_64 AAPT2, and Android device QA/backend-agnostic sync adapter remain required |
+| 🟠 | Build Android IME WinFlowz keyboard progressively: base native keyboard, Settings bridge, privacy gate, clipboard, media, docs, Android device QA | 🔄 in progress — custom swipe-corner keyboard, Settings bridge, privacy gate, native panels, reference-keyboard foundation/editing parity roadmap, IME subtype/lifecycle/context slice, selection/InputConnection editor slice, advanced editing actions, auto-capitalization, current-word suggestions, Snippets/Dictionary text-expander sync, key-value/parser/modifier/modmap foundations now wired into live text/keyevent/action/macro dispatch with Ctrl/Alt/Fn keys and Fn navigation modmap, touch pointer/long-press/repeat/spacebar-slider foundations, FlutterWeb/Vercel keyboard preview, Keyboard Theme Studio kickoff, and persistent local clipboard fallback/search/copy verified by `flutter analyze` + `flutter test`; full Gradle packaging is blocked on this aarch64 runner by x86_64 AAPT2, and Android physical-device clipboard/IME QA remains required |
 | 🟠 | Repair Flutter Android overlay parity with native floating bubble, event bridge, accessibility delivery, and appearance settings | 🔄 in progress — native bridge and Settings controls implemented; overlay foreground-service type fix attempted for BUG-2026-05-11-001; CI APK and Android device retest still required |
 | ✅ | Run the required Android-current manual platform pass and document non-Android limits | ✅ done — Android remains the only current runtime target; capability/permission limits documented; web local speech disabled; Android real-device QA remains tracked under overlay/IME tasks |
 

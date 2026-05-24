@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.23"
+artifact_version: "1.0.25"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
 updated: "2026-05-23"
-updated_at: "2026-05-23 14:30:13 UTC"
+updated_at: "2026-05-23 19:33:42 UTC"
 status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -20,7 +20,7 @@ docs_impact: "yes"
 linked_systems:
   - "winflows.com / WinFlowz Formation"
   - "WinFlowz Flutter app"
-  - "TubeFlow / YouTube product"
+  - "ReplayGlowz / YouTube product"
   - "VoiceFlowz historical tracker, now legacy naming for WinFlowz app"
   - "Firebase Auth"
   - "Google Cloud Identity Platform"
@@ -49,7 +49,7 @@ depends_on:
     artifact_version: "0.1.0"
     required_status: "draft"
   - artifact: "/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md"
-    artifact_version: "1.0.8"
+    artifact_version: "1.0.9"
     required_status: "reviewed"
 supersedes: []
 evidence:
@@ -72,6 +72,7 @@ evidence:
   - "Hosted Flutter web auth debug 2026-05-23: `app.winflowz.com` renders the official Google Identity Services button, but Google rejects the current origin for the configured OAuth client ID."
   - "Firebase CI/rules migration 2026-05-23: GitHub Actions WIF, deploy service account, Firestore database, rules/index deploy, auth-config validation and debug APK build now pass against `winflowz-suite`."
   - "Legacy Google Cloud project `winflowz` deletion requested 2026-05-23 after migration to `winflowz-suite`."
+  - "User correction 2026-05-23: ReplayGlowz is the canonical YouTube product and `product_id=replayglowz`; the old YouTube product naming is legacy only."
 next_step: "ship the Flutter web init/id-token error handling patch, redeploy `winflowz-app`, then rerun Google web and email/password auth smoke"
 ---
 
@@ -94,7 +95,7 @@ Acteurs secondaires:
 - utilisateur qui s'inscrit sur un produit puis essaie un autre produit;
 - utilisateur existant sur le site WinFlowz Formation;
 - utilisateur existant ou futur de l'app WinFlowz Android;
-- utilisateur existant ou futur de TubeFlow;
+- utilisateur existant ou futur de ReplayGlowz;
 - opérateur support;
 - systèmes de paiement et d'entitlement: Polar, stores mobiles, grants manuels;
 - backends produit: Firebase/Firestore, Clerk/Convex, futurs backends.
@@ -116,7 +117,7 @@ La suite accepte une identité client globale et associe cette identité à des 
 # Success Behavior
 
 - Given un utilisateur crée un compte sur un produit, when il tente de se connecter à un autre produit de la suite avec le même identifiant, then le système reconnaît la même identité globale ou propose un linking explicite sans duplicat silencieux.
-- Given un utilisateur a un compte global mais aucun droit TubeFlow, when il ouvre TubeFlow, then il voit un état connecté sans accès produit, avec un CTA achat/waitlist/support selon le produit, et aucune donnée TubeFlow privée n'est lue.
+- Given un utilisateur a un compte global mais aucun droit ReplayGlowz, when il ouvre ReplayGlowz, then il voit un état connecté sans accès produit, avec un CTA achat/waitlist/support selon le produit, et aucune donnée ReplayGlowz privée n'est lue.
 - Given un utilisateur a un entitlement actif `winflowz_app`, when il se connecte à l'app WinFlowz, then l'app peut utiliser son identité globale et ses données restent sous un namespace produit protégé.
 - Given un webhook Polar ou store mobile confirme un achat, when l'événement est vérifié, then une ligne entitlement idempotente est créée ou mise à jour pour le bon `global_user_id`, le bon `product_id`, le bon plan et le bon statut.
 - Given un remboursement, expiration ou révocation arrive, when le backend entitlements le traite, then l'accès produit est retiré sans supprimer l'identité globale ni les données conservées selon la policy produit.
@@ -137,7 +138,7 @@ La suite accepte une identité client globale et associe cette identité à des 
 
 # Problem
 
-Les produits WinFlowz ont grandi avec des stacks d'auth différentes: WinFlowz app cible Firebase Auth/Firestore, le site WinFlowz Formation a des traces Clerk/Convex/Polar, TubeFlow a des traces Clerk/Convex/YouTube OAuth, et le playbook auth workspace recommande surtout un propriétaire de session par runtime. Rien dans les documents locaux ne justifie une séparation durable des comptes par produit. À l'inverse, une séparation produit créerait des doublons de comptes, plus de support, plus de reset password, plus de surface de configuration auth et une expérience moins professionnelle.
+Les produits WinFlowz ont grandi avec des stacks d'auth différentes: WinFlowz app cible Firebase Auth/Firestore, le site WinFlowz Formation a des traces Clerk/Convex/Polar, ReplayGlowz a des traces Clerk/Convex/YouTube OAuth issues de l'ancien nom produit, et le playbook auth workspace recommande surtout un propriétaire de session par runtime. Rien dans les documents locaux ne justifie une séparation durable des comptes par produit. À l'inverse, une séparation produit créerait des doublons de comptes, plus de support, plus de reset password, plus de surface de configuration auth et une expérience moins professionnelle.
 
 Le risque opposé est de confondre "un compte" et "accès à tout". Une identité globale mal modélisée peut élargir les permissions, mélanger des données produit, casser les paiements, ou fusionner des utilisateurs historiques à tort.
 
@@ -169,7 +170,8 @@ L'implémentation doit être progressive. La première tranche ne migre pas tous
 - Canon initial `product_id`:
   - `winflowz_formation`;
   - `winflowz_app`;
-  - `tubeflow`.
+  - `replayglowz`.
+  - l'ancien product id YouTube est un alias legacy/migration seulement et ne doit plus être créé pour de nouveaux droits.
   - Legacy VoiceFlowz / VoiceFlows references map to `winflowz_app`, not to a separate product id.
 - Contrats de token et backend:
   - issuer/audience/app id vérifiés;
@@ -274,7 +276,7 @@ Fresh-docs verdict: `fresh-docs checked`. The docs support the architecture dire
 - `lib/features/auth/application/auth_session_provider.dart`: may need a `SuiteIdentitySession` adapter or bridge.
 - `lib/features/*/application/*_store_provider.dart`: must continue selecting stores from auth state without trusting client-provided IDs.
 - WinFlowz Formation site: Clerk/Convex/Polar user and entitlement model must be audited before linking to suite identity.
-- TubeFlow: Clerk/Convex/YouTube OAuth must remain separate from suite login; YouTube OAuth grants product permissions, not suite identity.
+- ReplayGlowz: Clerk/Convex/YouTube OAuth must remain separate from suite login; YouTube OAuth grants product permissions, not suite identity. Former YouTube product names are legacy aliases only.
 - Support/docs: account help must explain "same account, access depends on product" without advertising unrelated products prematurely.
 
 # Documentation Coherence
@@ -286,7 +288,7 @@ Update or create:
 - `docs/DECISIONS.md`: reviewed pointer for shared suite identity principle and selected provider/bridge.
 - `shipflow_data/technical/architecture.md`: linked suite identity architecture and data boundaries.
 - `shipflow_data/technical/guidelines.md`: coding rules for global identity, entitlement checks, provider boundaries and redaction.
-- Product docs for WinFlowz app, WinFlowz Formation and TubeFlow: login/access copy, setup env, smoke steps.
+- Product docs for WinFlowz app, WinFlowz Formation and ReplayGlowz: login/access copy, setup env, smoke steps.
 - `.env.example` or equivalent per product: auth domain, audience, issuer, callback, webhook secret names, without real secrets.
 - Support runbook: duplicate email, account linking, entitlement missing, refund/revoke, provider outage.
 - Changelog entry only after an implementation tranche is actually shipped.
@@ -337,7 +339,7 @@ Update or create:
 
 - [ ] Tâche 4 : Auditer les comptes et IDs existants avant linking
   - Fichiers : `/home/claude/shipflow_data/projects/winflowz/docs/technical/suite-authentication.md`, `/home/claude/winflowz/convex/schema.ts`, `/home/claude/winflowz/convex/users.ts`, `/home/claude/winflowz/convex/http.ts`, `/home/claude/winflowz/src/pages/api/clerk/webhook.ts`, `/home/claude/winflowz/src/pages/api/polar/checkout.ts`
-  - Action : lister sources utilisateurs et paiements: Firebase Auth, Clerk users, Convex users/course entitlements, Polar customer/subscription/order ids, TubeFlow users et YouTube OAuth grants.
+  - Action : lister sources utilisateurs et paiements: Firebase Auth, Clerk users, Convex users/course entitlements, Polar customer/subscription/order ids, ReplayGlowz users, legacy YouTube product aliases et YouTube OAuth grants.
   - User story link : empêche merge silencieux et perte d'accès.
   - Depends on : Tâche 2.
   - Validate with : inventaire documenté par produit; cas doublon email catégorisés; aucun secret exporté dans le repo.
@@ -377,10 +379,10 @@ Update or create:
   - Progress 2026-05-21 : endpoint interne `POST /api/bridge/sync` ajouté; il accepte seulement `{ globalUserId }` avec secret serveur, relit Convex, résout les Firebase UIDs liés et réécrit `suiteAccess/{firebaseUid}` avec Firebase Admin.
   - Progress 2026-05-21 : les chemins Polar grant/refund/revoke appellent maintenant le sync après mutation d'entitlement; un échec de sync retourne une erreur retryable au webhook au lieu de laisser un miroir stale en silence.
 
-- [ ] Tâche 8 : Adapter TubeFlow sans confondre YouTube OAuth et suite identity
-  - Fichiers : repo TubeFlow concerné; auth/session docs; YouTube OAuth routes.
-  - Action : connecter la session suite au produit TubeFlow, mais garder les tokens YouTube comme grants produit séparés et révocables.
-  - User story link : même compte pour entrer dans TubeFlow, mais YouTube reste une permission externe spécifique.
+- [ ] Tâche 8 : Adapter ReplayGlowz sans confondre YouTube OAuth et suite identity
+  - Fichiers : repo ReplayGlowz concerné; auth/session docs; YouTube OAuth routes.
+  - Action : connecter la session suite au produit ReplayGlowz, mais garder les tokens YouTube comme grants produit séparés et révocables.
+  - User story link : même compte pour entrer dans ReplayGlowz, mais YouTube reste une permission externe spécifique.
   - Depends on : Tâche 5, Tâche 7.
   - Validate with : login suite; no entitlement deny; entitlement allow; YouTube connect/disconnect; sign-out.
   - Notes : ne jamais utiliser un refresh token YouTube comme identité suite; cette tâche peut attendre la preuve WinFlowz Formation + app Android.
@@ -417,13 +419,13 @@ Update or create:
 - [ ] CA 8 : Given un token session a le mauvais issuer/audience/environment, when un backend produit le reçoit, then la requête est refusée.
 - [ ] CA 9 : Given custom claims existent, when un entitlement change, then le backend continue de lire la source de vérité serveur et ne dépend pas d'un token stale pour autoriser une mutation sensible.
 - [ ] CA 10 : Given un utilisateur se déconnecte d'un produit, when il revient sur une route protégée, then la session locale produit et l'accès backend sont invalidés selon le provider choisi.
-- [ ] CA 11 : Given un utilisateur TubeFlow connecte YouTube, when il se déconnecte de YouTube, then son identité suite reste intacte mais les permissions YouTube produit sont retirées.
+- [ ] CA 11 : Given un utilisateur ReplayGlowz connecte YouTube, when il se déconnecte de YouTube, then son identité suite reste intacte mais les permissions YouTube produit sont retirées.
 - [ ] CA 12 : Given la première tranche est proposée au ship, when `sf-verify` relit les preuves, then WinFlowz Formation et WinFlowz Android app prouvent compte, entitlement allow/deny, backend deny et sign-out.
 
 # Test Strategy
 
 - Unit tests:
-  - product id allowlist validation for `winflowz_formation`, `winflowz_app`, `tubeflow`;
+  - product id allowlist validation for `winflowz_formation`, `winflowz_app`, `replayglowz`, with the old YouTube product id accepted only as a legacy migration alias;
   - legacy VoiceFlowz / VoiceFlows references map to `winflowz_app` and cannot create a separate entitlement namespace;
   - entitlement model validation;
   - duplicate email/linking policy;
@@ -500,7 +502,7 @@ Resolved decisions:
 
 - Provider gate: Clerk central identity + Firebase Android bridge.
 - First proof pair: WinFlowz Formation + WinFlowz Android app.
-- Product ID canon: internal allowlist `winflowz_formation`, `winflowz_app`, `tubeflow`; historical VoiceFlowz / VoiceFlows references map to `winflowz_app`; external billing IDs are stored as `source_ref`, not used as canonical `product_id`.
+- Product ID canon: internal allowlist `winflowz_formation`, `winflowz_app`, `replayglowz`; the old YouTube product id is a legacy migration alias only; historical VoiceFlowz / VoiceFlows references map to `winflowz_app`; external billing IDs are stored as `source_ref`, not used as canonical `product_id`.
 
 # Skill Run History
 
@@ -538,6 +540,7 @@ Resolved decisions:
 | 2026-05-23 13:09:13 UTC | sf-auth-debug | GPT-5 Codex | Retested hosted Flutter web email/password after Firebase provider activation | Passed preflight: `app.winflowz.com` now reaches Firebase Email/Password auth and returns controlled invalid-credential UX for a fake account instead of provider-disabled copy | push/redeploy `winflowz-app`, then retest Google web sign-in and a real email/password account smoke |
 | 2026-05-23 13:35:40 UTC | sf-auth-debug | GPT-5 Codex | Continued hosted Flutter web auth debug after deploy and Firebase Email/Password activation | Partial: live `app.winflowz.com` now renders the official GIS button, but Google returns `origin is not allowed for the given client ID`; local patch also prevents repeated Google Sign-In singleton init from masking email/password errors and maps Firebase REST invalid-login credentials to the proper UX | add `https://app.winflowz.com` to the Google OAuth Web client authorized JavaScript origins, push/redeploy `winflowz-app`, then rerun Google web and email/password smoke |
 | 2026-05-23 14:30:13 UTC | sf-auth-debug | GPT-5 Codex | Migrated Firebase CI/rules ownership from legacy `winflowz` project to `winflowz-suite` and retested GitHub Actions | Passed: created `winflowz-suite` WIF pool/provider, deploy service account, Firestore `(default)` in `nam5`, GitHub secrets/variable; workflow run `26335153138` passed auth config, Firestore rules/indexes deploy, analyze, tests and debug APK upload; legacy `winflowz` deletion requested | ship/redeploy local Flutter web auth patch, then rerun deployed Google web and email/password account smoke |
+| 2026-05-23 19:33:42 UTC | sf-auth-debug | GPT-5 Codex | Read-only verification of the current WinFlowz Flutter web auth path after ReplayGlowz ClerkJS bridge discussion. | Confirmed: `winflowz_app` web currently uses Firebase Auth plus `google_sign_in_web` rendered GIS button, then maps the Firebase uid/id token through the suite identity bridge; no ClerkJS bridge exists in `web/index.html`, `auth_session_provider.dart`, or auth data code. | keep current Firebase web smoke path for WinFlowz app unless a new spec explicitly migrates Flutter web to ClerkJS |
 
 # Current Chantier Flow
 
@@ -549,7 +552,7 @@ Resolved decisions:
 - sf-ship: partial quick ship prepared on 2026-05-22; hosted Vercel/GitHub Actions proof still pending.
 - support-runbook: done via sf-build delegated docs worker; canonical operator guide added in the main project docs and surfaced from the app docs.
 - smoke-readiness: partial via sf-build delegated docs worker; Task 10 log exists, but real deployed proof is not captured yet.
-- sf-test/sf-auth-debug: partial on 2026-05-23; `www.winflowz.com/signin` now loads the Clerk custom-domain sign-in UI, `app.winflowz.com` now loads Firebase auth UI and the official Google GIS button, Email/Password reaches Firebase, Google web reaches the Google popup after authorized-origin fix, and a local Google singleton-init/error-mapping patch still needs ship/redeploy.
+- sf-test/sf-auth-debug: partial on 2026-05-23; `www.winflowz.com/signin` now loads the Clerk custom-domain sign-in UI, `app.winflowz.com` currently uses Firebase Auth plus the official Google GIS button and a Firebase-id-token suite bridge, Email/Password reaches Firebase, Google web reaches the Google popup after authorized-origin fix, and a local Google singleton-init/error-mapping patch still needs ship/redeploy. No ClerkJS bridge is present in the WinFlowz Flutter web app today.
 - sf-prod: partial on 2026-05-23; Android CI is green against `winflowz-suite`, Firestore rules/indexes deploy to `winflowz-suite`, WinFlowz Clerk DNS/TLS/CSP allow sign-in UI loading, and `winflowz-app` Vercel envs are now present with production redeployed.
 
 Next command: push/redeploy the local Flutter web auth patch, then retest Google web sign-in and a real email/password account smoke on `app.winflowz.com`.
