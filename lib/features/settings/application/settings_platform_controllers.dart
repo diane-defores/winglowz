@@ -44,6 +44,7 @@ class SettingsKeyboardController {
       'voice_engine=${status.voiceEngine}',
       'voice_fallback=${status.voiceFallbackReason}',
       'voice_last_error=${status.voiceLastErrorCode}',
+      'clipboard_sensitive_field_history=${status.clipboardSensitiveFieldHistoryEnabled}',
       'last_error_at=${status.lastKeyboardErrorAt ?? 'none'}',
       'last_error=${SensitiveRedactor.redact(status.lastKeyboardError ?? 'none')}',
     ].join('; ');
@@ -79,6 +80,7 @@ class SettingsKeyboardController {
     required AndroidKeyboardStatus current,
     bool? voiceEnabled,
     bool? clipboardSyncDesired,
+    bool? clipboardSensitiveFieldHistoryEnabled,
     bool? mediaControlsEnabled,
     int? mediaVolumeStepPercent,
     int? mediaBrightnessStepPercent,
@@ -104,6 +106,9 @@ class SettingsKeyboardController {
       voiceEnabled: voiceEnabled ?? current.voiceEnabled,
       clipboardSyncDesired:
           clipboardSyncDesired ?? current.clipboardSyncDesired,
+      clipboardSensitiveFieldHistoryEnabled:
+          clipboardSensitiveFieldHistoryEnabled ??
+          current.clipboardSensitiveFieldHistoryEnabled,
       mediaControlsEnabled:
           mediaControlsEnabled ?? current.mediaControlsEnabled,
       mediaVolumeStepPercent:

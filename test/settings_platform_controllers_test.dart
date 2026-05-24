@@ -59,12 +59,14 @@ void main() {
         current: current,
         layoutProfile: KeyboardLayoutProfile.azerty,
         clipboardSyncDesired: true,
+        clipboardSensitiveFieldHistoryEnabled: true,
         privacyMode: KeyboardPrivacyMode.strict,
         autoCloseModesEnabled: false,
       );
 
       expect(status.layoutProfile, KeyboardLayoutProfile.azerty);
       expect(status.clipboardSyncDesired, isTrue);
+      expect(status.clipboardSensitiveFieldHistoryEnabled, isTrue);
       expect(status.mediaVolumeStepPercent, 15);
       expect(status.mediaBrightnessStepPercent, 20);
       expect(status.actionRowHeightScale, closeTo(2 / 3, 0.0001));
@@ -76,6 +78,10 @@ void main() {
       expect(
         calls.single.arguments,
         containsPair('clipboardSyncDesired', true),
+      );
+      expect(
+        calls.single.arguments,
+        containsPair('clipboardSensitiveFieldHistoryEnabled', true),
       );
       expect(calls.single.arguments, containsPair('voiceEnabled', true));
       expect(

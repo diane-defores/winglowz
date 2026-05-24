@@ -14,20 +14,24 @@ data class KeyboardFieldPolicy(
 )
 
 object KeyboardSecurityPolicy {
-    fun evaluate(editorInfo: EditorInfo?, privacyMode: String): KeyboardFieldPolicy {
+    fun evaluate(
+        editorInfo: EditorInfo?,
+        privacyMode: String,
+        clipboardSensitiveFieldHistoryEnabled: Boolean = false,
+    ): KeyboardFieldPolicy {
         if (privacyMode == KeyboardStateStore.PRIVACY_STRICT) {
             return privatePolicy("Strict privacy mode")
         }
         val info = editorInfo ?: return privatePolicy("No focused field")
         if (privacyMode != KeyboardStateStore.PRIVACY_STANDARD) {
             if (hasNoPersonalizedLearningFlag(info)) {
-                return privatePolicy("Private field")
+                return privatePolicy("Private field", clipboardSensitiveFieldHistoryEnabled)
             }
             if (hasSensitiveInputType(info.inputType)) {
-                return privatePolicy("Sensitive field")
+                return privatePolicy("Sensitive field", clipboardSensitiveFieldHistoryEnabled)
             }
             if (hasSensitivePrivateOptions(info.privateImeOptions)) {
-                return privatePolicy("Host app private field")
+                return privatePolicy("Host app private field", clipboardSensitiveFieldHistoryEnabled)
             }
         }
         return KeyboardFieldPolicy(
@@ -41,13 +45,16 @@ object KeyboardSecurityPolicy {
         )
     }
 
-    private fun privatePolicy(reason: String): KeyboardFieldPolicy =
+    private fun privatePolicy(
+        reason: String,
+        clipboardAllowed: Boolean = false,
+    ): KeyboardFieldPolicy =
         KeyboardFieldPolicy(
             privateMode = true,
             reason = reason,
             inputAllowed = true,
             voiceAllowed = false,
-            clipboardAllowed = false,
+            clipboardAllowed = clipboardAllowed,
             snippetsAllowed = false,
             learningAllowed = false,
         )

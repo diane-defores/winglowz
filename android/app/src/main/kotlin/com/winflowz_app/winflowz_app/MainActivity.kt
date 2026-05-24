@@ -479,6 +479,9 @@ class MainActivity : FlutterActivity() {
                         call.argument<Boolean>("clipboardSyncDesired")?.let {
                             keyboardState.clipboardSyncDesired = it
                         }
+                        call.argument<Boolean>("clipboardSensitiveFieldHistoryEnabled")?.let {
+                            keyboardState.clipboardSensitiveFieldHistoryEnabled = it
+                        }
                         call.argument<Boolean>("mediaControlsEnabled")?.let {
                             keyboardState.mediaControlsEnabled = it
                         }

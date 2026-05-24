@@ -509,7 +509,19 @@ class _KeyboardSettingsSection extends StatelessWidget {
                 : (value) => onPreferenceChanged(clipboardSyncDesired: value),
             title: const Text('Keyboard clipboard sync intent'),
             subtitle: const Text(
-              'Opt-in flag for eligible keyboard clipboard items. Sensitive/private fields still disable capture.',
+              'Opt-in flag for cloud sync of eligible keyboard clipboard items. Local history is handled separately.',
+            ),
+          ),
+          SwitchListTile(
+            value: status?.clipboardSensitiveFieldHistoryEnabled ?? false,
+            onChanged: busy
+                ? null
+                : (value) => onPreferenceChanged(
+                    clipboardSensitiveFieldHistoryEnabled: value,
+                  ),
+            title: const Text('Clipboard history in sensitive fields'),
+            subtitle: const Text(
+              'Advanced opt-in: copy/cut/paste from password, OTP, or private fields can appear in clipboard history. Off by default.',
             ),
           ),
           SwitchListTile(

@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-19"
+updated: "2026-05-24"
 status: draft
 source_skill: sf-docs
 scope: "android-native"
@@ -47,7 +47,7 @@ inside other apps' input fields.
 | `android/app/src/main/AndroidManifest.xml` | Android service, activity, and permission declarations | Keep IME and overlay declarations explicit; avoid broad permissions before use. |
 | `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/MainActivity.kt` | Flutter MethodChannel owner | Keep `winflowz_app/overlay` and `winflowz_app/keyboard` contracts separate. |
 | `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/Overlay*.kt` | Overlay runtime | Do not allow concurrent overlay and keyboard recording without coordinator logic. |
-| `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/**` | Native IME services/controllers | No raw text logging; sensitive fields disable capture/sync/enriched insertion; clipboard bridge events persist only as a bounded local drain queue for Flutter import. |
+| `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/**` | Native IME services/controllers | No raw text logging; sensitive fields disable capture/sync/enriched insertion by default; an explicit advanced opt-in may allow clipboard history only. Clipboard bridge events persist only as a bounded local drain queue for Flutter import. |
 | `android/app/src/main/res/xml/**` | Android service metadata | IME metadata must match manifest service declarations. |
 
 ## Entrypoints
@@ -83,7 +83,7 @@ Keyboard clipboard action
   - punctuation auto-spacing
   - both disabled automatically for private/email/url/phone contexts.
 - Debug touch overlay can render key bounds and gesture classifier diagnostics without exposing user text.
-- Password, OTP, `noPersonalizedLearning`, and app-marked sensitive fields must disable voice capture, clipboard sync, snippets, and learning behavior.
+- Password, OTP, `noPersonalizedLearning`, and app-marked sensitive fields must disable voice capture, clipboard history, snippets, and learning behavior by default. The advanced `clipboardSensitiveFieldHistoryEnabled` preference may allow only IME copy/cut/paste history in those fields; strict privacy mode still disables clipboard, and the opt-in must not re-enable voice, snippets, learning, or background clipboard capture.
 - Base media control sends generic play/pause key events only; it must not read metadata without explicit richer permission.
 - Keyboard preferences are persisted in `KeyboardStateStore` and round-tripped through `winflowz_app/keyboard`:
   - `layoutProfile`: `QWERTY` / `AZERTY`, default `AZERTY`
@@ -91,6 +91,7 @@ Keyboard clipboard action
   - `cornerConfig`: versioned JSON with a preset id and per-key/per-slot overrides (`up/down/left/right` plus legacy `topLeft/topRight/bottomLeft/bottomRight`)
   - `themeConfig`: versioned JSON (`version`, `presetId`, colors, linear/radial gradient style, border/radius/shadow values, local image reference, press-effect/easing metadata) persisted under `KEY_THEME_CONFIG` with size cap (48 KB)
   - `privacyMode`: `auto` / `strict` / `standard`
+  - `clipboardSensitiveFieldHistoryEnabled`: `true` / `false`, default `false`, advanced opt-in for clipboard history in sensitive fields under auto policy
 - IME state preferences store only non-sensitive flags and counters, never typed or dictated text.
 - Gesture shortcut execution uses `KeyboardCornerShortcuts`, `KeyboardCornerShortcutResolver`, and `KeyboardKeyValue` instead of a second action language. Kotlin native is the source of truth for functional preset tables and combines preset, user overrides, field policy, `cornerModeEnabled`, and `specialKeyCornersEnabled` at layout snapshot time.
 - Keyboard theme authoring lives in Flutter `KeyboardThemeStudioScreen` and is pushed to native with `getKeyboardThemeConfig`, `setKeyboardThemeConfig`, and `resetKeyboardThemeConfig` on `winflowz_app/keyboard`. The studio ships the v1 preset catalog (`System`, `WinFlowz Light`, `WinFlowz Dark`, `Neon Terminal`, `Glass Mint`, `Sunset Gradient`, `Midnight Aurora`, `Paper Ink`, `Pixel Candy`, `Minimal Contrast`), collapsible editing sections, and JSON import/export without image bytes.
@@ -107,7 +108,7 @@ Keyboard clipboard action
 - Flutter Settings can call `getKeyboardStatus` and `clearKeyboardDiagnostics` on `winflowz_app/keyboard`. `Clear logs` clears both `AppDiagnostics` and native keyboard diagnostics; `Copy diagnostic` includes the last native incident when present.
 - Sentry is expected to be initialized through `sentry_flutter` when a DSN is configured. This module does not add a standalone Android Sentry dependency; native keyboard diagnostics remain local and copyable when Sentry is absent, offline, or not initialized.
 - The built-in `Smart French` gesture preset keeps useful French accents, common punctuation, `$`/`€`, numeric up-gestures on the letter grid, and layout-aware directional navigation gestures on `W`/`Z` plus `S` while avoiding low-value defaults such as German `ß`, `ñ`, `ä`, and `ö`. Additional presets are punctuation + navigation, French accents plus punctuation, developer symbols, and no shortcuts. Flutter may expose these preset ids/names for settings and DTO fallback, but it must not duplicate or simulate their functional shortcut tables.
-- Gesture shortcut values may dispatch text, key events, actions, modifiers, and macros. Private fields suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros while keeping normal text accents available.
+- Gesture shortcut values may dispatch text, key events, actions, modifiers, and macros. Private fields suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros while keeping normal text accents available; clipboard history in sensitive fields is allowed only through the explicit advanced opt-in above and never in strict privacy mode.
 - IME clipboard history events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
 - The native clipboard event queue persists a bounded local drain list so keyboard copy/cut/paste actions can reach the Flutter clipboard history even if the app opens after the IME event. This is a transient import queue, not the product history store.
 - Text keys carry a `KeyboardKeyValue` model in addition to display glyphs. `KeyboardKeyValueParser`, `KeyboardKeyModifier`, and `KeyboardModMap` are the local foundation for parsed layouts, macros, Ctrl/Alt/Fn/Shift behavior and user modmaps; the live layout dispatches parsed text keys, key events, action values and macros through existing callbacks.

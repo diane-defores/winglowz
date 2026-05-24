@@ -186,6 +186,7 @@ class AndroidKeyboardBridge {
   static Future<AndroidKeyboardStatus> setPreferences({
     required bool voiceEnabled,
     required bool clipboardSyncDesired,
+    required bool clipboardSensitiveFieldHistoryEnabled,
     required bool mediaControlsEnabled,
     required int mediaVolumeStepPercent,
     required int mediaBrightnessStepPercent,
@@ -216,6 +217,8 @@ class AndroidKeyboardBridge {
     final raw = await _invoke<Map<Object?, Object?>>('setKeyboardPreferences', {
       'voiceEnabled': voiceEnabled,
       'clipboardSyncDesired': clipboardSyncDesired,
+      'clipboardSensitiveFieldHistoryEnabled':
+          clipboardSensitiveFieldHistoryEnabled,
       'mediaControlsEnabled': mediaControlsEnabled,
       'mediaVolumeStepPercent': mediaVolumeStepPercent.clamp(1, 20).toInt(),
       'mediaBrightnessStepPercent': mediaBrightnessStepPercent

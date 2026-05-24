@@ -22,19 +22,25 @@ class KeyboardClipboardController(private val context: Context) {
         return true
     }
 
-    fun pastePrimaryText(inputConnection: InputConnection?): Boolean {
+    fun pastePrimaryText(
+        inputConnection: InputConnection?,
+        allowSensitiveClip: Boolean = false,
+    ): Boolean {
         val clip = clipboard.primaryClip ?: return false
         val value = primaryText() ?: return false
         val pasted = InputConnectionEditor(inputConnection).commitText(value).applied
-        if (pasted && !clip.isSensitive()) {
+        if (pasted && (!clip.isSensitive() || allowSensitiveClip)) {
             recordClipboardHistoryEntry(value, "paste_primary_clip")
         }
         return pasted
     }
 
-    fun recordPrimaryClipHistoryEntry(action: String): String? {
+    fun recordPrimaryClipHistoryEntry(
+        action: String,
+        allowSensitiveClip: Boolean = false,
+    ): String? {
         val clip = clipboard.primaryClip ?: return null
-        if (clip.isSensitive()) {
+        if (clip.isSensitive() && !allowSensitiveClip) {
             return null
         }
         val value = primaryText() ?: return null
@@ -55,6 +61,14 @@ class KeyboardClipboardController(private val context: Context) {
         val clip = clipboard.primaryClip ?: return null
         val item = clip.getItemAt(0) ?: return null
         return item.coerceToText(context)?.toString()?.trim()?.takeIf { it.isNotBlank() }
+    }
+
+    fun primaryTextAllowedForHistory(allowSensitiveClip: Boolean = false): String? {
+        val clip = clipboard.primaryClip ?: return null
+        if (clip.isSensitive() && !allowSensitiveClip) {
+            return null
+        }
+        return primaryText()
     }
 
     private fun ClipData.isSensitive(): Boolean {

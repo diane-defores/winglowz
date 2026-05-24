@@ -123,7 +123,12 @@ class WinFlowzInputMethodService :
 
     private fun refreshInputState(attribute: EditorInfo?) {
         runServiceSafely("refreshInputState") {
-            fieldPolicy = KeyboardSecurityPolicy.evaluate(attribute, stateStore.privacyMode)
+            fieldPolicy =
+                KeyboardSecurityPolicy.evaluate(
+                    editorInfo = attribute,
+                    privacyMode = stateStore.privacyMode,
+                    clipboardSensitiveFieldHistoryEnabled = stateStore.clipboardSensitiveFieldHistoryEnabled,
+                )
             inputContext = KeyboardInputContextResolver.resolve(attribute)
             selectionState =
                 KeyboardSelectionState.fromEditorBounds(
@@ -377,7 +382,10 @@ class WinFlowzInputMethodService :
             return
         }
         if (editor().performContextMenuAction(android.R.id.copy).applied) {
-            clipboardController.recordPrimaryClipHistoryEntry("copy_context_menu")
+            clipboardController.recordPrimaryClipHistoryEntry(
+                action = "copy_context_menu",
+                allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+            )
                 ?.let { stateStore.pushClipboardEntry(it) }
             applyRuntimePreferencesToView()
             showInlineStatus("Copy sent")
@@ -405,7 +413,10 @@ class WinFlowzInputMethodService :
         }
         val cut = editor().performContextMenuAction(android.R.id.cut)
         if (cut.applied) {
-            clipboardController.recordPrimaryClipHistoryEntry("cut_selection")
+            clipboardController.recordPrimaryClipHistoryEntry(
+                action = "cut_selection",
+                allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+            )
                 ?.let { stateStore.pushClipboardEntry(it) }
             refreshTypingAssistantState()
             applyRuntimePreferencesToView()
@@ -431,16 +442,27 @@ class WinFlowzInputMethodService :
         val targetPaste = editor().performContextMenuAction(android.R.id.paste)
         if (targetPaste.applied) {
             val pastedText =
-                clipboardController.recordPrimaryClipHistoryEntry("paste_context_menu")
-                    ?: clipboardController.primaryText()
+                clipboardController.recordPrimaryClipHistoryEntry(
+                    action = "paste_context_menu",
+                    allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+                )
+                    ?: clipboardController.primaryTextAllowedForHistory(
+                        allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+                    )
             pastedText?.let { stateStore.pushClipboardEntry(it) }
             applyRuntimePreferencesToView()
             showInlineStatus("Clipboard paste sent")
             return true
         }
-        val pasted = clipboardController.pastePrimaryText(currentInputConnection)
+        val pasted =
+            clipboardController.pastePrimaryText(
+                inputConnection = currentInputConnection,
+                allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+            )
         if (pasted) {
-            clipboardController.primaryText()?.let { stateStore.pushClipboardEntry(it) }
+            clipboardController.primaryTextAllowedForHistory(
+                allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+            )?.let { stateStore.pushClipboardEntry(it) }
             applyRuntimePreferencesToView()
         }
         showInlineStatus(if (pasted) "Clipboard pasted" else "No text clipboard")
@@ -455,8 +477,13 @@ class WinFlowzInputMethodService :
         val plainPaste = editor().performContextMenuAction(android.R.id.pasteAsPlainText)
         if (plainPaste.applied) {
             val pastedText =
-                clipboardController.recordPrimaryClipHistoryEntry("paste_plain_context_menu")
-                    ?: clipboardController.primaryText()
+                clipboardController.recordPrimaryClipHistoryEntry(
+                    action = "paste_plain_context_menu",
+                    allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+                )
+                    ?: clipboardController.primaryTextAllowedForHistory(
+                        allowSensitiveClip = stateStore.clipboardSensitiveFieldHistoryEnabled,
+                    )
             pastedText?.let { stateStore.pushClipboardEntry(it) }
             applyRuntimePreferencesToView()
             showInlineStatus("Plain clipboard pasted")

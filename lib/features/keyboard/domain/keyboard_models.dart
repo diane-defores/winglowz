@@ -1591,6 +1591,7 @@ class AndroidKeyboardStatus {
     required this.active,
     required this.voiceEnabled,
     required this.clipboardSyncDesired,
+    required this.clipboardSensitiveFieldHistoryEnabled,
     required this.mediaControlsEnabled,
     required this.mediaVolumeStepPercent,
     required this.mediaBrightnessStepPercent,
@@ -1644,6 +1645,7 @@ class AndroidKeyboardStatus {
   final bool active;
   final bool voiceEnabled;
   final bool clipboardSyncDesired;
+  final bool clipboardSensitiveFieldHistoryEnabled;
   final bool mediaControlsEnabled;
   final int mediaVolumeStepPercent;
   final int mediaBrightnessStepPercent;
@@ -1698,6 +1700,7 @@ class AndroidKeyboardStatus {
       active: false,
       voiceEnabled: false,
       clipboardSyncDesired: false,
+      clipboardSensitiveFieldHistoryEnabled: false,
       mediaControlsEnabled: false,
       mediaVolumeStepPercent: 5,
       mediaBrightnessStepPercent: 10,
@@ -1754,6 +1757,8 @@ class AndroidKeyboardStatus {
       active: map['active'] as bool? ?? false,
       voiceEnabled: map['voiceEnabled'] as bool? ?? true,
       clipboardSyncDesired: map['clipboardSyncDesired'] as bool? ?? false,
+      clipboardSensitiveFieldHistoryEnabled:
+          map['clipboardSensitiveFieldHistoryEnabled'] as bool? ?? false,
       mediaControlsEnabled: map['mediaControlsEnabled'] as bool? ?? true,
       mediaVolumeStepPercent:
           ((map['mediaVolumeStepPercent'] as num?)?.toInt() ?? 5)
@@ -1853,6 +1858,7 @@ class AndroidKeyboardStatus {
   Map<String, Object?> toPreferencesMap({
     bool? voiceEnabled,
     bool? clipboardSyncDesired,
+    bool? clipboardSensitiveFieldHistoryEnabled,
     bool? mediaControlsEnabled,
     int? mediaVolumeStepPercent,
     int? mediaBrightnessStepPercent,
@@ -1876,6 +1882,9 @@ class AndroidKeyboardStatus {
     return {
       'voiceEnabled': voiceEnabled ?? this.voiceEnabled,
       'clipboardSyncDesired': clipboardSyncDesired ?? this.clipboardSyncDesired,
+      'clipboardSensitiveFieldHistoryEnabled':
+          clipboardSensitiveFieldHistoryEnabled ??
+          this.clipboardSensitiveFieldHistoryEnabled,
       'mediaControlsEnabled': mediaControlsEnabled ?? this.mediaControlsEnabled,
       'mediaVolumeStepPercent':
           mediaVolumeStepPercent ?? this.mediaVolumeStepPercent,

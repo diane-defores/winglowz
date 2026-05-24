@@ -45,6 +45,7 @@ typedef _KeyboardPreferenceChanged =
     Future<void> Function({
       bool? voiceEnabled,
       bool? clipboardSyncDesired,
+      bool? clipboardSensitiveFieldHistoryEnabled,
       bool? mediaControlsEnabled,
       int? mediaVolumeStepPercent,
       int? mediaBrightnessStepPercent,
@@ -350,6 +351,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _setKeyboardPreferences({
     bool? voiceEnabled,
     bool? clipboardSyncDesired,
+    bool? clipboardSensitiveFieldHistoryEnabled,
     bool? mediaControlsEnabled,
     int? mediaVolumeStepPercent,
     int? mediaBrightnessStepPercent,
@@ -377,6 +379,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         current: current,
         voiceEnabled: voiceEnabled,
         clipboardSyncDesired: clipboardSyncDesired,
+        clipboardSensitiveFieldHistoryEnabled:
+            clipboardSensitiveFieldHistoryEnabled,
         mediaControlsEnabled: mediaControlsEnabled,
         mediaVolumeStepPercent: mediaVolumeStepPercent,
         mediaBrightnessStepPercent: mediaBrightnessStepPercent,
@@ -929,6 +933,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'active=${status.active}',
       'voice_enabled=${status.voiceEnabled}',
       'clipboard_sync_desired=${status.clipboardSyncDesired}',
+      'clipboard_sensitive_field_history=${status.clipboardSensitiveFieldHistoryEnabled}',
       'media_controls=${status.mediaControlsEnabled}',
       'media_session_access=${status.mediaSessionAccessGranted}',
       'system_settings_write=${status.systemSettingsWriteGranted}',

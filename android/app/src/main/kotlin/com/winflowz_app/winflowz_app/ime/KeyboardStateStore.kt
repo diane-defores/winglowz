@@ -30,6 +30,10 @@ class KeyboardStateStore(private val context: Context) {
         get() = preferences.getBoolean(KEY_CLIPBOARD_SYNC_DESIRED, false)
         set(value) = preferences.edit().putBoolean(KEY_CLIPBOARD_SYNC_DESIRED, value).apply()
 
+    var clipboardSensitiveFieldHistoryEnabled: Boolean
+        get() = preferences.getBoolean(KEY_CLIPBOARD_SENSITIVE_FIELD_HISTORY_ENABLED, false)
+        set(value) = preferences.edit().putBoolean(KEY_CLIPBOARD_SENSITIVE_FIELD_HISTORY_ENABLED, value).apply()
+
     var mediaControlsEnabled: Boolean
         get() = preferences.getBoolean(KEY_MEDIA_CONTROLS_ENABLED, true)
         set(value) = preferences.edit().putBoolean(KEY_MEDIA_CONTROLS_ENABLED, value).apply()
@@ -321,6 +325,7 @@ class KeyboardStateStore(private val context: Context) {
             "active" to isInputMethodActive(),
             "voiceEnabled" to voiceEnabled,
             "clipboardSyncDesired" to clipboardSyncDesired,
+            "clipboardSensitiveFieldHistoryEnabled" to clipboardSensitiveFieldHistoryEnabled,
             "mediaControlsEnabled" to mediaControlsEnabled,
             "mediaVolumeStepPercent" to mediaVolumeStepPercent,
             "mediaBrightnessStepPercent" to mediaBrightnessStepPercent,
@@ -924,6 +929,7 @@ class KeyboardStateStore(private val context: Context) {
         const val PREFERENCES_NAME = "winflowz_app_keyboard_prefs"
         const val KEY_VOICE_ENABLED = "voice_enabled"
         const val KEY_CLIPBOARD_SYNC_DESIRED = "clipboard_sync_desired"
+        const val KEY_CLIPBOARD_SENSITIVE_FIELD_HISTORY_ENABLED = "clipboard_sensitive_field_history_enabled"
         const val KEY_MEDIA_CONTROLS_ENABLED = "media_controls_enabled"
         const val KEY_MEDIA_VOLUME_STEP_PERCENT = "media_volume_step_percent"
         const val KEY_MEDIA_BRIGHTNESS_STEP_PERCENT = "media_brightness_step_percent"

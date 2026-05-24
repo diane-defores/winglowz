@@ -279,6 +279,8 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
         await AndroidKeyboardBridge.setPreferences(
           voiceEnabled: status.voiceEnabled,
           clipboardSyncDesired: true,
+          clipboardSensitiveFieldHistoryEnabled:
+              status.clipboardSensitiveFieldHistoryEnabled,
           mediaControlsEnabled: status.mediaControlsEnabled,
           mediaVolumeStepPercent: status.mediaVolumeStepPercent,
           mediaBrightnessStepPercent: status.mediaBrightnessStepPercent,

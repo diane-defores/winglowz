@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-05-08"
 created_at: "2026-05-08 17:48:07 UTC"
 updated: "2026-05-24"
-updated_at: "2026-05-24 19:14:50 UTC"
+updated_at: "2026-05-24 19:29:37 UTC"
 status: ready
 source_skill: sf-build
 source_model: "GPT-5 Codex"
@@ -130,6 +130,7 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
 - Le natif Android ne doit pas contenir de credentials backend ni appeler un provider distant directement.
 - Les contenus sensibles doivent demander confirmation avant toute sauvegarde manuelle cloud ou locale persistante.
 - Les captures automatiques sensibles doivent être refusées ou rester locales sans sync tant qu'une confirmation explicite n'est pas possible.
+- Les captures clipboard IME depuis des champs sensibles restent refusées par défaut; seule une préférence avancée explicite peut les autoriser pour l'historique clipboard, sans réactiver voix, snippets, apprentissage ou mode strict.
 - Les items sont bornés à `kClipboardMaxContentLength`.
 - Les sources et états de sync doivent être des enums de domaine, pas des strings dispersées.
 - Les erreurs doivent être récupérables et observables par l'utilisateur ou par un état de queue.
@@ -262,6 +263,13 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
   - Depends on : Tâches 6-8.
   - Validate with : `flutter analyze`, `flutter test`; validation Android/Kotlin et appareil physique hors VM.
 
+- [x] Tâche 10 : Ajouter une option avancée pour l'historique clipboard en champs sensibles
+  - Fichiers : `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardSecurityPolicy.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardStateStore.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardClipboardController.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzInputMethodService.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/MainActivity.kt`, `lib/features/keyboard/domain/keyboard_models.dart`, `lib/core/platform/android_keyboard_bridge.dart`, `lib/features/settings/**`, `docs/technical/android-native.md`
+  - Action : Exposer une préférence désactivée par défaut qui autorise uniquement l'historique clipboard IME dans les champs sensibles sous policy auto, tout en gardant voix, snippets, learning et strict privacy bloqués.
+  - User story link : les utilisateurs avancés peuvent choisir de conserver leurs copier/coller sensibles dans l'historique tout en assumant explicitement le risque.
+  - Depends on : Tâches 8-9.
+  - Validate with : `flutter analyze`, `flutter test`; validation Android/Kotlin et appareil physique hors VM.
+
 # Acceptance Criteria
 
 - [x] AC 1 : Given l'écran clipboard Flutter, when il liste/ajoute/pin/supprime, then il appelle `ClipboardHistoryApi` et n'importe pas `lib/data/supabase`.
@@ -274,6 +282,7 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
 - [x] AC 8 : Given l'utilisateur est en local mode ou sans accès cloud, when il redémarre l'app ou recrée le store local, then les items clipboard locaux, pins, edits et déduplications automatiques restent disponibles.
 - [x] AC 9 : Given un historique long, when l'utilisateur cherche ou veut réutiliser un item, then l'écran permet de filtrer l'historique et de recopier l'item vers le presse-papiers système.
 - [x] AC 10 : Given l'utilisateur copie, coupe ou colle via les actions clavier IME dans un champ autorisé, when il ouvre l'écran Clipboard, then l'événement est drainé dans `ClipboardHistoryApi` sans dépendre de `clipboardSyncDesired`.
+- [x] AC 11 : Given l'option avancée d'historique clipboard sensible est désactivée, when l'utilisateur copie/coupe/colle dans un champ password/OTP/private sous privacy auto, then aucun item sensible n'est ajouté à l'historique app ou aux récents locaux clavier; when l'option est activée, then seuls les événements clipboard IME sont autorisés et le mode strict reste bloqué.
 
 # Test Strategy
 
@@ -361,6 +370,7 @@ None.
 | 2026-05-08 19:22:40 UTC | sf-verify | GPT-5 Codex | Ran Dart format, Flutter analyze, Flutter tests, Android debug build attempt and diff whitespace check | partial: Flutter checks pass; Android build blocked by missing Android SDK/ANDROID_HOME and device QA remains pending | /sf-test Android IME clipboard bridge on Android SDK/device |
 | 2026-05-24 11:20:01 UTC | sf-build | GPT-5 Codex | Added secure persistent local clipboard history, search, copy action, docs alignment and tests for local fallback durability | implemented: Flutter checks pass; Android physical-device QA still pending | /sf-test Android IME clipboard bridge on Android SDK/device |
 | 2026-05-24 19:14:50 UTC | sf-build | GPT-5 Codex | Removed clipboardSyncDesired gating from IME history capture and persisted the native drain queue for authorized keyboard copy/cut/paste events | implemented: Flutter checks pass; Android CI/device validation still pending | /sf-test Android IME clipboard bridge on Android SDK/device |
+| 2026-05-24 19:29:37 UTC | sf-build | GPT-5 Codex | Added default-off advanced opt-in for IME clipboard history in sensitive fields while keeping strict privacy, voice, snippets and learning blocked | implemented: Flutter checks pass; Android CI/device validation still pending | /sf-test Android IME clipboard bridge on Android SDK/device |
 
 # Current Chantier Flow
 
