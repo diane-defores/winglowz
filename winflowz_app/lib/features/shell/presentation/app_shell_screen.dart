@@ -1,0 +1,1702 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/diagnostics/app_diagnostics.dart';
+import '../../../core/platform/android_keyboard_bridge.dart';
+import '../../../core/platform/android_overlay_bridge.dart';
+import '../../../core/platform/platform_capabilities.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_components.dart';
+import '../../clipboard/presentation/clipboard_screen.dart';
+import '../../dictionary/presentation/dictionary_screen.dart';
+import '../../keyboard/domain/keyboard_models.dart';
+import '../../settings/application/settings_store_provider.dart';
+import '../../settings/domain/onboarding_permission_contract.dart';
+import '../../settings/domain/settings_store.dart';
+import '../../settings/presentation/settings_screen.dart';
+import '../../snippets/presentation/snippets_screen.dart';
+import '../../voice/presentation/voice_screen.dart';
+
+class AppShellScreen extends ConsumerStatefulWidget {
+  const AppShellScreen({
+    super.key,
+    this.initialIndex = 0,
+    this.initialOnboardingStep,
+  });
+
+  final int initialIndex;
+  final String? initialOnboardingStep;
+
+  @override
+  ConsumerState<AppShellScreen> createState() => _AppShellScreenState();
+}
+
+class _AppShellScreenState extends ConsumerState<AppShellScreen>
+    with WidgetsBindingObserver {
+  static const _bottomNavIconOffset = Offset(0, -3);
+  static const _unsupportedOverlayStatus = AndroidOverlayStatus(
+    enabled: false,
+    requestedEnabled: false,
+    running: false,
+    overlayPermissionGranted: false,
+    accessibilityPermissionGranted: false,
+    recordAudioGranted: false,
+    deliveryMode: OverlayDeliveryMode.clipboardOnly,
+    sizeScale: 1,
+    opacity: 0.9,
+    eventQueueSize: 0,
+    serviceState: 'unsupported',
+  );
+
+  int _index = 0;
+  bool _onboardingVisible = false;
+  bool _onboardingDismissed = false;
+  bool _onboardingOpenedManually = false;
+  bool _onboardingBusy = false;
+  bool _onboardingDeferPromptVisible = false;
+  bool _showOnboardingResumeHint = false;
+  final List<int> _tabHistory = [0];
+  OnboardingReadiness? _onboardingReadiness;
+  String? _onboardingMessage;
+  UserSettingsSnapshot? _onboardingSettings;
+
+  void _selectTab(int value) {
+    if (value == _index) {
+      return;
+    }
+    const titles = ['Voice', 'Clipboard', 'Snippets', 'Dictionary', 'Settings'];
+    AppDiagnostics.record(
+      'tab_select',
+      '${titles[_index]} -> ${titles[value]}',
+    );
+    setState(() {
+      _index = value;
+      _tabHistory.remove(value);
+      _tabHistory.add(value);
+    });
+  }
+
+  void _goBackInTabs() {
+    if (_tabHistory.length <= 1) {
+      return;
+    }
+    setState(() {
+      _tabHistory.removeLast();
+      _index = _tabHistory.last;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _index = widget.initialIndex.clamp(0, 4);
+    _tabHistory
+      ..clear()
+      ..add(_index);
+    WidgetsBinding.instance.addObserver(this);
+    Future.microtask(_refreshOnboardingState);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshOnboardingState();
+    }
+  }
+
+  Future<AndroidOverlayStatus> _loadOverlayStatusForOnboarding() async {
+    if (!PlatformCapabilities.overlaySupported) {
+      return _unsupportedOverlayStatus;
+    }
+    try {
+      return await AndroidOverlayBridge.getStatus();
+    } catch (_) {
+      return _unsupportedOverlayStatus;
+    }
+  }
+
+  Future<AndroidKeyboardStatus> _loadKeyboardStatusForOnboarding() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return AndroidKeyboardStatus.unsupported();
+    }
+    try {
+      return await AndroidKeyboardBridge.getStatus();
+    } catch (_) {
+      return AndroidKeyboardStatus.unsupported();
+    }
+  }
+
+  Future<void> _saveOnboardingSettings(UserSettingsSnapshot settings) async {
+    try {
+      await ref.read(settingsStoreProvider).save(settings);
+    } catch (_) {
+      // Onboarding should stay operational even if settings persistence fails.
+    }
+  }
+
+  Future<void> _refreshOnboardingState() async {
+    if (!PlatformCapabilities.isAndroid ||
+        !PlatformCapabilities.overlaySupported) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _onboardingReadiness = const OnboardingReadiness(
+          platformSupported: false,
+          steps: <OnboardingStepProgress>[],
+          currentStep: 0,
+          onboardingCompleted: false,
+        );
+        _onboardingVisible = false;
+        _onboardingDismissed = true;
+        _onboardingOpenedManually = false;
+        _onboardingDeferPromptVisible = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _onboardingBusy = true;
+      _onboardingMessage = null;
+    });
+
+    try {
+      final store = ref.read(settingsStoreProvider);
+      final rawSettings = await store.load();
+      final overlayStatus = await _loadOverlayStatusForOnboarding();
+      final keyboardStatus = await _loadKeyboardStatusForOnboarding();
+      var readiness = evaluateOnboardingReadiness(
+        isPlatformSupported: PlatformCapabilities.overlaySupported,
+        overlayStatus: overlayStatus,
+        keyboardStatus: keyboardStatus,
+        persistedStep: rawSettings.onboardingCurrentStep,
+        onboardingCompleted: rawSettings.onboardingCompleted,
+        clipboardSkipped: rawSettings.onboardingClipboardSkipped,
+        accessibilitySkipped: rawSettings.onboardingAccessibilitySkipped,
+        microphoneSkipped: rawSettings.onboardingMicrophoneSkipped,
+        mediaAccessSkipped: rawSettings.onboardingMediaAccessSkipped,
+        brightnessSkipped: rawSettings.onboardingBrightnessSkipped,
+        overlaySkipped: rawSettings.onboardingOverlaySkipped,
+      );
+      final forcedStep = _forcedOnboardingStepIndex(readiness);
+      if (forcedStep != null) {
+        readiness = OnboardingReadiness(
+          platformSupported: readiness.platformSupported,
+          steps: readiness.steps,
+          currentStep: forcedStep,
+          onboardingCompleted: false,
+        );
+      }
+
+      var nextSettings = rawSettings;
+      if (rawSettings.onboardingCurrentStep != readiness.currentStep ||
+          rawSettings.onboardingLastSeenAt == null) {
+        nextSettings = rawSettings.copyWith(
+          onboardingCurrentStep: readiness.currentStep,
+          onboardingLastSeenAt: DateTime.now().toUtc(),
+        );
+        await _saveOnboardingSettings(nextSettings);
+      }
+
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _onboardingReadiness = readiness;
+        _onboardingSettings = nextSettings;
+        _onboardingBusy = false;
+        if (forcedStep != null) {
+          _onboardingVisible = true;
+          _onboardingDismissed = false;
+          _onboardingOpenedManually = true;
+        } else if (readiness.shouldShowOnboarding && !_onboardingDismissed) {
+          _onboardingVisible = true;
+        }
+        if (!readiness.shouldShowOnboarding && !_onboardingOpenedManually) {
+          _onboardingVisible = false;
+          _onboardingDismissed = true;
+        }
+      });
+
+      final activeStep = readiness.activeStep?.definition.id.name ?? 'none';
+      AppDiagnostics.record(
+        'onboarding_refresh',
+        'current=${readiness.currentStep}/${readiness.steps.length};active=$activeStep;mandatory=${readiness.hasPendingMandatory};recommended=${readiness.hasPendingRecommended};visible=$_onboardingVisible',
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _onboardingBusy = false;
+        _onboardingMessage = 'Impossible de charger l’onboarding: $error';
+      });
+    }
+  }
+
+  int? _forcedOnboardingStepIndex(OnboardingReadiness readiness) {
+    final requested = widget.initialOnboardingStep?.trim();
+    if (requested != 'media' && requested != 'brightness') {
+      return null;
+    }
+    final target = requested == 'brightness'
+        ? OnboardingStepId.brightnessSystemSettings
+        : OnboardingStepId.mediaSessionAccess;
+    final index = readiness.steps.indexWhere(
+      (step) => step.definition.id == target,
+    );
+    return index < 0 ? null : index;
+  }
+
+  Future<void> _openCurrentStepPrimaryAction([OnboardingStepId? stepId]) async {
+    final step = _onboardingStepDefinition(stepId);
+    if (step == null) {
+      return;
+    }
+    setState(() {
+      _onboardingBusy = true;
+      _onboardingMessage = null;
+    });
+    try {
+      AppDiagnostics.record('onboarding_primary_action', step.id.name);
+      if (step.id == OnboardingStepId.overlay) {
+        final status = await _loadOverlayStatusForOnboarding();
+        if (!status.overlayPermissionGranted) {
+          await AndroidOverlayBridge.openPermissionSettings();
+        } else {
+          await AndroidOverlayBridge.startRecording();
+        }
+      } else if (step.id == OnboardingStepId.keyboardIme) {
+        await AndroidKeyboardBridge.openInputMethodSettings();
+      } else if (step.id == OnboardingStepId.keyboardClipboard) {
+        final status = await _loadKeyboardStatusForOnboarding();
+        await AndroidKeyboardBridge.setPreferences(
+          voiceEnabled: status.voiceEnabled,
+          clipboardSyncDesired: true,
+          clipboardSensitiveFieldHistoryEnabled:
+              status.clipboardSensitiveFieldHistoryEnabled,
+          mediaControlsEnabled: status.mediaControlsEnabled,
+          mediaVolumeStepPercent: status.mediaVolumeStepPercent,
+          mediaBrightnessStepPercent: status.mediaBrightnessStepPercent,
+          themeMode: status.themeMode,
+          layoutProfile: status.layoutProfile,
+          cornerModeEnabled: status.cornerModeEnabled,
+          debugTouchOverlayEnabled: status.debugTouchOverlayEnabled,
+          keyVibrationEnabled: status.keyVibrationEnabled,
+          keySoundEnabled: status.keySoundEnabled,
+          spellingSuggestionsEnabled: status.spellingSuggestionsEnabled,
+          specialKeyCornersEnabled: status.specialKeyCornersEnabled,
+          frenchLanguageEnabled: status.frenchLanguageEnabled,
+          englishLanguageEnabled: status.englishLanguageEnabled,
+          doubleSpacePeriodEnabled: status.doubleSpacePeriodEnabled,
+          punctuationAutoSpacingEnabled: status.punctuationAutoSpacingEnabled,
+          keyboardHeightScale: status.keyboardHeightScale,
+          actionRowHeightScale: status.actionRowHeightScale,
+          compactModeEnabled: status.compactModeEnabled,
+          autoCloseModesEnabled: status.autoCloseModesEnabled,
+          privacyMode: status.privacyMode,
+        );
+      } else if (step.id == OnboardingStepId.accessibility) {
+        await AndroidOverlayBridge.openAccessibilitySettings();
+      } else if (step.id == OnboardingStepId.mediaSessionAccess) {
+        await AndroidKeyboardBridge.openNotificationListenerSettings();
+      } else if (step.id == OnboardingStepId.brightnessSystemSettings) {
+        await AndroidKeyboardBridge.openWriteSettingsPermission();
+      } else {
+        await AndroidOverlayBridge.openAppSettings();
+      }
+    } on AndroidOverlayBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _onboardingMessage =
+            'Action impossible (${error.code}): ${error.message}',
+      );
+    } on AndroidKeyboardBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _onboardingMessage =
+            'Action clavier impossible (${error.code}): ${error.message}',
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _onboardingMessage = 'Action impossible: $error');
+    } finally {
+      if (mounted) {
+        setState(() => _onboardingBusy = false);
+        await _refreshOnboardingState();
+      }
+    }
+  }
+
+  Future<void> _openCurrentStepSecondaryAction([
+    OnboardingStepId? stepId,
+  ]) async {
+    final step = _onboardingStepDefinition(stepId);
+    if (step == null || step.id != OnboardingStepId.keyboardIme) {
+      return;
+    }
+    setState(() {
+      _onboardingBusy = true;
+      _onboardingMessage = null;
+    });
+    try {
+      AppDiagnostics.record('onboarding_secondary_action', step.id.name);
+      await AndroidKeyboardBridge.showInputMethodPicker();
+    } on AndroidKeyboardBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _onboardingMessage =
+            'Impossible d’ouvrir le sélecteur (${error.code}): ${error.message}',
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _onboardingMessage = 'Impossible d’ouvrir le sélecteur: $error',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _onboardingBusy = false);
+        await _refreshOnboardingState();
+      }
+    }
+  }
+
+  Future<void> _skipCurrentStep([OnboardingStepId? stepId]) async {
+    final step = _onboardingStepProgress(stepId);
+    if (step == null) {
+      return;
+    }
+    final settings = _onboardingSettings;
+    if (settings == null) {
+      return;
+    }
+    final updated = switch (step.definition.id) {
+      OnboardingStepId.keyboardClipboard => settings.copyWith(
+        onboardingClipboardSkipped: true,
+        onboardingLastSeenAt: DateTime.now().toUtc(),
+      ),
+      OnboardingStepId.accessibility => settings.copyWith(
+        onboardingAccessibilitySkipped: true,
+        onboardingLastSeenAt: DateTime.now().toUtc(),
+      ),
+      OnboardingStepId.microphoneForDictation => settings.copyWith(
+        onboardingMicrophoneSkipped: true,
+        onboardingLastSeenAt: DateTime.now().toUtc(),
+      ),
+      OnboardingStepId.mediaSessionAccess => settings.copyWith(
+        onboardingMediaAccessSkipped: true,
+        onboardingLastSeenAt: DateTime.now().toUtc(),
+      ),
+      OnboardingStepId.brightnessSystemSettings => settings.copyWith(
+        onboardingBrightnessSkipped: true,
+        onboardingLastSeenAt: DateTime.now().toUtc(),
+      ),
+      OnboardingStepId.overlay => settings.copyWith(
+        onboardingOverlaySkipped: true,
+        onboardingLastSeenAt: DateTime.now().toUtc(),
+      ),
+      _ => settings.copyWith(onboardingLastSeenAt: DateTime.now().toUtc()),
+    };
+    await _saveOnboardingSettings(updated);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _onboardingSettings = updated;
+    });
+    await _refreshOnboardingState();
+  }
+
+  OnboardingStepDefinition? _onboardingStepDefinition(
+    OnboardingStepId? stepId,
+  ) {
+    return _onboardingStepProgress(stepId)?.definition;
+  }
+
+  OnboardingStepProgress? _onboardingStepProgress(OnboardingStepId? stepId) {
+    final readiness = _onboardingReadiness;
+    if (readiness == null) {
+      return null;
+    }
+    if (stepId == null) {
+      return readiness.activeStep;
+    }
+    for (final step in readiness.steps) {
+      if (step.definition.id == stepId) {
+        return step;
+      }
+    }
+    return null;
+  }
+
+  Future<void> _completeOnboarding() async {
+    final readiness = _onboardingReadiness;
+    final settings = _onboardingSettings;
+    if (readiness == null ||
+        settings == null ||
+        !readiness.shouldShowCompletion) {
+      return;
+    }
+    setState(() {
+      _onboardingBusy = true;
+    });
+    try {
+      await _saveOnboardingSettings(
+        settings.copyWith(
+          onboardingCompleted: true,
+          onboardingLastSeenAt: DateTime.now().toUtc(),
+        ),
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _onboardingVisible = false;
+        _onboardingDismissed = true;
+        _onboardingOpenedManually = false;
+      });
+      await _refreshOnboardingState();
+    } finally {
+      if (mounted) {
+        setState(() => _onboardingBusy = false);
+      }
+    }
+  }
+
+  Future<void> _pauseOnboarding() async {
+    final settings = _onboardingSettings;
+    if (settings != null) {
+      await _saveOnboardingSettings(
+        settings.copyWith(onboardingLastSeenAt: DateTime.now().toUtc()),
+      );
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _onboardingVisible = false;
+      _onboardingDismissed = true;
+      _onboardingOpenedManually = false;
+      _onboardingDeferPromptVisible = false;
+    });
+  }
+
+  Future<void> _openSettingsFromOnboarding() async {
+    await _pauseOnboarding();
+    if (!mounted) {
+      return;
+    }
+    _selectTab(4);
+  }
+
+  void _showOnboardingDeferPrompt() {
+    setState(() => _onboardingDeferPromptVisible = true);
+  }
+
+  Future<void> _confirmDeferOnboardingToSettings() async {
+    await _pauseOnboarding();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _showOnboardingResumeHint = true;
+      _onboardingDeferPromptVisible = false;
+    });
+    _selectTab(4);
+    Future<void>.delayed(const Duration(milliseconds: 2200), () {
+      if (mounted) {
+        setState(() => _showOnboardingResumeHint = false);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pages = [
+      VoiceScreen(),
+      ClipboardScreen(),
+      SnippetsScreen(),
+      DictionaryScreen(),
+      SettingsScreen(
+        highlightOnboardingResume: _showOnboardingResumeHint,
+        onResumeOnboarding: () {
+          setState(() {
+            _onboardingDismissed = false;
+            _onboardingVisible = true;
+            _onboardingOpenedManually = true;
+            _showOnboardingResumeHint = false;
+          });
+          _refreshOnboardingState();
+        },
+      ),
+    ];
+    const titles = ['Voice', 'Clipboard', 'Snippets', 'Dictionary', 'Settings'];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useRail = constraints.maxWidth >= AppBreakpoints.navigationRail;
+        final colorScheme = Theme.of(context).colorScheme;
+        return PopScope(
+          canPop: !_onboardingVisible && _tabHistory.length <= 1,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) {
+              return;
+            }
+            if (_onboardingVisible) {
+              _pauseOnboarding();
+            } else {
+              _goBackInTabs();
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('WinFlowz • ${titles[_index]}'),
+              titleSpacing: AppSpacing.x4,
+            ),
+            body: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: AppGradients.shell(colorScheme.brightness),
+              ),
+              child: Row(
+                children: [
+                  if (useRail)
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: colorScheme.outlineVariant),
+                        ),
+                      ),
+                      child: NavigationRail(
+                        extended:
+                            constraints.maxWidth >=
+                            AppBreakpoints.navigationRailExtended,
+                        selectedIndex: _index,
+                        onDestinationSelected: _selectTab,
+                        destinations: const [
+                          NavigationRailDestination(
+                            icon: Icon(Icons.keyboard_voice_outlined),
+                            label: Text('Voice'),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.content_paste_outlined),
+                            label: Text('Clipboard'),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.text_snippet_outlined),
+                            label: Text('Snippets'),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.auto_fix_high_outlined),
+                            label: Text('Dictionary'),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.settings_outlined),
+                            label: Text('Settings'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        if (!PlatformCapabilities.localSpeechSupported)
+                          const Padding(
+                            padding: AppInsets.screen,
+                            child: AppBannerCard(
+                              icon: Icons.mic_off_outlined,
+                              title: 'Local speech unavailable',
+                              message:
+                                  'This platform cannot run local speech. Use advanced Whisper mode instead.',
+                              accentColor: AppColors.warning,
+                            ),
+                          ),
+                        if (!PlatformCapabilities.overlaySupported)
+                          const Padding(
+                            padding: AppInsets.screen,
+                            child: AppBannerCard(
+                              icon: Icons.layers_clear_outlined,
+                              title: 'Overlay unavailable',
+                              message:
+                                  'Android overlay controls are not available on this platform.',
+                            ),
+                          ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(child: pages[_index]),
+                              if (_onboardingVisible)
+                                _OnboardingOverlay(
+                                  readiness: _onboardingReadiness,
+                                  isBusy: _onboardingBusy,
+                                  message: _onboardingMessage,
+                                  showDeferPrompt:
+                                      _onboardingDeferPromptVisible,
+                                  onClose: _pauseOnboarding,
+                                  onDefer: _showOnboardingDeferPrompt,
+                                  onConfirmDefer:
+                                      _confirmDeferOnboardingToSettings,
+                                  onOpenSettings: _openSettingsFromOnboarding,
+                                  onPrimaryAction:
+                                      _openCurrentStepPrimaryAction,
+                                  onSecondaryAction:
+                                      _onboardingReadiness
+                                              ?.activeStep
+                                              ?.definition
+                                              .id ==
+                                          OnboardingStepId.keyboardIme
+                                      ? _openCurrentStepSecondaryAction
+                                      : null,
+                                  onSkip: _skipCurrentStep,
+                                  onRefresh: _refreshOnboardingState,
+                                  onComplete: _completeOnboarding,
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            bottomNavigationBar: useRail || _onboardingVisible
+                ? null
+                : SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.x2,
+                        AppSpacing.x1,
+                        AppSpacing.x2,
+                        AppSpacing.x2,
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerLow.withValues(
+                            alpha: colorScheme.brightness == Brightness.dark
+                                ? AppNavigationMetrics.bottomBarDarkAlpha
+                                : AppNavigationMetrics.bottomBarLightAlpha,
+                          ),
+                          borderRadius: BorderRadius.circular(AppRadii.lg),
+                          border: Border.all(
+                            color: colorScheme.outlineVariant.withValues(
+                              alpha: 0.78,
+                            ),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.black.withValues(
+                                alpha: colorScheme.brightness == Brightness.dark
+                                    ? AppNavigationMetrics
+                                          .bottomBarDarkShadowAlpha
+                                    : AppNavigationMetrics
+                                          .bottomBarLightShadowAlpha,
+                              ),
+                              blurRadius:
+                                  AppNavigationMetrics.bottomBarShadowBlur,
+                              offset:
+                                  AppNavigationMetrics.bottomBarShadowOffset,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppRadii.lg),
+                          child: NavigationBar(
+                            labelBehavior: NavigationDestinationLabelBehavior
+                                .onlyShowSelected,
+                            selectedIndex: _index,
+                            onDestinationSelected: _selectTab,
+                            destinations: const [
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.keyboard_voice_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.keyboard_voice,
+                                ),
+                                label: 'Voice',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.content_paste_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.content_paste,
+                                ),
+                                label: 'Clipboard',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.text_snippet_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.text_snippet,
+                                ),
+                                label: 'Snippets',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.auto_fix_high_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.auto_fix_high,
+                                ),
+                                label: 'Dictionary',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(Icons.settings_outlined),
+                                selectedIcon: _BottomNavIcon(Icons.settings),
+                                label: 'Settings',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _BottomNavIcon extends StatelessWidget {
+  const _BottomNavIcon(this.icon);
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: _AppShellScreenState._bottomNavIconOffset,
+      child: Icon(icon),
+    );
+  }
+}
+
+class _OnboardingOverlay extends StatelessWidget {
+  const _OnboardingOverlay({
+    required this.readiness,
+    required this.isBusy,
+    required this.message,
+    required this.showDeferPrompt,
+    required this.onClose,
+    required this.onDefer,
+    required this.onConfirmDefer,
+    required this.onOpenSettings,
+    required this.onPrimaryAction,
+    required this.onSecondaryAction,
+    required this.onSkip,
+    required this.onRefresh,
+    required this.onComplete,
+  });
+
+  final OnboardingReadiness? readiness;
+  final bool isBusy;
+  final String? message;
+  final bool showDeferPrompt;
+  final Future<void> Function() onClose;
+  final VoidCallback onDefer;
+  final Future<void> Function() onConfirmDefer;
+  final VoidCallback onOpenSettings;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
+  final Future<void> Function() onRefresh;
+  final Future<void> Function() onComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    final activeReadiness = readiness;
+    final Widget onboardingContent;
+    if (activeReadiness == null) {
+      onboardingContent = const Text(
+        'Onboarding indisponible sur ce terminal.',
+      );
+    } else if (!activeReadiness.platformSupported) {
+      onboardingContent = const Text(
+        'Onboarding indisponible sur ce terminal.',
+      );
+    } else if (showDeferPrompt) {
+      onboardingContent = _OnboardingDeferredContent(
+        isBusy: isBusy,
+        onConfirm: onConfirmDefer,
+      );
+    } else if (activeReadiness.shouldShowCompletion) {
+      onboardingContent = _OnboardingCompletionContent(
+        readiness: activeReadiness,
+        isBusy: isBusy,
+        onOpenSettings: onOpenSettings,
+        onComplete: onComplete,
+      );
+    } else {
+      onboardingContent = _OnboardingOverviewContent(
+        readiness: activeReadiness,
+        isBusy: isBusy,
+        onPrimaryAction: onPrimaryAction,
+        onSecondaryAction: onSecondaryAction,
+        onSkip: onSkip,
+        onRefresh: onRefresh,
+        onOpenSettings: onOpenSettings,
+      );
+    }
+    return Positioned.fill(
+      child: BlockSemantics(
+        child: Semantics(
+          scopesRoute: true,
+          namesRoute: true,
+          explicitChildNodes: true,
+          label: 'Onboarding setup guide',
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => onClose(),
+            child: ColoredBox(
+              color: AppColors.overlayScrim,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.x2,
+                    vertical: AppSpacing.x2,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final overlayWidth =
+                          ((constraints.maxWidth - (AppSpacing.x4 * 2)).clamp(
+                            0.0,
+                            constraints.maxWidth,
+                          )).toDouble();
+                      final cardWidth = showDeferPrompt && overlayWidth > 560
+                          ? 560.0
+                          : overlayWidth;
+                      return Align(
+                        alignment: Alignment.topCenter,
+                        child: SizedBox(
+                          key: const Key('onboarding-overlay-card-frame'),
+                          width: cardWidth,
+                          height: showDeferPrompt
+                              ? null
+                              : constraints.maxHeight,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: AppModalCard(
+                              padding: AppInsets.onboarding,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.flag_outlined,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
+                                        AppGaps.horizontalX2,
+                                        Expanded(
+                                          child: Text(
+                                            'Configuration WinFlowz',
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.titleSmall,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          tooltip:
+                                              'Fermer (reprendre plus tard)',
+                                          onPressed: () => onClose(),
+                                          icon: const Icon(
+                                            Icons.close_outlined,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    AppGaps.x2,
+                                    onboardingContent,
+                                    if (message != null) ...[
+                                      AppGaps.x2,
+                                      AppBannerCard(
+                                        icon: Icons.error_outline,
+                                        title: 'Action impossible',
+                                        message: message!,
+                                        accentColor: Theme.of(
+                                          context,
+                                        ).colorScheme.error,
+                                      ),
+                                    ],
+                                    if (!showDeferPrompt) ...[
+                                      AppGaps.x3,
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton.icon(
+                                          onPressed: onDefer,
+                                          icon: const Icon(
+                                            Icons.close_outlined,
+                                          ),
+                                          label: const Text('Plus tard'),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingOverviewContent extends StatefulWidget {
+  const _OnboardingOverviewContent({
+    required this.readiness,
+    required this.isBusy,
+    required this.onPrimaryAction,
+    required this.onSecondaryAction,
+    required this.onSkip,
+    required this.onRefresh,
+    required this.onOpenSettings,
+  });
+
+  final OnboardingReadiness readiness;
+  final bool isBusy;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
+  final Future<void> Function() onRefresh;
+  final VoidCallback onOpenSettings;
+
+  @override
+  State<_OnboardingOverviewContent> createState() =>
+      _OnboardingOverviewContentState();
+}
+
+class _OnboardingOverviewContentState
+    extends State<_OnboardingOverviewContent> {
+  var _pageIndex = 0;
+
+  static const _pages = <_OnboardingUseCasePage>[
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.microphoneForDictation,
+      icon: Icons.keyboard_voice_outlined,
+      title: 'Micro et voice',
+      subtitle: 'Dictée vocale et injection assistée.',
+    ),
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.accessibility,
+      icon: Icons.accessibility_new_outlined,
+      title: 'Service Accessibilité',
+      subtitle: 'Injection directe et assistance dans les champs texte.',
+    ),
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.keyboardIme,
+      icon: Icons.keyboard_outlined,
+      title: 'Clavier',
+      subtitle: 'Clavier Android WinFlowz et options liées.',
+    ),
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.mediaSessionAccess,
+      icon: Icons.notifications_active_outlined,
+      title: 'Accès notifications et média',
+      subtitle: 'Titre en cours, app audio et contrôles depuis le clavier.',
+    ),
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.brightnessSystemSettings,
+      icon: Icons.brightness_6_outlined,
+      title: 'Luminosité système',
+      subtitle: 'Contrôle Bri- et Bri+ depuis le clavier.',
+    ),
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.keyboardClipboard,
+      icon: Icons.content_paste_outlined,
+      title: 'Clipboard',
+      subtitle: 'Historique et synchronisation du clipboard clavier.',
+    ),
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.overlay,
+      icon: Icons.open_in_new_outlined,
+      title: 'Overlay flottant',
+      subtitle: 'Bulle flottante hors parcours principal.',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final page = _pages[_pageIndex];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Choisis les usages que tu veux activer',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        AppGaps.x1,
+        Text(
+          'Chaque module est indépendant. Active seulement ce dont tu as besoin maintenant.',
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
+        AppGaps.x2,
+        _OnboardingProgressDots(
+          pages: _pages,
+          readiness: widget.readiness,
+          index: _pageIndex,
+          isBusy: widget.isBusy,
+          onSelect: (index) => setState(() => _pageIndex = index),
+        ),
+        AppGaps.x2,
+        _OnboardingUseCaseCard(
+          icon: page.icon,
+          title: page.title,
+          subtitle: page.subtitle,
+          steps: _stepsFor(page.stepId),
+          isBusy: widget.isBusy,
+          onPrimaryAction: widget.onPrimaryAction,
+          onSecondaryAction: widget.onSecondaryAction,
+          onSkip: widget.onSkip,
+        ),
+        AppGaps.x2,
+        Wrap(
+          spacing: AppSpacing.x2,
+          runSpacing: AppSpacing.x2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              onPressed: widget.isBusy || _pageIndex == 0
+                  ? null
+                  : () => setState(() => _pageIndex -= 1),
+              icon: const Icon(Icons.arrow_back_outlined),
+              label: const Text('Précédent'),
+            ),
+            FilledButton.tonalIcon(
+              onPressed: widget.isBusy || _pageIndex == _pages.length - 1
+                  ? null
+                  : () => setState(() => _pageIndex += 1),
+              icon: const Icon(Icons.arrow_forward_outlined),
+              label: const Text('Suivant'),
+            ),
+            if (widget.isBusy)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              OutlinedButton.icon(
+                onPressed: () => widget.onRefresh(),
+                icon: const Icon(Icons.refresh_outlined),
+                label: const Text('Re-vérifier les accès'),
+              ),
+            if (!widget.isBusy)
+              OutlinedButton.icon(
+                onPressed: widget.onOpenSettings,
+                icon: const Icon(Icons.settings_outlined),
+                label: const Text('Paramètres'),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  List<OnboardingStepProgress> _stepsFor(OnboardingStepId stepId) {
+    return widget.readiness.steps
+        .where((step) => step.definition.id == stepId)
+        .toList(growable: false);
+  }
+}
+
+class _OnboardingUseCasePage {
+  const _OnboardingUseCasePage({
+    required this.stepId,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final OnboardingStepId stepId;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+}
+
+class _OnboardingProgressDots extends StatelessWidget {
+  const _OnboardingProgressDots({
+    required this.pages,
+    required this.readiness,
+    required this.index,
+    required this.isBusy,
+    required this.onSelect,
+  });
+
+  final List<_OnboardingUseCasePage> pages;
+  final OnboardingReadiness readiness;
+  final int index;
+  final bool isBusy;
+  final ValueChanged<int> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        for (var i = 0; i < pages.length; i++) ...[
+          Semantics(
+            selected: i == index,
+            child: IconButton(
+              key: ValueKey('onboarding-progress-dot-${pages[i].stepId.name}'),
+              tooltip: _dotTooltip(pages[i]),
+              onPressed: isBusy ? null : () => onSelect(i),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+              style: IconButton.styleFrom(
+                fixedSize: const Size.square(28),
+                minimumSize: const Size.square(28),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                backgroundColor: _dotColor(
+                  colorScheme: colorScheme,
+                  stepId: pages[i].stepId,
+                  isCurrent: i == index,
+                ),
+                disabledBackgroundColor: _dotColor(
+                  colorScheme: colorScheme,
+                  stepId: pages[i].stepId,
+                  isCurrent: i == index,
+                ),
+                foregroundColor: _iconColor(
+                  colorScheme: colorScheme,
+                  stepId: pages[i].stepId,
+                  isCurrent: i == index,
+                ),
+                disabledForegroundColor: _iconColor(
+                  colorScheme: colorScheme,
+                  stepId: pages[i].stepId,
+                  isCurrent: i == index,
+                ),
+                side: BorderSide(
+                  color: i == index
+                      ? colorScheme.primary
+                      : colorScheme.outlineVariant,
+                ),
+                shape: const CircleBorder(),
+              ),
+              icon: Icon(pages[i].icon, size: 14),
+            ),
+          ),
+          if (i != pages.length - 1) const SizedBox(width: AppSpacing.x1),
+        ],
+      ],
+    );
+  }
+
+  String _dotTooltip(_OnboardingUseCasePage page) {
+    return 'Ouvrir ${page.title} - ${_dotStatusLabel(page.stepId)}';
+  }
+
+  String _dotStatusLabel(OnboardingStepId stepId) {
+    for (final step in readiness.steps) {
+      if (step.definition.id == stepId) {
+        if (step.satisfied) {
+          return 'terminé';
+        }
+        if (step.skipped) {
+          return 'ignoré';
+        }
+        return 'à terminer';
+      }
+    }
+    return 'indisponible';
+  }
+
+  Color _dotColor({
+    required ColorScheme colorScheme,
+    required OnboardingStepId stepId,
+    required bool isCurrent,
+  }) {
+    for (final step in readiness.steps) {
+      if (step.definition.id == stepId && step.satisfied) {
+        return AppColors.success;
+      }
+    }
+    return isCurrent ? colorScheme.primary : colorScheme.outlineVariant;
+  }
+
+  Color _iconColor({
+    required ColorScheme colorScheme,
+    required OnboardingStepId stepId,
+    required bool isCurrent,
+  }) {
+    for (final step in readiness.steps) {
+      if (step.definition.id == stepId && step.satisfied) {
+        return Colors.white;
+      }
+    }
+    return isCurrent ? colorScheme.onPrimary : colorScheme.onSurfaceVariant;
+  }
+}
+
+class _OnboardingUseCaseCard extends StatelessWidget {
+  const _OnboardingUseCaseCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.steps,
+    required this.isBusy,
+    required this.onPrimaryAction,
+    required this.onSecondaryAction,
+    required this.onSkip,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final List<OnboardingStepProgress> steps;
+  final bool isBusy;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AppSectionCard(
+      title: title,
+      subtitle: subtitle,
+      leading: Icon(icon),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final step in steps) ...[
+            _OnboardingPermissionRow(
+              step: step,
+              isBusy: isBusy,
+              onPrimaryAction: onPrimaryAction,
+              onSecondaryAction: onSecondaryAction,
+              onSkip: onSkip,
+            ),
+            if (step != steps.last)
+              Divider(color: theme.colorScheme.outlineVariant),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _OnboardingPermissionRow extends StatelessWidget {
+  const _OnboardingPermissionRow({
+    required this.step,
+    required this.isBusy,
+    required this.onPrimaryAction,
+    required this.onSecondaryAction,
+    required this.onSkip,
+  });
+
+  final OnboardingStepProgress step;
+  final bool isBusy;
+  final Future<void> Function(OnboardingStepId stepId) onPrimaryAction;
+  final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
+  final Future<void> Function(OnboardingStepId stepId) onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    final definition = step.definition;
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = step.satisfied
+        ? AppColors.success
+        : step.skipped
+        ? colorScheme.outline
+        : AppColors.warning;
+    final isResolved = step.satisfied || step.skipped;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.x1),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(definition.description),
+          AppGaps.x1,
+          Text(definition.why, style: Theme.of(context).textTheme.bodySmall),
+          if (step.blockerReason != null && !step.skipped) ...[
+            AppGaps.x1,
+            Text(
+              step.blockerReason!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ],
+          AppGaps.x2,
+          Wrap(
+            spacing: AppSpacing.x2,
+            runSpacing: AppSpacing.x2,
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (!step.satisfied)
+                FilledButton.icon(
+                  onPressed: isBusy
+                      ? null
+                      : () => onPrimaryAction(definition.id),
+                  icon: const Icon(Icons.play_arrow_outlined),
+                  label: Text(definition.openActionLabel),
+                )
+              else
+                FilledButton.tonalIcon(
+                  onPressed: isBusy
+                      ? null
+                      : () => onPrimaryAction(definition.id),
+                  icon: const Icon(Icons.tune_outlined),
+                  label: const Text('Modifier'),
+                ),
+              if (definition.secondaryActionLabel != null)
+                OutlinedButton.icon(
+                  onPressed: isBusy
+                      ? null
+                      : () => onSecondaryAction?.call(definition.id),
+                  icon: const Icon(Icons.keyboard_alt_outlined),
+                  label: Text(definition.secondaryActionLabel!),
+                ),
+              if (isResolved)
+                _OnboardingResolvedInfo(
+                  icon: step.satisfied
+                      ? Icons.check_circle_outline
+                      : Icons.do_not_disturb_on_outlined,
+                  label: step.satisfied ? 'Activé' : 'Ignoré',
+                  color: color,
+                )
+              else
+                TextButton.icon(
+                  onPressed: isBusy ? null : () => onSkip(definition.id),
+                  icon: const Icon(Icons.schedule_outlined),
+                  label: const Text('Plus tard'),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OnboardingResolvedInfo extends StatelessWidget {
+  const _OnboardingResolvedInfo({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        border: Border.all(color: color.withValues(alpha: 0.45)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.x3,
+          vertical: AppSpacing.x2,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: AppIconMetrics.sm),
+            AppGaps.horizontalX2,
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(color: colorScheme.onSurface),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingCompletionContent extends StatelessWidget {
+  const _OnboardingCompletionContent({
+    required this.readiness,
+    required this.isBusy,
+    required this.onOpenSettings,
+    required this.onComplete,
+  });
+
+  final OnboardingReadiness readiness;
+  final bool isBusy;
+  final VoidCallback onOpenSettings;
+  final Future<void> Function() onComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    final completed = readiness.steps.where((step) => step.completed).length;
+    final allActive = readiness.steps.every((step) => step.satisfied);
+    final stepsById = {
+      for (final step in readiness.steps) step.definition.id: step,
+    };
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppBannerCard(
+          icon: Icons.check_circle_outline,
+          title: allActive ? 'WinFlowz est prêt' : 'Configuration terminée',
+          message: allActive
+              ? 'Tu vas pouvoir profiter au maximum de WinFlowz.'
+              : 'Les modules que tu as choisis sont prêts. Tu peux terminer maintenant ou revoir les réglages.',
+          accentColor: AppColors.success,
+        ),
+        AppGaps.x2,
+        ...[
+          _OnboardingPathHint(
+            icon: Icons.keyboard_voice_outlined,
+            title: 'Dictée depuis le clavier',
+            text:
+                'Utilise le micro pour transformer ta voix en texte directement là où tu écris.',
+            permissions: [
+              stepsById[OnboardingStepId.microphoneForDictation],
+              stepsById[OnboardingStepId.accessibility],
+            ],
+          ),
+          _OnboardingPathHint(
+            icon: Icons.content_paste_outlined,
+            title: 'Retrouver ton clipboard',
+            text:
+                'Garde tes copies récentes à portée de main pour les réutiliser depuis le clavier.',
+            permissions: [stepsById[OnboardingStepId.keyboardClipboard]],
+          ),
+          _OnboardingPathHint(
+            icon: Icons.tune_outlined,
+            title: 'Contrôler ton téléphone plus vite',
+            text:
+                'Accède aux médias, à la luminosité et aux actions rapides sans quitter ton flux.',
+            permissions: [
+              stepsById[OnboardingStepId.mediaSessionAccess],
+              stepsById[OnboardingStepId.brightnessSystemSettings],
+              stepsById[OnboardingStepId.overlay],
+            ],
+          ),
+          AppGaps.x2,
+        ],
+        Wrap(
+          spacing: AppSpacing.x2,
+          runSpacing: AppSpacing.x2,
+          children: [
+            AppTag(label: 'Modules $completed/${readiness.steps.length}'),
+            const AppTag(label: 'Tout est optionnel'),
+          ],
+        ),
+        AppGaps.x2,
+        AppGaps.x2,
+        Wrap(
+          spacing: AppSpacing.x2,
+          runSpacing: AppSpacing.x2,
+          children: [
+            if (isBusy)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              FilledButton.icon(
+                onPressed: () => onComplete(),
+                icon: const Icon(Icons.check_circle_outline),
+                label: const Text('Terminer'),
+              ),
+            if (!isBusy)
+              OutlinedButton.icon(
+                onPressed: onOpenSettings,
+                icon: const Icon(Icons.settings_outlined),
+                label: const Text('Paramètres'),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _OnboardingDeferredContent extends StatelessWidget {
+  const _OnboardingDeferredContent({
+    required this.isBusy,
+    required this.onConfirm,
+  });
+
+  final bool isBusy;
+  final Future<void> Function() onConfirm;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppBannerCard(
+          icon: Icons.info_outline,
+          title: 'Onboarding mis en pause',
+          message:
+              "Tu peux reprendre la suite de l'onboarding quand tu veux à partir des paramètres.",
+          accentColor: Theme.of(context).colorScheme.primary,
+        ),
+        AppGaps.x3,
+        Align(
+          alignment: Alignment.centerRight,
+          child: FilledButton(
+            onPressed: isBusy ? null : () => onConfirm(),
+            child: const Text('OK'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _OnboardingPathHint extends StatelessWidget {
+  const _OnboardingPathHint({
+    required this.icon,
+    required this.title,
+    required this.text,
+    this.permissions = const [],
+  });
+
+  final IconData icon;
+  final String title;
+  final String text;
+  final List<OnboardingStepProgress?> permissions;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedPermissions = permissions.nonNulls.toList(growable: false);
+    return Padding(
+      padding: AppInsets.stack,
+      child: Card(
+        child: Padding(
+          padding: AppInsets.compactCard,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(icon, color: Theme.of(context).colorScheme.primary),
+                  AppGaps.horizontalX3,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        AppGaps.x1,
+                        Text(
+                          text,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (resolvedPermissions.isNotEmpty) ...[
+                AppGaps.x2,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Wrap(
+                    spacing: AppSpacing.x2,
+                    runSpacing: AppSpacing.x2,
+                    alignment: WrapAlignment.end,
+                    children: [
+                      for (final permission in resolvedPermissions)
+                        _OnboardingPermissionBadge(step: permission),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingPermissionBadge extends StatelessWidget {
+  const _OnboardingPermissionBadge({required this.step});
+
+  final OnboardingStepProgress step;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = step.satisfied
+        ? AppColors.success
+        : step.skipped
+        ? colorScheme.outline
+        : AppColors.warning;
+    final icon = step.satisfied
+        ? Icons.check_circle_outline
+        : step.skipped
+        ? Icons.do_not_disturb_on_outlined
+        : Icons.radio_button_unchecked;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.x2 + AppSpacing.x1 / 2,
+          vertical: AppSpacing.x1,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: AppIconMetrics.sm),
+            AppGaps.horizontalX2,
+            Text(
+              step.definition.title,
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: colorScheme.onSurface),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

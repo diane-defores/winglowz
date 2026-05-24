@@ -1,0 +1,2 @@
+-- Intentionally empty.
+-- Supabase CLI looks for supabase/seed.sql by default during local starts/resets.

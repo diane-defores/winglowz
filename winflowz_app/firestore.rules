@@ -1,0 +1,91 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function hasWinFlowzAppAccess(userId) {
+      return isOwner(userId) &&
+          exists(/databases/$(database)/documents/suiteAccess/$(userId)) &&
+          get(/databases/$(database)/documents/suiteAccess/$(userId)).data.products.winflowz_app.active == true;
+    }
+
+    function hasValidRetentionHours(payload) {
+      return !('retentionHours' in payload) ||
+          (payload.retentionHours is int &&
+            (payload.retentionHours in [1, 12, 24, 72, 168]));
+    }
+
+    function hasValidThemeMode(payload) {
+      return !('themeMode' in payload) ||
+          (payload.themeMode is string &&
+            (payload.themeMode in ['system', 'light', 'dark']));
+    }
+
+    function hasSafeClientEventMetadata(payload) {
+      return !('metadata' in payload) ||
+          (payload.metadata is map &&
+            !payload.metadata.keys().hasAny(
+              ['rawText', 'audioBytes', 'audioBase64', 'transcript', 'providerPayload', 'openaiKey', 'anthropicKey']));
+    }
+
+    match /users/{uid} {
+      allow read, write: if false;
+
+      match /settings/{settingId} {
+        allow read: if hasWinFlowzAppAccess(uid);
+        allow create, update: if hasWinFlowzAppAccess(uid) &&
+          hasValidThemeMode(request.resource.data) &&
+          hasValidRetentionHours(request.resource.data) &&
+          hasSafeClientEventMetadata(request.resource.data);
+        allow delete: if hasWinFlowzAppAccess(uid);
+      }
+
+      match /clipboardItems/{itemId} {
+        allow read: if hasWinFlowzAppAccess(uid);
+        allow create, update: if hasWinFlowzAppAccess(uid) && hasValidRetentionHours(request.resource.data);
+        allow delete: if hasWinFlowzAppAccess(uid);
+      }
+
+      match /transcriptions/{transcriptionId} {
+        allow read: if hasWinFlowzAppAccess(uid);
+        allow create, update: if hasWinFlowzAppAccess(uid) && hasValidRetentionHours(request.resource.data);
+        allow delete: if hasWinFlowzAppAccess(uid);
+      }
+
+      match /snippets/{snippetId} {
+        allow read: if hasWinFlowzAppAccess(uid);
+        allow create, update: if hasWinFlowzAppAccess(uid) && hasValidRetentionHours(request.resource.data);
+        allow delete: if hasWinFlowzAppAccess(uid);
+      }
+
+      match /dictionaryTerms/{termId} {
+        allow read: if hasWinFlowzAppAccess(uid);
+        allow create, update: if hasWinFlowzAppAccess(uid) && hasValidRetentionHours(request.resource.data);
+        allow delete: if hasWinFlowzAppAccess(uid);
+      }
+
+      match /clientEvents/{eventId} {
+        allow read: if hasWinFlowzAppAccess(uid);
+        allow create, update: if hasWinFlowzAppAccess(uid) &&
+          hasValidRetentionHours(request.resource.data) &&
+          hasSafeClientEventMetadata(request.resource.data);
+        allow delete: if hasWinFlowzAppAccess(uid);
+      }
+    }
+
+    match /suiteAccess/{uid} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

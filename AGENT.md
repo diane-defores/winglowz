@@ -1,103 +1,66 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
-project: "winflowz"
-created: "2026-04-26"
-updated: "2026-05-17"
-status: "reviewed"
-source_skill: sf-docs
-scope: "file"
+artifact_version: "0.1.0"
+project: "WinFlowz"
+created: "2026-05-24"
+updated: "2026-05-24"
+status: "draft"
+source_skill: sf-start
+scope: "repository_guidance"
 owner: "Diane"
-confidence: "high"
+confidence: "medium"
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "Astro 6"
-  - "Vercel"
-  - "Clerk"
-  - "Convex"
-  - "Polar"
-  - "Resend"
+  - "winflowz_site"
+  - "winflowz_app"
+  - "shipflow_data"
 depends_on:
-  - "CLAUDE.md"
-  - "shipflow_data/technical/guidelines.md"
   - "shipflow_data/technical/architecture.md"
+  - "shipflow_data/technical/guidelines.md"
 supersedes: []
 evidence:
-  - "package.json"
-  - "astro.config.mjs"
-  - "src/middleware/index.ts"
-  - "src/pages/api/polar/checkout.ts"
-  - "convex/http.ts"
-next_step: "pnpm build:check"
+  - "README.md"
+  - "winflowz_site/AGENT.md"
+  - "winflowz_app/AGENTS.md"
+next_step: "/sf-verify shipflow_data/workflow/specs/winflowz-monorepo-migration.md"
 ---
-# Agent Guide
 
-## Mission
+# AGENT
 
-WinFlowz is a bilingual Astro application for Windows-focused productivity content, products, docs, and training sales. The repo combines:
+## Purpose
 
-- marketing and editorial pages
-- gated training purchase flows
-- Clerk authentication
-- Convex-backed user and feature data
-- Polar checkout and webhook handling
-- Resend newsletter flows
+This repository is the canonical WinFlowz monorepo for the Astro site and Flutter app.
 
-## First Places to Read
+## Repository Layout
 
-1. `CLAUDE.md` for the local MCP/context workflow expected in this repo.
-2. `shipflow_data/technical/guidelines.md` for product and routing constraints.
-3. `shipflow_data/technical/architecture.md` for system boundaries and runtime flows.
-4. `shipflow_data/technical/context.md` for a concise directory and feature map.
+- `winflowz_site/`: Astro site with content, account, commerce, Convex, and bridge API surfaces.
+- `winflowz_app/`: Flutter Android-first app with Firebase, native Android IME work, and app-level docs.
+- `shipflow_data/`: monorepo-level governance, specs, bugs, audits, and workflow artifacts.
 
-## Stack Summary
+## Working Rules
 
-- Frontend: Astro 6, Tailwind, MDX, React islands
-- Deployment: Vercel server output
-- Auth: Clerk middleware and webhook sync
-- Data: Convex schema, queries, mutations, HTTP actions
-- Billing: Polar checkout route plus Convex webhook processing
-- Email: Resend subscription and unsubscribe endpoints
-- Content: Astro content collections for docs, blog, products, services
+- Treat `shipflow_data/` at the repository root as the only canonical governance corpus.
+- Keep subproject changes inside their subproject unless root CI, docs, or governance files must change.
+- Preserve public content language rules in the site and app docs; user-facing French should remain natural and accented.
+- Do not add secrets to root or subproject docs, workflows, or env examples.
+- Do not use the sibling `/home/claude/winflowz_app` checkout as an active source after this monorepo is verified.
 
-## Critical Working Rules
+## Validation
 
-- Keep English routes unprefixed and French routes under `/fr`.
-- Preserve route translation integrity between `src/pages/[...lang]`, `src/i18n/*`, and routing helpers.
-- Treat `src/pages/api/polar/checkout.ts` and `convex/http.ts` as a coupled purchase flow.
-- Treat Clerk webhook sync and Convex user records as a coupled identity flow.
-- Do not document or introduce dead-end commerce CTAs.
-- If changing content schemas, update `src/content/config.ts` and audit affected content folders.
+Use focused checks from the changed subproject:
 
-## High-Risk Areas
+```bash
+(cd winflowz_site && pnpm build:check)
+(cd winflowz_site && pnpm test:unit)
+(cd winflowz_app && flutter analyze)
+(cd winflowz_app && flutter test)
+```
 
-- `src/middleware/i18n.ts`: route canonicalization and locale redirects
-- `src/pages/api/polar/checkout.ts`: auth, env validation, checkout creation
-- `convex/http.ts`: webhook verification and entitlement updates
-- `src/pages/api/newsletter/*.ts`: external email audience side effects
-- `convex/schema.ts`: persistent data contract
+Run ShipFlow metadata validation for governance docs when governance files change:
 
-## Environment Assumptions
-
-The codebase expects valid values for Clerk, Convex, Polar, and Resend. Placeholder env values are explicitly rejected in parts of the runtime, especially checkout and newsletter flows.
-
-## Change Checklist
-
-1. If you change routing, inspect `src/utils/routing.ts`, `src/middleware/i18n.ts`, and `src/i18n/*`.
-2. If you change checkout or entitlements, inspect `src/utils/courseGating.ts`, `src/pages/api/polar/*`, and `convex/polar.ts`.
-3. If you change auth lifecycle behavior, inspect `src/pages/api/clerk/webhook.ts`, `convex/http.ts`, and `convex/users.ts`.
-4. If you change docs or content model behavior, inspect `src/content/config.ts` and the relevant content folders.
-
-## Entry Surface
-
-- Public routes: `src/pages/[...lang]/*`
-- Dashboard routes: `src/pages/dashboard/*`
-- API routes: `src/pages/api/*`
-- Backend actions and data: `convex/*`
-
-## Current Confidence
-
-High for technical boundaries and runtime flow mapping because all claims above are directly grounded in current repo files and route handlers.
+```bash
+/home/claude/shipflow/tools/shipflow_metadata_lint.py AGENT.md shipflow_data
+```

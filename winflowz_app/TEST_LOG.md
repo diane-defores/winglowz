@@ -1,0 +1,51 @@
+## 2026-05-16 - Keyboard Theme Studio (preview web import JSON)
+
+- Scope: feature keyboard-theme-studio
+- Environment: local
+- Tester: user
+- Source: sf-test
+- Status: fail
+- Confidence: high
+- Result summary: Steps 2, 3, 4 pass; step 5 fails because JSON import does not work on web preview flow.
+- Bug pointer: BUG-2026-05-16-001 -> bugs/BUG-2026-05-16-001.md
+- Evidence pointer: user report in session ("2 oui, 3 oui, 4 oui, 5 non l'import marche en rien")
+- Follow-up: /sf-fix BUG-2026-05-16-001
+
+## 2026-05-17 - Keyboard voice dictation history
+
+- Scope: feature keyboard-action-bar-voice-recording
+- Environment: android-physical-device
+- Tester: user
+- Source: sf-test
+- Status: fail
+- Confidence: high
+- Result summary: Enter finalization now ends with `no speech detected`, inserts no text, and does not add the dictation to Voice history; Clipboard exclusion passed.
+- Bug pointer: BUG-2026-05-17-001 -> bugs/BUG-2026-05-17-001.md
+- Evidence pointer: user report in session ("4 le texte nest plus entrer dans le champs... 'no speech detected'; 7 fail; 8 pass")
+- Follow-up: /sf-fix BUG-2026-05-17-001
+
+## 2026-05-17 - App keyboard test page removal
+
+- Scope: feature app-shell-keyboard-preview-removal
+- Environment: local
+- Tester: user
+- Source: sf-test
+- Status: pass
+- Confidence: high
+- Result summary: Keyboard preview tab/page is gone; remaining navigation and Settings keyboard section were confirmed working.
+- Bug pointer: none
+- Evidence pointer: user report in session ("1 pass", "5 pass", then "pass")
+- Follow-up: /sf-verify app-shell-keyboard-preview-removal
+
+## 2026-05-17 - Keyboard action bars and preview badges
+
+- Scope: feature keyboard-action-bars-preview-badges
+- Environment: android-physical-device + local settings preview
+- Tester: user
+- Source: sf-test
+- Status: fail
+- Confidence: high
+- Result summary: Real keyboard action-row width/Media scroll and theme badges passed; settings preview still has a bottom empty row, starts at QWERTY without action bar, and Theme Studio pin badge is only a generic dot.
+- Bug pointer: BUG-2026-05-17-002 -> bugs/BUG-2026-05-17-002.md
+- Evidence pointer: user report in session ("2 pass", "3 pass", "barre vide en bas... toujours presente", "je ne vois pas de barre d'action dans la preview", "sur le vrai clavier, oui, tout est fonctionnel")
+- Follow-up: /sf-fix BUG-2026-05-17-002

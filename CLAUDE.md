@@ -1,82 +1,38 @@
----
-artifact: documentation
-metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
-project: winflowz
-created: "2026-04-25"
-updated: "2026-05-17"
-status: reviewed
-source_skill: sf-docs
-scope: file
-owner: "Diane"
-confidence: high
-risk_level: medium
-security_impact: yes
-docs_impact: yes
-linked_systems:
-  - "Astro 6"
-  - "Vercel"
-  - "Clerk"
-  - "Convex"
-  - "Polar"
-  - "Resend"
-depends_on:
-  - "shipflow_data/technical/guidelines.md"
-  - "shipflow_data/technical/architecture.md"
-supersedes: []
-evidence:
-  - "package.json"
-  - "astro.config.mjs"
-  - "src/middleware/index.ts"
-  - "src/pages/api/polar/checkout.ts"
-  - "convex/http.ts"
-next_step: "pnpm build:check"
----
-# winflowz
+# CLAUDE.md
 
-## Repository Execution Contract
+This file provides root-level guidance for agents working in the WinFlowz monorepo.
 
-This repository is an Astro 6 server application with bilingual routing, Clerk auth, Convex state, Polar checkout, and Resend newsletter flows.
+## Project Overview
 
-Use this file as the short operating contract before changing code or docs.
+- `winflowz_site/`: Astro site, content, account, commerce, Convex, and bridge API surfaces.
+- `winflowz_app/`: Flutter Android-first application.
+- `shipflow_data/`: project governance, workflow, audit, task, bug, and spec artifacts.
 
-## Stack Snapshot
+## ShipFlow Development Mode
 
-- Framework: Astro 6 (`output: "server"`)
-- Deployment adapter: Vercel (`@astrojs/vercel`)
-- Auth: Clerk middleware + webhook forwarding
-- Backend/state: Convex (`users`, `apiKeys`, `features`)
-- Billing: Polar checkout route + Convex webhook processing
-- Email: Resend subscribe/unsubscribe API routes
-- Content: Astro content collections (`docs`, `products`, `blog`, `services`)
+- development_mode: hybrid
+- validation_surface: mixed
+- ship_before_preview_test: conditional
+- post_ship_verification: sf-prod
+- deployment_provider: vercel
+- preview_source: Vercel MCP deployment target_url for hosted web surfaces; local tooling for Flutter/Android preflight
+- production_url: https://winflowz.com
+- notes: Use local checks for structural, Flutter, and unit validation. Use Vercel preview validation before claiming hosted site/app web behavior, serverless API behavior, auth callbacks, bridge endpoints, checkout, or production-like deployment behavior.
+- last_reviewed: 2026-05-24
 
-## First Files To Inspect
+## Validation
 
-1. `shipflow_data/technical/guidelines.md`
-2. `shipflow_data/technical/architecture.md`
-3. `src/middleware/index.ts`
-4. `src/middleware/i18n.ts`
-5. `src/pages/api/polar/checkout.ts`
-6. `convex/http.ts`
+Use focused checks from the changed subproject:
 
-## High-Risk Change Areas
+```bash
+(cd winflowz_site && pnpm build:check)
+(cd winflowz_site && pnpm test:unit)
+(cd winflowz_app && flutter analyze)
+(cd winflowz_app && flutter test)
+```
 
-- Locale and route normalization: `src/middleware/i18n.ts`, `src/i18n/config.ts`, `src/utils/routing.ts`
-- Checkout and entitlements: `src/pages/api/polar/checkout.ts`, `src/pages/api/polar/webhook.ts`, `convex/http.ts`, `convex/polar.ts`, `src/utils/courseGating.ts`
-- Auth identity sync: `src/pages/api/clerk/webhook.ts`, `convex/http.ts`, `convex/users.ts`
-- Newsletter side effects: `src/pages/api/newsletter/subscribe.ts`, `src/pages/api/newsletter/unsubscribe.ts`
-- Content schema contracts: `src/content/config.ts`
+Run ShipFlow metadata validation for governance docs:
 
-## Runtime Assumptions
-
-- English routes are unprefixed and French routes are under `/fr`.
-- `PUBLIC_CONVEX_URL` must not be placeholder for Convex-backed logic.
-- Polar flows require `POLAR_ACCESS_TOKEN` and `POLAR_WINFLOWZ_PRODUCT_ID` (or fallback `POLAR_PRODUCT_ID`).
-- Newsletter routes require `RESEND_API_KEY` and a valid audience id.
-
-## Safe Change Pattern
-
-1. Identify the boundary first (routing, auth, checkout, newsletter, content schema).
-2. Keep Astro API routes as thin integration controllers.
-3. Keep durable state transitions inside Convex mutations/actions.
-4. Update docs when changing env contracts, route contracts, or data shape.
+```bash
+/home/claude/shipflow/tools/shipflow_metadata_lint.py AGENT.md shipflow_data
+```
