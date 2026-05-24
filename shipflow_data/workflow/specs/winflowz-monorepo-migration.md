@@ -1,7 +1,7 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-05-24"
 created_at: "2026-05-24 21:02:33 UTC"
