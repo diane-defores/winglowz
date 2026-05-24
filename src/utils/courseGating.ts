@@ -62,6 +62,10 @@ export function isSafePrivateCoursePath(pathname: string | null) {
 	return Boolean(pathname && pathname.startsWith('/dashboard/docs/'))
 }
 
+export function isSafeAccountPath(pathname: string | null) {
+	return pathname === '/dashboard/parametres'
+}
+
 export function isSafeCourseCheckoutPath(pathname: string | null) {
 	if (!pathname) {
 		return false
@@ -80,7 +84,11 @@ export function isSafeCourseCheckoutPath(pathname: string | null) {
 }
 
 export function getSafeAuthRedirectPath(pathname: string | null) {
-	if (isSafePrivateCoursePath(pathname) || isSafeCourseCheckoutPath(pathname)) {
+	if (
+		isSafePrivateCoursePath(pathname) ||
+		isSafeAccountPath(pathname) ||
+		isSafeCourseCheckoutPath(pathname)
+	) {
 		return pathname
 	}
 

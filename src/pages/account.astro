@@ -1,0 +1,9 @@
+---
+const auth = Astro.locals.auth()
+
+if (!auth.userId) {
+	return Astro.redirect('/signin?next=%2Fdashboard%2Fparametres')
+}
+
+return Astro.redirect('/dashboard/parametres')
+---

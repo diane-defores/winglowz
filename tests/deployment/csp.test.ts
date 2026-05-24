@@ -17,8 +17,10 @@ describe("Vercel security headers", () => {
 
     expect(csp).toContain("script-src");
     expect(csp).toContain("https://clerk.winflowz.com");
+    expect(csp).toContain("https://challenges.cloudflare.com");
     expect(csp).toContain("connect-src");
     expect(csp).toContain("https://accounts.winflowz.com");
+    expect(csp).toContain("worker-src 'self' blob:");
     expect(csp).toContain("style-src");
     expect(csp).toContain("https://fonts.googleapis.com");
   });
