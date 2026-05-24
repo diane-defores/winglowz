@@ -74,8 +74,15 @@ function parseSnapshot(value: unknown): ReplayGlowzEntitlementSnapshot | null {
   };
 }
 
+function getServerEnv(): Record<string, string | undefined> {
+  return {
+    ...(typeof process !== "undefined" ? process.env : {}),
+    ...(import.meta.env as Record<string, string | undefined>),
+  };
+}
+
 export const POST: APIRoute = async ({ request }) => {
-  const env = import.meta.env as Record<string, string | undefined>;
+  const env = getServerEnv();
   const endpointSecret = getSuiteEntitlementVerifySecret(env);
   const convexBridgeSecret = getConvexBridgeSecret(env);
   const clerkSecretKey = env.CLERK_SECRET_KEY?.trim();
