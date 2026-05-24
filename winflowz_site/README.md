@@ -18,7 +18,7 @@ depends_on: []
 supersedes: []
 evidence:
   - package.json
-  - shipflow_data/
+  - ../shipflow_data/
 next_step: /sf-docs update
 ---
 
@@ -28,7 +28,7 @@ WinFlowz is a Windows-first productivity project centered on `Windows Mastery`, 
 
 Production: https://winflowz.com
 
-## What This Repo Contains
+## What This Subproject Contains
 
 - Astro site with `en` and `fr` routes
 - content collections for blog, docs, and products
@@ -69,7 +69,7 @@ The local dev server runs on `http://localhost:3011`.
 ## Project Structure
 
 ```text
-winflowz/
+winflowz_site/
 ├── src/
 │   ├── assets/             # Global styles, scripts, and images
 │   ├── components/         # Astro and React UI components
@@ -168,20 +168,20 @@ Common commands:
 
 - [CLAUDE.md](./CLAUDE.md) — agent workflow and context rules
 - [AGENT.md](./AGENT.md) — short repo execution contract
-- [shipflow_data/business/business.md](./shipflow_data/business/business.md) — business contract centered on `Windows Mastery`
-- [shipflow_data/business/branding.md](./shipflow_data/business/branding.md) — brand voice and claim policy
-- [shipflow_data/business/product.md](./shipflow_data/business/product.md) — product scope and user journey
-- [shipflow_data/business/gtm.md](./shipflow_data/business/gtm.md) — go-to-market structure
-- [shipflow_data/editorial/content-map.md](./shipflow_data/editorial/content-map.md) — content routing map
-- [shipflow_data/technical/guidelines.md](./shipflow_data/technical/guidelines.md) — project-specific engineering guidelines
-- [shipflow_data/technical/architecture.md](./shipflow_data/technical/architecture.md) — system boundaries and integrations
-- [shipflow_data/technical/context.md](./shipflow_data/technical/context.md) — repository context map
+- [shipflow_data/business/business.md](../shipflow_data/business/business.md) — business contract centered on `Windows Mastery`
+- [shipflow_data/business/branding.md](../shipflow_data/business/branding.md) — brand voice and claim policy
+- [shipflow_data/business/product.md](../shipflow_data/business/product.md) — product scope and user journey
+- [shipflow_data/business/gtm.md](../shipflow_data/business/gtm.md) — go-to-market structure
+- [shipflow_data/editorial/content-map.md](../shipflow_data/editorial/content-map.md) — content routing map
+- [shipflow_data/technical/guidelines.md](../shipflow_data/technical/guidelines.md) — project-specific engineering guidelines
+- [shipflow_data/technical/architecture.md](../shipflow_data/technical/architecture.md) — system boundaries and integrations
+- [shipflow_data/technical/context.md](../shipflow_data/technical/context.md) — repository context map
 - [docs/DESIGN_SPECIFICATION.md](./docs/DESIGN_SPECIFICATION.md) — design system notes
 - [docs/COMPONENT_CLASSES.md](./docs/COMPONENT_CLASSES.md) — reusable CSS class reference
 
 ## Deployment
 
-The project is configured for Vercel server output through `@astrojs/vercel`.
+The project is configured for Vercel server output through `@astrojs/vercel`. In the monorepo, configure the Vercel project Root Directory as `winflowz_site`.
 
 Typical production flow:
 

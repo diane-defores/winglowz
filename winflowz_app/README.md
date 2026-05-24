@@ -27,7 +27,7 @@ depends_on:
 supersedes: []
 evidence:
   - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md"
-  - "shipflow_data/workflow/specs/android-ime-winflowz_app-keyboard.md"
+  - "../shipflow_data/workflow/specs/android-ime-winflowz_app-keyboard.md"
   - "android/app/src/main/AndroidManifest.xml"
 next_step: "$sf-docs update"
 ---
@@ -38,7 +38,7 @@ WinFlowz is migrating to a Flutter Android-first architecture with backend-agnos
 
 WinFlowz is positioned as a sibling product of WinFlowz in the same ecosystem, with a product focus on voice-first capture and text workflow acceleration.
 
-This repository now contains:
+This subproject now contains:
 - A Flutter multi-platform project scaffold.
 - Legacy Supabase SQL migrations with RLS-first contracts from the prior migration path.
 - Android native overlay and a first native WinFlowz keyboard IME foundation.
