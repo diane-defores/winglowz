@@ -8,10 +8,16 @@ import 'package:winflowz_app/core/bootstrap/supabase_bootstrap.dart';
 import 'package:winflowz_app/core/platform/android_keyboard_bridge.dart';
 import 'package:winflowz_app/core/platform/android_overlay_bridge.dart';
 import 'package:winflowz_app/core/platform/platform_capabilities.dart';
+import 'package:winflowz_app/features/clipboard/application/clipboard_store_provider.dart';
+import 'package:winflowz_app/features/clipboard/data/in_memory_clipboard_history_store.dart';
+import 'package:winflowz_app/features/clipboard/domain/clipboard_store.dart';
+import 'package:winflowz_app/features/clipboard/presentation/clipboard_screen.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
 import 'package:winflowz_app/features/keyboard/presentation/keyboard_preview_screen.dart';
 import 'package:winflowz_app/features/clipboard/domain/clipboard_normalizer.dart';
 import 'package:winflowz_app/features/shell/presentation/app_shell_screen.dart';
+import 'package:winflowz_app/features/settings/application/settings_store_provider.dart';
+import 'package:winflowz_app/features/settings/domain/settings_store.dart';
 import 'package:winflowz_app/features/voice/domain/transcription_draft.dart';
 
 const _overlayChannel = MethodChannel('winflowz_app/overlay');
@@ -20,18 +26,29 @@ const _secureStorageChannel = MethodChannel(
   'plugins.it_nomads.com/flutter_secure_storage',
 );
 
-void _installAndroidBridgeMocks() {
+void _installAndroidBridgeMocks({
+  bool keyboardEnabled = false,
+  bool keyboardActive = false,
+  bool clipboardSyncDesired = false,
+  bool mediaSessionAccessGranted = false,
+  bool systemSettingsWriteGranted = false,
+  bool overlayPermissionGranted = false,
+  bool overlayEnabled = false,
+  bool accessibilityPermissionGranted = false,
+  bool recordAudioGranted = false,
+}) {
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
   messenger.setMockMethodCallHandler(_overlayChannel, (call) async {
     switch (call.method) {
       case 'getOverlayStatus':
         return <String, Object?>{
-          'enabled': false,
-          'requestedEnabled': false,
-          'running': false,
-          'overlayPermissionGranted': false,
-          'accessibilityPermissionGranted': false,
+          'enabled': overlayEnabled,
+          'requestedEnabled': overlayEnabled,
+          'running': overlayEnabled,
+          'overlayPermissionGranted': overlayPermissionGranted,
+          'accessibilityPermissionGranted': accessibilityPermissionGranted,
+          'recordAudioGranted': recordAudioGranted,
           'deliveryMode': 'clipboard_only',
           'sizeScale': 1.0,
           'opacity': 0.8,
@@ -46,11 +63,13 @@ void _installAndroidBridgeMocks() {
       case 'getKeyboardStatus':
         return <String, Object?>{
           'supported': true,
-          'enabled': false,
-          'active': false,
+          'enabled': keyboardEnabled,
+          'active': keyboardActive,
           'voiceEnabled': true,
-          'clipboardSyncDesired': false,
+          'clipboardSyncDesired': clipboardSyncDesired,
           'mediaControlsEnabled': true,
+          'mediaSessionAccessGranted': mediaSessionAccessGranted,
+          'systemSettingsWriteGranted': systemSettingsWriteGranted,
           'privacyMode': 'auto',
           'keyVibrationEnabled': true,
           'keySoundEnabled': false,
@@ -105,12 +124,42 @@ Widget _appShellTestWidget() {
   );
 }
 
+class _MemorySettingsStore implements SettingsStore {
+  _MemorySettingsStore(this.snapshot);
+
+  UserSettingsSnapshot snapshot;
+
+  @override
+  Future<UserSettingsSnapshot> load() async => snapshot;
+
+  @override
+  Future<void> save(UserSettingsSnapshot settings) async {
+    snapshot = settings;
+  }
+
+  @override
+  Stream<UserSettingsSnapshot> watch() async* {
+    yield snapshot;
+  }
+}
+
 Widget _keyboardPreviewTestWidget() {
   return ProviderScope(
     child: MaterialApp(
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       home: const Scaffold(body: KeyboardPreviewScreen()),
+    ),
+  );
+}
+
+Widget _clipboardScreenTestWidget(ClipboardHistoryStore store) {
+  return ProviderScope(
+    overrides: [clipboardStoreProvider.overrideWithValue(store)],
+    child: MaterialApp(
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      home: const Scaffold(body: ClipboardScreen()),
     ),
   );
 }
@@ -488,7 +537,8 @@ void main() {
   testWidgets('settings can resume onboarding overlay', (tester) async {
     final previousPlatform = debugDefaultTargetPlatformOverride;
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
-    _useLargeViewport(tester);
+    tester.view.physicalSize = const Size(900, 5000);
+    tester.view.devicePixelRatio = 1.0;
     _installAndroidBridgeMocks();
 
     try {
@@ -576,6 +626,135 @@ void main() {
     }
   });
 
+  testWidgets('validated onboarding steps show an active info state', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks(keyboardEnabled: true, keyboardActive: true);
+
+    try {
+      await tester.pumpWidget(_appShellTestWidget());
+      await _pumpNavigationFrame(tester);
+
+      final keyboardProgressDot = find.byKey(
+        const ValueKey('onboarding-progress-dot-keyboardIme'),
+      );
+      await tester.ensureVisible(keyboardProgressDot);
+      await tester.tap(keyboardProgressDot);
+      await tester.pumpAndSettle(const Duration(milliseconds: 300));
+
+      expect(find.text('Clavier WinFlowz keyboard'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Activé'), findsNothing);
+      expect(find.widgetWithText(TextButton, 'Plus tard'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Modifier'), findsOneWidget);
+      expect(find.text('Activé'), findsWidgets);
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('completion groups granted permissions under feature cards', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks(
+      keyboardEnabled: true,
+      keyboardActive: true,
+      clipboardSyncDesired: true,
+      mediaSessionAccessGranted: true,
+      systemSettingsWriteGranted: true,
+      overlayPermissionGranted: true,
+      overlayEnabled: true,
+      accessibilityPermissionGranted: true,
+      recordAudioGranted: true,
+    );
+
+    try {
+      await tester.pumpWidget(_appShellTestWidget());
+      await _pumpNavigationFrame(tester);
+
+      expect(find.text('WinFlowz est prêt'), findsOneWidget);
+      expect(find.text('Dictée depuis le clavier'), findsOneWidget);
+      expect(find.text('Microphone'), findsOneWidget);
+      expect(find.text('Service Accessibilité'), findsOneWidget);
+      expect(find.text('Contrôler ton téléphone plus vite'), findsOneWidget);
+      expect(find.text('Luminosité système'), findsOneWidget);
+      expect(find.text('Overlay flottant'), findsOneWidget);
+      expect(
+        find.byKey(const Key('onboarding-completion-loose-list')),
+        findsNothing,
+      );
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('completed onboarding card moves to bottom of settings', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks(
+      keyboardEnabled: true,
+      keyboardActive: true,
+      clipboardSyncDesired: true,
+      mediaSessionAccessGranted: true,
+      systemSettingsWriteGranted: true,
+      overlayPermissionGranted: true,
+      overlayEnabled: true,
+      accessibilityPermissionGranted: true,
+      recordAudioGranted: true,
+    );
+    final settingsStore = _MemorySettingsStore(
+      UserSettingsSnapshot.defaults().copyWith(onboardingCompleted: true),
+    );
+
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [settingsStoreProvider.overrideWithValue(settingsStore)],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            home: const AppShellScreen(),
+          ),
+        ),
+      );
+      await _pumpNavigationFrame(tester);
+
+      await tester.tap(find.byIcon(Icons.settings_outlined).last);
+      await _pumpNavigationFrame(tester);
+
+      expect(find.text('Tout est configuré'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Revisiter'), findsOneWidget);
+
+      final visibleTexts = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((widget) => widget.data ?? widget.textSpan?.toPlainText() ?? '')
+          .toList(growable: false);
+      expect(
+        visibleTexts.indexOf('Onboarding permissions'),
+        greaterThan(visibleTexts.indexOf('Android Overlay')),
+      );
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
   testWidgets('tapping outside onboarding overlay closes it', (tester) async {
     final previousPlatform = debugDefaultTargetPlatformOverride;
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
@@ -611,10 +790,13 @@ void main() {
   testWidgets('android shell renders every main tab body', (tester) async {
     final previousPlatform = debugDefaultTargetPlatformOverride;
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
     _installAndroidBridgeMocks();
     addTearDown(() {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
     });
 
     await tester.pumpWidget(_appShellTestWidget());
@@ -655,6 +837,64 @@ void main() {
 
     debugDefaultTargetPlatformOverride = previousPlatform;
     _clearAndroidBridgeMocks();
+  });
+
+  testWidgets('clipboard edit dialog closes safely on cancel and noop save', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks();
+    try {
+      final store = InMemoryClipboardHistoryStore(
+        clock: () => DateTime.utc(2026, 5, 24, 12),
+      );
+
+      await tester.pumpWidget(_clipboardScreenTestWidget(store));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Clipboard content').first,
+        'clipboard item to edit',
+      );
+      await tester.pump();
+      await tester.ensureVisible(
+        find.widgetWithText(FilledButton, 'Add clipboard item'),
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Add clipboard item'));
+      await tester.pumpAndSettle();
+
+      expect(store.snapshot(), hasLength(1));
+      expect(find.text('clipboard item to edit'), findsOneWidget);
+
+      await tester.ensureVisible(find.byIcon(Icons.edit_outlined));
+      await tester.tap(find.byIcon(Icons.edit_outlined));
+      await tester.pumpAndSettle();
+      expect(find.text('Modifier le clipboard'), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(TextButton, 'Annuler'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Modifier le clipboard'), findsNothing);
+
+      await tester.ensureVisible(find.byIcon(Icons.edit_outlined));
+      await tester.tap(find.byIcon(Icons.edit_outlined));
+      await tester.pumpAndSettle();
+      expect(find.text('Modifier le clipboard'), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Sauvegarder'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Modifier le clipboard'), findsNothing);
+      expect(store.snapshot(), hasLength(1));
+      expect(store.snapshot().single.content, 'clipboard item to edit');
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
   });
 
   testWidgets('settings backend diagnostics panel opens without layout error', (

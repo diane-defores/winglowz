@@ -51,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Changed the app shell navigation to use a responsive rail on wider screens so the added keyboard review surface does not crowd the bottom navigation.
 - Changed first-run onboarding into a dismissible overlay so tab content remains visible while setup guidance is shown.
+- Changed the onboarding completion screen to group granted permissions inside the matching feature cards instead of stacking them as separate cards.
+- Moved the Settings onboarding card to the bottom once setup is fully configured, with `Tout est configuré` and a `Revisiter` action.
 - Changed Android/system Back handling inside the shell so Back returns to the previous app tab before exiting.
 - Migrated canonical project documentation from root files (`ARCHITECTURE.md`, `BRANDING.md`, `BUSINESS.md`, `GTM.md`, `GUIDELINES.md`, `PRODUCT.md`, `CONTENT_MAP.md`) to `shipflow_data` and updated documentation/spec path references accordingly.
 - Moved the missing Supabase configuration diagnostic out of the global shell banner and into Settings so local-mode screens are not crowded while the backend provider remains undecided.
@@ -65,6 +67,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Archived Supabase migration target docs as legacy-only references and pointed execution to `shipflow_data/workflow/specs/firebase-backend-agnostic-migration.md`.
 - Removed unnecessary Firestore indexes that caused hosted deploy errors on `settings` and `transcriptions` collection groups.
 - Moved active task tracking to `shipflow_data/workflow/TASKS.md` and synced tracker naming to WinFlowz.
+
+### Fixed
+- Fixed a Flutter crash when closing the clipboard item edit dialog with `Annuler` or `Sauvegarder` without changing content.
+- Replaced the `Plus tard` action on already validated onboarding rows with a non-actionable `Activé` state.
 
 ### Security
 - Removed the hardcoded sample snippet insertion path from the Android IME; snippet actions now open the app instead of inserting placeholder text.

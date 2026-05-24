@@ -187,33 +187,11 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<String?> _showEditClipboardItemDialog(ClipboardItemRecord item) async {
-    final controller = TextEditingController(text: item.content);
     final result = await showDialog<String>(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Modifier le clipboard'),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            minLines: 4,
-            maxLines: 8,
-            decoration: const InputDecoration(labelText: 'Clipboard content'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Annuler'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(controller.text),
-              child: const Text('Sauvegarder'),
-            ),
-          ],
-        );
-      },
+      builder: (context) =>
+          _ClipboardEditItemDialog(initialContent: item.content),
     );
-    controller.dispose();
     return result?.trim();
   }
 
@@ -697,6 +675,56 @@ class _ClipboardInlineNotice extends StatelessWidget {
           Expanded(child: Text(text)),
         ],
       ),
+    );
+  }
+}
+
+class _ClipboardEditItemDialog extends StatefulWidget {
+  const _ClipboardEditItemDialog({required this.initialContent});
+
+  final String initialContent;
+
+  @override
+  State<_ClipboardEditItemDialog> createState() =>
+      _ClipboardEditItemDialogState();
+}
+
+class _ClipboardEditItemDialogState extends State<_ClipboardEditItemDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialContent);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Modifier le clipboard'),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        minLines: 4,
+        maxLines: 8,
+        decoration: const InputDecoration(labelText: 'Clipboard content'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Annuler'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(_controller.text),
+          child: const Text('Sauvegarder'),
+        ),
+      ],
     );
   }
 }

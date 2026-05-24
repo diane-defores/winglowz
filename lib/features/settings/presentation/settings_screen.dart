@@ -1180,15 +1180,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     AppDiagnostics.record('screen_build', 'Settings');
     final storageStatusAsync = ref.watch(_storageStatusProvider);
     final onboardingReadiness = _onboardingReadiness();
+    final onboardingTile = widget.onResumeOnboarding == null
+        ? null
+        : _OnboardingSettingsTile(
+            onResume: widget.onResumeOnboarding!,
+            readiness: onboardingReadiness,
+            highlightResume: widget.highlightOnboardingResume,
+          );
+    final moveOnboardingTileToEnd =
+        onboardingReadiness.onboardingCompleted &&
+        onboardingReadiness.steps.isNotEmpty &&
+        onboardingReadiness.steps.every((step) => step.satisfied);
     if (_loading || _onboardingLoading) {
       return _settingsList(
         sections: [
-          if (widget.onResumeOnboarding != null)
-            _OnboardingSettingsTile(
-              onResume: widget.onResumeOnboarding!,
-              readiness: onboardingReadiness,
-              highlightResume: widget.highlightOnboardingResume,
-            ),
+          ?onboardingTile,
           const Center(child: CircularProgressIndicator()),
         ],
       );
@@ -1202,12 +1208,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final voiceCatalogState = ref.watch(languagePackCatalogProvider);
     return _settingsList(
       sections: [
-        if (widget.onResumeOnboarding != null)
-          _OnboardingSettingsTile(
-            onResume: widget.onResumeOnboarding!,
-            readiness: onboardingReadiness,
-            highlightResume: widget.highlightOnboardingResume,
-          ),
+        if (onboardingTile != null && !moveOnboardingTileToEnd) onboardingTile,
         _collapsibleSection(
           id: 'appearance',
           title: 'Appearance',
@@ -1313,6 +1314,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onCancel: _cancelOverlay,
             ),
           ),
+        if (onboardingTile != null && moveOnboardingTileToEnd) onboardingTile,
       ],
     );
   }
@@ -1383,7 +1385,13 @@ class _OnboardingSettingsTileState extends State<_OnboardingSettingsTile>
     final pending = widget.readiness.steps
         .where((step) => step.requiresAction)
         .length;
-    final actionLabel = widget.readiness.shouldShowOnboarding
+    final fullyConfigured =
+        widget.readiness.onboardingCompleted &&
+        widget.readiness.steps.isNotEmpty &&
+        widget.readiness.steps.every((step) => step.satisfied);
+    final actionLabel = fullyConfigured
+        ? 'Revisiter'
+        : widget.readiness.shouldShowOnboarding
         ? 'Reprendre'
         : widget.readiness.onboardingCompleted
         ? 'Voir le récapitulatif'
@@ -1391,6 +1399,8 @@ class _OnboardingSettingsTileState extends State<_OnboardingSettingsTile>
 
     final subtitle = !widget.readiness.platformSupported
         ? 'Non requis sur cette plateforme'
+        : fullyConfigured
+        ? 'Tout est configuré'
         : widget.readiness.shouldShowOnboarding
         ? 'Actifs: $active • Ignorés: $skipped • À configurer si utile: $pending'
         : 'Onboarding terminé';

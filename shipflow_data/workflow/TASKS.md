@@ -11,6 +11,8 @@
 🟠 [WinFlowzApp] task: Push or ship the verified persistent local clipboard fallback changes | status: todo | area: clipboard-local | id: wfz-clipboard-persistent-local-ship
 🟠 [WinFlowzApp] task: Retest Android IME clipboard bridge on physical device after APK/CI handoff | status: todo | area: clipboard-ime | id: wfz-ime-clipboard-device-qa
 🟠 [WinFlowzApp] task: Redeploy the Flutter web auth patch and rerun Google plus email/password smoke on app.winflowz.com | status: todo | area: suite-auth | id: wfz-suite-auth-web-smoke
+🟠 [WinFlowzApp] task: Retest BUG-2026-05-24-001 onboarding active-state info box on Android APK | status: fixed_pending_verify | area: onboarding | id: BUG-2026-05-24-001
+🟠 [WinFlowzApp] task: Retest BUG-2026-05-24-002 clipboard edit dialog cancel/save on Android APK | status: fixed_pending_verify | area: clipboard | id: BUG-2026-05-24-002
 
 ---
 

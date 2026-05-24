@@ -1301,7 +1301,7 @@ class _OnboardingPermissionRow extends StatelessWidget {
         : Icons.radio_button_unchecked;
     final isResolved = step.satisfied || step.skipped;
     final status = step.satisfied
-        ? 'Actif'
+        ? 'Activé'
         : step.skipped
         ? 'Ignoré'
         : _configureHint(definition.id);
@@ -1384,11 +1384,20 @@ class _OnboardingPermissionRow extends StatelessWidget {
                   icon: const Icon(Icons.keyboard_alt_outlined),
                   label: Text(definition.secondaryActionLabel!),
                 ),
-              TextButton.icon(
-                onPressed: isBusy ? null : () => onSkip(definition.id),
-                icon: const Icon(Icons.schedule_outlined),
-                label: Text(step.skipped ? 'Ignoré' : 'Plus tard'),
-              ),
+              if (isResolved)
+                _OnboardingResolvedInfo(
+                  icon: step.satisfied
+                      ? Icons.check_circle_outline
+                      : Icons.do_not_disturb_on_outlined,
+                  label: step.satisfied ? 'Activé' : 'Ignoré',
+                  color: color,
+                )
+              else
+                TextButton.icon(
+                  onPressed: isBusy ? null : () => onSkip(definition.id),
+                  icon: const Icon(Icons.schedule_outlined),
+                  label: const Text('Plus tard'),
+                ),
             ],
           ),
         ],
@@ -1416,6 +1425,49 @@ class _OnboardingPermissionRow extends StatelessWidget {
   }
 }
 
+class _OnboardingResolvedInfo extends StatelessWidget {
+  const _OnboardingResolvedInfo({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        border: Border.all(color: color.withValues(alpha: 0.45)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.x3,
+          vertical: AppSpacing.x2,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: AppIconMetrics.sm),
+            AppGaps.horizontalX2,
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(color: colorScheme.onSurface),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _OnboardingCompletionContent extends StatelessWidget {
   const _OnboardingCompletionContent({
     required this.readiness,
@@ -1433,6 +1485,9 @@ class _OnboardingCompletionContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final completed = readiness.steps.where((step) => step.completed).length;
     final allActive = readiness.steps.every((step) => step.satisfied);
+    final stepsById = {
+      for (final step in readiness.steps) step.definition.id: step,
+    };
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1446,24 +1501,34 @@ class _OnboardingCompletionContent extends StatelessWidget {
           accentColor: AppColors.success,
         ),
         AppGaps.x2,
-        if (allActive) ...[
-          const _OnboardingPathHint(
+        ...[
+          _OnboardingPathHint(
             icon: Icons.keyboard_voice_outlined,
-            title: 'Dicter depuis le clavier',
+            title: 'Dictée depuis le clavier',
             text:
                 'Utilise le micro pour transformer ta voix en texte directement là où tu écris.',
+            permissions: [
+              stepsById[OnboardingStepId.microphoneForDictation],
+              stepsById[OnboardingStepId.accessibility],
+            ],
           ),
-          const _OnboardingPathHint(
+          _OnboardingPathHint(
             icon: Icons.content_paste_outlined,
             title: 'Retrouver ton clipboard',
             text:
                 'Garde tes copies récentes à portée de main pour les réutiliser depuis le clavier.',
+            permissions: [stepsById[OnboardingStepId.keyboardClipboard]],
           ),
-          const _OnboardingPathHint(
+          _OnboardingPathHint(
             icon: Icons.tune_outlined,
             title: 'Contrôler ton téléphone plus vite',
             text:
                 'Accède aux médias, à la luminosité et aux actions rapides sans quitter ton flux.',
+            permissions: [
+              stepsById[OnboardingStepId.mediaSessionAccess],
+              stepsById[OnboardingStepId.brightnessSystemSettings],
+              stepsById[OnboardingStepId.overlay],
+            ],
           ),
           AppGaps.x2,
         ],
@@ -1476,15 +1541,7 @@ class _OnboardingCompletionContent extends StatelessWidget {
           ],
         ),
         AppGaps.x2,
-        for (final step in readiness.steps)
-          _OnboardingPathHint(
-            icon: Icons.lightbulb_outline,
-            title: step.definition.title,
-            text: step.completed
-                ? 'OK'
-                : 'Optionnel: ${step.definition.whereToFind}',
-          ),
-        AppGaps.x3,
+        AppGaps.x2,
         Wrap(
           spacing: AppSpacing.x2,
           runSpacing: AppSpacing.x2,
@@ -1553,17 +1610,115 @@ class _OnboardingPathHint extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.text,
+    this.permissions = const [],
   });
 
   final IconData icon;
   final String title;
   final String text;
+  final List<OnboardingStepProgress?> permissions;
 
   @override
   Widget build(BuildContext context) {
+    final resolvedPermissions = permissions.nonNulls.toList(growable: false);
     return Padding(
       padding: AppInsets.stack,
-      child: AppBannerCard(icon: icon, title: title, message: text),
+      child: Card(
+        child: Padding(
+          padding: AppInsets.compactCard,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(icon, color: Theme.of(context).colorScheme.primary),
+                  AppGaps.horizontalX3,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        AppGaps.x1,
+                        Text(
+                          text,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (resolvedPermissions.isNotEmpty) ...[
+                AppGaps.x2,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Wrap(
+                    spacing: AppSpacing.x2,
+                    runSpacing: AppSpacing.x2,
+                    alignment: WrapAlignment.end,
+                    children: [
+                      for (final permission in resolvedPermissions)
+                        _OnboardingPermissionBadge(step: permission),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingPermissionBadge extends StatelessWidget {
+  const _OnboardingPermissionBadge({required this.step});
+
+  final OnboardingStepProgress step;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = step.satisfied
+        ? AppColors.success
+        : step.skipped
+        ? colorScheme.outline
+        : AppColors.warning;
+    final icon = step.satisfied
+        ? Icons.check_circle_outline
+        : step.skipped
+        ? Icons.do_not_disturb_on_outlined
+        : Icons.radio_button_unchecked;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.x2 + AppSpacing.x1 / 2,
+          vertical: AppSpacing.x1,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: AppIconMetrics.sm),
+            AppGaps.horizontalX2,
+            Text(
+              step.definition.title,
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: colorScheme.onSurface),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
