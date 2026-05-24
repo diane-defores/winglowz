@@ -1383,10 +1383,6 @@ class _OnboardingSettingsTileState extends State<_OnboardingSettingsTile>
 
   @override
   Widget build(BuildContext context) {
-    final active = widget.readiness.steps
-        .where((step) => step.satisfied)
-        .length;
-    final skipped = widget.readiness.steps.where((step) => step.skipped).length;
     final pending = widget.readiness.steps
         .where((step) => step.requiresAction)
         .length;
@@ -1407,7 +1403,7 @@ class _OnboardingSettingsTileState extends State<_OnboardingSettingsTile>
         : fullyConfigured
         ? 'Tout est configuré'
         : widget.readiness.shouldShowOnboarding
-        ? 'Actifs: $active • Ignorés: $skipped • À configurer si utile: $pending'
+        ? '$pending accès encore disponible${pending == 1 ? '' : 's'}'
         : 'Onboarding terminé';
 
     final tile = AppStatusCard(

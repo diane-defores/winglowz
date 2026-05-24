@@ -677,59 +677,97 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
             ),
             bottomNavigationBar: useRail || _onboardingVisible
                 ? null
-                : DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: colorScheme.outlineVariant.withValues(
-                            alpha: 0.72,
+                : SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.x2,
+                        AppSpacing.x1,
+                        AppSpacing.x2,
+                        AppSpacing.x2,
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerLow.withValues(
+                            alpha: colorScheme.brightness == Brightness.dark
+                                ? AppNavigationMetrics.bottomBarDarkAlpha
+                                : AppNavigationMetrics.bottomBarLightAlpha,
+                          ),
+                          borderRadius: BorderRadius.circular(AppRadii.lg),
+                          border: Border.all(
+                            color: colorScheme.outlineVariant.withValues(
+                              alpha: 0.78,
+                            ),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.black.withValues(
+                                alpha: colorScheme.brightness == Brightness.dark
+                                    ? AppNavigationMetrics
+                                          .bottomBarDarkShadowAlpha
+                                    : AppNavigationMetrics
+                                          .bottomBarLightShadowAlpha,
+                              ),
+                              blurRadius:
+                                  AppNavigationMetrics.bottomBarShadowBlur,
+                              offset:
+                                  AppNavigationMetrics.bottomBarShadowOffset,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppRadii.lg),
+                          child: NavigationBar(
+                            labelBehavior: NavigationDestinationLabelBehavior
+                                .onlyShowSelected,
+                            selectedIndex: _index,
+                            onDestinationSelected: _selectTab,
+                            destinations: const [
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.keyboard_voice_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.keyboard_voice,
+                                ),
+                                label: 'Voice',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.content_paste_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.content_paste,
+                                ),
+                                label: 'Clipboard',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.text_snippet_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.text_snippet,
+                                ),
+                                label: 'Snippets',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(
+                                  Icons.auto_fix_high_outlined,
+                                ),
+                                selectedIcon: _BottomNavIcon(
+                                  Icons.auto_fix_high,
+                                ),
+                                label: 'Dictionary',
+                              ),
+                              NavigationDestination(
+                                icon: _BottomNavIcon(Icons.settings_outlined),
+                                selectedIcon: _BottomNavIcon(Icons.settings),
+                                label: 'Settings',
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.black.withValues(
-                            alpha: colorScheme.brightness == Brightness.dark
-                                ? 0.34
-                                : 0.08,
-                          ),
-                          blurRadius: 18,
-                          offset: const Offset(0, -6),
-                        ),
-                      ],
-                    ),
-                    child: NavigationBar(
-                      labelBehavior:
-                          NavigationDestinationLabelBehavior.onlyShowSelected,
-                      selectedIndex: _index,
-                      onDestinationSelected: _selectTab,
-                      destinations: const [
-                        NavigationDestination(
-                          icon: _BottomNavIcon(Icons.keyboard_voice_outlined),
-                          selectedIcon: _BottomNavIcon(Icons.keyboard_voice),
-                          label: 'Voice',
-                        ),
-                        NavigationDestination(
-                          icon: _BottomNavIcon(Icons.content_paste_outlined),
-                          selectedIcon: _BottomNavIcon(Icons.content_paste),
-                          label: 'Clipboard',
-                        ),
-                        NavigationDestination(
-                          icon: _BottomNavIcon(Icons.text_snippet_outlined),
-                          selectedIcon: _BottomNavIcon(Icons.text_snippet),
-                          label: 'Snippets',
-                        ),
-                        NavigationDestination(
-                          icon: _BottomNavIcon(Icons.auto_fix_high_outlined),
-                          selectedIcon: _BottomNavIcon(Icons.auto_fix_high),
-                          label: 'Dictionary',
-                        ),
-                        NavigationDestination(
-                          icon: _BottomNavIcon(Icons.settings_outlined),
-                          selectedIcon: _BottomNavIcon(Icons.settings),
-                          label: 'Settings',
-                        ),
-                      ],
                     ),
                   ),
           ),
@@ -1246,11 +1284,9 @@ class _OnboardingUseCaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final active = steps.where((step) => step.satisfied).length;
-    final skipped = steps.where((step) => step.skipped).length;
     return AppSectionCard(
       title: title,
-      subtitle: '$subtitle $active actif(s), $skipped ignoré(s).',
+      subtitle: subtitle,
       leading: Icon(icon),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1296,53 +1332,12 @@ class _OnboardingPermissionRow extends StatelessWidget {
         : step.skipped
         ? colorScheme.outline
         : AppColors.warning;
-    final icon = step.satisfied
-        ? Icons.check_circle
-        : step.skipped
-        ? Icons.do_not_disturb_on_outlined
-        : Icons.radio_button_unchecked;
     final isResolved = step.satisfied || step.skipped;
-    final status = step.satisfied
-        ? 'Activé'
-        : step.skipped
-        ? 'Ignoré'
-        : _configureHint(definition.id);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.x1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(icon, color: color),
-              AppGaps.horizontalX2,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      definition.title,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    AppGaps.x1,
-                    if (isResolved)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: AppTag(label: status),
-                      )
-                    else
-                      Text(
-                        status,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          AppGaps.x1,
           Text(definition.description),
           AppGaps.x1,
           Text(definition.why, style: Theme.of(context).textTheme.bodySmall),
@@ -1405,25 +1400,6 @@ class _OnboardingPermissionRow extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _configureHint(OnboardingStepId id) {
-    return switch (id) {
-      OnboardingStepId.keyboardIme =>
-        'À configurer si tu veux utiliser le clavier',
-      OnboardingStepId.keyboardClipboard =>
-        'À configurer si tu veux synchroniser le clipboard',
-      OnboardingStepId.microphoneForDictation =>
-        'À configurer si tu veux utiliser la transcription vocale',
-      OnboardingStepId.accessibility =>
-        'À configurer si tu veux améliorer l’injection du texte',
-      OnboardingStepId.mediaSessionAccess =>
-        'À configurer si tu veux contrôler les médias depuis le clavier',
-      OnboardingStepId.brightnessSystemSettings =>
-        'À configurer si tu veux que WinFlowz gère ta luminosité',
-      OnboardingStepId.overlay =>
-        'À configurer si tu veux utiliser la bulle flottante',
-    };
   }
 }
 

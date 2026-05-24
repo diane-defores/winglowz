@@ -137,16 +137,16 @@ class AppSpacing {
 
 class AppInsets {
   static const none = EdgeInsets.zero;
-  static const screen = EdgeInsets.all(AppSpacing.x4);
-  static const card = EdgeInsets.all(AppSpacing.x4);
-  static const compactCard = EdgeInsets.all(AppSpacing.x3);
+  static const screen = EdgeInsets.all(AppSpacing.x3);
+  static const card = EdgeInsets.all(AppSpacing.x3);
+  static const compactCard = EdgeInsets.all(AppSpacing.x2);
   static const button = EdgeInsets.symmetric(
     horizontal: AppSpacing.x3,
-    vertical: AppSpacing.x2,
+    vertical: AppSpacing.x1 + 2,
   );
   static const textButton = EdgeInsets.symmetric(
-    horizontal: AppSpacing.x2 + AppSpacing.x1 / 2,
-    vertical: AppSpacing.x1 + 1,
+    horizontal: AppSpacing.x2,
+    vertical: AppSpacing.x1,
   );
   static const input = EdgeInsets.symmetric(
     horizontal: AppSpacing.x2 + AppSpacing.x1 / 2,
@@ -181,11 +181,9 @@ class AppInsets {
 class AppSectionMetrics {
   static const double sectionGap = AppSpacing.x1;
   static const double sectionRunSpacing = sectionGap;
-  static const double sectionColumnGap = AppSpacing.x3;
-  static const double headerContentGap = AppSpacing.x2;
-  static const EdgeInsets cardMargin = EdgeInsets.symmetric(
-    vertical: AppSpacing.x1,
-  );
+  static const double sectionColumnGap = AppSpacing.x2;
+  static const double headerContentGap = AppSpacing.x1;
+  static const EdgeInsets cardMargin = EdgeInsets.zero;
   static const EdgeInsets collapsibleSectionMargin = EdgeInsets.zero;
   static const EdgeInsets collapsibleTilePadding = EdgeInsets.symmetric(
     horizontal: AppSpacing.x3,
@@ -214,12 +212,26 @@ class AppIconMetrics {
   static const sm = AppSpacing.x4;
   static const progressStroke = AppSpacing.x1 / 2;
   static const stepAvatarRadius = AppSpacing.x3;
-  static const minTarget = 44.0;
+  static const minTarget = 40.0;
   static const listActionSpacing = AppSpacing.x1;
 }
 
 class AppButtonMetrics {
-  static const minHeight = 40.0;
+  static const minHeight = 36.0;
+}
+
+class AppNavigationMetrics {
+  static const bottomBarHeight = 58.0;
+  static const bottomBarShadowBlur = 14.0;
+  static const bottomBarShadowOffset = Offset(0, 4);
+  static const bottomBarLightAlpha = 0.98;
+  static const bottomBarDarkAlpha = 0.94;
+  static const bottomBarLightShadowAlpha = 0.06;
+  static const bottomBarDarkShadowAlpha = 0.2;
+  static const bottomIndicatorLightAlpha = 0.1;
+  static const bottomIndicatorDarkAlpha = 0.18;
+  static const bottomIconSize = 23.0;
+  static const bottomSelectedIconSize = 24.0;
 }
 
 class AppLayoutMetrics {
@@ -314,7 +326,7 @@ class AppGradients {
 
 class AppRadii {
   static const sm = TubeflowSiteThemeTokens.siteRadiusSm;
-  static const md = TubeflowSiteThemeTokens.siteRadiusMd;
+  static const md = 10.0;
   static const lg = TubeflowSiteThemeTokens.siteRadiusLg;
   static const xl = TubeflowSiteThemeTokens.siteRadiusXl;
   static const x2l = TubeflowSiteThemeTokens.siteRadius2xl;
@@ -435,7 +447,7 @@ class AppTheme {
     return ThemeData(
       colorScheme: colorScheme,
       useMaterial3: true,
-      visualDensity: VisualDensity.standard,
+      visualDensity: VisualDensity.compact,
       scaffoldBackgroundColor: colorScheme.surface,
       fontFamily: AppTypography.fontFamily,
       fontFamilyFallback: AppTypography.fontFallback,
@@ -460,12 +472,8 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         margin: AppSectionMetrics.cardMargin,
-        elevation: isDark ? AppElevation.cardDark : AppElevation.cardLight,
-        shadowColor: AppColors.black.withValues(
-          alpha: isDark
-              ? TubeflowSiteThemeTokens.darkCardShadowAlpha
-              : TubeflowSiteThemeTokens.cardShadowAlpha,
-        ),
+        elevation: 0,
+        shadowColor: AppColors.black.withValues(alpha: isDark ? 0.2 : 0.08),
         color: isDark
             ? colorScheme.surfaceContainer
             : colorScheme.surfaceContainerLow,
@@ -504,8 +512,8 @@ class AppTheme {
           padding: AppInsets.button,
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          elevation: isDark ? 0 : 2,
-          shadowColor: AppColors.black.withValues(alpha: 0.24),
+          elevation: 0,
+          shadowColor: AppColors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.md),
           ),
@@ -544,26 +552,28 @@ class AppTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        height: 76,
-        elevation: 10,
+        height: AppNavigationMetrics.bottomBarHeight,
+        elevation: 0,
         indicatorColor: colorScheme.primary.withValues(
-          alpha: isDark ? 0.2 : 0.14,
+          alpha: isDark
+              ? AppNavigationMetrics.bottomIndicatorDarkAlpha
+              : AppNavigationMetrics.bottomIndicatorLightAlpha,
         ),
         indicatorShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.pill),
         ),
-        backgroundColor: isDark
-            ? colorScheme.surfaceContainer
-            : colorScheme.surfaceContainerLowest,
+        backgroundColor: AppColors.transparent,
         surfaceTintColor: AppColors.transparent,
-        shadowColor: AppColors.black.withValues(alpha: isDark ? 0.4 : 0.18),
+        shadowColor: AppColors.transparent,
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return IconThemeData(
             color: selected
                 ? colorScheme.primary
                 : colorScheme.onSurfaceVariant,
-            size: selected ? 25 : 24,
+            size: selected
+                ? AppNavigationMetrics.bottomSelectedIconSize
+                : AppNavigationMetrics.bottomIconSize,
           );
         }),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
@@ -572,7 +582,7 @@ class AppTheme {
             color: selected
                 ? colorScheme.primary
                 : colorScheme.onSurfaceVariant,
-            fontWeight: selected ? AppFontWeights.xBold : AppFontWeights.medium,
+            fontWeight: selected ? AppFontWeights.bold : AppFontWeights.medium,
           );
         }),
         overlayColor: WidgetStateProperty.all(
@@ -640,12 +650,13 @@ class AppTheme {
         ),
       ),
       listTileTheme: ListTileThemeData(
+        dense: true,
         iconColor: colorScheme.onSurface.withValues(alpha: 0.72),
         textColor: colorScheme.onSurface,
         subtitleTextStyle: textTheme.bodySmall,
-        minVerticalPadding: 2,
+        minVerticalPadding: 0,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.x3,
+          horizontal: AppSpacing.x2,
           vertical: 0,
         ),
       ),

@@ -586,7 +586,7 @@ void main() {
       await tester.ensureVisible(nextButton);
       await tester.tap(nextButton);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
-      expect(find.text('Service Accessibilité'), findsWidgets);
+      expect(find.text('Service Accessibilité'), findsOneWidget);
       expect(find.text('Clavier'), findsNothing);
 
       await tester.ensureVisible(nextButton);
@@ -645,7 +645,8 @@ void main() {
       await tester.tap(keyboardProgressDot);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
-      expect(find.text('Clavier WinFlowz keyboard'), findsOneWidget);
+      expect(find.text('Clavier'), findsOneWidget);
+      expect(find.text('Clavier WinFlowz keyboard'), findsNothing);
       expect(find.widgetWithText(TextButton, 'Activé'), findsNothing);
       expect(find.widgetWithText(TextButton, 'Plus tard'), findsOneWidget);
       expect(find.widgetWithText(FilledButton, 'Modifier'), findsOneWidget);

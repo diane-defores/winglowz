@@ -301,8 +301,8 @@ class AppModalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: AppElevation.overlay,
-      shadowColor: AppColors.borderLight,
+      elevation: 8,
+      shadowColor: AppColors.black.withValues(alpha: 0.16),
       clipBehavior: Clip.antiAlias,
       child: Padding(padding: padding, child: child),
     );
