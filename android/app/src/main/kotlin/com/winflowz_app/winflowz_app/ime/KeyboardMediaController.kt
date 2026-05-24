@@ -121,7 +121,7 @@ class KeyboardMediaController(context: Context) {
     ): String {
         return try {
             val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC).coerceAtLeast(1)
-            val steps = (max * stepPercent.coerceIn(5, 30) / 100f).toInt().coerceAtLeast(1)
+            val steps = (max * stepPercent.coerceIn(1, 20) / 100f).toInt().coerceAtLeast(1)
             repeat(steps) { index ->
                 val flags = if (index == steps - 1) AudioManager.FLAG_SHOW_UI else 0
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, direction, flags)

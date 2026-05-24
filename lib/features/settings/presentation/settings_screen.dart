@@ -84,11 +84,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  static const _sectionGap = SizedBox(height: AppSpacing.x2);
-  static const _sectionRunSpacing = AppSpacing.x2;
-  static const _collapsibleSectionMargin = EdgeInsets.symmetric(
-    vertical: AppSpacing.x1,
-  );
+  static final _sectionGap = SizedBox(height: AppSectionMetrics.sectionGap);
 
   late final TextEditingController _openAiController;
   late final TextEditingController _anthropicController;
@@ -120,10 +116,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final Map<String, bool> _expandedSections = {
     'appearance': true,
     'backend': false,
-    'keys': true,
+    'keys': false,
     'platform': false,
     'keyboard': false,
-    'voice_packs': true,
+    'voice_packs': false,
     'overlay': false,
   };
 
@@ -1125,7 +1121,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         }
 
         final totalHorizontalPadding = AppSpacing.x4 * 2;
-        final columnSpacing = AppSpacing.x4;
+        final columnSpacing = AppSectionMetrics.sectionColumnGap;
         final itemWidth =
             (constraints.maxWidth - totalHorizontalPadding - columnSpacing) / 2;
         return Scrollbar(
@@ -1136,7 +1132,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             padding: AppInsets.screen,
             child: Wrap(
               spacing: columnSpacing,
-              runSpacing: _sectionRunSpacing,
+              runSpacing: AppSectionMetrics.sectionRunSpacing,
               children: [
                 for (final section in sections)
                   SizedBox(width: itemWidth, child: section),
@@ -1155,24 +1151,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }) {
     final expanded = _expandedSections[id] ?? false;
     return Card(
-      margin: _collapsibleSectionMargin,
+      margin: AppSectionMetrics.collapsibleSectionMargin,
       child: ExpansionTile(
-        key: PageStorageKey<String>('settings_section_$id'),
+        key: ValueKey<String>('settings_section_${id}_$expanded'),
         initiallyExpanded: expanded,
         onExpansionChanged: (value) {
-          setState(() => _expandedSections[id] = value);
+          setState(() => _setExpandedSection(id, value));
         },
-        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.x3),
-        childrenPadding: const EdgeInsets.fromLTRB(
-          AppSpacing.x2,
-          0,
-          AppSpacing.x2,
-          AppSpacing.x2,
-        ),
+        tilePadding: AppSectionMetrics.collapsibleTilePadding,
+        childrenPadding: AppSectionMetrics.collapsibleChildrenPadding,
         title: Text(title, style: Theme.of(context).textTheme.titleSmall),
         children: [child],
       ),
     );
+  }
+
+  void _setExpandedSection(String id, bool expanded) {
+    for (final sectionId in _expandedSections.keys) {
+      _expandedSections[sectionId] = expanded && sectionId == id;
+    }
+    if (!_expandedSections.containsKey(id)) {
+      _expandedSections[id] = expanded;
+    }
   }
 
   @override

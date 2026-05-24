@@ -67,7 +67,7 @@ void main() {
       expect(status.clipboardSyncDesired, isTrue);
       expect(status.mediaVolumeStepPercent, 15);
       expect(status.mediaBrightnessStepPercent, 20);
-      expect(status.actionRowHeightScale, 0.6);
+      expect(status.actionRowHeightScale, closeTo(2 / 3, 0.0001));
       expect(status.privacyMode, KeyboardPrivacyMode.strict);
       expect(status.autoCloseModesEnabled, isFalse);
       expect(status.voiceEnabled, isTrue);
@@ -86,7 +86,10 @@ void main() {
         calls.single.arguments,
         containsPair('mediaBrightnessStepPercent', 20),
       );
-      expect(calls.single.arguments, containsPair('actionRowHeightScale', 0.6));
+      expect(
+        calls.single.arguments,
+        containsPair('actionRowHeightScale', closeTo(2 / 3, 0.0001)),
+      );
       expect(
         calls.single.arguments,
         containsPair('autoCloseModesEnabled', false),

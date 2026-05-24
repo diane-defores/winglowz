@@ -21,23 +21,29 @@ class KeyboardThemeModelsTest {
                 mapOf(
                     "pressEffect" to "expensive",
                     "effectIntensity" to 2.4,
+                    "pressHighlightDurationMs" to 3000,
+                    "cornerTextOpacity" to 1.0,
                     "effectDurationMs" to 2000,
                     "gradientStyle" to "spiral",
                     "effectEasing" to "bounce",
                     "borderWidth" to 99,
                     "keyRadius" to 99,
                     "shadowBlur" to 99,
+                    "keyboardOpacity" to -1,
                 ),
             )
 
         assertEquals("none", config.pressEffect)
         assertEquals(1f, config.effectIntensity)
+        assertEquals(1200, config.pressHighlightDurationMs)
+        assertEquals(0.85f, config.cornerTextOpacity)
         assertEquals(600, config.effectDurationMs)
         assertEquals("linear", config.gradientStyle)
         assertEquals("easeOut", config.effectEasing)
         assertEquals(4f, config.borderWidth)
         assertEquals(24f, config.keyRadius)
         assertEquals(18f, config.shadowBlur)
+        assertEquals(0.25f, config.keyboardOpacity)
     }
 
     @Test
@@ -51,6 +57,9 @@ class KeyboardThemeModelsTest {
                 keyRadius = 14f,
                 shadowBlur = 9f,
                 shadowOffsetY = 2f,
+                pressHighlightDurationMs = 850,
+                cornerTextOpacity = 0.5f,
+                keyboardOpacity = 0.55f,
                 effectEasing = "spring",
             )
 
@@ -61,7 +70,18 @@ class KeyboardThemeModelsTest {
         assertEquals(14f, parsed.keyRadius)
         assertEquals(9f, parsed.shadowBlur)
         assertEquals(2f, parsed.shadowOffsetY)
+        assertEquals(850, parsed.pressHighlightDurationMs)
+        assertEquals(0.5f, parsed.cornerTextOpacity)
+        assertEquals(0.55f, parsed.keyboardOpacity)
         assertEquals("spring", parsed.effectEasing)
+    }
+
+    @Test
+    fun `ignores legacy key width scale`() {
+        val config = KeyboardThemeConfig.fromMap(mapOf("keyWidthScale" to 0.75))
+
+        assertEquals(1f, config.keyWidthScale)
+        assertFalse(config.toMap().containsKey("keyWidthScale"))
     }
 
     @Test

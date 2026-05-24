@@ -35,7 +35,10 @@ class AppSectionCard extends StatelessWidget {
               ? CrossAxisAlignment.stretch
               : CrossAxisAlignment.start,
           children: [
-            if (header != null) ...[header, AppGaps.x3],
+            if (header != null) ...[
+              header,
+              SizedBox(height: AppSectionMetrics.headerContentGap),
+            ],
             child,
           ],
         ),

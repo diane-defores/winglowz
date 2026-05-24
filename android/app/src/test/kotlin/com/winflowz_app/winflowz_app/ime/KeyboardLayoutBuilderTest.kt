@@ -118,6 +118,40 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
+    fun `compact letter bottom row keeps shift at normal key width`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Letters,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    compactModeEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val compactBottomRow = snapshot.rows[3]
+        val shift = compactBottomRow.keys.first()
+
+        assertEquals("Maj", shift.label)
+        assertEquals(KeyboardKeyAction.Shift, shift.action)
+        assertEquals(1, shift.span)
+        assertTrue(compactBottomRow.keys.all { it.span == null || it.span == 1 })
+    }
+
+    @Test
     fun `forces number mode on phone fields`() {
         val snapshot =
             KeyboardLayoutBuilder.build(

@@ -290,13 +290,13 @@ Environment: Android APK on real phone.
 
 ## 2026-05-24 - Clipboard manual CRUD and edit-dialog crash retest
 
-- Scope: BUG-2026-05-24-002 clipboard edit dialog cancel/save retest
+- Scope: BUG-2026-05-24-002 clipboard edit dialog cancel/save retest, manual clipboard CRUD, persistence, search/copy/pin, and Android IME clipboard import
 - Environment: Android APK physical-device QA, operator-reported
 - Tester: Diane
 - Source: sf-test
 - Status: pass
 - Confidence: high
-- Result summary: Manual clipboard tests requested by Codex pass, including the previously crashing edit dialog close paths.
+- Result summary: Manual clipboard tests requested by Codex pass, including the previously crashing edit dialog close paths and the clipboard keyboard/IME check.
 - Bug pointer: BUG-2026-05-24-002 -> shipflow_data/workflow/bugs/BUG-2026-05-24-002.md
-- Evidence pointer: operator report in chat, 2026-05-24
-- Follow-up: ready for verification/ship closure
+- Evidence pointer: operator report in chat, 2026-05-24 17:57:08 UTC.
+- Follow-up: closed

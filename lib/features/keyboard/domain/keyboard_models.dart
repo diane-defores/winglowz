@@ -523,12 +523,15 @@ class KeyboardThemeConfig {
     required this.gradientStyle,
     required this.useImage,
     required this.backgroundImagePath,
+    required this.keyboardOpacity,
     required this.keyColor,
     required this.specialKeyColor,
     required this.activeKeyColor,
     required this.pressedKeyColor,
+    required this.pressHighlightDurationMs,
     required this.textColor,
     required this.cornerTextColor,
+    required this.cornerTextOpacity,
     required this.statusTextColor,
     required this.borderColor,
     required this.borderWidth,
@@ -553,12 +556,15 @@ class KeyboardThemeConfig {
   final KeyboardThemeGradientStyle gradientStyle;
   final bool useImage;
   final String? backgroundImagePath;
+  final double keyboardOpacity;
   final int keyColor;
   final int specialKeyColor;
   final int activeKeyColor;
   final int pressedKeyColor;
+  final int pressHighlightDurationMs;
   final int textColor;
   final int cornerTextColor;
+  final double cornerTextOpacity;
   final int statusTextColor;
   final int borderColor;
   final double borderWidth;
@@ -584,12 +590,15 @@ class KeyboardThemeConfig {
       gradientStyle: KeyboardThemeGradientStyle.linear,
       useImage: false,
       backgroundImagePath: null,
+      keyboardOpacity: 1,
       keyColor: 0xFFFFFFFF,
       specialKeyColor: 0xFFE0E6E3,
       activeKeyColor: 0xFF17795D,
       pressedKeyColor: 0xFFCADAD3,
+      pressHighlightDurationMs: 170,
       textColor: 0xFF1D2320,
       cornerTextColor: 0xFF5C6762,
+      cornerTextOpacity: 0.85,
       statusTextColor: 0xFF333D38,
       borderColor: 0x00000000,
       borderWidth: 0,
@@ -647,6 +656,10 @@ class KeyboardThemeConfig {
       ),
       useImage: map['useImage'] as bool? ?? defaults.useImage,
       backgroundImagePath: map['backgroundImagePath'] as String?,
+      keyboardOpacity:
+          ((map['keyboardOpacity'] as num?)?.toDouble() ??
+                  defaults.keyboardOpacity)
+              .clamp(0.25, 1.0),
       keyColor: asColor(map['keyColor'], defaults.keyColor),
       specialKeyColor: asColor(
         map['specialKeyColor'],
@@ -657,11 +670,21 @@ class KeyboardThemeConfig {
         map['pressedKeyColor'],
         defaults.pressedKeyColor,
       ),
+      pressHighlightDurationMs:
+          ((map['pressHighlightDurationMs'] as num?)?.toInt() ??
+                  defaults.pressHighlightDurationMs)
+              .clamp(0, 1200)
+              .toInt(),
       textColor: asColor(map['textColor'], defaults.textColor),
       cornerTextColor: asColor(
         map['cornerTextColor'],
         defaults.cornerTextColor,
       ),
+      cornerTextOpacity:
+          ((map['cornerTextOpacity'] as num?)?.toDouble() ??
+                  defaults.cornerTextOpacity)
+              .clamp(0.0, 0.85)
+              .toDouble(),
       statusTextColor: asColor(
         map['statusTextColor'],
         defaults.statusTextColor,
@@ -680,9 +703,7 @@ class KeyboardThemeConfig {
           ((map['rowVerticalGap'] as num?)?.toDouble() ??
                   defaults.rowVerticalGap)
               .clamp(0.0, 16.0),
-      keyWidthScale:
-          ((map['keyWidthScale'] as num?)?.toDouble() ?? defaults.keyWidthScale)
-              .clamp(0.75, 1.0),
+      keyWidthScale: defaults.keyWidthScale,
       shadowColor: asColor(map['shadowColor'], defaults.shadowColor),
       shadowBlur:
           ((map['shadowBlur'] as num?)?.toDouble() ?? defaults.shadowBlur)
@@ -718,19 +739,21 @@ class KeyboardThemeConfig {
       'useImage': useImage,
       if (backgroundImagePath != null)
         'backgroundImagePath': backgroundImagePath,
+      'keyboardOpacity': keyboardOpacity,
       'keyColor': keyColor,
       'specialKeyColor': specialKeyColor,
       'activeKeyColor': activeKeyColor,
       'pressedKeyColor': pressedKeyColor,
+      'pressHighlightDurationMs': pressHighlightDurationMs,
       'textColor': textColor,
       'cornerTextColor': cornerTextColor,
+      'cornerTextOpacity': cornerTextOpacity,
       'statusTextColor': statusTextColor,
       'borderColor': borderColor,
       'borderWidth': borderWidth,
       'keyRadius': keyRadius,
       'keyHorizontalGap': keyHorizontalGap,
       'rowVerticalGap': rowVerticalGap,
-      'keyWidthScale': keyWidthScale,
       'shadowColor': shadowColor,
       'shadowBlur': shadowBlur,
       'shadowOffsetY': shadowOffsetY,
@@ -750,12 +773,15 @@ class KeyboardThemeConfig {
     KeyboardThemeGradientStyle? gradientStyle,
     bool? useImage,
     String? backgroundImagePath,
+    double? keyboardOpacity,
     int? keyColor,
     int? specialKeyColor,
     int? activeKeyColor,
     int? pressedKeyColor,
+    int? pressHighlightDurationMs,
     int? textColor,
     int? cornerTextColor,
+    double? cornerTextOpacity,
     int? statusTextColor,
     int? borderColor,
     double? borderWidth,
@@ -780,19 +806,23 @@ class KeyboardThemeConfig {
       gradientStyle: gradientStyle ?? this.gradientStyle,
       useImage: useImage ?? this.useImage,
       backgroundImagePath: backgroundImagePath ?? this.backgroundImagePath,
+      keyboardOpacity: keyboardOpacity ?? this.keyboardOpacity,
       keyColor: keyColor ?? this.keyColor,
       specialKeyColor: specialKeyColor ?? this.specialKeyColor,
       activeKeyColor: activeKeyColor ?? this.activeKeyColor,
       pressedKeyColor: pressedKeyColor ?? this.pressedKeyColor,
+      pressHighlightDurationMs:
+          pressHighlightDurationMs ?? this.pressHighlightDurationMs,
       textColor: textColor ?? this.textColor,
       cornerTextColor: cornerTextColor ?? this.cornerTextColor,
+      cornerTextOpacity: cornerTextOpacity ?? this.cornerTextOpacity,
       statusTextColor: statusTextColor ?? this.statusTextColor,
       borderColor: borderColor ?? this.borderColor,
       borderWidth: borderWidth ?? this.borderWidth,
       keyRadius: keyRadius ?? this.keyRadius,
       keyHorizontalGap: keyHorizontalGap ?? this.keyHorizontalGap,
       rowVerticalGap: rowVerticalGap ?? this.rowVerticalGap,
-      keyWidthScale: keyWidthScale ?? this.keyWidthScale,
+      keyWidthScale: this.keyWidthScale,
       shadowColor: shadowColor ?? this.shadowColor,
       shadowBlur: shadowBlur ?? this.shadowBlur,
       shadowOffsetY: shadowOffsetY ?? this.shadowOffsetY,
@@ -1727,11 +1757,11 @@ class AndroidKeyboardStatus {
       mediaControlsEnabled: map['mediaControlsEnabled'] as bool? ?? true,
       mediaVolumeStepPercent:
           ((map['mediaVolumeStepPercent'] as num?)?.toInt() ?? 5)
-              .clamp(5, 30)
+              .clamp(1, 20)
               .toInt(),
       mediaBrightnessStepPercent:
           ((map['mediaBrightnessStepPercent'] as num?)?.toInt() ?? 10)
-              .clamp(5, 30)
+              .clamp(1, 20)
               .toInt(),
       mediaSessionAccessGranted:
           map['mediaSessionAccessGranted'] as bool? ?? false,
@@ -1879,11 +1909,11 @@ class AndroidKeyboardStatus {
   }
 
   static double _normalizeActionRowHeightScale(double value) {
-    if (value < 0.45) {
-      return 0.30;
+    if (value < 0.50) {
+      return 1 / 3;
     }
-    if (value < 0.80) {
-      return 0.60;
+    if (value < 0.84) {
+      return 2 / 3;
     }
     return 1;
   }

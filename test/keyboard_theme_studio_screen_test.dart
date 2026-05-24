@@ -22,12 +22,15 @@ void main() {
               'backgroundEndColor': 0xFFEEF1EE,
               'useGradient': false,
               'gradientStyle': 'linear',
+              'keyboardOpacity': 1.0,
               'keyColor': 0xFFFFFFFF,
               'specialKeyColor': 0xFFE0E6E3,
               'activeKeyColor': 0xFF17795D,
               'pressedKeyColor': 0xFFCADAD3,
+              'pressHighlightDurationMs': 170,
               'textColor': 0xFF1D2320,
               'cornerTextColor': 0xFF5C6762,
+              'cornerTextOpacity': 0.85,
               'statusTextColor': 0xFF333D38,
               'borderColor': 0x00000000,
               'borderWidth': 0.0,
@@ -53,6 +56,31 @@ void main() {
         .setMockMethodCallHandler(channel, null);
   });
 
+  Future<void> openStudioSection(WidgetTester tester, String title) async {
+    final section = find.text(title);
+    await tester.scrollUntilVisible(
+      section,
+      220,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    for (var i = 0; i < 6; i++) {
+      final centerY = tester.getCenter(section).dy;
+      if (centerY < 440) {
+        await tester.drag(find.byType(CustomScrollView), const Offset(0, 120));
+      } else if (centerY > 560) {
+        await tester.drag(find.byType(CustomScrollView), const Offset(0, -120));
+      } else {
+        break;
+      }
+      await tester.pumpAndSettle();
+    }
+
+    await tester.tap(section);
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('shows preview and updates draft background color', (
     tester,
   ) async {
@@ -65,6 +93,8 @@ void main() {
       find.byKey(const Key('keyboard-theme-studio-preview')),
       findsOneWidget,
     );
+
+    await openStudioSection(tester, 'Background');
 
     final firstField = find.byType(TextFormField).first;
     await tester.enterText(firstField, 'FF0000FF');
@@ -90,6 +120,8 @@ void main() {
     final textColorField = find.byKey(
       const ValueKey('keyboard-theme-color-Text'),
     );
+
+    await openStudioSection(tester, 'Keys');
 
     await tester.scrollUntilVisible(
       keyColorField,
@@ -143,6 +175,73 @@ void main() {
     );
   });
 
+  testWidgets('shows a separate pressed color hold control', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: KeyboardThemeStudioScreen()),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await openStudioSection(tester, 'Effects');
+
+    expect(find.text('Color hold'), findsOneWidget);
+    expect(find.text('Effect time'), findsOneWidget);
+  });
+
+  testWidgets('shows capped swipe glyph opacity control', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: KeyboardThemeStudioScreen()),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await openStudioSection(tester, 'Keys');
+
+    expect(find.text('Opacity'), findsOneWidget);
+    expect(find.text('85%'), findsOneWidget);
+  });
+
+  testWidgets('opens one studio section at a time', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: KeyboardThemeStudioScreen()),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await openStudioSection(tester, 'Background');
+    expect(find.text('Gradient background'), findsOneWidget);
+
+    await openStudioSection(tester, 'Spacing');
+
+    expect(find.text('Key gap'), findsOneWidget);
+    expect(find.text('Gradient background'), findsNothing);
+  });
+
+  testWidgets('shows keyboard opacity control near image background', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: KeyboardThemeStudioScreen()),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await openStudioSection(tester, 'Background');
+
+    expect(find.text('Image background'), findsOneWidget);
+    expect(find.text('Opacity'), findsOneWidget);
+    expect(find.text('100%'), findsOneWidget);
+  });
+
+  testWidgets('keeps spacing controls focused on gaps only', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: KeyboardThemeStudioScreen()),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await openStudioSection(tester, 'Spacing');
+
+    expect(find.text('Key gap'), findsOneWidget);
+    expect(find.text('Row gap'), findsOneWidget);
+    expect(find.text('Key width'), findsNothing);
+  });
+
   testWidgets('imports JSON into draft without saving natively', (
     tester,
   ) async {
@@ -151,14 +250,7 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 200));
 
-    final importSection = find.text('Import / export');
-    await tester.dragUntilVisible(
-      importSection,
-      find.byType(CustomScrollView),
-      const Offset(0, -300),
-    );
-    await tester.tap(importSection);
-    await tester.pumpAndSettle();
+    await openStudioSection(tester, 'Import / export');
     final importButton = find.byKey(const Key('theme-import-json'));
     await tester.tap(importButton);
     await tester.pumpAndSettle();
@@ -169,9 +261,14 @@ void main() {
     await tester.tap(find.text('Preview import'));
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(
-      find.text('Theme JSON imported into draft. Press Save to apply.'),
-      findsOneWidget,
+    final importedMessage = find.text(
+      'Theme JSON imported into draft. Press Save to apply.',
     );
+    await tester.scrollUntilVisible(
+      importedMessage,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(importedMessage, findsOneWidget);
   });
 }

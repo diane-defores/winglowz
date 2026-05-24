@@ -1058,7 +1058,7 @@ object KeyboardLayoutBuilder {
         return KeyboardRowSpec(
             keys =
                 listOf(
-                    shiftKey("Maj", request.shifted),
+                    shiftKey("Maj", request.shifted, span = 1),
                     modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                     KeyboardKeySpec("tab-letter-compact", "Tab", KeyboardKeyAction.InsertTab),
                     KeyboardKeySpec("esc-letter-compact", "Échap", KeyboardKeyAction.Escape),
@@ -1343,13 +1343,14 @@ object KeyboardLayoutBuilder {
     private fun shiftKey(
         label: String,
         active: Boolean,
+        span: Int = 2,
     ): KeyboardKeySpec {
         return KeyboardKeySpec(
             id = "shift",
             label = label,
             action = KeyboardKeyAction.Shift,
             keyValue = KeyboardKeyValue.modifier(KeyboardSystemModifier.Shift, label),
-            span = 2,
+            span = span,
             active = active,
         )
     }

@@ -217,9 +217,9 @@ class AndroidKeyboardBridge {
       'voiceEnabled': voiceEnabled,
       'clipboardSyncDesired': clipboardSyncDesired,
       'mediaControlsEnabled': mediaControlsEnabled,
-      'mediaVolumeStepPercent': mediaVolumeStepPercent.clamp(5, 30).toInt(),
+      'mediaVolumeStepPercent': mediaVolumeStepPercent.clamp(1, 20).toInt(),
       'mediaBrightnessStepPercent': mediaBrightnessStepPercent
-          .clamp(5, 30)
+          .clamp(1, 20)
           .toInt(),
       'themeMode': themeMode,
       'layoutProfile': layoutProfile.name,
@@ -245,11 +245,11 @@ class AndroidKeyboardBridge {
   }
 
   static double _normalizeActionRowHeightScale(double value) {
-    if (value < 0.45) {
-      return 0.30;
+    if (value < 0.50) {
+      return 1 / 3;
     }
-    if (value < 0.80) {
-      return 0.60;
+    if (value < 0.84) {
+      return 2 / 3;
     }
     return 1;
   }
@@ -396,15 +396,13 @@ class AndroidKeyboardBridge {
     if (!PlatformCapabilities.keyboardImeSupported) {
       return AndroidKeyboardStatus.unsupported();
     }
-    final raw = await _invoke<Map<Object?, Object?>>(
-      'setKeyboardVoiceRuntimeConfig',
-      {
-        'languageTag': languageTag,
-        'packId': packId,
-        'engine': engine,
-        'modelArtifactPath': modelArtifactPath,
-      },
-    );
+    final raw =
+        await _invoke<Map<Object?, Object?>>('setKeyboardVoiceRuntimeConfig', {
+          'languageTag': languageTag,
+          'packId': packId,
+          'engine': engine,
+          'modelArtifactPath': modelArtifactPath,
+        });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 
@@ -417,15 +415,13 @@ class AndroidKeyboardBridge {
     if (!PlatformCapabilities.keyboardImeSupported) {
       return AndroidKeyboardStatus.unsupported();
     }
-    final raw = await _invoke<Map<Object?, Object?>>(
-      'setKeyboardVoiceModelArtifact',
-      {
-        'modelArtifactPath': modelArtifactPath,
-        'languageTag': languageTag,
-        'packId': packId,
-        'engine': engine,
-      },
-    );
+    final raw =
+        await _invoke<Map<Object?, Object?>>('setKeyboardVoiceModelArtifact', {
+          'modelArtifactPath': modelArtifactPath,
+          'languageTag': languageTag,
+          'packId': packId,
+          'engine': engine,
+        });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 
@@ -438,15 +434,13 @@ class AndroidKeyboardBridge {
     if (!PlatformCapabilities.keyboardImeSupported) {
       return AndroidKeyboardStatus.unsupported();
     }
-    final raw = await _invoke<Map<Object?, Object?>>(
-      'probeKeyboardLocalRuntimePath',
-      {
-        'languageTag': languageTag,
-        'packId': packId,
-        'engine': engine,
-        'modelArtifactPath': modelArtifactPath,
-      },
-    );
+    final raw =
+        await _invoke<Map<Object?, Object?>>('probeKeyboardLocalRuntimePath', {
+          'languageTag': languageTag,
+          'packId': packId,
+          'engine': engine,
+          'modelArtifactPath': modelArtifactPath,
+        });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 

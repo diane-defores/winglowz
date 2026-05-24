@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-05-08"
 created_at: "2026-05-08 17:48:07 UTC"
 updated: "2026-05-24"
-updated_at: "2026-05-24 11:20:01 UTC"
+updated_at: "2026-05-24 19:14:50 UTC"
 status: ready
 source_skill: sf-build
 source_model: "GPT-5 Codex"
@@ -235,11 +235,11 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
 
 - [x] Tâche 6 : Raccorder Android/IME au contrat backend-agnostic
   - Fichiers : `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardClipboardEventQueue.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardClipboardController.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzInputMethodService.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/MainActivity.kt`, `lib/core/platform/android_keyboard_bridge.dart`, `lib/features/clipboard/application/keyboard_clipboard_event_importer.dart`, `lib/features/clipboard/presentation/clipboard_screen.dart`
-  - Action : Faire transiter les événements IME clipboard par une queue native en mémoire drainée par `winflowz_app/keyboard`, puis importée via `ClipboardHistoryApi`; interdire l'appel direct Supabase depuis Android.
+  - Action : Faire transiter les événements IME clipboard par une queue native drainée par `winflowz_app/keyboard`, puis importée via `ClipboardHistoryApi`; interdire l'appel direct Supabase depuis Android.
   - User story link : le clavier devient une source d'événements produit, pas un client backend.
   - Depends on : Tâche 5 ou décision explicite de rester in-memory pour la première preuve.
   - Validate with : tests Dart passés; build Android/Kotlin bloqué localement par Android SDK absent; QA manuel ultérieur requis.
-  - Notes : queue native en mémoire uniquement; pas de stockage disque de texte clipboard sans décision produit/architecture séparée.
+  - Notes : la queue native est une file locale bornée de transit vers Flutter, pas le store produit final.
 
 - [x] Tâche 7 : Aligner la spec Android IME et les docs techniques
   - Fichiers : `shipflow_data/workflow/specs/android-ime-winflowz_app-keyboard.md`, `docs/technical/flutter-app.md`, `docs/technical/supabase-data.md`, `docs/technical/code-docs-map.md`
@@ -255,6 +255,13 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
   - Depends on : Tâches 1-6.
   - Validate with : `flutter analyze`, `flutter test`, tests ciblés clipboard/local mode.
 
+- [x] Tâche 9 : Synchroniser toutes les actions copier/coller IME autorisées vers l'app
+  - Fichiers : `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardClipboardController.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/KeyboardClipboardEventQueue.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/WinFlowzInputMethodService.kt`, `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/MainActivity.kt`, `docs/technical/android-native.md`
+  - Action : Supprimer la dépendance au toggle `clipboardSyncDesired` pour l'historique local app, enregistrer les actions copy/cut/paste clavier autorisées dans la queue native bornée et la drainer vers `ClipboardHistoryApi`.
+  - User story link : tout copier/coller réalisé via le clavier doit apparaître dans l'application, sauf champs privés ou clips marqués sensibles.
+  - Depends on : Tâches 6-8.
+  - Validate with : `flutter analyze`, `flutter test`; validation Android/Kotlin et appareil physique hors VM.
+
 # Acceptance Criteria
 
 - [x] AC 1 : Given l'écran clipboard Flutter, when il liste/ajoute/pin/supprime, then il appelle `ClipboardHistoryApi` et n'importe pas `lib/data/supabase`.
@@ -266,6 +273,7 @@ Faire du clipboard une API produit local-first et backend-agnostic. Le cœur est
 - [x] AC 7 : Given la spec Android IME est relue, when elle mentionne sync clipboard, then elle passe par l'API/store backend-agnostic ou nomme Supabase comme adaptateur seulement.
 - [x] AC 8 : Given l'utilisateur est en local mode ou sans accès cloud, when il redémarre l'app ou recrée le store local, then les items clipboard locaux, pins, edits et déduplications automatiques restent disponibles.
 - [x] AC 9 : Given un historique long, when l'utilisateur cherche ou veut réutiliser un item, then l'écran permet de filtrer l'historique et de recopier l'item vers le presse-papiers système.
+- [x] AC 10 : Given l'utilisateur copie, coupe ou colle via les actions clavier IME dans un champ autorisé, when il ouvre l'écran Clipboard, then l'événement est drainé dans `ClipboardHistoryApi` sans dépendre de `clipboardSyncDesired`.
 
 # Test Strategy
 
@@ -352,6 +360,7 @@ None.
 | 2026-05-08 19:22:40 UTC | sf-start | GPT-5 Codex | Implemented native in-memory keyboard clipboard event queue, MethodChannel drain, Flutter importer, clipboard screen drain, and tests for backend-agnostic IME clipboard events | implemented | /sf-verify shipflow_data/workflow/specs/clipboard-backend-agnostic-api.md |
 | 2026-05-08 19:22:40 UTC | sf-verify | GPT-5 Codex | Ran Dart format, Flutter analyze, Flutter tests, Android debug build attempt and diff whitespace check | partial: Flutter checks pass; Android build blocked by missing Android SDK/ANDROID_HOME and device QA remains pending | /sf-test Android IME clipboard bridge on Android SDK/device |
 | 2026-05-24 11:20:01 UTC | sf-build | GPT-5 Codex | Added secure persistent local clipboard history, search, copy action, docs alignment and tests for local fallback durability | implemented: Flutter checks pass; Android physical-device QA still pending | /sf-test Android IME clipboard bridge on Android SDK/device |
+| 2026-05-24 19:14:50 UTC | sf-build | GPT-5 Codex | Removed clipboardSyncDesired gating from IME history capture and persisted the native drain queue for authorized keyboard copy/cut/paste events | implemented: Flutter checks pass; Android CI/device validation still pending | /sf-test Android IME clipboard bridge on Android SDK/device |
 
 # Current Chantier Flow
 

@@ -47,7 +47,7 @@ inside other apps' input fields.
 | `android/app/src/main/AndroidManifest.xml` | Android service, activity, and permission declarations | Keep IME and overlay declarations explicit; avoid broad permissions before use. |
 | `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/MainActivity.kt` | Flutter MethodChannel owner | Keep `winflowz_app/overlay` and `winflowz_app/keyboard` contracts separate. |
 | `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/Overlay*.kt` | Overlay runtime | Do not allow concurrent overlay and keyboard recording without coordinator logic. |
-| `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/**` | Native IME services/controllers | No raw text logging; sensitive fields disable capture/sync/enriched insertion; clipboard bridge events stay in memory unless durable storage is explicitly selected. |
+| `android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/**` | Native IME services/controllers | No raw text logging; sensitive fields disable capture/sync/enriched insertion; clipboard bridge events persist only as a bounded local drain queue for Flutter import. |
 | `android/app/src/main/res/xml/**` | Android service metadata | IME metadata must match manifest service declarations. |
 
 ## Entrypoints
@@ -67,7 +67,7 @@ Android input field
   -> InputConnection / ClipboardManager / AudioManager
 
 Keyboard clipboard action
-  -> KeyboardClipboardEventQueue in memory
+  -> KeyboardClipboardEventQueue bounded local drain queue
   -> winflowz_app/keyboard MethodChannel drain
   -> ClipboardHistoryApi / ClipboardHistoryStore
 ```
@@ -108,8 +108,8 @@ Keyboard clipboard action
 - Sentry is expected to be initialized through `sentry_flutter` when a DSN is configured. This module does not add a standalone Android Sentry dependency; native keyboard diagnostics remain local and copyable when Sentry is absent, offline, or not initialized.
 - The built-in `Smart French` gesture preset keeps useful French accents, common punctuation, `$`/`€`, numeric up-gestures on the letter grid, and layout-aware directional navigation gestures on `W`/`Z` plus `S` while avoiding low-value defaults such as German `ß`, `ñ`, `ä`, and `ö`. Additional presets are punctuation + navigation, French accents plus punctuation, developer symbols, and no shortcuts. Flutter may expose these preset ids/names for settings and DTO fallback, but it must not duplicate or simulate their functional shortcut tables.
 - Gesture shortcut values may dispatch text, key events, actions, modifiers, and macros. Private fields suppress sensitive actions such as clipboard, snippets, voice, and sensitive macros while keeping normal text accents available.
-- IME clipboard sync events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
-- The native clipboard event queue is process-memory only until a durable local storage decision is made.
+- IME clipboard history events must not call Supabase or any backend directly; Flutter drains them into the backend-agnostic clipboard API.
+- The native clipboard event queue persists a bounded local drain list so keyboard copy/cut/paste actions can reach the Flutter clipboard history even if the app opens after the IME event. This is a transient import queue, not the product history store.
 - Text keys carry a `KeyboardKeyValue` model in addition to display glyphs. `KeyboardKeyValueParser`, `KeyboardKeyModifier`, and `KeyboardModMap` are the local foundation for parsed layouts, macros, Ctrl/Alt/Fn/Shift behavior and user modmaps; the live layout dispatches parsed text keys, key events, action values and macros through existing callbacks.
 - Ctrl, Alt and Fn are exposed as modifier keys in the control row. They latch for the next key-value dispatch, then clear; Fn currently ships with a conservative built-in navigation modmap for `h/j/k/l`.
 - Touch handling tracks the active pointer id, ignores secondary pointers without dispatching duplicate keys, supports long-press repeat for destructive/navigation actions, and uses horizontal spacebar sliding for cursor movement. It still does not implement full multi-finger modifier chords or selection sliders.

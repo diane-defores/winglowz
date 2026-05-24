@@ -115,8 +115,9 @@ class KeyboardStateStore(private val context: Context) {
         }
 
     var actionRowHeightScale: Float
-        get() = preferences.getFloat(KEY_ACTION_ROW_HEIGHT_SCALE, ACTION_ROW_HEIGHT_DEFAULT)
-            .coerceIn(ACTION_ROW_HEIGHT_MIN, ACTION_ROW_HEIGHT_MAX)
+        get() = normalizeActionRowHeightScale(
+            preferences.getFloat(KEY_ACTION_ROW_HEIGHT_SCALE, ACTION_ROW_HEIGHT_DEFAULT),
+        )
         set(value) = preferences.edit().putFloat(KEY_ACTION_ROW_HEIGHT_SCALE, normalizeActionRowHeightScale(value)).apply()
 
     var compactModeEnabled: Boolean
@@ -987,11 +988,11 @@ class KeyboardStateStore(private val context: Context) {
         const val KEYBOARD_HEIGHT_MIN = 0.85f
         const val KEYBOARD_HEIGHT_MAX = 1.20f
         const val KEYBOARD_HEIGHT_DEFAULT = 1.0f
-        const val ACTION_ROW_HEIGHT_MIN = 0.30f
+        const val ACTION_ROW_HEIGHT_MIN = 0.33333334f
         const val ACTION_ROW_HEIGHT_MAX = 1.0f
         const val ACTION_ROW_HEIGHT_DEFAULT = 1.0f
-        const val MEDIA_STEP_PERCENT_MIN = 5
-        const val MEDIA_STEP_PERCENT_MAX = 30
+        const val MEDIA_STEP_PERCENT_MIN = 1
+        const val MEDIA_STEP_PERCENT_MAX = 20
         const val MEDIA_VOLUME_STEP_PERCENT_DEFAULT = 5
         const val MEDIA_BRIGHTNESS_STEP_PERCENT_DEFAULT = 10
         const val DEFAULT_ACTION_BAR_LONG_PRESS_BEHAVIOR = "attach_context_row"
@@ -999,8 +1000,8 @@ class KeyboardStateStore(private val context: Context) {
 
         fun normalizeActionRowHeightScale(value: Float): Float {
             return when {
-                value < 0.45f -> 0.30f
-                value < 0.80f -> 0.60f
+                value < 0.50f -> ACTION_ROW_HEIGHT_MIN
+                value < 0.84f -> 0.6666667f
                 else -> 1.0f
             }
         }

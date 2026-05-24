@@ -265,9 +265,9 @@ void main() {
     expect(status.active, isFalse);
     expect(status.voiceEnabled, isFalse);
     expect(status.clipboardSyncDesired, isTrue);
-    expect(status.mediaVolumeStepPercent, 25);
+    expect(status.mediaVolumeStepPercent, 20);
     expect(status.mediaBrightnessStepPercent, 15);
-    expect(status.actionRowHeightScale, 0.3);
+    expect(status.actionRowHeightScale, closeTo(1 / 3, 0.0001));
     expect(status.privacyMode, KeyboardPrivacyMode.strict);
     expect(status.cornerPresetId, 'developer_symbols');
     expect(status.layoutProfile, KeyboardLayoutProfile.azerty);
@@ -917,6 +917,7 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.settings_outlined).last);
       await _pumpNavigationFrame(tester);
+      expect(find.text('Keyboard Theme Studio'), findsOneWidget);
 
       final backendSection = find.text('Backend Provider').first;
       await tester.scrollUntilVisible(
@@ -931,6 +932,7 @@ void main() {
         find.byKey(const Key('backend-diagnostic-log-text')),
         findsOneWidget,
       );
+      expect(find.text('Keyboard Theme Studio'), findsNothing);
       expect(tester.takeException(), isNull);
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;

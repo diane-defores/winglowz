@@ -20,21 +20,24 @@ void main() {
     );
   });
 
-  test('resolves preset colors from brightness without changing preset choice', () {
-    final light = KeyboardThemePresetCatalog.configFor(
-      KeyboardThemePresetCatalog.pixelCandy,
-      brightness: Brightness.light,
-    );
-    final dark = KeyboardThemePresetCatalog.configFor(
-      KeyboardThemePresetCatalog.pixelCandy,
-      brightness: Brightness.dark,
-    );
+  test(
+    'resolves preset colors from brightness without changing preset choice',
+    () {
+      final light = KeyboardThemePresetCatalog.configFor(
+        KeyboardThemePresetCatalog.pixelCandy,
+        brightness: Brightness.light,
+      );
+      final dark = KeyboardThemePresetCatalog.configFor(
+        KeyboardThemePresetCatalog.pixelCandy,
+        brightness: Brightness.dark,
+      );
 
-    expect(light.presetId, KeyboardThemePresetCatalog.pixelCandy);
-    expect(dark.presetId, KeyboardThemePresetCatalog.pixelCandy);
-    expect(light.backgroundStartColor, isNot(dark.backgroundStartColor));
-    expect(dark.textColor, 0xFFFFF4FF);
-  });
+      expect(light.presetId, KeyboardThemePresetCatalog.pixelCandy);
+      expect(dark.presetId, KeyboardThemePresetCatalog.pixelCandy);
+      expect(light.backgroundStartColor, isNot(dark.backgroundStartColor));
+      expect(dark.textColor, 0xFFFFF4FF);
+    },
+  );
 
   test('all preset light and dark variants pass theme contrast validation', () {
     for (final preset in KeyboardThemePresetCatalog.presets) {
@@ -64,9 +67,11 @@ void main() {
       keyRadius: 14,
       keyHorizontalGap: 0,
       rowVerticalGap: 10,
-      keyWidthScale: 0.88,
       shadowBlur: 9,
       shadowOffsetY: 2,
+      pressHighlightDurationMs: 850,
+      cornerTextOpacity: 0.5,
+      keyboardOpacity: 0.55,
       effectEasing: KeyboardThemeEffectEasing.spring,
     );
 
@@ -77,9 +82,58 @@ void main() {
     expect(parsed.keyRadius, 14);
     expect(parsed.keyHorizontalGap, 0);
     expect(parsed.rowVerticalGap, 10);
-    expect(parsed.keyWidthScale, 0.88);
     expect(parsed.shadowBlur, 9);
+    expect(parsed.pressHighlightDurationMs, 850);
+    expect(parsed.cornerTextOpacity, 0.5);
+    expect(parsed.keyboardOpacity, 0.55);
     expect(parsed.effectEasing, KeyboardThemeEffectEasing.spring);
+  });
+
+  test('ignores legacy key width scale', () {
+    final parsed = KeyboardThemeConfig.fromMap({'keyWidthScale': 0.75});
+
+    expect(parsed.keyWidthScale, 1);
+    expect(parsed.toMap().containsKey('keyWidthScale'), isFalse);
+    expect(parsed.copyWith(keyWidthScale: 0.75).keyWidthScale, 1);
+  });
+
+  test('clamps pressed color hold duration', () {
+    expect(
+      KeyboardThemeConfig.fromMap({
+        'pressHighlightDurationMs': -25,
+      }).pressHighlightDurationMs,
+      0,
+    );
+    expect(
+      KeyboardThemeConfig.fromMap({
+        'pressHighlightDurationMs': 3000,
+      }).pressHighlightDurationMs,
+      1200,
+    );
+  });
+
+  test('caps corner text opacity at eighty five percent', () {
+    expect(
+      KeyboardThemeConfig.fromMap({
+        'cornerTextOpacity': -0.25,
+      }).cornerTextOpacity,
+      0,
+    );
+    expect(
+      KeyboardThemeConfig.fromMap({'cornerTextOpacity': 1.0}).cornerTextOpacity,
+      0.85,
+    );
+  });
+
+  test('clamps keyboard opacity to usable range', () {
+    expect(
+      KeyboardThemeConfig.fromMap({'keyboardOpacity': -0.25}).keyboardOpacity,
+      0.25,
+    );
+    expect(
+      KeyboardThemeConfig.fromMap({'keyboardOpacity': 1.5}).keyboardOpacity,
+      1,
+    );
   });
 
   test('accepts default theme contrast', () {

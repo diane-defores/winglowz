@@ -178,6 +178,26 @@ class AppInsets {
   );
 }
 
+class AppSectionMetrics {
+  static const double sectionGap = AppSpacing.x1;
+  static const double sectionRunSpacing = sectionGap;
+  static const double sectionColumnGap = AppSpacing.x3;
+  static const double headerContentGap = AppSpacing.x2;
+  static const EdgeInsets cardMargin = EdgeInsets.symmetric(
+    vertical: AppSpacing.x1,
+  );
+  static const EdgeInsets collapsibleSectionMargin = EdgeInsets.zero;
+  static const EdgeInsets collapsibleTilePadding = EdgeInsets.symmetric(
+    horizontal: AppSpacing.x3,
+  );
+  static const EdgeInsets collapsibleChildrenPadding = EdgeInsets.fromLTRB(
+    AppSpacing.x2,
+    0,
+    AppSpacing.x2,
+    AppSpacing.x2,
+  );
+}
+
 class AppGaps {
   static const x1 = SizedBox(height: AppSpacing.x1);
   static const x2 = SizedBox(height: AppSpacing.x2);
@@ -439,7 +459,7 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        margin: const EdgeInsets.symmetric(vertical: AppSpacing.x2),
+        margin: AppSectionMetrics.cardMargin,
         elevation: isDark ? AppElevation.cardDark : AppElevation.cardLight,
         shadowColor: AppColors.black.withValues(
           alpha: isDark

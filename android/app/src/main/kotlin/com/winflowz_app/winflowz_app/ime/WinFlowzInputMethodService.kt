@@ -369,11 +369,7 @@ class WinFlowzInputMethodService :
             return
         }
         val selectedText = editor().selectedText()?.toString()?.trim()
-        val copied =
-            clipboardController.copySelection(
-                currentInputConnection,
-                syncDesired = stateStore.clipboardSyncDesired,
-            )
+        val copied = clipboardController.copySelection(currentInputConnection)
         if (copied && !selectedText.isNullOrBlank()) {
             stateStore.pushClipboardEntry(selectedText)
             applyRuntimePreferencesToView()
@@ -381,6 +377,9 @@ class WinFlowzInputMethodService :
             return
         }
         if (editor().performContextMenuAction(android.R.id.copy).applied) {
+            clipboardController.recordPrimaryClipHistoryEntry("copy_context_menu")
+                ?.let { stateStore.pushClipboardEntry(it) }
+            applyRuntimePreferencesToView()
             showInlineStatus("Copy sent")
             return
         }
@@ -406,7 +405,10 @@ class WinFlowzInputMethodService :
         }
         val cut = editor().performContextMenuAction(android.R.id.cut)
         if (cut.applied) {
+            clipboardController.recordPrimaryClipHistoryEntry("cut_selection")
+                ?.let { stateStore.pushClipboardEntry(it) }
             refreshTypingAssistantState()
+            applyRuntimePreferencesToView()
             return true
         }
         val sent = isTermuxInputTarget() && sendTermuxClipboardShortcut(KeyEvent.KEYCODE_X)
@@ -428,16 +430,15 @@ class WinFlowzInputMethodService :
         }
         val targetPaste = editor().performContextMenuAction(android.R.id.paste)
         if (targetPaste.applied) {
-            clipboardController.primaryText()?.let { stateStore.pushClipboardEntry(it) }
+            val pastedText =
+                clipboardController.recordPrimaryClipHistoryEntry("paste_context_menu")
+                    ?: clipboardController.primaryText()
+            pastedText?.let { stateStore.pushClipboardEntry(it) }
             applyRuntimePreferencesToView()
             showInlineStatus("Clipboard paste sent")
             return true
         }
-        val pasted =
-            clipboardController.pastePrimaryText(
-                currentInputConnection,
-                syncDesired = stateStore.clipboardSyncDesired,
-            )
+        val pasted = clipboardController.pastePrimaryText(currentInputConnection)
         if (pasted) {
             clipboardController.primaryText()?.let { stateStore.pushClipboardEntry(it) }
             applyRuntimePreferencesToView()
@@ -453,6 +454,11 @@ class WinFlowzInputMethodService :
         }
         val plainPaste = editor().performContextMenuAction(android.R.id.pasteAsPlainText)
         if (plainPaste.applied) {
+            val pastedText =
+                clipboardController.recordPrimaryClipHistoryEntry("paste_plain_context_menu")
+                    ?: clipboardController.primaryText()
+            pastedText?.let { stateStore.pushClipboardEntry(it) }
+            applyRuntimePreferencesToView()
             showInlineStatus("Plain clipboard pasted")
             return true
         }
@@ -527,8 +533,10 @@ class WinFlowzInputMethodService :
             val intent =
                 Intent(this, MainActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra("openRoute", "/settings")
                 }
             startActivity(intent)
+            showStatus("Open WinFlowz preferences")
         }
     }
 

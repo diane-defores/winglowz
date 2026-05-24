@@ -1,5 +1,29 @@
 part of "settings_screen.dart";
 
+const _mediaStepPercentOptions = <int>[1, 2, 3, 4, 5, 10, 15, 20];
+
+int _mediaStepPercentForSliderValue(double value) {
+  final index = value.round().clamp(0, _mediaStepPercentOptions.length - 1);
+  return _mediaStepPercentOptions[index];
+}
+
+double _mediaStepSliderValue(int percent) {
+  final index = _mediaStepPercentOptions.indexOf(percent);
+  if (index >= 0) {
+    return index.toDouble();
+  }
+  var nearestIndex = 0;
+  var nearestDistance = (percent - _mediaStepPercentOptions.first).abs();
+  for (var i = 1; i < _mediaStepPercentOptions.length; i += 1) {
+    final distance = (percent - _mediaStepPercentOptions[i]).abs();
+    if (distance < nearestDistance) {
+      nearestIndex = i;
+      nearestDistance = distance;
+    }
+  }
+  return nearestIndex.toDouble();
+}
+
 class _AppearanceSection extends StatelessWidget {
   const _AppearanceSection({
     required this.themeMode,
@@ -355,11 +379,11 @@ class _KeyboardSettingsSection extends StatelessWidget {
 
   double get _actionRowHeightScale {
     final value = status?.actionRowHeightScale ?? 1;
-    if (value < 0.45) {
-      return 0.30;
+    if (value < 0.50) {
+      return 1 / 3;
     }
-    if (value < 0.80) {
-      return 0.60;
+    if (value < 0.84) {
+      return 2 / 3;
     }
     return 1;
   }
@@ -509,16 +533,19 @@ class _KeyboardSettingsSection extends StatelessWidget {
                   ],
                 ),
                 Slider(
-                  value: (status?.mediaVolumeStepPercent ?? 5).toDouble(),
-                  min: 5,
-                  max: 30,
-                  divisions: 5,
+                  value: _mediaStepSliderValue(
+                    status?.mediaVolumeStepPercent ?? 5,
+                  ),
+                  min: 0,
+                  max: (_mediaStepPercentOptions.length - 1).toDouble(),
+                  divisions: _mediaStepPercentOptions.length - 1,
                   semanticFormatterCallback: (value) =>
-                      'Volume step ${value.round()} percent',
+                      'Volume step ${_mediaStepPercentForSliderValue(value)} percent',
                   onChanged: busy
                       ? null
                       : (value) => onPreferenceChanged(
-                          mediaVolumeStepPercent: value.round(),
+                          mediaVolumeStepPercent:
+                              _mediaStepPercentForSliderValue(value),
                         ),
                 ),
                 Row(
@@ -528,16 +555,19 @@ class _KeyboardSettingsSection extends StatelessWidget {
                   ],
                 ),
                 Slider(
-                  value: (status?.mediaBrightnessStepPercent ?? 10).toDouble(),
-                  min: 5,
-                  max: 30,
-                  divisions: 5,
+                  value: _mediaStepSliderValue(
+                    status?.mediaBrightnessStepPercent ?? 10,
+                  ),
+                  min: 0,
+                  max: (_mediaStepPercentOptions.length - 1).toDouble(),
+                  divisions: _mediaStepPercentOptions.length - 1,
                   semanticFormatterCallback: (value) =>
-                      'Brightness step ${value.round()} percent',
+                      'Brightness step ${_mediaStepPercentForSliderValue(value)} percent',
                   onChanged: busy
                       ? null
                       : (value) => onPreferenceChanged(
-                          mediaBrightnessStepPercent: value.round(),
+                          mediaBrightnessStepPercent:
+                              _mediaStepPercentForSliderValue(value),
                         ),
                 ),
               ],
@@ -660,12 +690,12 @@ class _KeyboardSettingsSection extends StatelessWidget {
                       label: Text('Full'),
                     ),
                     ButtonSegment(
-                      value: .60,
+                      value: 2 / 3,
                       icon: Icon(Icons.crop_square_outlined),
                       label: Text('Square'),
                     ),
                     ButtonSegment(
-                      value: .30,
+                      value: 1 / 3,
                       icon: Icon(Icons.density_small_outlined),
                       label: Text('Mini'),
                     ),

@@ -230,6 +230,8 @@ class WinFlowzKeyboardView(
     private var gestureMaxDistance = 0f
     private var activePointerId = MotionEvent.INVALID_POINTER_ID
     private var activeKeyId: String? = null
+    private val lingeringPressedKeyIds = linkedSetOf<String>()
+    private val lingeringPressTokens = mutableMapOf<String, Int>()
     private var debugGestureText = "idle"
     private var longPressTriggered = false
     private var repeatActionKey: KeyboardKeySpec? = null
@@ -272,7 +274,7 @@ class WinFlowzKeyboardView(
 
     private fun rowGap(): Float = dp(themeConfig.rowVerticalGap)
 
-    private fun keyWidthScale(): Float = themeConfig.keyWidthScale.coerceIn(0.75f, 1f)
+    private fun keyWidthScale(): Float = 1f
 
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = NativeKeyboardColors.Light.background
@@ -377,9 +379,9 @@ class WinFlowzKeyboardView(
     private val repeatDelayMs = 72L
     private val spaceSlideStartPx = dp(18f)
     private val spaceSlideStepPx = dp(34f)
-    private val horizontalSnapDurationMs = 340L
-    private val horizontalRowVisualInDurationMs = 95L
-    private val horizontalRowVisualOutDurationMs = 180L
+    private val horizontalSnapDurationMs = 780L
+    private val horizontalRowVisualInDurationMs = 420L
+    private val horizontalRowVisualOutDurationMs = 860L
     private val horizontalSnapInterpolator = OvershootInterpolator(0.85f)
 
     private val longPressRunnable =
@@ -551,25 +553,103 @@ class WinFlowzKeyboardView(
                 resolvedThemeConfig.backgroundStartColor
             }
         backgroundPaint.shader = null
-        backgroundPaint.color = defaultBackground
+        backgroundPaint.color = keyboardLayerColor(defaultBackground, KEYBOARD_BACKGROUND_OPACITY_BOOST)
         privateBackgroundPaint.color = nativeColors.privateBackground
-        keyPaint.color = if (resolvedThemeConfig.presetId == "system") nativeColors.key else resolvedThemeConfig.keyColor
-        specialKeyPaint.color = if (resolvedThemeConfig.presetId == "system") nativeColors.specialKey else resolvedThemeConfig.specialKeyColor
-        activeKeyPaint.color = if (resolvedThemeConfig.presetId == "system") nativeColors.activeKey else resolvedThemeConfig.activeKeyColor
-        pressedKeyPaint.color = if (resolvedThemeConfig.presetId == "system") nativeColors.pressedKey else resolvedThemeConfig.pressedKeyColor
+        keyPaint.color =
+            keyboardLayerColor(
+                if (resolvedThemeConfig.presetId == "system") nativeColors.key else resolvedThemeConfig.keyColor,
+                KEYBOARD_SURFACE_OPACITY_BOOST,
+            )
+        specialKeyPaint.color =
+            keyboardLayerColor(
+                if (resolvedThemeConfig.presetId == "system") nativeColors.specialKey else resolvedThemeConfig.specialKeyColor,
+                KEYBOARD_SURFACE_OPACITY_BOOST,
+            )
+        activeKeyPaint.color =
+            keyboardLayerColor(
+                if (resolvedThemeConfig.presetId == "system") nativeColors.activeKey else resolvedThemeConfig.activeKeyColor,
+                KEYBOARD_SURFACE_OPACITY_BOOST,
+            )
+        pressedKeyPaint.color =
+            keyboardLayerColor(
+                if (resolvedThemeConfig.presetId == "system") nativeColors.pressedKey else resolvedThemeConfig.pressedKeyColor,
+                KEYBOARD_SURFACE_OPACITY_BOOST,
+            )
         disabledKeyPaint.color = nativeColors.disabledKey
-        resolvedTextColor = if (resolvedThemeConfig.presetId == "system") nativeColors.text else resolvedThemeConfig.textColor
-        resolvedCornerTextColor =
+        resolvedTextColor =
+            keyboardLayerColor(
+                if (resolvedThemeConfig.presetId == "system") nativeColors.text else resolvedThemeConfig.textColor,
+                KEYBOARD_TEXT_OPACITY_BOOST,
+            )
+        val baseCornerTextColor =
             if (resolvedThemeConfig.presetId == "system") nativeColors.secondaryText else resolvedThemeConfig.cornerTextColor
+        resolvedCornerTextColor =
+            keyboardLayerColor(
+                colorWithOpacity(
+                    baseCornerTextColor,
+                    resolvedThemeConfig.cornerTextOpacity,
+                ),
+                KEYBOARD_TEXT_OPACITY_BOOST,
+            )
         resolvedStatusTextColor =
-            if (resolvedThemeConfig.presetId == "system") nativeColors.statusText else resolvedThemeConfig.statusTextColor
+            keyboardLayerColor(
+                if (resolvedThemeConfig.presetId == "system") nativeColors.statusText else resolvedThemeConfig.statusTextColor,
+                KEYBOARD_TEXT_OPACITY_BOOST,
+            )
         resolvedKeyRadius = if (resolvedThemeConfig.presetId == "system") keyRadius else dp(resolvedThemeConfig.keyRadius)
-        keyBorderPaint.color = if (resolvedThemeConfig.presetId == "system") Color.TRANSPARENT else resolvedThemeConfig.borderColor
-        keyBorderPaint.strokeWidth = if (resolvedThemeConfig.presetId == "system") 0f else dp(resolvedThemeConfig.borderWidth)
-        keyShadowPaint.color = if (resolvedThemeConfig.presetId == "system") Color.TRANSPARENT else resolvedThemeConfig.shadowColor
+        restoreKeyBorderPaint()
+        keyShadowPaint.color =
+            keyboardLayerColor(
+                if (resolvedThemeConfig.presetId == "system") Color.TRANSPARENT else resolvedThemeConfig.shadowColor,
+                KEYBOARD_SHADOW_OPACITY_BOOST,
+            )
         textPaint.color = resolvedTextColor
         secondaryTextPaint.color = resolvedCornerTextColor
         statusPaint.color = resolvedStatusTextColor
+    }
+
+    private fun restoreKeyBorderPaint() {
+        keyBorderPaint.color =
+            if (themeConfig.presetId == "system") {
+                Color.TRANSPARENT
+            } else {
+                keyboardLayerColor(themeConfig.borderColor, KEYBOARD_BORDER_OPACITY_BOOST)
+            }
+        keyBorderPaint.strokeWidth =
+            if (themeConfig.presetId == "system") {
+                0f
+            } else {
+                dp(themeConfig.borderWidth)
+            }
+    }
+
+    private fun keyboardLayerColor(
+        color: Int,
+        opacityBoost: Float,
+    ): Int {
+        val opacity = weightedKeyboardOpacity(opacityBoost)
+        val alpha = (Color.alpha(color) * opacity)
+            .roundToInt()
+            .coerceIn(0, 255)
+        return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
+    }
+
+    private fun weightedKeyboardOpacity(opacityBoost: Float): Float {
+        if (fieldPolicy.privateMode) {
+            return 1f
+        }
+        val opacity = themeConfig.keyboardOpacity.coerceIn(KEYBOARD_OPACITY_MIN, 1f)
+        return (opacity + (1f - opacity) * opacityBoost.coerceIn(0f, 1f)).coerceIn(0f, 1f)
+    }
+
+    private fun colorWithOpacity(
+        color: Int,
+        opacity: Float,
+    ): Int {
+        val alpha = (Color.alpha(color) * opacity.coerceIn(0f, 0.85f))
+            .roundToInt()
+            .coerceIn(0, 217)
+        return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
     }
 
     private fun resolvedThemeConfigForMode(
@@ -792,8 +872,8 @@ class WinFlowzKeyboardView(
                         width * 0.28f,
                         height * 0.18f,
                         max(width, height).toFloat(),
-                        themeConfig.backgroundEndColor,
-                        themeConfig.backgroundStartColor,
+                        keyboardLayerColor(themeConfig.backgroundEndColor, KEYBOARD_BACKGROUND_OPACITY_BOOST),
+                        keyboardLayerColor(themeConfig.backgroundStartColor, KEYBOARD_BACKGROUND_OPACITY_BOOST),
                         Shader.TileMode.CLAMP,
                     )
                 } else {
@@ -802,8 +882,8 @@ class WinFlowzKeyboardView(
                         0f,
                         width.toFloat(),
                         height.toFloat(),
-                        themeConfig.backgroundStartColor,
-                        themeConfig.backgroundEndColor,
+                        keyboardLayerColor(themeConfig.backgroundStartColor, KEYBOARD_BACKGROUND_OPACITY_BOOST),
+                        keyboardLayerColor(themeConfig.backgroundEndColor, KEYBOARD_BACKGROUND_OPACITY_BOOST),
                         Shader.TileMode.CLAMP,
                     )
                 }
@@ -993,6 +1073,7 @@ class WinFlowzKeyboardView(
         debugGestureText =
             "up key=${key.id} sel=${selection.name} tap=${gestureThresholds.tapSlopPx.toInt()} corner=${gestureThresholds.cornerThresholdPx.toInt()}"
         dispatch(key, selection)
+        retainPressedHighlight(key.id)
         resetGesture()
         invalidate()
         return true
@@ -1153,15 +1234,26 @@ class WinFlowzKeyboardView(
             return
         }
         val currentOffset = horizontalRowScrollOffsetById[rowId] ?: 0f
+        val pagedRow = frame.isPagedScrollableRowFrame()
         if (!scrollingHorizontalRow) {
             scrollingHorizontalRow = true
             activeHorizontalRowId = rowId
-            horizontalGestureStartOffset = currentOffset
             lastHorizontalScrollX = gestureStartX
             cancelHorizontalRowAnimation(rowId)
+            horizontalGestureStartOffset =
+                if (pagedRow) {
+                    val pageWidth = max(dp(1f), horizontalRowPageWidthById[rowId] ?: frame?.rowVisibleWidth ?: width.toFloat())
+                    val startPage = currentHorizontalRowPage(rowId, pageWidth, maxOffset, currentOffset)
+                    pageOffset(startPage, pageWidth, maxOffset).also { startOffset ->
+                        horizontalRowScrollOffsetById[rowId] = startOffset
+                    }
+                } else {
+                    currentOffset
+                }
+            horizontalGestureDragDx = 0f
             animateHorizontalRowVisualProgress(rowId, 1f, horizontalRowVisualInDurationMs, removeWhenZero = false)
         }
-        if (frame.isPagedScrollableRowFrame()) {
+        if (pagedRow) {
             val pageWidth = max(dp(1f), horizontalRowPageWidthById[rowId] ?: frame?.rowVisibleWidth ?: width.toFloat())
             val maxPage = ceil(maxOffset / pageWidth).toInt().coerceAtLeast(0)
             val startPage = (horizontalGestureStartOffset / pageWidth).roundToInt().coerceIn(0, maxPage)
@@ -1241,6 +1333,17 @@ class WinFlowzKeyboardView(
         maxOffset: Float,
     ): Float {
         return (page.coerceAtLeast(0) * pageWidth).coerceIn(0f, maxOffset)
+    }
+
+    private fun currentHorizontalRowPage(
+        rowId: String,
+        pageWidth: Float,
+        maxOffset: Float,
+        offsetFallback: Float,
+    ): Int {
+        val maxPage = ceil(maxOffset / pageWidth).toInt().coerceAtLeast(0)
+        val storedPage = horizontalRowPageById[rowId] ?: actionBarState.rowPageById[rowId]
+        return (storedPage ?: (offsetFallback / pageWidth).roundToInt()).coerceIn(0, maxPage)
     }
 
     private fun animateHorizontalRowOffset(
@@ -1588,8 +1691,7 @@ class WinFlowzKeyboardView(
         val visibleCount = row.visiblePageKeyCount
         val baseKeyWidth =
             if (visibleCount != null && visibleCount > 0) {
-                val visibleGaps = keyGap() * max(0, visibleCount - 1)
-                ((width - visibleGaps) / visibleCount).coerceAtLeast(dp(1f))
+                (width / visibleCount).coerceAtLeast(dp(1f))
             } else {
                 dp(76f) * keyWidthScale()
             }
@@ -1607,7 +1709,9 @@ class WinFlowzKeyboardView(
         horizontalRowPageWidthById[rowId] = max(dp(1f), width)
         if (row.pagedHorizontalScrollable) {
             val pageWidth = horizontalRowPageWidthById[rowId] ?: max(dp(1f), width)
-            val page = horizontalRowPageById[rowId] ?: actionBarState.rowPageById[rowId] ?: 0
+            val maxPage = ceil(maxOffset / pageWidth).toInt().coerceAtLeast(0)
+            val page = (horizontalRowPageById[rowId] ?: actionBarState.rowPageById[rowId] ?: 0).coerceIn(0, maxPage)
+            horizontalRowPageById[rowId] = page
             val targetOffset = pageOffset(page, pageWidth, maxOffset)
             val isActiveGesture = scrollingHorizontalRow && activeHorizontalRowId == rowId
             val isAnimating = horizontalRowAnimatorById.containsKey(rowId)
@@ -1627,10 +1731,9 @@ class WinFlowzKeyboardView(
             }
         horizontalRowScrollOffsetById[rowId] = rowOffset
         val visualProgress = horizontalRowVisualProgress(rowId, row, width, maxOffset)
-        val keyWidthShrink = 0.10f * visualProgress
-        val keyHeightShrink = 0.18f * visualProgress
-        val radiusScale = 1f - 0.16f * visualProgress
-        val textScale = 1f - 0.10f * visualProgress
+        val keyWidthShrink = 0.28f * visualProgress
+        val radiusScale = 1f - 0.24f * visualProgress
+        val textScale = 1f - 0.18f * visualProgress
 
         val clipSave = canvas.save()
         canvas.clipRect(left, top, left + width, top + height)
@@ -1655,7 +1758,7 @@ class WinFlowzKeyboardView(
                         scrollVisualRect.set(cell.visualRect)
                         scrollVisualRect.inset(
                             scrollVisualRect.width() * keyWidthShrink / 2f,
-                            scrollVisualRect.height() * keyHeightShrink / 2f,
+                            0f,
                         )
                         RectF(scrollVisualRect)
                     } else {
@@ -1676,7 +1779,17 @@ class WinFlowzKeyboardView(
                 drawKey(canvas, cell.key, drawRect, radiusScale = radiusScale, textScale = textScale)
             }
         }
-        drawHorizontalRowEdgeAffordances(canvas, left, top, width, height, rowOffset, maxOffset, visualProgress)
+        drawHorizontalRowEdgeAffordances(
+            canvas,
+            left,
+            top,
+            width,
+            height,
+            baseKeyWidth,
+            rowOffset,
+            maxOffset,
+            visualProgress,
+        )
         canvas.restoreToCount(clipSave)
     }
 
@@ -1702,6 +1815,7 @@ class WinFlowzKeyboardView(
         top: Float,
         width: Float,
         height: Float,
+        baseKeyWidth: Float,
         rowOffset: Float,
         maxOffset: Float,
         visualProgress: Float,
@@ -1709,66 +1823,80 @@ class WinFlowzKeyboardView(
         if (maxOffset <= 0f) {
             return
         }
-        val edgeWidth = min(width * 0.16f, dp(34f))
+        val edgeWidth = min(min(width * 0.12f, baseKeyWidth * 0.66f), dp(30f))
         val activeProgress = visualProgress.coerceIn(0f, 1f)
-        val fadeAlphaBase = (24f + 96f * activeProgress).roundToInt().coerceIn(0, 120)
-        val handleAlphaBase = (64f + 72f * activeProgress).roundToInt().coerceIn(0, 136)
+        val fadeAlphaBase = (34f + 108f * activeProgress).roundToInt().coerceIn(0, 142)
+        val handleAlphaBase = (88f + 80f * activeProgress).roundToInt().coerceIn(0, 168)
         val leftHidden = (rowOffset / dp(36f)).coerceIn(0f, 1f)
         val rightHidden = ((maxOffset - rowOffset) / dp(36f)).coerceIn(0f, 1f)
         val leftAlpha = (fadeAlphaBase * leftHidden).roundToInt()
         val rightAlpha = (fadeAlphaBase * rightHidden).roundToInt()
         val leftHandleAlpha = (handleAlphaBase * leftHidden).roundToInt()
         val rightHandleAlpha = (handleAlphaBase * rightHidden).roundToInt()
-        val edgeColor = if (colorBrightness(backgroundPaint.color) > 0.5f) Color.BLACK else Color.WHITE
-        val stripWidth = edgeWidth / 3f
+        val edgeColor = horizontalRowEdgeColor()
         if (leftAlpha > 0) {
-            for (index in 0 until 3) {
-                val alpha = (leftAlpha * (3 - index) / 3f).roundToInt()
-                horizontalEdgeAffordancePaint.color =
-                    Color.argb(alpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
-                canvas.drawRect(
-                    left + stripWidth * index,
-                    top,
-                    left + stripWidth * (index + 1),
-                    top + height,
-                    horizontalEdgeAffordancePaint,
-                )
-            }
+            drawHorizontalEdgeStrips(canvas, left, top, height, edgeWidth, leftAlpha, edgeColor, leftEdge = true)
         }
         if (leftHandleAlpha > 0) {
             horizontalEdgeAffordancePaint.color =
                 Color.argb(leftHandleAlpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
-            val handleWidth = dp(2.5f)
-            val handleHeight = min(max(dp(1f), height - dp(10f)), max(dp(18f), height * 0.48f))
-            val handleLeft = left + dp(2.5f)
+            val handleWidth = dp(3.5f)
+            val handleHeight = min(max(dp(1f), height - dp(8f)), max(dp(20f), height * 0.56f))
+            val handleLeft = left + dp(2f)
             val handleTop = top + (height - handleHeight) / 2f
             scrollVisualRect.set(handleLeft, handleTop, handleLeft + handleWidth, handleTop + handleHeight)
             canvas.drawRoundRect(scrollVisualRect, handleWidth / 2f, handleWidth / 2f, horizontalEdgeAffordancePaint)
         }
         if (rightAlpha > 0) {
-            for (index in 0 until 3) {
-                val alpha = (rightAlpha * (index + 1) / 3f).roundToInt()
-                val stripLeft = left + width - edgeWidth + stripWidth * index
-                horizontalEdgeAffordancePaint.color =
-                    Color.argb(alpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
-                canvas.drawRect(
-                    stripLeft,
-                    top,
-                    stripLeft + stripWidth,
-                    top + height,
-                    horizontalEdgeAffordancePaint,
-                )
-            }
+            drawHorizontalEdgeStrips(canvas, left + width, top, height, edgeWidth, rightAlpha, edgeColor, leftEdge = false)
         }
         if (rightHandleAlpha > 0) {
             horizontalEdgeAffordancePaint.color =
                 Color.argb(rightHandleAlpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
-            val handleWidth = dp(2.5f)
-            val handleHeight = min(max(dp(1f), height - dp(10f)), max(dp(18f), height * 0.48f))
-            val handleRight = left + width - dp(2.5f)
+            val handleWidth = dp(3.5f)
+            val handleHeight = min(max(dp(1f), height - dp(8f)), max(dp(20f), height * 0.56f))
+            val handleRight = left + width - dp(2f)
             val handleTop = top + (height - handleHeight) / 2f
             scrollVisualRect.set(handleRight - handleWidth, handleTop, handleRight, handleTop + handleHeight)
             canvas.drawRoundRect(scrollVisualRect, handleWidth / 2f, handleWidth / 2f, horizontalEdgeAffordancePaint)
+        }
+    }
+
+    private fun drawHorizontalEdgeStrips(
+        canvas: Canvas,
+        edgeX: Float,
+        top: Float,
+        height: Float,
+        edgeWidth: Float,
+        alphaBase: Int,
+        edgeColor: Int,
+        leftEdge: Boolean,
+    ) {
+        val widthWeights = floatArrayOf(0.19f, 0.31f, 0.50f)
+        val alphaWeights = floatArrayOf(0.32f, 0.58f, 0.86f)
+        var cursor = if (leftEdge) edgeX + edgeWidth else edgeX - edgeWidth
+        for (index in widthWeights.indices) {
+            val stripWidth = edgeWidth * widthWeights[index]
+            val alpha = (alphaBase * alphaWeights[index]).roundToInt().coerceIn(0, 255)
+            horizontalEdgeAffordancePaint.color =
+                Color.argb(alpha, Color.red(edgeColor), Color.green(edgeColor), Color.blue(edgeColor))
+            if (leftEdge) {
+                canvas.drawRect(cursor - stripWidth, top, cursor, top + height, horizontalEdgeAffordancePaint)
+                cursor -= stripWidth
+            } else {
+                canvas.drawRect(cursor, top, cursor + stripWidth, top + height, horizontalEdgeAffordancePaint)
+                cursor += stripWidth
+            }
+        }
+    }
+
+    private fun horizontalRowEdgeColor(): Int {
+        return if (!fieldPolicy.privateMode && keyBorderPaint.strokeWidth > 0f && Color.alpha(keyBorderPaint.color) > 0) {
+            keyBorderPaint.color
+        } else if (colorBrightness(backgroundPaint.color) > 0.5f) {
+            Color.BLACK
+        } else {
+            Color.WHITE
         }
     }
 
@@ -1814,6 +1942,7 @@ class WinFlowzKeyboardView(
     ) {
         val firstPanelIndex = firstPanelRowIndex()
         val panelRows = layoutSnapshot.rows.drop(firstPanelIndex).take(layoutSnapshot.panelRowCount)
+        val panelRowHeight = scaledPanelRowHeight()
         val contentHeight = panelRows.size * panelRowHeight + rowGap() * max(0, panelRows.size - 1)
         verticalPanelMaxScrollOffset = max(0f, contentHeight - height)
         verticalPanelScrollOffset = verticalPanelScrollOffset.coerceIn(0f, verticalPanelMaxScrollOffset)
@@ -1886,7 +2015,7 @@ class WinFlowzKeyboardView(
         }
         val paint = when {
             !key.enabled -> disabledKeyPaint
-            key.id == activeKeyId -> pressedKeyPaint
+            key.id == activeKeyId || key.id in lingeringPressedKeyIds -> pressedKeyPaint
             key.active && usesNeutralKeyboardSurface(key) -> pressedKeyPaint
             key.active || isActiveModifierKey(key) -> activeKeyPaint
             key.actionSurface -> specialKeyPaint
@@ -1903,20 +2032,24 @@ class WinFlowzKeyboardView(
         }
         canvas.drawRoundRect(rect, drawRadius, drawRadius, paint)
         if (!fieldPolicy.privateMode && keyBorderPaint.strokeWidth > 0f && Color.alpha(keyBorderPaint.color) > 0) {
-            canvas.drawRoundRect(rect, drawRadius, drawRadius, keyBorderPaint)
+            drawRoundRectStrokeInside(canvas, rect, drawRadius, keyBorderPaint)
         }
 
         if (voiceRecordingActive && key.action == KeyboardKeyAction.Voice) {
             drawVoiceRecordingIndicator(canvas, rect)
         }
+        if (key.pinned) {
+            drawPinnedBadge(canvas, rect, paint.color)
+        }
 
         textPaint.color =
             if (key.active || isActiveModifierKey(key)) {
-                if (themeConfig.presetId == "system") {
+                val activeTextColor = if (themeConfig.presetId == "system") {
                     nativeColors.activeText
                 } else {
                     contrastTextColor(paint.color)
                 }
+                keyboardLayerColor(activeTextColor, KEYBOARD_TEXT_OPACITY_BOOST)
             } else if (key.enabled) {
                 resolvedTextColor
             } else {
@@ -1930,9 +2063,29 @@ class WinFlowzKeyboardView(
             renderCornerGlyphs(canvas, rect, key.cornerAssignments)
         }
 
-        if (key.pinned) {
-            drawPinnedBadge(canvas, rect, paint.color)
+    }
+
+    private fun drawRoundRectStrokeInside(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        paint: Paint,
+    ) {
+        val strokeInset = (paint.strokeWidth / 2f).coerceAtLeast(0f)
+        if (strokeInset <= 0f) {
+            canvas.drawRoundRect(rect, radius, radius, paint)
+            return
         }
+        val maxInset = ((min(rect.width(), rect.height()) - 1f) / 2f).coerceAtLeast(0f)
+        val safeInset = min(strokeInset, maxInset)
+        if (safeInset <= 0f) {
+            canvas.drawRoundRect(rect, radius, radius, paint)
+            return
+        }
+        scrollVisualRect.set(rect)
+        scrollVisualRect.inset(safeInset, safeInset)
+        val innerRadius = (radius - safeInset).coerceAtLeast(0f)
+        canvas.drawRoundRect(scrollVisualRect, innerRadius, innerRadius, paint)
     }
 
     private fun usesNeutralKeyboardSurface(key: KeyboardKeySpec): Boolean {
@@ -2000,25 +2153,23 @@ class WinFlowzKeyboardView(
         if (key.active) {
             keyBorderPaint.color = previewConfig.activeKeyColor
             keyBorderPaint.strokeWidth = dp(2f)
-            canvas.drawRoundRect(rect, resolvedKeyRadius, resolvedKeyRadius, keyBorderPaint)
-            keyBorderPaint.color = if (themeConfig.presetId == "system") Color.TRANSPARENT else themeConfig.borderColor
-            keyBorderPaint.strokeWidth = if (themeConfig.presetId == "system") 0f else dp(themeConfig.borderWidth)
+            drawRoundRectStrokeInside(canvas, rect, resolvedKeyRadius, keyBorderPaint)
+            restoreKeyBorderPaint()
         } else if (previewConfig.borderWidth > 0f && Color.alpha(previewConfig.borderColor) > 0) {
             keyBorderPaint.color = previewConfig.borderColor
             keyBorderPaint.strokeWidth = dp(previewConfig.borderWidth)
-            canvas.drawRoundRect(rect, resolvedKeyRadius, resolvedKeyRadius, keyBorderPaint)
-            keyBorderPaint.color = if (themeConfig.presetId == "system") Color.TRANSPARENT else themeConfig.borderColor
-            keyBorderPaint.strokeWidth = if (themeConfig.presetId == "system") 0f else dp(themeConfig.borderWidth)
+            drawRoundRectStrokeInside(canvas, rect, resolvedKeyRadius, keyBorderPaint)
+            restoreKeyBorderPaint()
+        }
+
+        if (key.pinned) {
+            drawPinnedBadge(canvas, rect, previewConfig.specialKeyColor, previewConfig.presetId)
         }
 
         textPaint.color = contrastTextColor(backgroundColor)
         textPaint.textSize = keyTextSize(key)
         val baseline = rect.centerY() - dp(3f) - (textPaint.descent() + textPaint.ascent()) / 2f
         canvas.drawText(displayLabel(key), rect.centerX(), baseline, textPaint)
-
-        if (key.pinned) {
-            drawPinnedBadge(canvas, rect, previewConfig.specialKeyColor, previewConfig.presetId)
-        }
     }
 
     private fun drawPinnedBadge(
@@ -2029,15 +2180,27 @@ class WinFlowzKeyboardView(
     ) {
         val cx = rect.right - dp(8f)
         val cy = rect.top + dp(8f)
-        withAngledPinnedBadge(canvas, cx, cy) {
+        withAngledPinnedBadge(canvas, cx, cy, pinnedBadgeRotationForPreset(presetId)) {
             when (presetId) {
                 KeyboardThemePresets.PIXEL_CANDY -> drawCandyPinnedBadge(canvas, cx, cy, keyColor)
                 KeyboardThemePresets.SUNSET_GRADIENT -> drawCloudPinnedBadge(canvas, cx, cy, keyColor)
                 KeyboardThemePresets.GLASS_MINT -> drawDropPinnedBadge(canvas, cx, cy, contrastBadgeAccentColor(keyColor))
-                KeyboardThemePresets.MIDNIGHT_AURORA -> drawStarPinnedBadge(canvas, cx, cy, contrastBadgeAccentColor(keyColor))
+                KeyboardThemePresets.MIDNIGHT_AURORA -> drawStarPinnedBadge(canvas, cx, cy, midnightStarBadgeColor())
                 else -> drawLedPinnedBadge(canvas, cx, cy, contrastBadgeAccentColor(keyColor), contrastBadgeBaseColor(keyColor))
             }
         }
+    }
+
+    private fun pinnedBadgeRotationForPreset(presetId: String): Float {
+        return when (presetId) {
+            KeyboardThemePresets.GLASS_MINT -> -45f
+            KeyboardThemePresets.MIDNIGHT_AURORA -> 0f
+            else -> 45f
+        }
+    }
+
+    private fun midnightStarBadgeColor(): Int {
+        return Color.rgb(255, 216, 77)
     }
 
     private fun drawVoiceRecordingIndicator(
@@ -2070,10 +2233,11 @@ class WinFlowzKeyboardView(
         canvas: Canvas,
         cx: Float,
         cy: Float,
+        rotationDegrees: Float,
         draw: () -> Unit,
     ) {
         val save = canvas.save()
-        canvas.rotate(-45f, cx, cy)
+        canvas.rotate(rotationDegrees, cx, cy)
         try {
             draw()
         } finally {
@@ -2222,32 +2386,29 @@ class WinFlowzKeyboardView(
         val previousAlign = secondaryTextPaint.textAlign
         secondaryTextPaint.textAlign = Paint.Align.CENTER
         assignments.up?.let {
-            canvas.drawText(it.label, rect.centerX(), rect.top + dp(11f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.centerX(), rect.top + dp(9f), secondaryTextPaint)
         }
         assignments.down?.let {
-            canvas.drawText(it.label, rect.centerX(), rect.bottom - dp(7f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.centerX(), rect.bottom - dp(5f), secondaryTextPaint)
         }
-        secondaryTextPaint.textAlign = Paint.Align.LEFT
+        secondaryTextPaint.textAlign = Paint.Align.CENTER
         assignments.left?.let {
-            canvas.drawText(it.label, rect.left + dp(8f), rect.centerY() + dp(3f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.left + dp(7f), rect.centerY() + dp(3f), secondaryTextPaint)
         }
-        secondaryTextPaint.textAlign = Paint.Align.RIGHT
         assignments.right?.let {
-            canvas.drawText(it.label, rect.right - dp(8f), rect.centerY() + dp(3f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.right - dp(7f), rect.centerY() + dp(3f), secondaryTextPaint)
         }
-        secondaryTextPaint.textAlign = Paint.Align.LEFT
         assignments.topLeft?.let {
-            canvas.drawText(it.label, rect.left + dp(10f), rect.top + dp(12f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.left + dp(8f), rect.top + dp(10f), secondaryTextPaint)
         }
         assignments.bottomLeft?.let {
-            canvas.drawText(it.label, rect.left + dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.left + dp(8f), rect.bottom - dp(6f), secondaryTextPaint)
         }
-        secondaryTextPaint.textAlign = Paint.Align.RIGHT
         assignments.topRight?.let {
-            canvas.drawText(it.label, rect.right - dp(10f), rect.top + dp(12f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.right - dp(8f), rect.top + dp(10f), secondaryTextPaint)
         }
         assignments.bottomRight?.let {
-            canvas.drawText(it.label, rect.right - dp(10f), rect.bottom - dp(8f), secondaryTextPaint)
+            canvas.drawText(it.label, rect.right - dp(8f), rect.bottom - dp(6f), secondaryTextPaint)
         }
         secondaryTextPaint.textAlign = previousAlign
     }
@@ -2711,6 +2872,33 @@ class WinFlowzKeyboardView(
         }
     }
 
+    private fun retainPressedHighlight(keyId: String) {
+        val durationMs = themeConfig.pressHighlightDurationMs.coerceIn(0, 1200)
+        val token = (lingeringPressTokens[keyId] ?: 0) + 1
+        lingeringPressTokens[keyId] = token
+        if (durationMs == 0) {
+            lingeringPressedKeyIds.remove(keyId)
+            lingeringPressTokens.remove(keyId)
+            return
+        }
+        while (lingeringPressedKeyIds.size >= 8 && keyId !in lingeringPressedKeyIds) {
+            val oldest = lingeringPressedKeyIds.first()
+            lingeringPressedKeyIds.remove(oldest)
+            lingeringPressTokens.remove(oldest)
+        }
+        lingeringPressedKeyIds.add(keyId)
+        postDelayed(
+            {
+                if (lingeringPressTokens[keyId] == token) {
+                    lingeringPressedKeyIds.remove(keyId)
+                    lingeringPressTokens.remove(keyId)
+                    invalidate()
+                }
+            },
+            durationMs.toLong(),
+        )
+    }
+
     private fun triggerPressEffect(key: KeyboardKeySpec) {
         val frame = gestureStartFrame?.takeIf { it.key.id == key.id } ?: return
         val spec = KeyboardPressEffectPolicy.resolve(themeConfig, fieldPolicy.privateMode)
@@ -2959,10 +3147,10 @@ class WinFlowzKeyboardView(
         return when {
             isActionRow(index) -> scaledActionRowHeight()
             isActionSurfaceRow(index) -> scaledActionRowHeight()
-            layoutSnapshot.suggestionRowCount > 0 && index in 1..layoutSnapshot.suggestionRowCount -> panelRowHeight
-            layoutSnapshot.panelRowCount > 0 && index in firstPanelIndex until firstPanelIndex + layoutSnapshot.panelRowCount -> panelRowHeight
-            index == layoutSnapshot.rows.lastIndex -> controlRowHeight
-            else -> textRowHeight
+            layoutSnapshot.suggestionRowCount > 0 && index in 1..layoutSnapshot.suggestionRowCount -> scaledPanelRowHeight()
+            layoutSnapshot.panelRowCount > 0 && index in firstPanelIndex until firstPanelIndex + layoutSnapshot.panelRowCount -> scaledPanelRowHeight()
+            index == layoutSnapshot.rows.lastIndex -> scaledControlRowHeight()
+            else -> scaledTextRowHeight()
         }
     }
 
@@ -2976,7 +3164,19 @@ class WinFlowzKeyboardView(
     }
 
     private fun scaledActionRowHeight(): Float {
-        return actionRowHeight * actionRowHeightScale
+        return actionRowHeight * actionRowHeightScale * keyboardHeightScale
+    }
+
+    private fun scaledTextRowHeight(): Float {
+        return textRowHeight * keyboardHeightScale
+    }
+
+    private fun scaledControlRowHeight(): Float {
+        return controlRowHeight * keyboardHeightScale
+    }
+
+    private fun scaledPanelRowHeight(): Float {
+        return panelRowHeight * keyboardHeightScale
     }
 
     private fun desiredKeyboardHeight(viewWidth: Int): Int {
@@ -2994,7 +3194,7 @@ class WinFlowzKeyboardView(
         val baseHeight =
             outerPadding * 2 + statusHeightFor(contentWidth) + rowsHeight +
                 rowGap() * effectiveRowCount
-        return (baseHeight * keyboardHeightScale).toInt()
+        return baseHeight.toInt()
     }
 
     private fun usesVerticalPanelScroll(): Boolean {
@@ -3015,7 +3215,7 @@ class WinFlowzKeyboardView(
             } else {
                 3
             }
-        return panelRowHeight * visibleRows + rowGap() * (visibleRows - 1)
+        return scaledPanelRowHeight() * visibleRows + rowGap() * (visibleRows - 1)
     }
 
     private fun toggleCompactMode() {
@@ -3174,5 +3374,11 @@ class WinFlowzKeyboardView(
 
     private companion object {
         const val SYMBOL_PAGE_COUNT = 3
+        const val KEYBOARD_OPACITY_MIN = 0.25f
+        const val KEYBOARD_BACKGROUND_OPACITY_BOOST = 0f
+        const val KEYBOARD_SURFACE_OPACITY_BOOST = 0f
+        const val KEYBOARD_SHADOW_OPACITY_BOOST = 0f
+        const val KEYBOARD_BORDER_OPACITY_BOOST = 0.48f
+        const val KEYBOARD_TEXT_OPACITY_BOOST = 0.58f
     }
 }

@@ -358,7 +358,7 @@ class MainActivity : FlutterActivity() {
                         }
                     }
                     "drainKeyboardClipboardEvents" -> {
-                        result.success(KeyboardClipboardEventQueue.drain())
+                        result.success(KeyboardClipboardEventQueue.drain(this))
                     }
                     "drainKeyboardVoiceEvents" -> {
                         result.success(KeyboardVoiceEventQueue.drain())
