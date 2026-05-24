@@ -26,10 +26,10 @@ jobs:
         with:
           filters: |
             apk:
-              - 'android/**'
-              - 'lib/**'
-              - 'pubspec.yaml'
-              - 'pubspec.lock'
+              - 'winflowz_app/android/**'
+              - 'winflowz_app/lib/**'
+              - 'winflowz_app/pubspec.yaml'
+              - 'winflowz_app/pubspec.lock'
               - '.github/workflows/android-build.yml'
 
   analyze:
@@ -57,9 +57,11 @@ jobs:
           cache: true
 
       - name: Resolve dependencies
+        working-directory: winflowz_app
         run: flutter pub get
 
       - name: Static analysis
+        working-directory: winflowz_app
         run: flutter analyze
 
   test:
@@ -87,9 +89,11 @@ jobs:
           cache: true
 
       - name: Resolve dependencies
+        working-directory: winflowz_app
         run: flutter pub get
 
       - name: Run tests
+        working-directory: winflowz_app
         run: flutter test
 
   firebase_auth_config:
@@ -177,6 +181,7 @@ jobs:
           cache: true
 
       - name: Resolve dependencies
+        working-directory: winflowz_app
         run: flutter pub get
 
       - name: Cache Gradle
@@ -185,11 +190,12 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('winflowz_app/**/*.gradle*', 'winflowz_app/**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
       - name: Build debug APK
+        working-directory: winflowz_app
         env:
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIREBASE_DEV_API_KEY: ${{ secrets.FIREBASE_DEV_API_KEY }}
@@ -236,13 +242,13 @@ jobs:
             --dart-define=WINFLOWZ_APP_BUILD_REF="${GITHUB_REF_NAME}"
 
       - name: Verify debug APK exists
-        run: test -f build/app/outputs/flutter-apk/app-debug.apk
+        run: test -f winflowz_app/build/app/outputs/flutter-apk/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v7
         with:
           name: winflowz_app-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: winflowz_app/build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: ignore
           retention-days: 14
 
@@ -292,6 +298,7 @@ jobs:
           test -f "$GOOGLE_APPLICATION_CREDENTIALS"
 
       - name: Deploy Firestore rules and indexes
+        working-directory: winflowz_app
         env:
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: firebase deploy --only firestore --project "$FIREBASE_PROJECT_ID" --non-interactive
