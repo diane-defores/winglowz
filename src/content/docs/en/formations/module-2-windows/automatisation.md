@@ -172,15 +172,19 @@ For more advanced needs, you can also look at dedicated tools like **Beeftext** 
 | Tool | Best use | Best for |
 |------|----------|----------|
 | **AutoHotkey** | Snippets + hotkeys + macros + scripts | Windows users who want a long-term leverage tool |
+| **Trigr** | Visual hotkeys + macros + text expansion | Windows users who want a no-code bridge before scripting |
 | **QuickTextPaste** | Text shortcuts plus quick command/program launching | A good middle ground if you want speed before moving into scripting |
 | **Beeftext** | Simple local open-source text expansion | A clean choice if you just want reliable snippets without heavy complexity |
 | **PhraseExpress** | Advanced snippet library, forms, multiple triggers, deep organization | Better for intensive users or professional/team needs, with much more power and more complexity |
 
 **Our take**:
 - if you want a simple free tool to replace text everywhere, **Beeftext** is very clean
+- if you want to combine visual hotkeys, macros, and text expansion without writing scripts yet, **Trigr** is worth testing as a newer no-code bridge
 - if you also want to bind snippets to shortcuts or launch a few simple commands without writing scripts yet, **QuickTextPaste** is a strong bridge tool
 - if you want a rich template system with advanced features, **PhraseExpress** is extremely powerful
 - if you want to learn one tool that goes far beyond text expansion, **AutoHotkey** has the highest leverage ceiling
+
+Trigr is especially interesting when you are not ready to maintain AutoHotkey scripts but already feel the need for several layers at once: global hotkeys, simple macros, and reusable text. Treat it as an evaluation candidate, not as a replacement for the underlying decision framework. The question remains the same: which repeated action costs enough attention to deserve a trigger?
 
 ## Browser automation
 
@@ -283,6 +287,7 @@ It is an advanced topic, but if you work with repetitive processes at scale, it 
 ## Official resources
 
 - [AutoHotkey](https://www.autohotkey.com/) - the core tool for hotkeys, hotstrings, and Windows scripts.
+- [Trigr](https://usetrigr.com/) - a Windows tool positioned around visual hotkeys, macros, and text expansion without scripting.
 - [QuickTextPaste](https://www.softwareok.com/?seite=Microsoft/QuickTextPaste) - the lightweight utility for text insertion and shortcut-triggered commands.
 - [Beeftext](https://beeftext.org/) - a simple local text expander.
 - [PhraseExpress](https://www.phraseexpress.com/) - a more advanced snippet library for heavy use.

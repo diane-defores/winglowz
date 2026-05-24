@@ -172,15 +172,19 @@ Pour des besoins plus avancés, tu peux aussi regarder des outils dédiés comme
 | Outil | Meilleur usage | Profil |
 |-------|----------------|--------|
 | **AutoHotkey** | Snippets + hotkeys + macros + scripts | Utilisateur Windows qui veut un vrai levier long terme |
+| **Trigr** | Hotkeys visuels + macros + text expansion | Utilisateur Windows qui veut une passerelle no-code avant le scripting |
 | **QuickTextPaste** | Raccourcis texte + lancement rapide de commandes/programmes | Bon compromis si tu veux gagner du temps sans entrer tout de suite dans le scripting |
 | **Beeftext** | Text expansion simple, local, open source | Bon choix si tu veux juste des snippets propres sans usine à gaz |
 | **PhraseExpress** | Bibliothèque de snippets très avancée, formulaires, déclencheurs multiples, organisation poussée | Plutôt pour profils intensifs ou besoins pro/équipe, avec plus de richesse mais aussi plus de complexité |
 
 **Notre lecture** :
 - si tu veux un outil simple et gratuit pour remplacer du texte partout, **Beeftext** est très propre
+- si tu veux combiner hotkeys visuels, macros et text expansion sans écrire de scripts tout de suite, **Trigr** mérite un test comme passerelle no-code récente
 - si tu veux aussi attacher certains snippets à des raccourcis clavier ou lancer quelques actions simples sans écrire de scripts, **QuickTextPaste** est une bonne passerelle
 - si tu veux un système riche de templates et de fonctions avancées, **PhraseExpress** est extrêmement puissant
 - si tu veux apprendre un outil qui déborde largement le text expansion, **AutoHotkey** a le plus fort potentiel de levier
+
+Trigr est surtout intéressant quand tu n'es pas encore prêt à maintenir des scripts AutoHotkey, mais que tu ressens déjà le besoin de plusieurs couches à la fois : hotkeys globales, macros simples et textes réutilisables. Traite-le comme un outil à évaluer, pas comme un remplacement de la méthode. La vraie question reste la même : quelle action répétée coûte assez d'attention pour mériter un déclencheur ?
 
 ## Automatisation navigateur
 
@@ -283,6 +287,7 @@ C'est un sujet avancé, mais si tu travailles avec des processus répétitifs à
 ## Ressources officielles
 
 - [AutoHotkey](https://www.autohotkey.com/) - le socle pour les hotkeys, hotstrings et scripts Windows.
+- [Trigr](https://usetrigr.com/) - outil Windows positionné sur les hotkeys visuels, les macros et le text expansion sans scripting.
 - [QuickTextPaste](https://www.softwareok.com/?seite=Microsoft/QuickTextPaste) - le petit outil léger pour coller du texte ou lancer des commandes via raccourci.
 - [Beeftext](https://beeftext.org/) - une solution simple et locale pour le text expansion.
 - [PhraseExpress](https://www.phraseexpress.com/) - une bibliothèque de snippets plus avancée pour les usages intensifs.
