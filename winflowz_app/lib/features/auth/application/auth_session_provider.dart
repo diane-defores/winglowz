@@ -26,6 +26,8 @@ final localAuthModeProvider = NotifierProvider<LocalAuthModeController, bool>(
   LocalAuthModeController.new,
 );
 
+final signupWelcomePendingProvider = StateProvider<bool>((ref) => false);
+
 final authSessionStoreProvider = Provider<AuthSessionStore>((ref) {
   if (ref.watch(localAuthModeProvider)) {
     return ref.watch(localAuthSessionStoreProvider);

@@ -12,6 +12,7 @@ import 'package:winflowz_app/features/clipboard/application/clipboard_store_prov
 import 'package:winflowz_app/features/clipboard/data/in_memory_clipboard_history_store.dart';
 import 'package:winflowz_app/features/clipboard/domain/clipboard_store.dart';
 import 'package:winflowz_app/features/clipboard/presentation/clipboard_screen.dart';
+import 'package:winflowz_app/features/auth/application/auth_session_provider.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
 import 'package:winflowz_app/features/keyboard/presentation/keyboard_preview_screen.dart';
 import 'package:winflowz_app/features/clipboard/domain/clipboard_normalizer.dart';
@@ -114,8 +115,9 @@ void _clearAndroidBridgeMocks() {
   messenger.setMockMethodCallHandler(_secureStorageChannel, null);
 }
 
-Widget _appShellTestWidget() {
+Widget _appShellTestWidget({List<Override> overrides = const []}) {
   return ProviderScope(
+    overrides: overrides,
     child: MaterialApp(
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
@@ -532,6 +534,26 @@ void main() {
 
     expect(handled, isTrue);
     expect(find.text('WinFlowz • Voice'), findsOneWidget);
+  });
+
+  testWidgets('new account welcome guide is shown once in app shell', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _appShellTestWidget(
+        overrides: [signupWelcomePendingProvider.overrideWith((ref) => true)],
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Bienvenue dans WinFlowz'), findsOneWidget);
+    expect(find.text('Ouvrir le guide'), findsOneWidget);
+    expect(find.textContaining('Ton compte est prêt.'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Commencer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bienvenue dans WinFlowz'), findsNothing);
   });
 
   testWidgets('settings can resume onboarding overlay', (tester) async {

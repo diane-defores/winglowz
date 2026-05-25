@@ -47,9 +47,9 @@ class AndroidKeyboardBridge {
     KeyboardStatusBarConfig config,
   ) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>(
@@ -106,9 +106,9 @@ class AndroidKeyboardBridge {
     AndroidKeyboardCornerConfig config,
   ) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>(
@@ -122,9 +122,9 @@ class AndroidKeyboardBridge {
     String presetId,
   ) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>(
@@ -146,9 +146,9 @@ class AndroidKeyboardBridge {
 
   static Future<void> openInputMethodSettings() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     await _invoke<void>('openInputMethodSettings');
@@ -156,9 +156,9 @@ class AndroidKeyboardBridge {
 
   static Future<void> showInputMethodPicker() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     await _invoke<void>('showInputMethodPicker');
@@ -166,9 +166,9 @@ class AndroidKeyboardBridge {
 
   static Future<void> openNotificationListenerSettings() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     await _invoke<void>('openNotificationListenerSettings');
@@ -176,9 +176,9 @@ class AndroidKeyboardBridge {
 
   static Future<void> openWriteSettingsPermission() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     await _invoke<void>('openWriteSettingsPermission');
@@ -210,9 +210,9 @@ class AndroidKeyboardBridge {
     required KeyboardPrivacyMode privacyMode,
   }) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>('setKeyboardPreferences', {
@@ -260,9 +260,9 @@ class AndroidKeyboardBridge {
 
   static Future<AndroidKeyboardStatus> setThemeMode(String themeMode) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>('setKeyboardThemeMode', {
@@ -283,9 +283,9 @@ class AndroidKeyboardBridge {
     KeyboardThemeConfig config,
   ) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>(
@@ -307,9 +307,9 @@ class AndroidKeyboardBridge {
 
   static Future<Map<String, Object?>> importKeyboardThemeImage() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>(
@@ -481,9 +481,9 @@ class AndroidKeyboardBridge {
     KeyboardSyncProfile profile,
   ) async {
     if (!PlatformCapabilities.keyboardImeSupported) {
-      throw const AndroidKeyboardBridgeException(
+      throw AndroidKeyboardBridgeException(
         code: 'KEYBOARD_UNSUPPORTED',
-        message: 'Android keyboard IME is not supported on this platform.',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
       );
     }
     final validation = profile.validate();

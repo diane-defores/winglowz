@@ -46,7 +46,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Clavier Android non disponible'), findsOneWidget);
+      expect(find.text('Clavier Android indisponible sur iOS'), findsOneWidget);
+      expect(
+        find.text(
+          'Le clavier WinFlowz est une IME native Android et ne peut pas être installé sur iOS.',
+        ),
+        findsOneWidget,
+      );
       final syncButton = tester.widget<FilledButton>(
         find.widgetWithText(FilledButton, 'Synchroniser'),
       );

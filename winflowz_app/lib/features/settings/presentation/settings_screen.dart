@@ -1373,7 +1373,7 @@ class _OnboardingSettingsTileState extends State<_OnboardingSettingsTile>
         : 'Reprendre';
 
     final subtitle = !widget.readiness.platformSupported
-        ? 'Non requis sur cette plateforme'
+        ? 'Non requis sur ${PlatformCapabilities.currentPlatformLabel}: ${PlatformCapabilities.overlayUnavailableReason}'
         : fullyConfigured
         ? 'Tout est configuré'
         : widget.readiness.shouldShowOnboarding

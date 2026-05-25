@@ -80,7 +80,7 @@ class _KeyboardCornerShortcutsScreenState
         _snippets = snippets;
         _message = PlatformCapabilities.keyboardImeSupported
             ? 'Loaded. Changes stay in draft until Save.'
-            : 'Simulation only: this platform does not change the Android IME.';
+            : 'Simulation sur ${PlatformCapabilities.currentPlatformLabel}: ${PlatformCapabilities.keyboardImeUnavailableReason}';
       });
       _syncAdvancedEditor();
     } on AndroidKeyboardBridgeException catch (error) {

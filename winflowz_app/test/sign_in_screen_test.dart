@@ -76,6 +76,42 @@ class _ThrowingAuthSessionStore implements AuthSessionStore {
   Future<void> signOut() async {}
 }
 
+class _SuccessfulAuthSessionStore implements AuthSessionStore {
+  var createAccountCalls = 0;
+
+  @override
+  Future<AuthSessionSnapshot> currentSession() async => _signedOut;
+
+  @override
+  Stream<AuthSessionSnapshot> watchSession() => Stream.value(_signedOut);
+
+  @override
+  Future<void> signInAnonymously() async {}
+
+  @override
+  Future<void> signInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {}
+
+  @override
+  Future<void> createAccountWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    createAccountCalls += 1;
+  }
+
+  @override
+  Future<void> signInWithGoogle() async {}
+
+  @override
+  Future<void> signInWithGoogleIdToken({required String? idToken}) async {}
+
+  @override
+  Future<void> signOut() async {}
+}
+
 const _signedOut = AuthSessionSnapshot(
   user: null,
   syncStatus: SyncStatus.unavailable(),
@@ -163,6 +199,27 @@ void main() {
     );
     expect(find.text('Copier le détail'), findsOneWidget);
     expect(store.createAccountCalls, 1);
+  });
+
+  testWidgets('successful account creation schedules welcome guide', (
+    tester,
+  ) async {
+    final store = _SuccessfulAuthSessionStore();
+    await tester.pumpWidget(_testWidget(store));
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'test@example.com',
+    );
+    await tester.enterText(find.byType(TextFormField).last, 'password');
+    await tester.tap(find.text('Créer un compte'));
+    await tester.pumpAndSettle();
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SignInScreen)),
+    );
+    expect(store.createAccountCalls, 1);
+    expect(container.read(signupWelcomePendingProvider), isTrue);
   });
 
   testWidgets('continue locally bypasses the active remote auth store', (

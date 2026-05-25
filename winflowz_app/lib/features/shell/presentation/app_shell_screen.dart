@@ -7,6 +7,7 @@ import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
+import '../../auth/application/auth_session_provider.dart';
 import '../../clipboard/presentation/clipboard_screen.dart';
 import '../../dictionary/presentation/dictionary_screen.dart';
 import '../../keyboard/domain/keyboard_models.dart';
@@ -53,6 +54,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   bool _onboardingOpenedManually = false;
   bool _onboardingBusy = false;
   bool _onboardingDeferPromptVisible = false;
+  bool _welcomeGuideVisible = false;
   bool _showOnboardingResumeHint = false;
   final List<int> _tabHistory = [0];
   OnboardingReadiness? _onboardingReadiness;
@@ -93,6 +95,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       ..clear()
       ..add(_index);
     WidgetsBinding.instance.addObserver(this);
+    Future.microtask(_consumePendingSignupWelcome);
     Future.microtask(_refreshOnboardingState);
   }
 
@@ -129,6 +132,14 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     } catch (_) {
       return AndroidKeyboardStatus.unsupported();
     }
+  }
+
+  void _consumePendingSignupWelcome() {
+    if (!mounted || !ref.read(signupWelcomePendingProvider)) {
+      return;
+    }
+    ref.read(signupWelcomePendingProvider.notifier).state = false;
+    setState(() => _welcomeGuideVisible = true);
   }
 
   Future<void> _saveOnboardingSettings(UserSettingsSnapshot settings) async {
@@ -504,6 +515,22 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     _selectTab(4);
   }
 
+  void _startWelcomeGuide() {
+    setState(() {
+      _welcomeGuideVisible = false;
+      _onboardingDismissed = false;
+      _onboardingOpenedManually = true;
+      _showOnboardingResumeHint = false;
+    });
+    if (PlatformCapabilities.isAndroid &&
+        PlatformCapabilities.overlaySupported) {
+      setState(() => _onboardingVisible = true);
+      _refreshOnboardingState();
+    } else {
+      _selectTab(4);
+    }
+  }
+
   void _showOnboardingDeferPrompt() {
     setState(() => _onboardingDeferPromptVisible = true);
   }
@@ -615,30 +642,39 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                     child: Column(
                       children: [
                         if (!PlatformCapabilities.localSpeechSupported)
-                          const Padding(
+                          Padding(
                             padding: AppInsets.screen,
                             child: AppBannerCard(
                               icon: Icons.mic_off_outlined,
-                              title: 'Local speech unavailable',
+                              title:
+                                  'Dictée locale indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
                               message:
-                                  'This platform cannot run local speech. Use advanced Whisper mode instead.',
+                                  '${PlatformCapabilities.localSpeechUnavailableReason} Utilise le mode Whisper avancé à la place.',
                               accentColor: AppColors.warning,
                             ),
                           ),
                         if (!PlatformCapabilities.overlaySupported)
-                          const Padding(
+                          Padding(
                             padding: AppInsets.screen,
                             child: AppBannerCard(
                               icon: Icons.layers_clear_outlined,
-                              title: 'Overlay unavailable',
+                              title:
+                                  'Overlay Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
                               message:
-                                  'Android overlay controls are not available on this platform.',
+                                  PlatformCapabilities.overlayUnavailableReason,
                             ),
                           ),
                         Expanded(
                           child: Stack(
                             children: [
                               Positioned.fill(child: pages[_index]),
+                              if (_welcomeGuideVisible)
+                                _WelcomeGuideOverlay(
+                                  onClose: () => setState(
+                                    () => _welcomeGuideVisible = false,
+                                  ),
+                                  onStartGuide: _startWelcomeGuide,
+                                ),
                               if (_onboardingVisible)
                                 _OnboardingOverlay(
                                   readiness: _onboardingReadiness,
@@ -676,59 +712,187 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
             ),
             bottomNavigationBar: useRail || _onboardingVisible
                 ? null
-                : SafeArea(
-                    top: false,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerLow.withValues(
-                          alpha: colorScheme.brightness == Brightness.dark
-                              ? AppNavigationMetrics.bottomBarDarkAlpha
-                              : AppNavigationMetrics.bottomBarLightAlpha,
-                        ),
-                        border: Border(
-                          top: BorderSide(
-                            color: colorScheme.outlineVariant.withValues(
-                              alpha: 0.72,
-                            ),
-                          ),
-                        ),
+                : NavigationBar(
+                    selectedIndex: _index,
+                    onDestinationSelected: _selectTab,
+                    destinations: const [
+                      NavigationDestination(
+                        icon: Icon(Icons.keyboard_voice_outlined),
+                        selectedIcon: Icon(Icons.keyboard_voice),
+                        label: 'Voice',
                       ),
-                      child: NavigationBar(
-                        selectedIndex: _index,
-                        onDestinationSelected: _selectTab,
-                        destinations: const [
-                          NavigationDestination(
-                            icon: Icon(Icons.keyboard_voice_outlined),
-                            selectedIcon: Icon(Icons.keyboard_voice),
-                            label: 'Voice',
+                      NavigationDestination(
+                        icon: Icon(Icons.content_paste_outlined),
+                        selectedIcon: Icon(Icons.content_paste),
+                        label: 'Clipboard',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.text_snippet_outlined),
+                        selectedIcon: Icon(Icons.text_snippet),
+                        label: 'Snippets',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.auto_fix_high_outlined),
+                        selectedIcon: Icon(Icons.auto_fix_high),
+                        label: 'Dictionary',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.settings_outlined),
+                        selectedIcon: Icon(Icons.settings),
+                        label: 'Settings',
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _WelcomeGuideOverlay extends StatelessWidget {
+  const _WelcomeGuideOverlay({
+    required this.onClose,
+    required this.onStartGuide,
+  });
+
+  final VoidCallback onClose;
+  final VoidCallback onStartGuide;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Positioned.fill(
+      child: BlockSemantics(
+        child: Semantics(
+          scopesRoute: true,
+          namesRoute: true,
+          explicitChildNodes: true,
+          label: 'Bienvenue dans WinFlowz',
+          child: ColoredBox(
+            color: AppColors.overlayScrim,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.x2),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 560),
+                    child: AppModalCard(
+                      padding: AppInsets.onboarding,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.waving_hand_outlined,
+                                color: colorScheme.primary,
+                              ),
+                              AppGaps.horizontalX2,
+                              Expanded(
+                                child: Text(
+                                  'Bienvenue dans WinFlowz',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium,
+                                ),
+                              ),
+                              IconButton(
+                                tooltip: 'Fermer',
+                                onPressed: onClose,
+                                icon: const Icon(Icons.close_outlined),
+                              ),
+                            ],
                           ),
-                          NavigationDestination(
-                            icon: Icon(Icons.content_paste_outlined),
-                            selectedIcon: Icon(Icons.content_paste),
-                            label: 'Clipboard',
+                          AppGaps.x2,
+                          Text(
+                            'Ton compte est prêt. Commence par configurer les accès utiles, puis ajoute tes premiers snippets, mots de dictionnaire et captures clipboard.',
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          NavigationDestination(
-                            icon: Icon(Icons.text_snippet_outlined),
-                            selectedIcon: Icon(Icons.text_snippet),
-                            label: 'Snippets',
+                          AppGaps.x3,
+                          const _WelcomeGuideItem(
+                            icon: Icons.keyboard_voice_outlined,
+                            title: 'Voice',
+                            message:
+                                'Dicte un texte, relis le brouillon, puis envoie-le dans ton champ actif.',
                           ),
-                          NavigationDestination(
-                            icon: Icon(Icons.auto_fix_high_outlined),
-                            selectedIcon: Icon(Icons.auto_fix_high),
-                            label: 'Dictionary',
+                          AppGaps.x2,
+                          const _WelcomeGuideItem(
+                            icon: Icons.content_paste_outlined,
+                            title: 'Clipboard',
+                            message:
+                                'Retrouve les éléments capturés et épingle ceux que tu réutilises souvent.',
                           ),
-                          NavigationDestination(
-                            icon: Icon(Icons.settings_outlined),
-                            selectedIcon: Icon(Icons.settings),
-                            label: 'Settings',
+                          AppGaps.x2,
+                          const _WelcomeGuideItem(
+                            icon: Icons.text_snippet_outlined,
+                            title: 'Snippets',
+                            message:
+                                'Crée des raccourcis pour tes réponses, signatures et phrases fréquentes.',
+                          ),
+                          AppGaps.x3,
+                          Wrap(
+                            spacing: AppSpacing.x2,
+                            runSpacing: AppSpacing.x2,
+                            children: [
+                              FilledButton.icon(
+                                onPressed: onStartGuide,
+                                icon: const Icon(Icons.flag_outlined),
+                                label: const Text('Ouvrir le guide'),
+                              ),
+                              OutlinedButton.icon(
+                                onPressed: onClose,
+                                icon: const Icon(Icons.check_outlined),
+                                label: const Text('Commencer'),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
                   ),
+                ),
+              ),
+            ),
           ),
-        );
-      },
+        ),
+      ),
+    );
+  }
+}
+
+class _WelcomeGuideItem extends StatelessWidget {
+  const _WelcomeGuideItem({
+    required this.icon,
+    required this.title,
+    required this.message,
+  });
+
+  final IconData icon;
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: colorScheme.primary),
+        AppGaps.horizontalX2,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleSmall),
+              AppGaps.x1,
+              Text(message),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -769,12 +933,12 @@ class _OnboardingOverlay extends StatelessWidget {
     final activeReadiness = readiness;
     final Widget onboardingContent;
     if (activeReadiness == null) {
-      onboardingContent = const Text(
-        'Onboarding indisponible sur ce terminal.',
+      onboardingContent = Text(
+        'Guide indisponible sur ${PlatformCapabilities.currentPlatformLabel}. ${PlatformCapabilities.overlayUnavailableReason}',
       );
     } else if (!activeReadiness.platformSupported) {
-      onboardingContent = const Text(
-        'Onboarding indisponible sur ce terminal.',
+      onboardingContent = Text(
+        'Guide indisponible sur ${PlatformCapabilities.currentPlatformLabel}. ${PlatformCapabilities.overlayUnavailableReason}',
       );
     } else if (showDeferPrompt) {
       onboardingContent = _OnboardingDeferredContent(

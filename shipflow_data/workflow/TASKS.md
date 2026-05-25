@@ -103,3 +103,201 @@
 | 🟡 | Add explicit accessibility/focus contracts for custom keyboard corner targets and editor controls beyond basic `Semantics` labels | ✅ done — corner preview now has ordered focus traversal, semantic key/corner targets, Enter/Space activation, overlay slider semantic values, and widget-test coverage |
 | 🟡 | Introduce reusable app primitives (`AppSectionCard`, `AppFormPanel`, `AppEntityListTile`, `AppStatusCard`) instead of assembling Material primitives inline on every page | ✅ done — first shared component set added under `lib/core/widgets/app_components.dart` |
 | 🟡 | Move data mutation/load orchestration out of the large page state classes where practical, keeping screen widgets focused on rendering and interaction wiring | ✅ done — Settings keyboard/overlay bridge orchestration moved to `SettingsKeyboardController`/`SettingsOverlayController`, and keyboard preview/settings rendering split into dedicated part files |
+
+
+---
+
+<!-- central-shipflow-data-retirement: imported projects/winflowz/TASKS.md -->
+
+## Legacy Imported From Central ShipFlow Data
+
+The following content was preserved from `/home/claude/shipflow_data/projects/winflowz/TASKS.md` during central repository retirement. Treat it as historical backlog/context unless an item is promoted into the active section above.
+
+# WinFlowz Formation — Backlog
+
+> Audit date: 2026-03-09
+> Course: 39 pages across 8 modules (FR)
+> Benchmark: Ali Abdaal LifeOS, Tiago Forte BASB, Thomas Frank, August Bradley PPV
+
+---
+
+## Active
+
+🟡 [winflowz] task: Consolidate SITE and PUBLIC_SITE_URL into one canonical site URL env | status: todo | area: env-cleanup | id: wf-site-url-env-single-source
+
+---
+
+## Audit: Code (2026-04-07) — Score: C+
+
+| Pri | Task | Status |
+|-----|------|--------|
+| ✅ | Clerk webhook: add svix signature verification + proxy to Convex HTTP | ✅ fixed |
+| ✅ | Convert public Convex mutations to internalMutation (polar.ts, users.ts) | ✅ fixed |
+| ✅ | API key generation: replace Math.random() with crypto.getRandomValues() | ✅ fixed |
+| ✅ | Route translation drift: align routing.ts, i18n/config.ts, fr/routes.json | ✅ fixed |
+| ✅ | CSP connect-src: add Convex/Clerk/Polar domains, remove unsafe-eval | ✅ fixed |
+| ✅ | convex/http.ts: add Polar signature verification, fix empty catch | ✅ fixed |
+| ✅ | CORS: make origin environment-aware (not hardcoded localhost) | ✅ fixed |
+| ✅ | Middleware: remove unnecessary `as any` casts | ✅ fixed |
+| 🟠 | `as never` casts on ConvexHttpClient calls (courseGating.ts, checkout.ts) — needs codegen | 📋 todo |
+| 🟠 | Add CLERK_WEBHOOK_SECRET env var to Vercel + Convex deployment | 📋 todo |
+| 🟠 | Point Clerk webhooks to Convex HTTP endpoint or Astro proxy | 📋 todo |
+| 🟠 | Zero test files — write tests for courseGating, webhooks, checkout | 📋 todo |
+| 🟡 | Duplicate cn() utility (lib/cn.ts + lib/utils.ts) — consolidate | 📋 todo |
+| 🟡 | Duplicate Button component (ui/button.tsx vs react/ui/button.tsx) | 📋 todo |
+| 🟡 | Convex client singleton in lib/convex.ts never used (4 ad-hoc instantiations) | 📋 todo |
+| 🟡 | COURSE_ENTITLEMENT duplicated in courseGating.ts and convex/http.ts | 📋 todo |
+| 🟡 | Dead deps: @astrojs/vue, @types/cors, astro-vtbot — remove | 📋 todo |
+| 🟡 | Both astro-compress AND astro-compressor installed — pick one | 📋 todo |
+| 🟡 | No .env.example file | 📋 todo |
+| 🟡 | In-memory rate limiting useless on Vercel serverless | 📋 todo |
+| 🟡 | No structured logging or error tracking | 📋 todo |
+
+### Audit: Deps
+
+| Pri | Task | Status |
+|-----|------|--------|
+| 🔴 | Remediate public Astro/Vercel security advisories: `path-to-regexp` ReDoS via `@astrojs/vercel`, Astro `define:vars` XSS, `@astrojs/node` SSRF/DoS/cache-poisoning advisories | ✅ done |
+| 🟠 | Plan an Astro adapter/framework migration under `/sf-migrate` before major upgrades (`astro` 5→6, `@astrojs/vercel` 9→10, `@astrojs/node` 9→10, Clerk/Preline/Tailwind ecosystem majors) | ✅ done |
+| 🟠 | Restore reproducible installs: commit or intentionally replace `pnpm-lock.yaml`, add `packageManager`, and pin Node runtime via `engines` or `.node-version` | 🔄 in progress |
+| 🟡 | Add dependency update automation for pnpm and GitHub Actions with reviewed security updates, not silent major auto-merges | 📋 todo |
+| 🟡 | Remove or justify likely-unused direct dependencies after manual verification: `@heroicons/react`, `@polar-sh/astro`, `@preline/accordion`, `@types/cors`, `@vercel/nft`, `astro-compress`, `astro-compressor`, `astro-vtbot`, `globby`, `html-minifier-terser`, `lucide-react`, `sharp-ico`, `@phosphor-icons/web`, and formatting-only packages | 📋 todo |
+| 🟡 | Resolve dependency hygiene: choose one Astro compression package, document Preline Fair Use license fit, and add a project license declaration | 📋 todo |
+
+---
+
+## Session Notes — 2026-03-24
+
+### Done
+
+- [x] Public/private course gating is in place with Starlight override and private lesson route under `/dashboard/docs/...`
+- [x] Public lesson previews now route to a real server checkout entrypoint at `/api/polar/checkout`
+- [x] Polar webhook endpoint added at `/api/polar/webhook` with signature validation
+- [x] Convex user model now supports persistent training entitlements via `courseEntitlements`
+- [x] Clerk sign-in redirect flow now supports returning to checkout or the private lesson
+- [x] Purchase success page now redirects back to the unlocked private lesson
+- [x] Global anti-copy / anti-select scripts removed from public layouts and `/bio`
+- [x] Public inspector/debug scripts removed from the public site
+- [x] French Module V now has a real index page at `/fr/formations/module-5-consommer/`
+- [x] Public blog page debug logs removed
+- [x] Public lesson previews now have clearer value proposition, structure, and unlock CTAs
+- [x] Homepage and product page copy now better matches the real WinFlowz offer
+- [x] Full English training content now exists across all 8 modules
+- [x] Public contact email updated to `hello@winflowz.com`
+- [x] Sales funnel CTAs now point to real localized destinations across landing, product, and success flows
+- [x] Newsletter welcome flow now sends subscribers toward the Windows sales page
+- [x] Product catalog `beta` / `coming_soon` entries now use contact or waitlist CTAs instead of dead `#` links
+- [x] README, GUIDELINES, and `.env.example` now reflect the current Astro + Polar + Convex stack
+
+### Next Prod Steps
+
+- [ ] Configure Vercel env vars: `POLAR_ACCESS_TOKEN`, `POLAR_WINFLOWZ_PRODUCT_ID` or `POLAR_PRODUCT_ID`, `POLAR_WEBHOOK_SECRET`, `POLAR_SERVER`, `PUBLIC_CONVEX_URL`
+- [ ] Point Polar webhooks to `POST /api/polar/webhook`
+- [ ] Deploy Convex schema and mutations so `courseEntitlements` is available in production
+- [ ] Run an end-to-end production test: public lesson -> sign in -> Polar checkout -> success -> `/dashboard/docs/...`
+- [x] Keep `pnpm-lock.yaml` out of the commit, otherwise Vercel will switch back to `pnpm --frozen-lockfile` (currently absent from repo)
+
+### Next UX / Content Cleanup
+
+- [ ] Remove or modernize the legacy `/landing` page so it no longer duplicates the homepage positioning
+- [ ] Continue tightening marketing claims across secondary pages, testimonials, and remaining legacy sections
+- [ ] Implement a real contact flow instead of the current `mailto:` fallback
+- [ ] Pre-fill contact requests with the product or beta/waitlist intent to close the loop from catalog pages
+
+---
+
+## Dashboard
+
+| Module | Pages | Quality | Priority fixes |
+|--------|-------|---------|---------------|
+| I — Productivité | 7 | A | Exercises, sources, cross-links |
+| II — Windows | 7 | A- | Cross-links, exercises |
+| III — Temps & Énergie | 3 | A | Weekly review page, exercises |
+| IV — Actions | 3 | B+ | Troubleshooting, tool workflow, setup guide |
+| V — Consommer | 5 | B | Restructure, deepen, connect to PKM |
+| VI — Connaissances | 8 | B+ | Reorder, decision trees, minimal setup, backlinks concept |
+| VII — Social | 6 | A | Privacy notes, cross-links |
+| VIII — Raccourcis | 1 | B | Add Slack/Teams/VSCode, deepen |
+| Hub page | 1 | B | Progression path, CTA |
+
+---
+
+## 🔴 Critical — Missing from any professional course
+
+- [ ] **Exercises & deliverables per module** — Every module should produce a tangible artifact (ton système de tâches, ton workflow de capture, ton template de revue hebdo). Top courses (BASB, LifeOS) all do this. Currently: zero exercises across 39 pages.
+- [ ] **Weekly review as keystone habit** — Every major course converges on this as THE most important practice. We don't have a dedicated page. Add to Module III or IV: structured 60-90 min ritual (process tasks, review energy data, digital declutter, set intentions).
+- [ ] **AI integration depth** — "Utilise l'IA partout" is not enough in 2026. Need concrete AI workflows: prompt templates for prioritization, AI-assisted weekly review, ChatGPT for brainstorming, AI note summarization. MIT now has a dedicated course on "Personal Productivity in the Age of AI".
+- [ ] **Learning objectives** — Each page should start with "À la fin de cette leçon, tu sauras..." (2-3 bullet points). Currently: none.
+- [ ] **Cross-references between modules** — Concepts repeat across modules without linking. Examples: Backwardation (M4) should reference PKM for research; Focus (M1) should link to Timeboxing (M3); Discipline habits should link to Habit trackers (M4). Currently: zero cross-links.
+
+## 🟠 High — Would significantly improve quality
+
+- [ ] **Module V (Consommer) restructure** — Weakest module. Pages feel disconnected. Restructure as a consumption pipeline: Trouver → Filtrer → Lire → Synthétiser. Add decision tree for tool selection.
+- [ ] **Module VI reorder** — "Consommer & Réfléchir" (order 8) is foundational but listed last. Move to order 2 (after index). Current order makes reader build systems before learning how to consume intentionally.
+- [ ] **"Getting Started" quick-start guide** — Top courses all have this. Add a page to Module I or hub: "Week 1: the minimum viable setup in 15 minutes. Week 4: your full system." Prevents tool overload paralysis.
+- [ ] **Failure recovery** — What to do when the system breaks. No course teaches this well (identified gap across industry). Huge differentiator opportunity. Add to Module IV or III.
+- [ ] **Module VI tool overload** — 30+ tools across 8 pages. Add "Minimum Viable PKM" sidebar: the 3 tools you actually need to start (ex: Flow Launcher + Obsidian + Hoarder). Decision trees instead of lists.
+- [ ] **Obsidian/Logseq missing** — Module VI covers PKM but doesn't mention the two dominant PKM tools of 2025-26. No mention of backlinks, graph view, or linked thinking — which is the core innovation in modern PKM.
+- [ ] **Source citations** — Several stats are unsourced: "24 min to refocus" (Gloria Mark, 2004), "66 days for habits" (Lally et al., 2009), "147 min/day social media" (outdated, now ~2h30). Add inline sources.
+- [ ] **Module VIII expand** — Missing entire categories: Slack, Teams, VSCode/developer shortcuts, Windows 11-specific (Snap Layouts). Add app-specific shortcut sub-sections.
+
+## 🟡 Medium — Would make the course great
+
+- [ ] **"Next lesson" navigation** — Each page should end with a CTA pointing to the next page. Currently pages just end.
+- [ ] **Hub page progression** — Transform formations.mdx into a visual learning path (not just a list). Show recommended order, estimated time per module, visual progress.
+- [ ] **Slow productivity / burnout prevention** — Cal Newport's "Slow Productivity" (2024) is now standard. We touch on it (rest, boundaries) but don't name or develop the concept: fewer things, at a natural pace, obsess over quality.
+- [ ] **Personalization guidance** — "Ce qui marche pour un influenceur YouTube ne marchera pas pour un développeur freelance." Add a page or section on identifying your productivity personality/cognitive style and adapting the system.
+- [ ] **Tone consistency** — Module VII uses Starlight admonitions (:::tip, :::caution) and structured 4-week challenges. Other modules don't. Standardize engagement patterns across all modules.
+- [ ] **Privacy/GDPR notes** — Several tools (Hunter.io, LinkedIn Sales Navigator, MailTrack) have privacy implications. Add brief disclaimers.
+- [ ] **Reflection prompts** — End each page with "Qu'est-ce que tu vas mettre en place cette semaine ?" Module VII already does this (4-week challenges). Extend to all modules.
+- [ ] **Tool pricing/dates** — Add "dernière vérification : mars 2026" to tool tables. Prices change, tools disappear.
+
+## 🟢 Low — Nice to have
+
+- [x] **EN training translation** — Full EN lesson set now exists under `en/formations/`
+- [ ] **Image migration** — Copy images from CONTENU/ to `public/images/cours/`, fix Obsidian references
+- [ ] **Community/accountability angle** — Top courses with community have 5x engagement. Even a simple groupe Facebook link + accountability partner suggestion would help.
+- [ ] **Video content** — Many source notes reference YouTube videos. Consider embedding key ones or creating course-specific video content.
+- [ ] **Measurable outcomes** — BASB reports "40% improvement in notetaking confidence." Define measurable claims: "saves X hours/week," "reduces email time by Y%."
+- [ ] **Tiered pricing strategy** — Le contenu est le produit (pas l'affiliation). Industry standard: Basic (97-197€), Premium (297-497€ avec communauté + templates), Accompagné (697-997€ avec coaching). Module I gratuit comme vitrine.
+- [x] **Paywall / gating** — Gating Starlight en place : previews publiques + auth (Clerk) + paiement (Polar.sh) + route privée `/dashboard/docs/...`
+- [ ] **Cohort option** — Cohort-based courses achieve 85-96% completion vs ~30% self-paced. Consider periodic cohort launches.
+- [ ] **Notion/Obsidian templates** — Downloadable templates matching each module's system (weekly review template, PKM starter, habit tracker). Valeur perçue élevée → justifie le prix.
+- [ ] **Evaluate Vovsoft AI Automator for Windows-first training demos** — Test whether its local Ollama/API scheduling and batch prompt workflows can support WinFlowz exercises, classroom demos, or guided automation examples without needing shared infra (added 2026-04-18).
+
+---
+
+## Content gaps identified (new pages to consider)
+
+| Proposed page | Module | Rationale |
+|--------------|--------|-----------|
+| `revue-hebdomadaire.md` | III or IV | Keystone habit, every top course has this |
+| `ia-productivite.md` | I or new | AI workflows for productivity (2026 table stakes) |
+| `demarrage-rapide.md` | I (hub) | Quick-start guide, prevents overwhelm |
+| `quand-le-systeme-casse.md` | IV | Failure recovery, unique differentiator |
+| `productivite-lente.md` | I or III | Slow productivity / burnout prevention |
+| `pensee-liee.md` | VI | Backlinks, graph view, linked thinking |
+| `personnalise-ton-systeme.md` | I | Cognitive styles, adapting frameworks |
+
+---
+
+## Benchmarking vs top courses
+
+| Feature | WinFlowz | Ali Abdaal | Tiago Forte | Thomas Frank |
+|---------|----------|------------|-------------|--------------|
+| Modules | 8 | 7 | 6 | 3 |
+| Pages | 39 | 38 lessons | ~30 lessons | ~15 lessons |
+| Exercises | None | Workbook | Exercises/module | Exercises/module |
+| Learning objectives | None | Yes | Yes | Implicit |
+| Weekly review | Not taught | Core practice | Core practice | Core practice |
+| AI integration | Shallow | Growing | Minimal | Growing |
+| Community | None | Pro tier | 3000+ members | Skillshare |
+| Cross-references | None | Some | Strong | Some |
+| Quick-start | None | Workbook | App quiz | Video 1 |
+| Tool-agnostic | Yes (Windows) | Yes | Yes | Notion-focused |
+| Failure recovery | None | None | None | None |
+| French content | Native + EN translation | EN only | EN only | EN only |
+
+**Our advantages**: Native French (eux sont EN only), Windows-specific depth, broader scope (8 modules vs 3-7), contenu = produit principal (pas un lead magnet).
+**Our gaps**: No exercises, no weekly review, no AI depth, no community, no quick-start.
+**Business model**: Formation payante (tiers). Module I gratuit = vitrine. Affiliation = bonus, pas le core. Templates + communauté = valeur perçue pour tiers supérieurs.

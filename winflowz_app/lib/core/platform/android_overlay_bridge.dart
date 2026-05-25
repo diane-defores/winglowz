@@ -16,7 +16,13 @@ enum AndroidOverlayEventType {
   unknown,
 }
 
-enum AndroidOverlayVisualState { collapsed, recording, paused, processing, result }
+enum AndroidOverlayVisualState {
+  collapsed,
+  recording,
+  paused,
+  processing,
+  result,
+}
 
 class AndroidOverlayStatus {
   const AndroidOverlayStatus({
@@ -179,9 +185,9 @@ class AndroidOverlayBridge {
 
   static Future<void> openPermissionSettings() async {
     if (!PlatformCapabilities.overlaySupported) {
-      throw const AndroidOverlayBridgeException(
+      throw AndroidOverlayBridgeException(
         code: 'OVERLAY_UNSUPPORTED',
-        message: 'Android overlay is not supported on this platform.',
+        message: PlatformCapabilities.overlayUnavailableReason,
       );
     }
     await _invoke<void>('openOverlayPermissionSettings');
@@ -189,9 +195,9 @@ class AndroidOverlayBridge {
 
   static Future<void> openAccessibilitySettings() async {
     if (!PlatformCapabilities.overlaySupported) {
-      throw const AndroidOverlayBridgeException(
+      throw AndroidOverlayBridgeException(
         code: 'OVERLAY_UNSUPPORTED',
-        message: 'Android overlay is not supported on this platform.',
+        message: PlatformCapabilities.overlayUnavailableReason,
       );
     }
     await _invoke<void>('openAccessibilitySettings');
@@ -199,9 +205,9 @@ class AndroidOverlayBridge {
 
   static Future<void> openAppSettings() async {
     if (!PlatformCapabilities.overlaySupported) {
-      throw const AndroidOverlayBridgeException(
+      throw AndroidOverlayBridgeException(
         code: 'OVERLAY_UNSUPPORTED',
-        message: 'Android app settings is not supported on this platform.',
+        message: PlatformCapabilities.overlayUnavailableReason,
       );
     }
     await _invoke<void>('openAppSettings');
@@ -232,9 +238,9 @@ class AndroidOverlayBridge {
     required double opacity,
   }) async {
     if (!PlatformCapabilities.overlaySupported) {
-      throw const AndroidOverlayBridgeException(
+      throw AndroidOverlayBridgeException(
         code: 'OVERLAY_UNSUPPORTED',
-        message: 'Android overlay is not supported on this platform.',
+        message: PlatformCapabilities.overlayUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>('setOverlayAppearance', {
@@ -246,9 +252,9 @@ class AndroidOverlayBridge {
 
   static Future<AndroidOverlayStatus> setOverlayEnabled(bool enabled) async {
     if (!PlatformCapabilities.overlaySupported) {
-      throw const AndroidOverlayBridgeException(
+      throw AndroidOverlayBridgeException(
         code: 'OVERLAY_UNSUPPORTED',
-        message: 'Android overlay is not supported on this platform.',
+        message: PlatformCapabilities.overlayUnavailableReason,
       );
     }
     final raw = await _invoke<Map<Object?, Object?>>('setOverlayEnabled', {

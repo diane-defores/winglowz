@@ -222,8 +222,8 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
     if (!PlatformCapabilities.keyboardImeSupported) {
       return (
         _KeyboardSyncPanelStatus.unsupported,
-        'Clavier Android non disponible',
-        'Sur web/desktop, cette section reste locale et ne simule pas de succès natif.',
+        'Clavier Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
+        PlatformCapabilities.keyboardImeUnavailableReason,
         Icons.phonelink_erase_outlined,
       );
     }

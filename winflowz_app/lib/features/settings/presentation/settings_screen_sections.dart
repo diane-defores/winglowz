@@ -314,23 +314,29 @@ class _PlatformCapabilitiesSection extends StatelessWidget {
         AppStatusCard(
           icon: Icons.mic_none,
           title: PlatformCapabilities.localSpeechSupported
-              ? 'Local speech available'
-              : 'Local speech unavailable',
-          subtitle: 'Linux falls back to advanced recording + Whisper.',
+              ? 'Dictée locale disponible'
+              : 'Dictée locale indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
+          subtitle: PlatformCapabilities.localSpeechSupported
+              ? 'Le moteur local de la plateforme peut être utilisé.'
+              : '${PlatformCapabilities.localSpeechUnavailableReason} WinFlowz bascule vers l’enregistrement avancé et Whisper.',
         ),
         AppStatusCard(
           icon: Icons.bubble_chart_outlined,
           title: PlatformCapabilities.overlaySupported
               ? 'Android overlay supported'
-              : 'Android overlay unavailable on this platform',
+              : 'Overlay Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
+          subtitle: PlatformCapabilities.overlaySupported
+              ? 'La bulle native Android peut être utilisée.'
+              : PlatformCapabilities.overlayUnavailableReason,
         ),
         AppStatusCard(
           icon: Icons.keyboard_outlined,
           title: PlatformCapabilities.keyboardImeSupported
               ? 'Android keyboard IME supported'
-              : 'Android keyboard IME unavailable on this platform',
-          subtitle:
-              'WinFlowz keyboard is Android-only and runs as a native input method.',
+              : 'Clavier Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
+          subtitle: PlatformCapabilities.keyboardImeSupported
+              ? 'Le clavier WinFlowz fonctionne comme méthode de saisie native Android.'
+              : PlatformCapabilities.keyboardImeUnavailableReason,
         ),
       ],
     );
@@ -482,12 +488,12 @@ class _KeyboardSettingsSection extends StatelessWidget {
             ),
           ),
           Padding(
-          padding: AppInsets.keyboardControls,
-          child: _KeyboardThemeQuickPicker(
-            status: status,
-            busy: busy,
-            onThemePresetChanged: onThemePresetChanged,
-          ),
+            padding: AppInsets.keyboardControls,
+            child: _KeyboardThemeQuickPicker(
+              status: status,
+              busy: busy,
+              onThemePresetChanged: onThemePresetChanged,
+            ),
           ),
           SwitchListTile(
             value: status?.voiceEnabled ?? true,

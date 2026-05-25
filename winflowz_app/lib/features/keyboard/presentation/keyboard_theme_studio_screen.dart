@@ -55,7 +55,7 @@ class _KeyboardThemeStudioScreenState
         _draft = config;
         _message = PlatformCapabilities.keyboardImeSupported
             ? 'Theme loaded. Changes remain in draft until Save.'
-            : 'Simulation only on this platform.';
+            : 'Simulation sur ${PlatformCapabilities.currentPlatformLabel}: ${PlatformCapabilities.keyboardImeUnavailableReason}';
       });
     } catch (error) {
       if (!mounted) return;
