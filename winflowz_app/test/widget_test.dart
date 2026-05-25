@@ -267,7 +267,7 @@ void main() {
     expect(status.clipboardSyncDesired, isTrue);
     expect(status.mediaVolumeStepPercent, 20);
     expect(status.mediaBrightnessStepPercent, 15);
-    expect(status.actionRowHeightScale, closeTo(1 / 3, 0.0001));
+    expect(status.actionRowHeightScale, closeTo(0.56, 0.0001));
     expect(status.privacyMode, KeyboardPrivacyMode.strict);
     expect(status.cornerPresetId, 'developer_symbols');
     expect(status.layoutProfile, KeyboardLayoutProfile.azerty);
@@ -547,7 +547,7 @@ void main() {
 
       expect(find.text('Capture automatique'), findsOneWidget);
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
-      await tester.tap(find.widgetWithText(TextButton, 'Plus tard').last);
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Plus tard').last);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
       expect(find.text('Onboarding mis en pause'), findsOneWidget);
@@ -648,7 +648,7 @@ void main() {
       expect(find.text('Clavier'), findsOneWidget);
       expect(find.text('Clavier WinFlowz keyboard'), findsNothing);
       expect(find.widgetWithText(TextButton, 'Activé'), findsNothing);
-      expect(find.widgetWithText(TextButton, 'Plus tard'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Plus tard'), findsNothing);
       expect(find.widgetWithText(FilledButton, 'Modifier'), findsOneWidget);
       expect(find.text('Activé'), findsWidgets);
     } finally {

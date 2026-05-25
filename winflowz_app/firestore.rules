@@ -35,6 +35,101 @@ service cloud.firestore {
               ['rawText', 'audioBytes', 'audioBase64', 'transcript', 'providerPayload', 'openaiKey', 'anthropicKey']));
     }
 
+    function isDefaultKeyboardConfig(configId) {
+      return configId == 'default';
+    }
+
+    function hasKeyboardConfigAllowedKeys(payload) {
+      return payload.keys().hasOnly([
+        'schemaVersion',
+        'profileRevision',
+        'baseCloudRevision',
+        'updatedAt',
+        'updatedByDeviceId',
+        'sourcePlatform',
+        'sanitizationPolicy',
+        'checksum',
+        'payload',
+        'lastSyncedAt',
+      ]);
+    }
+
+    function hasKeyboardConfigRequiredKeys(payload) {
+      return payload.keys().hasAll([
+        'schemaVersion',
+        'profileRevision',
+        'baseCloudRevision',
+        'updatedAt',
+        'updatedByDeviceId',
+        'sourcePlatform',
+        'sanitizationPolicy',
+        'checksum',
+        'payload',
+      ]);
+    }
+
+    function hasKeyboardSyncV1Header(payload) {
+      return payload.schemaVersion == 1 &&
+        payload.sanitizationPolicy == 'keyboard_sync_v1';
+    }
+
+    function hasKeyboardConfigBoundedRevisions(payload) {
+      return payload.profileRevision is int &&
+        payload.baseCloudRevision is int &&
+        payload.profileRevision >= 0 &&
+        payload.baseCloudRevision >= 0 &&
+        payload.profileRevision <= 1000000 &&
+        payload.baseCloudRevision <= 1000000;
+    }
+
+    function hasKeyboardConfigBoundedStrings(payload) {
+      return payload.updatedAt is string &&
+        payload.updatedAt.size() >= 10 &&
+        payload.updatedAt.size() <= 64 &&
+        payload.updatedByDeviceId is string &&
+        payload.updatedByDeviceId.size() >= 1 &&
+        payload.updatedByDeviceId.size() <= 128 &&
+        payload.sourcePlatform is string &&
+        payload.sourcePlatform.size() >= 2 &&
+        payload.sourcePlatform.size() <= 32 &&
+        payload.checksum is string &&
+        payload.checksum.size() >= 32 &&
+        payload.checksum.size() <= 128;
+    }
+
+    function hasSafeKeyboardPayloadMap(payload) {
+      return payload.payload is map &&
+        !payload.payload.keys().hasAny([
+          'recents',
+          'clipboard',
+          'clipboardHistory',
+          'diagnostics',
+          'voiceArtifacts',
+          'rawVoiceArtifacts',
+          'token',
+          'tokens',
+          'secret',
+          'secrets',
+          'jwt',
+          'providerPayload',
+          'openaiKey',
+          'anthropicKey',
+          'imageBytes',
+          'imagePath',
+          'localImagePath',
+          'privatePaths',
+        ]);
+    }
+
+    function hasValidKeyboardConfig(payload) {
+      return hasKeyboardConfigAllowedKeys(payload) &&
+        hasKeyboardConfigRequiredKeys(payload) &&
+        hasKeyboardSyncV1Header(payload) &&
+        hasKeyboardConfigBoundedRevisions(payload) &&
+        hasKeyboardConfigBoundedStrings(payload) &&
+        hasSafeKeyboardPayloadMap(payload);
+    }
+
     match /users/{uid} {
       allow read, write: if false;
 
@@ -77,6 +172,14 @@ service cloud.firestore {
           hasValidRetentionHours(request.resource.data) &&
           hasSafeClientEventMetadata(request.resource.data);
         allow delete: if hasWinFlowzAppAccess(uid);
+      }
+
+      match /keyboardConfigs/{configId} {
+        allow read: if hasWinFlowzAppAccess(uid) && isDefaultKeyboardConfig(configId);
+        allow create, update: if hasWinFlowzAppAccess(uid) &&
+          isDefaultKeyboardConfig(configId) &&
+          hasValidKeyboardConfig(request.resource.data);
+        allow delete: if false;
       }
     }
 

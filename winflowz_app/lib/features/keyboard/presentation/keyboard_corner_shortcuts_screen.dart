@@ -7,6 +7,7 @@ import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
+import '../application/keyboard_sync_providers.dart';
 import '../../snippets/application/snippet_store_provider.dart';
 import '../../snippets/domain/snippet_store.dart';
 import '../domain/keyboard_models.dart';
@@ -199,6 +200,9 @@ class _KeyboardCornerShortcutsScreenState
         );
         _message = 'Gesture shortcuts saved to Android keyboard.';
       });
+      ref
+          .read(keyboardSyncChangeNotifierProvider.notifier)
+          .markKeyboardProfileChanged();
     } on AndroidKeyboardBridgeException catch (error) {
       if (!mounted) {
         return;

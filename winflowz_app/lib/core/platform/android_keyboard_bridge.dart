@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 import '../../features/clipboard/domain/clipboard_capture_event.dart';
 import '../../features/keyboard/domain/keyboard_models.dart';
+import '../../features/keyboard/domain/keyboard_sync_models.dart';
 import 'platform_capabilities.dart';
 
 class AndroidKeyboardBridgeException implements Exception {
@@ -426,6 +427,75 @@ class AndroidKeyboardBridge {
           'engine': engine,
         });
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
+  }
+
+  static Future<KeyboardSyncProfile?> exportKeyboardSyncProfile() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return null;
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'exportKeyboardSyncProfile',
+    );
+    if (raw == null) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_SYNC_EXPORT_EMPTY',
+        message: 'Native keyboard sync export returned an empty payload.',
+      );
+    }
+    var profile = KeyboardSyncProfile.fromMap(Map<String, Object?>.from(raw));
+    if (profile.checksum.isEmpty) {
+      profile = KeyboardSyncProfile(
+        schemaVersion: profile.schemaVersion,
+        profileRevision: profile.profileRevision,
+        baseCloudRevision: profile.baseCloudRevision,
+        updatedAt: profile.updatedAt,
+        updatedByDeviceId: profile.updatedByDeviceId,
+        sourcePlatform: profile.sourcePlatform,
+        sanitizationPolicy: profile.sanitizationPolicy,
+        checksum: KeyboardSyncProfile.computeChecksum(
+          schemaVersion: profile.schemaVersion,
+          profileRevision: profile.profileRevision,
+          baseCloudRevision: profile.baseCloudRevision,
+          updatedAt: profile.updatedAt,
+          updatedByDeviceId: profile.updatedByDeviceId,
+          sourcePlatform: profile.sourcePlatform,
+          sanitizationPolicy: profile.sanitizationPolicy,
+          payload: profile.payload,
+        ),
+        payload: profile.payload,
+      );
+    }
+    final validation = profile.validate();
+    if (!validation.isValid) {
+      throw AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_SYNC_EXPORT_INVALID',
+        message:
+            'Native keyboard sync export is invalid: ${validation.errors.join(", ")}',
+        details: validation.verdict.name,
+      );
+    }
+    return profile;
+  }
+
+  static Future<void> applyKeyboardSyncProfile(
+    KeyboardSyncProfile profile,
+  ) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: 'Android keyboard IME is not supported on this platform.',
+      );
+    }
+    final validation = profile.validate();
+    if (!validation.isValid) {
+      throw AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_SYNC_PROFILE_INVALID',
+        message:
+            'Keyboard sync profile is invalid: ${validation.errors.join(", ")}',
+        details: validation.verdict.name,
+      );
+    }
+    await _invoke<void>('applyKeyboardSyncProfile', profile.toMap());
   }
 
   static Future<AndroidKeyboardStatus> probeKeyboardLocalRuntimePath({

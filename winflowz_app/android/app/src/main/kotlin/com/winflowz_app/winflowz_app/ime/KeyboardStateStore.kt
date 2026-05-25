@@ -14,7 +14,10 @@ import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionBarState
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionLongPressBehavior
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardAttachedActionRowState
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.Date
+import java.util.TimeZone
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -505,6 +508,80 @@ class KeyboardStateStore(private val context: Context) {
         }
     }
 
+    fun exportKeyboardSyncProfile(): Map<String, Any?> {
+        val payload =
+            mapOf(
+                "preferences" to exportSyncablePreferences(),
+                "themeConfig" to sanitizeSyncThemeConfig(themeConfig().toMap()),
+                "cornerConfig" to sanitizeSyncCornerConfig(cornerConfig().toMap(includePresets = false)),
+                "statusBarConfig" to sanitizeSyncStatusBarConfig(statusBarConfig.toMap()),
+                "metadata" to exportSyncSafeMetadata(),
+            )
+        return mapOf(
+            "schemaVersion" to 1,
+            "profileRevision" to 0,
+            "baseCloudRevision" to 0,
+            "updatedAt" to iso8601NowUtc(),
+            "updatedByDeviceId" to "android_sdk_${Build.VERSION.SDK_INT}",
+            "sourcePlatform" to "android",
+            "sanitizationPolicy" to "keyboard_sync_v1",
+            "checksum" to "",
+            "payload" to payload,
+        )
+    }
+
+    fun applyKeyboardSyncProfile(profile: Map<*, *>): Map<String, Any?> {
+        val schemaVersion = (profile["schemaVersion"] as? Number)?.toInt()
+        if (schemaVersion != null && schemaVersion != 1) {
+            throw IllegalArgumentException("Unsupported keyboard sync schema version")
+        }
+        val payload = profile["payload"] as? Map<*, *>
+            ?: throw IllegalArgumentException("Keyboard sync payload must be a map")
+        val rawPreferences = payload["preferences"] as? Map<*, *> ?: emptyMap<Any?, Any?>()
+        val rawThemeConfig = payload["themeConfig"] as? Map<*, *>
+        val rawCornerConfig = payload["cornerConfig"] as? Map<*, *>
+        val rawStatusBarConfig = payload["statusBarConfig"] as? Map<*, *>
+        val restorePoint = captureSyncRestorePoint()
+        try {
+            applySyncablePreferences(rawPreferences)
+            if (rawThemeConfig != null) {
+                val sanitizedTheme = sanitizeSyncThemeConfig(rawThemeConfig)
+                val config = KeyboardThemeConfig.fromMap(sanitizedTheme).validated()
+                val encoded = config.toJson().toString()
+                if (encoded.length > MAX_THEME_CONFIG_JSON_LENGTH) {
+                    throw IllegalArgumentException("Theme config is too large")
+                }
+                preferences.edit().putString(KEY_THEME_CONFIG, encoded).apply()
+            }
+            if (rawCornerConfig != null) {
+                val sanitizedCorner = sanitizeSyncCornerConfig(rawCornerConfig)
+                val config = KeyboardCornerConfig.fromMap(sanitizedCorner)
+                val encoded = config.toJson().toString()
+                if (encoded.length > MAX_CORNER_CONFIG_JSON_LENGTH) {
+                    throw KeyboardCornerConfigException("Corner shortcut config is too large")
+                }
+                preferences.edit().putString(KEY_CORNER_CONFIG, encoded).apply()
+            }
+            if (rawStatusBarConfig != null) {
+                val sanitizedStatusBar = sanitizeSyncStatusBarConfig(rawStatusBarConfig)
+                val config = KeyboardStatusBarConfig.fromMap(sanitizedStatusBar)
+                preferences
+                    .edit()
+                    .putString(KEY_STATUS_BAR_CONFIG, config.toJSONObject().toString())
+                    .apply()
+            }
+        } catch (error: Exception) {
+            val restored = runCatching { restoreSyncRestorePoint(restorePoint) }.isSuccess
+            if (!restored) {
+                throw IllegalStateException("Keyboard sync apply failed and restore is required")
+            }
+            throw IllegalStateException(
+                "Keyboard sync apply failed and was rolled back: ${error.message ?: error.javaClass.simpleName}",
+            )
+        }
+        return mapOf("applied" to true, "rolledBack" to false)
+    }
+
     fun emojiRecents(limit: Int = 16): List<String> {
         return preferences
             .getString(KEY_EMOJI_RECENTS, "")
@@ -960,6 +1037,228 @@ class KeyboardStateStore(private val context: Context) {
     }
 
     private fun clipboardDedupeKey(content: String): String = content.replace(Regex("\\s+"), " ").trim().lowercase()
+
+    private fun exportSyncablePreferences(): Map<String, Any> {
+        return mapOf(
+            "voiceEnabled" to voiceEnabled,
+            "mediaControlsEnabled" to mediaControlsEnabled,
+            "mediaVolumeStepPercent" to mediaVolumeStepPercent,
+            "mediaBrightnessStepPercent" to mediaBrightnessStepPercent,
+            "themeMode" to themeMode,
+            "layoutProfile" to layoutProfile.name,
+            "cornerModeEnabled" to cornerModeEnabled,
+            "debugTouchOverlayEnabled" to debugTouchOverlayEnabled,
+            "keyVibrationEnabled" to keyVibrationEnabled,
+            "keyVibrationIntensity" to keyVibrationIntensity,
+            "keySoundEnabled" to keySoundEnabled,
+            "keySoundIntensity" to keySoundIntensity,
+            "spellingSuggestionsEnabled" to spellingSuggestionsEnabled,
+            "specialKeyCornersEnabled" to specialKeyCornersEnabled,
+            "frenchLanguageEnabled" to frenchLanguageEnabled,
+            "englishLanguageEnabled" to englishLanguageEnabled,
+            "doubleSpacePeriodEnabled" to doubleSpacePeriodEnabled,
+            "punctuationAutoSpacingEnabled" to punctuationAutoSpacingEnabled,
+            "keyboardHeightScale" to keyboardHeightScale,
+            "keyboardHorizontalPaddingPercent" to keyboardHorizontalPaddingPercent,
+            "keyboardVerticalPaddingPercent" to keyboardVerticalPaddingPercent,
+            "actionRowHeightScale" to actionRowHeightScale,
+            "compactModeEnabled" to compactModeEnabled,
+            "autoCloseModesEnabled" to autoCloseModesEnabled,
+            "actionBarLongPressBehavior" to actionBarLongPressBehavior.wireValue,
+            "privacyMode" to privacyMode,
+            "voiceLanguageTag" to voiceLanguageTag,
+            "voicePackId" to voicePackId,
+            "voiceEngine" to voiceEngine,
+        )
+    }
+
+    private fun exportSyncSafeMetadata(): Map<String, Any> {
+        return mapOf(
+            "androidSdk" to Build.VERSION.SDK_INT,
+            "layoutProfile" to layoutProfile.name,
+            "themePresetId" to themeConfig().presetId,
+            "cornerPresetId" to cornerConfig().presetId,
+            "hasNativeCustomizations" to hasNativeKeyboardCustomizations(),
+        )
+    }
+
+    private fun hasNativeKeyboardCustomizations(): Boolean {
+        return preferences.contains(KEY_THEME_CONFIG) ||
+            preferences.contains(KEY_CORNER_CONFIG) ||
+            preferences.contains(KEY_STATUS_BAR_CONFIG) ||
+            preferences.contains(KEY_KEYBOARD_HEIGHT_SCALE) ||
+            preferences.contains(KEY_KEYBOARD_HORIZONTAL_PADDING_PERCENT) ||
+            preferences.contains(KEY_KEYBOARD_VERTICAL_PADDING_PERCENT) ||
+            preferences.contains(KEY_ACTION_ROW_HEIGHT_SCALE) ||
+            preferences.contains(KEY_COMPACT_MODE_ENABLED) ||
+            preferences.contains(KEY_PRIVACY_MODE)
+    }
+
+    private fun sanitizeSyncThemeConfig(rawConfig: Map<*, *>): Map<String, Any?> {
+        val sanitized = rawConfig.mapNotNull { (key, value) ->
+            val stringKey = key as? String ?: return@mapNotNull null
+            stringKey to value
+        }.toMap().toMutableMap()
+        sanitized.remove("backgroundImagePath")
+        sanitized.remove("localImagePath")
+        sanitized.remove("imagePath")
+        sanitized.remove("imageBytes")
+        sanitized.remove("backgroundImageBytes")
+        sanitized["useImage"] = false
+        if (sanitized["presetId"] == null) {
+            sanitized["presetId"] = themeConfig().presetId
+        }
+        return sanitized
+    }
+
+    private fun sanitizeSyncCornerConfig(rawConfig: Map<*, *>): Map<String, Any?> {
+        val presetId = (rawConfig["presetId"] as? String)?.trim().orEmpty().ifEmpty {
+            KeyboardCornerPresets.FRENCH_ACCENTS
+        }
+        val rawOverrides = rawConfig["overrides"] as? List<*>
+        val overrides =
+            rawOverrides
+                .orEmpty()
+                .mapNotNull { item -> item as? Map<*, *> }
+                .mapNotNull { item ->
+                    val keyId = (item["keyId"] as? String)?.trim().orEmpty()
+                    val slot = (item["slot"] as? String)?.trim().orEmpty()
+                    if (keyId.isEmpty() || slot.isEmpty()) {
+                        return@mapNotNull null
+                    }
+                    val expression = (item["expression"] as? String)?.trim().orEmpty()
+                    val sensitive = item["sensitive"] as? Boolean ?: false
+                    val hasSensitiveExpression = looksSensitiveExpression(expression)
+                    val redacted = mutableMapOf<String, Any?>(
+                        "keyId" to keyId,
+                        "slot" to slot,
+                    )
+                    if (sensitive || hasSensitiveExpression) {
+                        redacted["disabled"] = true
+                        redacted["sensitive"] = true
+                        redacted["redacted"] = true
+                    } else {
+                        redacted["disabled"] = item["disabled"] as? Boolean ?: false
+                        redacted["sensitive"] = false
+                        if (expression.isNotEmpty()) {
+                            redacted["expression"] = expression
+                        }
+                        val label = (item["label"] as? String)?.trim()
+                        if (!label.isNullOrEmpty()) {
+                            redacted["label"] = label
+                        }
+                    }
+                    redacted
+                }
+        return mapOf(
+            "version" to 1,
+            "presetId" to presetId,
+            "overrides" to overrides,
+        )
+    }
+
+    private fun sanitizeSyncStatusBarConfig(rawConfig: Map<*, *>): Map<String, Any?> {
+        val config = KeyboardStatusBarConfig.fromMap(rawConfig)
+        return config.toMap().toMutableMap().apply {
+            remove("accountLabel")
+        }
+    }
+
+    private fun looksSensitiveExpression(expression: String): Boolean {
+        val lowered = expression.lowercase()
+        return lowered.contains("clipboard") ||
+            lowered.contains("snippet") ||
+            lowered.contains("voice") ||
+            lowered.contains("token") ||
+            lowered.contains("secret") ||
+            lowered.contains("/storage/") ||
+            lowered.contains("/data/") ||
+            lowered.contains("file://")
+    }
+
+    private fun iso8601NowUtc(): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        return formatter.format(Date())
+    }
+
+    private fun applySyncablePreferences(rawPreferences: Map<*, *>) {
+        rawPreferences.forEach { (key, value) ->
+            when (key as? String) {
+                "voiceEnabled" -> if (value is Boolean) voiceEnabled = value
+                "mediaControlsEnabled" -> if (value is Boolean) mediaControlsEnabled = value
+                "mediaVolumeStepPercent" -> if (value is Number) mediaVolumeStepPercent = value.toInt()
+                "mediaBrightnessStepPercent" -> if (value is Number) mediaBrightnessStepPercent = value.toInt()
+                "themeMode" -> if (value is String) themeMode = value
+                "layoutProfile" -> if (value is String) layoutProfile = KeyboardLayoutProfile.fromRaw(value)
+                "cornerModeEnabled" -> if (value is Boolean) cornerModeEnabled = value
+                "debugTouchOverlayEnabled" -> if (value is Boolean) debugTouchOverlayEnabled = value
+                "keyVibrationEnabled" -> if (value is Boolean) keyVibrationEnabled = value
+                "keyVibrationIntensity" -> if (value is Number) keyVibrationIntensity = value.toInt()
+                "keySoundEnabled" -> if (value is Boolean) keySoundEnabled = value
+                "keySoundIntensity" -> if (value is Number) keySoundIntensity = value.toInt()
+                "spellingSuggestionsEnabled" -> if (value is Boolean) spellingSuggestionsEnabled = value
+                "specialKeyCornersEnabled" -> if (value is Boolean) specialKeyCornersEnabled = value
+                "frenchLanguageEnabled" -> if (value is Boolean) frenchLanguageEnabled = value
+                "englishLanguageEnabled" -> if (value is Boolean) englishLanguageEnabled = value
+                "doubleSpacePeriodEnabled" -> if (value is Boolean) doubleSpacePeriodEnabled = value
+                "punctuationAutoSpacingEnabled" -> if (value is Boolean) punctuationAutoSpacingEnabled = value
+                "keyboardHeightScale" -> if (value is Number) keyboardHeightScale = value.toFloat()
+                "keyboardHorizontalPaddingPercent" ->
+                    if (value is Number) keyboardHorizontalPaddingPercent = value.toInt()
+                "keyboardVerticalPaddingPercent" ->
+                    if (value is Number) keyboardVerticalPaddingPercent = value.toInt()
+                "actionRowHeightScale" -> if (value is Number) actionRowHeightScale = value.toFloat()
+                "compactModeEnabled" -> if (value is Boolean) compactModeEnabled = value
+                "autoCloseModesEnabled" -> if (value is Boolean) autoCloseModesEnabled = value
+                "actionBarLongPressBehavior" ->
+                    if (value is String) actionBarLongPressBehavior = KeyboardActionLongPressBehavior.fromRaw(value)
+                "privacyMode" -> if (value is String) privacyMode = value
+                "voiceLanguageTag" -> if (value is String) voiceLanguageTag = value
+                "voicePackId" -> if (value is String) voicePackId = value
+                "voiceEngine" -> if (value is String) voiceEngine = value
+            }
+        }
+    }
+
+    private fun captureSyncRestorePoint(): KeyboardSyncRestorePoint {
+        return KeyboardSyncRestorePoint(
+            preferences = exportSyncablePreferences(),
+            rawThemeConfig = preferences.getString(KEY_THEME_CONFIG, null),
+            rawCornerConfig = preferences.getString(KEY_CORNER_CONFIG, null),
+            rawStatusBarConfig = preferences.getString(KEY_STATUS_BAR_CONFIG, null),
+        )
+    }
+
+    private fun restoreSyncRestorePoint(restorePoint: KeyboardSyncRestorePoint) {
+        applySyncablePreferences(restorePoint.preferences)
+        preferences
+            .edit()
+            .apply {
+                if (restorePoint.rawThemeConfig == null) {
+                    remove(KEY_THEME_CONFIG)
+                } else {
+                    putString(KEY_THEME_CONFIG, restorePoint.rawThemeConfig)
+                }
+                if (restorePoint.rawCornerConfig == null) {
+                    remove(KEY_CORNER_CONFIG)
+                } else {
+                    putString(KEY_CORNER_CONFIG, restorePoint.rawCornerConfig)
+                }
+                if (restorePoint.rawStatusBarConfig == null) {
+                    remove(KEY_STATUS_BAR_CONFIG)
+                } else {
+                    putString(KEY_STATUS_BAR_CONFIG, restorePoint.rawStatusBarConfig)
+                }
+            }.apply()
+    }
+
+    private data class KeyboardSyncRestorePoint(
+        val preferences: Map<String, Any>,
+        val rawThemeConfig: String?,
+        val rawCornerConfig: String?,
+        val rawStatusBarConfig: String?,
+    )
 
     private fun JSONObject.toMap(): Map<String, Any> {
         return mutableMapOf<String, Any>().also { map ->

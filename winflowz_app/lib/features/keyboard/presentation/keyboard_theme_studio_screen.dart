@@ -2,23 +2,26 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
+import '../application/keyboard_sync_providers.dart';
 import '../domain/keyboard_models.dart';
 import '../domain/keyboard_theme_validation.dart';
 
-class KeyboardThemeStudioScreen extends StatefulWidget {
+class KeyboardThemeStudioScreen extends ConsumerStatefulWidget {
   const KeyboardThemeStudioScreen({super.key});
 
   @override
-  State<KeyboardThemeStudioScreen> createState() =>
+  ConsumerState<KeyboardThemeStudioScreen> createState() =>
       _KeyboardThemeStudioScreenState();
 }
 
-class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
+class _KeyboardThemeStudioScreenState
+    extends ConsumerState<KeyboardThemeStudioScreen> {
   KeyboardThemeConfig _saved = KeyboardThemeConfig.defaults();
   KeyboardThemeConfig _draft = KeyboardThemeConfig.defaults();
   bool _loading = true;
@@ -83,6 +86,9 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
         _draft = saved;
         _message = 'Keyboard theme saved.';
       });
+      ref
+          .read(keyboardSyncChangeNotifierProvider.notifier)
+          .markKeyboardProfileChanged();
     } catch (error) {
       if (!mounted) return;
       setState(() => _message = 'Unable to save keyboard theme: $error');
@@ -107,6 +113,9 @@ class _KeyboardThemeStudioScreenState extends State<KeyboardThemeStudioScreen> {
         _draft = reset;
         _message = 'Keyboard theme reset to defaults.';
       });
+      ref
+          .read(keyboardSyncChangeNotifierProvider.notifier)
+          .markKeyboardProfileChanged();
     } catch (error) {
       if (!mounted) return;
       setState(() => _message = 'Unable to reset keyboard theme: $error');

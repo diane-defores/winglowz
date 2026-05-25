@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
+import 'package:winflowz_app/features/keyboard/application/keyboard_sync_providers.dart';
 import 'package:winflowz_app/features/keyboard/presentation/keyboard_theme_studio_screen.dart';
 
 void main() {
@@ -85,7 +87,9 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -110,7 +114,9 @@ void main() {
 
   testWidgets('blocks save when theme contrast is unreadable', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -151,7 +157,9 @@ void main() {
 
   testWidgets('selecting a preset applies its draft colors', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -177,7 +185,9 @@ void main() {
 
   testWidgets('shows a separate pressed color hold control', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -189,7 +199,9 @@ void main() {
 
   testWidgets('shows capped swipe glyph opacity control', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -201,7 +213,9 @@ void main() {
 
   testWidgets('opens one studio section at a time', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -218,7 +232,9 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -231,7 +247,9 @@ void main() {
 
   testWidgets('keeps spacing controls focused on gaps only', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -246,7 +264,9 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(home: KeyboardThemeStudioScreen()),
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
@@ -270,5 +290,29 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(importedMessage, findsOneWidget);
+  });
+
+  testWidgets('save emits keyboard sync change notification', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(KeyboardThemeStudioScreen)),
+    );
+    final before = container.read(keyboardSyncChangeNotifierProvider);
+
+    await tester.tap(find.text('System').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Neon Terminal').last);
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+
+    final after = container.read(keyboardSyncChangeNotifierProvider);
+    expect(after, greaterThan(before));
   });
 }

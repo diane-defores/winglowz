@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-24"
+updated: "2026-05-25"
 status: draft
 source_skill: sf-docs
 scope: "android-native"
@@ -27,6 +27,7 @@ supersedes: []
 evidence:
   - "Mapped before Android IME native implementation."
   - "Updated for stable grid/touch geometry implementation."
+  - "Updated for account-backed keyboard sync profile export/import V1 contract."
 next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
@@ -102,6 +103,9 @@ Keyboard clipboard action
 - Theme image import uses a system image picker, decodes/downsamples to a bounded PNG in app-private storage, and rejects non-image or oversized output; no broad storage permission is required and the IME renders only the private path.
 - Replacing or resetting a theme cleans up superseded app-private theme images under `filesDir/keyboard_themes` to avoid orphaned files.
 - Keyboard diagnostics now expose `themePresetId`, `themePressEffect`, `themeBackgroundSource`, `themeConfigSize`, and `themeFallbackStatus` without exposing private image paths.
+- Keyboard sync/recovery bridge methods are `exportKeyboardSyncProfile` and `applyKeyboardSyncProfile`. Flutter must validate checksum/schema before apply; native apply is atomic-or-recoverable and must never claim cloud success on unsupported platforms.
+- Keyboard sync V1 stays local-first: the IME keeps working even if cloud sync fails. Cloud payload excludes image bytes/private paths, sensitive shortcuts, clipboard/history content, dictation raw content, recents, diagnostics, tokens, and secrets.
+- Account-backed keyboard sync/recovery requires Blacksmith/GitHub Actions Android build proof plus Diane device QA for IME-native behavior (restore while keyboard is active, permissions, lifecycle). Do not validate this slice with local Android/Gradle builds on the shared VM.
 - Keyboard crash recovery records only allowlisted native diagnostics: action id, panel, mode, layout profile, compact flag, height scale, theme preset/source, private-mode flag, exception class/message redigés, short stack, UTC timestamp, and recovery counter. It must never persist typed text, clipboard contents, snippets, dictation, emails, tokens, JWTs, prompts, or provider payloads.
 - `WinFlowzKeyboardView` wraps draw/touch/dispatch/layout refresh paths. A recoverable exception stops repeat runnables, clears the active gesture, stores the diagnostic through `KeyboardCrashReporter`, and switches to a neutral `KeyboardLayoutBuilder.safeFallback()` snapshot without deleting user preferences.
 - `WinFlowzInputMethodService` wraps lifecycle preference refresh and system actions such as settings/theme launch and keyboard picker. Service-level failures are reported through the same redigé diagnostic store and shown as `Keyboard recovered`.

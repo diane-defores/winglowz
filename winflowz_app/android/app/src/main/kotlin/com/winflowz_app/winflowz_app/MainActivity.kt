@@ -602,6 +602,49 @@ class MainActivity : FlutterActivity() {
                         keyboardState.replaceDictionaryRules(keyboardTextRulesFromArgument(call.arguments))
                         result.success(true)
                     }
+                    "exportKeyboardSyncProfile" -> {
+                        try {
+                            result.success(keyboardState.exportKeyboardSyncProfile())
+                        } catch (error: Exception) {
+                            result.error(
+                                "KEYBOARD_SYNC_EXPORT_FAILED",
+                                "Unable to export keyboard sync profile.",
+                                error.message,
+                            )
+                        }
+                    }
+                    "applyKeyboardSyncProfile" -> {
+                        val rawProfile = call.arguments as? Map<*, *>
+                        if (rawProfile == null) {
+                            result.error(
+                                "KEYBOARD_SYNC_PROFILE_INVALID",
+                                "Keyboard sync profile payload must be a map.",
+                                null,
+                            )
+                            return@setMethodCallHandler
+                        }
+                        try {
+                            result.success(keyboardState.applyKeyboardSyncProfile(rawProfile))
+                        } catch (error: IllegalArgumentException) {
+                            result.error(
+                                "KEYBOARD_SYNC_PROFILE_INVALID",
+                                error.message ?: "Keyboard sync profile is invalid.",
+                                null,
+                            )
+                        } catch (error: IllegalStateException) {
+                            result.error(
+                                "KEYBOARD_SYNC_APPLY_FAILED",
+                                error.message ?: "Keyboard sync profile apply failed.",
+                                null,
+                            )
+                        } catch (error: Exception) {
+                            result.error(
+                                "KEYBOARD_SYNC_APPLY_FAILED",
+                                "Unable to apply keyboard sync profile.",
+                                error.message,
+                            )
+                        }
+                    }
                     else -> result.notImplemented()
                 }
             }

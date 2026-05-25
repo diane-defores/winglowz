@@ -39,6 +39,24 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 - Firebase configuration/rules/indexes validation when Firebase adapter is implemented.
 - Firestore Security Rules tests or emulator smoke proving user-scoped isolation.
 
+## Keyboard Sync Slice Verification — 2026-05-25
+
+Executed locally (no Android/Gradle tasks on this VM):
+
+- `dart format lib/features/keyboard/application/keyboard_sync_providers.dart lib/features/keyboard/application/keyboard_profile_backup_service.dart lib/features/keyboard/presentation/keyboard_sync_panel.dart lib/features/settings/presentation/settings_screen.dart lib/features/keyboard/presentation/keyboard_theme_studio_screen.dart lib/features/keyboard/presentation/keyboard_corner_shortcuts_screen.dart test/keyboard_profile_backup_service_test.dart test/keyboard_sync_panel_test.dart test/keyboard_theme_studio_screen_test.dart test/keyboard_corner_shortcuts_screen_test.dart`
+- `flutter test test/keyboard_profile_backup_service_test.dart`
+- `flutter test test/keyboard_sync_panel_test.dart`
+- `flutter test test/keyboard_theme_studio_screen_test.dart`
+- `flutter test test/keyboard_corner_shortcuts_screen_test.dart`
+- `flutter analyze`
+
+Result: passed.
+
+Still required outside local VM:
+
+- Blacksmith/GitHub Actions Android build proof for IME sync bridge behavior.
+- Diane physical-device QA for IME-native restore/apply flows.
+
 ## Required Manual Checks
 
 - Android: local speech, advanced recording, WinFlowz keyboard enable/switch/type/private-field behavior, keyboard dictation permission denied/allowed, keyboard clipboard actions, keyboard media play/pause, overlay permission, accessibility fallback, clipboard fallback.

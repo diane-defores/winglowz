@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-24"
+updated: "2026-05-25"
 status: draft
 source_skill: sf-docs
 scope: "flutter-app"
@@ -27,6 +27,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Mapped before Android IME Settings bridge work."
+  - "Updated for account-backed keyboard sync panel, backup service, and sync change notifier wiring."
 next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
@@ -84,6 +85,12 @@ Clipboard UI
   -> ClipboardHistoryApi
   -> ClipboardHistoryStore
   -> secure local persistent store or provider adapter
+
+Keyboard sync panel
+  -> authSessionProvider + suiteIdentityProvider
+  -> KeyboardSyncController (local export/apply + queue + cloud store)
+  -> KeyboardSyncPanel statuses (local-only/unsupported/waiting/synced/pending/failed/conflict)
+  -> KeyboardProfileBackupService export/import JSON (validated before apply)
 ```
 
 ## Invariants
@@ -103,6 +110,9 @@ Clipboard UI
 - Keyboard clipboard bridge events are imported by Flutter before listing clipboard items; sensitive automatic content can be rejected by the store without user confirmation.
 - Keyboard corner config models in `lib/features/keyboard/domain/keyboard_models.dart` mirror the native preset/override wire shape. Kotlin native owns functional preset tables; Flutter keeps preset ids/names as DTO/UI fallback and resolves only explicit overrides.
 - `KeyboardCornerShortcutsScreen` edits corner shortcuts as a draft. It must not call the native save bridge until the user explicitly saves, and unsupported platforms must remain simulation-only.
+- `KeyboardThemeStudioScreen` and `KeyboardCornerShortcutsScreen` notify `keyboardSyncChangeNotifierProvider` only after successful native saves; these screens must not call Firestore directly.
+- `KeyboardSyncPanel` must show explicit unsupported/local-only messaging on web/non-Android and must not simulate native success.
+- V1 keyboard cloud sync excludes sensitive shortcuts, image payloads/paths, clipboard content/history, recents, diagnostics, and secrets. Manual export/import follows the same validation policy.
 - `KeyboardPreviewScreen` and `KeyboardCornerSelectablePreview` can render explicit override shortcuts and simulate simple text-like override outputs. They do not recreate native preset defaults; Android key events, field policy enforcement, persistence, preset resolution, and system dispatch still require Android IME validation.
 
 ## Failure Modes

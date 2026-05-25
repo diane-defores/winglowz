@@ -19,6 +19,7 @@ import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../keyboard/domain/keyboard_models.dart';
 import '../../keyboard/presentation/keyboard_corner_shortcuts_screen.dart';
+import '../../keyboard/presentation/keyboard_sync_panel.dart';
 import '../../keyboard/presentation/keyboard_theme_studio_screen.dart';
 import '../../auth/application/suite_identity_provider.dart';
 import '../../snippets/application/snippet_store_provider.dart';
@@ -116,6 +117,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String? _message;
   final Map<String, bool> _expandedSections = {
     'appearance': true,
+    'keyboard_sync': false,
     'backend': false,
     'keys': false,
     'platform': false,
@@ -1198,6 +1200,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ref.read(appThemeModeProvider.notifier).setMode(mode);
             },
           ),
+        ),
+        _collapsibleSection(
+          id: 'keyboard_sync',
+          title: 'Keyboard Sync',
+          child: const KeyboardSyncPanel(),
         ),
         _collapsibleSection(
           id: 'backend',

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:winflowz_app/core/theme/app_theme.dart';
+import 'package:winflowz_app/features/keyboard/application/keyboard_sync_providers.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
 import 'package:winflowz_app/features/keyboard/presentation/keyboard_corner_shortcuts_screen.dart';
 import 'package:winflowz_app/features/snippets/application/snippet_store_provider.dart';
@@ -154,6 +155,10 @@ void main() {
 
       await tester.pumpWidget(_testWidget(await _snippetStore()));
       await tester.pumpAndSettle();
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(KeyboardCornerShortcutsScreen)),
+      );
+      final before = container.read(keyboardSyncChangeNotifierProvider);
 
       await tester.tap(find.byKey(const Key('corner-preview-key-letter-e')));
       await tester.pumpAndSettle();
@@ -173,8 +178,10 @@ void main() {
       final saveCalls = calls.where(
         (call) => call.method == 'setKeyboardCornerConfig',
       );
+      final after = container.read(keyboardSyncChangeNotifierProvider);
       expect(saveCalls, hasLength(1));
       expect(find.textContaining('Saved'), findsWidgets);
+      expect(after, greaterThan(before));
     });
   });
 
