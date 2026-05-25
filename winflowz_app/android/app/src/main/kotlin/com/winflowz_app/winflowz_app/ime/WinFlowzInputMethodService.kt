@@ -273,7 +273,7 @@ class WinFlowzInputMethodService :
         )
         if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
             val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            Log.d(TAG, "word delete before fallback-to-selection-clear | result=${deleted.applied}")
+            Log.d(TAG, "word delete before fallback-to-selection-clear | result=$deleted")
             refreshTypingAssistantState(editor)
             return deleted
         }
@@ -306,7 +306,7 @@ class WinFlowzInputMethodService :
         )
         if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
             val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            Log.d(TAG, "word delete after fallback-to-selection-clear | result=${deleted.applied}")
+            Log.d(TAG, "word delete after fallback-to-selection-clear | result=$deleted")
             refreshTypingAssistantState(editor)
             return deleted
         }

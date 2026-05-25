@@ -954,10 +954,10 @@ object KeyboardLayoutBuilder {
                         KeyboardKeySpec(
                             id = "setting-vibration",
                             label = when (request.keyVibrationIntensity) {
-                                KeyboardStateStore.KEY_VIBRATION_INTENSITY_OFF -> "Vibe off",
-                                KeyboardStateStore.KEY_VIBRATION_INTENSITY_SHORT -> "Vibe short",
-                                KeyboardStateStore.KEY_VIBRATION_INTENSITY_LONG -> "Vibe long",
-                                else -> "Vibe med",
+                                KeyboardStateStore.KEY_VIBRATION_INTENSITY_OFF -> "Vibe off"
+                                KeyboardStateStore.KEY_VIBRATION_INTENSITY_SHORT -> "Vibe short"
+                                KeyboardStateStore.KEY_VIBRATION_INTENSITY_LONG -> "Vibe long"
+                                else -> "Vibe med"
                             },
                             action = KeyboardKeyAction.ToggleKeyVibration,
                             active = request.keyVibrationIntensity != KeyboardStateStore.KEY_VIBRATION_INTENSITY_OFF,
@@ -1036,7 +1036,7 @@ object KeyboardLayoutBuilder {
                         ),
                         KeyboardKeySpec(
                             id = "setting-horizontal-padding-value",
-                            label = "H ${String.format(\"%02d\", (request.keyboardHorizontalPaddingScale * 100).toInt())}%",
+                            label = "H " + String.format("%02d", (request.keyboardHorizontalPaddingScale * 100).toInt()) + "%",
                             action = KeyboardKeyAction.DecreaseKeyboardHorizontalPadding,
                             active = true,
                             enabled = false,
