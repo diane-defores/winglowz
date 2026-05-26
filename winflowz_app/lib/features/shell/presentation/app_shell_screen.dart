@@ -135,10 +135,10 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   }
 
   void _consumePendingSignupWelcome() {
-    if (!mounted || !ref.read(signupWelcomePendingProvider)) {
+    if (!mounted ||
+        !ref.read(signupWelcomePendingProvider.notifier).consume()) {
       return;
     }
-    ref.read(signupWelcomePendingProvider.notifier).state = false;
     setState(() => _welcomeGuideVisible = true);
   }
 

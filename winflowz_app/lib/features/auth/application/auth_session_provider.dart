@@ -26,7 +26,25 @@ final localAuthModeProvider = NotifierProvider<LocalAuthModeController, bool>(
   LocalAuthModeController.new,
 );
 
-final signupWelcomePendingProvider = StateProvider<bool>((ref) => false);
+class SignupWelcomeController extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void markPending() {
+    state = true;
+  }
+
+  bool consume() {
+    final pending = state;
+    state = false;
+    return pending;
+  }
+}
+
+final signupWelcomePendingProvider =
+    NotifierProvider<SignupWelcomeController, bool>(
+      SignupWelcomeController.new,
+    );
 
 final authSessionStoreProvider = Provider<AuthSessionStore>((ref) {
   if (ref.watch(localAuthModeProvider)) {

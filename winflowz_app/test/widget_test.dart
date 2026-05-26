@@ -115,9 +115,8 @@ void _clearAndroidBridgeMocks() {
   messenger.setMockMethodCallHandler(_secureStorageChannel, null);
 }
 
-Widget _appShellTestWidget({List<Override> overrides = const []}) {
+Widget _appShellTestWidget() {
   return ProviderScope(
-    overrides: overrides,
     child: MaterialApp(
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
@@ -143,6 +142,11 @@ class _MemorySettingsStore implements SettingsStore {
   Stream<UserSettingsSnapshot> watch() async* {
     yield snapshot;
   }
+}
+
+class _PendingSignupWelcomeController extends SignupWelcomeController {
+  @override
+  bool build() => true;
 }
 
 Widget _keyboardPreviewTestWidget() {
@@ -540,8 +544,17 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      _appShellTestWidget(
-        overrides: [signupWelcomePendingProvider.overrideWith((ref) => true)],
+      ProviderScope(
+        overrides: [
+          signupWelcomePendingProvider.overrideWith(
+            _PendingSignupWelcomeController.new,
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          home: const AppShellScreen(),
+        ),
       ),
     );
     await tester.pump();

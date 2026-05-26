@@ -64,7 +64,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           email: email,
           password: password,
         );
-        ref.read(signupWelcomePendingProvider.notifier).state = true;
+        ref.read(signupWelcomePendingProvider.notifier).markPending();
       } else {
         await store.signInWithEmailPassword(email: email, password: password);
       }
