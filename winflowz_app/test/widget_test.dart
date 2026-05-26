@@ -8,17 +8,20 @@ import 'package:winflowz_app/core/bootstrap/supabase_bootstrap.dart';
 import 'package:winflowz_app/core/platform/android_keyboard_bridge.dart';
 import 'package:winflowz_app/core/platform/android_overlay_bridge.dart';
 import 'package:winflowz_app/core/platform/platform_capabilities.dart';
+import 'package:winflowz_app/core/sync/sync_status.dart';
 import 'package:winflowz_app/features/clipboard/application/clipboard_store_provider.dart';
 import 'package:winflowz_app/features/clipboard/data/in_memory_clipboard_history_store.dart';
 import 'package:winflowz_app/features/clipboard/domain/clipboard_store.dart';
 import 'package:winflowz_app/features/clipboard/presentation/clipboard_screen.dart';
 import 'package:winflowz_app/features/auth/application/auth_session_provider.dart';
+import 'package:winflowz_app/features/auth/domain/auth_session_store.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
 import 'package:winflowz_app/features/keyboard/presentation/keyboard_preview_screen.dart';
 import 'package:winflowz_app/features/clipboard/domain/clipboard_normalizer.dart';
 import 'package:winflowz_app/features/shell/presentation/app_shell_screen.dart';
 import 'package:winflowz_app/features/settings/application/settings_store_provider.dart';
 import 'package:winflowz_app/features/settings/domain/settings_store.dart';
+import 'package:winflowz_app/features/settings/presentation/settings_screen.dart';
 import 'package:winflowz_app/features/voice/domain/transcription_draft.dart';
 
 const _overlayChannel = MethodChannel('winflowz_app/overlay');
@@ -142,6 +145,48 @@ class _MemorySettingsStore implements SettingsStore {
   Stream<UserSettingsSnapshot> watch() async* {
     yield snapshot;
   }
+}
+
+class _RecordingCloudAuthStore implements AuthSessionStore {
+  var emailPasswordCalls = 0;
+
+  @override
+  Future<AuthSessionSnapshot> currentSession() async =>
+      const AuthSessionSnapshot(
+        user: null,
+        syncStatus: SyncStatus.unavailable(),
+      );
+
+  @override
+  Stream<AuthSessionSnapshot> watchSession() => Stream.value(
+    const AuthSessionSnapshot(user: null, syncStatus: SyncStatus.unavailable()),
+  );
+
+  @override
+  Future<void> signInAnonymously() async {}
+
+  @override
+  Future<void> signInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    emailPasswordCalls += 1;
+  }
+
+  @override
+  Future<void> createAccountWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {}
+
+  @override
+  Future<void> signInWithGoogle() async {}
+
+  @override
+  Future<void> signInWithGoogleIdToken({required String? idToken}) async {}
+
+  @override
+  Future<void> signOut() async {}
 }
 
 class _PendingSignupWelcomeController extends SignupWelcomeController {
@@ -653,6 +698,65 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
       expect(find.text('Configuration WinFlowz'), findsNothing);
       expect(find.text('WinFlowz • Settings'), findsOneWidget);
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('settings local mode exposes cloud account connection', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks();
+    final cloudAuthStore = _RecordingCloudAuthStore();
+
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(
+              (ref) => Stream.value(const AuthSessionSnapshot.localFallback()),
+            ),
+            remoteAuthConfiguredProvider.overrideWithValue(true),
+            remoteAuthSessionStoreProvider.overrideWithValue(cloudAuthStore),
+            settingsStoreProvider.overrideWithValue(
+              _MemorySettingsStore(const UserSettingsSnapshot.defaults()),
+            ),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            home: const SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Local mode active'), findsOneWidget);
+      await _tapVisible(
+        tester,
+        find.byKey(const Key('settings-connect-cloud-account')),
+      );
+
+      expect(find.text('Connexion'), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const ValueKey('auth-email-field')),
+        'test@example.com',
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('auth-password-field')),
+        'password',
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Se connecter'));
+      await tester.pumpAndSettle();
+
+      expect(cloudAuthStore.emailPasswordCalls, 1);
+      expect(find.text('Account & cloud'), findsOneWidget);
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();

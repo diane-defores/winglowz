@@ -24,6 +24,82 @@ double _mediaStepSliderValue(int percent) {
   return nearestIndex.toDouble();
 }
 
+class _AccountCloudSection extends StatelessWidget {
+  const _AccountCloudSection({
+    required this.authAsync,
+    required this.remoteAuthConfigured,
+    required this.onConnectCloudAccount,
+    required this.onSignOut,
+  });
+
+  final AsyncValue<AuthSessionSnapshot> authAsync;
+  final bool remoteAuthConfigured;
+  final VoidCallback onConnectCloudAccount;
+  final VoidCallback onSignOut;
+
+  @override
+  Widget build(BuildContext context) {
+    final session = authAsync.maybeWhen(
+      data: (value) => value,
+      orElse: () => null,
+    );
+    final isRemoteSignedIn =
+        session != null && session.isSignedIn && !session.isLocalFallback;
+    final title = isRemoteSignedIn
+        ? 'Cloud account connected'
+        : session?.isLocalFallback == true
+        ? 'Local mode active'
+        : 'Cloud account not connected';
+    final subtitle = !remoteAuthConfigured
+        ? 'Remote auth is not configured in this build.'
+        : isRemoteSignedIn
+        ? 'Keyboard, appearance and eligible data can sync with your WinFlowz account.'
+        : 'Connect a WinFlowz account to sync keyboard settings and recover work across devices.';
+    final account =
+        session?.user?.email ?? session?.user?.provider.name ?? 'none';
+
+    return AppSectionCard(
+      title: 'Account & cloud',
+      subtitle: subtitle,
+      leading: const Icon(Icons.cloud_sync_outlined),
+      stretch: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppStatusCard(
+            icon: isRemoteSignedIn
+                ? Icons.cloud_done_outlined
+                : Icons.cloud_off_outlined,
+            title: title,
+            subtitle: 'Current account: $account',
+          ),
+          AppGaps.x3,
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.icon(
+                key: const Key('settings-connect-cloud-account'),
+                onPressed: remoteAuthConfigured && !isRemoteSignedIn
+                    ? onConnectCloudAccount
+                    : null,
+                icon: const Icon(Icons.login_outlined),
+                label: const Text('Connect cloud account'),
+              ),
+              if (session?.isSignedIn == true)
+                OutlinedButton.icon(
+                  onPressed: onSignOut,
+                  icon: const Icon(Icons.logout_outlined),
+                  label: const Text('Sign out'),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _AppearanceSection extends StatelessWidget {
   const _AppearanceSection({
     required this.themeMode,

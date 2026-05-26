@@ -9,6 +9,17 @@ final localAuthSessionStoreProvider = Provider<LocalAuthSessionStore>(
   (ref) => const LocalAuthSessionStore(),
 );
 
+final remoteAuthConfiguredProvider = Provider<bool>(
+  (ref) => FirebaseBootstrap.isConfigured,
+);
+
+final remoteAuthSessionStoreProvider = Provider<AuthSessionStore>((ref) {
+  if (!ref.watch(remoteAuthConfiguredProvider)) {
+    throw UnsupportedError('Remote auth is not configured.');
+  }
+  return FirebaseAuthSessionStore();
+});
+
 class LocalAuthModeController extends Notifier<bool> {
   @override
   bool build() => false;
@@ -50,8 +61,8 @@ final authSessionStoreProvider = Provider<AuthSessionStore>((ref) {
   if (ref.watch(localAuthModeProvider)) {
     return ref.watch(localAuthSessionStoreProvider);
   }
-  if (FirebaseBootstrap.isConfigured) {
-    return FirebaseAuthSessionStore();
+  if (ref.watch(remoteAuthConfiguredProvider)) {
+    return ref.watch(remoteAuthSessionStoreProvider);
   }
   return ref.watch(localAuthSessionStoreProvider);
 });

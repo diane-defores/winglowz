@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-25"
+updated: "2026-05-26"
 status: draft
 source_skill: sf-docs
 scope: "android-native"
@@ -117,7 +117,7 @@ Keyboard clipboard action
 - The native clipboard event queue persists a bounded local drain list so keyboard copy/cut/paste actions can reach the Flutter clipboard history even if the app opens after the IME event. This is a transient import queue, not the product history store.
 - Text keys carry a `KeyboardKeyValue` model in addition to display glyphs. `KeyboardKeyValueParser`, `KeyboardKeyModifier`, and `KeyboardModMap` are the local foundation for parsed layouts, macros, Ctrl/Alt/Fn/Shift behavior and user modmaps; the live layout dispatches parsed text keys, key events, action values and macros through existing callbacks.
 - Ctrl, Alt and Fn are exposed as modifier keys in the control row. They latch for the next key-value dispatch, then clear; Fn currently ships with a conservative built-in navigation modmap for `h/j/k/l`.
-- Touch handling tracks the active pointer id, ignores secondary pointers without dispatching duplicate keys, supports long-press repeat for destructive/navigation actions, and uses horizontal spacebar sliding for cursor movement. It still does not implement full multi-finger modifier chords or selection sliders.
+- Touch handling tracks per-pointer gesture state by Android `pointerId`, allows overlapping normal text/key taps to complete independently, and keeps protected interactions explicitly exclusive (space slider, horizontal row scroll, vertical panel scroll, long-press repeat, and action-descriptor long press). Pointer cleanup on `ACTION_CANCEL`, missing pointer indexes, detach, and finish-input removes delayed callbacks and avoids duplicate dispatch. It still does not implement full multi-finger modifier chords or selection sliders.
 - Protected gestures keep priority over shortcuts: space slider, horizontal scroll rows, long press/repeat, and return-to-center cancellation must not dispatch a configured direction/corner slot.
 - Keyboard geometry separates stable grid slots, visual key rectangles, and tactile hit rectangles. Main modes should use whole-cell spans for deliberate exceptions such as Space, Enter, Shift, or Delete; theme gaps, radius, shadows, and width scaling affect the visual rectangle, not the tactile grid cell.
 - The touch-debug overlay distinguishes tactile bounds from visual key bounds so fast-typing misses, covered gaps, and scroll/panel clipping can be inspected without logging typed content.

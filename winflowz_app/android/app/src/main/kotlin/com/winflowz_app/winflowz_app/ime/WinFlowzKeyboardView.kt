@@ -182,6 +182,48 @@ class WinFlowzKeyboardView(
         val panelScrollable: Boolean = false,
     )
 
+    private data class LayoutFingerprint(
+        val layoutMode: KeyboardLayoutMode,
+        val panelMode: KeyboardPanelMode,
+        val shifted: Boolean,
+        val shiftLocked: Boolean,
+        val fieldContext: KeyboardFieldContextMode,
+        val layoutProfile: KeyboardLayoutProfile,
+        val cornerModeEnabled: Boolean,
+        val debugTouchOverlayEnabled: Boolean,
+        val keyVibrationEnabled: Boolean,
+        val keyVibrationIntensity: Int,
+        val keySoundEnabled: Boolean,
+        val keySoundIntensity: Int,
+        val spellingSuggestionsEnabled: Boolean,
+        val specialKeyCornersEnabled: Boolean,
+        val frenchLanguageEnabled: Boolean,
+        val englishLanguageEnabled: Boolean,
+        val doubleSpacePeriodEnabled: Boolean,
+        val punctuationAutoSpacingEnabled: Boolean,
+        val keyboardHeightScale: Float,
+        val keyboardHorizontalPaddingScale: Float,
+        val keyboardVerticalPaddingScale: Float,
+        val compactModeEnabled: Boolean,
+        val symbolPage: Int,
+        val emojiCategory: KeyboardEmojiCategory,
+        val recentEmojis: List<String>,
+        val recentSymbols: List<String>,
+        val enterLabel: String,
+        val clipboardEntries: List<KeyboardClipboardEntry>,
+        val snippets: List<KeyboardTextRule>,
+        val suggestions: List<String>,
+        val actionBarState: KeyboardActionBarState,
+        val mediaNowPlayingLabel: String?,
+        val cornerConfig: KeyboardCornerConfig,
+        val themePresetId: String,
+        val privateMode: Boolean,
+        val clipboardAllowed: Boolean,
+        val voiceAllowed: Boolean,
+        val snippetsAllowed: Boolean,
+        val mediaControlsEnabled: Boolean,
+    )
+
     private var shifted = false
     private var shiftLocked = false
     private var actionBarState = KeyboardActionBarState()
@@ -264,22 +306,25 @@ class WinFlowzKeyboardView(
     private var cornerConfig = KeyboardCornerConfig()
     private val activeSystemModifiers = linkedSetOf<KeyboardSystemModifier>()
 
-    private var gestureStartFrame: KeyFrame? = null
-    private var gestureStartX = 0f
-    private var gestureStartY = 0f
-    private var gestureLatestX = 0f
-    private var gestureLatestY = 0f
-    private var gestureMaxDistance = 0f
-    private var activePointerId = MotionEvent.INVALID_POINTER_ID
-    private var activeKeyId: String? = null
+    private val pointerTracker = KeyboardPointerTracker<KeyFrame>()
+    private val longPressRunnablesByPointerId = mutableMapOf<Int, Runnable>()
+    private var debugPrimaryPointerX = 0f
+    private var debugPrimaryPointerY = 0f
+    private var debugPrimaryStartX = 0f
+    private var debugPrimaryStartY = 0f
+    private var activePointerPressedKeyIds = emptySet<String>()
     private val lingeringPressedKeyIds = linkedSetOf<String>()
     private val lingeringPressTokens = mutableMapOf<String, Int>()
     private var debugGestureText = "idle"
-    private var longPressTriggered = false
     private var repeatActionKey: KeyboardKeySpec? = null
+    private var repeatOwnerPointerId = MotionEvent.INVALID_POINTER_ID
+    private var repeatSourceFrame: KeyFrame? = null
+    private var repeatRunnable: Runnable? = null
     private var slidingSpace = false
+    private var slidingSpaceOwnerPointerId = MotionEvent.INVALID_POINTER_ID
     private var lastSlideStep = 0
     private var scrollingHorizontalRow = false
+    private var horizontalScrollOwnerPointerId = MotionEvent.INVALID_POINTER_ID
     private var lastHorizontalScrollX = 0f
     private var activeHorizontalRowId: String? = null
     private var horizontalGestureStartOffset = 0f
@@ -292,6 +337,7 @@ class WinFlowzKeyboardView(
     private val horizontalRowVisualProgressById = mutableMapOf<String, Float>()
     private val horizontalRowVisualAnimatorById = mutableMapOf<String, ValueAnimator>()
     private var scrollingVerticalPanel = false
+    private var verticalScrollOwnerPointerId = MotionEvent.INVALID_POINTER_ID
     private var lastVerticalScrollY = 0f
     private var verticalPanelScrollOffset = 0f
     private var verticalPanelMaxScrollOffset = 0f
@@ -299,6 +345,7 @@ class WinFlowzKeyboardView(
 
     private val keyFrames = mutableListOf<KeyFrame>()
     private var layoutSnapshot = KeyboardLayoutBuilder.safeFallback()
+    private var layoutRefreshGeneration = 0
 
     private val density = resources.displayMetrics.density
     private val pressEffects = KeyboardPressEffects(density) { SystemClock.uptimeMillis() }
@@ -427,20 +474,6 @@ class WinFlowzKeyboardView(
     private val horizontalRowVisualInDurationMs = 420L
     private val horizontalRowVisualOutDurationMs = 860L
     private val horizontalSnapInterpolator = OvershootInterpolator(0.85f)
-
-    private val longPressRunnable =
-        Runnable {
-            handleLongPress()
-        }
-
-    private val repeatRunnable =
-        object : Runnable {
-            override fun run() {
-                val key = repeatActionKey ?: return
-                dispatch(key, GestureSelection.PrimaryTap)
-                postDelayed(this, repeatDelayMs)
-            }
-        }
 
     private val repeatingActions =
         setOf(
@@ -745,10 +778,20 @@ class WinFlowzKeyboardView(
         autoCapitalized: Boolean,
         candidates: List<String>,
     ) {
-        if (layoutMode == KeyboardLayoutMode.Letters && !shiftLocked && shifted != autoCapitalized) {
-            shifted = autoCapitalized
+        val nextShifted =
+            if (layoutMode == KeyboardLayoutMode.Letters && !shiftLocked) {
+                autoCapitalized
+            } else {
+                shifted
+            }
+        val nextSuggestions = candidates.take(3)
+        if (shifted == nextShifted && suggestions == nextSuggestions) {
+            return
         }
-        suggestions = candidates.take(3)
+        if (layoutMode == KeyboardLayoutMode.Letters && !shiftLocked) {
+            shifted = nextShifted
+        }
+        suggestions = nextSuggestions
         refreshLayout()
     }
 
@@ -922,6 +965,7 @@ class WinFlowzKeyboardView(
 
     private fun drawKeyboard(canvas: Canvas) {
         keyFrames.clear()
+        activePointerPressedKeyIds = pointerTracker.activeKeyIds()
         horizontalRowMaxOffsetById.clear()
         if (!fieldPolicy.privateMode && themeConfig.useGradient && themeConfig.presetId != "system" && !themeConfig.useImage) {
             backgroundPaint.shader =
@@ -1014,38 +1058,10 @@ class WinFlowzKeyboardView(
                 return startGesture(event.getPointerId(event.actionIndex), event.x, event.y)
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
-                if (activePointerId != MotionEvent.INVALID_POINTER_ID) {
-                    debugGestureText = "multi-touch ignored active=$activePointerId"
-                    invalidate()
-                    return true
-                }
                 val index = event.actionIndex
                 return startGesture(event.getPointerId(index), event.getX(index), event.getY(index))
             }
-            MotionEvent.ACTION_MOVE -> {
-                if (gestureStartFrame == null) {
-                    return false
-                }
-                val pointerIndex = event.findPointerIndex(activePointerId)
-                if (pointerIndex < 0) {
-                    cancelGesture("missing active pointer")
-                    return true
-                }
-                gestureLatestX = event.getX(pointerIndex)
-                gestureLatestY = event.getY(pointerIndex)
-                val dx = gestureLatestX - gestureStartX
-                val dy = gestureLatestY - gestureStartY
-                val distance = hypot(dx.toDouble(), dy.toDouble()).toFloat()
-                gestureMaxDistance = max(gestureMaxDistance, distance)
-                activeKeyId = gestureStartFrame?.key?.id
-                handleSpaceSlider(dx, dy)
-                handleHorizontalRowScroll(dx, gestureLatestX)
-                handleVerticalPanelScroll(dy, gestureLatestY)
-                debugGestureText =
-                    "move dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${gestureMaxDistance.toInt()} slide=$slidingSpace scroll=$scrollingHorizontalRow vscroll=$scrollingVerticalPanel"
-                invalidate()
-                return true
-            }
+            MotionEvent.ACTION_MOVE -> return handleMoveEvent(event)
             MotionEvent.ACTION_UP -> {
                 return finishGesture(event.getPointerId(event.actionIndex), event.x, event.y)
             }
@@ -1054,7 +1070,7 @@ class WinFlowzKeyboardView(
                 return finishGesture(event.getPointerId(index), event.getX(index), event.getY(index))
             }
             MotionEvent.ACTION_CANCEL -> {
-                cancelGesture("cancel")
+                cancelAllPointers("cancel")
                 return true
             }
         }
@@ -1066,27 +1082,61 @@ class WinFlowzKeyboardView(
         x: Float,
         y: Float,
     ): Boolean {
+        if (pointerTracker.isProtectedByOtherPointer(pointerId)) {
+            debugGestureText =
+                "pointer suppressed pointer=$pointerId owner=${pointerTracker.protectedOwnerPointerId}"
+            invalidate()
+            return true
+        }
         val hit = hitTest(x, y)
         if (hit == null || !hit.key.enabled) {
             return false
         }
-        gestureStartFrame = hit
-        gestureStartX = x
-        gestureStartY = y
-        gestureLatestX = x
-        gestureLatestY = y
-        gestureMaxDistance = 0f
-        activePointerId = pointerId
-        activeKeyId = hit.key.id
+        val state = pointerTracker.startPointer(pointerId, hit.key.id, hit, x, y)
+        updateDebugPointer(state)
         if (hit.rowScrollable && !hit.rowId.isNullOrBlank()) {
             cancelHorizontalRowAnimation(hit.rowId)
         }
-        longPressTriggered = false
-        slidingSpace = false
-        lastSlideStep = 0
+        scheduleLongPress(pointerId)
         debugGestureText = "start pointer=$pointerId key=${hit.key.id}"
-        removeCallbacks(longPressRunnable)
-        postDelayed(longPressRunnable, longPressDelayMs)
+        invalidate()
+        return true
+    }
+
+    private fun handleMoveEvent(event: MotionEvent): Boolean {
+        val activePointers = pointerTracker.activeStates()
+        if (activePointers.isEmpty()) {
+            return false
+        }
+        activePointers.forEach { state ->
+            val pointerIndex = event.findPointerIndex(state.pointerId)
+            if (pointerIndex < 0) {
+                cancelPointer(state.pointerId, "missing pointer=${state.pointerId}")
+                return@forEach
+            }
+            val updated =
+                pointerTracker.updatePosition(
+                    pointerId = state.pointerId,
+                    x = event.getX(pointerIndex),
+                    y = event.getY(pointerIndex),
+                ) ?: return@forEach
+            updateDebugPointer(updated)
+            if (pointerTracker.isProtectedByOtherPointer(updated.pointerId)) {
+                cancelPointer(
+                    updated.pointerId,
+                    "pointer canceled pointer=${updated.pointerId} protected=${pointerTracker.protectedInteraction}",
+                )
+                return@forEach
+            }
+            val dx = updated.latestX - updated.startX
+            val dy = updated.latestY - updated.startY
+            handleSpaceSlider(updated, dx, dy)
+            handleHorizontalRowScroll(updated, dx, updated.latestX)
+            handleVerticalPanelScroll(updated, dy, updated.latestY)
+            val distance = hypot(dx.toDouble(), dy.toDouble()).toFloat()
+            debugGestureText =
+                "move ptr=${updated.pointerId} dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${updated.maxDistanceFromStart.toInt()} lock=${pointerTracker.protectedInteraction ?: "none"}"
+        }
         invalidate()
         return true
     }
@@ -1096,25 +1146,28 @@ class WinFlowzKeyboardView(
         x: Float,
         y: Float,
     ): Boolean {
-        if (pointerId != activePointerId) {
-            debugGestureText = "ignored pointer-up pointer=$pointerId active=$activePointerId"
+        val state = pointerTracker.get(pointerId)
+        if (state == null) {
+            debugGestureText = "ignored pointer-up pointer=$pointerId active=${pointerTracker.activeStates().size}"
             invalidate()
             return true
         }
-        removeCallbacks(longPressRunnable)
-        stopRepeat()
-        val key = gestureStartFrame?.key
-        if (key == null || !key.enabled) {
-            resetGesture()
+        val updated = pointerTracker.updatePosition(pointerId, x, y) ?: state
+        clearLongPress(pointerId)
+        stopRepeat(pointerId)
+        val key = updated.payload.key
+        if (!key.enabled) {
+            removePointerState(pointerId)
             invalidate()
             return true
         }
-        if (slidingSpace || scrollingHorizontalRow || scrollingVerticalPanel || longPressTriggered) {
-            if (scrollingHorizontalRow) {
+        if (updated.consumedByProtectedInteraction || updated.longPressTriggered) {
+            if (scrollingHorizontalRow && horizontalScrollOwnerPointerId == pointerId) {
                 finishHorizontalRowScroll()
             }
-            debugGestureText = "up key=${key.id} consumed slide=$slidingSpace scroll=$scrollingHorizontalRow vscroll=$scrollingVerticalPanel long=$longPressTriggered"
-            resetGesture()
+            debugGestureText =
+                "up key=${key.id} consumed lock=${pointerTracker.protectedInteraction ?: "none"}"
+            removePointerState(pointerId)
             invalidate()
             return true
         }
@@ -1123,68 +1176,129 @@ class WinFlowzKeyboardView(
                 key = key,
                 sample =
                     GestureSample(
-                        startX = gestureStartX,
-                        startY = gestureStartY,
+                        startX = updated.startX,
+                        startY = updated.startY,
                         endX = x,
                         endY = y,
-                        maxDistanceFromStart = gestureMaxDistance,
+                        maxDistanceFromStart = updated.maxDistanceFromStart,
                     ),
             )
         debugGestureText =
             "up key=${key.id} sel=${selection.name} tap=${gestureThresholds.tapSlopPx.toInt()} corner=${gestureThresholds.cornerThresholdPx.toInt()}"
-        dispatch(key, selection)
+        dispatch(key, selection, updated.payload)
         retainPressedHighlight(key.id)
-        resetGesture()
+        removePointerState(pointerId)
         invalidate()
         return true
     }
 
-    private fun cancelGesture(reason: String) {
-        removeCallbacks(longPressRunnable)
-        stopRepeat()
-        if (scrollingHorizontalRow) {
-            finishHorizontalRowScroll()
+    private fun cancelAllPointers(reason: String) {
+        val removedPointers = pointerTracker.removeAllPointers()
+        removedPointers.forEach { state ->
+            cleanupPointerStateAfterRemoval(state.pointerId)
         }
-        resetGesture()
+        stopRepeat()
         debugGestureText = reason
         invalidate()
     }
 
-    private fun resetGesture() {
-        gestureStartFrame = null
-        activePointerId = MotionEvent.INVALID_POINTER_ID
-        activeKeyId = null
-        gestureMaxDistance = 0f
-        longPressTriggered = false
-        slidingSpace = false
-        lastSlideStep = 0
-        scrollingHorizontalRow = false
-        lastHorizontalScrollX = 0f
-        activeHorizontalRowId = null
-        horizontalGestureStartOffset = 0f
-        horizontalGestureDragDx = 0f
-        scrollingVerticalPanel = false
-        lastVerticalScrollY = 0f
+    private fun cancelPointer(
+        pointerId: Int,
+        reason: String,
+    ) {
+        if (scrollingHorizontalRow && horizontalScrollOwnerPointerId == pointerId) {
+            finishHorizontalRowScroll()
+        }
+        removePointerState(pointerId)
+        debugGestureText = reason
     }
 
-    private fun handleLongPress() {
-        runKeyboardSafely("handleLongPress:${gestureStartFrame?.key?.id ?: "none"}") {
-            handleLongPressUnsafe()
+    private fun removePointerState(pointerId: Int) {
+        pointerTracker.removePointer(pointerId) ?: return
+        cleanupPointerStateAfterRemoval(pointerId)
+    }
+
+    private fun cleanupPointerStateAfterRemoval(pointerId: Int) {
+        clearLongPress(pointerId)
+        if (repeatOwnerPointerId == pointerId) {
+            stopRepeat(pointerId)
+        }
+        if (slidingSpaceOwnerPointerId == pointerId) {
+            slidingSpace = false
+            slidingSpaceOwnerPointerId = MotionEvent.INVALID_POINTER_ID
+            lastSlideStep = 0
+        }
+        if (horizontalScrollOwnerPointerId == pointerId) {
+            scrollingHorizontalRow = false
+            horizontalScrollOwnerPointerId = MotionEvent.INVALID_POINTER_ID
+            lastHorizontalScrollX = 0f
+            activeHorizontalRowId = null
+            horizontalGestureStartOffset = 0f
+            horizontalGestureDragDx = 0f
+        }
+        if (verticalScrollOwnerPointerId == pointerId) {
+            scrollingVerticalPanel = false
+            verticalScrollOwnerPointerId = MotionEvent.INVALID_POINTER_ID
+            lastVerticalScrollY = 0f
         }
     }
 
-    private fun handleLongPressUnsafe() {
-        val key = gestureStartFrame?.key ?: return
+    private fun scheduleLongPress(pointerId: Int) {
+        val token = pointerTracker.nextLongPressToken(pointerId) ?: return
+        clearLongPress(pointerId)
+        val runnable =
+            Runnable {
+                handleLongPress(pointerId, token)
+            }
+        longPressRunnablesByPointerId[pointerId] = runnable
+        postDelayed(runnable, longPressDelayMs)
+    }
+
+    private fun clearLongPress(pointerId: Int) {
+        longPressRunnablesByPointerId.remove(pointerId)?.let { removeCallbacks(it) }
+    }
+
+    private fun updateDebugPointer(pointerState: KeyboardPointerState<KeyFrame>) {
+        debugPrimaryStartX = pointerState.startX
+        debugPrimaryStartY = pointerState.startY
+        debugPrimaryPointerX = pointerState.latestX
+        debugPrimaryPointerY = pointerState.latestY
+    }
+
+    fun cancelAllPointerGestures(reason: String = "reset") {
+        cancelAllPointers(reason)
+    }
+
+    private fun handleLongPress(
+        pointerId: Int,
+        token: Int,
+    ) {
+        runKeyboardSafely("handleLongPress:${pointerTracker.get(pointerId)?.keyId ?: "none"}") {
+            handleLongPressUnsafe(pointerId, token)
+        }
+    }
+
+    private fun handleLongPressUnsafe(
+        pointerId: Int,
+        token: Int,
+    ) {
+        if (!pointerTracker.isLongPressTokenCurrent(pointerId, token)) {
+            return
+        }
+        val state = pointerTracker.get(pointerId) ?: return
+        if (pointerTracker.isProtectedByOtherPointer(pointerId)) {
+            return
+        }
+        val key = state.payload.key
         if (!key.enabled || slidingSpace || scrollingHorizontalRow) {
             return
         }
-        debugGestureText = "long key=${key.id}"
+        debugGestureText = "long key=${key.id} ptr=$pointerId"
         if (key.action in repeatingActions) {
-            longPressTriggered = true
-            repeatActionKey = key
-            dispatch(key, GestureSelection.PrimaryTap)
-            removeCallbacks(repeatRunnable)
-            postDelayed(repeatRunnable, repeatDelayMs)
+            acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressRepeat)
+            pointerTracker.markLongPressTriggered(pointerId)
+            startRepeat(pointerId, key, state.payload)
+            dispatch(key, GestureSelection.PrimaryTap, state.payload)
         } else if (key.actionDescriptorPrimary && key.actionDescriptorId != null) {
             val result =
                 actionBarController.onLongPress(
@@ -1196,7 +1310,8 @@ class WinFlowzKeyboardView(
                 invalidate()
                 return
             }
-            longPressTriggered = true
+            acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressAction)
+            pointerTracker.markLongPressTriggered(pointerId)
             setActionBarState(result.nextState)
             if (key.actionDescriptorId == "numbers" && layoutMode == KeyboardLayoutMode.Numbers) {
                 layoutMode = KeyboardLayoutMode.Letters
@@ -1208,7 +1323,8 @@ class WinFlowzKeyboardView(
             reconcileActionBarState()
             refreshLayout()
         } else if (key.action == KeyboardKeyAction.Shift) {
-            longPressTriggered = true
+            acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressAction)
+            pointerTracker.markLongPressTriggered(pointerId)
             if (layoutMode == KeyboardLayoutMode.Symbols) {
                 cycleSymbolPage()
             } else {
@@ -1217,8 +1333,9 @@ class WinFlowzKeyboardView(
                 setStatus("Shift locked")
             }
             refreshLayout()
-        } else if (dispatchLongPressShortcut(key)) {
-            longPressTriggered = true
+        } else if (dispatchLongPressShortcut(key, state.payload)) {
+            acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressAction)
+            pointerTracker.markLongPressTriggered(pointerId)
         } else {
             invalidate()
             return
@@ -1227,7 +1344,10 @@ class WinFlowzKeyboardView(
         invalidate()
     }
 
-    private fun dispatchLongPressShortcut(key: KeyboardKeySpec): Boolean {
+    private fun dispatchLongPressShortcut(
+        key: KeyboardKeySpec,
+        sourceFrame: KeyFrame?,
+    ): Boolean {
         if (cornerModeEnabled && allowsCornerGesture(key)) {
             val shortcut = key.cornerAssignments.topLeft
             if (shortcut != null) {
@@ -1237,25 +1357,76 @@ class WinFlowzKeyboardView(
                 return true
             }
         }
-        dispatch(key, GestureSelection.PrimaryTap)
+        dispatch(key, GestureSelection.PrimaryTap, sourceFrame)
         return true
     }
 
-    private fun stopRepeat() {
-        removeCallbacks(repeatRunnable)
+    private fun startRepeat(
+        pointerId: Int,
+        key: KeyboardKeySpec,
+        sourceFrame: KeyFrame?,
+    ) {
+        stopRepeat()
+        repeatOwnerPointerId = pointerId
+        repeatActionKey = key
+        repeatSourceFrame = sourceFrame
+        val runnable =
+            object : Runnable {
+                override fun run() {
+                    if (repeatOwnerPointerId != pointerId || !pointerTracker.contains(pointerId)) {
+                        stopRepeat(pointerId)
+                        return
+                    }
+                    val repeatKey = repeatActionKey ?: return
+                    dispatch(repeatKey, GestureSelection.PrimaryTap, repeatSourceFrame)
+                    postDelayed(this, repeatDelayMs)
+                }
+            }
+        repeatRunnable = runnable
+        postDelayed(runnable, repeatDelayMs)
+    }
+
+    private fun stopRepeat(ownerPointerId: Int? = null) {
+        if (ownerPointerId != null && repeatOwnerPointerId != ownerPointerId) {
+            return
+        }
+        repeatRunnable?.let { removeCallbacks(it) }
+        repeatRunnable = null
         repeatActionKey = null
+        repeatSourceFrame = null
+        repeatOwnerPointerId = MotionEvent.INVALID_POINTER_ID
+    }
+
+    private fun acquireProtectedInteraction(
+        pointerId: Int,
+        interaction: KeyboardProtectedInteraction,
+    ) {
+        val canceled = pointerTracker.acquireProtectedInteraction(pointerId, interaction)
+        canceled.forEach { state ->
+            cleanupPointerStateAfterRemoval(state.pointerId)
+        }
     }
 
     private fun handleSpaceSlider(
+        state: KeyboardPointerState<KeyFrame>,
         dx: Float,
         dy: Float,
     ) {
-        val key = gestureStartFrame?.key ?: return
+        val key = state.payload.key
+        if (slidingSpace && slidingSpaceOwnerPointerId != state.pointerId) {
+            return
+        }
         if (!isSpaceKey(key) || abs(dx) < spaceSlideStartPx || abs(dx) < abs(dy) * 1.25f) {
             return
         }
-        removeCallbacks(longPressRunnable)
-        slidingSpace = true
+        if (!slidingSpace) {
+            acquireProtectedInteraction(state.pointerId, KeyboardProtectedInteraction.SpaceSlider)
+            pointerTracker.markConsumedByProtectedInteraction(state.pointerId)
+            slidingSpace = true
+            slidingSpaceOwnerPointerId = state.pointerId
+            lastSlideStep = 0
+        }
+        clearLongPress(state.pointerId)
         val step = (dx / spaceSlideStepPx).toInt()
         val delta = step - lastSlideStep
         if (delta == 0) {
@@ -1277,18 +1448,22 @@ class WinFlowzKeyboardView(
     }
 
     private fun handleHorizontalRowScroll(
+        state: KeyboardPointerState<KeyFrame>,
         dxFromStart: Float,
         x: Float,
     ) {
-        val frame = gestureStartFrame
+        if (scrollingHorizontalRow && horizontalScrollOwnerPointerId != state.pointerId) {
+            return
+        }
+        val frame = state.payload
         val rowId = frame?.rowId
         if (!frame.isScrollableRowFrame() || rowId.isNullOrBlank() || abs(dxFromStart) < dp(8f)) {
             return
         }
-        if (abs(dxFromStart) < abs(gestureLatestY - gestureStartY) * 1.2f) {
+        if (abs(dxFromStart) < abs(state.latestY - state.startY) * 1.2f) {
             return
         }
-        removeCallbacks(longPressRunnable)
+        clearLongPress(state.pointerId)
         val maxOffset = horizontalRowMaxOffsetById[rowId] ?: 0f
         if (maxOffset <= 0f) {
             return
@@ -1296,9 +1471,12 @@ class WinFlowzKeyboardView(
         val currentOffset = horizontalRowScrollOffsetById[rowId] ?: 0f
         val pagedRow = frame.isPagedScrollableRowFrame()
         if (!scrollingHorizontalRow) {
+            acquireProtectedInteraction(state.pointerId, KeyboardProtectedInteraction.HorizontalRowScroll)
+            pointerTracker.markConsumedByProtectedInteraction(state.pointerId)
             scrollingHorizontalRow = true
+            horizontalScrollOwnerPointerId = state.pointerId
             activeHorizontalRowId = rowId
-            lastHorizontalScrollX = gestureStartX
+            lastHorizontalScrollX = state.startX
             cancelHorizontalRowAnimation(rowId)
             horizontalGestureStartOffset =
                 if (pagedRow) {
@@ -1336,10 +1514,12 @@ class WinFlowzKeyboardView(
     }
 
     private fun finishHorizontalRowScroll() {
-        val rowId = activeHorizontalRowId ?: gestureStartFrame?.rowId ?: return
+        val ownerPointerId = horizontalScrollOwnerPointerId
+        val ownerFrame = pointerTracker.get(ownerPointerId)?.payload
+        val rowId = activeHorizontalRowId ?: ownerFrame?.rowId ?: return
         val maxOffset = horizontalRowMaxOffsetById[rowId] ?: 0f
         val currentOffset = horizontalRowScrollOffsetById[rowId] ?: 0f
-        val frame = gestureStartFrame
+        val frame = ownerFrame
         if (frame.isPagedScrollableRowFrame()) {
             val pageWidth = max(dp(1f), horizontalRowPageWidthById[rowId] ?: frame?.rowVisibleWidth ?: width.toFloat())
             val maxPage = ceil(maxOffset / pageWidth).toInt().coerceAtLeast(0)
@@ -1516,7 +1696,9 @@ class WinFlowzKeyboardView(
         horizontalRowPageWidthById.clear()
         horizontalRowMaxOffsetById.clear()
         scrollingHorizontalRow = false
+        horizontalScrollOwnerPointerId = MotionEvent.INVALID_POINTER_ID
         activeHorizontalRowId = null
+        lastHorizontalScrollX = 0f
         horizontalGestureStartOffset = 0f
         horizontalGestureDragDx = 0f
     }
@@ -1540,23 +1722,31 @@ class WinFlowzKeyboardView(
             if (activeHorizontalRowId == rowId) {
                 activeHorizontalRowId = null
                 scrollingHorizontalRow = false
+                horizontalScrollOwnerPointerId = MotionEvent.INVALID_POINTER_ID
             }
         }
     }
 
     private fun handleVerticalPanelScroll(
+        state: KeyboardPointerState<KeyFrame>,
         dyFromStart: Float,
         y: Float,
     ) {
-        if (!gestureStartFrame.isScrollablePanelFrame() || abs(dyFromStart) < dp(8f)) {
+        if (scrollingVerticalPanel && verticalScrollOwnerPointerId != state.pointerId) {
             return
         }
-        if (abs(dyFromStart) < abs(gestureLatestX - gestureStartX) * 1.2f) {
+        if (!state.payload.isScrollablePanelFrame() || abs(dyFromStart) < dp(8f)) {
             return
         }
-        removeCallbacks(longPressRunnable)
+        if (abs(dyFromStart) < abs(state.latestX - state.startX) * 1.2f) {
+            return
+        }
+        clearLongPress(state.pointerId)
         if (!scrollingVerticalPanel) {
+            acquireProtectedInteraction(state.pointerId, KeyboardProtectedInteraction.VerticalPanelScroll)
+            pointerTracker.markConsumedByProtectedInteraction(state.pointerId)
             scrollingVerticalPanel = true
+            verticalScrollOwnerPointerId = state.pointerId
             lastVerticalScrollY = y
         }
         val delta = lastVerticalScrollY - y
@@ -2077,7 +2267,7 @@ class WinFlowzKeyboardView(
         }
         val paint = when {
             !key.enabled -> disabledKeyPaint
-            key.id == activeKeyId || key.id in lingeringPressedKeyIds -> pressedKeyPaint
+            key.id in activePointerPressedKeyIds || key.id in lingeringPressedKeyIds -> pressedKeyPaint
             key.active && usesNeutralKeyboardSurface(key) -> pressedKeyPaint
             key.active || isActiveModifierKey(key) -> activeKeyPaint
             key.actionSurface -> specialKeyPaint
@@ -2167,7 +2357,7 @@ class WinFlowzKeyboardView(
         rect: RectF,
         previewConfig: KeyboardThemeConfig,
     ) {
-        val isPressed = key.id == activeKeyId
+        val isPressed = key.id in activePointerPressedKeyIds
         val backgroundColor = if (isPressed) previewConfig.pressedKeyColor else previewConfig.backgroundStartColor
         themePreviewKeyPaint.shader = if (previewConfig.useGradient && !isPressed) {
             LinearGradient(
@@ -2514,15 +2704,17 @@ class WinFlowzKeyboardView(
     private fun dispatch(
         key: KeyboardKeySpec,
         selection: GestureSelection,
+        sourceFrame: KeyFrame? = null,
     ) {
         runKeyboardSafely("dispatch:${key.id}") {
-            dispatchUnsafe(key, selection)
+            dispatchUnsafe(key, selection, sourceFrame)
         }
     }
 
     private fun dispatchUnsafe(
         key: KeyboardKeySpec,
         selection: GestureSelection,
+        sourceFrame: KeyFrame?,
     ) {
         if (selection == GestureSelection.Canceled) {
             setStatus("Gesture canceled")
@@ -2554,7 +2746,7 @@ class WinFlowzKeyboardView(
                     )
                 }
         }
-        triggerPressEffect(key)
+        triggerPressEffect(key, sourceFrame)
         performKeyboardHaptic(HapticFeedbackConstants.KEYBOARD_TAP)
         performKeySound()
         if (selection != GestureSelection.PrimaryTap) {
@@ -2567,7 +2759,7 @@ class WinFlowzKeyboardView(
                         setStatus("Gesture shortcut unavailable")
                     }
                     else -> {
-                        dispatch(commandKey, GestureSelection.PrimaryTap)
+                        dispatch(commandKey, GestureSelection.PrimaryTap, sourceFrame)
                     }
                     }
                 return
@@ -2580,12 +2772,14 @@ class WinFlowzKeyboardView(
                         setStatus("Gesture shortcut unavailable")
                     }
                     else -> {
-                        dispatch(commandKey, GestureSelection.PrimaryTap)
+                        dispatch(commandKey, GestureSelection.PrimaryTap, sourceFrame)
                     }
                 }
             }
             return
         }
+        val previousLayout = layoutFingerprint()
+        val previousLayoutRefreshGeneration = layoutRefreshGeneration
         val previousMode = layoutMode
         val previousPanel = panelMode
         when (commandKey.action) {
@@ -2992,7 +3186,15 @@ class WinFlowzKeyboardView(
             verticalPanelScrollOffset = 0f
         }
         reconcileActionBarState()
-        refreshLayout()
+        if (layoutFingerprint() != previousLayout) {
+            if (layoutRefreshGeneration == previousLayoutRefreshGeneration) {
+                refreshLayout()
+            } else {
+                invalidate()
+            }
+        } else {
+            invalidate()
+        }
     }
 
     private fun autoCloseModeAfterTextInput(insertedText: Boolean) {
@@ -3098,6 +3300,8 @@ class WinFlowzKeyboardView(
     }
 
     override fun onDetachedFromWindow() {
+        cancelAllPointerGestures("detached")
+        stopRepeat()
         super.onDetachedFromWindow()
         keyToneGenerator?.release()
         keyToneGenerator = null
@@ -3130,8 +3334,14 @@ class WinFlowzKeyboardView(
         )
     }
 
-    private fun triggerPressEffect(key: KeyboardKeySpec) {
-        val frame = gestureStartFrame?.takeIf { it.key.id == key.id } ?: return
+    private fun triggerPressEffect(
+        key: KeyboardKeySpec,
+        sourceFrame: KeyFrame?,
+    ) {
+        val frame =
+            sourceFrame?.takeIf { it.key.id == key.id } ?:
+                keyFrames.lastOrNull { it.key.id == key.id } ?:
+                return
         val spec = KeyboardPressEffectPolicy.resolve(themeConfig, fieldPolicy.privateMode)
         if (pressEffects.trigger(key.id, frame.visualRect, spec)) {
             postInvalidateOnAnimation()
@@ -3546,12 +3756,13 @@ class WinFlowzKeyboardView(
             canvas.drawRoundRect(frame.touchRect, resolvedKeyRadius, resolvedKeyRadius, debugStrokePaint)
             canvas.drawRoundRect(frame.visualRect, resolvedKeyRadius, resolvedKeyRadius, debugVisualStrokePaint)
         }
-        val dx = gestureLatestX - gestureStartX
-        val dy = gestureLatestY - gestureStartY
+        val dx = debugPrimaryPointerX - debugPrimaryStartX
+        val dy = debugPrimaryPointerY - debugPrimaryStartY
         val direction = directionFrom(dx, dy)
         debugTextPaint.textSize = sp(10f)
+        val activeKeys = activePointerPressedKeyIds.joinToString(",").ifBlank { "-" }
         val debugLine =
-            "debug key=${activeKeyId ?: "-"} dir=$direction sel=${debugGestureText}"
+            "debug keys=$activeKeys dir=$direction sel=${debugGestureText}"
         canvas.drawText(debugLine, baseOuterPadding, height - dp(6f), debugTextPaint)
     }
 
@@ -3568,9 +3779,54 @@ class WinFlowzKeyboardView(
         runKeyboardSafely("refreshLayout") {
             clearHorizontalRowVisualState()
             layoutSnapshot = buildSnapshot()
+            layoutRefreshGeneration += 1
             requestLayout()
             invalidate()
         }
+    }
+
+    private fun layoutFingerprint(): LayoutFingerprint {
+        return LayoutFingerprint(
+            layoutMode = layoutMode,
+            panelMode = panelMode,
+            shifted = shifted,
+            shiftLocked = shiftLocked,
+            fieldContext = fieldContext,
+            layoutProfile = layoutProfile,
+            cornerModeEnabled = cornerModeEnabled,
+            debugTouchOverlayEnabled = debugTouchOverlayEnabled,
+            keyVibrationEnabled = keyVibrationEnabled,
+            keyVibrationIntensity = keyVibrationIntensity,
+            keySoundEnabled = keySoundEnabled,
+            keySoundIntensity = keySoundIntensity,
+            spellingSuggestionsEnabled = spellingSuggestionsEnabled,
+            specialKeyCornersEnabled = specialKeyCornersEnabled,
+            frenchLanguageEnabled = frenchLanguageEnabled,
+            englishLanguageEnabled = englishLanguageEnabled,
+            doubleSpacePeriodEnabled = doubleSpacePeriodEnabled,
+            punctuationAutoSpacingEnabled = punctuationAutoSpacingEnabled,
+            keyboardHeightScale = keyboardHeightScale,
+            keyboardHorizontalPaddingScale = keyboardHorizontalPaddingScale,
+            keyboardVerticalPaddingScale = keyboardVerticalPaddingScale,
+            compactModeEnabled = compactModeEnabled,
+            symbolPage = symbolPage,
+            emojiCategory = emojiCategory,
+            recentEmojis = recentEmojis,
+            recentSymbols = recentSymbols,
+            enterLabel = enterLabel,
+            clipboardEntries = clipboardEntries,
+            snippets = snippets,
+            suggestions = suggestions,
+            actionBarState = actionBarState,
+            mediaNowPlayingLabel = mediaNowPlayingLabel,
+            cornerConfig = cornerConfig,
+            themePresetId = themeConfig.presetId,
+            privateMode = fieldPolicy.privateMode,
+            clipboardAllowed = fieldPolicy.clipboardAllowed,
+            voiceAllowed = fieldPolicy.voiceAllowed,
+            snippetsAllowed = fieldPolicy.snippetsAllowed,
+            mediaControlsEnabled = mediaControlsEnabled,
+        )
     }
 
     private fun <T> runKeyboardSafely(
@@ -3595,8 +3851,7 @@ class WinFlowzKeyboardView(
         recoveringFromKeyboardError = true
         try {
             stopRepeat()
-            removeCallbacks(longPressRunnable)
-            resetGesture()
+            cancelAllPointerGestures("error")
             clearHorizontalRowScrollState()
             val source =
                 when {

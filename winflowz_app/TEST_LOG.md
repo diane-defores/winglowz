@@ -49,3 +49,16 @@
 - Bug pointer: BUG-2026-05-17-002 -> bugs/BUG-2026-05-17-002.md
 - Evidence pointer: user report in session ("2 pass", "3 pass", "barre vide en bas... toujours presente", "je ne vois pas de barre d'action dans la preview", "sur le vrai clavier, oui, tout est fonctionnel")
 - Follow-up: /sf-fix BUG-2026-05-17-002
+
+## 2026-05-26 - AZERTY S/Z directional gesture shortcuts
+
+- Scope: spec keyboard-directional-gesture-shortcuts
+- Environment: android-physical-device
+- Tester: user
+- Source: sf-test
+- Status: pass
+- Confidence: high
+- Result summary: User confirmed all requested S/Z directional swipe checks passed on device.
+- Bug pointer: none
+- Evidence pointer: user report in session ("all PASS")
+- Follow-up: /sf-verify keyboard-directional-gesture-shortcuts --android-ci-device-proof

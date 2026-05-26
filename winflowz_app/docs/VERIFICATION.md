@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-04-27"
-updated: "2026-05-14"
+updated: "2026-05-26"
 status: "reviewed"
 source_skill: "sf-spec"
 scope: "android_firebase_backend_agnostic_migration"
@@ -153,7 +153,8 @@ Run on at least one emulator or real Android device before closing the IME chant
 | Enable keyboard touch debug overlay | Key bounds + gesture classifier diagnostics appear without exposing typed text. |
 | Long-press Backspace / forward delete / word delete / navigation keys | Action repeats at a controlled cadence and stops immediately on release/cancel. |
 | Slide horizontally from the space bar | Cursor moves left/right by character steps without inserting a space. |
-| Touch with a second finger while one key is active | Secondary pointer does not emit a second key or corrupt the active gesture. |
+| Type very fast with two overlapping fingers on normal text keys | Each completed pointer release inserts at most one expected character; highlights stay on the correct keys and no pointer freezes. |
+| Start a protected gesture (space slider/row scroll/panel scroll/long-press repeat) then touch another key | Protected owner stays predictable and secondary incompatible pointers are suppressed/canceled without wrong dispatch or stuck repeat. |
 | Focus password/OTP/no-personalized-learning field | Private mode is visible; dictation, clipboard capture, snippets and learning/sync are disabled. |
 | Tap Mic without microphone permission | No recording starts; keyboard shows recoverable permission state. |
 | Tap Mic with permission and speech recognition available | Recognized text is inserted into the active field. |

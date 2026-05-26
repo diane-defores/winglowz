@@ -15,6 +15,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../auth/application/auth_session_provider.dart';
 import '../../auth/domain/auth_session_store.dart';
+import '../../auth/presentation/sign_in_screen.dart';
 import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../keyboard/domain/keyboard_models.dart';
@@ -116,6 +117,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   UserSettingsSnapshot? _onboardingSettings;
   String? _message;
   final Map<String, bool> _expandedSections = {
+    'account_cloud': true,
     'appearance': true,
     'keyboard_sync': false,
     'backend': false,
@@ -668,6 +670,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     ref.read(localAuthModeProvider.notifier).disable();
   }
 
+  Future<void> _connectCloudAccount() async {
+    final connected = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => SignInScreen(
+          remoteOnly: true,
+          onAuthenticated: () => Navigator.of(context).pop(true),
+        ),
+      ),
+    );
+    if (connected != true || !mounted) {
+      return;
+    }
+    ref.read(localAuthModeProvider.notifier).disable();
+    setState(() => _message = 'Cloud account connected.');
+  }
+
   Future<void> _copyBackendDiagnostic() async {
     final suiteIdentityAsync = ref.read(suiteIdentityProvider);
     await Clipboard.setData(
@@ -1179,11 +1197,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final keyboardStatus = _keyboardStatus;
     final themeMode = ref.watch(appThemeModeProvider);
     final authAsync = ref.watch(authSessionProvider);
+    final remoteAuthConfigured = ref.watch(remoteAuthConfiguredProvider);
     final suiteIdentityAsync = ref.watch(suiteIdentityProvider);
     final voiceCatalogState = ref.watch(languagePackCatalogProvider);
     return _settingsList(
       sections: [
         if (onboardingTile != null && !moveOnboardingTileToEnd) onboardingTile,
+        _collapsibleSection(
+          id: 'account_cloud',
+          title: 'Account & Cloud',
+          child: _AccountCloudSection(
+            authAsync: authAsync,
+            remoteAuthConfigured: remoteAuthConfigured,
+            onConnectCloudAccount: _connectCloudAccount,
+            onSignOut: _signOut,
+          ),
+        ),
         _collapsibleSection(
           id: 'appearance',
           title: 'Appearance',

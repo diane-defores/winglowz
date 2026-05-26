@@ -9,11 +9,19 @@ import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../application/auth_session_provider.dart';
+import '../domain/auth_session_store.dart';
 import '../domain/auth_failure.dart';
 import 'google_web_sign_in_button.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({
+    super.key,
+    this.remoteOnly = false,
+    this.onAuthenticated,
+  });
+
+  final bool remoteOnly;
+  final VoidCallback? onAuthenticated;
 
   @override
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
@@ -27,6 +35,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   String? _error;
   String? _errorDetail;
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+
+  AuthSessionStore _store() {
+    return widget.remoteOnly
+        ? ref.read(remoteAuthSessionStoreProvider)
+        : ref.read(authSessionStoreProvider);
+  }
 
   @override
   void dispose() {
@@ -49,14 +63,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       return;
     }
 
-    final store = ref.read(authSessionStoreProvider);
-
     setState(() {
       _busy = true;
       _error = null;
     });
 
     try {
+      final store = _store();
       final email = _emailController.text.trim();
       final password = _passwordController.text;
       if (signup) {
@@ -68,6 +81,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       } else {
         await store.signInWithEmailPassword(email: email, password: password);
       }
+      widget.onAuthenticated?.call();
     } on AuthFailure catch (error, stackTrace) {
       await _presentAuthFailure(error, stackTrace);
     } on UnsupportedError catch (error, stackTrace) {
@@ -113,14 +127,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   Future<void> _signInWithGoogle() async {
-    final store = ref.read(authSessionStoreProvider);
     setState(() {
       _busy = true;
       _error = null;
       _errorDetail = null;
     });
     try {
+      final store = _store();
       await store.signInWithGoogle();
+      widget.onAuthenticated?.call();
     } on AuthFailure catch (error, stackTrace) {
       await _presentAuthFailure(error, stackTrace);
     } on UnsupportedError catch (error, stackTrace) {
@@ -145,14 +160,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   Future<void> _signInWithGoogleIdToken(String? idToken) async {
-    final store = ref.read(authSessionStoreProvider);
     setState(() {
       _busy = true;
       _error = null;
       _errorDetail = null;
     });
     try {
+      final store = _store();
       await store.signInWithGoogleIdToken(idToken: idToken);
+      widget.onAuthenticated?.call();
     } on AuthFailure catch (error, stackTrace) {
       await _presentAuthFailure(error, stackTrace);
     } catch (error, stackTrace) {
@@ -239,8 +255,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 constraints: const BoxConstraints(maxWidth: 460),
                 child: AppSectionCard(
                   title: 'Connexion',
-                  subtitle:
-                      'Accède à ton espace de dictée, clipboard et snippets.',
+                  subtitle: widget.remoteOnly
+                      ? 'Connecte ton compte WinFlowz pour activer la synchronisation cloud.'
+                      : 'Accède à ton espace de dictée, clipboard et snippets.',
                   child: AutofillGroup(
                     child: Form(
                       key: _formKey,
@@ -323,11 +340,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                               ),
                             ],
                           ),
-                          AppGaps.x3,
-                          OutlinedButton(
-                            onPressed: _busy ? null : _continueLocally,
-                            child: const Text('Continuer en local'),
-                          ),
+                          if (!widget.remoteOnly) ...[
+                            AppGaps.x3,
+                            OutlinedButton(
+                              onPressed: _busy ? null : _continueLocally,
+                              child: const Text('Continuer en local'),
+                            ),
+                          ],
                           AppGaps.x2,
                           if (kIsWeb)
                             GoogleWebSignInButton(

@@ -186,6 +186,7 @@ class WinFlowzInputMethodService :
 
     override fun onFinishInput() {
         selectionState = KeyboardSelectionState.Unavailable
+        keyboardView?.cancelAllPointerGestures("finish-input")
         super.onFinishInput()
     }
 
