@@ -111,7 +111,7 @@ class TubeflowSiteThemeTokens {
   static const double keyboardPreviewControlHeight = 48.0;
   static const double keyboardPreviewRowHeightTall = 48.0;
   static const double keyboardPreviewRowHeight = 46.0;
-  static const double keyboardPreviewRowHeightCompact = 42.0;
+  static const double keyboardPreviewRowHeightCompact = 40.0;
   static const double keyboardPreviewRowHeightMini = 40.0;
   static const double keyboardKeyBorderWidth = 1.0;
   static const double keyboardKeyDebugBorderWidth = 1.3;

@@ -189,11 +189,11 @@ class KeyboardStateStore(private val context: Context) {
         }
 
     var keyboardHorizontalPaddingPercent: Int
-        get() = normalizeKeyboardPaddingPercent(preferences.getInt(KEY_KEYBOARD_HORIZONTAL_PADDING_PERCENT, 0))
+        get() = normalizeKeyboardPaddingPercent(preferences.getInt(KEY_KEYBOARD_HORIZONTAL_PADDING_PERCENT, KEYBOARD_PADDING_PERCENT_DEFAULT))
         set(value) = preferences.edit().putInt(KEY_KEYBOARD_HORIZONTAL_PADDING_PERCENT, normalizeKeyboardPaddingPercent(value)).apply()
 
     var keyboardVerticalPaddingPercent: Int
-        get() = normalizeKeyboardPaddingPercent(preferences.getInt(KEY_KEYBOARD_VERTICAL_PADDING_PERCENT, 0))
+        get() = normalizeKeyboardPaddingPercent(preferences.getInt(KEY_KEYBOARD_VERTICAL_PADDING_PERCENT, KEYBOARD_PADDING_PERCENT_DEFAULT))
         set(value) = preferences.edit().putInt(KEY_KEYBOARD_VERTICAL_PADDING_PERCENT, normalizeKeyboardPaddingPercent(value)).apply()
 
     var actionRowHeightScale: Float
@@ -1380,6 +1380,7 @@ class KeyboardStateStore(private val context: Context) {
         const val ACTION_ROW_HEIGHT_MAX = 1.0f
         const val ACTION_ROW_HEIGHT_DEFAULT = 1.0f
         const val KEYBOARD_PADDING_PERCENT_STEP = 5
+        const val KEYBOARD_PADDING_PERCENT_DEFAULT = 5
         const val KEYBOARD_PADDING_PERCENT_MAX = 20
         const val KEY_VIBRATION_INTENSITY_OFF = 0
         const val KEY_VIBRATION_INTENSITY_SHORT = 1

@@ -19,6 +19,7 @@ import android.graphics.Typeface
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.SystemClock
+import android.text.TextUtils
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.SoundEffectConstants
@@ -167,6 +168,7 @@ class WinFlowzKeyboardView(
         fun onHorizontalKeyboardPaddingChanged(scale: Float)
         fun onVerticalKeyboardPaddingChanged(scale: Float)
         fun onCompactModeChanged(enabled: Boolean)
+        fun onAutoCloseModesChanged(enabled: Boolean)
         fun onActionBarStateChanged(state: KeyboardActionBarState)
     }
 
@@ -272,8 +274,8 @@ class WinFlowzKeyboardView(
     private var doubleSpacePeriodEnabled = true
     private var punctuationAutoSpacingEnabled = true
     private var keyboardHeightScale = KeyboardStateStore.KEYBOARD_HEIGHT_DEFAULT
-    private var keyboardHorizontalPaddingScale = 0f
-    private var keyboardVerticalPaddingScale = 0f
+    private var keyboardHorizontalPaddingScale = KeyboardStateStore.KEYBOARD_PADDING_PERCENT_DEFAULT / 100f
+    private var keyboardVerticalPaddingScale = KeyboardStateStore.KEYBOARD_PADDING_PERCENT_DEFAULT / 100f
     private var actionRowHeightScale = KeyboardStateStore.ACTION_ROW_HEIGHT_DEFAULT
     private var compactModeEnabled = false
     private var autoCloseModesEnabled = true
@@ -349,7 +351,7 @@ class WinFlowzKeyboardView(
 
     private val density = resources.displayMetrics.density
     private val pressEffects = KeyboardPressEffects(density) { SystemClock.uptimeMillis() }
-    private val baseOuterPadding = dp(8f)
+    private val baseOuterPadding = 0f
     private val keyboardWidthPaddingStep = 0.05f
     private val keyboardHeightPaddingStep = 0.05f
     private val keyRadius = dp(8f)
@@ -2309,7 +2311,7 @@ class WinFlowzKeyboardView(
             }
         textPaint.textSize = keyTextSize(key) * textScale.coerceIn(0.86f, 1f)
         val baseline = rect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
-        canvas.drawText(displayLabel(key), rect.centerX(), baseline, textPaint)
+        canvas.drawText(displayLabelForRect(key, rect), rect.centerX(), baseline, textPaint)
 
         if (shouldRenderCorners(key)) {
             renderCornerGlyphs(canvas, rect, key.cornerAssignments)
@@ -3106,6 +3108,9 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.ToggleCompactMode -> {
                 toggleCompactMode()
             }
+            KeyboardKeyAction.ToggleAutoCloseModes -> {
+                toggleAutoCloseModes()
+            }
             KeyboardKeyAction.SelectEmojiRecents -> emojiCategory = KeyboardEmojiCategory.Recents
             KeyboardKeyAction.SelectEmojiSmileys -> emojiCategory = KeyboardEmojiCategory.Smileys
             KeyboardKeyAction.SelectEmojiHands -> emojiCategory = KeyboardEmojiCategory.Hands
@@ -3114,6 +3119,7 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.SelectEmojiFood -> emojiCategory = KeyboardEmojiCategory.Food
             KeyboardKeyAction.SelectEmojiObjects -> emojiCategory = KeyboardEmojiCategory.Objects
             KeyboardKeyAction.SelectEmojiActivities -> emojiCategory = KeyboardEmojiCategory.Activities
+            KeyboardKeyAction.SelectEmojiTravel -> emojiCategory = KeyboardEmojiCategory.Travel
             KeyboardKeyAction.NavigateCharLeft -> {
                 if (!callbacks.onNavigateCharLeft()) {
                     setStatus("Left unavailable")
@@ -3517,6 +3523,7 @@ class WinFlowzKeyboardView(
                 keyboardHorizontalPaddingScale = keyboardHorizontalPaddingScale,
                 keyboardVerticalPaddingScale = keyboardVerticalPaddingScale,
                 compactModeEnabled = compactModeEnabled,
+                autoCloseModesEnabled = autoCloseModesEnabled,
                 symbolPage = symbolPage,
                 emojiCategory = emojiCategory,
                 recentEmojis = recentEmojis,
@@ -3569,6 +3576,27 @@ class WinFlowzKeyboardView(
         } else {
             primary
         }
+    }
+
+    private fun displayLabelForRect(
+        key: KeyboardKeySpec,
+        rect: RectF,
+    ): String {
+        val label = displayLabel(key)
+        if (label.length <= 1) {
+            return label
+        }
+        val horizontalInset = dp(if (key.actionSurface) 8f else 10f)
+        val maxTextWidth = (rect.width() - horizontalInset * 2f).coerceAtLeast(dp(8f))
+        if (textPaint.measureText(label) <= maxTextWidth) {
+            return label
+        }
+        return TextUtils.ellipsize(
+            label,
+            textPaint,
+            maxTextWidth,
+            TextUtils.TruncateAt.END,
+        ).toString()
     }
 
     private fun keyTextSize(key: KeyboardKeySpec): Float {
@@ -3673,6 +3701,13 @@ class WinFlowzKeyboardView(
         callbacks.onCompactModeChanged(compactModeEnabled)
         setStatus(if (compactModeEnabled) "Compact keyboard on" else "Compact keyboard off")
         requestLayout()
+        refreshLayout()
+    }
+
+    private fun toggleAutoCloseModes() {
+        autoCloseModesEnabled = !autoCloseModesEnabled
+        callbacks.onAutoCloseModesChanged(autoCloseModesEnabled)
+        setStatus(if (autoCloseModesEnabled) "Auto close modes on" else "Auto close modes off")
         refreshLayout()
     }
 

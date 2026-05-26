@@ -603,8 +603,8 @@ class KeyboardThemeConfig {
       borderColor: 0x00000000,
       borderWidth: 0,
       keyRadius: 8,
-      keyHorizontalGap: 5,
-      rowVerticalGap: 5,
+      keyHorizontalGap: 4,
+      rowVerticalGap: 4,
       keyWidthScale: 1,
       shadowColor: 0x33000000,
       shadowBlur: 4,
@@ -629,6 +629,11 @@ class KeyboardThemeConfig {
         }
       }
       return fallback;
+    }
+
+    double asGridGap(Object? value, double fallback, double max) {
+      final raw = ((value as num?)?.toDouble() ?? fallback).clamp(0.0, max);
+      return (raw / 4).roundToDouble() * 4;
     }
 
     final defaults = KeyboardThemeConfig.defaults();
@@ -695,14 +700,16 @@ class KeyboardThemeConfig {
               .clamp(0.0, 4.0),
       keyRadius: ((map['keyRadius'] as num?)?.toDouble() ?? defaults.keyRadius)
           .clamp(0.0, 24.0),
-      keyHorizontalGap:
-          ((map['keyHorizontalGap'] as num?)?.toDouble() ??
-                  defaults.keyHorizontalGap)
-              .clamp(0.0, 14.0),
-      rowVerticalGap:
-          ((map['rowVerticalGap'] as num?)?.toDouble() ??
-                  defaults.rowVerticalGap)
-              .clamp(0.0, 16.0),
+      keyHorizontalGap: asGridGap(
+        map['keyHorizontalGap'],
+        defaults.keyHorizontalGap,
+        16.0,
+      ),
+      rowVerticalGap: asGridGap(
+        map['rowVerticalGap'],
+        defaults.rowVerticalGap,
+        16.0,
+      ),
       keyWidthScale: defaults.keyWidthScale,
       shadowColor: asColor(map['shadowColor'], defaults.shadowColor),
       shadowBlur:

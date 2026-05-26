@@ -2,6 +2,7 @@ package com.winflowz_app.winflowz_app.ime
 
 import android.graphics.Color
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 data class KeyboardThemePreset(
     val id: String,
@@ -297,8 +298,8 @@ data class KeyboardThemeConfig(
     val borderColor: Int = Color.TRANSPARENT,
     val borderWidth: Float = 0f,
     val keyRadius: Float = 8f,
-    val keyHorizontalGap: Float = 5f,
-    val rowVerticalGap: Float = 5f,
+    val keyHorizontalGap: Float = 4f,
+    val rowVerticalGap: Float = 4f,
     val keyWidthScale: Float = 1f,
     val shadowColor: Int = 0x33000000,
     val shadowBlur: Float = 4f,
@@ -358,8 +359,8 @@ data class KeyboardThemeConfig(
             gradientStyle = if (gradientStyle in allowedGradientStyles) gradientStyle else "linear",
             borderWidth = borderWidth.coerceIn(0f, 4f),
             keyRadius = keyRadius.coerceIn(0f, 24f),
-            keyHorizontalGap = keyHorizontalGap.coerceIn(0f, 14f),
-            rowVerticalGap = rowVerticalGap.coerceIn(0f, 16f),
+            keyHorizontalGap = keyHorizontalGap.snapToImeGrid(max = 16f),
+            rowVerticalGap = rowVerticalGap.snapToImeGrid(max = 16f),
             keyWidthScale = 1f,
             keyboardOpacity = keyboardOpacity.coerceIn(KEYBOARD_OPACITY_MIN, 1f),
             shadowBlur = shadowBlur.coerceIn(0f, 18f),
@@ -411,8 +412,8 @@ data class KeyboardThemeConfig(
                         "borderColor" to json.optInt("borderColor", Color.TRANSPARENT),
                         "borderWidth" to json.optDouble("borderWidth", 0.0),
                         "keyRadius" to json.optDouble("keyRadius", 8.0),
-                        "keyHorizontalGap" to json.optDouble("keyHorizontalGap", 5.0),
-                        "rowVerticalGap" to json.optDouble("rowVerticalGap", 5.0),
+                        "keyHorizontalGap" to json.optDouble("keyHorizontalGap", 4.0),
+                        "rowVerticalGap" to json.optDouble("rowVerticalGap", 4.0),
                         "shadowColor" to json.optInt("shadowColor", 0x33000000),
                         "shadowBlur" to json.optDouble("shadowBlur", 4.0),
                         "shadowOffsetY" to json.optDouble("shadowOffsetY", 1.0),
@@ -449,8 +450,8 @@ data class KeyboardThemeConfig(
                     borderColor = (raw["borderColor"] as? Number)?.toInt() ?: Color.TRANSPARENT,
                     borderWidth = (raw["borderWidth"] as? Number)?.toFloat() ?: 0f,
                     keyRadius = (raw["keyRadius"] as? Number)?.toFloat() ?: 8f,
-                    keyHorizontalGap = (raw["keyHorizontalGap"] as? Number)?.toFloat() ?: 5f,
-                    rowVerticalGap = (raw["rowVerticalGap"] as? Number)?.toFloat() ?: 5f,
+                    keyHorizontalGap = (raw["keyHorizontalGap"] as? Number)?.toFloat() ?: 4f,
+                    rowVerticalGap = (raw["rowVerticalGap"] as? Number)?.toFloat() ?: 4f,
                     keyWidthScale = 1f,
                     shadowColor = (raw["shadowColor"] as? Number)?.toInt() ?: 0x33000000,
                     shadowBlur = (raw["shadowBlur"] as? Number)?.toFloat() ?: 4f,
@@ -461,6 +462,11 @@ data class KeyboardThemeConfig(
                     effectEasing = (raw["effectEasing"] as? String)?.ifBlank { "easeOut" } ?: "easeOut",
                 )
             return config.validated()
+        }
+
+        private fun Float.snapToImeGrid(max: Float): Float {
+            val clamped = coerceIn(0f, max)
+            return (clamped / 4f).roundToInt() * 4f
         }
     }
 }

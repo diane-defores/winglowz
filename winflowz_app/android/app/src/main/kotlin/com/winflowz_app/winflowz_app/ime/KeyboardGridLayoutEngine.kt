@@ -2,7 +2,6 @@ package com.winflowz_app.winflowz_app.ime
 
 import android.graphics.RectF
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 internal data class KeyboardKeyGeometry(
     val key: KeyboardKeySpec,
@@ -12,8 +11,6 @@ internal data class KeyboardKeyGeometry(
 )
 
 internal object KeyboardGridLayoutEngine {
-    private const val LEGACY_SPAN_SCALE = 100
-
     fun layoutFixedRow(
         row: KeyboardRowSpec,
         left: Float,
@@ -108,16 +105,16 @@ internal object KeyboardGridLayoutEngine {
     }
 
     private fun keySpan(key: KeyboardKeySpec): Int {
-        key.span?.let { return it.coerceAtLeast(1) * LEGACY_SPAN_SCALE }
-        return max(1, (key.weight * LEGACY_SPAN_SCALE).roundToInt())
+        key.span?.let { return it.coerceAtLeast(1) }
+        return max(1, key.weight.toInt())
     }
 
     private fun spacerSpan(explicitSpan: Int?, legacyWeight: Float): Int {
-        explicitSpan?.let { return it.coerceAtLeast(0) * LEGACY_SPAN_SCALE }
+        explicitSpan?.let { return it.coerceAtLeast(0) }
         if (legacyWeight <= 0f) {
             return 0
         }
-        return max(1, (legacyWeight * LEGACY_SPAN_SCALE).roundToInt())
+        return max(1, legacyWeight.toInt())
     }
 
     private fun visualRectForSlot(

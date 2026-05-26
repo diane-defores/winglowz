@@ -81,7 +81,7 @@ void main() {
     expect(parsed.borderWidth, 1.5);
     expect(parsed.keyRadius, 14);
     expect(parsed.keyHorizontalGap, 0);
-    expect(parsed.rowVerticalGap, 10);
+    expect(parsed.rowVerticalGap, 12);
     expect(parsed.shadowBlur, 9);
     expect(parsed.pressHighlightDurationMs, 850);
     expect(parsed.cornerTextOpacity, 0.5);

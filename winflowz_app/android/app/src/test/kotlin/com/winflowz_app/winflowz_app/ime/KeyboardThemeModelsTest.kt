@@ -55,6 +55,8 @@ class KeyboardThemeModelsTest {
                 gradientStyle = "radial",
                 borderWidth = 1.5f,
                 keyRadius = 14f,
+                keyHorizontalGap = 10f,
+                rowVerticalGap = 5f,
                 shadowBlur = 9f,
                 shadowOffsetY = 2f,
                 pressHighlightDurationMs = 850,
@@ -68,6 +70,8 @@ class KeyboardThemeModelsTest {
         assertEquals("radial", parsed.gradientStyle)
         assertEquals(1.5f, parsed.borderWidth)
         assertEquals(14f, parsed.keyRadius)
+        assertEquals(12f, parsed.keyHorizontalGap)
+        assertEquals(4f, parsed.rowVerticalGap)
         assertEquals(9f, parsed.shadowBlur)
         assertEquals(2f, parsed.shadowOffsetY)
         assertEquals(850, parsed.pressHighlightDurationMs)

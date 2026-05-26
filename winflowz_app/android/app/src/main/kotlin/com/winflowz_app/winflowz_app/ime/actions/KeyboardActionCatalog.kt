@@ -154,7 +154,10 @@ class KeyboardActionCatalog private constructor(
                             pagedHorizontal = true,
                             items =
                                 rankedTextValues(
-                                    listOf("é", "è", "ê", "ë", "à", "â", "ç", "ù", "û", "ü", "î", "ï", "ô", "œ", "æ", "É", "À", "Ç"),
+                                    listOf(
+                                        "é", "è", "ê", "ë", "à", "â", "ä", "ç", "ù", "û",
+                                        "ü", "î", "ï", "ô", "ö", "œ", "æ", "É", "È", "Ê",
+                                    ),
                                     context.recentSymbols,
                                 )
                                     .map { textActionKey(it, idPrefix = "action-accent") },
@@ -172,7 +175,10 @@ class KeyboardActionCatalog private constructor(
                             pagedHorizontal = true,
                             items =
                                 rankedTextValues(
-                                    listOf("😀", "😂", "😊", "😍", "🔥", "✨", "👏", "❤️", "👍", "🙏", "✅", "💡", "🎯", "🌿", "🍔", "💻"),
+                                    listOf(
+                                        "😀", "😂", "😊", "😍", "🔥", "✨", "👏", "❤️", "👍", "🙏",
+                                        "✅", "💡", "🎯", "🌿", "🍔", "💻", "🥳", "🙌", "🚀", "⭐",
+                                    ),
                                     context.recentEmojis,
                                 )
                                     .map { textActionKey(it, idPrefix = "action-emoji") },

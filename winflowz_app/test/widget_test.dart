@@ -1346,6 +1346,8 @@ void main() {
     expect(find.text('Suggest on'), findsOneWidget);
     expect(find.text('FR on'), findsOneWidget);
     expect(find.text('EN on'), findsOneWidget);
+    expect(find.text('Compact'), findsOneWidget);
+    expect(find.text('Auto close on'), findsOneWidget);
     expect(find.text('Special G off'), findsOneWidget);
     expect(find.text('Gestures on'), findsOneWidget);
     expect(find.text('2sp on'), findsOneWidget);
@@ -1377,7 +1379,7 @@ void main() {
     expect(find.text('#'), findsOneWidget);
     expect(find.text('?'), findsOneWidget);
     expect(find.text('!'), findsOneWidget);
-    expect(find.text(':'), findsOneWidget);
+    expect(find.text('Fn'), findsOneWidget);
     expect(find.text(';'), findsOneWidget);
     for (final digit in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']) {
       expect(find.text(digit), findsOneWidget);

@@ -40,6 +40,50 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
+    fun `all IME layout rows use whole grid spans`() {
+        val requests =
+            KeyboardLayoutMode.values().flatMap { mode ->
+                KeyboardPanelMode.values().map { panel ->
+                    KeyboardLayoutRequest(
+                        mode = mode,
+                        panel = panel,
+                        shifted = false,
+                        fieldContext = KeyboardFieldContextMode.Text,
+                        layoutProfile = KeyboardLayoutProfile.AZERTY,
+                        cornerModeEnabled = false,
+                        debugTouchOverlayEnabled = false,
+                        doubleSpacePeriodEnabled = true,
+                        punctuationAutoSpacingEnabled = true,
+                        emojiCategory = KeyboardEmojiCategory.Recents,
+                        recentEmojis = listOf("😀", "😂"),
+                        recentSymbols = listOf("€", "$"),
+                        enterLabel = "Enter",
+                        clipboardAllowed = true,
+                        voiceAllowed = true,
+                        snippetsAllowed = true,
+                        snippets = listOf(KeyboardTextRule(trigger = "JA", replacement = "J'arrive.", caseSensitive = false)),
+                        clipboardEntries = listOf(KeyboardClipboardEntry("Copier ceci")),
+                        suggestions = listOf("bonjour", "merci"),
+                    )
+                }
+            }
+
+        requests.map(KeyboardLayoutBuilder::build).forEach { snapshot ->
+            snapshot.rows.forEach { row ->
+                assertEquals(row.leadingWeight.toInt().toFloat(), row.leadingWeight)
+                assertEquals(row.trailingWeight.toInt().toFloat(), row.trailingWeight)
+                row.leadingSpan?.let { assertTrue(it >= 0) }
+                row.trailingSpan?.let { assertTrue(it >= 0) }
+                row.keys.forEach { key ->
+                    assertEquals(key.weight.toInt().toFloat(), key.weight)
+                    assertTrue(key.weight >= 1f)
+                    key.span?.let { assertTrue(it >= 1) }
+                }
+            }
+        }
+    }
+
+    @Test
     fun `qwerty home row uses ten equal letter grid slots`() {
         val snapshot =
             KeyboardLayoutBuilder.build(
@@ -239,7 +283,81 @@ class KeyboardLayoutBuilderTest {
 
         assertEquals(listOf("@", "+", "1", "2", "3", "-", "#"), numericRows[0])
         assertEquals(listOf("?", "*", "4", "5", "6", "/", "!"), numericRows[1])
-        assertEquals(listOf(":", ".", "7", "8", "9", "0", ";"), numericRows[2])
+        assertEquals(listOf("Fn", ".", "7", "8", "9", "0", ";"), numericRows[2])
+        assertEquals(1, snapshot.rows[1].leadingSpan)
+        assertEquals(1, snapshot.rows[1].trailingSpan)
+        val digitLabels = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+        val numberKeys = snapshot.rows.drop(1).take(3).flatMap { it.keys }
+        assertTrue(numberKeys.filter { it.label in digitLabels }.all { it.weight == 1f })
+        assertTrue(numberKeys.filter { it.label !in digitLabels }.all { it.weight == 1f })
+    }
+
+    @Test
+    fun `number control row exposes tab and gives ctrl and alt wider keys`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Numbers,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val controlRow = snapshot.rows.last()
+
+        assertTrue(controlRow.keys.any { it.label == "Tab" && it.action == KeyboardKeyAction.InsertTab })
+        assertEquals(2, controlRow.keys.first { it.label == "Ctrl" }.span)
+        assertEquals(2, controlRow.keys.first { it.label == "Alt" }.span)
+        assertTrue(controlRow.keys.none { it.label == "Fn" })
+        assertTrue(controlRow.keys.indexOfFirst { it.label == "Del" } < controlRow.keys.indexOfFirst { it.action == KeyboardKeyAction.Enter })
+    }
+
+    @Test
+    fun `navigation control row puts delete before enter`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Navigation,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val controlRow = snapshot.rows.last()
+        val navigationRows = snapshot.rows.drop(1).take(3)
+
+        assertTrue(controlRow.keys.indexOfFirst { it.label == "Del" } < controlRow.keys.indexOfFirst { it.action == KeyboardKeyAction.Enter })
+        assertTrue(controlRow.keys.any { it.label == "Tab" && it.action == KeyboardKeyAction.InsertTab })
+        assertTrue(controlRow.keys.any { it.label == "Échap" && it.action == KeyboardKeyAction.Escape })
+        assertEquals(listOf("All", "Copy", "Cut", "Paste", "Début", "Fin", "↑", "↓"), navigationRows[0].keys.map { it.label })
+        assertTrue(navigationRows.flatMap { it.keys }.all { it.weight >= 1f })
+        assertEquals(setOf(1f), navigationRows.flatMap { it.keys }.map { it.weight }.toSet())
     }
 
     @Test
@@ -423,8 +541,10 @@ class KeyboardLayoutBuilderTest {
 
         assertEquals(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "="), symbolRows[0].keys.map { it.label })
         assertEquals(listOf("_", "\\", "|", "~", "<", ">", "$", "€", "£", "¥"), symbolRows[1].keys.map { it.label })
-        assertEquals(listOf("Esc", ".", ",", "?", "!", "'", "`", "•", "Del"), symbolRows[2].keys.map { it.label })
+        assertEquals(listOf("Esc", ".", ",", "?", "!", "'", "`", "•", "§", "Del"), symbolRows[2].keys.map { it.label })
         assertTrue(symbolRows[2].keys.last().action == KeyboardKeyAction.Backspace)
+        assertTrue(symbolRows.all { row -> row.leadingSpan == null && row.trailingSpan == null })
+        assertTrue(symbolRows.flatMap { row -> row.keys }.all { key -> key.span == null && key.weight == 1f })
         assertFalse(snapshot.rows.last().keys.any { it.label == "Del" && it.action == KeyboardKeyAction.Backspace })
         assertTrue(modifierValues.contains(KeyboardSystemModifier.Ctrl))
         assertTrue(modifierValues.contains(KeyboardSystemModifier.Fn))
@@ -510,8 +630,8 @@ class KeyboardLayoutBuilderTest {
         val secondPageLabels = secondPage.rows.drop(1).take(3).flatMap { row -> row.keys.map { it.label } }
         val thirdPageLabels = thirdPage.rows.drop(1).take(3).flatMap { row -> row.keys.map { it.label } }
 
-        assertTrue(secondPageLabels.containsAll(listOf("(", ")", "©", "®", "™", "…", "¿", "‰")))
-        assertTrue(thirdPageLabels.containsAll(listOf("←", "→", "✓", "✕", "≤", "≥", "π", "Ω")))
+        assertTrue(secondPageLabels.containsAll(listOf("(", ")", "©", "®", "™", "…", "¿", "‰", "¤")))
+        assertTrue(thirdPageLabels.containsAll(listOf("←", "→", "✓", "✕", "≤", "≥", "π", "Ω", "∆")))
     }
 
     @Test
@@ -542,8 +662,10 @@ class KeyboardLayoutBuilderTest {
         val labels = panelRows.flatMap { row -> row.keys.map { it.label } }
 
         assertEquals(2, snapshot.panelRowCount)
-        assertTrue(labels.containsAll(listOf("é", "è", "ê", "ë", "à", "â", "ç")))
-        assertTrue(labels.containsAll(listOf("ù", "û", "ü", "î", "ï", "ô", "œ", "æ")))
+        assertTrue(labels.containsAll(listOf("é", "è", "ê", "ë", "à", "â", "ä", "ç", "ù", "û")))
+        assertTrue(labels.containsAll(listOf("ü", "î", "ï", "ô", "ö", "œ", "æ", "É", "È", "Ê")))
+        assertTrue(panelRows.all { row -> row.keys.size == 10 })
+        assertTrue(panelRows.flatMap { row -> row.keys }.all { it.label.isNotBlank() && it.enabled })
         assertTrue(snapshot.rows.drop(1 + snapshot.panelRowCount).any { row ->
             row.keys.any { it.label == "q" }
         })
@@ -573,13 +695,22 @@ class KeyboardLayoutBuilderTest {
                 ),
             )
 
-        val categoryLabels = snapshot.rows[1].keys.map { it.label }
-        val emojiLabels = snapshot.rows[2].keys.map { it.label }
-        assertTrue(categoryLabels.containsAll(listOf("🕘", "😀", "👏", "✨", "🌿", "🍔", "💡", "⚽")))
+        val panelRows = snapshot.rows.drop(1).take(snapshot.panelRowCount)
+        val categoryLabels = panelRows[0].keys.map { it.label }
+        val emojiRows = panelRows.drop(1)
+        val emojiLabels = emojiRows.flatMap { row -> row.keys.map { it.label } }
+        assertTrue(categoryLabels.containsAll(listOf("🕘", "😀", "👏", "✨", "🌿", "🍔", "💡", "⚽", "🚗")))
         assertFalse(categoryLabels.contains("×"))
-        assertEquals(8, emojiLabels.size)
+        assertEquals(9, categoryLabels.size)
+        assertEquals(5, snapshot.panelRowCount)
+        assertTrue(emojiRows.all { it.horizontalScrollable && it.pagedHorizontalScrollable && it.visiblePageKeyCount == 10 })
         assertEquals("🔥", emojiLabels.first())
         assertTrue(emojiLabels.contains("😀"))
+        assertTrue(emojiLabels.size >= 40)
+        assertTrue(emojiLabels.all { it.isNotBlank() })
+        assertFalse(snapshot.rows.drop(1 + snapshot.panelRowCount).any { row ->
+            row.keys.any { it.label == "q" }
+        })
     }
 
     @Test
@@ -816,7 +947,7 @@ class KeyboardLayoutBuilderTest {
         val actions = panelRows.flatMap { row -> row.keys.map { it.action } }
         val labels = panelRows.flatMap { row -> row.keys.map { it.label } }
 
-        assertEquals(4, snapshot.panelRowCount)
+        assertEquals(7, snapshot.panelRowCount)
         assertTrue(actions.contains(KeyboardKeyAction.ShowKeyboardPicker))
         assertTrue(actions.contains(KeyboardKeyAction.OpenWinFlowzSettings))
         assertTrue(actions.contains(KeyboardKeyAction.OpenThemeSettings))
@@ -827,11 +958,19 @@ class KeyboardLayoutBuilderTest {
         assertTrue(actions.contains(KeyboardKeyAction.ToggleSpecialKeyCorners))
         assertTrue(actions.contains(KeyboardKeyAction.ToggleFrenchLanguage))
         assertTrue(actions.contains(KeyboardKeyAction.ToggleEnglishLanguage))
+        assertTrue(actions.contains(KeyboardKeyAction.DecreaseKeyboardHeight))
+        assertTrue(actions.contains(KeyboardKeyAction.ToggleCompactMode))
+        assertTrue(actions.contains(KeyboardKeyAction.ToggleAutoCloseModes))
+        assertTrue(actions.contains(KeyboardKeyAction.IncreaseKeyboardHeight))
+        assertTrue(actions.contains(KeyboardKeyAction.DecreaseKeyboardHorizontalPadding))
+        assertTrue(actions.contains(KeyboardKeyAction.IncreaseKeyboardHorizontalPadding))
+        assertTrue(actions.contains(KeyboardKeyAction.DecreaseKeyboardVerticalPadding))
+        assertTrue(actions.contains(KeyboardKeyAction.IncreaseKeyboardVerticalPadding))
         assertTrue(actions.contains(KeyboardKeyAction.ToggleCornerMode))
         assertTrue(actions.contains(KeyboardKeyAction.ToggleDoubleSpacePeriod))
         assertTrue(actions.contains(KeyboardKeyAction.TogglePunctuationAutoSpacing))
         assertTrue(actions.contains(KeyboardKeyAction.ToggleDebugTouchOverlay))
-        assertTrue(labels.containsAll(listOf("Keyboard", "App", "Theme", "QWERTY", "Vibe on", "Sound off", "Suggest on", "FR on", "EN on", "Special off", "Corners on", "2sp on", "Punc on", "Debug off")))
+        assertTrue(labels.containsAll(listOf("Keyboard", "App", "Theme", "QWERTY", "Vibe med", "Sound off", "Suggest on", "FR on", "EN on", "H-", "Compact", "Auto close on", "H+", "H 05%", "V 5%", "Special G off", "Gestures on", "2sp on", "Punc on", "Debug off")))
         assertTrue(snapshot.rows.drop(1 + snapshot.panelRowCount).none { row ->
             row.keys.any { it.action == KeyboardKeyAction.Text || it.action == KeyboardKeyAction.KeyValue }
         })

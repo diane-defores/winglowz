@@ -466,8 +466,8 @@ class _KeyboardThemeStudioScreenState
                         label: 'Key gap',
                         value: _draft.keyHorizontalGap,
                         min: 0,
-                        max: 14,
-                        divisions: 14,
+                        max: 16,
+                        divisions: 4,
                         valueLabel: '${_draft.keyHorizontalGap.round()} px',
                         onChanged: (value) => setState(
                           () =>
@@ -479,7 +479,7 @@ class _KeyboardThemeStudioScreenState
                         value: _draft.rowVerticalGap,
                         min: 0,
                         max: 16,
-                        divisions: 16,
+                        divisions: 4,
                         valueLabel: '${_draft.rowVerticalGap.round()} px',
                         onChanged: (value) => setState(
                           () => _draft = _draft.copyWith(rowVerticalGap: value),
@@ -1325,9 +1325,9 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
         child: Column(
           children: [
             _previewActionRow(theme),
-            SizedBox(height: theme.rowVerticalGap.clamp(3, 8).toDouble()),
+            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
             _previewRow(theme, const ['Q', 'W', 'E', 'R', 'T']),
-            SizedBox(height: theme.rowVerticalGap.clamp(3, 8).toDouble()),
+            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
             _previewRow(theme, const [
               'A',
               'S',
@@ -1335,9 +1335,9 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
               'F',
               'G',
             ], pinnedLabel: 'D'),
-            SizedBox(height: theme.rowVerticalGap.clamp(3, 8).toDouble()),
+            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
             _previewRow(theme, const ['Shift', 'Z', 'X', 'C', '⌫']),
-            SizedBox(height: theme.rowVerticalGap.clamp(3, 8).toDouble()),
+            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
             Row(
               children: [
                 Expanded(child: _previewKey(theme, ',', special: true)),
@@ -1392,7 +1392,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
             ),
           ),
           if (i != labels.length - 1)
-            SizedBox(width: theme.keyHorizontalGap.clamp(3, 8).toDouble()),
+            SizedBox(width: theme.keyHorizontalGap.clamp(4, 8).toDouble()),
         ],
       ],
     );

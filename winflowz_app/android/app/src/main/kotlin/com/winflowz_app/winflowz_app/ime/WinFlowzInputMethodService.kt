@@ -974,6 +974,12 @@ class WinFlowzInputMethodService :
         showStatus(if (enabled) "Compact keyboard enabled" else "Compact keyboard disabled")
     }
 
+    override fun onAutoCloseModesChanged(enabled: Boolean) {
+        stateStore.autoCloseModesEnabled = enabled
+        applyRuntimePreferencesToView()
+        showStatus(if (enabled) "Auto close modes enabled" else "Auto close modes disabled")
+    }
+
     override fun onActionBarStateChanged(state: KeyboardActionBarState) {
         stateStore.replaceActionBarState(state)
     }
