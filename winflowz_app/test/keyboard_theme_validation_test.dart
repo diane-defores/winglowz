@@ -64,6 +64,8 @@ void main() {
       useGradient: true,
       gradientStyle: KeyboardThemeGradientStyle.radial,
       borderWidth: 1.5,
+      keyReliefEnabled: true,
+      keyReliefDepth: 3,
       keyRadius: 14,
       keyHorizontalGap: 0,
       rowVerticalGap: 10,
@@ -72,6 +74,7 @@ void main() {
       pressHighlightDurationMs: 850,
       cornerTextOpacity: 0.5,
       keyboardOpacity: 0.55,
+      pressEffect: KeyboardThemePressEffect.electricArc,
       effectEasing: KeyboardThemeEffectEasing.spring,
     );
 
@@ -79,6 +82,8 @@ void main() {
 
     expect(parsed.gradientStyle, KeyboardThemeGradientStyle.radial);
     expect(parsed.borderWidth, 1.5);
+    expect(parsed.keyReliefEnabled, isTrue);
+    expect(parsed.keyReliefDepth, 3);
     expect(parsed.keyRadius, 14);
     expect(parsed.keyHorizontalGap, 0);
     expect(parsed.rowVerticalGap, 12);
@@ -86,6 +91,7 @@ void main() {
     expect(parsed.pressHighlightDurationMs, 850);
     expect(parsed.cornerTextOpacity, 0.5);
     expect(parsed.keyboardOpacity, 0.55);
+    expect(parsed.pressEffect, KeyboardThemePressEffect.electricArc);
     expect(parsed.effectEasing, KeyboardThemeEffectEasing.spring);
   });
 

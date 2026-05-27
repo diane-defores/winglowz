@@ -412,6 +412,7 @@ class KeyboardStateStore(private val context: Context) {
             "themeMode" to themeMode,
             "themePresetId" to theme.presetId,
             "themePressEffect" to theme.pressEffect,
+            "themeKeyReliefEnabled" to theme.keyReliefEnabled,
             "themeBackgroundSource" to backgroundSource,
             "themeConfigSize" to themeConfigSize,
             "themeFallbackStatus" to fallbackStatus,

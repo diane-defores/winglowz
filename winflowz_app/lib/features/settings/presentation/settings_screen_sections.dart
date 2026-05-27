@@ -429,6 +429,7 @@ class _KeyboardSettingsSection extends StatelessWidget {
     required this.onOpenCornerShortcuts,
     required this.onOpenKeyboardThemeStudio,
     required this.onThemePresetChanged,
+    required this.onReliefChanged,
     required this.onPreferenceChanged,
   });
 
@@ -440,6 +441,7 @@ class _KeyboardSettingsSection extends StatelessWidget {
   final VoidCallback onOpenCornerShortcuts;
   final VoidCallback onOpenKeyboardThemeStudio;
   final ValueChanged<String> onThemePresetChanged;
+  final ValueChanged<bool> onReliefChanged;
   final _KeyboardPreferenceChanged onPreferenceChanged;
 
   String get _enabledLanguages {
@@ -569,6 +571,14 @@ class _KeyboardSettingsSection extends StatelessWidget {
               status: status,
               busy: busy,
               onThemePresetChanged: onThemePresetChanged,
+            ),
+          ),
+          SwitchListTile(
+            value: status?.themeKeyReliefEnabled ?? false,
+            onChanged: busy ? null : onReliefChanged,
+            title: const Text('Keyboard relief'),
+            subtitle: const Text(
+              'Adds a physical-key edge and a pressed-in feel to the native keyboard.',
             ),
           ),
           SwitchListTile(

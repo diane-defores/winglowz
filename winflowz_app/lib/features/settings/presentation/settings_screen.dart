@@ -451,6 +451,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _setKeyboardRelief(bool enabled) async {
+    setState(() => _keyboardBusy = true);
+    try {
+      final current = await AndroidKeyboardBridge.getKeyboardThemeConfig();
+      await AndroidKeyboardBridge.setKeyboardThemeConfig(
+        current.copyWith(
+          keyReliefEnabled: enabled,
+          keyReliefDepth: current.keyReliefDepth <= 0
+              ? 2
+              : current.keyReliefDepth,
+        ),
+      );
+      final status = await _keyboardController.loadStatus();
+      if (!mounted) {
+        return;
+      }
+      setState(() => _keyboardStatus = status);
+    } on AndroidKeyboardBridgeException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _message =
+            'Unable to update keyboard relief (${error.code}): ${error.message}',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _keyboardBusy = false);
+      }
+    }
+  }
+
   Future<void> _openOverlaySettings() async {
     try {
       AppDiagnostics.record('overlay_permission_settings', 'open');
@@ -1280,6 +1312,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onOpenCornerShortcuts: _openCornerShortcuts,
               onOpenKeyboardThemeStudio: _openKeyboardThemeStudio,
               onThemePresetChanged: _setKeyboardThemePreset,
+              onReliefChanged: _setKeyboardRelief,
               onPreferenceChanged: _setKeyboardPreferences,
             ),
           ),

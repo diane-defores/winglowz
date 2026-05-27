@@ -32,6 +32,11 @@ enum KeyboardThemePressEffect {
   shake,
   ripple,
   glow,
+  electricArc,
+  specularSweep,
+  inkPress,
+  keycapTilt,
+  edgeCompression,
   confettiLite,
   fireworksLite;
 
@@ -535,6 +540,8 @@ class KeyboardThemeConfig {
     required this.statusTextColor,
     required this.borderColor,
     required this.borderWidth,
+    required this.keyReliefEnabled,
+    required this.keyReliefDepth,
     required this.keyRadius,
     required this.keyHorizontalGap,
     required this.rowVerticalGap,
@@ -568,6 +575,8 @@ class KeyboardThemeConfig {
   final int statusTextColor;
   final int borderColor;
   final double borderWidth;
+  final bool keyReliefEnabled;
+  final double keyReliefDepth;
   final double keyRadius;
   final double keyHorizontalGap;
   final double rowVerticalGap;
@@ -602,6 +611,8 @@ class KeyboardThemeConfig {
       statusTextColor: 0xFF333D38,
       borderColor: 0x00000000,
       borderWidth: 0,
+      keyReliefEnabled: false,
+      keyReliefDepth: 2,
       keyRadius: 8,
       keyHorizontalGap: 4,
       rowVerticalGap: 4,
@@ -698,6 +709,12 @@ class KeyboardThemeConfig {
       borderWidth:
           ((map['borderWidth'] as num?)?.toDouble() ?? defaults.borderWidth)
               .clamp(0.0, 4.0),
+      keyReliefEnabled:
+          map['keyReliefEnabled'] as bool? ?? defaults.keyReliefEnabled,
+      keyReliefDepth:
+          ((map['keyReliefDepth'] as num?)?.toDouble() ??
+                  defaults.keyReliefDepth)
+              .clamp(0.0, 6.0),
       keyRadius: ((map['keyRadius'] as num?)?.toDouble() ?? defaults.keyRadius)
           .clamp(0.0, 24.0),
       keyHorizontalGap: asGridGap(
@@ -758,6 +775,8 @@ class KeyboardThemeConfig {
       'statusTextColor': statusTextColor,
       'borderColor': borderColor,
       'borderWidth': borderWidth,
+      'keyReliefEnabled': keyReliefEnabled,
+      'keyReliefDepth': keyReliefDepth,
       'keyRadius': keyRadius,
       'keyHorizontalGap': keyHorizontalGap,
       'rowVerticalGap': rowVerticalGap,
@@ -792,6 +811,8 @@ class KeyboardThemeConfig {
     int? statusTextColor,
     int? borderColor,
     double? borderWidth,
+    bool? keyReliefEnabled,
+    double? keyReliefDepth,
     double? keyRadius,
     double? keyHorizontalGap,
     double? rowVerticalGap,
@@ -826,6 +847,8 @@ class KeyboardThemeConfig {
       statusTextColor: statusTextColor ?? this.statusTextColor,
       borderColor: borderColor ?? this.borderColor,
       borderWidth: borderWidth ?? this.borderWidth,
+      keyReliefEnabled: keyReliefEnabled ?? this.keyReliefEnabled,
+      keyReliefDepth: keyReliefDepth ?? this.keyReliefDepth,
       keyRadius: keyRadius ?? this.keyRadius,
       keyHorizontalGap: keyHorizontalGap ?? this.keyHorizontalGap,
       rowVerticalGap: rowVerticalGap ?? this.rowVerticalGap,
@@ -1607,6 +1630,7 @@ class AndroidKeyboardStatus {
     required this.themeMode,
     required this.themePresetId,
     required this.themePressEffect,
+    required this.themeKeyReliefEnabled,
     required this.themeBackgroundSource,
     required this.themeConfigSize,
     required this.themeFallbackStatus,
@@ -1661,6 +1685,7 @@ class AndroidKeyboardStatus {
   final String themeMode;
   final String themePresetId;
   final String themePressEffect;
+  final bool themeKeyReliefEnabled;
   final String themeBackgroundSource;
   final int themeConfigSize;
   final String themeFallbackStatus;
@@ -1716,6 +1741,7 @@ class AndroidKeyboardStatus {
       themeMode: 'system',
       themePresetId: 'system',
       themePressEffect: 'none',
+      themeKeyReliefEnabled: false,
       themeBackgroundSource: 'solid',
       themeConfigSize: 0,
       themeFallbackStatus: 'not_supported',
@@ -1782,6 +1808,7 @@ class AndroidKeyboardStatus {
       themeMode: map['themeMode'] as String? ?? 'system',
       themePresetId: map['themePresetId'] as String? ?? 'system',
       themePressEffect: map['themePressEffect'] as String? ?? 'none',
+      themeKeyReliefEnabled: map['themeKeyReliefEnabled'] as bool? ?? false,
       themeBackgroundSource: map['themeBackgroundSource'] as String? ?? 'solid',
       themeConfigSize: (map['themeConfigSize'] as num?)?.toInt() ?? 0,
       themeFallbackStatus: map['themeFallbackStatus'] as String? ?? 'unknown',

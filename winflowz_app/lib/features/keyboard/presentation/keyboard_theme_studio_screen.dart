@@ -523,6 +523,34 @@ class _KeyboardThemeStudioScreenState
                           () => _draft = _draft.copyWith(borderWidth: value),
                         ),
                       ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        value: _draft.keyReliefEnabled,
+                        onChanged: (value) => setState(
+                          () =>
+                              _draft = _draft.copyWith(keyReliefEnabled: value),
+                        ),
+                        title: const Text('Relief'),
+                        subtitle: const Text(
+                          'Adds an integrated physical-key edge that sinks on press.',
+                        ),
+                      ),
+                      _SliderField(
+                        label: 'Relief depth',
+                        value: _draft.keyReliefDepth,
+                        min: 0,
+                        max: 6,
+                        divisions: 6,
+                        valueLabel:
+                            '${_draft.keyReliefDepth.toStringAsFixed(0)} px',
+                        onChanged: _draft.keyReliefEnabled
+                            ? (value) => setState(
+                                () => _draft = _draft.copyWith(
+                                  keyReliefDepth: value,
+                                ),
+                              )
+                            : null,
+                      ),
                       _SliderField(
                         label: 'Radius',
                         value: _draft.keyRadius,
@@ -707,6 +735,11 @@ String _effectLabel(KeyboardThemePressEffect effect) {
     KeyboardThemePressEffect.shake => 'Shake',
     KeyboardThemePressEffect.ripple => 'Ripple',
     KeyboardThemePressEffect.glow => 'Glow',
+    KeyboardThemePressEffect.electricArc => 'Electric arc',
+    KeyboardThemePressEffect.specularSweep => 'Specular sweep',
+    KeyboardThemePressEffect.inkPress => 'Ink press',
+    KeyboardThemePressEffect.keycapTilt => 'Keycap tilt',
+    KeyboardThemePressEffect.edgeCompression => 'Edge compression',
     KeyboardThemePressEffect.confettiLite => 'Confetti lite',
     KeyboardThemePressEffect.fireworksLite => 'Fireworks lite',
   };
@@ -993,7 +1026,7 @@ class _SliderField extends StatelessWidget {
   final double max;
   final int divisions;
   final String valueLabel;
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -1429,16 +1462,37 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
       KeyboardThemePressEffect.pulse =>
         pressed ? 1 + 0.12 * theme.effectIntensity.clamp(0.25, 1) : 1,
       KeyboardThemePressEffect.shake => pressed ? 1.04 : 1,
+      KeyboardThemePressEffect.edgeCompression => pressed ? 0.985 : 1,
       KeyboardThemePressEffect.none ||
       KeyboardThemePressEffect.ripple ||
       KeyboardThemePressEffect.glow ||
+      KeyboardThemePressEffect.electricArc ||
+      KeyboardThemePressEffect.specularSweep ||
+      KeyboardThemePressEffect.inkPress ||
+      KeyboardThemePressEffect.keycapTilt ||
       KeyboardThemePressEffect.confettiLite ||
       KeyboardThemePressEffect.fireworksLite => 1,
     };
-    final animatedOffsetX =
-        theme.pressEffect == KeyboardThemePressEffect.shake && pressed
-        ? 8.0 * theme.effectIntensity.clamp(0.35, 1)
+    final animatedOffsetX = switch (theme.pressEffect) {
+      KeyboardThemePressEffect.shake when pressed =>
+        8.0 * theme.effectIntensity.clamp(0.35, 1),
+      KeyboardThemePressEffect.keycapTilt when pressed =>
+        1.5 * theme.effectIntensity.clamp(0.35, 1),
+      _ => 0.0,
+    };
+    final reliefDepth = theme.keyReliefEnabled
+        ? theme.keyReliefDepth.clamp(0.0, 6.0)
         : 0.0;
+    final reliefOffsetY = pressed ? reliefDepth * 0.55 : 0.0;
+    final reliefShadowColor = _reliefShadowColor(Color(bg), theme);
+    final reliefHighlightColor = _reliefHighlightColor(Color(bg), theme);
+    final previewShadows = _previewKeyShadows(
+      theme: theme,
+      pressed: pressed,
+      reliefDepth: reliefDepth,
+      reliefShadowColor: reliefShadowColor,
+      reliefHighlightColor: reliefHighlightColor,
+    );
     return GestureDetector(
       onTapDown: (_) => _press(label),
       onTapUp: (_) => _release(label),
@@ -1448,7 +1502,12 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
           milliseconds: (theme.effectDurationMs * 0.45).round().clamp(60, 220),
         ),
         curve: Curves.easeOut,
-        transform: Matrix4.translationValues(animatedOffsetX, 0, 0),
+        transform: Matrix4.translationValues(animatedOffsetX, reliefOffsetY, 0)
+          ..rotateZ(
+            pressed && theme.pressEffect == KeyboardThemePressEffect.keycapTilt
+                ? -0.018 * theme.effectIntensity.clamp(0.35, 1)
+                : 0,
+          ),
         child: AnimatedScale(
           scale: animatedScale,
           duration: Duration(
@@ -1461,6 +1520,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: _weightedThemeColor(Color(bg), theme),
+                  gradient: _previewKeyGradient(theme, Color(bg), pressed),
                   borderRadius: BorderRadius.circular(theme.keyRadius),
                   border:
                       pressed &&
@@ -1483,35 +1543,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
                                 width: theme.borderWidth,
                               )
                             : null),
-                  boxShadow:
-                      pressed &&
-                          theme.pressEffect != KeyboardThemePressEffect.none
-                      ? [
-                          BoxShadow(
-                            color: Color(theme.activeKeyColor).withValues(
-                              alpha:
-                                  0.45 *
-                                  _weightedKeyboardOpacity(
-                                    theme,
-                                    boost: _keyboardSurfaceOpacityBoost,
-                                  ),
-                            ),
-                            blurRadius: 14 + theme.effectIntensity * 14,
-                            spreadRadius: 2 + theme.effectIntensity * 4,
-                          ),
-                        ]
-                      : (theme.shadowBlur > 0
-                            ? [
-                                BoxShadow(
-                                  color: _weightedThemeColor(
-                                    Color(theme.shadowColor),
-                                    theme,
-                                  ),
-                                  blurRadius: theme.shadowBlur,
-                                  offset: Offset(0, theme.shadowOffsetY),
-                                ),
-                              ]
-                            : null),
+                  boxShadow: previewShadows,
                 ),
                 child: SizedBox(
                   height: compact ? 24 : 28,
@@ -1533,7 +1565,7 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
                   ),
                 ),
               ),
-              if (pressed)
+              if (pressed && _usesEmittedPressEffect(theme.pressEffect))
                 Positioned.fill(
                   child: IgnorePointer(
                     child: CustomPaint(
@@ -1614,6 +1646,178 @@ Color _weightedThemeColor(
 }) {
   final opacity = _weightedKeyboardOpacity(theme, boost: boost);
   return color.withValues(alpha: color.a * opacity);
+}
+
+Color _reliefShadowColor(Color base, KeyboardThemeConfig theme) {
+  final dark = HSLColor.fromColor(base)
+      .withLightness(
+        (HSLColor.fromColor(base).lightness - 0.18).clamp(0.0, 1.0),
+      )
+      .toColor();
+  return _weightedThemeColor(
+    dark,
+    theme,
+    boost: _keyboardBorderOpacityBoost,
+  ).withValues(alpha: 0.5);
+}
+
+Color _reliefHighlightColor(Color base, KeyboardThemeConfig theme) {
+  final light = HSLColor.fromColor(base)
+      .withLightness(
+        (HSLColor.fromColor(base).lightness + 0.16).clamp(0.0, 1.0),
+      )
+      .toColor();
+  return _weightedThemeColor(
+    light,
+    theme,
+    boost: _keyboardBorderOpacityBoost,
+  ).withValues(alpha: 0.42);
+}
+
+Color _lightenThemeColor(Color color, double amount) {
+  final hsl = HSLColor.fromColor(color);
+  return hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0)).toColor();
+}
+
+Color _darkenThemeColor(Color color, double amount) {
+  final hsl = HSLColor.fromColor(color);
+  return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
+}
+
+Gradient? _previewKeyGradient(
+  KeyboardThemeConfig theme,
+  Color base,
+  bool pressed,
+) {
+  if (!pressed) {
+    return null;
+  }
+  final active = _weightedThemeColor(Color(theme.activeKeyColor), theme);
+  final surface = _weightedThemeColor(base, theme);
+  return switch (theme.pressEffect) {
+    KeyboardThemePressEffect.glow => RadialGradient(
+      center: Alignment.topLeft,
+      radius: 1.25,
+      colors: [active.withValues(alpha: 0.34), surface],
+    ),
+    KeyboardThemePressEffect.electricArc => LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        active.withValues(alpha: 0.36),
+        surface,
+        active.withValues(alpha: 0.18),
+      ],
+      stops: const [0, 0.42, 1],
+    ),
+    KeyboardThemePressEffect.specularSweep => LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [surface, Colors.white.withValues(alpha: 0.34), surface],
+      stops: const [0.12, 0.5, 0.88],
+    ),
+    KeyboardThemePressEffect.inkPress => LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        _weightedThemeColor(_darkenThemeColor(base, 0.08), theme),
+        _weightedThemeColor(_darkenThemeColor(base, 0.18), theme),
+      ],
+    ),
+    KeyboardThemePressEffect.keycapTilt => LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        _weightedThemeColor(_lightenThemeColor(base, 0.10), theme),
+        surface,
+        _weightedThemeColor(_darkenThemeColor(base, 0.13), theme),
+      ],
+      stops: const [0, 0.52, 1],
+    ),
+    KeyboardThemePressEffect.edgeCompression => LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        _weightedThemeColor(_lightenThemeColor(base, 0.08), theme),
+        surface,
+        _weightedThemeColor(_darkenThemeColor(base, 0.20), theme),
+      ],
+      stops: const [0, 0.58, 1],
+    ),
+    _ => null,
+  };
+}
+
+List<BoxShadow>? _previewKeyShadows({
+  required KeyboardThemeConfig theme,
+  required bool pressed,
+  required double reliefDepth,
+  required Color reliefShadowColor,
+  required Color reliefHighlightColor,
+}) {
+  final shadows = <BoxShadow>[];
+  final effect = theme.pressEffect;
+  final opacity = _weightedKeyboardOpacity(
+    theme,
+    boost: _keyboardSurfaceOpacityBoost,
+  );
+  if (pressed &&
+      (effect == KeyboardThemePressEffect.glow ||
+          effect == KeyboardThemePressEffect.electricArc)) {
+    shadows.add(
+      BoxShadow(
+        color: Color(theme.activeKeyColor).withValues(
+          alpha:
+              (effect == KeyboardThemePressEffect.electricArc ? 0.30 : 0.42) *
+              opacity,
+        ),
+        blurRadius:
+            (effect == KeyboardThemePressEffect.electricArc ? 7 : 12) +
+            theme.effectIntensity * 16,
+        spreadRadius:
+            (effect == KeyboardThemePressEffect.electricArc ? 0.5 : 1.5) +
+            theme.effectIntensity * 3,
+      ),
+    );
+  } else if (pressed && effect == KeyboardThemePressEffect.pulse) {
+    shadows.add(
+      BoxShadow(
+        color: Color(theme.activeKeyColor).withValues(alpha: 0.20 * opacity),
+        blurRadius: 8 + theme.effectIntensity * 8,
+        spreadRadius: 0.5 + theme.effectIntensity * 1.5,
+      ),
+    );
+  }
+  if (reliefDepth > 0) {
+    shadows.addAll([
+      BoxShadow(
+        color: reliefShadowColor,
+        blurRadius: 0,
+        offset: Offset(0, pressed ? 0.5 : reliefDepth),
+      ),
+      BoxShadow(
+        color: reliefHighlightColor,
+        blurRadius: 0,
+        offset: const Offset(0, -0.75),
+      ),
+    ]);
+  }
+  if (theme.shadowBlur > 0) {
+    shadows.add(
+      BoxShadow(
+        color: _weightedThemeColor(Color(theme.shadowColor), theme),
+        blurRadius: theme.shadowBlur,
+        offset: Offset(0, theme.shadowOffsetY),
+      ),
+    );
+  }
+  return shadows.isEmpty ? null : shadows;
+}
+
+bool _usesEmittedPressEffect(KeyboardThemePressEffect effect) {
+  return effect == KeyboardThemePressEffect.ripple ||
+      effect == KeyboardThemePressEffect.confettiLite ||
+      effect == KeyboardThemePressEffect.fireworksLite;
 }
 
 double _weightedKeyboardOpacity(
@@ -1857,17 +2061,6 @@ class _PreviewPressEffectPainter extends CustomPainter {
           math.max(size.width, size.height) * 0.42,
           paint,
         );
-      case KeyboardThemePressEffect.glow:
-        paint
-          ..style = PaintingStyle.fill
-          ..color = accent.withValues(alpha: 0.24);
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromLTWH(-5, -5, size.width + 10, size.height + 10),
-            Radius.circular(theme.keyRadius + 5),
-          ),
-          paint,
-        );
       case KeyboardThemePressEffect.confettiLite:
       case KeyboardThemePressEffect.fireworksLite:
         final count =
@@ -1897,6 +2090,12 @@ class _PreviewPressEffectPainter extends CustomPainter {
       case KeyboardThemePressEffect.scale:
       case KeyboardThemePressEffect.pulse:
       case KeyboardThemePressEffect.shake:
+      case KeyboardThemePressEffect.glow:
+      case KeyboardThemePressEffect.electricArc:
+      case KeyboardThemePressEffect.specularSweep:
+      case KeyboardThemePressEffect.inkPress:
+      case KeyboardThemePressEffect.keycapTilt:
+      case KeyboardThemePressEffect.edgeCompression:
         break;
     }
   }

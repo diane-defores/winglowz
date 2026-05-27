@@ -18,7 +18,21 @@ data class KeyboardPressEffectSpec(
 
 object KeyboardPressEffectPolicy {
     private val allowedEffects =
-        setOf("none", "scale", "pulse", "shake", "ripple", "glow", "confettiLite", "fireworksLite")
+        setOf(
+            "none",
+            "scale",
+            "pulse",
+            "shake",
+            "ripple",
+            "glow",
+            "electricArc",
+            "specularSweep",
+            "inkPress",
+            "keycapTilt",
+            "edgeCompression",
+            "confettiLite",
+            "fireworksLite",
+        )
 
     fun resolve(config: KeyboardThemeConfig, privateMode: Boolean): KeyboardPressEffectSpec {
         val effect =
@@ -40,6 +54,8 @@ class KeyboardPressEffects(
     private val density: Float,
     private val clock: () -> Long,
 ) {
+    private val emittedEffects = setOf("ripple", "confettiLite", "fireworksLite")
+
     private data class Particle(
         val angle: Float,
         val speed: Float,
@@ -71,7 +87,7 @@ class KeyboardPressEffects(
         rect: RectF,
         spec: KeyboardPressEffectSpec,
     ): Boolean {
-        if (spec.effect == "none") {
+        if (spec.effect == "none" || spec.effect !in emittedEffects) {
             return false
         }
         while (effects.size >= 8) {

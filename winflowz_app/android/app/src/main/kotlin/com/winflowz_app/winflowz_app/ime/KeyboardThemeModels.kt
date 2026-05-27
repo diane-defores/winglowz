@@ -297,6 +297,8 @@ data class KeyboardThemeConfig(
     val statusTextColor: Int = Color.parseColor("#333D38"),
     val borderColor: Int = Color.TRANSPARENT,
     val borderWidth: Float = 0f,
+    val keyReliefEnabled: Boolean = false,
+    val keyReliefDepth: Float = 2f,
     val keyRadius: Float = 8f,
     val keyHorizontalGap: Float = 4f,
     val rowVerticalGap: Float = 4f,
@@ -331,6 +333,8 @@ data class KeyboardThemeConfig(
             "statusTextColor" to statusTextColor,
             "borderColor" to borderColor,
             "borderWidth" to borderWidth,
+            "keyReliefEnabled" to keyReliefEnabled,
+            "keyReliefDepth" to keyReliefDepth,
             "keyRadius" to keyRadius,
             "keyHorizontalGap" to keyHorizontalGap,
             "rowVerticalGap" to rowVerticalGap,
@@ -358,6 +362,7 @@ data class KeyboardThemeConfig(
             presetId = normalizedPresetId,
             gradientStyle = if (gradientStyle in allowedGradientStyles) gradientStyle else "linear",
             borderWidth = borderWidth.coerceIn(0f, 4f),
+            keyReliefDepth = keyReliefDepth.coerceIn(0f, 6f),
             keyRadius = keyRadius.coerceIn(0f, 24f),
             keyHorizontalGap = keyHorizontalGap.snapToImeGrid(max = 16f),
             rowVerticalGap = rowVerticalGap.snapToImeGrid(max = 16f),
@@ -379,7 +384,21 @@ data class KeyboardThemeConfig(
     companion object {
         private const val KEYBOARD_OPACITY_MIN = 0.25f
         private val allowedEffects =
-            setOf("none", "scale", "pulse", "shake", "ripple", "glow", "confettiLite", "fireworksLite")
+            setOf(
+                "none",
+                "scale",
+                "pulse",
+                "shake",
+                "ripple",
+                "glow",
+                "electricArc",
+                "specularSweep",
+                "inkPress",
+                "keycapTilt",
+                "edgeCompression",
+                "confettiLite",
+                "fireworksLite",
+            )
         private val allowedGradientStyles = setOf("linear", "radial")
         private val allowedEasings = setOf("easeOut", "linear", "spring")
 
@@ -411,6 +430,8 @@ data class KeyboardThemeConfig(
                         "statusTextColor" to json.optInt("statusTextColor", Color.parseColor("#333D38")),
                         "borderColor" to json.optInt("borderColor", Color.TRANSPARENT),
                         "borderWidth" to json.optDouble("borderWidth", 0.0),
+                        "keyReliefEnabled" to json.optBoolean("keyReliefEnabled", false),
+                        "keyReliefDepth" to json.optDouble("keyReliefDepth", 2.0),
                         "keyRadius" to json.optDouble("keyRadius", 8.0),
                         "keyHorizontalGap" to json.optDouble("keyHorizontalGap", 4.0),
                         "rowVerticalGap" to json.optDouble("rowVerticalGap", 4.0),
@@ -449,6 +470,8 @@ data class KeyboardThemeConfig(
                     statusTextColor = (raw["statusTextColor"] as? Number)?.toInt() ?: Color.parseColor("#333D38"),
                     borderColor = (raw["borderColor"] as? Number)?.toInt() ?: Color.TRANSPARENT,
                     borderWidth = (raw["borderWidth"] as? Number)?.toFloat() ?: 0f,
+                    keyReliefEnabled = raw["keyReliefEnabled"] as? Boolean ?: false,
+                    keyReliefDepth = (raw["keyReliefDepth"] as? Number)?.toFloat() ?: 2f,
                     keyRadius = (raw["keyRadius"] as? Number)?.toFloat() ?: 8f,
                     keyHorizontalGap = (raw["keyHorizontalGap"] as? Number)?.toFloat() ?: 4f,
                     rowVerticalGap = (raw["rowVerticalGap"] as? Number)?.toFloat() ?: 4f,

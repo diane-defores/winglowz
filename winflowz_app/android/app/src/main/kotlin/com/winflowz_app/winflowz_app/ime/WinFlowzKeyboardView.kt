@@ -38,6 +38,7 @@ import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.math.sin
 
 private data class NativeKeyboardColors(
     val background: Int,
@@ -317,6 +318,8 @@ class WinFlowzKeyboardView(
     private var activePointerPressedKeyIds = emptySet<String>()
     private val lingeringPressedKeyIds = linkedSetOf<String>()
     private val lingeringPressTokens = mutableMapOf<String, Int>()
+    private val materialPressStartedAtById = mutableMapOf<String, Long>()
+    private var materialPressEffectAnimating = false
     private var debugGestureText = "idle"
     private var repeatActionKey: KeyboardKeySpec? = null
     private var repeatOwnerPointerId = MotionEvent.INVALID_POINTER_ID
@@ -395,6 +398,26 @@ class WinFlowzKeyboardView(
         style = Paint.Style.STROKE
         strokeWidth = 0f
     }
+    private val keyReliefDarkPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.STROKE
+        strokeWidth = 0f
+    }
+    private val keyReliefLightPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.STROKE
+        strokeWidth = 0f
+    }
+    private val keyEffectFillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.FILL
+    }
+    private val keyEffectStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.STROKE
+        strokeWidth = 0f
+    }
+    private val keyEffectPath = Path()
     private val keyShadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.TRANSPARENT
         style = Paint.Style.FILL
@@ -716,6 +739,15 @@ class WinFlowzKeyboardView(
             }
     }
 
+    private fun syncMaterialPressStarts() {
+        val now = SystemClock.uptimeMillis()
+        val pressedIds = activePointerPressedKeyIds + lingeringPressedKeyIds
+        pressedIds.forEach { keyId ->
+            materialPressStartedAtById.putIfAbsent(keyId, now)
+        }
+        materialPressStartedAtById.keys.retainAll(pressedIds)
+    }
+
     private fun keyboardLayerColor(
         color: Int,
         opacityBoost: Float,
@@ -968,6 +1000,8 @@ class WinFlowzKeyboardView(
     private fun drawKeyboard(canvas: Canvas) {
         keyFrames.clear()
         activePointerPressedKeyIds = pointerTracker.activeKeyIds()
+        syncMaterialPressStarts()
+        materialPressEffectAnimating = false
         horizontalRowMaxOffsetById.clear()
         if (!fieldPolicy.privateMode && themeConfig.useGradient && themeConfig.presetId != "system" && !themeConfig.useImage) {
             backgroundPaint.shader =
@@ -1036,6 +1070,9 @@ class WinFlowzKeyboardView(
         }
 
         if (pressEffects.draw(canvas, resolvedKeyRadius, activeKeyPaint.color)) {
+            postInvalidateOnAnimation()
+        }
+        if (materialPressEffectAnimating) {
             postInvalidateOnAnimation()
         }
         if (voiceRecordingActive) {
@@ -2277,23 +2314,42 @@ class WinFlowzKeyboardView(
             else -> specialKeyPaint
         }
         val drawRadius = resolvedKeyRadius * radiusScale.coerceIn(0.75f, 1f)
+        val pressed = key.id in activePointerPressedKeyIds || key.id in lingeringPressedKeyIds
+        val materialEffect = materialPressEffect(pressed)
+        val materialProgress = materialPressProgress(key.id)
+        val drawRect = materialPressRect(rect, materialEffect, materialProgress)
+        val reliefDepth = if (!fieldPolicy.privateMode && themeConfig.keyReliefEnabled) dp(themeConfig.keyReliefDepth) else 0f
+        if (reliefDepth > 0f && pressed) {
+            drawRect.offset(0f, reliefDepth * 0.55f)
+        }
         if (!fieldPolicy.privateMode && themeConfig.presetId != "system" && themeConfig.shadowBlur > 0f) {
-            val shadowRect = RectF(rect).apply {
-                offset(0f, dp(themeConfig.shadowOffsetY))
+            val shadowRect = RectF(drawRect).apply {
+                val offsetY =
+                    if (reliefDepth > 0f && pressed) {
+                        dp(themeConfig.shadowOffsetY) * 0.25f
+                    } else {
+                        dp(themeConfig.shadowOffsetY)
+                    }
+                offset(0f, offsetY)
                 inset(-dp(themeConfig.shadowBlur) * 0.18f, -dp(themeConfig.shadowBlur) * 0.10f)
             }
             canvas.drawRoundRect(shadowRect, drawRadius, drawRadius, keyShadowPaint)
         }
-        canvas.drawRoundRect(rect, drawRadius, drawRadius, paint)
+        drawMaterialPressBackdrop(canvas, drawRect, drawRadius, materialEffect, materialProgress)
+        canvas.drawRoundRect(drawRect, drawRadius, drawRadius, paint)
+        if (reliefDepth > 0f) {
+            drawKeyRelief(canvas, drawRect, drawRadius, paint.color, pressed)
+        }
+        drawMaterialPressSurface(canvas, drawRect, drawRadius, paint.color, materialEffect, materialProgress)
         if (!fieldPolicy.privateMode && keyBorderPaint.strokeWidth > 0f && Color.alpha(keyBorderPaint.color) > 0) {
-            drawRoundRectStrokeInside(canvas, rect, drawRadius, keyBorderPaint)
+            drawRoundRectStrokeInside(canvas, drawRect, drawRadius, keyBorderPaint)
         }
 
         if (voiceRecordingActive && key.action == KeyboardKeyAction.Voice) {
-            drawVoiceRecordingIndicator(canvas, rect)
+            drawVoiceRecordingIndicator(canvas, drawRect)
         }
         if (key.pinned) {
-            drawPinnedBadge(canvas, rect, paint.color)
+            drawPinnedBadge(canvas, drawRect, paint.color)
         }
 
         textPaint.color =
@@ -2310,13 +2366,298 @@ class WinFlowzKeyboardView(
                 nativeColors.disabledText
             }
         textPaint.textSize = keyTextSize(key) * textScale.coerceIn(0.86f, 1f)
-        val baseline = rect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
-        canvas.drawText(displayLabelForRect(key, rect), rect.centerX(), baseline, textPaint)
+        val baseline = drawRect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
+        canvas.drawText(displayLabelForRect(key, drawRect), drawRect.centerX(), baseline, textPaint)
 
         if (shouldRenderCorners(key)) {
-            renderCornerGlyphs(canvas, rect, key.cornerAssignments)
+            renderCornerGlyphs(canvas, drawRect, key.cornerAssignments)
         }
 
+    }
+
+    private fun materialPressEffect(pressed: Boolean): String {
+        if (!pressed || fieldPolicy.privateMode) return "none"
+        return when (themeConfig.pressEffect) {
+            "scale",
+            "pulse",
+            "shake",
+            "glow",
+            "electricArc",
+            "specularSweep",
+            "inkPress",
+            "keycapTilt",
+            "edgeCompression",
+            -> themeConfig.pressEffect
+            else -> "none"
+        }
+    }
+
+    private fun materialPressProgress(keyId: String): Float {
+        val duration = themeConfig.effectDurationMs.coerceIn(80, 600)
+        val startedAt = materialPressStartedAtById[keyId] ?: return 1f
+        return ((SystemClock.uptimeMillis() - startedAt).toFloat() / duration).coerceIn(0f, 1f)
+    }
+
+    private fun materialPressRect(
+        rect: RectF,
+        effect: String,
+        progress: Float,
+    ): RectF {
+        val drawRect = RectF(rect)
+        val intensity = themeConfig.effectIntensity.coerceIn(0.25f, 1f)
+        when (effect) {
+            "scale" -> {
+                val scale = 1f - (0.026f + 0.024f * intensity) * easeOutPress(progress)
+                insetRectForScale(drawRect, scale)
+                if (progress < 1f) materialPressEffectAnimating = true
+            }
+            "pulse" -> {
+                val envelope = 1f - easeOutPress(progress)
+                val scale = 1f + 0.045f * intensity * envelope
+                insetRectForScale(drawRect, scale)
+                if (progress < 1f) materialPressEffectAnimating = true
+            }
+            "shake" -> {
+                val envelope = 1f - progress
+                val offsetX = sin((progress * 18.849556f).toDouble()).toFloat() * dp(7f) * intensity * envelope
+                drawRect.offset(offsetX, 0f)
+                if (progress < 1f) materialPressEffectAnimating = true
+            }
+            "keycapTilt" -> {
+                val settle = easeOutPress(progress)
+                drawRect.offset(dp(1.2f) * intensity * settle, dp(1.6f) * intensity * settle)
+                insetRectForScale(drawRect, 0.992f)
+                if (progress < 1f) materialPressEffectAnimating = true
+            }
+            "edgeCompression" -> {
+                val settle = easeOutPress(progress)
+                drawRect.top += dp(0.8f) * intensity * settle
+                drawRect.bottom -= dp(1.8f) * intensity * settle
+                drawRect.offset(0f, dp(1.2f) * intensity * settle)
+                if (progress < 1f) materialPressEffectAnimating = true
+            }
+            "glow",
+            "electricArc",
+            "specularSweep",
+            "inkPress",
+            -> {
+                if (progress < 1f) materialPressEffectAnimating = true
+            }
+        }
+        return drawRect
+    }
+
+    private fun insetRectForScale(rect: RectF, scale: Float) {
+        val safeScale = scale.coerceIn(0.88f, 1.12f)
+        val dx = rect.width() * (1f - safeScale) / 2f
+        val dy = rect.height() * (1f - safeScale) / 2f
+        rect.inset(dx, dy)
+    }
+
+    private fun drawMaterialPressBackdrop(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        effect: String,
+        progress: Float,
+    ) {
+        if (effect != "glow" && effect != "pulse" && effect != "electricArc") return
+        val intensity = themeConfig.effectIntensity.coerceIn(0.25f, 1f)
+        val settle = easeOutPress(progress)
+        val strength =
+            if (effect == "glow") {
+                0.16f + 0.20f * settle * intensity
+            } else if (effect == "electricArc") {
+                0.10f + 0.12f * (1f - settle) * intensity
+            } else {
+                0.14f * (1f - settle) * intensity
+            }
+        if (strength <= 0.01f) return
+        val glowRect = RectF(rect).apply {
+            val spread = dp(4f + 8f * intensity)
+            inset(-spread, -spread * 0.72f)
+        }
+        keyEffectFillPaint.color = colorWithOpacity(activeKeyPaint.color, strength)
+        canvas.drawRoundRect(glowRect, radius + dp(5f), radius + dp(5f), keyEffectFillPaint)
+    }
+
+    private fun drawMaterialPressSurface(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        baseColor: Int,
+        effect: String,
+        progress: Float,
+    ) {
+        if (effect == "none") return
+        val intensity = themeConfig.effectIntensity.coerceIn(0.25f, 1f)
+        val settle = easeOutPress(progress)
+        if (effect == "glow") {
+            keyEffectFillPaint.color = colorWithOpacity(adjustColor(baseColor, 1.12f), 0.10f + 0.12f * settle * intensity)
+            canvas.drawRoundRect(rect, radius, radius, keyEffectFillPaint)
+        }
+        if (effect == "inkPress") {
+            keyEffectFillPaint.shader = null
+            keyEffectFillPaint.color = colorWithOpacity(adjustColor(baseColor, 0.68f), 0.10f + 0.16f * settle * intensity)
+            canvas.drawRoundRect(rect, radius, radius, keyEffectFillPaint)
+        }
+        if (effect == "keycapTilt" || effect == "edgeCompression") {
+            drawKeyPressBevel(canvas, rect, radius, baseColor, effect, settle, intensity)
+        }
+        if (effect == "specularSweep") {
+            drawSpecularSweep(canvas, rect, radius, progress, intensity)
+        }
+        if (effect == "electricArc") {
+            drawElectricArc(canvas, rect, radius, progress, intensity)
+        }
+        if (
+            effect == "glow" ||
+                effect == "pulse" ||
+                effect == "scale" ||
+                effect == "electricArc" ||
+                effect == "specularSweep"
+        ) {
+            keyEffectStrokePaint.color = colorWithOpacity(activeKeyPaint.color, 0.28f + 0.22f * intensity)
+            keyEffectStrokePaint.strokeWidth = dp(1.2f)
+            drawRoundRectStrokeInside(canvas, rect, radius, keyEffectStrokePaint)
+        }
+    }
+
+    private fun drawKeyPressBevel(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        baseColor: Int,
+        effect: String,
+        settle: Float,
+        intensity: Float,
+    ) {
+        val topStrength = if (effect == "keycapTilt") 0.16f else 0.11f
+        keyEffectStrokePaint.strokeWidth = dp(1.1f)
+        keyEffectStrokePaint.color = colorWithOpacity(adjustColor(baseColor, 1.18f), topStrength * settle * intensity)
+        val saveTop = canvas.save()
+        canvas.clipRect(rect.left, rect.top, rect.right, rect.centerY())
+        drawRoundRectStrokeInside(canvas, rect, radius, keyEffectStrokePaint)
+        canvas.restoreToCount(saveTop)
+
+        keyEffectStrokePaint.strokeWidth = dp(if (effect == "edgeCompression") 2.3f else 1.6f)
+        keyEffectStrokePaint.color = colorWithOpacity(adjustColor(baseColor, 0.58f), 0.18f * settle * intensity)
+        val saveBottom = canvas.save()
+        canvas.clipRect(rect.left, rect.centerY(), rect.right, rect.bottom)
+        drawRoundRectStrokeInside(canvas, rect, radius, keyEffectStrokePaint)
+        canvas.restoreToCount(saveBottom)
+    }
+
+    private fun drawSpecularSweep(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        progress: Float,
+        intensity: Float,
+    ) {
+        val sweepCenter = rect.left + rect.width() * (0.18f + 0.72f * easeOutPress(progress))
+        val sweepWidth = rect.width() * (0.18f + 0.10f * intensity)
+        keyEffectFillPaint.shader =
+            LinearGradient(
+                sweepCenter - sweepWidth,
+                rect.top,
+                sweepCenter + sweepWidth,
+                rect.bottom,
+                intArrayOf(
+                    colorWithOpacity(Color.WHITE, 0f),
+                    colorWithOpacity(Color.WHITE, 0.22f * intensity),
+                    colorWithOpacity(Color.WHITE, 0f),
+                ),
+                floatArrayOf(0f, 0.5f, 1f),
+                Shader.TileMode.CLAMP,
+            )
+        canvas.drawRoundRect(rect, radius, radius, keyEffectFillPaint)
+        keyEffectFillPaint.shader = null
+    }
+
+    private fun drawElectricArc(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        progress: Float,
+        intensity: Float,
+    ) {
+        keyEffectStrokePaint.shader = null
+        keyEffectStrokePaint.strokeWidth = dp(1.0f + 0.9f * intensity)
+        keyEffectStrokePaint.color = colorWithOpacity(activeKeyPaint.color, 0.38f + 0.26f * intensity)
+        keyEffectPath.reset()
+        val inset = dp(2f)
+        val left = rect.left + radius * 0.35f
+        val right = rect.right - radius * 0.25f
+        val top = rect.top + inset
+        val bottom = rect.bottom - inset
+        val phase = progress * 8f
+        keyEffectPath.moveTo(left, top + dp(1.5f) * sin(phase.toDouble()).toFloat())
+        val segments = 6
+        for (index in 1..segments) {
+            val t = index / segments.toFloat()
+            val x = left + (right - left) * t
+            val jitter = sin((phase + index * 1.7f).toDouble()).toFloat() * dp(2.2f) * intensity
+            val y = if (index % 2 == 0) top + jitter else top + dp(4f) + jitter
+            keyEffectPath.lineTo(x, y)
+        }
+        canvas.drawPath(keyEffectPath, keyEffectStrokePaint)
+
+        keyEffectPath.reset()
+        keyEffectPath.moveTo(rect.right - inset, rect.top + radius * 0.35f)
+        keyEffectPath.lineTo(rect.right - dp(3f), rect.centerY() + dp(3f) * intensity)
+        keyEffectPath.lineTo(rect.right - radius * 0.25f, bottom)
+        keyEffectStrokePaint.color = colorWithOpacity(Color.WHITE, 0.22f + 0.18f * intensity)
+        keyEffectStrokePaint.strokeWidth = dp(0.7f + 0.5f * intensity)
+        canvas.drawPath(keyEffectPath, keyEffectStrokePaint)
+    }
+
+    private fun easeOutPress(progress: Float): Float {
+        val inverse = 1f - progress.coerceIn(0f, 1f)
+        return 1f - inverse * inverse * inverse
+    }
+
+    private fun drawKeyRelief(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        baseColor: Int,
+        pressed: Boolean,
+    ) {
+        val depth = dp(themeConfig.keyReliefDepth).coerceIn(0f, dp(6f))
+        if (depth <= 0f) return
+        keyReliefDarkPaint.strokeWidth = max(dp(1f), depth)
+        keyReliefLightPaint.strokeWidth = max(dp(0.75f), depth * 0.55f)
+        keyReliefDarkPaint.color = keyboardLayerColor(adjustColor(baseColor, 0.72f), KEYBOARD_BORDER_OPACITY_BOOST)
+        keyReliefLightPaint.color = keyboardLayerColor(adjustColor(baseColor, 1.18f), KEYBOARD_BORDER_OPACITY_BOOST)
+        val darkInset = keyReliefDarkPaint.strokeWidth / 2f
+        scrollVisualRect.set(rect)
+        scrollVisualRect.inset(darkInset, darkInset)
+        val darkRadius = (radius - darkInset).coerceAtLeast(0f)
+        val save = canvas.save()
+        canvas.clipRect(
+            rect.left,
+            rect.centerY() - if (pressed) depth * 0.15f else 0f,
+            rect.right,
+            rect.bottom + depth,
+        )
+        canvas.drawRoundRect(scrollVisualRect, darkRadius, darkRadius, keyReliefDarkPaint)
+        canvas.restoreToCount(save)
+        if (!pressed) {
+            val lightInset = keyReliefLightPaint.strokeWidth / 2f
+            scrollVisualRect.set(rect)
+            scrollVisualRect.inset(lightInset, lightInset)
+            val lightRadius = (radius - lightInset).coerceAtLeast(0f)
+            val lightSave = canvas.save()
+            canvas.clipRect(rect.left, rect.top - depth, rect.right, rect.centerY())
+            canvas.drawRoundRect(scrollVisualRect, lightRadius, lightRadius, keyReliefLightPaint)
+            canvas.restoreToCount(lightSave)
+        }
+    }
+
+    private fun adjustColor(color: Int, factor: Float): Int {
+        fun channel(value: Int): Int = (value * factor).roundToInt().coerceIn(0, 255)
+        return Color.argb(Color.alpha(color), channel(Color.red(color)), channel(Color.green(color)), channel(Color.blue(color)))
     }
 
     private fun drawRoundRectStrokeInside(
@@ -3041,7 +3382,6 @@ class WinFlowzKeyboardView(
                         else -> KeyboardStateStore.KEY_VIBRATION_INTENSITY_OFF
                     }
                 callbacks.onKeyVibrationModeChanged(keyVibrationIntensity)
-                callbacks.onKeyVibrationChanged(keyVibrationEnabled)
                 setStatus(vibrationModeStatusText())
             }
             KeyboardKeyAction.ToggleKeySound -> {
@@ -3227,20 +3567,26 @@ class WinFlowzKeyboardView(
         }
         when (keyVibrationIntensity) {
             KeyboardStateStore.KEY_VIBRATION_INTENSITY_SHORT -> {
-                performHapticFeedback(feedbackConstant)
+                performKeyboardHapticFeedback(feedbackConstant)
             }
             KeyboardStateStore.KEY_VIBRATION_INTENSITY_MEDIUM -> {
-                performHapticFeedback(feedbackConstant)
-                postDelayed({ performHapticFeedback(feedbackConstant) }, 45L)
+                performKeyboardHapticFeedback(feedbackConstant)
             }
             KeyboardStateStore.KEY_VIBRATION_INTENSITY_LONG -> {
-                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                postDelayed({ performHapticFeedback(HapticFeedbackConstants.LONG_PRESS) }, 120L)
+                performKeyboardHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             }
             else -> {
-                performHapticFeedback(feedbackConstant)
+                performKeyboardHapticFeedback(feedbackConstant)
             }
         }
+    }
+
+    private fun performKeyboardHapticFeedback(feedbackConstant: Int) {
+        performHapticFeedback(
+            feedbackConstant,
+            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING or
+                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING,
+        )
     }
 
     private fun vibrationModeStatusText(): String {
@@ -3349,6 +3695,20 @@ class WinFlowzKeyboardView(
                 keyFrames.lastOrNull { it.key.id == key.id } ?:
                 return
         val spec = KeyboardPressEffectPolicy.resolve(themeConfig, fieldPolicy.privateMode)
+        if (
+            spec.effect == "scale" ||
+                spec.effect == "pulse" ||
+                spec.effect == "shake" ||
+                spec.effect == "glow" ||
+                spec.effect == "electricArc" ||
+                spec.effect == "specularSweep" ||
+                spec.effect == "inkPress" ||
+                spec.effect == "keycapTilt" ||
+                spec.effect == "edgeCompression"
+        ) {
+            postInvalidateOnAnimation()
+            return
+        }
         if (pressEffects.trigger(key.id, frame.visualRect, spec)) {
             postInvalidateOnAnimation()
         }
