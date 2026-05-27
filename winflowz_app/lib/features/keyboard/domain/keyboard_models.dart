@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 
 enum KeyboardPrivacyMode {
   auto,
@@ -911,7 +912,149 @@ class KeyboardConfigurableKey {
 class KeyboardConfigurableKeyCatalog {
   const KeyboardConfigurableKeyCatalog._();
 
-  static const keys = [
+  static final List<KeyboardConfigurableKey> _qwertyKeys = _buildKeysForProfile(
+    KeyboardLayoutProfile.qwerty,
+  );
+  static final List<KeyboardConfigurableKey> _azertyKeys = _buildKeysForProfile(
+    KeyboardLayoutProfile.azerty,
+  );
+
+  static const _qwertyBase = [
+    'qwertyuiop',
+    'asdfghjkl;',
+    'zxcvbnm',
+  ];
+  static const _azertyBase = [
+    'azertyuiop',
+    'qsdfghjklm',
+    'wxcvbn',
+  ];
+
+  static List<KeyboardConfigurableKey> keysForProfile(
+    KeyboardLayoutProfile profile,
+  ) {
+    return profile == KeyboardLayoutProfile.azerty ? _azertyKeys : _qwertyKeys;
+  }
+
+  static KeyboardConfigurableKey byIdForProfile(
+    KeyboardLayoutProfile profile,
+    String id,
+  ) {
+    final profileKeys = keysForProfile(profile);
+    return profileKeys.firstWhere(
+      (key) => key.id == id,
+      orElse: () => profileKeys.first,
+    );
+  }
+
+  static bool containsForProfile(
+    KeyboardLayoutProfile profile,
+    String id,
+  ) {
+    return keysForProfile(profile).any((key) => key.id == id);
+  }
+
+  static final List<KeyboardConfigurableKey> keys = _qwertyKeys;
+
+  static List<KeyboardConfigurableKey> _buildKeysForProfile(
+    KeyboardLayoutProfile profile,
+  ) {
+    final rows = profile == KeyboardLayoutProfile.azerty ? _azertyBase : _qwertyBase;
+    final catalog = <KeyboardConfigurableKey>[];
+
+    void addCharKey(String value) {
+      if (value == ';') {
+        catalog.add(
+          const KeyboardConfigurableKey(
+            id: 'text-semicolon',
+            label: ';',
+            row: 1,
+          ),
+        );
+      } else {
+        catalog.add(KeyboardConfigurableKey(id: 'letter-$value', label: value.toUpperCase(), row: 1));
+      }
+    }
+
+    for (final top in rows[0].split('')) {
+      catalog.add(KeyboardConfigurableKey(id: 'letter-$top', label: top.toUpperCase(), row: 0));
+    }
+    for (final middle in rows[1].split('')) {
+      addCharKey(middle);
+    }
+    catalog.add(
+      const KeyboardConfigurableKey(
+        id: 'shift',
+        label: 'Shift',
+        row: 2,
+        special: true,
+      ),
+    );
+    for (final bottom in rows[2].split('')) {
+      catalog.add(KeyboardConfigurableKey(id: 'letter-$bottom', label: bottom.toUpperCase(), row: 2));
+    }
+    catalog.add(
+      const KeyboardConfigurableKey(
+        id: 'del-letter-row',
+        label: 'Back',
+        row: 2,
+        special: true,
+      ),
+    );
+
+    catalog
+      ..addAll(
+        [
+          const KeyboardConfigurableKey(
+            id: 'modifier-ctrl',
+            label: 'Ctrl',
+            row: 3,
+            special: true,
+          ),
+          const KeyboardConfigurableKey(
+            id: 'modifier-alt',
+            label: 'Alt',
+            row: 3,
+            special: true,
+          ),
+          const KeyboardConfigurableKey(
+            id: 'modifier-fn',
+            label: 'Fn',
+            row: 3,
+            special: true,
+          ),
+          const KeyboardConfigurableKey(
+            id: 'text-comma',
+            label: ',',
+            row: 3,
+            special: true,
+          ),
+          const KeyboardConfigurableKey(id: 'space', label: 'Space', row: 3, special: true),
+          const KeyboardConfigurableKey(
+            id: 'text-period',
+            label: '.',
+            row: 3,
+            special: true,
+          ),
+          const KeyboardConfigurableKey(id: 'enter', label: 'Enter', row: 3, special: true),
+        ],
+      );
+
+    final prefix = _legacyKeysV2.take(11);
+    if (profile == KeyboardLayoutProfile.azerty) {
+      return [
+        ...prefix,
+        ...catalog.take(16),
+        ...catalog.skip(16),
+      ];
+    }
+    return [
+      ...prefix,
+      ...catalog,
+    ];
+  }
+
+  static const _legacyKeysV2 = [
     KeyboardConfigurableKey(
       id: 'mode-ABC',
       label: 'ABC',
@@ -1058,10 +1201,13 @@ class KeyboardConfigurableKeyCatalog {
   ];
 
   static KeyboardConfigurableKey byId(String id) {
-    return keys.firstWhere((key) => key.id == id, orElse: () => keys.first);
+    return byIdForProfile(KeyboardLayoutProfile.qwerty, id);
   }
 
-  static bool contains(String id) => keys.any((key) => key.id == id);
+  static bool contains(String id) => containsForProfile(
+    KeyboardLayoutProfile.qwerty,
+    id,
+  );
 }
 
 class AndroidKeyboardCornerShortcut {
@@ -1177,6 +1323,7 @@ class KeyboardGuidedAction {
     this.sensitive = false,
     this.nativeOnly = false,
     this.specialKeyGated = false,
+    this.icon,
   });
 
   final KeyboardGuidedActionCategory category;
@@ -1187,6 +1334,7 @@ class KeyboardGuidedAction {
   final bool sensitive;
   final bool nativeOnly;
   final bool specialKeyGated;
+  final IconData? icon;
 
   AndroidKeyboardCornerShortcut shortcutFor({
     required String keyId,
@@ -1219,30 +1367,12 @@ class KeyboardGuidedActionCatalog {
   const KeyboardGuidedActionCatalog._();
 
   static const accents = [
-    'à',
-    'â',
-    'ä',
-    'æ',
     'é',
     'è',
-    'ê',
-    'ë',
-    'î',
-    'ï',
-    'ô',
-    'ö',
-    'ù',
-    'û',
-    'ü',
     'ç',
-    'ñ',
-    'ß',
-    'œ',
   ];
 
   static const punctuation = [
-    ',',
-    '.',
     '?',
     '!',
     "'",
@@ -1273,12 +1403,29 @@ class KeyboardGuidedActionCatalog {
       title: 'Undo',
       expression: 'action:Undo',
       nativeOnly: true,
+      icon: Icons.undo_outlined,
     ),
     KeyboardGuidedAction(
       category: KeyboardGuidedActionCategory.action,
       title: 'Redo',
       expression: 'action:Redo',
       nativeOnly: true,
+      icon: Icons.redo_outlined,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Select all',
+      expression: 'action:SelectAll',
+      nativeOnly: true,
+      icon: Icons.select_all_outlined,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Cut',
+      expression: 'action:CutSelection',
+      sensitive: true,
+      nativeOnly: true,
+      icon: Icons.content_cut_outlined,
     ),
     KeyboardGuidedAction(
       category: KeyboardGuidedActionCategory.action,
@@ -1286,6 +1433,7 @@ class KeyboardGuidedActionCatalog {
       expression: 'action:CopySelection',
       sensitive: true,
       nativeOnly: true,
+      icon: Icons.content_copy_outlined,
     ),
     KeyboardGuidedAction(
       category: KeyboardGuidedActionCategory.action,
@@ -1293,12 +1441,43 @@ class KeyboardGuidedActionCatalog {
       expression: 'action:PasteClipboard',
       sensitive: true,
       nativeOnly: true,
+      icon: Icons.content_paste_outlined,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Paste plain',
+      expression: 'action:PastePlainClipboard',
+      sensitive: true,
+      nativeOnly: true,
+      icon: Icons.content_paste_outlined,
     ),
     KeyboardGuidedAction(
       category: KeyboardGuidedActionCategory.action,
       title: 'Delete word',
       expression: 'action:DeleteWordBefore',
       nativeOnly: true,
+      icon: Icons.backspace_outlined,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Delete word →',
+      expression: 'action:DeleteWordAfter',
+      nativeOnly: true,
+      icon: Icons.backspace_outlined,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Move word ←',
+      expression: 'action:NavigateWordLeft',
+      nativeOnly: true,
+      icon: Icons.keyboard_double_arrow_left,
+    ),
+    KeyboardGuidedAction(
+      category: KeyboardGuidedActionCategory.action,
+      title: 'Move word →',
+      expression: 'action:NavigateWordRight',
+      nativeOnly: true,
+      icon: Icons.keyboard_double_arrow_right,
     ),
     KeyboardGuidedAction(
       category: KeyboardGuidedActionCategory.action,
@@ -1306,6 +1485,7 @@ class KeyboardGuidedActionCatalog {
       expression: 'action:NavigateCharLeft',
       nativeOnly: true,
       specialKeyGated: true,
+      icon: Icons.arrow_back,
     ),
     KeyboardGuidedAction(
       category: KeyboardGuidedActionCategory.action,
@@ -1313,6 +1493,7 @@ class KeyboardGuidedActionCatalog {
       expression: 'action:NavigateCharRight',
       nativeOnly: true,
       specialKeyGated: true,
+      icon: Icons.arrow_forward,
     ),
   ];
 

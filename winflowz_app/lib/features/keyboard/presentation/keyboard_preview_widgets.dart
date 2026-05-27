@@ -683,6 +683,7 @@ class KeyboardCornerSelectablePreview extends StatelessWidget {
   const KeyboardCornerSelectablePreview({
     super.key,
     required this.config,
+    required this.layoutProfile,
     required this.selectedKeyId,
     required this.selectedSlot,
     required this.privateMode,
@@ -692,6 +693,7 @@ class KeyboardCornerSelectablePreview extends StatelessWidget {
   });
 
   final AndroidKeyboardCornerConfig config;
+  final KeyboardLayoutProfile layoutProfile;
   final String selectedKeyId;
   final KeyboardCornerSlot selectedSlot;
   final bool privateMode;
@@ -702,7 +704,7 @@ class KeyboardCornerSelectablePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rows = <int, List<KeyboardConfigurableKey>>{};
-    for (final key in KeyboardConfigurableKeyCatalog.keys) {
+    for (final key in KeyboardConfigurableKeyCatalog.keysForProfile(layoutProfile)) {
       rows.putIfAbsent(key.row, () => <KeyboardConfigurableKey>[]).add(key);
     }
     return FocusTraversalGroup(

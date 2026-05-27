@@ -49,6 +49,7 @@ class _KeyboardCornerShortcutsScreenState
   bool _saving = false;
   bool _privateMode = false;
   String? _message;
+  KeyboardLayoutProfile _layoutProfile = KeyboardLayoutProfile.qwerty;
 
   @override
   void initState() {
@@ -70,6 +71,7 @@ class _KeyboardCornerShortcutsScreenState
   Future<void> _load() async {
     setState(() => _loading = true);
     try {
+      final status = await AndroidKeyboardBridge.getStatus();
       final config = await AndroidKeyboardBridge.getCornerConfig();
       final snippets = await ref.read(snippetStoreProvider).list();
       if (!mounted) {
@@ -77,6 +79,7 @@ class _KeyboardCornerShortcutsScreenState
       }
       setState(() {
         _draft = KeyboardCornerDraft.fromConfig(config);
+        _layoutProfile = status.layoutProfile;
         _snippets = snippets;
         _message = PlatformCapabilities.keyboardImeSupported
             ? 'Loaded. Changes stay in draft until Save.'
@@ -154,7 +157,10 @@ class _KeyboardCornerShortcutsScreenState
   }
 
   String? _validateShortcut(AndroidKeyboardCornerShortcut shortcut) {
-    if (!KeyboardConfigurableKeyCatalog.contains(shortcut.keyId)) {
+    if (!KeyboardConfigurableKeyCatalog.containsForProfile(
+      _layoutProfile,
+      shortcut.keyId,
+    )) {
       return 'Unknown key id: ${shortcut.keyId}.';
     }
     if (shortcut.disabled) {
@@ -412,7 +418,8 @@ class _KeyboardCornerShortcutsScreenState
       cornersEnabled: true,
       specialKeyCornersEnabled: true,
       privateMode: false,
-      specialKey: KeyboardConfigurableKeyCatalog.byId(
+      specialKey: KeyboardConfigurableKeyCatalog.byIdForProfile(
+        _layoutProfile,
         _draft.selectedKeyId,
       ).special,
     );
@@ -485,7 +492,8 @@ class _KeyboardCornerShortcutsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final selectedKey = KeyboardConfigurableKeyCatalog.byId(
+    final selectedKey = KeyboardConfigurableKeyCatalog.byIdForProfile(
+      _layoutProfile,
       _draft.selectedKeyId,
     );
     final selectedShortcut = _selectedShortcut();
@@ -604,6 +612,7 @@ class _KeyboardCornerShortcutsScreenState
                         ),
                         AppGaps.x3,
                         KeyboardCornerSelectablePreview(
+                          layoutProfile: _layoutProfile,
                           config: _draft.draftConfig,
                           selectedKeyId: _draft.selectedKeyId,
                           selectedSlot: _draft.selectedSlot,
@@ -812,7 +821,8 @@ class _KeyboardCornerShortcutsScreenState
       cornersEnabled: true,
       specialKeyCornersEnabled: true,
       privateMode: _privateMode,
-      specialKey: KeyboardConfigurableKeyCatalog.byId(
+      specialKey: KeyboardConfigurableKeyCatalog.byIdForProfile(
+        _layoutProfile,
         _draft.selectedKeyId,
       ).special,
     )[slot];
@@ -908,6 +918,7 @@ class _ActionCatalog extends StatelessWidget {
               for (final action in entry.value)
                 ActionChip(
                   key: Key('corner-action-${action.title}'),
+                  avatar: action.icon == null ? null : Icon(action.icon),
                   label: Text(action.title),
                   onPressed: () => onSelected(action),
                 ),

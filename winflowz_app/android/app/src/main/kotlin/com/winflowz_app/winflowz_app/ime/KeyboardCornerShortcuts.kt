@@ -330,25 +330,43 @@ object KeyboardCornerPresets {
 
     private fun frenchAccentShortcuts(): List<KeyboardCornerShortcut> {
         return listOf(
-            shortcut("letter-a", KeyboardCornerSlot.TopLeft, "à"),
-            shortcut("letter-a", KeyboardCornerSlot.TopRight, "â"),
-            shortcut("letter-e", KeyboardCornerSlot.TopLeft, "é"),
-            shortcut("letter-e", KeyboardCornerSlot.TopRight, "è"),
-            shortcut("letter-e", KeyboardCornerSlot.BottomLeft, "ê"),
-            shortcut("letter-e", KeyboardCornerSlot.BottomRight, "ë"),
-            shortcut("letter-i", KeyboardCornerSlot.TopLeft, "î"),
-            shortcut("letter-i", KeyboardCornerSlot.TopRight, "ï"),
-            shortcut("letter-o", KeyboardCornerSlot.TopLeft, "ô"),
-            shortcut("letter-o", KeyboardCornerSlot.TopRight, "œ"),
-            shortcut("letter-u", KeyboardCornerSlot.TopLeft, "ù"),
-            shortcut("letter-u", KeyboardCornerSlot.TopRight, "û"),
-            shortcut("letter-u", KeyboardCornerSlot.BottomLeft, "ü"),
-            shortcut("letter-c", KeyboardCornerSlot.TopLeft, "ç"),
+            shortcut(
+                "letter-e",
+                KeyboardCornerSlot.TopLeft,
+                "é",
+                layoutProfiles = setOf(KeyboardLayoutProfile.AZERTY),
+            ),
+            shortcut(
+                "letter-e",
+                KeyboardCornerSlot.TopRight,
+                "è",
+                layoutProfiles = setOf(KeyboardLayoutProfile.AZERTY),
+            ),
+            shortcut(
+                "letter-u",
+                KeyboardCornerSlot.TopLeft,
+                "ù",
+                layoutProfiles = setOf(KeyboardLayoutProfile.AZERTY),
+            ),
+            shortcut(
+                "letter-c",
+                KeyboardCornerSlot.TopLeft,
+                "ç",
+                layoutProfiles = setOf(KeyboardLayoutProfile.AZERTY),
+            ),
         )
     }
 
     private fun punctuationShortcuts(): List<KeyboardCornerShortcut> {
         return listOf(
+            shortcut("del-letter-row", KeyboardCornerSlot.TopLeft, "/", label = "/"),
+            shortcut("del-letter-row", KeyboardCornerSlot.TopRight, "/", label = "/"),
+            shortcut("del-letter-row", KeyboardCornerSlot.Up, "action:SelectAll", label = "Sel"),
+            shortcut("del-letter-row", KeyboardCornerSlot.Down, "action:CopySelection", label = "Copy"),
+            shortcut("del-letter-row", KeyboardCornerSlot.Left, "action:DeleteWordBefore", label = "DelW←"),
+            shortcut("del-letter-row", KeyboardCornerSlot.Right, "action:DeleteWordAfter", label = "DelW→"),
+            shortcut("del-letter-row", KeyboardCornerSlot.BottomLeft, "#", label = "#"),
+            shortcut("del-letter-row", KeyboardCornerSlot.BottomRight, "action:PasteClipboard", label = "Paste"),
             shortcut("letter-r", KeyboardCornerSlot.Up, "1"),
             shortcut("letter-t", KeyboardCornerSlot.Up, "2"),
             shortcut("letter-y", KeyboardCornerSlot.Up, "3"),
@@ -387,12 +405,22 @@ object KeyboardCornerPresets {
                 label = "↓",
                 layoutProfiles = setOf(KeyboardLayoutProfile.AZERTY),
             ),
+            shortcut(
+                "letter-z",
+                KeyboardCornerSlot.BottomLeft,
+                "action:NavigateWordLeft",
+                label = "W←",
+            ),
+            shortcut(
+                "letter-z",
+                KeyboardCornerSlot.BottomRight,
+                "action:NavigateWordRight",
+                label = "W→",
+            ),
             shortcut("letter-s", KeyboardCornerSlot.Left, "action:NavigateCharLeft", label = "←"),
             shortcut("letter-s", KeyboardCornerSlot.Right, "action:NavigateCharRight", label = "→"),
             shortcut("letter-n", KeyboardCornerSlot.TopLeft, "-"),
             shortcut("letter-n", KeyboardCornerSlot.TopRight, "_"),
-            shortcut("letter-j", KeyboardCornerSlot.TopLeft, ","),
-            shortcut("letter-j", KeyboardCornerSlot.TopRight, "."),
             shortcut("letter-j", KeyboardCornerSlot.BottomLeft, "?"),
             shortcut("letter-j", KeyboardCornerSlot.BottomRight, "!"),
             shortcut("letter-k", KeyboardCornerSlot.TopLeft, "'\\''", label = "'"),

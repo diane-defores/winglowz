@@ -19,16 +19,21 @@ class KeyboardCornerShortcutsTest {
         val nKey = keyById("letter-n")
         val jKey = keyById("letter-j")
         val lKey = keyById("letter-l")
+        val uKey = keyById("letter-u")
+        val zKey = keyById("letter-z")
 
-        assertEquals("à", aKey.cornerAssignments.topLeft?.label)
-        assertEquals("â", aKey.cornerAssignments.topRight?.label)
-        assertEquals("à", aKey.cornerAssignments.topLeft?.value?.text)
+        assertNull(aKey.cornerAssignments.topLeft)
+        assertNull(aKey.cornerAssignments.topRight)
         assertNull(aKey.cornerAssignments.bottomLeft)
-        assertEquals("é", eKey.cornerAssignments.topLeft?.label)
+        assertNull(eKey.cornerAssignments.topLeft)
+        assertNull(eKey.cornerAssignments.topRight)
         assertEquals("1", rKey.cornerAssignments.up?.label)
         assertEquals("8", cKey.cornerAssignments.up?.label)
         assertEquals("6", hKey.cornerAssignments.up?.label)
         assertEquals("0", bKey.cornerAssignments.up?.label)
+        assertNull(uKey.cornerAssignments.topLeft)
+        assertNull(uKey.cornerAssignments.topRight)
+        assertNull(uKey.cornerAssignments.bottomLeft)
         assertEquals("-", nKey.cornerAssignments.topLeft?.label)
         assertEquals("_", nKey.cornerAssignments.topRight?.label)
         assertEquals("?", jKey.cornerAssignments.bottomLeft?.label)
@@ -45,7 +50,11 @@ class KeyboardCornerShortcutsTest {
         assertEquals("↓", wKey.cornerAssignments.down?.label)
         assertEquals("←", sKey.cornerAssignments.left?.label)
         assertEquals("→", sKey.cornerAssignments.right?.label)
+        assertEquals("W←", zKey.cornerAssignments.bottomLeft?.label)
+        assertEquals("W→", zKey.cornerAssignments.bottomRight?.label)
         assertEquals(KeyboardKeyAction.NavigateLineUp, wKey.cornerAssignments.up?.value?.action)
+        assertEquals(KeyboardKeyAction.NavigateWordLeft, zKey.cornerAssignments.bottomLeft?.value?.action)
+        assertEquals(KeyboardKeyAction.NavigateWordRight, zKey.cornerAssignments.bottomRight?.value?.action)
         assertEquals(KeyboardKeyAction.NavigateCharLeft, sKey.cornerAssignments.left?.value?.action)
         assertEquals(KeyboardKeyAction.NavigateCharRight, sKey.cornerAssignments.right?.value?.action)
     }
@@ -68,7 +77,7 @@ class KeyboardCornerShortcutsTest {
 
         assertEquals("A+", key.cornerAssignments.topLeft?.label)
         assertEquals("aa", key.cornerAssignments.topLeft?.value?.text)
-        assertEquals("â", key.cornerAssignments.topRight?.label)
+        assertNull(key.cornerAssignments.topRight?.label)
     }
 
     @Test
@@ -77,13 +86,27 @@ class KeyboardCornerShortcutsTest {
         val zKey = keyById("letter-z", layoutProfile = KeyboardLayoutProfile.AZERTY)
         val wKey = keyById("letter-w", layoutProfile = KeyboardLayoutProfile.AZERTY)
         val sKey = keyById("letter-s", layoutProfile = KeyboardLayoutProfile.AZERTY)
+        val eKey = keyById("letter-e", layoutProfile = KeyboardLayoutProfile.AZERTY)
+        val uKey = keyById("letter-u", layoutProfile = KeyboardLayoutProfile.AZERTY)
+        val cKey = keyById("letter-c", layoutProfile = KeyboardLayoutProfile.AZERTY)
 
-        assertEquals("à", aKey.cornerAssignments.topLeft?.label)
+        assertNull(aKey.cornerAssignments.topLeft)
+        assertNull(aKey.cornerAssignments.topRight)
+        assertEquals("é", eKey.cornerAssignments.topLeft?.label)
+        assertEquals("è", eKey.cornerAssignments.topRight?.label)
+        assertEquals("ù", uKey.cornerAssignments.topLeft?.label)
+        assertNull(uKey.cornerAssignments.topRight)
+        assertEquals("ç", cKey.cornerAssignments.topLeft?.label)
+        assertNull(cKey.cornerAssignments.topRight)
         assertNull(wKey.cornerAssignments.down)
         assertEquals("↑", zKey.cornerAssignments.up?.label)
         assertEquals("↓", zKey.cornerAssignments.down?.label)
         assertEquals("←", sKey.cornerAssignments.left?.label)
         assertEquals("→", sKey.cornerAssignments.right?.label)
+        assertEquals("W←", zKey.cornerAssignments.bottomLeft?.label)
+        assertEquals("W→", zKey.cornerAssignments.bottomRight?.label)
+        assertEquals(KeyboardKeyAction.NavigateWordLeft, zKey.cornerAssignments.bottomLeft?.value?.action)
+        assertEquals(KeyboardKeyAction.NavigateWordRight, zKey.cornerAssignments.bottomRight?.value?.action)
     }
 
     @Test
@@ -135,10 +158,15 @@ class KeyboardCornerShortcutsTest {
             )
 
         val sensitive = keyById("letter-j", config = config, fieldPolicy = privatePolicy())
-        val accent = keyById("letter-a", config = config, fieldPolicy = privatePolicy())
+        val accent = keyById(
+            "letter-e",
+            config = config,
+            fieldPolicy = privatePolicy(),
+            layoutProfile = KeyboardLayoutProfile.AZERTY,
+        )
 
         assertNull(sensitive.cornerAssignments.topLeft)
-        assertEquals("à", accent.cornerAssignments.topLeft?.label)
+        assertEquals("é", accent.cornerAssignments.topLeft?.label)
     }
 
     @Test
