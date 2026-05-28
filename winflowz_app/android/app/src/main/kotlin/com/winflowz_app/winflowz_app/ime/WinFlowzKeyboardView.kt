@@ -19,6 +19,7 @@ import android.graphics.Typeface
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.SystemClock
+import android.text.TextPaint
 import android.text.TextUtils
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -476,7 +477,7 @@ class WinFlowzKeyboardView(
     private val disabledKeyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = NativeKeyboardColors.Light.disabledKey
     }
-    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = NativeKeyboardColors.Light.text
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
@@ -1450,7 +1451,7 @@ class WinFlowzKeyboardView(
         longPressSwipeStrokePaint.color = colorWithOpacity(accentColor, 0.5f + 0.18f * intensity)
         longPressSwipeStrokePaint.strokeWidth = dp(2.5f) * intensity
         canvas.drawLine(startX, startY, endX, endY, longPressSwipeStrokePaint)
-        val pulse = (sin((phase * 0.95f).toDouble()) * 0.5f + 0.5f) * 0.45f
+        val pulse = ((sin(phase * 0.95f) * 0.5f + 0.5f) * 0.45f)
         val markerX = startX + (endX - startX) * (0.18f + 0.64f * pulse)
         val markerY = startY + (endY - startY) * (0.18f + 0.64f * pulse)
         longPressSwipeFillPaint.color = colorWithOpacity(Color.WHITE, 0.2f + 0.16f * intensity * (1f - pulse))
@@ -4616,7 +4617,7 @@ class WinFlowzKeyboardView(
         }
         return TextUtils.ellipsize(
             label,
-            textPaint,
+            textPaint as TextPaint,
             maxTextWidth,
             TextUtils.TruncateAt.END,
         ).toString()
