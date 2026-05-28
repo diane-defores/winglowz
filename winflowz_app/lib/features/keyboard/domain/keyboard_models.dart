@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 enum KeyboardPrivacyMode {
@@ -1002,43 +1001,42 @@ class KeyboardConfigurableKeyCatalog {
       ),
     );
 
-    catalog
-      ..addAll(
-        [
-          const KeyboardConfigurableKey(
-            id: 'modifier-ctrl',
-            label: 'Ctrl',
-            row: 3,
-            special: true,
-          ),
-          const KeyboardConfigurableKey(
-            id: 'modifier-alt',
-            label: 'Alt',
-            row: 3,
-            special: true,
-          ),
-          const KeyboardConfigurableKey(
-            id: 'modifier-fn',
-            label: 'Fn',
-            row: 3,
-            special: true,
-          ),
-          const KeyboardConfigurableKey(
-            id: 'text-comma',
-            label: ',',
-            row: 3,
-            special: true,
-          ),
-          const KeyboardConfigurableKey(id: 'space', label: 'Space', row: 3, special: true),
-          const KeyboardConfigurableKey(
-            id: 'text-period',
-            label: '.',
-            row: 3,
-            special: true,
-          ),
-          const KeyboardConfigurableKey(id: 'enter', label: 'Enter', row: 3, special: true),
-        ],
-      );
+    catalog.addAll(
+      [
+        const KeyboardConfigurableKey(
+          id: 'modifier-ctrl',
+          label: 'Ctrl',
+          row: 3,
+          special: true,
+        ),
+        const KeyboardConfigurableKey(
+          id: 'modifier-alt',
+          label: 'Alt',
+          row: 3,
+          special: true,
+        ),
+        const KeyboardConfigurableKey(
+          id: 'modifier-fn',
+          label: 'Fn',
+          row: 3,
+          special: true,
+        ),
+        const KeyboardConfigurableKey(
+          id: 'text-comma',
+          label: ',',
+          row: 3,
+          special: true,
+        ),
+        const KeyboardConfigurableKey(id: 'space', label: 'Space', row: 3, special: true),
+        const KeyboardConfigurableKey(
+          id: 'text-period',
+          label: '.',
+          row: 3,
+          special: true,
+        ),
+        const KeyboardConfigurableKey(id: 'enter', label: 'Enter', row: 3, special: true),
+      ],
+    );
 
     final prefix = _legacyKeysV2.take(11);
     if (profile == KeyboardLayoutProfile.azerty) {
