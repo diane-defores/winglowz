@@ -47,9 +47,15 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
       });
       return;
     }
-    final controller = ref.read(keyboardSyncControllerProvider);
-    final nextState = await controller.synchronize(authContext);
+    final nextState = await _safeSynchronize(authContext);
     if (!mounted) {
+      return;
+    }
+    if (nextState == null) {
+      setState(() {
+        _syncing = false;
+        _message = 'Synchronisation clavier indisponible pour cette session.';
+      });
       return;
     }
     setState(() {
@@ -63,6 +69,39 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
     if (_rerunRequested) {
       _rerunRequested = false;
       unawaited(_runSync(userInitiated: userInitiated));
+    }
+  }
+
+  Future<KeyboardSyncControllerState?> _safeSynchronize(
+    KeyboardSyncAuthContext authContext,
+  ) async {
+    try {
+      final controller = ref.read(keyboardSyncControllerProvider);
+      return await controller.synchronize(authContext);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<KeyboardSyncControllerState?> _safeKeepProfile(
+    KeyboardSyncAuthContext authContext,
+  ) async {
+    try {
+      final controller = ref.read(keyboardSyncControllerProvider);
+      return await controller.keepLocalProfile(authContext);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<KeyboardSyncControllerState?> _safeUseCloudProfile(
+    KeyboardSyncAuthContext authContext,
+  ) async {
+    try {
+      final controller = ref.read(keyboardSyncControllerProvider);
+      return await controller.useCloudProfile(authContext);
+    } catch (_) {
+      return null;
     }
   }
 
@@ -197,13 +236,17 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
       return;
     }
     setState(() => _syncing = true);
-    final controller = ref.read(keyboardSyncControllerProvider);
     final authContext = ref.read(keyboardSyncAuthContextProvider);
-    final nextState = await controller.keepLocalProfile(authContext);
+    final nextState = await _safeKeepProfile(authContext);
     if (!mounted) {
       return;
     }
     setState(() {
+      if (nextState == null) {
+        _syncing = false;
+        _message = 'Synchronisation clavier indisponible pour cette session.';
+        return;
+      }
       _state = nextState;
       _syncing = false;
       _message = nextState.status == KeyboardSyncControllerStatus.ready
@@ -217,13 +260,17 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
       return;
     }
     setState(() => _syncing = true);
-    final controller = ref.read(keyboardSyncControllerProvider);
     final authContext = ref.read(keyboardSyncAuthContextProvider);
-    final nextState = await controller.useCloudProfile(authContext);
+    final nextState = await _safeUseCloudProfile(authContext);
     if (!mounted) {
       return;
     }
     setState(() {
+      if (nextState == null) {
+        _syncing = false;
+        _message = 'Synchronisation clavier indisponible pour cette session.';
+        return;
+      }
       _state = nextState;
       _syncing = false;
       _message = nextState.status == KeyboardSyncControllerStatus.ready

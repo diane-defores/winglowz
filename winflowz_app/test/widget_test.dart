@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
@@ -14,7 +16,10 @@ import 'package:winflowz_app/features/clipboard/data/in_memory_clipboard_history
 import 'package:winflowz_app/features/clipboard/domain/clipboard_store.dart';
 import 'package:winflowz_app/features/clipboard/presentation/clipboard_screen.dart';
 import 'package:winflowz_app/features/auth/application/auth_session_provider.dart';
+import 'package:winflowz_app/features/auth/application/suite_identity_provider.dart';
 import 'package:winflowz_app/features/auth/domain/auth_session_store.dart';
+import 'package:winflowz_app/features/auth/domain/product_entitlement.dart';
+import 'package:winflowz_app/features/auth/domain/suite_identity.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_models.dart';
 import 'package:winflowz_app/features/keyboard/presentation/keyboard_preview_screen.dart';
 import 'package:winflowz_app/features/clipboard/domain/clipboard_normalizer.dart';
@@ -189,10 +194,89 @@ class _RecordingCloudAuthStore implements AuthSessionStore {
   Future<void> signOut() async {}
 }
 
+class _PostAuthRemoteAuthStore implements AuthSessionStore {
+  _PostAuthRemoteAuthStore(this.signedInSession)
+    : _session = const AuthSessionSnapshot.localFallback() {
+    _controller.add(_session);
+  }
+
+  final AuthSessionSnapshot signedInSession;
+  final _controller = StreamController<AuthSessionSnapshot>();
+  AuthSessionSnapshot _session;
+  int emailPasswordCalls = 0;
+
+  @override
+  Future<AuthSessionSnapshot> currentSession() async => _session;
+
+  @override
+  Stream<AuthSessionSnapshot> watchSession() {
+    return _controller.stream;
+  }
+
+  @override
+  Future<void> signInAnonymously() async {}
+
+  @override
+  Future<void> signInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    emailPasswordCalls += 1;
+    _session = signedInSession;
+    _controller.add(_session);
+  }
+
+  @override
+  Future<void> createAccountWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {}
+
+  @override
+  Future<void> signInWithGoogle() async {}
+
+  @override
+  Future<void> signInWithGoogleIdToken({required String? idToken}) async {}
+
+  @override
+  Future<void> signOut() async {}
+
+  void dispose() {
+    _controller.close();
+  }
+}
+
 class _PendingSignupWelcomeController extends SignupWelcomeController {
   @override
   bool build() => true;
 }
+
+const _postAuthSignedInSession = AuthSessionSnapshot(
+  user: AuthUserSnapshot(
+    id: 'test-user-id',
+    provider: AuthProviderKind.emailPassword,
+    email: 'alice@example.test',
+  ),
+  syncStatus: SyncStatus(health: SyncHealth.synced),
+);
+
+const _postAuthSuiteActiveIdentity = SuiteIdentitySnapshot(
+  status: SuiteAccountStatus.accessActive,
+  globalUserId: 'global-user-id',
+  entitlements: [
+    ProductEntitlement(
+      productId: ProductId.winflowzApp,
+      status: ProductEntitlementStatus.active,
+      plan: 'pro',
+    ),
+  ],
+);
+
+const _postAuthSuiteInactiveIdentity = SuiteIdentitySnapshot(
+  status: SuiteAccountStatus.accessInactive,
+  globalUserId: 'global-user-id',
+  entitlements: [],
+);
 
 Widget _keyboardPreviewTestWidget() {
   return ProviderScope(
@@ -735,9 +819,11 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('Mode local actif'), findsOneWidget);
+      expect(find.textContaining('Compte de secours actif'), findsOneWidget);
       await _tapVisible(
         tester,
         find.byKey(const Key('settings-connect-cloud-account')),
@@ -753,10 +839,186 @@ void main() {
         'password',
       );
       await tester.tap(find.widgetWithText(FilledButton, 'Se connecter'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
 
       expect(cloudAuthStore.emailPasswordCalls, 1);
       expect(find.text('Compte & cloud'), findsWidgets);
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('settings shows post-auth feedback banner after cloud sign-in', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks();
+    final remoteStore = _PostAuthRemoteAuthStore(_postAuthSignedInSession);
+
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            remoteAuthSessionStoreProvider.overrideWithValue(remoteStore),
+            remoteAuthConfiguredProvider.overrideWithValue(true),
+            suiteIdentityProvider.overrideWith(
+              (ref) => Stream.value(_postAuthSuiteActiveIdentity),
+            ),
+            settingsStoreProvider.overrideWithValue(
+              _MemorySettingsStore(const UserSettingsSnapshot.defaults()),
+            ),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            home: const SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await _tapVisible(
+        tester,
+        find.byKey(const Key('settings-connect-cloud-account')),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Connexion'), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const ValueKey('auth-email-field')),
+        'alice@example.test',
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('auth-password-field')),
+        'password',
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Se connecter'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(
+        find.text(
+          'Compte cloud vérifié. Accès WinFlowz actif; les catégories '
+          'synchronisables sont évaluées.',
+        ),
+        findsOneWidget,
+      );
+    } finally {
+      remoteStore.dispose();
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('settings without suite access keeps data categories local', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks();
+
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(
+              (ref) => Stream.value(
+                const AuthSessionSnapshot(
+                  user: AuthUserSnapshot(
+                    id: 'remote-user-id',
+                    provider: AuthProviderKind.emailPassword,
+                    email: 'remote@example.test',
+                  ),
+                  syncStatus: SyncStatus(health: SyncHealth.synced),
+                ),
+              ),
+            ),
+            remoteAuthConfiguredProvider.overrideWithValue(true),
+            suiteIdentityProvider.overrideWith(
+              (ref) => Stream.value(_postAuthSuiteInactiveIdentity),
+            ),
+            settingsStoreProvider.overrideWithValue(
+              _MemorySettingsStore(const UserSettingsSnapshot.defaults()),
+            ),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            home: const SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Ce qui est synchronisé'), findsOneWidget);
+      expect(
+        find.text('Aucune donnée synchronisée pour le moment.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Transcription'), findsOneWidget);
+      expect(find.textContaining('Accès WinFlowz inactif'), findsWidgets);
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('settings on non-Android shows keyboard sync unavailable', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks();
+
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            remoteAuthConfiguredProvider.overrideWithValue(true),
+            authSessionProvider.overrideWith(
+              (ref) => Stream.value(const AuthSessionSnapshot.localFallback()),
+            ),
+            settingsStoreProvider.overrideWithValue(
+              _MemorySettingsStore(const UserSettingsSnapshot.defaults()),
+            ),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            home: const SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Compte & cloud'), findsWidgets);
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(
+        find.textContaining('Clavier Android indisponible sur'),
+        findsOneWidget,
+      );
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();

@@ -8,6 +8,7 @@ import '../../../core/bootstrap/firebase_bootstrap.dart';
 import '../../../core/bootstrap/sentry_bootstrap.dart';
 import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/diagnostics/sensitive_redactor.dart';
+import '../../../core/sync/cloud_sync_overview.dart';
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
@@ -15,6 +16,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../auth/application/auth_session_provider.dart';
 import '../../auth/domain/auth_session_store.dart';
+import '../../auth/domain/product_entitlement.dart';
 import '../../auth/presentation/sign_in_screen.dart';
 import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../dictionary/application/dictionary_store_provider.dart';
@@ -30,6 +32,7 @@ import '../domain/settings_store.dart';
 import '../../voice/application/transcription_store_provider.dart';
 import '../../voice/application/language_pack_catalog_provider.dart';
 import '../../voice/domain/language_pack_catalog.dart';
+import '../application/cloud_sync_overview_provider.dart';
 import '../application/settings_platform_controllers.dart';
 import '../application/settings_store_provider.dart';
 import '../data/secure_secret_store.dart';
@@ -116,6 +119,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _keyboardBusy = false;
   UserSettingsSnapshot? _onboardingSettings;
   String? _message;
+  String? _postAuthMessage;
   final Map<String, bool> _expandedSections = {
     'account_cloud': true,
     'appearance': true,
@@ -707,6 +711,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _signOut() async {
     await ref.read(authSessionStoreProvider).signOut();
     ref.read(localAuthModeProvider.notifier).disable();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _postAuthMessage = null;
+      _message = 'Déconnexion effectuée.';
+    });
   }
 
   Future<void> _connectCloudAccount() async {
@@ -722,7 +733,60 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return;
     }
     ref.read(localAuthModeProvider.notifier).disable();
-    setState(() => _message = 'Compte cloud connecté.');
+    setState(() {
+      _message = null;
+      _postAuthMessage = 'Vérification du compte cloud en cours…';
+    });
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted) {
+      return;
+    }
+    final authAsync = ref.read(authSessionProvider);
+    final suiteIdentityAsync = ref.read(suiteIdentityProvider);
+    setState(() {
+      _postAuthMessage = _cloudConnectFeedback(
+        authAsync: authAsync,
+        suiteIdentityAsync: suiteIdentityAsync,
+      );
+    });
+  }
+
+  String _cloudConnectFeedback({
+    required AsyncValue<AuthSessionSnapshot> authAsync,
+    required AsyncValue<SuiteIdentitySnapshot> suiteIdentityAsync,
+  }) {
+    return authAsync.when(
+      data: (session) {
+        if (session.isLocalFallback) {
+          return 'Compte cloud connecté, mais en mode local de secours.';
+        }
+        if (!session.isSignedIn) {
+          return 'Connexion cloud non confirmée pour l’instant.';
+        }
+        return suiteIdentityAsync.when(
+          data: (identity) {
+            final suiteStatus = identity.statusFor(ProductId.winflowzApp);
+            if (suiteStatus == SuiteAccountStatus.accessActive) {
+              return 'Compte cloud vérifié. Accès WinFlowz actif; '
+                  'les catégories synchronisables sont évaluées.';
+            }
+            if (suiteStatus == SuiteAccountStatus.linkingRequired) {
+              return 'Compte cloud vérifié. Liaison WinFlowz requise. '
+                  'Les données restent locales pour l’instant.';
+            }
+            return 'Compte cloud vérifié. Pas encore d’accès WinFlowz actif; '
+                'les données restent locales.';
+          },
+          loading: () =>
+              'Compte cloud vérifié. Vérification de l’accès WinFlowz en cours.',
+          error: (error, _) =>
+              'Compte cloud vérifié, mais l’accès WinFlowz n’a pu être vérifié.',
+        );
+      },
+      loading: () => 'Compte cloud en cours de vérification.',
+      error: (error, _) =>
+          'La connexion cloud n’a pas pu être validée immédiatement.',
+    );
   }
 
   Future<void> _copyBackendDiagnostic() async {
@@ -1238,6 +1302,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final themeMode = ref.watch(appThemeModeProvider);
     final authAsync = ref.watch(authSessionProvider);
     final remoteAuthConfigured = ref.watch(remoteAuthConfiguredProvider);
+    final cloudOverview = ref.watch(cloudSyncOverviewProvider);
     final suiteIdentityAsync = ref.watch(suiteIdentityProvider);
     final voiceCatalogState = ref.watch(languagePackCatalogProvider);
     return _settingsList(
@@ -1248,6 +1313,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           title: 'Compte & cloud',
           child: _AccountCloudSection(
             authAsync: authAsync,
+            cloudSyncOverview: cloudOverview,
+            postAuthMessage: _postAuthMessage,
             remoteAuthConfigured: remoteAuthConfigured,
             onConnectCloudAccount: _connectCloudAccount,
             onSignOut: _signOut,
@@ -1345,8 +1412,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const KeyboardSyncPanel(),
-              AppGaps.x3,
               _BackendProviderSection(
                 summary: FirebaseBootstrap.isConfigured
                     ? 'Firebase est configuré comme adaptateur backend principal.'

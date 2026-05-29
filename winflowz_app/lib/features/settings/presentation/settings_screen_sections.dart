@@ -27,52 +27,117 @@ double _mediaStepSliderValue(int percent) {
 class _AccountCloudSection extends StatelessWidget {
   const _AccountCloudSection({
     required this.authAsync,
+    required this.cloudSyncOverview,
+    required this.postAuthMessage,
     required this.remoteAuthConfigured,
     required this.onConnectCloudAccount,
     required this.onSignOut,
   });
 
   final AsyncValue<AuthSessionSnapshot> authAsync;
+  final CloudSyncOverview cloudSyncOverview;
+  final String? postAuthMessage;
   final bool remoteAuthConfigured;
   final VoidCallback onConnectCloudAccount;
   final VoidCallback onSignOut;
 
   @override
   Widget build(BuildContext context) {
-    final session = authAsync.maybeWhen(
-      data: (value) => value,
-      orElse: () => null,
+    const syncRelevantCategories = <CloudSyncCategory>{
+      CloudSyncCategory.settings,
+      CloudSyncCategory.clipboard,
+      CloudSyncCategory.snippets,
+      CloudSyncCategory.dictionary,
+      CloudSyncCategory.transcriptions,
+      CloudSyncCategory.keyboardProfile,
+    };
+
+    final syncRelevantStatuses = cloudSyncOverview.categories
+        .where((status) => syncRelevantCategories.contains(status.category))
+        .toList(growable: false);
+
+    final syncedCategories = syncRelevantStatuses
+        .where((status) => status.isRemoteVisible)
+        .toList(growable: false);
+    final localCategories = syncRelevantStatuses
+        .where((status) => !status.isRemoteVisible)
+        .toList(growable: false);
+
+    final localOnlyCategories = cloudSyncOverview.categories
+        .where((status) => status.category == CloudSyncCategory.localKeys)
+        .toList(growable: false);
+
+    final requiresAttention = cloudSyncOverview.categories
+        .where((status) => status.requiresAttention)
+        .map((status) => status.title)
+        .join(', ');
+    final accountStatus = cloudSyncOverview.categories.firstWhere(
+      (status) => status.category == CloudSyncCategory.account,
     );
-    final isRemoteSignedIn =
-        session != null && session.isSignedIn && !session.isLocalFallback;
-    final title = isRemoteSignedIn
-        ? 'Compte cloud connecté'
-        : session?.isLocalFallback == true
-        ? 'Mode local actif'
-        : 'Compte cloud non connecté';
-    final subtitle = !remoteAuthConfigured
-        ? 'L’authentification distante n’est pas configurée pour cette version.'
-        : isRemoteSignedIn
-        ? 'Votre compte WinFlowz est connecté. Les données compatibles avec le cloud peuvent être sauvegardées ou synchronisées.'
-        : 'Connectez un compte WinFlowz pour activer les sauvegardes cloud disponibles sur cette version.';
-    final account =
-        session?.user?.email ?? session?.user?.provider.name ?? 'none';
+    final suiteStatus = cloudSyncOverview.categories.firstWhere(
+      (status) => status.category == CloudSyncCategory.suiteAccess,
+    );
+
+    final isRemoteSignedIn = authAsync.maybeWhen(
+      data: (session) => session.isSignedIn && !session.isLocalFallback,
+      orElse: () => false,
+    );
 
     return AppSectionCard(
       title: 'Compte & cloud',
-      subtitle: subtitle,
+      subtitle: remoteAuthConfigured
+          ? 'État vérifié du compte, de l’accès et des données synchronisables.'
+          : 'L’authentification distante n’est pas configurée sur cette version.',
       leading: const Icon(Icons.cloud_sync_outlined),
       stretch: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppStatusCard(
-            icon: isRemoteSignedIn
-                ? Icons.cloud_done_outlined
-                : Icons.cloud_off_outlined,
-            title: title,
-            subtitle: 'Compte actuel : $account',
+            icon: accountStatus.icon,
+            title: accountStatus.title,
+            subtitle: '${accountStatus.stateLabel} · ${accountStatus.detail}',
+            trailing: authAsync.when(
+              loading: () => const SizedBox.square(
+                dimension: AppIconMetrics.sm,
+                child: CircularProgressIndicator(
+                  strokeWidth: AppIconMetrics.progressStroke,
+                ),
+              ),
+              error: (error, _) => IconButton(
+                tooltip: 'Erreur de compte cloud',
+                onPressed: null,
+                icon: const Icon(Icons.error_outline),
+              ),
+              data: (_) => null,
+            ),
           ),
+          AppGaps.x1,
+          AppStatusCard(
+            icon: suiteStatus.icon,
+            title: suiteStatus.title,
+            subtitle: '${suiteStatus.stateLabel} · ${suiteStatus.detail}',
+          ),
+          if (postAuthMessage != null) ...[
+            AppGaps.x3,
+            AppBannerCard(
+              key: const Key('settings-cloud-post-auth-feedback'),
+              icon: Icons.verified_user_outlined,
+              title: 'Retour de connexion',
+              message: postAuthMessage!,
+            ),
+          ],
+          if (requiresAttention.isNotEmpty) ...[
+            AppGaps.x3,
+            AppBannerCard(
+              key: const Key('settings-cloud-attention-required'),
+              icon: Icons.warning_amber_outlined,
+              title: 'Action requise',
+              message:
+                  'Synchronisation en attente d’attention: $requiresAttention',
+              accentColor: Theme.of(context).colorScheme.error,
+            ),
+          ],
           AppGaps.x3,
           Wrap(
             spacing: 8,
@@ -86,7 +151,7 @@ class _AccountCloudSection extends StatelessWidget {
                 icon: const Icon(Icons.login_outlined),
                 label: const Text('Connecter le compte cloud'),
               ),
-              if (session?.isSignedIn == true)
+              if (isRemoteSignedIn)
                 OutlinedButton.icon(
                   onPressed: onSignOut,
                   icon: const Icon(Icons.logout_outlined),
@@ -94,6 +159,52 @@ class _AccountCloudSection extends StatelessWidget {
                 ),
             ],
           ),
+          AppGaps.x3,
+          const Text(
+            'Ce qui est synchronisé',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          AppGaps.x2,
+          if (syncedCategories.isEmpty)
+            const Text('Aucune donnée synchronisée pour le moment.')
+          else
+            ...syncedCategories.map(
+              (status) => AppStatusCard(
+                icon: status.icon,
+                title: status.title,
+                subtitle: '${status.stateLabel} · ${status.detail}',
+              ),
+            ),
+          AppGaps.x3,
+          const Text(
+            'Ce qui reste local',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          AppGaps.x2,
+          ...localCategories.map(
+            (status) => AppStatusCard(
+              icon: status.icon,
+              title: status.title,
+              subtitle: '${status.stateLabel} · ${status.detail}',
+            ),
+          ),
+          if (localOnlyCategories.isNotEmpty) ...[
+            AppGaps.x2,
+            ...localOnlyCategories.map(
+              (status) => AppStatusCard(
+                icon: status.icon,
+                title: status.title,
+                subtitle: '${status.stateLabel} · ${status.detail}',
+              ),
+            ),
+          ],
+          AppGaps.x3,
+          const Text(
+            'Profil clavier Android',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          AppGaps.x2,
+          const KeyboardSyncPanel(),
         ],
       ),
     );
@@ -217,15 +328,15 @@ class _BackendProviderSection extends StatelessWidget {
             runSpacing: 8,
             children: [
               OutlinedButton.icon(
-              onPressed: onCopyDiagnostic,
-              icon: const Icon(Icons.copy_outlined),
-              label: const Text('Copier diagnostic'),
-            ),
+                onPressed: onCopyDiagnostic,
+                icon: const Icon(Icons.copy_outlined),
+                label: const Text('Copier diagnostic'),
+              ),
               OutlinedButton.icon(
-              onPressed: onClearDiagnosticLogs,
-              icon: const Icon(Icons.delete_sweep_outlined),
-              label: const Text('Effacer journaux'),
-            ),
+                onPressed: onClearDiagnosticLogs,
+                icon: const Icon(Icons.delete_sweep_outlined),
+                label: const Text('Effacer journaux'),
+              ),
             ],
           ),
         ],
@@ -324,19 +435,18 @@ class _SecretsSection extends StatelessWidget {
                   title: Text('Stockage sécurisé local disponible'),
                 );
               }
-                return const ListTile(
-                  leading: Icon(Icons.warning_amber_outlined),
-                  title: Text('Stockage sécurisé dégradé'),
-                  subtitle: Text(
-                    'Web/Linux peut ne pas offrir les mêmes garanties de keystore/keychain. '
-                    'Le mode IA cloud est considéré comme dégradé tant qu’aucune confirmation explicite n’a été faite.',
-                  ),
-                );
-            },
-            loading: () =>
-                const ListTile(
-                  title: Text('Vérification des capacités de stockage...'),
+              return const ListTile(
+                leading: Icon(Icons.warning_amber_outlined),
+                title: Text('Stockage sécurisé dégradé'),
+                subtitle: Text(
+                  'Web/Linux peut ne pas offrir les mêmes garanties de keystore/keychain. '
+                  'Le mode IA cloud est considéré comme dégradé tant qu’aucune confirmation explicite n’a été faite.',
                 ),
+              );
+            },
+            loading: () => const ListTile(
+              title: Text('Vérification des capacités de stockage...'),
+            ),
             error: (error, stack) =>
                 ListTile(title: Text('Erreur de statut du stockage : $error')),
           ),
@@ -404,18 +514,18 @@ class _PlatformCapabilitiesSection extends StatelessWidget {
               ? 'Le moteur local de la plateforme peut être utilisé.'
               : '${PlatformCapabilities.localSpeechUnavailableReason} WinFlowz bascule vers l’enregistrement avancé et Whisper.',
         ),
-          AppStatusCard(
-            icon: Icons.bubble_chart_outlined,
-            title: PlatformCapabilities.overlaySupported
+        AppStatusCard(
+          icon: Icons.bubble_chart_outlined,
+          title: PlatformCapabilities.overlaySupported
               ? 'Overlay Android pris en charge'
               : 'Overlay Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
           subtitle: PlatformCapabilities.overlaySupported
               ? 'La bulle native Android peut être utilisée.'
               : PlatformCapabilities.overlayUnavailableReason,
         ),
-          AppStatusCard(
-            icon: Icons.keyboard_outlined,
-            title: PlatformCapabilities.keyboardImeSupported
+        AppStatusCard(
+          icon: Icons.keyboard_outlined,
+          title: PlatformCapabilities.keyboardImeSupported
               ? 'IME clavier Android pris en charge'
               : 'Clavier Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
           subtitle: PlatformCapabilities.keyboardImeSupported
@@ -846,7 +956,9 @@ class _KeyboardSettingsSection extends StatelessWidget {
                 ? null
                 : (value) => onPreferenceChanged(keyVibrationEnabled: value),
             title: const Text('Vibration des touches'),
-            subtitle: const Text('Active/désactive le retour haptique du clavier.'),
+            subtitle: const Text(
+              'Active/désactive le retour haptique du clavier.',
+            ),
           ),
           SwitchListTile(
             value: status?.keySoundEnabled ?? false,
@@ -854,7 +966,9 @@ class _KeyboardSettingsSection extends StatelessWidget {
                 ? null
                 : (value) => onPreferenceChanged(keySoundEnabled: value),
             title: const Text('Son des touches'),
-            subtitle: const Text('Active/désactive le clic sonore des touches.'),
+            subtitle: const Text(
+              'Active/désactive le clic sonore des touches.',
+            ),
           ),
           SwitchListTile(
             value: status?.specialKeyCornersEnabled ?? false,
