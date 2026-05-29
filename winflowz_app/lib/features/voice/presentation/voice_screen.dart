@@ -48,6 +48,9 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   }
 
   Future<void> _load() async {
+    if (!mounted) {
+      return;
+    }
     setState(() => _busy = true);
     try {
       await _syncKeyboardVoiceRuntimeEvents();
@@ -456,6 +459,11 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<int>(transcriptionHistoryRefreshSignalProvider, (previous, next) {
+      if (previous != null && previous != next) {
+        Future<void>.microtask(_load);
+      }
+    });
     AppDiagnostics.record('screen_build', 'Voice');
     final catalogState = ref.watch(languagePackCatalogProvider);
     final activeLanguageTag = _activeLanguageTag();

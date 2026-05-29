@@ -26,14 +26,28 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
   DateTime? _lastSyncAtUtc;
   String? _message;
 
-  Future<void> _runSync() async {
+  Future<void> _runSync({bool userInitiated = false}) async {
     if (_syncing) {
       _rerunRequested = true;
       return;
     }
     setState(() => _syncing = true);
-    final controller = ref.read(keyboardSyncControllerProvider);
     final authContext = ref.read(keyboardSyncAuthContextProvider);
+    if (!PlatformCapabilities.keyboardImeSupported ||
+        !authContext.remoteSyncActive) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _state = const KeyboardSyncControllerState.initial();
+        _syncing = false;
+        if (userInitiated) {
+          _message = 'Aucune sauvegarde cloud active pour ce profil clavier.';
+        }
+      });
+      return;
+    }
+    final controller = ref.read(keyboardSyncControllerProvider);
     final nextState = await controller.synchronize(authContext);
     if (!mounted) {
       return;
@@ -48,7 +62,7 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
     });
     if (_rerunRequested) {
       _rerunRequested = false;
-      unawaited(_runSync());
+      unawaited(_runSync(userInitiated: userInitiated));
     }
   }
 
@@ -232,7 +246,7 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
       return (
         _KeyboardSyncPanelStatus.localOnly,
         'Mode local uniquement',
-        'Connectez un compte WinFlowz avec accès actif pour sauvegarder ce clavier dans le cloud.',
+        'Utile seulement pour sauvegarder ou restaurer le profil clavier entre plusieurs appareils.',
         Icons.save_outlined,
       );
     }
@@ -309,7 +323,7 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Icon(icon),
-              title: Text('Sauvegarde clavier compte'),
+              title: Text('Profil clavier'),
               subtitle: Text(title),
               trailing: _syncing
                   ? const SizedBox.square(
@@ -341,7 +355,7 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
                   onPressed:
                       status == _KeyboardSyncPanelStatus.unsupported || _syncing
                       ? null
-                      : _runSync,
+                      : () => unawaited(_runSync(userInitiated: true)),
                   icon: const Icon(Icons.sync),
                   label: Text(
                     status == _KeyboardSyncPanelStatus.failed

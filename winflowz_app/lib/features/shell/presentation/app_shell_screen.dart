@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,6 +10,8 @@ import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../auth/application/auth_session_provider.dart';
+import '../../auth/application/suite_identity_provider.dart';
+import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../clipboard/presentation/clipboard_screen.dart';
 import '../../dictionary/presentation/dictionary_screen.dart';
 import '../../keyboard/domain/keyboard_models.dart';
@@ -16,6 +20,8 @@ import '../../settings/domain/onboarding_permission_contract.dart';
 import '../../settings/domain/settings_store.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../snippets/presentation/snippets_screen.dart';
+import '../../voice/application/transcription_store_provider.dart';
+import '../../voice/domain/transcription_draft.dart';
 import '../../voice/presentation/voice_screen.dart';
 
 class AppShellScreen extends ConsumerStatefulWidget {
@@ -56,6 +62,10 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   bool _onboardingDeferPromptVisible = false;
   bool _welcomeGuideVisible = false;
   bool _showOnboardingResumeHint = false;
+  bool _clipboardImportBusy = false;
+  bool _notifyClipboardAfterImport = false;
+  bool _voiceImportBusy = false;
+  bool _notifyVoiceAfterImport = false;
   final List<int> _tabHistory = [0];
   OnboardingReadiness? _onboardingReadiness;
   String? _onboardingMessage;
@@ -63,6 +73,12 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
 
   void _selectTab(int value) {
     if (value == _index) {
+      if (value == 0) {
+        _scheduleKeyboardVoiceSync(notifyVoice: true);
+      }
+      if (value == 1) {
+        _scheduleKeyboardClipboardSync(notifyClipboard: true);
+      }
       return;
     }
     const titles = ['Voice', 'Clipboard', 'Snippets', 'Dictionary', 'Settings'];
@@ -75,6 +91,12 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       _tabHistory.remove(value);
       _tabHistory.add(value);
     });
+    if (value == 0) {
+      _scheduleKeyboardVoiceSync(notifyVoice: true);
+    }
+    if (value == 1) {
+      _scheduleKeyboardClipboardSync(notifyClipboard: true);
+    }
   }
 
   void _goBackInTabs() {
@@ -97,6 +119,8 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     WidgetsBinding.instance.addObserver(this);
     Future.microtask(_consumePendingSignupWelcome);
     Future.microtask(_refreshOnboardingState);
+    _scheduleKeyboardVoiceSync();
+    _scheduleKeyboardClipboardSync();
   }
 
   @override
@@ -109,6 +133,120 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _refreshOnboardingState();
+      _scheduleKeyboardVoiceSync(notifyVoice: _index == 0);
+      _scheduleKeyboardClipboardSync(notifyClipboard: _index == 1);
+    }
+  }
+
+  void _scheduleKeyboardVoiceSync({bool notifyVoice = false}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      unawaited(_syncKeyboardVoiceEvents(notifyVoice: notifyVoice));
+    });
+  }
+
+  Future<void> _syncKeyboardVoiceEvents({bool notifyVoice = false}) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    _notifyVoiceAfterImport = _notifyVoiceAfterImport || notifyVoice;
+    if (_voiceImportBusy) {
+      return;
+    }
+    _voiceImportBusy = true;
+    var imported = 0;
+    try {
+      await ref.read(suiteIdentityProvider.future);
+      final events = await AndroidKeyboardBridge.drainKeyboardVoiceEvents();
+      if (events.isNotEmpty) {
+        final store = ref.read(transcriptionStoreProvider);
+        for (final event in events) {
+          final draft = TranscriptionDraft(
+            rawText: event.rawText,
+            cleanedText: event.cleanedText,
+            language: event.language,
+            source: event.source,
+            durationMs: event.durationMs,
+          );
+          if (draft.isValid) {
+            await store.insert(draft);
+            imported += 1;
+          }
+        }
+        AppDiagnostics.record(
+          'keyboard_voice_auto_import',
+          'events=${events.length}; imported=$imported',
+        );
+      }
+    } catch (error) {
+      AppDiagnostics.record('keyboard_voice_auto_import_error', error);
+    } finally {
+      final shouldNotify =
+          mounted && _index == 0 && (_notifyVoiceAfterImport || imported > 0);
+      _notifyVoiceAfterImport = false;
+      _voiceImportBusy = false;
+      if (shouldNotify) {
+        final notifier = ref.read(
+          transcriptionHistoryRefreshSignalProvider.notifier,
+        );
+        notifier.state += 1;
+      }
+    }
+  }
+
+  void _scheduleKeyboardClipboardSync({bool notifyClipboard = false}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      unawaited(
+        _syncKeyboardClipboardEvents(notifyClipboard: notifyClipboard),
+      );
+    });
+  }
+
+  Future<void> _syncKeyboardClipboardEvents({
+    bool notifyClipboard = false,
+  }) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    _notifyClipboardAfterImport =
+        _notifyClipboardAfterImport || notifyClipboard;
+    if (_clipboardImportBusy) {
+      return;
+    }
+    _clipboardImportBusy = true;
+    var importedWork = false;
+    try {
+      await ref.read(suiteIdentityProvider.future);
+      final result = await ref
+          .read(keyboardClipboardEventImporterProvider)
+          .drainFromAndroidKeyboard();
+      importedWork = result.hasWork;
+      if (result.hasWork) {
+        AppDiagnostics.record(
+          'keyboard_clipboard_auto_import',
+          'imported=${result.imported}; failed=${result.failed}; rejected_sensitive=${result.rejectedSensitive}',
+        );
+      }
+    } catch (error) {
+      AppDiagnostics.record('keyboard_clipboard_auto_import_error', error);
+    } finally {
+      final shouldNotify =
+          mounted &&
+          _index == 1 &&
+          (_notifyClipboardAfterImport || importedWork);
+      _notifyClipboardAfterImport = false;
+      _clipboardImportBusy = false;
+      if (shouldNotify) {
+        final notifier = ref.read(
+          clipboardHistoryRefreshSignalProvider.notifier,
+        );
+        notifier.state += 1;
+      }
     }
   }
 

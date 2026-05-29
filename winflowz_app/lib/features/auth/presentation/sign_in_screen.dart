@@ -34,6 +34,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _busy = false;
   String? _error;
   String? _errorDetail;
+  String _errorTitle = 'Connexion impossible';
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   AuthSessionStore _store() {
@@ -54,6 +55,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       _autovalidateMode = AutovalidateMode.onUserInteraction;
       _error = null;
       _errorDetail = null;
+      _errorTitle = signup
+          ? 'Création de compte impossible'
+          : 'Connexion impossible';
     });
 
     if (!(_formKey.currentState?.validate() ?? false)) {
@@ -100,6 +104,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       _busy = true;
       _error = null;
       _errorDetail = null;
+      _errorTitle = 'Connexion impossible';
     });
     try {
       ref.read(localAuthModeProvider.notifier).enable();
@@ -131,6 +136,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       _busy = true;
       _error = null;
       _errorDetail = null;
+      _errorTitle = 'Connexion impossible';
     });
     try {
       final store = _store();
@@ -164,6 +170,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       _busy = true;
       _error = null;
       _errorDetail = null;
+      _errorTitle = 'Connexion impossible';
     });
     try {
       final store = _store();
@@ -306,7 +313,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           if (_error != null) ...[
                             AppBannerCard(
                               icon: Icons.error_outline,
-                              title: 'Connexion impossible',
+                              title: _errorTitle,
                               message: _error!,
                               accentColor: Theme.of(context).colorScheme.error,
                               action: _errorDetail == null

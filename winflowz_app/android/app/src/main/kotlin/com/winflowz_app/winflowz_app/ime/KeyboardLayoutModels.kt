@@ -51,6 +51,7 @@ enum class KeyboardEmojiCategory {
     Objects,
     Activities,
     Travel,
+    Flags,
 }
 
 enum class KeyboardFieldContextMode {
@@ -136,6 +137,7 @@ enum class KeyboardKeyAction {
     SelectEmojiObjects,
     SelectEmojiActivities,
     SelectEmojiTravel,
+    SelectEmojiFlags,
     NavigateCharLeft,
     NavigateCharRight,
     NavigateWordLeft,
@@ -615,12 +617,12 @@ object KeyboardLayoutBuilder {
             )),
             KeyboardRowSpec(listOf(
                 navKey("nav-mode-paragraph-up", "⏫", KeyboardKeyAction.NavigateParagraphUp),
-                navKey("nav-mode-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft, 1.25f),
+                navKey("nav-mode-word-left", "Word←", KeyboardKeyAction.NavigateWordLeft),
                 navKey("nav-mode-left", "←", KeyboardKeyAction.NavigateCharLeft),
                 navKey("nav-mode-right", "→", KeyboardKeyAction.NavigateCharRight),
-                navKey("nav-mode-word-right", "Word→", KeyboardKeyAction.NavigateWordRight, 1.25f),
-                navKey("nav-mode-sent-left", "Sent←", KeyboardKeyAction.NavigateSentenceLeft, 1.25f),
-                navKey("nav-mode-sent-right", "Sent→", KeyboardKeyAction.NavigateSentenceRight, 1.25f),
+                navKey("nav-mode-word-right", "Word→", KeyboardKeyAction.NavigateWordRight),
+                navKey("nav-mode-sent-left", "Sent←", KeyboardKeyAction.NavigateSentenceLeft),
+                navKey("nav-mode-sent-right", "Sent→", KeyboardKeyAction.NavigateSentenceRight),
                 navKey("nav-mode-paragraph-down", "⏬", KeyboardKeyAction.NavigateParagraphDown),
             )),
             KeyboardRowSpec(listOf(
@@ -628,10 +630,10 @@ object KeyboardLayoutBuilder {
                 navKey("nav-mode-redo", "Redo", KeyboardKeyAction.Redo),
                 navKey("nav-mode-delete-before", "Del←", KeyboardKeyAction.Backspace),
                 navKey("nav-mode-delete-after", "Del→", KeyboardKeyAction.ForwardDelete),
-                navKey("nav-mode-delete-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore, 1.25f),
-                navKey("nav-mode-delete-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter, 1.25f),
-                navKey("nav-mode-delete-sentence-before", "DelS←", KeyboardKeyAction.DeleteSentenceBefore, 1.25f),
-                navKey("nav-mode-delete-sentence-after", "DelS→", KeyboardKeyAction.DeleteSentenceAfter, 1.25f),
+                navKey("nav-mode-delete-word-before", "DelW←", KeyboardKeyAction.DeleteWordBefore),
+                navKey("nav-mode-delete-word-after", "DelW→", KeyboardKeyAction.DeleteWordAfter),
+                navKey("nav-mode-delete-sentence-before", "DelS←", KeyboardKeyAction.DeleteSentenceBefore),
+                navKey("nav-mode-delete-sentence-after", "DelS→", KeyboardKeyAction.DeleteSentenceAfter),
             )),
         )
     }
@@ -682,17 +684,19 @@ object KeyboardLayoutBuilder {
                         KeyboardKeySpec("emoji-objects", "💡", KeyboardKeyAction.SelectEmojiObjects, active = request.emojiCategory == KeyboardEmojiCategory.Objects),
                         KeyboardKeySpec("emoji-activities", "⚽", KeyboardKeyAction.SelectEmojiActivities, active = request.emojiCategory == KeyboardEmojiCategory.Activities),
                         KeyboardKeySpec("emoji-travel", "🚗", KeyboardKeyAction.SelectEmojiTravel, active = request.emojiCategory == KeyboardEmojiCategory.Travel),
+                        KeyboardKeySpec("emoji-flags", "🏳️", KeyboardKeyAction.SelectEmojiFlags, active = request.emojiCategory == KeyboardEmojiCategory.Flags),
                     ),
             )
 
-        val smileys = listOf("😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😍", "🥰", "😘", "😎", "🤔", "😭", "🥳", "😋", "😛", "😜", "🤪", "😐", "😬", "🙄", "😴", "🤯", "😤", "😡", "🤢", "🤠", "🥺", "😱", "🤫", "🤭", "🫠", "🫢", "🫣")
-        val hands = listOf("👍", "👎", "👏", "🙏", "👌", "🤝", "✌️", "🤞", "🤟", "👋", "🙌", "🫶", "💪", "☝️", "👀", "🫡", "👊", "🤙", "🖐️", "✍️", "🤲", "👐", "🙋", "🙆", "🙅", "🤦", "🤷", "💁", "🙇", "🧏", "🧑", "👩", "👨", "👶", "👧", "🧒", "👦", "👵", "👴", "🧓")
-        val symbols = listOf("❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🔥", "✨", "✅", "❌", "⚠️", "🎯", "💡", "⭐", "💥", "💯", "🔔", "📌", "🔒", "🔁", "➕", "➖", "➡️", "⬅️", "☑️", "❓", "❗", "💬", "🔴", "🟠", "🟡", "🟢", "🔵", "🟣", "⚫", "⚪", "🔶", "🔷")
-        val nature = listOf("🌿", "🌱", "🌴", "🌵", "🌸", "🌻", "🌙", "☀️", "⭐", "🌈", "⚡", "💧", "🔥", "🌊", "🍀", "🌍", "🌲", "🍁", "☁️", "❄️", "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🐦", "🐝", "🦋")
-        val food = listOf("🍔", "🍕", "🍟", "🌮", "🍣", "🍜", "🍩", "🍪", "🍫", "☕", "🍺", "🍎", "🍌", "🍓", "🥑", "🥐", "🥗", "🍰", "🍋", "🧀", "🍇", "🍉", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝", "🥕", "🌽", "🥔", "🥖", "🥨", "🥞", "🍗", "🍖", "🍤", "🍦", "🍷", "🥂")
-        val objects = listOf("💡", "📌", "📎", "✏️", "📱", "💻", "⌚", "🎧", "📷", "🔑", "🔒", "🧲", "🧰", "⚙️", "🛠️", "🧪", "📁", "🗂️", "📝", "🔎", "📚", "📖", "📅", "📊", "📈", "📉", "📮", "✉️", "📦", "🛒", "💳", "💎", "🔋", "🕯️", "🧯", "🪑", "🛏️", "🚿", "🧴", "🧻")
-        val activities = listOf("⚽", "🏀", "🏈", "🎾", "🏆", "🎮", "🎲", "🎸", "🎧", "🎬", "🎨", "🎤", "🎉", "🏃", "🚴", "⛳", "🎹", "🏐", "🏉", "🥏", "🎱", "🏓", "🏸", "🥊", "🥋", "🛹", "⛸️", "🎿", "🏂", "🏋️", "🤸", "🤾", "🏊", "🧘", "🎭", "🎪", "🎟️", "🎫", "🥇", "🥈")
-        val travel = listOf("🚗", "🚕", "🚙", "🚌", "🚎", "🏎️", "🚓", "🚑", "🚒", "🚐", "🛻", "🚚", "🚛", "🚜", "🏍️", "🛵", "🚲", "✈️", "🚀", "🛸", "🚁", "🚂", "🚆", "🚇", "🚊", "⛵", "🚤", "🛳️", "⚓", "🗺️", "🗽", "🗼", "🏰", "🏖️", "🏝️", "🏔️", "🌋", "⛺", "🏠", "🏢")
+        val smileys = listOf("😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "🥲", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🥸", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😮‍💨", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🫣", "🤗", "🫡", "🤔", "🫢", "🤭", "🤫", "🤥", "😶", "🫥", "😐", "🫤", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🫠", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑")
+        val hands = listOf("👍", "👎", "👏", "🙌", "🫶", "🙏", "🤝", "👌", "🤌", "🤏", "✌️", "🤞", "🫰", "🤟", "🤘", "🤙", "👈", "👉", "👆", "👇", "☝️", "✋", "🤚", "🖐️", "🖖", "👋", "🤲", "👐", "🫱", "🫲", "🫳", "🫴", "💪", "🦾", "🖕", "✍️", "💅", "👀", "👁️", "🫦", "👄", "🫡", "👊", "✊", "🤛", "🤜", "🙋", "🙆", "🙅", "🤦", "🤷", "💁", "🙇", "🧏", "🧑", "👩", "👨", "👶", "👧", "🧒", "👦", "👵", "👴", "🧓", "👮", "👷", "💂", "🕵️", "👩‍⚕️", "👨‍⚕️", "👩‍💻", "👨‍💻", "👩‍🍳", "👨‍🍳")
+        val symbols = listOf("❤️", "🧡", "💛", "💚", "💙", "🩵", "💜", "🖤", "🩶", "🤍", "🤎", "💔", "❤️‍🔥", "❤️‍🩹", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟", "🔥", "✨", "✅", "❌", "⚠️", "🚫", "⛔", "🎯", "💡", "⭐", "🌟", "💥", "💯", "🔔", "📌", "🔒", "🔓", "🔁", "🔂", "🔃", "➕", "➖", "✖️", "➗", "➡️", "⬅️", "⬆️", "⬇️", "↗️", "↘️", "↙️", "↖️", "☑️", "✔️", "❓", "❗", "‼️", "⁉️", "💬", "💭", "🔴", "🟠", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫", "⚪", "🔶", "🔷", "🔸", "🔹", "🔺", "🔻", "▪️", "▫️")
+        val nature = listOf("🌿", "🌱", "🌴", "🌵", "🌸", "🌺", "🌷", "🌹", "🥀", "🌻", "🌼", "🌙", "☀️", "⭐", "🌈", "⚡", "💧", "🔥", "🌊", "🍀", "🌍", "🌎", "🌏", "🌲", "🌳", "🍁", "🍂", "🍃", "☁️", "⛅", "🌧️", "⛈️", "❄️", "☃️", "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🐦", "🐤", "🦆", "🦅", "🦉", "🦇", "🐺", "🐗", "🐴", "🦄", "🐝", "🦋", "🐌", "🐞", "🐜", "🪲", "🐢", "🐍", "🦎", "🐙", "🦑", "🦀", "🐠", "🐟", "🐬", "🐳")
+        val food = listOf("🍔", "🍕", "🍟", "🌭", "🥪", "🌮", "🌯", "🫔", "🥙", "🍣", "🍱", "🍜", "🍝", "🍲", "🍛", "🍚", "🍙", "🍘", "🥟", "🍤", "🍩", "🍪", "🍫", "🍬", "🍭", "🍮", "🍯", "☕", "🍵", "🧋", "🍺", "🍻", "🥂", "🍷", "🥃", "🍸", "🍹", "🍾", "🍎", "🍏", "🍌", "🍓", "🫐", "🥝", "🥑", "🍋", "🍊", "🍉", "🍇", "🍒", "🍑", "🥭", "🍍", "🥥", "🍅", "🥕", "🌽", "🥔", "🍠", "🥐", "🥖", "🍞", "🥨", "🥯", "🥞", "🧇", "🧀", "🥗", "🍰", "🎂", "🧁", "🍦", "🍧", "🍨", "🍗", "🍖", "🥩", "🥓")
+        val objects = listOf("💡", "📌", "📎", "✏️", "🖊️", "🖋️", "📝", "📱", "💻", "🖥️", "⌨️", "🖱️", "🖨️", "⌚", "🎧", "🎙️", "🎚️", "📷", "📹", "🎥", "📺", "📻", "🔑", "🗝️", "🔒", "🔓", "🧲", "🧰", "⚙️", "🛠️", "🔧", "🔨", "⛏️", "🪛", "🧪", "🧫", "🔬", "🔭", "📁", "📂", "🗂️", "📚", "📖", "📅", "📆", "📊", "📈", "📉", "📮", "✉️", "📧", "📦", "🛒", "💳", "💎", "🔋", "🪫", "🔌", "💰", "💵", "💶", "💷", "🕯️", "🧯", "🪑", "🛏️", "🛋️", "🚿", "🛁", "🧴", "🧻", "🪥", "🧼", "🧽", "🧹")
+        val activities = listOf("⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🏓", "🏸", "🥅", "🏒", "🏑", "🏏", "🥍", "🏆", "🥇", "🥈", "🥉", "🏅", "🎖️", "🎮", "🕹️", "🎲", "♟️", "🎯", "🎳", "🎸", "🎹", "🎺", "🎻", "🥁", "🎧", "🎬", "🎨", "🎤", "🎉", "🎊", "🎁", "🎈", "🏃", "🚶", "🧎", "🏋️", "🤸", "⛹️", "🤾", "🏌️", "🏄", "🏊", "🚣", "🧗", "🚴", "🚵", "⛳", "🥊", "🥋", "🛹", "🛼", "⛸️", "🎿", "🏂", "🧘", "🎭", "🎪", "🎟️", "🎫")
+        val travel = listOf("🚗", "🚕", "🚙", "🚌", "🚎", "🏎️", "🚓", "🚑", "🚒", "🚐", "🛻", "🚚", "🚛", "🚜", "🏍️", "🛵", "🚲", "🛴", "🚨", "🚔", "🚍", "🚘", "🚖", "🚡", "🚠", "🚟", "🚃", "🚋", "🚞", "🚝", "🚄", "🚅", "🚈", "🚂", "🚆", "🚇", "🚊", "✈️", "🛫", "🛬", "🛩️", "💺", "🚀", "🛸", "🚁", "⛵", "🚤", "🛥️", "🛳️", "⛴️", "⚓", "🗺️", "🧭", "🗽", "🗼", "🏰", "🏯", "🏟️", "🎡", "🎢", "⛲", "🏖️", "🏝️", "🏔️", "⛰️", "🌋", "⛺", "🏕️", "🏠", "🏡", "🏢", "🏬", "🏥", "🏦", "🏨", "🏪", "🏫", "🏭")
+        val flags = listOf("🏳️", "🏴", "🏁", "🚩", "🏳️‍🌈", "🏳️‍⚧️", "🇫🇷", "🇪🇺", "🇺🇸", "🇨🇦", "🇧🇪", "🇨🇭", "🇬🇧", "🇮🇪", "🇩🇪", "🇪🇸", "🇮🇹", "🇵🇹", "🇳🇱", "🇩🇰", "🇸🇪", "🇳🇴", "🇫🇮", "🇵🇱", "🇨🇿", "🇦🇹", "🇬🇷", "🇹🇷", "🇺🇦", "🇲🇦", "🇩🇿", "🇹🇳", "🇸🇳", "🇨🇮", "🇨🇲", "🇿🇦", "🇧🇷", "🇲🇽", "🇦🇷", "🇨🇱", "🇨🇴", "🇯🇵", "🇰🇷", "🇨🇳", "🇮🇳", "🇦🇺", "🇳🇿")
         val recents = (request.recentEmojis.filter { isEmojiCandidate(it) } + smileys).distinct().take(40)
         val selectedRaw =
             when (request.emojiCategory) {
@@ -705,6 +709,7 @@ object KeyboardLayoutBuilder {
                 KeyboardEmojiCategory.Objects -> objects
                 KeyboardEmojiCategory.Activities -> activities
                 KeyboardEmojiCategory.Travel -> travel
+                KeyboardEmojiCategory.Flags -> flags
             }
         val selected =
             if (request.emojiCategory == KeyboardEmojiCategory.Recents) {
@@ -714,7 +719,7 @@ object KeyboardLayoutBuilder {
             }
 
         val emojiChunkSize = 10
-        val visibleRows = if (request.compactModeEnabled) 3 else 4
+        val visibleRows = if (request.compactModeEnabled) 3 else 5
         val emojiRows =
             (0 until visibleRows).map { rowIndex ->
                 val rowValues = selected.filterIndexed { index, _ -> index % visibleRows == rowIndex }
@@ -1363,40 +1368,34 @@ object KeyboardLayoutBuilder {
                 listOf(
                     numberSideKey("@"),
                     numberSideKey("+"),
-                    textKey("1"),
-                    textKey("2"),
-                    textKey("3"),
+                    numberDigitKey("1"),
+                    numberDigitKey("2"),
+                    numberDigitKey("3"),
                     numberSideKey("-"),
                     numberSideKey("#"),
                 ),
-                leadingWeight = 0.6f,
-                trailingWeight = 0.6f,
             ),
             KeyboardRowSpec(
                 listOf(
                     numberSideKey("?"),
                     numberSideKey("*"),
-                    textKey("4"),
-                    textKey("5"),
-                    textKey("6"),
+                    numberDigitKey("4"),
+                    numberDigitKey("5"),
+                    numberDigitKey("6"),
                     numberSideKey("/"),
                     numberSideKey("!"),
                 ),
-                leadingWeight = 0.6f,
-                trailingWeight = 0.6f,
             ),
             KeyboardRowSpec(
                 listOf(
                     numberSideModifierKey("Fn", KeyboardSystemModifier.Fn),
                     numberSideKey("."),
-                    textKey("7"),
-                    textKey("8"),
-                    textKey("9"),
+                    numberDigitKey("7"),
+                    numberDigitKey("8"),
+                    numberDigitKey("9"),
                     numberSideKey("0"),
                     numberSideKey(";"),
                 ),
-                leadingWeight = 0.6f,
-                trailingWeight = 0.6f,
             ),
         )
     }
@@ -1524,61 +1523,79 @@ object KeyboardLayoutBuilder {
                     ),
             )
         }
+        if (mode == KeyboardLayoutMode.Numbers) {
+            return KeyboardRowSpec(
+                keys =
+                    listOf(
+                        shiftKey(shiftLabel, active = false, span = 1),
+                        modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
+                        modifierKey("Alt", KeyboardSystemModifier.Alt),
+                        KeyboardKeySpec("tab-number-control", "Tab", KeyboardKeyAction.InsertTab),
+                        textKey(leftSymbol),
+                        textKey("Espace", " ", weight = 2f, span = 2),
+                        textKey(rightSymbol),
+                        KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace),
+                        KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter),
+                    ),
+            )
+        }
+        if (mode == KeyboardLayoutMode.Symbols) {
+            return KeyboardRowSpec(
+                keys =
+                    listOf(
+                        shiftKey(shiftLabel, active = false, span = 1),
+                        modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
+                        modifierKey("Fn", KeyboardSystemModifier.Fn),
+                        textKey(leftSymbol),
+                        textKey("Espace", " ", weight = 3f, span = 3),
+                        textKey(rightSymbol),
+                        KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
+                    ),
+            )
+        }
+        if (mode == KeyboardLayoutMode.Navigation) {
+            return KeyboardRowSpec(
+                keys =
+                    listOf(
+                        shiftKey(shiftLabel, active = false, span = 1),
+                        modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
+                        modifierKey("Alt", KeyboardSystemModifier.Alt),
+                        modifierKey("Fn", KeyboardSystemModifier.Fn),
+                        KeyboardKeySpec("tab-navigation-control", "Tab", KeyboardKeyAction.InsertTab),
+                        KeyboardKeySpec("esc-navigation-control", "Échap", KeyboardKeyAction.Escape),
+                        textKey(leftSymbol),
+                        textKey("Espace", " ", weight = 2f, span = 2),
+                        textKey(rightSymbol),
+                        KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace),
+                        KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter),
+                    ),
+            )
+        }
         val modifierKeys =
             listOfNotNull(
                 modifierKey(
                     "Ctrl",
                     KeyboardSystemModifier.Ctrl,
-                    span = if (mode == KeyboardLayoutMode.Numbers) 2 else null,
                 ),
                 modifierKey(
                     "Alt",
                     KeyboardSystemModifier.Alt,
-                    span = if (mode == KeyboardLayoutMode.Numbers) 2 else null,
                 ).takeUnless { mode == KeyboardLayoutMode.Symbols },
-                modifierKey("Fn", KeyboardSystemModifier.Fn).takeUnless { mode == KeyboardLayoutMode.Numbers },
+                modifierKey("Fn", KeyboardSystemModifier.Fn),
             )
         return KeyboardRowSpec(
             keys =
                 listOf(
-                    shiftKey(shiftLabel, active = false),
-                ) +
-                    modifierKeys +
-                    if (mode == KeyboardLayoutMode.Symbols) {
-                        listOf(
-                            textKey(leftSymbol),
-                            textKey("Espace", " ", weight = 3f, span = 3),
-                            textKey(rightSymbol),
-                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
-                        )
-                    } else if (mode == KeyboardLayoutMode.Numbers) {
-                        listOf(
-                            KeyboardKeySpec("tab-number-control", "Tab", KeyboardKeyAction.InsertTab),
-                            textKey(leftSymbol),
-                            textKey("Espace", " ", weight = 3f, span = 3),
-                            textKey(rightSymbol),
-                            KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, span = 2),
-                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
-                        )
-                    } else if (mode == KeyboardLayoutMode.Navigation) {
-                        listOf(
-                            KeyboardKeySpec("tab-navigation-control", "Tab", KeyboardKeyAction.InsertTab),
-                            KeyboardKeySpec("esc-navigation-control", "Échap", KeyboardKeyAction.Escape),
-                            textKey(leftSymbol),
-                            textKey("Espace", " ", weight = 3f, span = 3),
-                            textKey(rightSymbol),
-                            KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, span = 2),
-                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
-                        )
-                    } else {
-                        listOf(
-                            textKey(leftSymbol),
-                            textKey("Espace", " ", weight = 3f, span = 3),
-                            textKey(rightSymbol),
-                            KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
-                            KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, span = 2),
-                        )
-                    },
+                shiftKey(shiftLabel, active = false),
+            ) +
+                modifierKeys +
+                listOf(
+                    textKey(leftSymbol),
+                    textKey("Espace", " ", weight = 3f, span = 3),
+                    textKey(rightSymbol),
+                    KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter, span = 2),
+                    KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace, span = 2),
+                ),
         )
     }
 
@@ -1660,14 +1677,18 @@ object KeyboardLayoutBuilder {
     }
 
     private fun numberSideKey(label: String): KeyboardKeySpec {
-        return textKey(label, weight = 0.7f)
+        return textKey(label)
+    }
+
+    private fun numberDigitKey(label: String): KeyboardKeySpec {
+        return textKey(label, span = 2, weight = 2f)
     }
 
     private fun numberSideModifierKey(
         label: String,
         modifier: KeyboardSystemModifier,
     ): KeyboardKeySpec {
-        return modifierKey(label, modifier, weight = 0.7f)
+        return modifierKey(label, modifier)
     }
 
     private fun KeyboardKeySpec.asActionSurface(): KeyboardKeySpec = copy(actionSurface = true)

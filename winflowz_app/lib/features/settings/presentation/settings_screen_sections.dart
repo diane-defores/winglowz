@@ -53,8 +53,8 @@ class _AccountCloudSection extends StatelessWidget {
     final subtitle = !remoteAuthConfigured
         ? 'L’authentification distante n’est pas configurée pour cette version.'
         : isRemoteSignedIn
-        ? 'Le clavier, l’apparence et les données éligibles peuvent être synchronisés avec votre compte WinFlowz.'
-        : 'Connectez un compte WinFlowz pour synchroniser les réglages clavier et retrouver votre travail sur tous vos appareils.';
+        ? 'Votre compte WinFlowz est connecté. Les données compatibles avec le cloud peuvent être sauvegardées ou synchronisées.'
+        : 'Connectez un compte WinFlowz pour activer les sauvegardes cloud disponibles sur cette version.';
     final account =
         session?.user?.email ?? session?.user?.provider.name ?? 'none';
 
@@ -385,6 +385,11 @@ class _PlatformCapabilitiesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Text(
+          'Plateforme détectée: ${PlatformCapabilities.currentPlatformLabel}',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        AppGaps.x1,
         Text(
           'Capacités de la plateforme',
           style: Theme.of(context).textTheme.titleSmall,

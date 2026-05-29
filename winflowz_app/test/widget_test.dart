@@ -737,7 +737,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Local mode active'), findsOneWidget);
+      expect(find.text('Mode local actif'), findsOneWidget);
       await _tapVisible(
         tester,
         find.byKey(const Key('settings-connect-cloud-account')),
@@ -756,7 +756,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(cloudAuthStore.emailPasswordCalls, 1);
-      expect(find.text('Account & cloud'), findsOneWidget);
+      expect(find.text('Compte & cloud'), findsOneWidget);
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();
@@ -1059,7 +1059,7 @@ void main() {
       await _pumpNavigationFrame(tester);
       expect(find.text('Studio de thème clavier'), findsOneWidget);
 
-      final backendSection = find.text('Fournisseur backend').first;
+      final backendSection = find.text('Maintenance et diagnostics').first;
       await tester.scrollUntilVisible(
         backendSection,
         500,
@@ -1067,6 +1067,11 @@ void main() {
       );
       await tester.tap(backendSection, warnIfMissed: false);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
+      await tester.scrollUntilVisible(
+        find.text('Journaux et diagnostic'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
 
       expect(
         find.byKey(const Key('backend-diagnostic-log-text')),

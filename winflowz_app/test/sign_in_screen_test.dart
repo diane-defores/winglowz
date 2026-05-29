@@ -192,6 +192,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
+      find.text('Création de compte impossible'),
+      findsOneWidget,
+    );
+    expect(
       find.text(
         'La configuration Firebase de cette version est invalide. Le détail technique peut être copié pour correction.',
       ),

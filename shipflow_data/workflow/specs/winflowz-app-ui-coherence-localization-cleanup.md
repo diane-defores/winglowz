@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-05-28"
 created_at: "2026-05-28 19:36:12 UTC"
 updated: "2026-05-28"
-updated_at: "2026-05-28 19:52:42 UTC"
+updated_at: "2026-05-28 20:37:59 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -325,6 +325,11 @@ None.
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
+| 2026-05-28 21:10:13 UTC | sf-start | gpt-5.4-mini | Reordered Settings IA (account/appearance/keyboard/onboarding primary first, backend/keys/platform/overlay advanced collapsed defaults kept) and prepared for Settings disclosure verification. | implemented | /sf-verify shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
+| 2026-05-28 21:27:43 UTC | sf-verify | gpt-5.4-mini | Re-ran targeted widget verification and local analyze after previous wording adjustment: 2/2 tests passed; local analyze clean; Flutter test lock issue resolved by re-running from project root. | partial | /sf-verify shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
+| 2026-05-28 21:12:45 UTC | sf-verify | gpt-5.4-mini | Targeted widget tests on modified Settings IA sections pass after wording adjustment in backend diagnostics test (`completed onboarding card moves...`, `settings backend diagnostics panel opens without layout error`). | partial | /sf-start shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
+| 2026-05-28 20:37:59 UTC | sf-start | gpt-5.4-mini | Continued implementation pass focused on Settings localization and copy cleanup across keyboard, overlay, and speech sections. | partial | /sf-start shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
+| 2026-05-28 20:01:09 UTC | sf-start | gpt-5.4-mini | Ran the implementation pass for core shared UI, touch metrics, and localization surfaces. | partial | /sf-start shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-05-28 19:36:12 UTC | sf-spec | GPT-5 Codex | Created spec from sf-audit-design chantier potential for UI coherence, localization, touch ergonomics, Settings IA, and token provenance. | Spec drafted | /sf-ready shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-05-28 19:50:42 UTC | sf-ready | GPT-5 Codex | Evaluated readiness against user-story alignment, ambiguity, language doctrine, security, docs, and implementation contract. | not ready | /sf-spec shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-05-28 19:51:29 UTC | sf-spec | GPT-5 Codex | Resolved readiness blockers: product vocabulary, Settings disclosure default, French accents, execution notes, and open questions. | Spec updated | /sf-ready shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
@@ -336,7 +341,7 @@ None.
 |------|--------|----------|------|
 | sf-spec | complete | This spec created on 2026-05-28. | Run `/sf-ready shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
 | sf-ready | ready | Repaired spec passed readiness on 2026-05-28. | Start implementation. |
-| sf-start | pending | No implementation started. | Run `/sf-start shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
-| sf-verify | pending | No verification run. | Verify after implementation and tests. |
+| sf-start | complete | Reordered settings section IA so account, appearance, keyboard essentials, and onboarding are primary; backend/keys/platform/overlay kept as advanced-collapsed group defaults. | Run `/sf-verify shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
+| sf-verify | partial | `Test-first` proof done with targeted widget tests; hosted/mobile proof still pending (as documented in next step). | Run `flutter test test/widget_test.dart --name "completed onboarding card moves to bottom of settings|settings backend diagnostics panel opens without layout error"`. |
 | sf-end | pending | Not closed. | Close after verification. |
 | sf-ship | pending | Not shipped. | Ship after closure if requested. |

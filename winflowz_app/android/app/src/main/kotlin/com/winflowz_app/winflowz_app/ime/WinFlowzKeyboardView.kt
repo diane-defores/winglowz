@@ -20,7 +20,6 @@ import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.SystemClock
 import android.text.TextPaint
-import android.text.TextUtils
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.SoundEffectConstants
@@ -4172,6 +4171,7 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.SelectEmojiObjects -> emojiCategory = KeyboardEmojiCategory.Objects
             KeyboardKeyAction.SelectEmojiActivities -> emojiCategory = KeyboardEmojiCategory.Activities
             KeyboardKeyAction.SelectEmojiTravel -> emojiCategory = KeyboardEmojiCategory.Travel
+            KeyboardKeyAction.SelectEmojiFlags -> emojiCategory = KeyboardEmojiCategory.Flags
             KeyboardKeyAction.NavigateCharLeft -> {
                 if (!callbacks.onNavigateCharLeft()) {
                     setStatus("Left unavailable")
@@ -4705,7 +4705,7 @@ class WinFlowzKeyboardView(
         rect: RectF,
     ): String {
         val label = displayLabel(key)
-        if (label.length <= 1) {
+        if (label.length <= 1 || !key.id.startsWith("clip-row-entry-")) {
             return label
         }
         val horizontalInset = dp(if (key.actionSurface) 8f else 10f)
@@ -4713,12 +4713,26 @@ class WinFlowzKeyboardView(
         if (textPaint.measureText(label) <= maxTextWidth) {
             return label
         }
-        return TextUtils.ellipsize(
-            label,
-            textPaint as TextPaint,
-            maxTextWidth,
-            TextUtils.TruncateAt.END,
-        ).toString()
+        return fitClipboardActionLabel(label, maxTextWidth)
+    }
+
+    private fun fitClipboardActionLabel(
+        label: String,
+        maxTextWidth: Float,
+    ): String {
+        val ellipsis = "..."
+        if (textPaint.measureText(ellipsis) >= maxTextWidth) {
+            return ellipsis
+        }
+        var end = label.length
+        while (end > 0) {
+            val candidate = label.take(end) + ellipsis
+            if (textPaint.measureText(candidate) <= maxTextWidth) {
+                return candidate
+            }
+            end -= 1
+        }
+        return ellipsis
     }
 
     private fun isCtrlModifierKey(key: KeyboardKeySpec): Boolean {
@@ -4728,6 +4742,9 @@ class WinFlowzKeyboardView(
 
     private fun keyTextSize(key: KeyboardKeySpec): Float {
         return when {
+            isEmojiKey(key) && key.actionSurface && actionRowHeightScale <= 0.35f -> sp(12f)
+            isEmojiKey(key) && key.actionSurface && actionRowHeightScale <= 0.65f -> sp(15f)
+            isEmojiKey(key) -> sp(23f)
             key.actionSurface && actionRowHeightScale <= 0.35f -> sp(7f)
             key.actionSurface && actionRowHeightScale <= 0.65f -> sp(9f)
             key.label.length <= 1 -> sp(19f)
@@ -4736,6 +4753,11 @@ class WinFlowzKeyboardView(
             key.label.length >= 5 -> sp(11f)
             else -> sp(12.5f)
         }
+    }
+
+    private fun isEmojiKey(key: KeyboardKeySpec): Boolean {
+        val value = key.keyValue?.text ?: key.glyph?.primary ?: key.label
+        return isEmojiRecentCandidate(value)
     }
 
     private fun hitTest(x: Float, y: Float): KeyFrame? {

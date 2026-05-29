@@ -119,13 +119,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final Map<String, bool> _expandedSections = {
     'account_cloud': true,
     'appearance': true,
-    'keyboard_sync': false,
-    'backend': false,
-    'keys': false,
-    'platform': false,
     'keyboard': false,
     'voice_packs': false,
+    'keys': false,
     'overlay': false,
+    'maintenance': false,
   };
 
   @override
@@ -177,8 +175,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return;
       }
       setState(
-        () =>
-            _message = 'Impossible de charger la progression de l\'onboarding : $error',
+        () => _message =
+            'Impossible de charger la progression de l\'onboarding : $error',
       );
     } finally {
       if (mounted) {
@@ -847,7 +845,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         }
         return 'Le thème reste local tant que vous n\'êtes pas connecté.';
       },
-      orElse: () => 'L\'état de synchronisation du thème est en cours de chargement.',
+      orElse: () =>
+          'L\'état de synchronisation du thème est en cours de chargement.',
     );
   }
 
@@ -863,7 +862,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         if (session.isLocalFallback) {
           return 'Firebase est configuré, mais cette session est locale de secours. Les réglages restent locaux jusqu\'à ce que l\'authentification distante revienne.';
         }
-          return 'Firebase est configuré mais aucun compte connecté. Les réglages restent locaux jusqu\'à la connexion.';
+        return 'Firebase est configuré mais aucun compte connecté. Les réglages restent locaux jusqu\'à la connexion.';
       },
       loading: () =>
           'Vérification de la session avant confirmation de la synchronisation distante.',
@@ -1289,13 +1288,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
         _collapsibleSection(
-          id: 'keyboard_sync',
-          title: 'Synchronisation clavier',
-          child: const KeyboardSyncPanel(),
-        ),
-        if (onboardingTile != null && !moveOnboardingTileToEnd)
-          onboardingTile,
-        _collapsibleSection(
           id: 'voice_packs',
           title: 'Reconnaissance vocale locale',
           child: _OnDeviceSpeechSection(
@@ -1319,20 +1311,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
         _collapsibleSection(
-          id: 'backend',
-          title: 'Fournisseur backend',
-          child: _BackendProviderSection(
-            summary: FirebaseBootstrap.isConfigured
-                ? 'Firebase est configuré comme adaptateur backend principal.'
-                : 'La synchronisation distante n’est pas configurée. WinFlowz fonctionne en mode local.',
-            detail:
-                '${_appearanceSyncDetail(authAsync)}\nStatut du compte Suite: ${_suiteIdentitySummary(suiteIdentityAsync)}',
-            diagnosticText: _backendDiagnosticText(suiteIdentityAsync),
-            onCopyDiagnostic: _copyBackendDiagnostic,
-            onClearDiagnosticLogs: _clearDiagnosticLogs,
-          ),
-        ),
-        _collapsibleSection(
           id: 'keys',
           title: 'Clés IA locales',
           child: _SecretsSection(
@@ -1344,11 +1322,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onSave: _saveSecrets,
             onSignOut: _signOut,
           ),
-        ),
-        _collapsibleSection(
-          id: 'platform',
-          title: 'Capacités de la plateforme',
-          child: const _PlatformCapabilitiesSection(),
         ),
         if (PlatformCapabilities.overlaySupported)
           _collapsibleSection(
@@ -1366,6 +1339,29 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onCancel: _cancelOverlay,
             ),
           ),
+        _collapsibleSection(
+          id: 'maintenance',
+          title: 'Maintenance et diagnostics',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const KeyboardSyncPanel(),
+              AppGaps.x3,
+              _BackendProviderSection(
+                summary: FirebaseBootstrap.isConfigured
+                    ? 'Firebase est configuré comme adaptateur backend principal.'
+                    : 'La synchronisation distante n’est pas configurée. WinFlowz fonctionne en mode local.',
+                detail:
+                    '${_appearanceSyncDetail(authAsync)}\nStatut du compte Suite: ${_suiteIdentitySummary(suiteIdentityAsync)}',
+                diagnosticText: _backendDiagnosticText(suiteIdentityAsync),
+                onCopyDiagnostic: _copyBackendDiagnostic,
+                onClearDiagnosticLogs: _clearDiagnosticLogs,
+              ),
+              AppGaps.x3,
+              const _PlatformCapabilitiesSection(),
+            ],
+          ),
+        ),
         if (onboardingTile != null && moveOnboardingTileToEnd) onboardingTile,
       ],
     );

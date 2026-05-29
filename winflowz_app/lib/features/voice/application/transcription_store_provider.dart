@@ -40,3 +40,5 @@ final transcriptionStoreProvider = Provider<TranscriptionStore>((ref) {
 
   return ref.watch(localTranscriptionStoreProvider);
 });
+
+final transcriptionHistoryRefreshSignalProvider = StateProvider<int>((ref) => 0);

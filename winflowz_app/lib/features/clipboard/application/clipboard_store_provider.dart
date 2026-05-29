@@ -52,3 +52,5 @@ final keyboardClipboardEventImporterProvider =
       final api = ref.watch(clipboardHistoryApiProvider);
       return KeyboardClipboardEventImporter(api);
     });
+
+final clipboardHistoryRefreshSignalProvider = StateProvider<int>((ref) => 0);

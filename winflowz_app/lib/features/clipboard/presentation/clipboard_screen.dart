@@ -52,6 +52,9 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
   }
 
   Future<void> _load() async {
+    if (!mounted) {
+      return;
+    }
     setState(() {
       _busy = true;
       _message = null;
@@ -260,6 +263,11 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<int>(clipboardHistoryRefreshSignalProvider, (previous, next) {
+      if (previous != null && previous != next) {
+        Future<void>.microtask(_load);
+      }
+    });
     AppDiagnostics.record('screen_build', 'Clipboard');
     final draftContent = _contentController.text.trim();
     final draftClassification = classifySensitiveContent(draftContent);
