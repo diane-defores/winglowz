@@ -101,7 +101,7 @@ Run before closing any auth-hardening chantier as sellable/production-ready:
 | Google user cancellation before selection | User sees a cancellation message; no high-severity Sentry event is required. |
 | Controlled Google config failure or documented equivalent | Missing SHA/package/server client ID/client config is reported as configuration trouble, even if the SDK labels it canceled after account selection. |
 | Google missing/null ID token | No Firebase credential is built; typed auth failure is shown and logged redacted. |
-| Signed-out deep link to `/voice`, `/clipboard`, `/settings`, `/keyboard`, `/snippets`, or `/dictionary` | Router redirects to auth gate/login without building the protected product surface. |
+| Signed-out deep link to `/home`, `/voice`, `/clipboard`, `/settings`, `/keyboard`, `/snippets`, or `/dictionary` | Router redirects to auth gate/login without building the protected product surface. |
 | Local mode deep link to product route | Route opens through the app shell and remains local-only. |
 | Signed-in deep link to product route | Route opens through the app shell with the matching initial tab. |
 | Sentry/AppDiagnostics review | Category/code/support detail are present where useful; secrets, tokens, passwords, OAuth payloads, clipboard text, transcripts, and raw provider payloads are absent. |
@@ -187,7 +187,7 @@ Run after native keyboard resilience changes and before closing the keyboard rec
 Before deleting legacy JS/TS application code:
 
 1. Snapshot rollback archive exists and includes legacy app, Convex, overlay, and docs.
-2. Flutter parity checks pass for Voice, Clipboard, Settings, Snippets, Dictionary, Auth, and Android overlay.
+2. Flutter parity checks pass for Accueil, Voice, Clipboard, Settings, Snippets, Dictionary, Auth, and Android overlay.
 3. Firebase rules/indexes and user-scoped access tests pass once Firebase adapter replaces Supabase.
 4. Dry-run list of files to delete is reviewed.
 5. Keep rules are explicit: keep docs, assets still referenced by Flutter, legacy backend archives until parity, native platform files, Kotlin overlay code, and migration specs.

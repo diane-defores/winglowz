@@ -9,6 +9,7 @@ import '../../../core/bootstrap/sentry_bootstrap.dart';
 import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/diagnostics/sensitive_redactor.dart';
 import '../../../core/sync/cloud_sync_overview.dart';
+import '../../../core/sync/sync_status.dart';
 import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/platform/android_overlay_bridge.dart';
 import '../../../core/platform/platform_capabilities.dart';
@@ -35,6 +36,7 @@ import '../../voice/domain/language_pack_catalog.dart';
 import '../application/cloud_sync_overview_provider.dart';
 import '../application/settings_platform_controllers.dart';
 import '../application/settings_store_provider.dart';
+import '../data/local_settings_store.dart';
 import '../data/secure_secret_store.dart';
 
 part 'settings_screen_sections.dart';
@@ -120,6 +122,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   UserSettingsSnapshot? _onboardingSettings;
   String? _message;
   String? _postAuthMessage;
+  AppSyncStatus _appearanceSyncStatus = const AppSyncStatus(
+    kind: AppSyncStatusKind.idle,
+  );
+  AppSyncStatus _secretsSyncStatus = const AppSyncStatus(
+    kind: AppSyncStatusKind.idle,
+  );
+  UserSettingsSnapshot? _pendingAppearanceSettings;
   final Map<String, bool> _expandedSections = {
     'account_cloud': true,
     'appearance': true,
@@ -173,6 +182,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       }
       setState(() {
         _onboardingSettings = settings;
+        _appearanceSyncStatus = _settingsSyncStatusFromSnapshot(settings);
       });
     } catch (error) {
       if (!mounted) {
@@ -193,16 +203,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final store = ref.read(settingsStoreProvider);
     final current = _onboardingSettings ?? await store.load();
     final next = current.copyWith(confirmDestructiveActions: value);
-    await store.save(next);
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _onboardingSettings = next;
-      _message = value
+    await _persistAppearanceSettings(
+      next,
+      confirmMessage: value
           ? 'Confirmations de suppression activées.'
-          : 'Confirmations de suppression désactivées.';
-    });
+          : 'Confirmations de suppression désactivées.',
+    );
   }
 
   OnboardingReadiness _onboardingReadiness() {
@@ -230,18 +236,186 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() {
       _saving = true;
       _message = null;
+      _secretsSyncStatus = const AppSyncStatus(
+        kind: AppSyncStatusKind.saving,
+        message: 'Enregistrement des clés...',
+      );
     });
     try {
       await store.writeOpenAiKey(_openAiController.text);
       await store.writeAnthropicKey(_anthropicController.text);
-      setState(() => _message = 'Clés enregistrées localement.');
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _message = 'Clés enregistrées localement.';
+        _secretsSyncStatus = AppSyncStatus(
+          kind: AppSyncStatusKind.localOnly,
+          message: 'Clés enregistrées localement.',
+          timestamp: DateTime.now(),
+        );
+      });
     } catch (error) {
-      setState(() => _message = 'Enregistrement des clés impossible : $error');
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _message = 'Enregistrement des clés impossible : $error';
+        _secretsSyncStatus = AppSyncStatus(
+          kind: AppSyncStatusKind.error,
+          message: 'Échec de l’enregistrement local.',
+          timestamp: DateTime.now(),
+        );
+      });
     } finally {
       if (mounted) {
         setState(() => _saving = false);
       }
     }
+  }
+
+  Future<void> _setThemeMode(AppThemeMode mode) async {
+    final store = ref.read(settingsStoreProvider);
+    final current = _onboardingSettings ?? await store.load();
+    final next = current.copyWith(themeMode: mode.materialMode);
+    ref.read(appThemeModeProvider.notifier).previewMode(mode);
+    await _persistAppearanceSettings(next);
+  }
+
+  Future<void> _persistAppearanceSettings(
+    UserSettingsSnapshot snapshot, {
+    String? confirmMessage,
+  }) async {
+    _pendingAppearanceSettings = snapshot;
+    setState(() {
+      _message = null;
+      _appearanceSyncStatus = const AppSyncStatus(
+        kind: AppSyncStatusKind.saving,
+        message: 'Enregistrement des préférences en cours.',
+      );
+    });
+    final localStore = ref.read(localSettingsStoreProvider);
+    final activeStore = ref.read(settingsStoreProvider);
+
+    try {
+      await localStore.save(snapshot);
+      setState(() {
+        _onboardingSettings = snapshot;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => _appearanceSyncStatus = AppSyncStatus(
+          kind: AppSyncStatusKind.error,
+          message:
+              'Impossible d’enregistrer localement: ${_sanitizeDiagnostic(error)}',
+          timestamp: DateTime.now(),
+        ),
+      );
+      return;
+    }
+
+    var remoteSaved = false;
+    Object? remoteError;
+    if (activeStore is! LocalSettingsStore) {
+      setState(() {
+        _appearanceSyncStatus = const AppSyncStatus(
+          kind: AppSyncStatusKind.syncing,
+          message: 'Synchronisation des préférences en cours.',
+        );
+      });
+      try {
+        await activeStore.save(snapshot);
+        remoteSaved = true;
+      } catch (error) {
+        remoteError = error;
+      }
+    }
+
+    if (!mounted) {
+      return;
+    }
+    if (remoteSaved) {
+      setState(() {
+        _appearanceSyncStatus = AppSyncStatus(
+          kind: AppSyncStatusKind.synced,
+          message: 'Préférences synchronisées.',
+          timestamp: DateTime.now(),
+        );
+        if (confirmMessage != null) {
+          _message = confirmMessage;
+        }
+      });
+      return;
+    }
+
+    setState(() {
+      _appearanceSyncStatus = AppSyncStatus(
+        kind: AppSyncStatusKind.localOnly,
+        message: remoteError == null
+            ? 'Enregistré localement (synchronisation distante indisponible).'
+            : 'Enregistré localement; synchronisation distante en attente: ${_sanitizeDiagnostic(remoteError)}.',
+        timestamp: DateTime.now(),
+      );
+      if (confirmMessage != null) {
+        _message = confirmMessage;
+      }
+    });
+  }
+
+  Future<void> _retryAppearanceFromStatus() async {
+    if (_appearanceSyncStatus.isBusy) {
+      return;
+    }
+    final snapshot =
+        _pendingAppearanceSettings ??
+        _onboardingSettings ??
+        const UserSettingsSnapshot.defaults();
+    await _persistAppearanceSettings(snapshot);
+  }
+
+  AppSyncStatus _settingsSyncStatusFromSnapshot(UserSettingsSnapshot settings) {
+    final health = settings.syncStatus.health;
+    final kind = () {
+      if (health == SyncHealth.localOnly || health == SyncHealth.unavailable) {
+        return AppSyncStatusKind.localOnly;
+      }
+      if (health == SyncHealth.pending) {
+        return AppSyncStatusKind.pending;
+      }
+      if (health == SyncHealth.syncing) {
+        return AppSyncStatusKind.syncing;
+      }
+      if (health == SyncHealth.synced) {
+        return AppSyncStatusKind.synced;
+      }
+      return AppSyncStatusKind.error;
+    }();
+    return AppSyncStatus(kind: kind, message: _settingsSyncStatusMessage(kind));
+  }
+
+  String _settingsSyncStatusMessage(AppSyncStatusKind kind) {
+    return switch (kind) {
+      AppSyncStatusKind.localOnly => 'Données locales uniquement.',
+      AppSyncStatusKind.pending => 'Synchronisation en attente.',
+      AppSyncStatusKind.syncing => 'Synchronisation en cours.',
+      AppSyncStatusKind.synced => 'Synchronisé.',
+      AppSyncStatusKind.saving => 'Enregistrement.',
+      AppSyncStatusKind.loading => 'Chargement.',
+      AppSyncStatusKind.saved => 'Enregistré.',
+      AppSyncStatusKind.error => 'Erreur.',
+      AppSyncStatusKind.conflict => 'Conflit.',
+      AppSyncStatusKind.idle => 'Rien à synchroniser.',
+    };
+  }
+
+  Future<void> _retrySecretsFromStatus() async {
+    if (_secretsSyncStatus.isBusy || _saving) {
+      return;
+    }
+    await _saveSecrets();
   }
 
   Future<void> _loadOverlayState() async {
@@ -1330,11 +1504,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     .confirmDestructiveActions,
             syncStateLabel: _appearanceSyncLabel(authAsync),
             syncStateDetail: _appearanceSyncDetail(authAsync),
+            syncActionStatus: _appearanceSyncStatus,
             onOpenKeyboardThemeStudio: _openKeyboardThemeStudio,
-            onConfirmDestructiveActionsChanged: _setConfirmDestructiveActions,
-            onChanged: (mode) {
-              ref.read(appThemeModeProvider.notifier).setMode(mode);
+            onSyncOrRefresh: () {
+              _retryAppearanceFromStatus();
             },
+            onConfirmDestructiveActionsChanged: _setConfirmDestructiveActions,
+            onChanged: _setThemeMode,
           ),
         ),
         if (PlatformCapabilities.keyboardImeSupported)
@@ -1386,8 +1562,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             anthropicController: _anthropicController,
             message: _message,
             saving: _saving,
+            syncStatus: _secretsSyncStatus,
             onSave: _saveSecrets,
             onSignOut: _signOut,
+            onRetrySync: () {
+              _retrySecretsFromStatus();
+            },
           ),
         ),
         if (PlatformCapabilities.overlaySupported)

@@ -27,6 +27,7 @@ class VoiceScreen extends ConsumerStatefulWidget {
 }
 
 class _VoiceScreenState extends ConsumerState<VoiceScreen> {
+  final _searchController = TextEditingController();
   bool _busy = false;
   bool _overlayBusy = false;
   AndroidOverlayStatus? _overlayStatus;
@@ -37,6 +38,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(_handleSearchChanged);
     Future<void>.microtask(_load);
     Future<void>.microtask(_loadOverlayStatus);
     Future<void>.microtask(_loadKeyboardStatus);
@@ -44,7 +46,15 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
 
   @override
   void dispose() {
+    _searchController.removeListener(_handleSearchChanged);
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _handleSearchChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _load() async {
@@ -457,6 +467,49 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
     }
   }
 
+  AppSyncStatus _pageStatus() {
+    if (_busy) {
+      return const AppSyncStatus(
+        kind: AppSyncStatusKind.loading,
+        message: 'Chargement de l’historique vocal.',
+      );
+    }
+    if (_hasErrorMessage) {
+      return AppSyncStatus(kind: AppSyncStatusKind.error, message: _message);
+    }
+    return const AppSyncStatus(
+      kind: AppSyncStatusKind.idle,
+      message: 'Historique vocal prêt.',
+    );
+  }
+
+  bool get _hasErrorMessage {
+    final value = _message?.toLowerCase() ?? '';
+    return value.contains('erreur') ||
+        value.contains('impossible') ||
+        value.contains('échec') ||
+        value.contains('failed');
+  }
+
+  List<TranscriptionRecord> _visibleItems() {
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      return _items;
+    }
+    return _items
+        .where((item) {
+          final language = _languageLabel(item.language).toLowerCase();
+          final source = _sourceLabel(item.source).toLowerCase();
+          final duration = _formatDuration(item.durationMs).toLowerCase();
+          return item.cleanedText.toLowerCase().contains(query) ||
+              item.rawText.toLowerCase().contains(query) ||
+              language.contains(query) ||
+              source.contains(query) ||
+              duration.contains(query);
+        })
+        .toList(growable: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen<int>(transcriptionHistoryRefreshSignalProvider, (
@@ -479,6 +532,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
     final overlayStatus = _overlayStatus;
     final overlayRecording = overlayStatus?.serviceState == 'recording';
     final latest = _items.isEmpty ? null : _items.first;
+    final visibleItems = _visibleItems();
     return ListView(
       padding: AppInsets.screen,
       children: [
@@ -512,11 +566,6 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
               runSpacing: AppSpacing.x2,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                OutlinedButton.icon(
-                  onPressed: _busy ? null : _load,
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Rafraîchir l’historique'),
-                ),
                 AppTag(
                   label: _items.isEmpty
                       ? 'Historique vide'
@@ -557,8 +606,30 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
         AppGaps.x4,
         const AppEntityListHeader(title: 'Historique vocal'),
         AppGaps.x2,
+        AppPageToolbar(
+          searchField: AppSearchField(
+            controller: _searchController,
+            query: _searchController.text,
+            enabled: _items.isNotEmpty,
+            scopeLabel: 'Voix',
+            hintText: 'Rechercher une transcription',
+            onChanged: (_) {},
+            onClear: _searchController.clear,
+          ),
+          syncAction: AppSyncStatusAction(
+            status: _pageStatus(),
+            scopeLabel: 'Voix',
+            onPressed: _busy ? null : _load,
+          ),
+        ),
+        AppGaps.x2,
         if (_items.isEmpty) const _EmptyVoiceState(),
-        for (final item in _items)
+        if (_items.isNotEmpty && visibleItems.isEmpty)
+          const AppEmptyStateCard(
+            title: 'Aucun résultat',
+            message: 'Aucune transcription ne correspond à cette recherche.',
+          ),
+        for (final item in visibleItems)
           _TranscriptionTile(
             item: item,
             onEdit: _busy ? null : () => _quickEdit(item),

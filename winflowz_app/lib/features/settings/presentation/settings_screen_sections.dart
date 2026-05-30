@@ -217,7 +217,9 @@ class _AppearanceSection extends StatelessWidget {
     required this.confirmDestructiveActions,
     required this.syncStateLabel,
     required this.syncStateDetail,
+    required this.syncActionStatus,
     required this.onOpenKeyboardThemeStudio,
+    required this.onSyncOrRefresh,
     required this.onConfirmDestructiveActionsChanged,
     required this.onChanged,
   });
@@ -226,7 +228,9 @@ class _AppearanceSection extends StatelessWidget {
   final bool confirmDestructiveActions;
   final String syncStateLabel;
   final String syncStateDetail;
+  final AppSyncStatus syncActionStatus;
   final VoidCallback onOpenKeyboardThemeStudio;
+  final VoidCallback onSyncOrRefresh;
   final ValueChanged<bool> onConfirmDestructiveActionsChanged;
   final ValueChanged<AppThemeMode> onChanged;
 
@@ -263,6 +267,12 @@ class _AppearanceSection extends StatelessWidget {
           ),
           AppGaps.x2,
           Text(syncStateDetail, style: Theme.of(context).textTheme.bodySmall),
+          AppGaps.x2,
+          AppSyncStatusAction(
+            key: const Key('settings-appearance-sync-action'),
+            status: syncActionStatus,
+            onPressed: onSyncOrRefresh,
+          ),
           AppGaps.x2,
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
@@ -405,7 +415,9 @@ class _SecretsSection extends StatelessWidget {
     required this.anthropicController,
     required this.message,
     required this.saving,
+    required this.syncStatus,
     required this.onSave,
+    required this.onRetrySync,
     required this.onSignOut,
   });
 
@@ -414,7 +426,9 @@ class _SecretsSection extends StatelessWidget {
   final TextEditingController anthropicController;
   final String? message;
   final bool saving;
+  final AppSyncStatus syncStatus;
   final VoidCallback onSave;
+  final VoidCallback onRetrySync;
   final VoidCallback onSignOut;
 
   @override
@@ -463,6 +477,12 @@ class _SecretsSection extends StatelessWidget {
             decoration: const InputDecoration(labelText: 'Clé API Anthropic'),
           ),
           if (message != null) ...[AppGaps.x3, Text(message!)],
+          AppGaps.x2,
+          AppSyncStatusAction(
+            key: const Key('settings-secrets-sync-action'),
+            status: syncStatus,
+            onPressed: onRetrySync,
+          ),
           AppGaps.x4,
           Row(
             children: [

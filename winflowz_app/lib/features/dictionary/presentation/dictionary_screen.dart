@@ -21,6 +21,7 @@ class DictionaryScreen extends ConsumerStatefulWidget {
 class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   final _termController = TextEditingController();
   final _replacementController = TextEditingController();
+  final _searchController = TextEditingController();
   bool _caseSensitive = false;
   bool _busy = false;
   String? _message;
@@ -29,14 +30,23 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(_handleSearchChanged);
     Future<void>.microtask(_load);
   }
 
   @override
   void dispose() {
+    _searchController.removeListener(_handleSearchChanged);
     _termController.dispose();
     _replacementController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _handleSearchChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _load() async {
@@ -58,7 +68,9 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
     } catch (error) {
       AppDiagnostics.record('dictionary_load_error', error);
       if (mounted) {
-      setState(() => _message = 'Erreur lors du chargement du dictionnaire: $error');
+        setState(
+          () => _message = 'Erreur lors du chargement du dictionnaire: $error',
+        );
       }
     } finally {
       if (mounted) {
@@ -232,9 +244,50 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
     }
   }
 
+  AppSyncStatus _pageStatus() {
+    if (_busy) {
+      return const AppSyncStatus(
+        kind: AppSyncStatusKind.loading,
+        message: 'Chargement du dictionnaire.',
+      );
+    }
+    if (_hasErrorMessage) {
+      return AppSyncStatus(kind: AppSyncStatusKind.error, message: _message);
+    }
+    return const AppSyncStatus(
+      kind: AppSyncStatusKind.idle,
+      message: 'Dictionnaire prêt.',
+    );
+  }
+
+  bool get _hasErrorMessage {
+    final value = _message?.toLowerCase() ?? '';
+    return value.contains('erreur') ||
+        value.contains('impossible') ||
+        value.contains('échec');
+  }
+
+  List<DictionaryTermRecord> _visibleItems() {
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      return _items;
+    }
+    return _items
+        .where((item) {
+          final caseLabel = item.caseSensitive
+              ? 'respecter la casse oui casse sensible'
+              : 'respecter la casse non casse ignorée';
+          return item.term.toLowerCase().contains(query) ||
+              item.replacement.toLowerCase().contains(query) ||
+              caseLabel.contains(query);
+        })
+        .toList(growable: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     AppDiagnostics.record('screen_build', 'Dictionary');
+    final visibleItems = _visibleItems();
     return ListView(
       padding: AppInsets.screen,
       children: [
@@ -265,7 +318,6 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
               AppFormActions(
                 primaryLabel: 'Ajouter un terme',
                 onPrimary: _busy ? null : _add,
-                onSecondary: _busy ? null : _load,
               ),
             ],
           ),
@@ -280,13 +332,35 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
         AppGaps.x4,
         const AppEntityListHeader(title: 'Termes du dictionnaire'),
         AppGaps.x2,
+        AppPageToolbar(
+          searchField: AppSearchField(
+            controller: _searchController,
+            query: _searchController.text,
+            enabled: _items.isNotEmpty,
+            scopeLabel: 'Dictionnaire',
+            hintText: 'Rechercher un terme',
+            onChanged: (_) {},
+            onClear: _searchController.clear,
+          ),
+          syncAction: AppSyncStatusAction(
+            status: _pageStatus(),
+            scopeLabel: 'Dictionnaire',
+            onPressed: _busy ? null : _load,
+          ),
+        ),
+        AppGaps.x2,
         if (_items.isEmpty)
           const AppEmptyStateCard(
             title: 'Aucun terme',
             message:
                 'Ajoute un terme personnalisé pour corriger tes expressions récurrentes.',
           ),
-        for (final item in _items)
+        if (_items.isNotEmpty && visibleItems.isEmpty)
+          const AppEmptyStateCard(
+            title: 'Aucun résultat',
+            message: 'Aucun terme ne correspond à cette recherche.',
+          ),
+        for (final item in visibleItems)
           AppEntityListTile(
             title: Text(item.term),
             subtitle: Text(

@@ -22,6 +22,7 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   final _triggerController = TextEditingController();
   final _contentController = TextEditingController();
   final _labelController = TextEditingController();
+  final _searchController = TextEditingController();
   bool _busy = false;
   String? _message;
   List<SnippetRecord> _items = const [];
@@ -29,15 +30,24 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(_handleSearchChanged);
     Future<void>.microtask(_load);
   }
 
   @override
   void dispose() {
+    _searchController.removeListener(_handleSearchChanged);
     _triggerController.dispose();
     _contentController.dispose();
     _labelController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _handleSearchChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _load() async {
@@ -122,7 +132,9 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
                 AppGaps.x2,
                 TextField(
                   controller: label,
-                  decoration: const InputDecoration(labelText: 'Libellé (optionnel)'),
+                  decoration: const InputDecoration(
+                    labelText: 'Libellé (optionnel)',
+                  ),
                 ),
               ],
             ),
@@ -223,9 +235,48 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
     }
   }
 
+  AppSyncStatus _pageStatus() {
+    if (_busy) {
+      return const AppSyncStatus(
+        kind: AppSyncStatusKind.loading,
+        message: 'Chargement des snippets.',
+      );
+    }
+    if (_hasErrorMessage) {
+      return AppSyncStatus(kind: AppSyncStatusKind.error, message: _message);
+    }
+    return const AppSyncStatus(
+      kind: AppSyncStatusKind.idle,
+      message: 'Liste des snippets prête.',
+    );
+  }
+
+  bool get _hasErrorMessage {
+    final value = _message?.toLowerCase() ?? '';
+    return value.contains('erreur') ||
+        value.contains('impossible') ||
+        value.contains('échec');
+  }
+
+  List<SnippetRecord> _visibleItems() {
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      return _items;
+    }
+    return _items
+        .where((item) {
+          final label = item.label ?? '';
+          return item.trigger.toLowerCase().contains(query) ||
+              item.content.toLowerCase().contains(query) ||
+              label.toLowerCase().contains(query);
+        })
+        .toList(growable: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     AppDiagnostics.record('screen_build', 'Snippets');
+    final visibleItems = _visibleItems();
     return ListView(
       padding: AppInsets.screen,
       children: [
@@ -258,7 +309,6 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
               AppFormActions(
                 primaryLabel: 'Ajouter le snippet',
                 onPrimary: _busy ? null : _add,
-                onSecondary: _busy ? null : _load,
               ),
             ],
           ),
@@ -273,14 +323,35 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
         AppGaps.x4,
         const AppEntityListHeader(title: 'Snippets'),
         AppGaps.x2,
+        AppPageToolbar(
+          searchField: AppSearchField(
+            controller: _searchController,
+            query: _searchController.text,
+            enabled: _items.isNotEmpty,
+            scopeLabel: 'Snippets',
+            hintText: 'Rechercher un snippet',
+            onChanged: (_) {},
+            onClear: _searchController.clear,
+          ),
+          syncAction: AppSyncStatusAction(
+            status: _pageStatus(),
+            scopeLabel: 'Snippets',
+            onPressed: _busy ? null : _load,
+          ),
+        ),
+        AppGaps.x2,
         if (_items.isEmpty)
           const AppEmptyStateCard(
             title: 'Aucun snippet',
-            message:
-                'Aucun raccourci texte pour le moment.',
+            message: 'Aucun raccourci texte pour le moment.',
             example: 'Exemple : `brb` → `Je reviens tout de suite`',
           ),
-        for (final item in _items)
+        if (_items.isNotEmpty && visibleItems.isEmpty)
+          const AppEmptyStateCard(
+            title: 'Aucun résultat',
+            message: 'Aucun snippet ne correspond à cette recherche.',
+          ),
+        for (final item in visibleItems)
           AppEntityListTile(
             title: Text(item.trigger),
             subtitle: Text(

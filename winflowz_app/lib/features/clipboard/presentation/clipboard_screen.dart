@@ -357,7 +357,6 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
                 primaryLabel: 'Ajouter',
                 primaryIcon: Icons.add_link,
                 onPrimary: _busy || draftContent.isEmpty ? null : _add,
-                onSecondary: _busy ? null : _load,
               ),
             ],
           ),
@@ -375,13 +374,20 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
         AppGaps.x4,
         const AppEntityListHeader(title: 'Éléments du clipboard'),
         AppGaps.x2,
-        TextField(
-          controller: _searchController,
-          enabled: _items.isNotEmpty,
-          decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.search),
-            labelText: 'Rechercher',
-            hintText: 'Texte, source, état…',
+        AppPageToolbar(
+          searchField: AppSearchField(
+            controller: _searchController,
+            query: _searchController.text,
+            enabled: _items.isNotEmpty,
+            scopeLabel: 'Clipboard',
+            hintText: 'Rechercher un élément',
+            onChanged: (_) {},
+            onClear: _searchController.clear,
+          ),
+          syncAction: AppSyncStatusAction(
+            status: _pageStatus(pendingCount),
+            scopeLabel: 'Clipboard',
+            onPressed: _busy ? null : _load,
           ),
         ),
         AppGaps.x2,
@@ -414,6 +420,36 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
               sync.contains(query);
         })
         .toList(growable: false);
+  }
+
+  AppSyncStatus _pageStatus(int pendingCount) {
+    if (_busy) {
+      return const AppSyncStatus(
+        kind: AppSyncStatusKind.loading,
+        message: 'Chargement du clipboard.',
+      );
+    }
+    if (_hasErrorMessage) {
+      return AppSyncStatus(kind: AppSyncStatusKind.error, message: _message);
+    }
+    if (pendingCount > 0) {
+      return AppSyncStatus(
+        kind: AppSyncStatusKind.pending,
+        message: '$pendingCount élément(s) en attente de synchronisation.',
+      );
+    }
+    return const AppSyncStatus(
+      kind: AppSyncStatusKind.idle,
+      message: 'Clipboard prêt.',
+    );
+  }
+
+  bool get _hasErrorMessage {
+    final value = _message?.toLowerCase() ?? '';
+    return value.contains('erreur') ||
+        value.contains('impossible') ||
+        value.contains('échec') ||
+        value.contains('failed');
   }
 }
 

@@ -46,6 +46,11 @@ class AppThemeModeController extends Notifier<AppThemeMode> {
     });
   }
 
+  void previewMode(AppThemeMode value) {
+    state = value;
+    _syncKeyboardThemeMode(value);
+  }
+
   Future<void> _saveThemeMode(SettingsStore store, AppThemeMode value) async {
     var settings = const UserSettingsSnapshot.defaults();
     try {

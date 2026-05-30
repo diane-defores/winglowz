@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-05-30"
 created_at: "2026-05-30 07:06:27 UTC"
 updated: "2026-05-30"
-updated_at: "2026-05-30 15:34:00 UTC"
+updated_at: "2026-05-30 16:40:37 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -55,7 +55,7 @@ evidence:
   - "Current Clipboard screen already has a local search field in lib/features/clipboard/presentation/clipboard_screen.dart."
   - "Current AppFormActions defines a default refresh label in lib/core/widgets/app_components.dart."
   - "Current SyncStatus and CloudSyncOverview already model localOnly, pending, syncing, synced, failed, conflict and unavailable states."
-next_step: "/sf-start shipflow_data/workflow/specs/app-home-feed-global-actions-search.md"
+next_step: "/sf-prod winflowz-app"
 ---
 
 # Title
@@ -64,7 +64,7 @@ WinFlowz App Home Feed, Global Search, and Shared Page Actions
 
 ## Status
 
-Partial implementation in progress after `sf-start`. Created from Diane's 2026-05-30 product direction, updated the same day to expand the shared refresh control into a save/sync/status action component, passed readiness review once, then returned to draft on 2026-05-30 to clarify that search and sync/save are separate shared components. Readiness was rerun on 2026-05-30. The first implementation slice added the shared search/status/toolbar components, Accueil feed provider/screen, `/home` routing, shell tab insertion, and focused tests. Remaining implementation work is the page-scoped search migration across Voice/Clipboard/Snippets/Dictionary and Settings save/sync status integration.
+Implementation complete locally after `sf-start`. Created from Diane's 2026-05-30 product direction, updated the same day to expand the shared refresh control into a save/sync/status action component, passed readiness review once, then returned to draft on 2026-05-30 to clarify that search and sync/save are separate shared components. Readiness was rerun on 2026-05-30. Implementation now includes shared search/status/toolbar components, Accueil feed provider/screen, `/home` routing, shell tab insertion, page-scoped searches across Voice/Clipboard/Snippets/Dictionary, Settings save/sync status feedback, focused tests, and local validation. `sf-verify` remains partial until Flutter web smoke is run on a deployed/allowed web surface.
 
 ## User Story
 
@@ -246,7 +246,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
 
 ## Implementation Tasks
 
-- [ ] Task 1: Define shared action status model
+- [x] Task 1: Define shared action status model
   - File: `lib/core/widgets/app_components.dart`
   - Action: Add a small status value object or enum for `idle`, `loading`, `saving`, `syncing`, `saved`, `synced`, `pending`, `localOnly`, `error`, `conflict` or equivalent, with icon/label/semantic mapping.
   - User story link: the user can see whether changes are saved, syncing, local-only or failing.
@@ -254,7 +254,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: widget/model tests for status-to-icon/label mapping.
   - Notes: Reuse meanings from `SyncStatus` and `CloudSyncOverview` without coupling the UI component to every provider type.
 
-- [ ] Task 2: Define shared search component contract
+- [x] Task 2: Define shared search component contract
   - File: `lib/core/widgets/app_components.dart`
   - Action: Add a reusable `AppSearchField` or equivalent with query value/controller support, placeholder, clear action, disabled state, optional scope label, semantics and onChanged callback.
   - User story link: consistent global and page-scoped search across pages.
@@ -262,7 +262,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: targeted widget test for search typing, clear button, disabled rendering, accessible label and narrow-width layout.
   - Notes: This component must not own refresh, save, sync or status semantics.
 
-- [ ] Task 2.1: Define shared sync/save status action component contract
+- [x] Task 2.1: Define shared sync/save status action component contract
   - File: `lib/core/widgets/app_components.dart`
   - Action: Add a reusable `AppSyncStatusAction` or equivalent with refresh/sync/save retry callback, busy state, saved/synced/local-only/error/conflict states, labels, tooltips and semantics.
   - User story link: trustworthy refresh, sync and save feedback across pages and Settings.
@@ -270,7 +270,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: targeted widget test for refresh callback, disabled/busy rendering, success icon, local-only state, error retry state and accessible labels.
   - Notes: This component must not own search query or filtering semantics.
 
-- [ ] Task 2.2: Define optional toolbar composition
+- [x] Task 2.2: Define optional toolbar composition
   - File: `lib/core/widgets/app_components.dart`
   - Action: Add a lightweight `AppPageToolbar` or equivalent that can compose `AppSearchField` and `AppSyncStatusAction` side by side when a page needs both.
   - User story link: consistent layout without coupling search to sync/save state.
@@ -278,7 +278,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: widget tests for search-only, sync-only and combined toolbar rendering.
   - Notes: The toolbar is layout-only; business logic remains owned by page state/providers.
 
-- [ ] Task 3: Add home feed domain/application model
+- [x] Task 3: Add home feed domain/application model
   - File: `lib/features/home/application/home_feed_provider.dart`
   - Action: Create a Riverpod provider/service that loads Voice, Clipboard, Snippets and Dictionary read-only, maps records into a shared feed item model, applies sorting/capping/filtering, and returns partial failure metadata.
   - User story link: global feed and global search across recent entries.
@@ -286,7 +286,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: provider/unit tests using in-memory stores and simulated store failures.
   - Notes: Do not add persistence or new remote reads beyond existing current-user/local-mode store list calls.
 
-- [ ] Task 4: Add home feed presentation
+- [x] Task 4: Add home feed presentation
   - File: `lib/features/home/presentation/home_screen.dart`
   - Action: Render the shared search component and shared sync/save component, composed by the optional toolbar if useful, plus feed summary, type filters if useful, mixed feed entries, partial-error banner, empty state, and source navigation actions.
   - User story link: default entry point with latest useful content.
@@ -294,7 +294,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: widget tests for empty feed, mixed feed, global search, partial failure, and source navigation callbacks.
   - Notes: The first implementation opens source pages, not item-detail deep links.
 
-- [ ] Task 5: Insert Accueil into shell navigation
+- [x] Task 5: Insert Accueil into shell navigation
   - File: `lib/features/shell/presentation/app_shell_screen.dart`
   - Action: Add Home as tab index 0, shift existing feature indices, update titles, rail destinations, bottom navigation, tab history, refresh/import behavior conditions, onboarding settings redirect, and page list.
   - User story link: home page is the first app screen and has access to all major workflows.
@@ -302,7 +302,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: AppShell widget tests for default tab, tab switching, back through tab history, onboarding overlay stack.
   - Notes: Voice and Clipboard import refresh hooks should still run when their tabs are selected; global home refresh can explicitly call the aggregator.
 
-- [ ] Task 6: Update protected routes for home and shifted indices
+- [x] Task 6: Update protected routes for home and shifted indices
   - File: `lib/core/router/app_router.dart`
   - Action: Add a protected `/home` route to `AppShellScreen(initialIndex: 0)` and shift `/voice`, `/clipboard`, `/snippets`, `/dictionary`, `/settings` initial indices to match the new shell order.
   - User story link: direct navigation remains coherent after adding Accueil.
@@ -310,7 +310,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: existing `app_router_auth_guard_test.dart` plus new route assertions for `/home` and shifted routes.
   - Notes: Keep `/` as auth gate unless implementation intentionally changes root redirect after sign-in via `AuthGateScreen`.
 
-- [ ] Task 7: Make AuthGate default to Accueil
+- [x] Task 7: Make AuthGate default to Accueil
   - File: `lib/features/auth/presentation/auth_gate_screen.dart`
   - Action: Ensure signed-in/local fallback users land on `AppShellScreen(initialIndex: 0)` where index 0 is Accueil.
   - User story link: first screen exposes global feed and search.
@@ -318,7 +318,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: widget test for authenticated/local fallback auth gate rendering the Accueil title or content.
   - Notes: This may remain `const AppShellScreen()` if Task 4 changes default index semantics.
 
-- [ ] Task 8: Migrate Clipboard search/refresh to shared action bar
+- [x] Task 8: Migrate Clipboard search/refresh to shared action bar
   - File: `lib/features/clipboard/presentation/clipboard_screen.dart`
   - Action: Replace the local standalone search field with the shared search component and the refresh action with the shared sync/save component while preserving current filtering logic, sensitive notice, pinned/sync metrics and import behavior.
   - User story link: page-scoped search with consistent controls.
@@ -326,7 +326,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: clipboard widget tests for scoped search, refresh/import message, empty search state.
   - Notes: Clipboard has the most mature current search; use it as the page-scoped behavior reference.
 
-- [ ] Task 9: Add shared scoped search to Voice
+- [x] Task 9: Add shared scoped search to Voice
   - File: `lib/features/voice/presentation/voice_screen.dart`
   - Action: Add query state and use the shared search component for search plus the shared sync/save component for refresh; filter transcription history by cleaned text, raw text, language and source labels.
   - User story link: same interaction model for voice history.
@@ -334,7 +334,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: voice widget tests for search matching, no-results state, refresh button, and unchanged overlay controls.
   - Notes: Keep overlay status refresh separate where it controls overlay-specific state.
 
-- [ ] Task 10: Add shared scoped search to Snippets
+- [x] Task 10: Add shared scoped search to Snippets
   - File: `lib/features/snippets/presentation/snippets_screen.dart`
   - Action: Add query state with the shared search component and use the shared sync/save component for refresh; filter snippets by trigger, label and content.
   - User story link: same interaction model for reusable text entries.
@@ -342,7 +342,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: snippets widget tests for search matching, no-results state, add/edit/delete still working.
   - Notes: Do not change snippet data model in this spec.
 
-- [ ] Task 11: Add shared scoped search to Dictionary
+- [x] Task 11: Add shared scoped search to Dictionary
   - File: `lib/features/dictionary/presentation/dictionary_screen.dart`
   - Action: Add query state with the shared search component and use the shared sync/save component for refresh; filter terms by term, replacement and case-sensitivity label.
   - User story link: same interaction model for correction entries.
@@ -350,7 +350,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: dictionary widget tests for search matching, no-results state, add/edit/delete still working.
   - Notes: Do not add usage tracking in this spec.
 
-- [ ] Task 12: Integrate shared save/sync status in Settings
+- [x] Task 12: Integrate shared save/sync status in Settings
   - File: `lib/features/settings/presentation/settings_screen.dart`
   - Action: Connect settings save operations, theme mode changes, keyboard preference saves, overlay preference changes, secrets save state where appropriate, and cloud overview refresh to the shared action/status component.
   - User story link: settings changes visibly move through saving/synced/local-only/error states.
@@ -358,7 +358,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: Settings widget tests for saving spinner, saved confirmation, local-only label, error state, and click-to-retry/refresh callback.
   - Notes: Do not hide existing detailed `_message` feedback; the shared component should summarize state while detailed copy remains available when needed.
 
-- [ ] Task 13: Map cloud/sync overview states to the shared status vocabulary
+- [x] Task 13: Map cloud/sync overview states to the shared status vocabulary
   - File: `lib/core/sync/cloud_sync_overview.dart`
   - Action: Add a helper or adapter if needed so `CloudSyncCategoryState` and `SyncStatus` can drive the shared status control without duplicating string/icon decisions in each screen.
   - User story link: sync feedback is consistent and trustworthy.
@@ -366,7 +366,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: focused unit tests for mapping `syncing`, `pending`, `synced`, `localOnly`, `failed`, `conflict`, `unavailable`.
   - Notes: Keep domain enums stable; prefer adapter/helper over changing persistence models.
 
-- [ ] Task 14: Update tests for new navigation and shared controls
+- [x] Task 14: Update tests for new navigation and shared controls
   - File: `test/widget_test.dart`
   - Action: Update AppShell expectations for Accueil as default, shifted tab order, shared search/refresh/status text, and affected page labels.
   - User story link: regression coverage for the new primary workflow.
@@ -374,7 +374,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: targeted `flutter test test/widget_test.dart`.
   - Notes: Split tests into dedicated files if `widget_test.dart` becomes too broad during implementation.
 
-- [ ] Task 15: Update router auth guard tests
+- [x] Task 15: Update router auth guard tests
   - File: `test/app_router_auth_guard_test.dart`
   - Action: Add `/home` coverage and update shifted route index assumptions if the test inspects shell behavior.
   - User story link: protected routing remains coherent.
@@ -382,7 +382,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: `flutter test test/app_router_auth_guard_test.dart`.
   - Notes: Keep auth behavior unchanged.
 
-- [ ] Task 16: Add feed provider tests
+- [x] Task 16: Add feed provider tests
   - File: `test/home_feed_provider_test.dart`
   - Action: Cover mixed aggregation, sort order, cap behavior, global filtering, partial failures, empty feed, and exclusion of deleted/unavailable records if stores expose them.
   - User story link: reliable global feed and search behavior.
@@ -390,7 +390,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: `flutter test test/home_feed_provider_test.dart`.
   - Notes: Use in-memory/fake stores rather than Firebase.
 
-- [ ] Task 17: Add shared status component tests
+- [x] Task 17: Add shared status component tests
   - File: `test/app_page_action_bar_test.dart`
   - Action: Cover shared search component, shared sync/save component, optional toolbar composition, loading/saving spinner, saved/synced check icon, pending/local-only messaging, error icon/message, disabled state, click-to-retry, and accessible labels.
   - User story link: trustworthy save/sync feedback.
@@ -398,7 +398,7 @@ Manual checklist path if needed: `shipflow_data/workflow/test-checklists/app-hom
   - Validate with: `flutter test test/app_page_action_bar_test.dart`.
   - Notes: Include narrow-width layout coverage so status text/icons do not overflow.
 
-- [ ] Task 18: Align internal docs or checklist if needed
+- [x] Task 18: Align internal docs or checklist if needed
   - File: `shipflow_data/technical/code-docs-map.md`
   - Action: Update route/screen map if it names the shell tabs or feature entrypoints; otherwise document no docs change in the implementation report.
   - User story link: future agents can find the new home/feed architecture.
@@ -492,14 +492,17 @@ None blocking for the initial spec. Additional ideas are welcome before `/sf-rea
 | 2026-05-30 07:31:17 UTC | sf-ready | GPT-5 Codex | Reran readiness after component-separation clarification and confirmed the search, sync/save, and optional toolbar contracts are unambiguous | ready | `/sf-start shipflow_data/workflow/specs/app-home-feed-global-actions-search.md` |
 | 2026-05-30 15:30:49 UTC | sf-start | GPT-5 Codex with attempted GPT-5.3 Codex Spark worker | Added shared search/status/toolbar components, Accueil feed provider/screen, `/home` route, shifted shell navigation, and focused tests; scoped page search and Settings sync/save integration remain | partial | `/sf-start shipflow_data/workflow/specs/app-home-feed-global-actions-search.md` |
 | 2026-05-30 15:34:00 UTC | sf-verify | GPT-5 Codex | Verified current implementation slice and checks; full spec is not ship-ready because scoped page search migration and Settings sync/save integration remain incomplete | not verified | `/sf-start shipflow_data/workflow/specs/app-home-feed-global-actions-search.md` |
+| 2026-05-30 16:34:31 UTC | sf-start | GPT-5 Codex + GPT-5.3 Codex Spark worker | Completed page-scoped search migration, shared refresh/status controls, Settings save/sync status, docs alignment, and local checks | implemented | `/sf-verify shipflow_data/workflow/specs/app-home-feed-global-actions-search.md` |
+| 2026-05-30 16:34:31 UTC | sf-verify | GPT-5 Codex | Verified local implementation with `flutter analyze`, `flutter test`, focused page/settings tests, and metadata lint; Flutter web smoke remains required before clean ship readiness | partial | `/sf-ship shipflow_data/workflow/specs/app-home-feed-global-actions-search.md` |
+| 2026-05-30 16:40:37 UTC | sf-ship | GPT-5 Codex | Prepared targeted ship for the WinFlowz app home feed and shared action/status chantier, excluding unrelated site changes | shipped | `/sf-prod winflowz-app` |
 
 ## Current Chantier Flow
 
 sf-spec: done
 sf-ready: ready
-sf-start: partial
-sf-verify: not verified
+sf-start: implemented
+sf-verify: partial
 sf-end: not launched
-sf-ship: not launched
+sf-ship: shipped
 
-Next command: `/sf-start shipflow_data/workflow/specs/app-home-feed-global-actions-search.md`
+Next command: `/sf-prod winflowz-app`
