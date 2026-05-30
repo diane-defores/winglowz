@@ -15,10 +15,12 @@ import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../clipboard/presentation/clipboard_screen.dart';
 import '../../dictionary/presentation/dictionary_screen.dart';
 import '../../keyboard/domain/keyboard_models.dart';
+import '../../home/application/home_feed_provider.dart';
 import '../../settings/application/settings_store_provider.dart';
 import '../../settings/domain/onboarding_permission_contract.dart';
 import '../../settings/domain/settings_store.dart';
 import '../../settings/presentation/settings_screen.dart';
+import '../../home/presentation/home_screen.dart';
 import '../../snippets/presentation/snippets_screen.dart';
 import '../../voice/application/transcription_store_provider.dart';
 import '../../voice/domain/transcription_draft.dart';
@@ -40,6 +42,13 @@ class AppShellScreen extends ConsumerStatefulWidget {
 
 class _AppShellScreenState extends ConsumerState<AppShellScreen>
     with WidgetsBindingObserver {
+  static const int _homeTabIndex = 0;
+  static const int _voiceTabIndex = 1;
+  static const int _clipboardTabIndex = 2;
+  static const int _snippetTabIndex = 3;
+  static const int _dictionaryTabIndex = 4;
+  static const int _settingsTabIndex = 5;
+
   static const _unsupportedOverlayStatus = AndroidOverlayStatus(
     enabled: false,
     requestedEnabled: false,
@@ -73,15 +82,16 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
 
   void _selectTab(int value) {
     if (value == _index) {
-      if (value == 0) {
+      if (value == _voiceTabIndex) {
         _scheduleKeyboardVoiceSync(notifyVoice: true);
       }
-      if (value == 1) {
+      if (value == _clipboardTabIndex) {
         _scheduleKeyboardClipboardSync(notifyClipboard: true);
       }
       return;
     }
     const titles = [
+      'Accueil',
       'Voix',
       'Presse-papiers',
       'Snippets',
@@ -97,10 +107,10 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       _tabHistory.remove(value);
       _tabHistory.add(value);
     });
-    if (value == 0) {
+    if (value == _voiceTabIndex) {
       _scheduleKeyboardVoiceSync(notifyVoice: true);
     }
-    if (value == 1) {
+    if (value == _clipboardTabIndex) {
       _scheduleKeyboardClipboardSync(notifyClipboard: true);
     }
   }
@@ -118,7 +128,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   @override
   void initState() {
     super.initState();
-    _index = widget.initialIndex.clamp(0, 4);
+    _index = widget.initialIndex.clamp(_homeTabIndex, _settingsTabIndex);
     _tabHistory
       ..clear()
       ..add(_index);
@@ -139,8 +149,10 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _refreshOnboardingState();
-      _scheduleKeyboardVoiceSync(notifyVoice: _index == 0);
-      _scheduleKeyboardClipboardSync(notifyClipboard: _index == 1);
+      _scheduleKeyboardVoiceSync(notifyVoice: _index == _voiceTabIndex);
+      _scheduleKeyboardClipboardSync(
+        notifyClipboard: _index == _clipboardTabIndex,
+      );
     }
   }
 
@@ -190,7 +202,9 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       AppDiagnostics.record('keyboard_voice_auto_import_error', error);
     } finally {
       final shouldNotify =
-          mounted && _index == 0 && (_notifyVoiceAfterImport || imported > 0);
+          mounted &&
+          _index == _voiceTabIndex &&
+          (_notifyVoiceAfterImport || imported > 0);
       _notifyVoiceAfterImport = false;
       _voiceImportBusy = false;
       if (shouldNotify) {
@@ -241,7 +255,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     } finally {
       final shouldNotify =
           mounted &&
-          _index == 1 &&
+          _index == _clipboardTabIndex &&
           (_notifyClipboardAfterImport || importedWork);
       _notifyClipboardAfterImport = false;
       _clipboardImportBusy = false;
@@ -654,7 +668,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     if (!mounted) {
       return;
     }
-    _selectTab(4);
+    _selectTab(_settingsTabIndex);
   }
 
   void _startWelcomeGuide() {
@@ -669,7 +683,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       setState(() => _onboardingVisible = true);
       _refreshOnboardingState();
     } else {
-      _selectTab(4);
+      _selectTab(_settingsTabIndex);
     }
   }
 
@@ -686,7 +700,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       _showOnboardingResumeHint = true;
       _onboardingDeferPromptVisible = false;
     });
-    _selectTab(4);
+    _selectTab(_settingsTabIndex);
     Future<void>.delayed(const Duration(milliseconds: 2200), () {
       if (mounted) {
         setState(() => _showOnboardingResumeHint = false);
@@ -694,9 +708,20 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     });
   }
 
+  void _openHomeSource(HomeFeedSourceType sourceType) {
+    final target = switch (sourceType) {
+      HomeFeedSourceType.voice => _voiceTabIndex,
+      HomeFeedSourceType.clipboard => _clipboardTabIndex,
+      HomeFeedSourceType.snippet => _snippetTabIndex,
+      HomeFeedSourceType.dictionary => _dictionaryTabIndex,
+    };
+    _selectTab(target);
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = [
+      HomeScreen(onOpenSource: _openHomeSource),
       VoiceScreen(),
       ClipboardScreen(),
       SnippetsScreen(),
@@ -715,6 +740,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       ),
     ];
     const titles = [
+      'Accueil',
       'Voix',
       'Presse-papiers',
       'Snippets',
@@ -763,6 +789,10 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                         selectedIndex: _index,
                         onDestinationSelected: _selectTab,
                         destinations: const [
+                          NavigationRailDestination(
+                            icon: Icon(Icons.home_outlined),
+                            label: Text('Accueil'),
+                          ),
                           NavigationRailDestination(
                             icon: Icon(Icons.keyboard_voice_outlined),
                             label: Text('Voix'),
@@ -864,6 +894,11 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                     selectedIndex: _index,
                     onDestinationSelected: _selectTab,
                     destinations: const [
+                      NavigationDestination(
+                        icon: Icon(Icons.home_outlined),
+                        selectedIcon: Icon(Icons.home),
+                        label: 'Accueil',
+                      ),
                       NavigationDestination(
                         icon: Icon(Icons.keyboard_voice_outlined),
                         selectedIcon: Icon(Icons.keyboard_voice),

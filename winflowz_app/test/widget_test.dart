@@ -649,12 +649,12 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(_appShellTestWidget());
-    await tester.pump();
+    await _pumpNavigationFrame(tester);
 
     expect(find.text('Start here'), findsNothing);
     expect(find.textContaining('Missing Supabase config'), findsNothing);
     expect(find.textContaining('Cloud sync is disabled'), findsNothing);
-    expect(find.text('Capture automatique'), findsOneWidget);
+    expect(find.text('WinFlowz • Accueil'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.text_snippet_outlined).last);
     await _pumpNavigationFrame(tester);
@@ -666,12 +666,17 @@ void main() {
     await _pumpNavigationFrame(tester);
 
     expect(handled, isTrue);
-    expect(find.text('WinFlowz • Voix'), findsOneWidget);
+    expect(find.text('WinFlowz • Accueil'), findsOneWidget);
   });
 
   testWidgets('new account welcome guide is shown once in app shell', (
     tester,
   ) async {
+    _useLargeViewport(tester);
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -693,7 +698,7 @@ void main() {
     expect(find.textContaining('Ton compte est prêt.'), findsOneWidget);
 
     await tester.tap(find.widgetWithText(OutlinedButton, 'Commencer'));
-    await tester.pumpAndSettle();
+    await _pumpNavigationFrame(tester);
 
     expect(find.text('Bienvenue dans WinFlowz'), findsNothing);
   });
@@ -709,7 +714,7 @@ void main() {
       await tester.pumpWidget(_appShellTestWidget());
       await _pumpNavigationFrame(tester);
 
-      expect(find.text('Capture automatique'), findsOneWidget);
+      expect(find.text('WinFlowz • Accueil'), findsOneWidget);
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
       await tester.tap(find.widgetWithText(OutlinedButton, 'Plus tard').last);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
@@ -1180,7 +1185,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
       expect(find.text('Configuration WinFlowz'), findsNothing);
-      expect(find.text('WinFlowz • Voix'), findsOneWidget);
+      expect(find.text('WinFlowz • Accueil'), findsOneWidget);
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();
@@ -1210,9 +1215,8 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
     }
 
-    expect(find.text('WinFlowz • Voix'), findsOneWidget);
-    expect(find.text('Capture automatique'), findsOneWidget);
-    expect(find.text('Rafraîchir l’historique'), findsOneWidget);
+    expect(find.text('WinFlowz • Accueil'), findsOneWidget);
+    expect(find.textContaining('Ton fil global'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.content_paste_outlined).last);
     await _pumpNavigationFrame(tester);

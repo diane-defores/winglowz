@@ -1674,7 +1674,7 @@ Color _reliefShadowColor(Color base, KeyboardThemeConfig theme) {
     dark,
     theme,
     boost: _keyboardBorderOpacityBoost,
-  ).withValues(alpha: 0.5);
+  ).withValues(alpha: 0.30);
 }
 
 Color _reliefHighlightColor(Color base, KeyboardThemeConfig theme) {
@@ -1687,7 +1687,7 @@ Color _reliefHighlightColor(Color base, KeyboardThemeConfig theme) {
     light,
     theme,
     boost: _keyboardBorderOpacityBoost,
-  ).withValues(alpha: 0.42);
+  ).withValues(alpha: 0.24);
 }
 
 Color _lightenThemeColor(Color color, double amount) {
@@ -1808,12 +1808,13 @@ List<BoxShadow>? _previewKeyShadows({
     shadows.addAll([
       BoxShadow(
         color: reliefShadowColor,
-        blurRadius: 0,
-        offset: Offset(0, pressed ? 0.5 : reliefDepth),
+        blurRadius: math.max(1.2, reliefDepth * 0.75),
+        spreadRadius: -0.25,
+        offset: Offset(0, pressed ? 0.35 : reliefDepth * 0.72),
       ),
       BoxShadow(
         color: reliefHighlightColor,
-        blurRadius: 0,
+        blurRadius: 0.5,
         offset: const Offset(0, -0.75),
       ),
     ]);

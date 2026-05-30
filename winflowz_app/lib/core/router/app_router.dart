@@ -30,20 +30,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const AuthGateScreen(),
       ),
       GoRoute(
+        path: '/home',
+        name: 'home',
+        builder: (context, state) => const AppShellScreen(initialIndex: 0),
+      ),
+      GoRoute(
         path: '/voice',
         name: 'voice',
-        builder: (context, state) => const AppShellScreen(initialIndex: 0),
+        builder: (context, state) => const AppShellScreen(initialIndex: 1),
       ),
       GoRoute(
         path: '/clipboard',
         name: 'clipboard',
-        builder: (context, state) => const AppShellScreen(initialIndex: 1),
+        builder: (context, state) => const AppShellScreen(initialIndex: 2),
       ),
       GoRoute(
         path: '/settings',
         name: 'settings',
         builder: (context, state) => AppShellScreen(
-          initialIndex: 4,
+          initialIndex: 5,
           initialOnboardingStep: state.uri.queryParameters['onboarding'],
         ),
       ),
@@ -55,12 +60,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/snippets',
         name: 'snippets',
-        builder: (context, state) => const AppShellScreen(initialIndex: 2),
+        builder: (context, state) => const AppShellScreen(initialIndex: 3),
       ),
       GoRoute(
         path: '/dictionary',
         name: 'dictionary',
-        builder: (context, state) => const AppShellScreen(initialIndex: 3),
+        builder: (context, state) => const AppShellScreen(initialIndex: 4),
       ),
     ],
   );

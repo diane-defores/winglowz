@@ -3135,9 +3135,12 @@ class WinFlowzKeyboardView(
         }
         if (!hideInactiveLongPressSwipeSurface) {
             drawMaterialPressBackdrop(canvas, drawRect, drawRadius, materialEffect, materialProgress)
+            if (reliefDepth > 0f) {
+                drawKeyReliefSides(canvas, drawRect, drawRadius, paint.color, pressed, reliefDepth)
+            }
             canvas.drawRoundRect(drawRect, drawRadius, drawRadius, paint)
             if (reliefDepth > 0f) {
-                drawKeyRelief(canvas, drawRect, drawRadius, paint.color, pressed)
+                drawKeyReliefSurface(canvas, drawRect, drawRadius, paint.color, pressed)
             }
             drawMaterialPressSurface(canvas, drawRect, drawRadius, paint.color, materialEffect, materialProgress)
             if (!fieldPolicy.privateMode && keyBorderPaint.strokeWidth > 0f && Color.alpha(keyBorderPaint.color) > 0) {
@@ -3419,41 +3422,95 @@ class WinFlowzKeyboardView(
         return 1f - inverse * inverse * inverse
     }
 
-    private fun drawKeyRelief(
+    private fun drawKeyReliefSides(
+        canvas: Canvas,
+        rect: RectF,
+        radius: Float,
+        baseColor: Int,
+        pressed: Boolean,
+        depth: Float,
+    ) {
+        val sideDepth = if (pressed) depth * 0.18f else depth
+        if (sideDepth <= 0.35f) return
+        keyReliefDarkPaint.style = Paint.Style.FILL
+        keyReliefDarkPaint.shader = null
+
+        val bottomAlpha = if (pressed) 0.08f else 0.22f
+        keyReliefDarkPaint.color = colorWithOpacity(adjustColor(baseColor, 0.52f), bottomAlpha)
+        keyEffectPath.reset()
+        val leftInset = min(radius * 0.55f, rect.width() * 0.22f)
+        val rightInset = min(radius * 0.45f, rect.width() * 0.22f)
+        val lowerCorner = min(sideDepth * 0.72f, radius * 0.28f)
+        keyEffectPath.moveTo(rect.left + leftInset, rect.bottom)
+        keyEffectPath.lineTo(rect.right - rightInset, rect.bottom)
+        keyEffectPath.quadTo(
+            rect.right - lowerCorner,
+            rect.bottom + sideDepth * 0.22f,
+            rect.right - lowerCorner * 1.35f,
+            rect.bottom + sideDepth,
+        )
+        keyEffectPath.lineTo(rect.left + lowerCorner * 1.35f, rect.bottom + sideDepth)
+        keyEffectPath.quadTo(
+            rect.left + lowerCorner,
+            rect.bottom + sideDepth * 0.22f,
+            rect.left + leftInset,
+            rect.bottom,
+        )
+        keyEffectPath.close()
+        canvas.drawPath(keyEffectPath, keyReliefDarkPaint)
+
+        val rightAlpha = if (pressed) 0.055f else 0.15f
+        keyReliefDarkPaint.color = colorWithOpacity(adjustColor(baseColor, 0.62f), rightAlpha)
+        keyEffectPath.reset()
+        val sideWidth = min(sideDepth * 0.42f, dp(2.2f))
+        val rightTop = rect.top + min(radius * 0.58f, rect.height() * 0.42f)
+        val rightBottom = rect.bottom - min(radius * 0.42f, rect.height() * 0.34f)
+        keyEffectPath.moveTo(rect.right, rightTop)
+        keyEffectPath.lineTo(rect.right + sideWidth, rightTop + sideDepth * 0.24f)
+        keyEffectPath.lineTo(rect.right + sideWidth, rightBottom + sideDepth * 0.82f)
+        keyEffectPath.lineTo(rect.right - lowerCorner * 0.35f, rect.bottom + sideDepth)
+        keyEffectPath.quadTo(rect.right, rightBottom, rect.right, rightTop)
+        keyEffectPath.close()
+        canvas.drawPath(keyEffectPath, keyReliefDarkPaint)
+    }
+
+    private fun drawKeyReliefSurface(
         canvas: Canvas,
         rect: RectF,
         radius: Float,
         baseColor: Int,
         pressed: Boolean,
     ) {
-        val depth = dp(themeConfig.keyReliefDepth).coerceIn(0f, dp(6f))
-        if (depth <= 0f) return
-        keyReliefDarkPaint.strokeWidth = max(dp(1f), depth)
-        keyReliefLightPaint.strokeWidth = max(dp(0.75f), depth * 0.55f)
-        keyReliefDarkPaint.color = keyboardLayerColor(adjustColor(baseColor, 0.72f), KEYBOARD_BORDER_OPACITY_BOOST)
-        keyReliefLightPaint.color = keyboardLayerColor(adjustColor(baseColor, 1.18f), KEYBOARD_BORDER_OPACITY_BOOST)
-        val darkInset = keyReliefDarkPaint.strokeWidth / 2f
+        keyReliefLightPaint.shader = null
+        keyReliefLightPaint.style = Paint.Style.STROKE
+        keyReliefLightPaint.strokeWidth = dp(0.75f)
+        keyReliefLightPaint.color =
+            colorWithOpacity(
+                adjustColor(baseColor, 1.20f),
+                if (pressed) 0.06f else 0.13f,
+            )
+        val lightInset = keyReliefLightPaint.strokeWidth / 2f
         scrollVisualRect.set(rect)
-        scrollVisualRect.inset(darkInset, darkInset)
-        val darkRadius = (radius - darkInset).coerceAtLeast(0f)
-        val save = canvas.save()
-        canvas.clipRect(
-            rect.left,
-            rect.centerY() - if (pressed) depth * 0.15f else 0f,
-            rect.right,
-            rect.bottom + depth,
-        )
-        canvas.drawRoundRect(scrollVisualRect, darkRadius, darkRadius, keyReliefDarkPaint)
-        canvas.restoreToCount(save)
-        if (!pressed) {
-            val lightInset = keyReliefLightPaint.strokeWidth / 2f
+        scrollVisualRect.inset(lightInset, lightInset)
+        val lightRadius = (radius - lightInset).coerceAtLeast(0f)
+        val lightSave = canvas.save()
+        canvas.clipRect(rect.left, rect.top, rect.right, rect.top + rect.height() * 0.42f)
+        canvas.drawRoundRect(scrollVisualRect, lightRadius, lightRadius, keyReliefLightPaint)
+        canvas.restoreToCount(lightSave)
+
+        if (pressed) {
+            keyReliefDarkPaint.shader = null
+            keyReliefDarkPaint.style = Paint.Style.STROKE
+            keyReliefDarkPaint.strokeWidth = dp(0.8f)
+            keyReliefDarkPaint.color = colorWithOpacity(adjustColor(baseColor, 0.62f), 0.07f)
+            val darkInset = keyReliefDarkPaint.strokeWidth / 2f
             scrollVisualRect.set(rect)
-            scrollVisualRect.inset(lightInset, lightInset)
-            val lightRadius = (radius - lightInset).coerceAtLeast(0f)
-            val lightSave = canvas.save()
-            canvas.clipRect(rect.left, rect.top - depth, rect.right, rect.centerY())
-            canvas.drawRoundRect(scrollVisualRect, lightRadius, lightRadius, keyReliefLightPaint)
-            canvas.restoreToCount(lightSave)
+            scrollVisualRect.inset(darkInset, darkInset)
+            val darkRadius = (radius - darkInset).coerceAtLeast(0f)
+            val darkSave = canvas.save()
+            canvas.clipRect(rect.left, rect.top, rect.right, rect.top + rect.height() * 0.48f)
+            canvas.drawRoundRect(scrollVisualRect, darkRadius, darkRadius, keyReliefDarkPaint)
+            canvas.restoreToCount(darkSave)
         }
     }
 

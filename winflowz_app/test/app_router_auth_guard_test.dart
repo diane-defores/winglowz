@@ -8,6 +8,7 @@ import 'package:winflowz_app/features/auth/application/auth_session_provider.dar
 import 'package:winflowz_app/features/auth/domain/auth_session_store.dart';
 
 const _productRoutes = {
+  '/home': 'WinFlowz • Accueil',
   '/voice': 'WinFlowz • Voix',
   '/clipboard': 'WinFlowz • Presse-papiers',
   '/snippets': 'WinFlowz • Snippets',
