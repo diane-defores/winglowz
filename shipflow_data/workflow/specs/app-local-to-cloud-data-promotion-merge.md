@@ -470,6 +470,7 @@ Resolved decisions:
 - 2026-05-30 20:50 UTC - `sf-spec` - Integrated Diane's decisions for account seeding, voice durability, clipboard tombstones, clipboard retention, conflict surface, account association explanation and physical-device QA; kept secret-value sync as a security blocker requiring either V1 exclusion or separate encrypted vault spec.
 - 2026-05-30 20:55 UTC - `sf-ready` - Marked ready after Diane confirmed secrets are excluded from V1 and future secret sync requires a separate encrypted vault / secret backup spec.
 - 2026-05-30 21:10 UTC - `sf-build` - Implemented the local-cloud sync foundation: domain models, metadata and queue stores, controller decisions, concrete adapter bridge/provider, clipboard snapshot support, and controller tests for seed, confirmation, hydrate, merge, conflict, latest-wins guard, account replay blocking, local-only voice, and metadata persistence. `flutter analyze` and `flutter test` passed. Physical-device QA remains required before closure.
+- 2026-05-31 01:48 UTC - `sf-docs` - Added reusable local-cloud sync playbook and Flutter-specific implementation guide, then mapped `lib/features/sync/**` and sync specs/checklists in the WinFlowz app code-docs map.
 
 # Current Chantier Flow
 

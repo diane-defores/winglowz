@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-05-04"
-updated: "2026-05-25"
+updated: "2026-05-31"
 status: draft
 source_skill: sf-docs
 scope: "code-docs-map"
@@ -24,6 +24,7 @@ evidence:
   - "Bootstrapped before Android IME implementation."
   - "Updated Android native validation mapping for local VM guardrails and Blacksmith proof."
   - "Updated for keyboard account-sync panel and backup service V1."
+  - "Updated for local-cloud sync playbook and Flutter sync implementation guide."
 next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
@@ -34,6 +35,8 @@ next_step: "/sf-docs technical audit"
 | --- | --- | --- | --- | --- |
 | `lib/**` | Flutter app | `docs/technical/flutter-app.md` | `flutter analyze`; `flutter test` | Platform bridge contract, Settings UI, repository, domain model, or feature behavior changes |
 | `lib/features/clipboard/application/**`, `lib/features/clipboard/domain/**`, `lib/features/clipboard/data/**` | Clipboard product API and stores | `docs/technical/flutter-app.md` | `flutter analyze`; `flutter test test/clipboard_domain_test.dart test/clipboard_history_api_test.dart test/in_memory_clipboard_history_store_test.dart test/persistent_clipboard_history_store_test.dart` | Clipboard product contract, persistent local store, sensitivity, dedupe, source, sync state, or backend-agnostic API changes |
+| `lib/features/sync/**`, `lib/features/*/application/*store_provider.dart`, `lib/features/*/data/firebase_*_store.dart`, `lib/features/*/data/*memory*_store.dart`, `lib/features/*/data/persistent_*_store.dart` | Local-cloud data promotion and merge | `shipflow_data/technical/winflowz_app/flutter-local-cloud-sync.md` | `dart analyze lib/features/sync test/local_cloud_sync_controller_test.dart`; `flutter test test/local_cloud_sync_controller_test.dart`; `flutter analyze`; `flutter test` | Local-to-cloud promotion, local durability, Firebase adapter, account association, conflict, tombstone, secret exclusion, or sync status behavior changes |
+| `shipflow_data/workflow/specs/*sync*.md`, `shipflow_data/workflow/verification/*sync*.md` | Local-cloud sync doctrine and proof | `shipflow_data/technical/winflowz_app/local-cloud-sync-playbook.md` | `python3 /home/claude/shipflow/tools/shipflow_metadata_lint.py <changed-artifacts>` | Sync spec readiness, proof contract, reinstall/relogin QA, secrets policy, or conflict-resolution doctrine changes |
 | `lib/data/supabase/**` | Supabase provider adapters | `docs/technical/supabase-data.md` | `flutter test test/supabase_clipboard_store_test.dart`; Supabase smoke tests when DB is available | Provider payloads, table mapping, RLS-sensitive metadata, or adapter contract changes |
 | `.github/workflows/**`, `firebase.json`, `firestore.rules`, `firestore.indexes.json` | Firebase CI deploy and Firestore config | `docs/technical/firebase-cli-foundation.md`; `docs/technical/firebase-oidc-ci-playbook.md` | Trigger GitHub workflow; verify `Deploy Firestore Rules and Indexes` job; optional local `firebase deploy --only firestore --project <id>` | OIDC/WIF auth, Firebase deploy command, CI secrets, IAM assumptions, rules/indexes, or Firestore API enablement changes |
 | `android/app/src/main/**` | Android native | `docs/technical/android-native.md` | `flutter analyze` locally; Blacksmith/GitHub Actions for Android compile/package proof | Manifest/service/permission, MethodChannel, overlay, IME, media, clipboard, accessibility, layout geometry, or lifecycle changes |
