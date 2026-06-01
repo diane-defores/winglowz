@@ -484,20 +484,15 @@ class _SecretsSection extends StatelessWidget {
             onPressed: onRetrySync,
           ),
           AppGaps.x4,
-          Row(
+          AppActionRail(
             children: [
-              Expanded(
-                child: FilledButton(
-                  onPressed: saving ? null : onSave,
-                  child: const Text('Enregistrer les clés locales'),
-                ),
+              FilledButton(
+                onPressed: saving ? null : onSave,
+                child: const Text('Enregistrer les clés locales'),
               ),
-              AppGaps.horizontalX3,
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: saving ? null : onSignOut,
-                  child: const Text('Se déconnecter'),
-                ),
+              OutlinedButton(
+                onPressed: saving ? null : onSignOut,
+                child: const Text('Se déconnecter'),
               ),
             ],
           ),
@@ -1778,49 +1773,40 @@ class _OverlaySettingsSection extends StatelessWidget {
           ),
           Padding(
             padding: AppInsets.keyboardPrivacy,
-            child: Row(
+            child: AppActionRail(
+              spacing: AppSpacing.x1,
+              minActionWidth: 230,
               children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onOpenOverlaySettings,
-                    icon: const Icon(Icons.open_in_new),
-                    label: const Text('Permission overlay'),
-                  ),
+                OutlinedButton.icon(
+                  onPressed: onOpenOverlaySettings,
+                  icon: const Icon(Icons.open_in_new),
+                  label: const Text('Permission overlay'),
                 ),
-                AppGaps.horizontalX2,
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onOpenAccessibilitySettings,
-                    icon: const Icon(Icons.accessibility_new),
-                    label: const Text('Paramètres d’accessibilité'),
-                  ),
+                OutlinedButton.icon(
+                  onPressed: onOpenAccessibilitySettings,
+                  icon: const Icon(Icons.accessibility_new),
+                  label: const Text('Paramètres d’accessibilité'),
                 ),
               ],
             ),
           ),
           Padding(
             padding: AppInsets.overlayControls,
-            child: Row(
+            child: AppActionRail(
+              spacing: AppSpacing.x1,
+              minActionWidth: 130,
               children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: busy ? null : onStart,
-                    child: const Text('Démarrer'),
-                  ),
+                FilledButton(
+                  onPressed: busy ? null : onStart,
+                  child: const Text('Démarrer'),
                 ),
-                AppGaps.horizontalX2,
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: busy ? null : onStop,
-                    child: const Text('Arrêter'),
-                  ),
+                OutlinedButton(
+                  onPressed: busy ? null : onStop,
+                  child: const Text('Arrêter'),
                 ),
-                AppGaps.horizontalX2,
-                Expanded(
-                  child: TextButton(
-                    onPressed: busy ? null : onCancel,
-                    child: const Text('Annuler'),
-                  ),
+                TextButton(
+                  onPressed: busy ? null : onCancel,
+                  child: const Text('Annuler'),
                 ),
               ],
             ),

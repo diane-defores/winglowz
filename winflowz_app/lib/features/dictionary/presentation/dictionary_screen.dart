@@ -298,15 +298,36 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
-                controller: _termController,
-                decoration: const InputDecoration(labelText: 'Terme'),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final useColumn = constraints.maxWidth < 560;
+                  final termField = TextField(
+                    controller: _termController,
+                    decoration: const InputDecoration(labelText: 'Terme'),
+                  );
+                  final replacementField = TextField(
+                    controller: _replacementController,
+                    decoration: const InputDecoration(
+                      labelText: 'Remplacement',
+                    ),
+                  );
+                  if (useColumn) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [termField, AppGaps.x2, replacementField],
+                    );
+                  }
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: termField),
+                      AppGaps.horizontalX2,
+                      Expanded(child: replacementField),
+                    ],
+                  );
+                },
               ),
               AppGaps.x2,
-              TextField(
-                controller: _replacementController,
-                decoration: const InputDecoration(labelText: 'Remplacement'),
-              ),
               SwitchListTile(
                 contentPadding: AppInsets.none,
                 value: _caseSensitive,
@@ -329,7 +350,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
           ),
         if (_message != null)
           Padding(padding: AppInsets.message, child: Text(_message!)),
-        AppGaps.x4,
+        AppGaps.x3,
         const AppEntityListHeader(title: 'Termes du dictionnaire'),
         AppGaps.x2,
         AppPageToolbar(

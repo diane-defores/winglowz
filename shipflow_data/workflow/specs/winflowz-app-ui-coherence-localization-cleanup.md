@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-05-28"
 created_at: "2026-05-28 19:36:12 UTC"
-updated: "2026-05-29"
-updated_at: "2026-05-29 23:58:11 UTC"
+updated: "2026-06-01"
+updated_at: "2026-06-01 20:54:06 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -51,7 +51,7 @@ evidence:
   - "sf-audit-design 2026-05-28 found token provenance drift from TubeFlow references in lib/core/theme/tubeflow_site_theme_tokens.dart:3 and Settings copy claiming WinFlowz/Flowz tokens in lib/features/settings/presentation/settings_screen_sections.dart:127."
   - "sf-audit-design 2026-05-28 found Settings IA overload across account, appearance, backend diagnostics, local AI keys, platform status, keyboard, overlay, and voice packs."
   - "sf-audit-design 2026-05-28 found bare empty states in shared AppEmptyStateCard and CRUD screens."
-next_step: "/sf-start shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md"
+next_step: "/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md"
 ---
 
 # Title
@@ -325,6 +325,9 @@ None.
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
+| 2026-06-01 20:54:06 UTC | sf-build | gpt-5.3-codex subagent + Codex integration | Closed the remaining UI-coherence implementation slice for token provenance and density on Voice, Clipboard, Snippets, and Dictionary: clarified TubeFlow seed naming as historical while mapping semantics to WinFlowz, reduced excess vertical/card spacing, added responsive two-column form grouping where width allows, and reused `AppActionRail` for compact action groups. Local proof: `flutter analyze`, targeted UI/domain tests, full `flutter test`, and `git diff --check` passed. | implemented | /sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
+| 2026-06-01 20:43:47 UTC | sf-verify | GPT-5 Codex | Verified the density slice against the spec contract: reviewed shared UI diff, added missing component documentation for `AppActionRail`/48dp baseline, reran `flutter analyze`, targeted toolbar/search widget tests, full `flutter test`, diff whitespace check, and metadata lint. Hosted Vercel smoke remains deferred until ship/prod because the current patch is unshipped and no APK handoff is requested. | verified | /sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
+| 2026-06-01 09:34:33 UTC | sf-start | gpt-5.3-codex-spark subagent + Codex integration | Implemented a density slice: tightened shared screen/card/button spacing, raised common button targets to 48dp, added responsive `AppActionRail`, reduced Home card nesting, and compacted Settings action groups. Local proof: `flutter analyze`, `flutter test test/app_page_action_bar_test.dart test/page_scoped_search_test.dart`, and full `flutter test` passed. | implemented | /sf-verify shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-05-29 23:58:11 UTC | sf-build | gpt-5-codex | Harmonized French-facing copy in shell navigation, voice screen, and keyboard theme studio; updated affected widget/router tests. Local proof: `flutter analyze`, `flutter test test/keyboard_theme_studio_screen_test.dart test/app_router_auth_guard_test.dart`, and targeted `test/widget_test.dart` onboarding/navigation cases passed. | implemented | Review bounded diff; ship only with an explicit clean scope because another governance spec is already dirty. |
 | 2026-05-28 21:10:13 UTC | sf-start | gpt-5.4-mini | Reordered Settings IA (account/appearance/keyboard/onboarding primary first, backend/keys/platform/overlay advanced collapsed defaults kept) and prepared for Settings disclosure verification. | implemented | /sf-verify shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-05-28 21:27:43 UTC | sf-verify | gpt-5.4-mini | Re-ran targeted widget verification and local analyze after previous wording adjustment: 2/2 tests passed; local analyze clean; Flutter test lock issue resolved by re-running from project root. | partial | /sf-verify shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
@@ -342,7 +345,7 @@ None.
 |------|--------|----------|------|
 | sf-spec | complete | This spec created on 2026-05-28. | Run `/sf-ready shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
 | sf-ready | ready | Repaired spec passed readiness on 2026-05-28. | Start implementation. |
-| sf-start | complete | Localization continuation implemented for app shell navigation, voice copy, keyboard theme studio copy, and affected tests. | Local verification complete for this slice. |
-| sf-verify | complete | `flutter analyze`; `flutter test test/keyboard_theme_studio_screen_test.dart test/app_router_auth_guard_test.dart`; targeted `test/widget_test.dart` onboarding/navigation cases all passed on 2026-05-29. | Review bounded diff; hosted/mobile proof remains reserved for broader UI release or Android-native QA. |
-| sf-end | pending | Not closed because the broader UI-coherence chantier remains open. | Close when remaining chantier scope is accepted or explicitly split. |
+| sf-start | complete | Density and coherence slices implemented for shared spacing, action rails, Home/Settings grouping, token provenance, and Voice/Clipboard/Snippets/Dictionary density; `flutter analyze`, targeted tests, and full `flutter test` passed on 2026-06-01. | Run `/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
+| sf-verify | complete | Latest local verification on 2026-06-01 passed with `flutter analyze`, targeted UI/domain tests, full `flutter test` (268 tests), `git diff --check`, metadata lint, and docs coherence repair in `docs/COMPONENTS.md`. Hosted Vercel smoke remains deferred until ship/prod because this patch is unshipped and no APK handoff is requested. | Run `/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
+| sf-end | pending | Implementation and local verification are complete; closure is pending final bookkeeping/acceptance and any ship-scoped visual smoke decision. | Close when this UI-coherence scope is accepted or explicitly split. |
 | sf-ship | pending | Not shipped; worktree also contains an unrelated dirty governance spec outside this slice. | Ship only with explicit bounded staging scope. |

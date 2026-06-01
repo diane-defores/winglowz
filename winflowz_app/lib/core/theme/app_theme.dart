@@ -20,7 +20,8 @@ enum AppThemeMode {
 }
 
 class AppColors {
-  // Brand primitives.
+  // Brand primitives exposés pour WinFlowz.
+  // Mapping: seed tokens historiques (TubeFlow) -> sémantique app WinFlowz.
   static const primary = TubeflowSiteThemeTokens.brandPrimary;
   static const primaryDark = TubeflowSiteThemeTokens.brandPrimaryDark;
   static const secondary = TubeflowSiteThemeTokens.brandSecondary;
@@ -137,12 +138,15 @@ class AppSpacing {
 
 class AppInsets {
   static const none = EdgeInsets.zero;
-  static const screen = EdgeInsets.all(AppSpacing.x3);
-  static const card = EdgeInsets.all(AppSpacing.x2 + AppSpacing.x1 / 2);
+  static const screen = EdgeInsets.symmetric(
+    horizontal: AppSpacing.x2,
+    vertical: AppSpacing.x3,
+  );
+  static const card = EdgeInsets.all(AppSpacing.x2 + AppSpacing.x1 / 4);
   static const compactCard = EdgeInsets.all(AppSpacing.x2);
   static const button = EdgeInsets.symmetric(
     horizontal: AppSpacing.x3,
-    vertical: AppSpacing.x1 + 2,
+    vertical: AppSpacing.x1,
   );
   static const textButton = EdgeInsets.symmetric(
     horizontal: AppSpacing.x2,
@@ -179,7 +183,7 @@ class AppInsets {
 }
 
 class AppSectionMetrics {
-  static const double sectionGap = AppSpacing.x1 + 2;
+  static const double sectionGap = AppSpacing.x1;
   static const double sectionRunSpacing = sectionGap;
   static const double sectionColumnGap = AppSpacing.x2;
   static const double headerContentGap = AppSpacing.x1;
@@ -217,7 +221,8 @@ class AppIconMetrics {
 }
 
 class AppButtonMetrics {
-  static const minHeight = 42.0;
+  static const minHeight = 48.0;
+  static const compactMinHeight = 40.0;
 }
 
 class AppNavigationMetrics {

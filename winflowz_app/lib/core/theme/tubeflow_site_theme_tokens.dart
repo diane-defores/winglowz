@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-/// Tokens partagés entre la base web TubeFlow et l'UI WinFlowz.
-/// `tubeflow_site/src/styles/global.css` et
-/// `assets/theme_reference/tubeflow_site` servent de ligne de départ historique.
-/// La couche d'exposition Dart conserve la responsabilité d'implémentation
-/// WinFlowz dans `core/theme/app_theme.dart`.
+/// Tokens seed partagés entre la base web TubeFlow et l'UI WinFlowz.
+///
+/// Le nom de cette classe reste historique pour préserver la compatibilité.
+/// Source initiale: `tubeflow_site/src/styles/global.css` et
+/// `assets/theme_reference/tubeflow_site`.
+/// Propriété produit/implémentation active: WinFlowz via
+/// `core/theme/app_theme.dart`.
 class TubeflowSiteThemeTokens {
   // Typography
   static const fontSans = 'Manrope';

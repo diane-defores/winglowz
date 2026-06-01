@@ -706,7 +706,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
             padding: AppInsets.message,
             child: _VoiceMessage(message: _message!),
           ),
-        AppGaps.x4,
+        AppGaps.x3,
         const AppEntityListHeader(title: 'Historique vocal'),
         AppGaps.x2,
         AppPageToolbar(
@@ -783,9 +783,7 @@ class _MicroWithoutPackPromptCard extends StatelessWidget {
             style: theme.textTheme.bodySmall,
           ),
           AppGaps.x2,
-          Wrap(
-            spacing: AppSpacing.x2,
-            runSpacing: AppSpacing.x2,
+          AppActionRail(
             children: [
               FilledButton.icon(
                 onPressed: onInstall,
@@ -917,7 +915,7 @@ class _VoiceOverviewCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: AppInsets.card,
+        padding: AppInsets.compactCard,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -957,7 +955,7 @@ class _VoiceOverviewCard extends StatelessWidget {
                 ),
               ],
             ),
-            AppGaps.x4,
+            AppGaps.x3,
             Wrap(
               spacing: AppSpacing.x2,
               runSpacing: AppSpacing.x2,
@@ -1065,24 +1063,23 @@ class _OverlayControlCard extends StatelessWidget {
                 isBusy: isBusy,
                 onPressed: onToggleRecording,
               );
-              final secondary = Wrap(
-                spacing: AppSpacing.x2,
-                runSpacing: AppSpacing.x2,
+              final secondary = AppActionRail(
+                minActionWidth: 132,
                 children: [
                   OutlinedButton.icon(
                     onPressed: onStop,
                     icon: const Icon(Icons.stop_circle_outlined),
                     label: const Text('Arrêter'),
                   ),
-                  TextButton.icon(
+                  OutlinedButton.icon(
                     onPressed: onCancel,
                     icon: const Icon(Icons.close),
                     label: const Text('Annuler'),
                   ),
-                  IconButton(
-                    tooltip: 'Rafraîchir le statut overlay',
+                  OutlinedButton.icon(
                     onPressed: onRefresh,
                     icon: const Icon(Icons.sync),
+                    label: const Text('Rafraîchir'),
                   ),
                 ],
               );

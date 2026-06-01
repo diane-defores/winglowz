@@ -107,26 +107,67 @@ class AppFormActions extends StatelessWidget {
     final secondaryStyle = OutlinedButton.styleFrom(
       minimumSize: const Size(0, AppButtonMetrics.minHeight),
     );
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return AppActionRail(
       children: [
-        Expanded(
-          child: FilledButton.icon(
-            style: primaryStyle,
-            onPressed: onPrimary,
-            icon: Icon(primaryIcon),
-            label: Text(primaryLabel),
-          ),
+        FilledButton.icon(
+          style: primaryStyle,
+          onPressed: onPrimary,
+          icon: Icon(primaryIcon),
+          label: Text(primaryLabel),
         ),
-        if (onSecondary != null) ...[
-          AppGaps.horizontalX2,
+        if (onSecondary != null)
           OutlinedButton(
             style: secondaryStyle,
             onPressed: onSecondary,
             child: Text(secondaryLabel),
           ),
-        ],
       ],
+    );
+  }
+}
+
+class AppActionRail extends StatelessWidget {
+  const AppActionRail({
+    super.key,
+    required this.children,
+    this.minActionWidth = 160,
+    this.spacing = AppSpacing.x2,
+  });
+
+  final List<Widget> children;
+  final double minActionWidth;
+  final double spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    if (children.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : minActionWidth;
+        final maxColumns = (maxWidth / (minActionWidth + spacing))
+            .floor()
+            .clamp(1, children.length)
+            .toInt();
+        final columns = maxColumns == 0 ? 1 : maxColumns;
+        final itemWidth = columns == 1
+            ? maxWidth
+            : (maxWidth - spacing * (columns - 1)) / columns;
+
+        return Wrap(
+          spacing: spacing,
+          runSpacing: spacing,
+          children: children
+              .map((child) {
+                return SizedBox(width: itemWidth, child: child);
+              })
+              .toList(growable: false),
+        );
+      },
     );
   }
 }
@@ -341,7 +382,7 @@ class AppPageToolbar extends StatelessWidget {
     }
     return LayoutBuilder(
       builder: (context, constraints) {
-        final useColumn = constraints.maxWidth < 700;
+        final useColumn = constraints.maxWidth < 330;
         if (useColumn) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -414,7 +455,7 @@ class AppEmptyStateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: AppInsets.card,
+        padding: AppInsets.compactCard,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -545,24 +586,19 @@ class AppEntityCard extends StatelessWidget {
             if (notice != null) ...[AppGaps.x2, notice!],
             if (actions.isNotEmpty) ...[
               AppGaps.x2,
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButtonTheme(
-                  data: IconButtonThemeData(
-                    style: IconButton.styleFrom(
-                      minimumSize: const Size.square(40),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                      padding: const EdgeInsets.all(AppSpacing.x2),
+              IconButtonTheme(
+                data: IconButtonThemeData(
+                  style: IconButton.styleFrom(
+                    minimumSize: const Size.square(AppIconMetrics.minTarget),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.x2,
+                      vertical: AppSpacing.x1,
                     ),
                   ),
-                  child: Wrap(
-                    spacing: AppIconMetrics.listActionSpacing,
-                    runSpacing: AppIconMetrics.listActionSpacing,
-                    alignment: WrapAlignment.end,
-                    children: actions,
-                  ),
                 ),
+                child: AppActionRail(minActionWidth: 48, children: actions),
               ),
             ],
           ],
@@ -593,6 +629,14 @@ class AppStatusCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Icon(icon),
+        dense: true,
+        minVerticalPadding: AppSpacing.x1,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.x2,
+          vertical: AppSpacing.x1,
+        ),
+        minLeadingWidth: AppIconMetrics.sm,
+        visualDensity: VisualDensity.compact,
         title: Text(title),
         subtitle: subtitle == null ? null : Text(subtitle!),
         trailing: trailing,

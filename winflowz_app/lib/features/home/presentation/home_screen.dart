@@ -99,99 +99,122 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       error: (error, stack) => ListView(
         padding: AppInsets.screen,
         children: [
-          AppSectionCard(title: 'Accueil', child: Text('Erreur: $error')),
+          AppEmptyStateCard(
+            title: 'Accueil indisponible',
+            message: 'Impossible d’afficher le fil global pour le moment.',
+            example: '$error',
+          ),
         ],
       ),
       data: (data) {
         final filtered = _filteredItems(data.items);
+        final hasStatusBanner =
+            status.kind == AppSyncStatusKind.error ||
+            status.kind == AppSyncStatusKind.localOnly;
+        final selectedSourceLabels = _selectedSources
+            .map(_sourceChipLabel)
+            .toList(growable: false)
+            .join(', ');
         return ListView(
           padding: AppInsets.screen,
           children: [
             AppSectionCard(
-              title: 'Accueil',
+              title: 'Fil d’accueil',
               subtitle:
                   'Ton fil global des dernières entrées de voix, presse-papiers, snippets et dictionnaire.',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppPageToolbar(
-                    searchField: AppSearchField(
-                      controller: _searchController,
-                      query: _searchQuery,
-                      onChanged: (query) {
-                        if (query == _searchQuery) {
-                          return;
-                        }
-                        setState(() {
-                          _searchQuery = query.trim();
-                        });
-                      },
-                      onClear: () {
-                        _searchController.clear();
-                      },
-                      onSubmit: (_) => unawaited(_refresh()),
-                      scopeLabel: 'Global',
-                    ),
-                    syncAction: AppSyncStatusAction(
-                      status: status,
-                      onPressed: dataAsync.isLoading ? null : _refresh,
-                    ),
-                  ),
-                  AppGaps.x2,
-                  _FeedSourceFilters(
-                    selectedSources: _selectedSources,
-                    onChanged: _toggleSource,
-                  ),
-                  if (status.kind == AppSyncStatusKind.error ||
-                      status.kind == AppSyncStatusKind.localOnly)
-                    Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.x2),
-                      child: AppBannerCard(
-                        icon: status.kind == AppSyncStatusKind.error
-                            ? Icons.error_outline
-                            : Icons.cloud_off_outlined,
-                        title: status.kind == AppSyncStatusKind.error
-                            ? 'Chargement partiellement indisponible'
-                            : 'Mode partiellement local',
-                        message:
-                            status.message ??
-                            'Certaines sources sont temporairement indisponibles.',
-                      ),
-                    ),
-                  AppGaps.x3,
-                  if (data.items.isEmpty)
-                    _HomeEmptyState(
-                      onAction: widget.onOpenSource == null
-                          ? null
-                          : () =>
-                                widget.onOpenSource!(HomeFeedSourceType.voice),
-                    )
-                  else if (filtered.isEmpty)
-                    _NoSearchResultState(
-                      onClear: () {
-                        _searchController.clear();
-                        setState(() => _searchQuery = '');
-                      },
-                    )
-                  else
-                    Column(
-                      children: [
-                        for (final item in filtered) ...[
-                          _HomeFeedTile(
-                            item: item,
-                            onOpenSource: widget.onOpenSource,
-                          ),
-                          AppGaps.x1,
-                        ],
-                      ],
-                    ),
-                ],
+              child: AppPageToolbar(
+                searchField: AppSearchField(
+                  controller: _searchController,
+                  query: _searchQuery,
+                  onChanged: (query) {
+                    if (query == _searchQuery) {
+                      return;
+                    }
+                    setState(() {
+                      _searchQuery = query.trim();
+                    });
+                  },
+                  onClear: () {
+                    _searchController.clear();
+                  },
+                  onSubmit: (_) => unawaited(_refresh()),
+                  scopeLabel: 'Global',
+                ),
+                syncAction: AppSyncStatusAction(
+                  status: status,
+                  onPressed: dataAsync.isLoading ? null : _refresh,
+                ),
               ),
             ),
+            AppGaps.x2,
+            _FeedSourceFilters(
+              selectedSources: _selectedSources,
+              onChanged: _toggleSource,
+            ),
+            AppGaps.x2,
+            if (hasStatusBanner)
+              AppBannerCard(
+                icon: status.kind == AppSyncStatusKind.error
+                    ? Icons.error_outline
+                    : Icons.cloud_off_outlined,
+                title: status.kind == AppSyncStatusKind.error
+                    ? 'Chargement partiellement indisponible'
+                    : 'Mode partiellement local',
+                message:
+                    status.message ??
+                    'Certaines sources sont temporairement indisponibles.',
+              ),
+            if (hasStatusBanner) AppGaps.x2,
+            if (data.items.isEmpty)
+              _HomeEmptyState(
+                onAction: widget.onOpenSource == null
+                    ? null
+                    : () => widget.onOpenSource!(HomeFeedSourceType.voice),
+              )
+            else if (filtered.isEmpty)
+              _NoSearchResultState(
+                onClear: () {
+                  _searchController.clear();
+                  setState(() => _searchQuery = '');
+                },
+              )
+            else ...[
+              AppSectionCard(
+                title: 'Résultats récents',
+                subtitle:
+                    'Sources actives : ${selectedSourceLabels.isEmpty ? 'Toutes' : selectedSourceLabels}',
+                padding: AppInsets.compactCard,
+                stretch: false,
+                child: Column(
+                  children: [
+                    for (final item in filtered) ...[
+                      _HomeFeedTile(
+                        item: item,
+                        onOpenSource: widget.onOpenSource,
+                      ),
+                      AppGaps.x1,
+                    ],
+                  ],
+                ),
+              ),
+            ],
           ],
         );
       },
     );
+  }
+
+  String _sourceChipLabel(HomeFeedSourceType source) {
+    switch (source) {
+      case HomeFeedSourceType.voice:
+        return 'Voix';
+      case HomeFeedSourceType.clipboard:
+        return 'Presse-papiers';
+      case HomeFeedSourceType.snippet:
+        return 'Snippets';
+      case HomeFeedSourceType.dictionary:
+        return 'Dictionnaire';
+    }
   }
 
   List<HomeFeedItem> _filteredItems(List<HomeFeedItem> items) {

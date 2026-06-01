@@ -1691,15 +1691,16 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
     final reliefDepth = theme.keyReliefEnabled
         ? theme.keyReliefDepth.clamp(0.0, 6.0)
         : 0.0;
-    final reliefOffsetY = pressed ? reliefDepth * 0.55 : 0.0;
-    final reliefShadowColor = _reliefShadowColor(Color(bg), theme);
-    final reliefHighlightColor = _reliefHighlightColor(Color(bg), theme);
+    final visibleReliefDepth = _previewVisibleReliefDepth(reliefDepth, pressed);
+    final reliefTravel = reliefDepth - visibleReliefDepth;
+    final reliefSideDepth = _previewSideReliefDepth(reliefDepth);
+    final keyHeight = compact ? 24.0 : 28.0;
+    final reliefSurfaceHeight = math.max(12.0, keyHeight - reliefDepth);
+    final weightedBg = _weightedThemeColor(Color(bg), theme);
     final previewShadows = _previewKeyShadows(
       theme: theme,
       pressed: pressed,
       reliefDepth: reliefDepth,
-      reliefShadowColor: reliefShadowColor,
-      reliefHighlightColor: reliefHighlightColor,
     );
     return GestureDetector(
       onTapDown: (_) => _press(label),
@@ -1710,88 +1711,266 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
           milliseconds: (theme.effectDurationMs * 0.45).round().clamp(60, 220),
         ),
         curve: Curves.easeOut,
-        transform: Matrix4.translationValues(animatedOffsetX, reliefOffsetY, 0)
-          ..rotateZ(
-            pressed && theme.pressEffect == KeyboardThemePressEffect.keycapTilt
-                ? -0.018 * theme.effectIntensity.clamp(0.35, 1)
-                : 0,
-          ),
-        child: AnimatedScale(
-          scale: animatedScale,
-          duration: Duration(
-            milliseconds: (theme.effectDurationMs * 0.4).round().clamp(60, 200),
-          ),
-          curve: Curves.easeOut,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: _weightedThemeColor(Color(bg), theme),
-                  gradient: _previewKeyGradient(theme, Color(bg), pressed),
-                  borderRadius: BorderRadius.circular(theme.keyRadius),
-                  border:
-                      pressed &&
-                          theme.pressEffect != KeyboardThemePressEffect.none
-                      ? Border.all(
-                          color: _weightedThemeColor(
-                            Color(theme.activeKeyColor),
-                            theme,
-                            boost: _keyboardBorderOpacityBoost,
-                          ),
-                          width: 2,
-                        )
-                      : (theme.borderWidth > 0
-                            ? Border.all(
-                                color: _weightedThemeColor(
-                                  Color(theme.borderColor),
-                                  theme,
-                                  boost: _keyboardBorderOpacityBoost,
-                                ),
-                                width: theme.borderWidth,
-                              )
-                            : null),
-                  boxShadow: previewShadows,
+        height: keyHeight,
+        transform: Matrix4.translationValues(animatedOffsetX, 0, 0),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            if (reliefDepth > 0)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: CustomPaint(
+                    painter: _PreviewKeyReliefPainter(
+                      baseColor: Color(bg),
+                      theme: theme,
+                      radius: theme.keyRadius,
+                      pressed: pressed,
+                      reliefDepth: reliefDepth,
+                    ),
+                  ),
                 ),
-                child: SizedBox(
-                  height: compact ? 24 : 28,
+              ),
+            AnimatedPositioned(
+              duration: Duration(
+                milliseconds: (theme.effectDurationMs * 0.45).round().clamp(
+                  60,
+                  220,
+                ),
+              ),
+              curve: Curves.easeOut,
+              left: reliefSideDepth,
+              top: reliefTravel,
+              right: reliefSideDepth,
+              height: reliefSurfaceHeight,
+              child: Transform.rotate(
+                angle:
+                    pressed &&
+                        theme.pressEffect == KeyboardThemePressEffect.keycapTilt
+                    ? -0.018 * theme.effectIntensity.clamp(0.35, 1)
+                    : 0,
+                child: AnimatedScale(
+                  scale: animatedScale,
+                  duration: Duration(
+                    milliseconds: (theme.effectDurationMs * 0.4).round().clamp(
+                      60,
+                      200,
+                    ),
+                  ),
+                  curve: Curves.easeOut,
                   child: Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      if (pinned)
-                        _ThemePinnedBadge(theme: theme, keyColor: Color(bg)),
-                      Center(
-                        child: Text(
-                          label,
-                          style: TextStyle(
-                            color: labelColor,
-                            fontSize: compact ? 11 : null,
-                            fontWeight: FontWeight.w700,
+                      Positioned.fill(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: weightedBg,
+                            gradient: _previewKeyGradient(
+                              theme,
+                              Color(bg),
+                              pressed,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              theme.keyRadius,
+                            ),
+                            border:
+                                pressed &&
+                                    theme.pressEffect !=
+                                        KeyboardThemePressEffect.none
+                                ? Border.all(
+                                    color: _weightedThemeColor(
+                                      Color(theme.activeKeyColor),
+                                      theme,
+                                      boost: _keyboardBorderOpacityBoost,
+                                    ),
+                                    width: 2,
+                                  )
+                                : (theme.borderWidth > 0
+                                      ? Border.all(
+                                          color: _weightedThemeColor(
+                                            Color(theme.borderColor),
+                                            theme,
+                                            boost: _keyboardBorderOpacityBoost,
+                                          ),
+                                          width: theme.borderWidth,
+                                        )
+                                      : null),
+                            boxShadow: previewShadows,
+                          ),
+                          child: Stack(
+                            children: [
+                              if (pinned)
+                                _ThemePinnedBadge(
+                                  theme: theme,
+                                  keyColor: Color(bg),
+                                ),
+                              Center(
+                                child: Text(
+                                  label,
+                                  style: TextStyle(
+                                    color: labelColor,
+                                    fontSize: compact ? 11 : null,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
+                      if (pressed && _usesEmittedPressEffect(theme.pressEffect))
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: CustomPaint(
+                              painter: _PreviewPressEffectPainter(theme: theme),
+                            ),
+                          ),
+                        ),
+                      if (theme.presetId ==
+                          KeyboardThemePresetCatalog.minimalContrast)
+                        const Positioned.fill(
+                          child: IgnorePointer(
+                            child: CustomPaint(painter: _HazardBorderPainter()),
+                          ),
+                        ),
                     ],
                   ),
                 ),
               ),
-              if (pressed && _usesEmittedPressEffect(theme.pressEffect))
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(
-                      painter: _PreviewPressEffectPainter(theme: theme),
-                    ),
-                  ),
-                ),
-              if (theme.presetId == KeyboardThemePresetCatalog.minimalContrast)
-                const Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(painter: _HazardBorderPainter()),
-                  ),
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+}
+
+double _previewVisibleReliefDepth(double depth, bool pressed) {
+  if (depth <= 0) return 0;
+  final visibleDepth = pressed ? math.max(0.55, depth * 0.20) : depth;
+  return visibleDepth.clamp(0.0, depth).toDouble();
+}
+
+double _previewSideReliefDepth(double depth) {
+  if (depth <= 0) return 0;
+  return math.min(depth * 0.34, 2.2);
+}
+
+class _PreviewKeyReliefPainter extends CustomPainter {
+  const _PreviewKeyReliefPainter({
+    required this.baseColor,
+    required this.theme,
+    required this.radius,
+    required this.pressed,
+    required this.reliefDepth,
+  });
+
+  final Color baseColor;
+  final KeyboardThemeConfig theme;
+  final double radius;
+  final bool pressed;
+  final double reliefDepth;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final visibleDepth = _previewVisibleReliefDepth(reliefDepth, pressed);
+    if (visibleDepth <= 0.35 || size.width <= 0 || size.height <= 0) {
+      return;
+    }
+
+    final sideDepth = _previewSideReliefDepth(reliefDepth);
+    final travel = reliefDepth - visibleDepth;
+    final surfaceRect = Rect.fromLTWH(
+      sideDepth,
+      travel,
+      math.max(0, size.width - sideDepth * 2),
+      math.max(0, size.height - reliefDepth),
+    );
+    if (surfaceRect.width <= 0 || surfaceRect.height <= 0) {
+      return;
+    }
+
+    final faceAlpha = pressed ? 0.62 : 0.92;
+    final surfaceColor = _weightedThemeColor(baseColor, theme);
+    final paint = Paint()
+      ..isAntiAlias = true
+      ..style = PaintingStyle.fill;
+
+    final topInset = math.min(radius * 0.56, surfaceRect.height * 0.42);
+
+    final clipBounds = Offset.zero & size;
+    canvas.save();
+    canvas.clipRect(clipBounds);
+
+    if (sideDepth > 0.35) {
+      final leftPath = Path()
+        ..moveTo(surfaceRect.left, surfaceRect.top + topInset)
+        ..lineTo(surfaceRect.left, surfaceRect.bottom)
+        ..lineTo(surfaceRect.left - sideDepth, surfaceRect.bottom + reliefDepth)
+        ..lineTo(
+          surfaceRect.left - sideDepth,
+          surfaceRect.top + topInset + reliefDepth,
+        )
+        ..close();
+      paint.shader = LinearGradient(
+        colors: [
+          _darkenThemeColor(surfaceColor, 0.10).withValues(alpha: faceAlpha),
+          _darkenThemeColor(surfaceColor, 0.24).withValues(alpha: faceAlpha),
+        ],
+      ).createShader(leftPath.getBounds());
+      canvas.drawPath(leftPath, paint);
+      paint.shader = null;
+    }
+
+    if (sideDepth > 0.35) {
+      final rightPath = Path()
+        ..moveTo(surfaceRect.right, surfaceRect.top + topInset)
+        ..lineTo(
+          surfaceRect.right + sideDepth,
+          surfaceRect.top + topInset + reliefDepth,
+        )
+        ..lineTo(
+          surfaceRect.right + sideDepth,
+          surfaceRect.bottom + reliefDepth,
+        )
+        ..lineTo(surfaceRect.right, surfaceRect.bottom)
+        ..close();
+      final rightBounds = rightPath.getBounds();
+      paint.shader = LinearGradient(
+        colors: [
+          _darkenThemeColor(surfaceColor, 0.18).withValues(alpha: faceAlpha),
+          _darkenThemeColor(surfaceColor, 0.34).withValues(alpha: faceAlpha),
+        ],
+      ).createShader(rightBounds);
+      canvas.drawPath(rightPath, paint);
+      paint.shader = null;
+    }
+
+    final bottomPath = Path()
+      ..moveTo(surfaceRect.left, surfaceRect.bottom)
+      ..lineTo(surfaceRect.right, surfaceRect.bottom)
+      ..lineTo(surfaceRect.right + sideDepth, surfaceRect.bottom + reliefDepth)
+      ..lineTo(surfaceRect.left - sideDepth, surfaceRect.bottom + reliefDepth)
+      ..close();
+    paint.shader = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        _darkenThemeColor(surfaceColor, 0.12).withValues(alpha: faceAlpha),
+        _darkenThemeColor(surfaceColor, 0.28).withValues(alpha: faceAlpha),
+      ],
+    ).createShader(bottomPath.getBounds());
+    canvas.drawPath(bottomPath, paint);
+    paint.shader = null;
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _PreviewKeyReliefPainter oldDelegate) {
+    return oldDelegate.baseColor != baseColor ||
+        oldDelegate.theme != theme ||
+        oldDelegate.radius != radius ||
+        oldDelegate.pressed != pressed ||
+        oldDelegate.reliefDepth != reliefDepth;
   }
 }
 
@@ -1854,32 +2033,6 @@ Color _weightedThemeColor(
 }) {
   final opacity = _weightedKeyboardOpacity(theme, boost: boost);
   return color.withValues(alpha: color.a * opacity);
-}
-
-Color _reliefShadowColor(Color base, KeyboardThemeConfig theme) {
-  final dark = HSLColor.fromColor(base)
-      .withLightness(
-        (HSLColor.fromColor(base).lightness - 0.18).clamp(0.0, 1.0),
-      )
-      .toColor();
-  return _weightedThemeColor(
-    dark,
-    theme,
-    boost: _keyboardBorderOpacityBoost,
-  ).withValues(alpha: 0.30);
-}
-
-Color _reliefHighlightColor(Color base, KeyboardThemeConfig theme) {
-  final light = HSLColor.fromColor(base)
-      .withLightness(
-        (HSLColor.fromColor(base).lightness + 0.16).clamp(0.0, 1.0),
-      )
-      .toColor();
-  return _weightedThemeColor(
-    light,
-    theme,
-    boost: _keyboardBorderOpacityBoost,
-  ).withValues(alpha: 0.24);
 }
 
 Color _lightenThemeColor(Color color, double amount) {
@@ -1960,8 +2113,6 @@ List<BoxShadow>? _previewKeyShadows({
   required KeyboardThemeConfig theme,
   required bool pressed,
   required double reliefDepth,
-  required Color reliefShadowColor,
-  required Color reliefHighlightColor,
 }) {
   final shadows = <BoxShadow>[];
   final effect = theme.pressEffect;
@@ -1996,22 +2147,7 @@ List<BoxShadow>? _previewKeyShadows({
       ),
     );
   }
-  if (reliefDepth > 0) {
-    shadows.addAll([
-      BoxShadow(
-        color: reliefShadowColor,
-        blurRadius: math.max(1.2, reliefDepth * 0.75),
-        spreadRadius: -0.25,
-        offset: Offset(0, pressed ? 0.35 : reliefDepth * 0.72),
-      ),
-      BoxShadow(
-        color: reliefHighlightColor,
-        blurRadius: 0.5,
-        offset: const Offset(0, -0.75),
-      ),
-    ]);
-  }
-  if (theme.shadowBlur > 0) {
+  if (theme.shadowBlur > 0 && reliefDepth <= 0) {
     shadows.add(
       BoxShadow(
         color: _weightedThemeColor(Color(theme.shadowColor), theme),

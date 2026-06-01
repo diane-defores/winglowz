@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-04-26"
-updated: "2026-05-14"
+updated: "2026-06-01"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "components"
@@ -40,6 +40,25 @@ This inventory separates:
 - legacy React Native components (reference-only parity map).
 
 ## Target component contracts (Flutter)
+
+### Shared UI foundation
+
+- `AppTheme`:
+  shared color, typography, spacing, radius, motion, and interaction metrics.
+  Token provenance is explicit: historical seed values may come from TubeFlow
+  site references, while naming and semantic mapping in Flutter are owned by
+  WinFlowz.
+  Common touch targets should stay at a 48dp baseline for frequent actions;
+  visual density should be improved through layout, spacing, and grouping
+  before shrinking interactive targets.
+- `AppActionRail`:
+  responsive action layout used by forms and compact action groups. It keeps
+  actions on the same row when width allows, then wraps predictably instead of
+  forcing large stacked button blocks on mobile.
+- `AppSectionCard`, `AppStatusCard`, `AppEmptyStateCard`, and `AppEntityCard`:
+  shared content containers for section framing, status rows, guided empty
+  states, and entity lists. Prefer compact padding and avoid wrapping an entire
+  page in a card when child cards or status blocks already provide structure.
 
 ### Voice flow
 

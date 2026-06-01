@@ -398,7 +398,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
                 ),
               AppGaps.x2,
               _DraftStatsRow(content: draftContent, source: _source),
-              AppGaps.x3,
+              AppGaps.x2,
               AppFormActions(
                 primaryLabel: 'Ajouter',
                 primaryIcon: Icons.add_link,
@@ -417,7 +417,7 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
             padding: AppInsets.message,
             child: _ClipboardMessage(message: _message!),
           ),
-        AppGaps.x4,
+        AppGaps.x3,
         const AppEntityListHeader(title: 'Éléments du clipboard'),
         AppGaps.x2,
         AppPageToolbar(
@@ -522,7 +522,7 @@ class _ClipboardOverviewCard extends StatelessWidget {
         : _formatShortDateTime(latest!.lastSeenAt);
     return Card(
       child: Padding(
-        padding: AppInsets.card,
+        padding: AppInsets.compactCard,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -560,7 +560,7 @@ class _ClipboardOverviewCard extends StatelessWidget {
                 ),
               ],
             ),
-            AppGaps.x4,
+            AppGaps.x3,
             Wrap(
               spacing: AppSpacing.x2,
               runSpacing: AppSpacing.x2,
