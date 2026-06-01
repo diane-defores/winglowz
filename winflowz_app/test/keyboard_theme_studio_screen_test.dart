@@ -112,6 +112,23 @@ void main() {
     expect(decoration.color, const Color(0xFF0000FF));
   });
 
+  testWidgets('preview keyboard border hugs the visual key rows', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    final previewBox = tester.renderObject<RenderBox>(
+      find.byKey(const Key('keyboard-theme-studio-preview')),
+    );
+
+    expect(previewBox.size.height, lessThanOrEqualTo(200));
+  });
+
   testWidgets('blocks save when theme contrast is unreadable', (tester) async {
     await tester.pumpWidget(
       const ProviderScope(
@@ -314,5 +331,98 @@ void main() {
 
     final after = container.read(keyboardSyncChangeNotifierProvider);
     expect(after, greaterThan(before));
+  });
+
+  testWidgets('save button shows animated success checkbox after saving', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await tester.tap(find.text('System').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Neon Terminal').last);
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(find.widgetWithText(FilledButton, 'Enregistrer'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('keyboard-theme-save-success-icon')),
+      findsOneWidget,
+    );
+    expect(find.text('Enregistré'), findsOneWidget);
+  });
+
+  testWidgets('save button shows animated failure checkbox when save fails', (
+    tester,
+  ) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+          if (call.method == 'setKeyboardThemeConfig') {
+            throw PlatformException(
+              code: 'save_failed',
+              message: 'Native save failed',
+            );
+          }
+          if (call.method == 'getKeyboardThemeConfig' ||
+              call.method == 'resetKeyboardThemeConfig') {
+            return <String, Object?>{
+              'version': 1,
+              'presetId': 'system',
+              'backgroundStartColor': 0xFFEEF1EE,
+              'backgroundEndColor': 0xFFEEF1EE,
+              'useGradient': false,
+              'gradientStyle': 'linear',
+              'keyboardOpacity': 1.0,
+              'keyColor': 0xFFFFFFFF,
+              'specialKeyColor': 0xFFE0E6E3,
+              'activeKeyColor': 0xFF17795D,
+              'pressedKeyColor': 0xFFCADAD3,
+              'pressHighlightDurationMs': 170,
+              'textColor': 0xFF1D2320,
+              'cornerTextColor': 0xFF5C6762,
+              'cornerTextOpacity': 0.85,
+              'statusTextColor': 0xFF333D38,
+              'borderColor': 0x00000000,
+              'borderWidth': 0.0,
+              'keyRadius': 8.0,
+              'keyHorizontalGap': 5.0,
+              'rowVerticalGap': 5.0,
+              'keyWidthScale': 1.0,
+              'shadowColor': 0x33000000,
+              'shadowBlur': 4.0,
+              'shadowOffsetY': 1.0,
+              'pressEffect': 'none',
+              'effectIntensity': 0.35,
+              'effectDurationMs': 170,
+              'effectEasing': 'easeOut',
+            };
+          }
+          return null;
+        });
+
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: KeyboardThemeStudioScreen()),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await tester.tap(find.text('System').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Neon Terminal').last);
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(find.widgetWithText(FilledButton, 'Enregistrer'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('keyboard-theme-save-failure-icon')),
+      findsOneWidget,
+    );
+    expect(find.text('Échec'), findsOneWidget);
   });
 }

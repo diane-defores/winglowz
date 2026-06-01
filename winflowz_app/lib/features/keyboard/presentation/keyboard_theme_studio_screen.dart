@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
@@ -11,6 +12,8 @@ import '../../../core/widgets/app_components.dart';
 import '../application/keyboard_sync_providers.dart';
 import '../domain/keyboard_models.dart';
 import '../domain/keyboard_theme_validation.dart';
+
+enum _SaveButtonFeedback { idle, saving, success, failure }
 
 class KeyboardThemeStudioScreen extends ConsumerStatefulWidget {
   const KeyboardThemeStudioScreen({super.key});
@@ -26,6 +29,9 @@ class _KeyboardThemeStudioScreenState
   KeyboardThemeConfig _draft = KeyboardThemeConfig.defaults();
   bool _loading = true;
   bool _saving = false;
+  _SaveButtonFeedback _saveFeedback = _SaveButtonFeedback.idle;
+  Timer? _saveFeedbackResetTimer;
+  int _saveFeedbackEpoch = 0;
   String? _message;
   String? _expandedStudioSectionId;
 
@@ -43,6 +49,27 @@ class _KeyboardThemeStudioScreenState
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    _saveFeedbackResetTimer?.cancel();
+    super.dispose();
+  }
+
+  void _markSaveFeedback(_SaveButtonFeedback feedback, {Duration? resetAfter}) {
+    _saveFeedbackResetTimer?.cancel();
+    final epoch = ++_saveFeedbackEpoch;
+    _saveFeedback = feedback;
+    if (resetAfter == null) {
+      return;
+    }
+    _saveFeedbackResetTimer = Timer(resetAfter, () {
+      if (!mounted || epoch != _saveFeedbackEpoch) {
+        return;
+      }
+      setState(() => _saveFeedback = _SaveButtonFeedback.idle);
+    });
   }
 
   Future<void> _load() async {
@@ -70,17 +97,30 @@ class _KeyboardThemeStudioScreenState
   Future<void> _save() async {
     final validation = _validation;
     if (!validation.canSave) {
-      setState(() => _message = validation.errors.first);
+      setState(() {
+        _message = validation.errors.first;
+        _markSaveFeedback(
+          _SaveButtonFeedback.failure,
+          resetAfter: const Duration(milliseconds: 2200),
+        );
+      });
       return;
     }
     if (!PlatformCapabilities.keyboardImeSupported) {
-      setState(
-        () => _message =
-            'L’enregistrement du thème clavier natif est réservé à Android.',
-      );
+      setState(() {
+        _message =
+            'L’enregistrement du thème clavier natif est réservé à Android.';
+        _markSaveFeedback(
+          _SaveButtonFeedback.failure,
+          resetAfter: const Duration(milliseconds: 2200),
+        );
+      });
       return;
     }
-    setState(() => _saving = true);
+    setState(() {
+      _saving = true;
+      _markSaveFeedback(_SaveButtonFeedback.saving);
+    });
     try {
       final saved = await AndroidKeyboardBridge.setKeyboardThemeConfig(_draft);
       if (!mounted) return;
@@ -88,15 +128,23 @@ class _KeyboardThemeStudioScreenState
         _saved = saved;
         _draft = saved;
         _message = 'Thème clavier enregistré.';
+        _markSaveFeedback(
+          _SaveButtonFeedback.success,
+          resetAfter: const Duration(milliseconds: 2200),
+        );
       });
       ref
           .read(keyboardSyncChangeNotifierProvider.notifier)
           .markKeyboardProfileChanged();
     } catch (error) {
       if (!mounted) return;
-      setState(
-        () => _message = 'Enregistrement du thème clavier impossible: $error',
-      );
+      setState(() {
+        _message = 'Enregistrement du thème clavier impossible: $error';
+        _markSaveFeedback(
+          _SaveButtonFeedback.failure,
+          resetAfter: const Duration(milliseconds: 2200),
+        );
+      });
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -249,6 +297,7 @@ class _KeyboardThemeStudioScreenState
     }
     final mediaQuery = MediaQuery.of(context);
     final safeBottomPadding = mediaQuery.viewPadding.bottom;
+    final saveFeedback = _saving ? _SaveButtonFeedback.saving : _saveFeedback;
     return Scaffold(
       appBar: AppBar(title: const Text('Studio de thème clavier')),
       body: CustomScrollView(
@@ -260,6 +309,7 @@ class _KeyboardThemeStudioScreenState
               topPadding: 8,
               dirty: _dirty,
               saving: _saving,
+              saveFeedback: saveFeedback,
               validation: _validation,
               onPresetChanged: (value) {
                 if (value == null) return;
@@ -837,6 +887,7 @@ class _StickyPreviewHeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.topPadding,
     required this.dirty,
     required this.saving,
+    required this.saveFeedback,
     required this.validation,
     required this.onPresetChanged,
     required this.onDiscard,
@@ -848,6 +899,7 @@ class _StickyPreviewHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double topPadding;
   final bool dirty;
   final bool saving;
+  final _SaveButtonFeedback saveFeedback;
   final KeyboardThemeValidationResult validation;
   final ValueChanged<String?> onPresetChanged;
   final VoidCallback? onDiscard;
@@ -874,6 +926,7 @@ class _StickyPreviewHeaderDelegate extends SliverPersistentHeaderDelegate {
           theme: theme,
           dirty: dirty,
           saving: saving,
+          saveFeedback: saveFeedback,
           validation: validation,
           onPresetChanged: onPresetChanged,
           onDiscard: onDiscard,
@@ -890,6 +943,7 @@ class _StickyPreviewHeaderDelegate extends SliverPersistentHeaderDelegate {
         oldDelegate.topPadding != topPadding ||
         oldDelegate.dirty != dirty ||
         oldDelegate.saving != saving ||
+        oldDelegate.saveFeedback != saveFeedback ||
         oldDelegate.validation != validation;
   }
 }
@@ -899,6 +953,7 @@ class _PreviewSectionCard extends StatelessWidget {
     required this.theme,
     required this.dirty,
     required this.saving,
+    required this.saveFeedback,
     required this.validation,
     required this.onPresetChanged,
     required this.onDiscard,
@@ -909,6 +964,7 @@ class _PreviewSectionCard extends StatelessWidget {
   final KeyboardThemeConfig theme;
   final bool dirty;
   final bool saving;
+  final _SaveButtonFeedback saveFeedback;
   final KeyboardThemeValidationResult validation;
   final ValueChanged<String?> onPresetChanged;
   final VoidCallback? onDiscard;
@@ -967,6 +1023,7 @@ class _PreviewSectionCard extends StatelessWidget {
             _PreviewActionRow(
               dirty: dirty,
               saving: saving,
+              saveFeedback: saveFeedback,
               validation: validation,
               onDiscard: onDiscard,
               onReset: onReset,
@@ -983,6 +1040,7 @@ class _PreviewActionRow extends StatelessWidget {
   const _PreviewActionRow({
     required this.dirty,
     required this.saving,
+    required this.saveFeedback,
     required this.validation,
     required this.onDiscard,
     required this.onReset,
@@ -991,6 +1049,7 @@ class _PreviewActionRow extends StatelessWidget {
 
   final bool dirty;
   final bool saving;
+  final _SaveButtonFeedback saveFeedback;
   final KeyboardThemeValidationResult validation;
   final VoidCallback? onDiscard;
   final VoidCallback? onReset;
@@ -1015,14 +1074,140 @@ class _PreviewActionRow extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: FilledButton(
+          child: _AnimatedSaveButton(
+            feedback: saveFeedback,
             onPressed: saving || !validation.canSave ? null : onSave,
-            child: const Text('Enregistrer'),
           ),
         ),
       ],
     );
   }
+}
+
+class _AnimatedSaveButton extends StatelessWidget {
+  const _AnimatedSaveButton({required this.feedback, required this.onPressed});
+
+  final _SaveButtonFeedback feedback;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return FilledButton.icon(
+      key: const Key('keyboard-theme-save-button'),
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+        backgroundColor: switch (feedback) {
+          _SaveButtonFeedback.failure => colorScheme.error,
+          _SaveButtonFeedback.success => colorScheme.primary,
+          _ => null,
+        },
+        foregroundColor: switch (feedback) {
+          _SaveButtonFeedback.failure => colorScheme.onError,
+          _SaveButtonFeedback.success => colorScheme.onPrimary,
+          _ => null,
+        },
+      ),
+      icon: SizedBox.square(
+        dimension: 22,
+        child: Center(child: _SaveFeedbackIcon(feedback: feedback)),
+      ),
+      label: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 180),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        child: Text(
+          _saveButtonLabel(feedback),
+          key: ValueKey('keyboard-theme-save-label-${feedback.name}'),
+        ),
+      ),
+    );
+  }
+}
+
+class _SaveFeedbackIcon extends StatelessWidget {
+  const _SaveFeedbackIcon({required this.feedback});
+
+  final _SaveButtonFeedback feedback;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 260),
+      switchInCurve: Curves.easeOutBack,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        return ScaleTransition(
+          scale: animation,
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      child: switch (feedback) {
+        _SaveButtonFeedback.saving => const SizedBox.square(
+          key: Key('keyboard-theme-save-progress-icon'),
+          dimension: 18,
+          child: CircularProgressIndicator(strokeWidth: 2.4),
+        ),
+        _SaveButtonFeedback.success => _SaveResultIcon(
+          key: const Key('keyboard-theme-save-success-icon'),
+          icon: Icons.check_box_rounded,
+          semanticLabel: 'Thème enregistré',
+          turns: 0.02,
+        ),
+        _SaveButtonFeedback.failure => _SaveResultIcon(
+          key: const Key('keyboard-theme-save-failure-icon'),
+          icon: Icons.disabled_by_default_rounded,
+          semanticLabel: 'Échec de l’enregistrement',
+          turns: -0.02,
+        ),
+        _SaveButtonFeedback.idle => const Icon(
+          Icons.save_outlined,
+          key: Key('keyboard-theme-save-idle-icon'),
+          size: 20,
+          semanticLabel: 'Enregistrer le thème',
+        ),
+      },
+    );
+  }
+}
+
+class _SaveResultIcon extends StatelessWidget {
+  const _SaveResultIcon({
+    super.key,
+    required this.icon,
+    required this.semanticLabel,
+    required this.turns,
+  });
+
+  final IconData icon;
+  final String semanticLabel;
+  final double turns;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 520),
+      curve: Curves.elasticOut,
+      builder: (context, value, child) {
+        final clamped = value.clamp(0.0, 1.0);
+        return Transform.rotate(
+          angle: (1 - clamped) * turns * math.pi,
+          child: Transform.scale(scale: 0.62 + clamped * 0.38, child: child),
+        );
+      },
+      child: Icon(icon, size: 22, semanticLabel: semanticLabel),
+    );
+  }
+}
+
+String _saveButtonLabel(_SaveButtonFeedback feedback) {
+  return switch (feedback) {
+    _SaveButtonFeedback.saving => 'Enregistrement',
+    _SaveButtonFeedback.success => 'Enregistré',
+    _SaveButtonFeedback.failure => 'Échec',
+    _SaveButtonFeedback.idle => 'Enregistrer',
+  };
 }
 
 class _SliderField extends StatelessWidget {
@@ -1366,39 +1551,43 @@ class _ThemeDraftPreviewState extends State<_ThemeDraftPreview> {
                   ))
           : null,
     );
-    return DecoratedBox(
-      key: const Key('keyboard-theme-studio-preview'),
-      decoration: background,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            _previewActionRow(theme),
-            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
-            _previewRow(theme, const ['Q', 'W', 'E', 'R', 'T']),
-            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
-            _previewRow(theme, const [
-              'A',
-              'S',
-              'D',
-              'F',
-              'G',
-            ], pinnedLabel: 'D'),
-            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
-            _previewRow(theme, const ['Maj', 'Z', 'X', 'C', '⌫']),
-            SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
-            Row(
-              children: [
-                Expanded(child: _previewKey(theme, ',', special: true)),
-                SizedBox(width: theme.keyHorizontalGap),
-                Expanded(flex: 2, child: _previewKey(theme, 'espace')),
-                SizedBox(width: theme.keyHorizontalGap),
-                Expanded(
-                  child: _previewKey(theme, '↵', special: true, active: true),
-                ),
-              ],
-            ),
-          ],
+    return SizedBox(
+      width: double.infinity,
+      child: DecoratedBox(
+        key: const Key('keyboard-theme-studio-preview'),
+        decoration: background,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _previewActionRow(theme),
+              SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
+              _previewRow(theme, const ['Q', 'W', 'E', 'R', 'T']),
+              SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
+              _previewRow(theme, const [
+                'A',
+                'S',
+                'D',
+                'F',
+                'G',
+              ], pinnedLabel: 'D'),
+              SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
+              _previewRow(theme, const ['Maj', 'Z', 'X', 'C', '⌫']),
+              SizedBox(height: theme.rowVerticalGap.clamp(4, 8).toDouble()),
+              Row(
+                children: [
+                  Expanded(child: _previewKey(theme, ',', special: true)),
+                  SizedBox(width: theme.keyHorizontalGap),
+                  Expanded(flex: 2, child: _previewKey(theme, 'espace')),
+                  SizedBox(width: theme.keyHorizontalGap),
+                  Expanded(
+                    child: _previewKey(theme, '↵', special: true, active: true),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -716,6 +716,18 @@ void main() {
 
       expect(find.text('WinFlowz • Accueil'), findsOneWidget);
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
+      final refreshAccessButton = find.widgetWithText(
+        OutlinedButton,
+        'Re-vérifier les accès',
+      );
+      final deferButton = find.widgetWithText(OutlinedButton, 'Plus tard');
+      expect(refreshAccessButton, findsOneWidget);
+      expect(deferButton, findsOneWidget);
+      expect(
+        tester.getTopLeft(refreshAccessButton).dx,
+        lessThan(tester.getTopLeft(deferButton).dx),
+      );
+      expect(find.widgetWithText(OutlinedButton, 'Paramètres'), findsNothing);
       await tester.tap(find.widgetWithText(OutlinedButton, 'Plus tard').last);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
@@ -755,13 +767,13 @@ void main() {
       await tester.ensureVisible(nextButton);
       await tester.tap(nextButton);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
-      expect(find.text('Service Accessibilité'), findsOneWidget);
-      expect(find.text('Clavier'), findsNothing);
+      expect(find.text('Clavier'), findsOneWidget);
+      expect(find.text('Service Accessibilité'), findsNothing);
 
       await tester.ensureVisible(nextButton);
       await tester.tap(nextButton);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
-      expect(find.text('Clavier'), findsOneWidget);
+      expect(find.text('Accès notifications et média'), findsOneWidget);
       expect(
         find.textContaining(
           'Historique et synchronisation du presse-papiers clavier.',
@@ -783,10 +795,18 @@ void main() {
       );
       expect(find.text('Clavier'), findsNothing);
 
-      await tester.tap(find.widgetWithText(OutlinedButton, 'Paramètres'));
+      final accessibilityProgressDot = find.byKey(
+        const ValueKey('onboarding-progress-dot-accessibility'),
+      );
+      await tester.ensureVisible(accessibilityProgressDot);
+      await tester.tap(accessibilityProgressDot);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
-      expect(find.text('Configuration WinFlowz'), findsNothing);
-      expect(find.text('WinFlowz • Réglages'), findsOneWidget);
+      expect(find.text('Service Accessibilité'), findsOneWidget);
+      expect(
+        find.textContaining('Injection directe et assistance'),
+        findsOneWidget,
+      );
+      expect(find.widgetWithText(OutlinedButton, 'Paramètres'), findsNothing);
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();
@@ -1051,12 +1071,67 @@ void main() {
       await tester.tap(keyboardProgressDot);
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
+      final activeKeyboardDot = tester.widget<IconButton>(keyboardProgressDot);
+      expect(
+        activeKeyboardDot.style?.backgroundColor?.resolve(<WidgetState>{}),
+        AppColors.warning,
+      );
+      expect(
+        activeKeyboardDot.style?.side?.resolve(<WidgetState>{})?.color,
+        AppColors.warning,
+      );
       expect(find.text('Clavier'), findsOneWidget);
       expect(find.text('Clavier WinFlowz keyboard'), findsNothing);
       expect(find.widgetWithText(TextButton, 'Activé'), findsNothing);
       expect(find.widgetWithText(TextButton, 'Plus tard'), findsNothing);
       expect(find.widgetWithText(FilledButton, 'Modifier'), findsOneWidget);
       expect(find.text('Activé'), findsWidgets);
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('skipped onboarding progress dot is red', (tester) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks();
+    final settingsStore = _MemorySettingsStore(
+      UserSettingsSnapshot.defaults().copyWith(
+        onboardingMicrophoneSkipped: true,
+      ),
+    );
+
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [settingsStoreProvider.overrideWithValue(settingsStore)],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            home: const AppShellScreen(),
+          ),
+        ),
+      );
+      await _pumpNavigationFrame(tester);
+
+      final microphoneProgressDot = find.byKey(
+        const ValueKey('onboarding-progress-dot-microphoneForDictation'),
+      );
+      final skippedMicrophoneDot = tester.widget<IconButton>(
+        microphoneProgressDot,
+      );
+      expect(
+        skippedMicrophoneDot.style?.backgroundColor?.resolve(<WidgetState>{}),
+        AppColors.danger,
+      );
+      expect(
+        skippedMicrophoneDot.style?.side?.resolve(<WidgetState>{})?.color,
+        AppColors.danger,
+      );
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();

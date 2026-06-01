@@ -47,10 +47,10 @@ void main() {
       OnboardingStepId.keyboardIme,
       OnboardingStepId.keyboardClipboard,
       OnboardingStepId.microphoneForDictation,
-      OnboardingStepId.accessibility,
       OnboardingStepId.mediaSessionAccess,
       OnboardingStepId.brightnessSystemSettings,
       OnboardingStepId.overlay,
+      OnboardingStepId.accessibility,
     ]);
     expect(
       readiness.steps
@@ -87,7 +87,7 @@ void main() {
     expect(clipboardStep.satisfied, isFalse);
   });
 
-  test('keeps overlay optional and last after selected setup', () {
+  test('keeps accessibility optional and last after selected setup', () {
     final readiness = evaluateOnboardingReadiness(
       isPlatformSupported: true,
       overlayStatus: overlayStatus,
@@ -96,12 +96,12 @@ void main() {
       onboardingCompleted: false,
       clipboardSkipped: true,
       microphoneSkipped: true,
-      accessibilitySkipped: true,
       mediaAccessSkipped: true,
       brightnessSkipped: true,
+      overlaySkipped: true,
     );
 
-    expect(readiness.activeStep?.definition.id, OnboardingStepId.overlay);
+    expect(readiness.activeStep?.definition.id, OnboardingStepId.accessibility);
     expect(readiness.activeStep?.isMandatory, isFalse);
     expect(readiness.shouldShowCompletion, isFalse);
 

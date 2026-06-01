@@ -150,17 +150,6 @@ const _stepDefinitions = <OnboardingStepDefinition>[
         'Réglages Android → Applications → WinFlowz → Autorisations → Microphone',
   ),
   OnboardingStepDefinition(
-    id: OnboardingStepId.accessibility,
-    title: 'Service Accessibilité',
-    description: 'Active le service d’accessibilité WinFlowz.',
-    why:
-        'Améliore certains cas d’injection directe, mais le clavier reste utilisable sans ce service.',
-    category: OnboardingStepCategory.recommended,
-    group: OnboardingStepGroup.voice,
-    openActionLabel: 'Ouvrir Accessibilité',
-    whereToFind: 'Réglages Android → Accessibilité → Service WinFlowz',
-  ),
-  OnboardingStepDefinition(
     id: OnboardingStepId.mediaSessionAccess,
     title: 'Accès notifications et média',
     description: 'Autorise WinFlowz à lire les notifications média Android.',
@@ -195,6 +184,17 @@ const _stepDefinitions = <OnboardingStepDefinition>[
     openActionLabel: 'Activer l’overlay',
     whereToFind:
         'Réglages Android → Applications → WinFlowz → Autorisations → Afficher les fenêtres',
+  ),
+  OnboardingStepDefinition(
+    id: OnboardingStepId.accessibility,
+    title: 'Service Accessibilité',
+    description: 'Active le service d’accessibilité WinFlowz.',
+    why:
+        'Améliore certains cas d’injection directe, mais le clavier reste utilisable sans ce service.',
+    category: OnboardingStepCategory.recommended,
+    group: OnboardingStepGroup.voice,
+    openActionLabel: 'Ouvrir Accessibilité',
+    whereToFind: 'Réglages Android → Accessibilité → Service WinFlowz',
   ),
 ];
 

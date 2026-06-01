@@ -1144,7 +1144,6 @@ class _OnboardingOverlay extends StatelessWidget {
         onSecondaryAction: onSecondaryAction,
         onSkip: onSkip,
         onRefresh: onRefresh,
-        onOpenSettings: onOpenSettings,
       );
     }
     return Positioned.fill(
@@ -1256,7 +1255,6 @@ class _OnboardingOverviewContent extends StatefulWidget {
     required this.onSecondaryAction,
     required this.onSkip,
     required this.onRefresh,
-    required this.onOpenSettings,
   });
 
   final OnboardingReadiness readiness;
@@ -1266,7 +1264,6 @@ class _OnboardingOverviewContent extends StatefulWidget {
   final Future<void> Function(OnboardingStepId stepId)? onSecondaryAction;
   final Future<void> Function(OnboardingStepId stepId) onSkip;
   final Future<void> Function() onRefresh;
-  final VoidCallback onOpenSettings;
 
   @override
   State<_OnboardingOverviewContent> createState() =>
@@ -1283,12 +1280,6 @@ class _OnboardingOverviewContentState
       icon: Icons.keyboard_voice_outlined,
       title: 'Micro et voix',
       subtitle: 'Dictée vocale et injection assistée.',
-    ),
-    _OnboardingUseCasePage(
-      stepId: OnboardingStepId.accessibility,
-      icon: Icons.accessibility_new_outlined,
-      title: 'Service Accessibilité',
-      subtitle: 'Injection directe et assistance dans les champs texte.',
     ),
     _OnboardingUseCasePage(
       stepId: OnboardingStepId.keyboardIme,
@@ -1319,6 +1310,12 @@ class _OnboardingOverviewContentState
       icon: Icons.open_in_new_outlined,
       title: 'Overlay flottant',
       subtitle: 'Bulle flottante hors parcours principal.',
+    ),
+    _OnboardingUseCasePage(
+      stepId: OnboardingStepId.accessibility,
+      icon: Icons.accessibility_new_outlined,
+      title: 'Service Accessibilité',
+      subtitle: 'Injection directe et assistance dans les champs texte.',
     ),
   ];
 
@@ -1377,36 +1374,42 @@ class _OnboardingOverviewContentState
               icon: const Icon(Icons.arrow_forward_outlined),
               label: const Text('Suivant'),
             ),
-            if (!showCompletionAction)
-              OutlinedButton.icon(
-                onPressed: widget.isBusy ? null : widget.onDefer,
-                icon: const Icon(Icons.schedule_outlined),
-                label: const Text('Plus tard'),
-              )
-            else
-              Text(
-                'Bravo ! Toutes les étapes sont complétées.',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-            if (widget.isBusy)
-              const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            else
-              OutlinedButton.icon(
-                onPressed: () => widget.onRefresh(),
-                icon: const Icon(Icons.refresh_outlined),
-                label: const Text('Re-vérifier les accès'),
-              ),
-            if (!widget.isBusy)
-              OutlinedButton.icon(
-                onPressed: widget.onOpenSettings,
-                icon: const Icon(Icons.settings_outlined),
-                label: const Text('Paramètres'),
-              ),
           ],
+        ),
+        AppGaps.x2,
+        Align(
+          alignment: Alignment.centerRight,
+          child: Wrap(
+            alignment: WrapAlignment.end,
+            spacing: AppSpacing.x2,
+            runSpacing: AppSpacing.x2,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (widget.isBusy)
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed: () => widget.onRefresh(),
+                  icon: const Icon(Icons.refresh_outlined),
+                  label: const Text('Re-vérifier les accès'),
+                ),
+              if (!showCompletionAction)
+                OutlinedButton.icon(
+                  onPressed: widget.isBusy ? null : widget.onDefer,
+                  icon: const Icon(Icons.schedule_outlined),
+                  label: const Text('Plus tard'),
+                )
+              else
+                Text(
+                  'Bravo ! Toutes les étapes sont complétées.',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+            ],
+          ),
         ),
       ],
     );
@@ -1487,9 +1490,11 @@ class _OnboardingProgressDots extends StatelessWidget {
                   isCurrent: i == index,
                 ),
                 side: BorderSide(
-                  color: i == index
-                      ? colorScheme.primary
-                      : colorScheme.outlineVariant,
+                  color: _dotBorderColor(
+                    colorScheme: colorScheme,
+                    stepId: pages[i].stepId,
+                    isCurrent: i == index,
+                  ),
                 ),
                 shape: const CircleBorder(),
               ),
@@ -1507,16 +1512,15 @@ class _OnboardingProgressDots extends StatelessWidget {
   }
 
   String _dotStatusLabel(OnboardingStepId stepId) {
-    for (final step in readiness.steps) {
-      if (step.definition.id == stepId) {
-        if (step.satisfied) {
-          return 'terminé';
-        }
-        if (step.skipped) {
-          return 'ignoré';
-        }
-        return 'à terminer';
+    final step = _stepFor(stepId);
+    if (step != null) {
+      if (step.satisfied) {
+        return 'terminé';
       }
+      if (step.skipped) {
+        return 'ignoré';
+      }
+      return 'à terminer';
     }
     return 'indisponible';
   }
@@ -1526,12 +1530,17 @@ class _OnboardingProgressDots extends StatelessWidget {
     required OnboardingStepId stepId,
     required bool isCurrent,
   }) {
-    for (final step in readiness.steps) {
-      if (step.definition.id == stepId && step.satisfied) {
-        return AppColors.success;
-      }
+    final step = _stepFor(stepId);
+    if (step?.skipped ?? false) {
+      return AppColors.danger;
     }
-    return isCurrent ? colorScheme.primary : colorScheme.outlineVariant;
+    if (isCurrent) {
+      return AppColors.warning;
+    }
+    if (step?.satisfied ?? false) {
+      return AppColors.success;
+    }
+    return colorScheme.outlineVariant;
   }
 
   Color _iconColor({
@@ -1539,12 +1548,41 @@ class _OnboardingProgressDots extends StatelessWidget {
     required OnboardingStepId stepId,
     required bool isCurrent,
   }) {
+    final step = _stepFor(stepId);
+    if (step?.skipped ?? false) {
+      return Colors.white;
+    }
+    if (isCurrent) {
+      return Colors.white;
+    }
+    if (step?.satisfied ?? false) {
+      return Colors.white;
+    }
+    return colorScheme.onSurfaceVariant;
+  }
+
+  Color _dotBorderColor({
+    required ColorScheme colorScheme,
+    required OnboardingStepId stepId,
+    required bool isCurrent,
+  }) {
+    final step = _stepFor(stepId);
+    if (step?.skipped ?? false) {
+      return AppColors.danger;
+    }
+    if (isCurrent) {
+      return AppColors.warning;
+    }
+    return colorScheme.outlineVariant;
+  }
+
+  OnboardingStepProgress? _stepFor(OnboardingStepId stepId) {
     for (final step in readiness.steps) {
-      if (step.definition.id == stepId && step.satisfied) {
-        return Colors.white;
+      if (step.definition.id == stepId) {
+        return step;
       }
     }
-    return isCurrent ? colorScheme.onPrimary : colorScheme.onSurfaceVariant;
+    return null;
   }
 }
 
