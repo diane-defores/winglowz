@@ -4,6 +4,7 @@ import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionBarState
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardAttachedActionRowState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -903,8 +904,10 @@ class KeyboardLayoutBuilderTest {
 
         assertEquals(2, snapshot.panelRowCount)
         assertEquals("media-panel-primary", panelRows[0].rowId)
-        assertTrue(panelRows[0].pagedHorizontalScrollable)
-        assertEquals(10, panelRows[0].visiblePageKeyCount)
+        assertFalse(panelRows[0].horizontalScrollable)
+        assertFalse(panelRows[0].pagedHorizontalScrollable)
+        assertNull(panelRows[0].visiblePageKeyCount)
+        assertEquals(10, panelRows[0].keys.size)
         assertTrue(actions.contains(KeyboardKeyAction.MediaPrevious))
         assertTrue(actions.contains(KeyboardKeyAction.MediaPlayPause))
         assertTrue(actions.contains(KeyboardKeyAction.MediaNext))
@@ -916,7 +919,11 @@ class KeyboardLayoutBuilderTest {
         assertTrue(actions.contains(KeyboardKeyAction.VolumeUp))
         assertTrue(actions.contains(KeyboardKeyAction.BrightnessDown))
         assertTrue(actions.contains(KeyboardKeyAction.BrightnessUp))
+        assertEquals("media-row-now-playing-label", panelRows[1].rowId)
+        assertFalse(panelRows[1].pagedHorizontalScrollable)
+        assertNull(panelRows[1].visiblePageKeyCount)
         assertEquals("Daft Punk - Digital Love", panelRows[1].keys.single().label)
+        assertEquals(10f, panelRows[1].keys.single().weight)
     }
 
     @Test

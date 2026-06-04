@@ -1609,6 +1609,11 @@ void main() {
 
     await _tapVisible(tester, find.text('Now'));
     expect(find.text('Daft Punk - Digital Love'), findsWidgets);
+    final nowPlayingKey = find.ancestor(
+      of: find.text('Daft Punk - Digital Love'),
+      matching: find.byType(InkWell),
+    );
+    expect(tester.getRect(nowPlayingKey).width, greaterThan(700));
 
     await _tapVisible(tester, find.text('Now'));
     expect(find.text('Daft Punk - Digital Love'), findsNothing);

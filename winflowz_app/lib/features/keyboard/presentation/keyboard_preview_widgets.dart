@@ -1504,7 +1504,7 @@ class KeyboardPreviewSnapshot {
                 KeyboardPreviewKey(
                   label: mediaNowPlaying!,
                   special: true,
-                  weight: 5,
+                  weight: 10,
                   action: KeyboardPreviewKeyAction.mediaNowPlaying,
                 ),
               ],

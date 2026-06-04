@@ -848,15 +848,17 @@ object KeyboardLayoutBuilder {
                     add(KeyboardKeySpec("media-stop", "Stop", KeyboardKeyAction.MediaStop))
                 }
             }
+        val primaryMediaRowScrollable =
+            !request.compactModeEnabled && primaryMediaKeys.size > 10
         val rows =
             mutableListOf(
                 padRowToFixedWidth(
                     KeyboardRowSpec(
-                    keys = primaryMediaKeys,
-                    horizontalScrollable = !request.compactModeEnabled,
-                    pagedHorizontalScrollable = !request.compactModeEnabled,
-                    visiblePageKeyCount = if (request.compactModeEnabled) null else 10,
-                    rowId = "media-panel-primary",
+                        keys = primaryMediaKeys,
+                        horizontalScrollable = primaryMediaRowScrollable,
+                        pagedHorizontalScrollable = primaryMediaRowScrollable,
+                        visiblePageKeyCount = if (primaryMediaRowScrollable) 10 else null,
+                        rowId = "media-panel-primary",
                     ),
                     10,
                     "media-row-primary",
@@ -865,28 +867,28 @@ object KeyboardLayoutBuilder {
         if (request.compactModeEnabled) {
             rows.add(
                 padRowToFixedWidth(
-                KeyboardRowSpec(
-                    keys =
-                        listOf(
-                            KeyboardKeySpec("media-volume-down", "Vol-", KeyboardKeyAction.VolumeDown),
-                            KeyboardKeySpec("media-volume-up", "Vol+", KeyboardKeyAction.VolumeUp),
-                            KeyboardKeySpec("media-brightness-down", "Bri-", KeyboardKeyAction.BrightnessDown),
-                            KeyboardKeySpec("media-brightness-up", "Bri+", KeyboardKeyAction.BrightnessUp),
-                            KeyboardKeySpec("media-close", "Back", KeyboardKeyAction.ClosePanel),
-                        ),
-                ),
+                    KeyboardRowSpec(
+                        keys =
+                            listOf(
+                                KeyboardKeySpec("media-volume-down", "Vol-", KeyboardKeyAction.VolumeDown),
+                                KeyboardKeySpec("media-volume-up", "Vol+", KeyboardKeyAction.VolumeUp),
+                                KeyboardKeySpec("media-brightness-down", "Bri-", KeyboardKeyAction.BrightnessDown),
+                                KeyboardKeySpec("media-brightness-up", "Bri+", KeyboardKeyAction.BrightnessUp),
+                                KeyboardKeySpec("media-close", "Back", KeyboardKeyAction.ClosePanel),
+                            ),
+                    ),
                     10,
                     "media-row-compact-controls",
                 ),
             )
             rows.add(
                 padRowToFixedWidth(
-                KeyboardRowSpec(
-                    keys =
-                        listOf(
-                            KeyboardKeySpec("media-status", "Media controls", KeyboardKeyAction.MediaNowPlaying),
-                        ),
-                ),
+                    KeyboardRowSpec(
+                        keys =
+                            listOf(
+                                KeyboardKeySpec("media-status", "Media controls", KeyboardKeyAction.MediaNowPlaying),
+                            ),
+                    ),
                     10,
                     "media-row-status",
                 ),
@@ -894,7 +896,6 @@ object KeyboardLayoutBuilder {
         }
         request.mediaNowPlayingLabel?.let { label ->
             rows.add(
-                padRowToFixedWidth(
                 KeyboardRowSpec(
                     keys =
                         listOf(
@@ -902,11 +903,10 @@ object KeyboardLayoutBuilder {
                                 "media-now-playing-label",
                                 label,
                                 KeyboardKeyAction.MediaNowPlaying,
+                                weight = 10f,
                             ),
                         ),
-                ),
-                    10,
-                    "media-row-now-playing-label",
+                    rowId = "media-row-now-playing-label",
                 ),
             )
         }
