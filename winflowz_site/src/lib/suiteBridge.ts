@@ -2,13 +2,11 @@ export const SUITE_PRODUCT_ALLOWLIST = [
   'winflowz_app',
   'winflowz_formation',
   'replayglowz',
-  'tubeflow',
   'socialglowz',
 ] as const
 
 export const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
 export const SOCIALGLOWZ_PRODUCT_ID = 'socialglowz'
-export const REPLAYGLOWZ_LEGACY_PRODUCT_IDS = ['tubeflow'] as const
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_KEY_ID =
   'replayglowz-suite-2026-06-02'
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_ISSUER = 'https://winflowz.com'
@@ -48,7 +46,6 @@ export type BridgeEntitlementSnapshot = {
 
 export type ReplayGlowzEntitlementReasonCode =
   | 'active_entitlement'
-  | 'legacy_alias_entitlement'
   | 'default_free_entitlement'
   | 'missing_product_entitlement'
   | 'account_not_found'
@@ -498,21 +495,6 @@ export function resolveReplayGlowzEntitlementSnapshot({
       globalUserId,
       matchedProductId: REPLAYGLOWZ_PRODUCT_ID,
       reasonCode: 'active_entitlement',
-    }
-  }
-
-  const legacy = entitlements.find(
-    (entry) =>
-      (REPLAYGLOWZ_LEGACY_PRODUCT_IDS as readonly string[]).includes(
-        entry.productId
-      ) && isActiveAccessStatus(entry.status)
-  )
-  if (legacy) {
-    return {
-      hasAccess: true,
-      globalUserId,
-      matchedProductId: legacy.productId,
-      reasonCode: 'legacy_alias_entitlement',
     }
   }
 

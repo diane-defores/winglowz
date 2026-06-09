@@ -46,11 +46,11 @@ const PRODUCTS = [
   {
     group: "WinFlowz",
     name: "WinFlowz — Bundle",
-    description: "Full Training + SocialFlow Lifetime + 1 year TubeFlow Pro. Best value for the complete Flowz ecosystem.",
+    description: "Full Training + SocialFlow Lifetime + 1 year ReplayGlowz Pro. Best value for the complete Flowz ecosystem.",
     prices: [
       { type: "one_time", amountType: "fixed", priceAmount: 14900, priceCurrency: "usd" },
     ],
-    metadata: { entitlement: "bundle_full", includes: "winflowz_training,socialflow_lifetime,tubeflow_pro_1yr" },
+    metadata: { entitlement: "bundle_full", includes: "winflowz_training,socialflow_lifetime,replayglowz_pro_1yr" },
   },
 
   // ── SocialFlow ────────────────────────────────────────────
@@ -85,42 +85,42 @@ const PRODUCTS = [
     metadata: { entitlement: "socialflow_lifetime", launch_price: "true" },
   },
 
-  // ── TubeFlow ──────────────────────────────────────────────
+  // ── ReplayGlowz ──────────────────────────────────────────────
   {
-    group: "TubeFlow",
-    name: "TubeFlow Pro — Monthly",
+    group: "ReplayGlowz",
+    name: "ReplayGlowz Pro — Monthly",
     description: "AI transcription (50 videos/mo), unlimited playlists & videos, AI-powered summaries, export to Obsidian & Notion, cross-device sync, advanced search, priority support.",
     prices: [
       { type: "recurring", amountType: "fixed", priceAmount: 700, priceCurrency: "usd", recurringInterval: "month" },
     ],
-    metadata: { entitlement: "tubeflow_pro" },
+    metadata: { entitlement: "replayglowz_pro" },
   },
   {
-    group: "TubeFlow",
-    name: "TubeFlow Pro — Annual",
+    group: "ReplayGlowz",
+    name: "ReplayGlowz Pro — Annual",
     description: "AI transcription (50 videos/mo), unlimited playlists & videos, AI-powered summaries, export to Obsidian & Notion, cross-device sync, advanced search, priority support. Billed annually ($56/yr).",
     prices: [
       { type: "recurring", amountType: "fixed", priceAmount: 5600, priceCurrency: "usd", recurringInterval: "year" },
     ],
-    metadata: { entitlement: "tubeflow_pro" },
+    metadata: { entitlement: "replayglowz_pro" },
   },
   {
-    group: "TubeFlow",
-    name: "TubeFlow Power — Monthly",
+    group: "ReplayGlowz",
+    name: "ReplayGlowz Power — Monthly",
     description: "AI transcription (200 videos/mo), everything in Pro, early access to new features, priority support.",
     prices: [
       { type: "recurring", amountType: "fixed", priceAmount: 1500, priceCurrency: "usd", recurringInterval: "month" },
     ],
-    metadata: { entitlement: "tubeflow_power" },
+    metadata: { entitlement: "replayglowz_power" },
   },
   {
-    group: "TubeFlow",
-    name: "TubeFlow Power — Annual",
+    group: "ReplayGlowz",
+    name: "ReplayGlowz Power — Annual",
     description: "AI transcription (200 videos/mo), everything in Pro, early access to new features, priority support. Billed annually ($120/yr).",
     prices: [
       { type: "recurring", amountType: "fixed", priceAmount: 12000, priceCurrency: "usd", recurringInterval: "year" },
     ],
-    metadata: { entitlement: "tubeflow_power" },
+    metadata: { entitlement: "replayglowz_power" },
   },
 ];
 

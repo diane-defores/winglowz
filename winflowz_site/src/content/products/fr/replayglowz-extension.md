@@ -1,14 +1,14 @@
 ---
-title: "TubeFlowz"
+title: "ReplayGlowz"
 description: "Extension Chrome avancée pour les marque-pages YouTube"
 status: "beta"
 main:
   id: 1
   content: |
-    Découvrez TubeFlowz – votre compagnon ultime de productivité sur YouTube. Cette puissante extension Chrome transforme votre expérience de visionnage avec des fonctionnalités avancées de marque-pages, des raccourcis clavier personnalisables et des options d'export intuitives. Parfait pour les étudiants, chercheurs et tous ceux qui souhaitent organiser leur apprentissage sur YouTube.
+    Découvrez ReplayGlowz – votre compagnon ultime de productivité sur YouTube. Cette puissante extension Chrome transforme votre expérience de visionnage avec des fonctionnalités avancées de marque-pages, des raccourcis clavier personnalisables et des options d'export intuitives. Parfait pour les étudiants, chercheurs et tous ceux qui souhaitent organiser leur apprentissage sur YouTube.
   imgCard: "@/images/WinFlowz.png"
   imgMain: "@/images/WinFlowz.png"
-  imgAlt: "Capture d'écran de l'interface de l'extension TubeFlowz"
+  imgAlt: "Capture d'écran de l'interface de l'extension ReplayGlowz"
 tabs:
   - id: "tabs-with-card-item-1"
     dataTab: "#tabs-with-card-1"
@@ -22,7 +22,7 @@ tabs:
 longDescription:
   title: "Transformez votre expérience d'apprentissage sur YouTube"
   subTitle: |
-    TubeFlowz apporte des capacités de marque-pages professionnelles à YouTube, vous aidant à organiser et naviguer facilement dans le contenu éducatif. Que vous soyez en train d'étudier, de faire des recherches ou simplement de suivre des moments importants dans les vidéos, TubeFlowz rend tout cela sans effort.
+    ReplayGlowz apporte des capacités de marque-pages professionnelles à YouTube, vous aidant à organiser et naviguer facilement dans le contenu éducatif. Que vous soyez en train d'étudier, de faire des recherches ou simplement de suivre des moments importants dans les vidéos, ReplayGlowz rend tout cela sans effort.
   btnTitle: "Rejoindre la beta"
   btnURL: "/fr/contact"
 descriptionList:

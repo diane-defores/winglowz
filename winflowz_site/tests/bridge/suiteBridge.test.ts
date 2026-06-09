@@ -104,7 +104,7 @@ describe('suiteBridge helpers', () => {
     expect(isAllowedSuiteProduct('winflowz_app')).toBe(true)
     expect(isAllowedSuiteProduct('winflowz_formation')).toBe(true)
     expect(isAllowedSuiteProduct('replayglowz')).toBe(true)
-    expect(isAllowedSuiteProduct('tubeflow')).toBe(true)
+    expect(isAllowedSuiteProduct('old_youtube_product')).toBe(false)
     expect(isAllowedSuiteProduct('legacy_product')).toBe(false)
   })
 
@@ -119,7 +119,7 @@ describe('suiteBridge helpers', () => {
       hasActiveEntitlement(
         [
           { productId: 'winflowz_app', status: 'trialing', plan: 'monthly' },
-          { productId: 'tubeflow', status: 'refunded', plan: 'pro' },
+          { productId: 'old_youtube_product', status: 'refunded', plan: 'pro' },
         ],
         'winflowz_app'
       )
@@ -138,7 +138,7 @@ describe('suiteBridge helpers', () => {
         globalUserId: 'gu_123',
         entitlements: [
           { productId: 'winflowz_app', status: 'active', plan: 'pro' },
-          { productId: 'tubeflow', status: 'active', plan: 'pro' },
+          { productId: 'replayglowz', status: 'active', plan: 'pro' },
         ],
       })
     ).toEqual({
@@ -266,7 +266,7 @@ describe('suiteBridge helpers', () => {
       resolveReplayGlowzEntitlementSnapshot({
         globalUserId: 'gu_123',
         entitlements: [
-          { productId: 'tubeflow', status: 'active', plan: 'legacy' },
+          { productId: 'old_youtube_product', status: 'active', plan: 'legacy' },
           { productId: 'replayglowz', status: 'trialing', plan: 'pro' },
         ],
       })
@@ -278,19 +278,19 @@ describe('suiteBridge helpers', () => {
     })
   })
 
-  test('resolves ReplayGlowz access from legacy alias only', () => {
+  test('ignores old ReplayGlowz aliases and falls back to free access', () => {
     expect(
       resolveReplayGlowzEntitlementSnapshot({
         globalUserId: 'gu_123',
         entitlements: [
-          { productId: 'tubeflow', status: 'active', plan: 'legacy' },
+          { productId: 'old_youtube_product', status: 'active', plan: 'legacy' },
         ],
       })
     ).toEqual({
       hasAccess: true,
       globalUserId: 'gu_123',
-      matchedProductId: 'tubeflow',
-      reasonCode: 'legacy_alias_entitlement',
+      matchedProductId: 'replayglowz',
+      reasonCode: 'default_free_entitlement',
     })
   })
 

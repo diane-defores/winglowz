@@ -7,12 +7,10 @@ const SUITE_PRODUCT_ALLOWLIST = new Set([
   'winflowz_app',
   'winflowz_formation',
   'replayglowz',
-  'tubeflow',
   'socialglowz',
 ])
 const ACTIVE_ENTITLEMENT_STATUSES = new Set(['active', 'trialing'])
 const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
-const REPLAYGLOWZ_LEGACY_PRODUCT_IDS = ['tubeflow']
 const REPLAYGLOWZ_DEFAULT_FREE_PLAN = 'free'
 const REPLAYGLOWZ_DEFAULT_FREE_SOURCE = 'product_default'
 const SOCIALGLOWZ_PRODUCT_ID = 'socialglowz'
@@ -376,20 +374,6 @@ function resolveReplayGlowzAccess(args: {
       globalUserId: args.globalUserId,
       matchedProductId: REPLAYGLOWZ_PRODUCT_ID,
       reasonCode: 'active_entitlement',
-    }
-  }
-
-  const legacy = args.entitlements.find(
-    (entry) =>
-      REPLAYGLOWZ_LEGACY_PRODUCT_IDS.includes(entry.productId) &&
-      isActiveAccessStatus(entry.status)
-  )
-  if (legacy) {
-    return {
-      hasAccess: true,
-      globalUserId: args.globalUserId,
-      matchedProductId: legacy.productId,
-      reasonCode: 'legacy_alias_entitlement',
     }
   }
 

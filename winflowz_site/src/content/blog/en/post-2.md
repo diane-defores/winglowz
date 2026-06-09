@@ -31,7 +31,7 @@ This means:
 
 ## API Key Management
 
-Some of our tools integrate with third-party services (YouTube for TubeFlowz, RSS feeds for RSSFlowz). In these cases:
+Some of our tools integrate with third-party services (YouTube for ReplayGlowz, RSS feeds for RSSFlowz). In these cases:
 - **You** provide and manage your own API keys
 - Keys are stored locally in your Obsidian vault settings
 - WinFlowz never transmits or stores your API credentials

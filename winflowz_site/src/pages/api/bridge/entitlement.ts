@@ -16,7 +16,6 @@ const JSON_HEADERS = { 'Content-Type': 'application/json' }
 const ENTITLEMENT_SECRET_HEADER = 'x-suite-entitlement-secret'
 const ALLOWED_REASON_CODES = new Set<ReplayGlowzEntitlementReasonCode>([
   'active_entitlement',
-  'legacy_alias_entitlement',
   'default_free_entitlement',
   'missing_product_entitlement',
   'account_not_found',

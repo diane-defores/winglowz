@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-05-09"
 created_at: "2026-05-09 15:19:23 UTC"
-updated: "2026-05-14"
-updated_at: "2026-05-15 00:11:49 UTC"
-status: implementation
+updated: "2026-06-09"
+updated_at: "2026-06-09 21:05:11 UTC"
+status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "design-system-settings"
@@ -342,9 +342,9 @@ Transformer l'Appearance selector en préférence produit complète: module Sett
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-09 15:19:23 UTC | sf-spec | GPT-5 Codex | Created draft spec for post-settings-decision design system completion | Draft spec created; later unblocked by backend-agnostic SettingsStore decision | Continue implementation and verification |
-| 2026-05-11 19:08:22 UTC | sf-ship | GPT-5.5 | Centralized theme variables using TubeFlow theme references across AppTheme, keyboard preview, settings slider, and shell breakpoints; copied theme-reference assets from tubeflow_site | shipped | `/sf-end shipflow_data/workflow/specs/settings-driven-design-system.md` |
-| 2026-05-14 22:27:20 UTC | sf-design-from-scratch | GPT-5 Codex | Reworked the Flutter visual layer toward TubeFlow: monochrome action palette, charcoal/off-white surfaces, stronger card depth, themed shell background, auth card, and card-based form panels on representative screens | passed local validation | Continue visual audit/playground before final closure |
-| 2026-05-14 22:37:00 UTC | sf-audit-components | GPT-5 Codex | Audited Flutter component architecture after TubeFlow design pass | C overall; top-heavy screens, repeated CRUD panels, oversized Settings/Keyboard widgets | Extract shared UI primitives before final design-system closure |
+| 2026-05-11 19:08:22 UTC | sf-ship | GPT-5.5 | Centralized theme variables using legacy site theme references across AppTheme, keyboard preview, settings slider, and shell breakpoints; copied legacy theme-reference assets | shipped | `/sf-end shipflow_data/workflow/specs/settings-driven-design-system.md` |
+| 2026-05-14 22:27:20 UTC | sf-design-from-scratch | GPT-5 Codex | Reworked the Flutter visual layer toward the legacy site style: monochrome action palette, charcoal/off-white surfaces, stronger card depth, themed shell background, auth card, and card-based form panels on representative screens | passed local validation | Continue visual audit/playground before final closure |
+| 2026-05-14 22:37:00 UTC | sf-audit-components | GPT-5 Codex | Audited Flutter component architecture after legacy site design pass | C overall; top-heavy screens, repeated CRUD panels, oversized Settings/Keyboard widgets | Extract shared UI primitives before final design-system closure |
 | 2026-05-14 22:47:39 UTC | component-refactor | GPT-5 Codex | Added shared Flutter UI primitives, migrated representative CRUD pages, grouped keyboard preview control props, and moved initial Settings sections to shared cards | passed local validation | Continue extracting Settings keyboard/overlay/secrets sections |
 | 2026-05-14 22:49:32 UTC | chantier-classification | GPT-5 Codex | Corrected the component audit classification after operator challenge | component audit `C` is an active chantier attached to this spec; no separate parallel chantier opened | Keep `sf-end` blocked until remaining component work raises the baseline |
 | 2026-05-14 22:57:24 UTC | continue | GPT-5 Codex | Continued the active component chantier by splitting Settings rendering into dedicated section widgets and adding `AppStatusCard` | `flutter analyze` and `flutter test` passed | Continue accessibility/focus contracts and orchestration extraction |

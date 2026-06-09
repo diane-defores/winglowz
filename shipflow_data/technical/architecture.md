@@ -111,7 +111,7 @@ Astro API routes act as thin integration controllers for:
 - suite bridge endpoints:
   - `POST /api/bridge/firebase` maps Firebase users to suite identities and mirrors `winflowz_app` access into Firestore.
   - `POST /api/bridge/sync` refreshes the Firestore access mirror by `globalUserId`.
-  - `POST /api/bridge/entitlement` verifies a Clerk session token server-side and returns a redacted ReplayGlowz entitlement snapshot for `product_id=replayglowz`, accepting `tubeflow` only as a legacy alias. When a recognized Clerk account has no active ReplayGlowz entitlement yet, the bridge persists a product-scoped `replayglowz/free` default grant instead of granting suite-wide access.
+  - `POST /api/bridge/entitlement` verifies a Clerk session token server-side and returns a redacted ReplayGlowz entitlement snapshot for `product_id=replayglowz`; old YouTube-product ids are no longer accepted. When a recognized Clerk account has no active ReplayGlowz entitlement yet, the bridge persists a product-scoped `replayglowz/free` default grant instead of granting suite-wide access.
 
 ### Backend state layer
 

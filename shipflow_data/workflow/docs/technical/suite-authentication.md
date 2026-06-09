@@ -130,7 +130,7 @@ Product Backends
 - Uses suite identity for account recognition.
 - Keeps YouTube OAuth separate from suite identity: YouTube grants are product permissions, not the user's WinFlowz identity.
 - Requires product entitlement checks for `product_id=replayglowz` before private ReplayGlowz data access.
-- Treats the old YouTube product id only as a legacy alias or migration input; new entitlements must use `replayglowz`.
+- Rejects old YouTube product ids at runtime; migrations must normalize historical records to `replayglowz` before entitlement checks.
 
 ### Legacy Naming: VoiceFlowz / VoiceFlows
 
@@ -170,7 +170,7 @@ As of 2026-05-21, the first Formation/app bridge tranche has started:
 - The WinFlowz Android app also gates Firestore-backed stores on `suiteIdentityProvider.hasAccessTo(winflowz_app)`. A signed-in Firebase user without suite entitlement stays on local stores instead of receiving remote product data.
 - Convex exposes a protected entitlement snapshot by `globalUserId`; the internal Formation endpoint `POST /api/bridge/sync` accepts only `{ globalUserId }` plus `x-suite-bridge-secret`, re-reads Convex entitlements, resolves linked Firebase UIDs, and rewrites the Firestore mirror with Firebase Admin.
 - Polar grant/refund/revoke webhook handling now calls the sync endpoint after entitlement changes. If the sync fails, webhook handling fails closed with retryable server error semantics instead of silently leaving stale product access.
-- `POST /api/bridge/entitlement` exists on the WinFlowz Formation server for ReplayGlowz. It requires `x-suite-entitlement-secret`, `Authorization: Bearer <Clerk session token>`, `CLERK_SECRET_KEY`, `PUBLIC_CONVEX_URL` and `SUITE_BRIDGE_CONVEX_SECRET`; it verifies the Clerk token server-side, resolves the Clerk user in Convex, checks `product_id=replayglowz`, accepts `tubeflow` only as a legacy alias, and returns only `hasAccess`, `globalUserId`, `matchedProductId` and `reasonCode`.
+- `POST /api/bridge/entitlement` exists on the WinFlowz Formation server for ReplayGlowz. It requires `x-suite-entitlement-secret`, `Authorization: Bearer <Clerk session token>`, `CLERK_SECRET_KEY`, `PUBLIC_CONVEX_URL` and `SUITE_BRIDGE_CONVEX_SECRET`; it verifies the Clerk token server-side, resolves the Clerk user in Convex, checks `product_id=replayglowz`, rejects old YouTube-product ids, and returns only `hasAccess`, `globalUserId`, `matchedProductId` and `reasonCode`.
 
 This is not a completed suite auth launch yet. Cross-product smoke tests with real Firebase/Convex provider payloads and deployed `SUITE_BRIDGE_SYNC_URL` proof remain open.
 
@@ -190,7 +190,7 @@ Before implementation starts, the suite spec must be updated so `/sf-ready` can 
 
 - provider gate resolved as `Clerk central + Firebase Android bridge`;
 - first proof pair selected, preferably WinFlowz Formation + WinFlowz Android app;
-- product id canon selected, with `replayglowz` as the YouTube product and the old product id only as a legacy alias.
+- product id canon selected, with `replayglowz` as the only accepted YouTube product id.
 
 ## Support Runbook
 

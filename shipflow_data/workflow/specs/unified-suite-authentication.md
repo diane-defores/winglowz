@@ -5,8 +5,8 @@ artifact_version: "1.0.25"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
-updated: "2026-05-23"
-updated_at: "2026-05-23 19:33:42 UTC"
+updated: "2026-06-09"
+updated_at: "2026-06-09 21:05:11 UTC"
 status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -171,7 +171,7 @@ L'implémentation doit être progressive. La première tranche ne migre pas tous
   - `winflowz_formation`;
   - `winflowz_app`;
   - `replayglowz`.
-  - l'ancien product id YouTube est un alias legacy/migration seulement et ne doit plus être créé pour de nouveaux droits.
+  - l'ancien product id YouTube n'est plus accepté au runtime; les migrations doivent normaliser les historiques vers `replayglowz`.
   - Legacy VoiceFlowz / VoiceFlows references map to `winflowz_app`, not to a separate product id.
 - Contrats de token et backend:
   - issuer/audience/app id vérifiés;
@@ -425,7 +425,7 @@ Update or create:
 # Test Strategy
 
 - Unit tests:
-  - product id allowlist validation for `winflowz_formation`, `winflowz_app`, `replayglowz`, with the old YouTube product id accepted only as a legacy migration alias;
+  - product id allowlist validation for `winflowz_formation`, `winflowz_app`, and `replayglowz`, with old YouTube product ids rejected at runtime;
   - legacy VoiceFlowz / VoiceFlows references map to `winflowz_app` and cannot create a separate entitlement namespace;
   - entitlement model validation;
   - duplicate email/linking policy;
@@ -502,7 +502,7 @@ Resolved decisions:
 
 - Provider gate: Clerk central identity + Firebase Android bridge.
 - First proof pair: WinFlowz Formation + WinFlowz Android app.
-- Product ID canon: internal allowlist `winflowz_formation`, `winflowz_app`, `replayglowz`; the old YouTube product id is a legacy migration alias only; historical VoiceFlowz / VoiceFlows references map to `winflowz_app`; external billing IDs are stored as `source_ref`, not used as canonical `product_id`.
+- Product ID canon: internal allowlist `winflowz_formation`, `winflowz_app`, `replayglowz`; old YouTube product ids are migration input only and must be normalized before runtime entitlement checks; historical VoiceFlowz / VoiceFlows references map to `winflowz_app`; external billing IDs are stored as `source_ref`, not used as canonical `product_id`.
 
 # Skill Run History
 

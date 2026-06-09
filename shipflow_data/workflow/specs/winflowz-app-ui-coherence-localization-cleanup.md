@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-05-28"
 created_at: "2026-05-28 19:36:12 UTC"
-updated: "2026-06-01"
-updated_at: "2026-06-01 22:59:07 UTC"
+updated: "2026-06-09"
+updated_at: "2026-06-09 14:54:38 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -48,7 +48,7 @@ supersedes: []
 evidence:
   - "sf-audit-design 2026-05-28 found touch targets below mobile accessibility norms in lib/core/theme/app_theme.dart:215 and lib/core/theme/app_theme.dart:220."
   - "sf-audit-design 2026-05-28 found mixed French and English UI labels in lib/features/clipboard/presentation/clipboard_screen.dart:345, lib/features/snippets/presentation/snippets_screen.dart:259, and lib/features/dictionary/presentation/dictionary_screen.dart:266."
-  - "sf-audit-design 2026-05-28 found token provenance drift from TubeFlow references in lib/core/theme/tubeflow_site_theme_tokens.dart:3 and Settings copy claiming WinFlowz/Flowz tokens in lib/features/settings/presentation/settings_screen_sections.dart:127."
+  - "sf-audit-design 2026-05-28 found token provenance drift from legacy video-app references in lib/core/theme/winflowz_theme_tokens.dart:3 and Settings copy claiming WinFlowz/Flowz tokens in lib/features/settings/presentation/settings_screen_sections.dart:127."
   - "sf-audit-design 2026-05-28 found Settings IA overload across account, appearance, backend diagnostics, local AI keys, platform status, keyboard, overlay, and voice packs."
   - "sf-audit-design 2026-05-28 found bare empty states in shared AppEmptyStateCard and CRUD screens."
 next_step: "/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md"
@@ -89,7 +89,7 @@ The Flutter app must present the main shared UI surfaces with a coherent WinFlow
 
 ## Problem
 
-The app has a functional component vocabulary and token layer, but the product experience still reads as uneven: some frequent controls are below mobile touch-target norms, several CRUD flows mix English labels inside French UI, Settings exposes too much backend/debug vocabulary at the same level as normal user preferences, token comments still reference TubeFlow while the UI claims WinFlowz/Flowz coherence, and first-run empty states are too bare to guide users. This creates a prototype impression on flows that are central to the Android keyboard and productivity promise.
+The app has a functional component vocabulary and token layer, but the product experience still reads as uneven: some frequent controls are below mobile touch-target norms, several CRUD flows mix English labels inside French UI, Settings exposes too much backend/debug vocabulary at the same level as normal user preferences, token comments still reference legacy video app while the UI claims WinFlowz/Flowz coherence, and first-run empty states are too bare to guide users. This creates a prototype impression on flows that are central to the Android keyboard and productivity promise.
 
 ## Solution
 
@@ -98,7 +98,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
 ## Scope In
 
 - Shared design tokens and metrics in `lib/core/theme/app_theme.dart`.
-- Theme provenance and naming/comments around `lib/core/theme/tubeflow_site_theme_tokens.dart`.
+- Theme provenance and naming/comments around `lib/core/theme/winflowz_theme_tokens.dart`.
 - Shared UI building blocks in `lib/core/widgets/app_components.dart`.
 - French-facing labels, helper copy, messages, dialogs, and empty states in:
   - `lib/features/clipboard/presentation/clipboard_screen.dart`
@@ -190,7 +190,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
   - Notes: Do not reduce global targets to preserve dense layouts; fix density at component/layout level.
 
 - [ ] Task 2: Rename or clarify token provenance
-  - File: `lib/core/theme/tubeflow_site_theme_tokens.dart`
+  - File: `lib/core/theme/winflowz_theme_tokens.dart`
   - Action: Update comments/class naming strategy or introduce WinFlowz-facing wrappers so the active design-system language clearly belongs to WinFlowz/Flowz while preserving source lineage where useful.
   - User story link: coherent product identity and maintainable design decisions.
   - Depends on: Task 1 if shared metrics move.
@@ -275,7 +275,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
 - Clipboard, Snippets, Dictionary, and Settings no longer expose mixed English labels in normal French-facing flows, excluding intentional product/provider/technical terms.
 - Settings has a clear default path for normal users and a separate advanced/support path for diagnostics and risky technical controls.
 - Empty states on Clipboard, Snippets, and Dictionary include useful guidance and a next action or example.
-- Token comments/names no longer imply TubeFlow is the active app brand system.
+- Token comments/names no longer imply legacy video app is the active app brand system.
 - Security/privacy/degraded-storage copy remains explicit and accurate.
 - Targeted widget tests pass for every changed primary screen.
 - `flutter analyze` passes.
@@ -312,7 +312,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
 - Use existing app patterns first: `AppTheme`, `AppComponents`, `AppSectionCard`, Riverpod providers, and existing screen structure.
 - Prefer small, reviewable changes per surface, but do not accept undersized touch targets or mixed-language UI for convenience.
 - Fresh external documentation was not consulted because the spec does not depend on changed external framework/API behavior.
-- First files to read before coding: `lib/core/theme/app_theme.dart`, `lib/core/theme/tubeflow_site_theme_tokens.dart`, `lib/core/widgets/app_components.dart`, then the target screen files listed in `Scope In`.
+- First files to read before coding: `lib/core/theme/app_theme.dart`, `lib/core/theme/winflowz_theme_tokens.dart`, `lib/core/widgets/app_components.dart`, then the target screen files listed in `Scope In`.
 - Validation commands for implementation: `flutter analyze`; targeted `flutter test ...` for each changed screen/component; full `flutter test` before broad UI handoff or APK QA request.
 - Stop conditions before code: stop if implementation would require a new settings persistence schema, auth/session behavior changes, Android-native IME Canvas changes, local Gradle/Android build validation, or removal of diagnostics/power-user controls.
 - Do not add new localization infrastructure in this chantier unless existing string placement makes the copy pass impossible; prefer direct copy cleanup in the touched widgets for this bounded pass.
@@ -325,8 +325,9 @@ None.
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
+| 2026-06-09 14:54:38 UTC | sf-build | GPT-5 Codex | Removed old-brand naming from active WinFlowz app surfaces: renamed the active theme token file/class to `WinFlowzThemeTokens`, updated `AppTheme` imports/usages, deleted obsolete theme-reference assets, removed the legacy product id from the client allowlist, and cleaned active component/spec/exploration docs. Local proof: active app/spec `rg` scan found no old-brand matches; `dart format`, `flutter analyze`, targeted suite/theme tests, full `flutter test` (268 tests), `git diff --check`, and ShipFlow metadata lint passed. | implemented | `/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md` after review. |
 | 2026-06-01 22:59:07 UTC | sf-browser | GPT-5.5 Codex + Chromium/CDP fallback | Rechecked deployed Flutter web after user push. `https://winflowz-app.vercel.app/` still returned Vercel `404 DEPLOYMENT_NOT_FOUND`. `https://app.winflowz.com/` returned 200 and rendered the WinFlowz sign-in screen in Chromium/CDP, but served `index/main.dart.js` from 2026-05-30 (`x-vercel-cache: HIT`) and Vercel CLI showed the new 2026-06-01 production deployment belongs to project `winflowz`, not `winflowz_app`. | partial | Redeploy or alias the Flutter app deployment, then rerun `sf-browser` on the confirmed app URL. |
-| 2026-06-01 20:54:06 UTC | sf-build | gpt-5.3-codex subagent + Codex integration | Closed the remaining UI-coherence implementation slice for token provenance and density on Voice, Clipboard, Snippets, and Dictionary: clarified TubeFlow seed naming as historical while mapping semantics to WinFlowz, reduced excess vertical/card spacing, added responsive two-column form grouping where width allows, and reused `AppActionRail` for compact action groups. Local proof: `flutter analyze`, targeted UI/domain tests, full `flutter test`, and `git diff --check` passed. | implemented | /sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
+| 2026-06-01 20:54:06 UTC | sf-build | gpt-5.3-codex subagent + Codex integration | Closed the remaining UI-coherence implementation slice for token provenance and density on Voice, Clipboard, Snippets, and Dictionary: clarified legacy video app seed naming as historical while mapping semantics to WinFlowz, reduced excess vertical/card spacing, added responsive two-column form grouping where width allows, and reused `AppActionRail` for compact action groups. Local proof: `flutter analyze`, targeted UI/domain tests, full `flutter test`, and `git diff --check` passed. | implemented | /sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-06-01 20:43:47 UTC | sf-verify | GPT-5 Codex | Verified the density slice against the spec contract: reviewed shared UI diff, added missing component documentation for `AppActionRail`/48dp baseline, reran `flutter analyze`, targeted toolbar/search widget tests, full `flutter test`, diff whitespace check, and metadata lint. Hosted Vercel smoke remains deferred until ship/prod because the current patch is unshipped and no APK handoff is requested. | verified | /sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-06-01 09:34:33 UTC | sf-start | gpt-5.3-codex-spark subagent + Codex integration | Implemented a density slice: tightened shared screen/card/button spacing, raised common button targets to 48dp, added responsive `AppActionRail`, reduced Home card nesting, and compacted Settings action groups. Local proof: `flutter analyze`, `flutter test test/app_page_action_bar_test.dart test/page_scoped_search_test.dart`, and full `flutter test` passed. | implemented | /sf-verify shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md |
 | 2026-05-29 23:58:11 UTC | sf-build | gpt-5-codex | Harmonized French-facing copy in shell navigation, voice screen, and keyboard theme studio; updated affected widget/router tests. Local proof: `flutter analyze`, `flutter test test/keyboard_theme_studio_screen_test.dart test/app_router_auth_guard_test.dart`, and targeted `test/widget_test.dart` onboarding/navigation cases passed. | implemented | Review bounded diff; ship only with an explicit clean scope because another governance spec is already dirty. |
@@ -346,7 +347,7 @@ None.
 |------|--------|----------|------|
 | sf-spec | complete | This spec created on 2026-05-28. | Run `/sf-ready shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
 | sf-ready | ready | Repaired spec passed readiness on 2026-05-28. | Start implementation. |
-| sf-start | complete | Density and coherence slices implemented for shared spacing, action rails, Home/Settings grouping, token provenance, and Voice/Clipboard/Snippets/Dictionary density; `flutter analyze`, targeted tests, and full `flutter test` passed on 2026-06-01. | Run `/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
-| sf-verify | complete | Latest local verification on 2026-06-01 passed with `flutter analyze`, targeted UI/domain tests, full `flutter test` (268 tests), `git diff --check`, metadata lint, and docs coherence repair in `docs/COMPONENTS.md`. Hosted Vercel smoke remains deferred until ship/prod because this patch is unshipped and no APK handoff is requested. | Run `/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
-| sf-end | pending | Implementation and local verification are complete; deployed Flutter web smoke is blocked because the documented app domain returns deployment-not-found and `app.winflowz.com` is still serving the 2026-05-30 build. | Close after a confirmed Flutter app deployment URL is smoke-checked or explicitly accept local-only proof. |
-| sf-ship | pending | User pushed, but Vercel CLI shows the fresh production deployment is project `winflowz`, not `winflowz_app`; `app.winflowz.com` has not picked up the 2026-06-01 app build. | Redeploy or alias the Flutter app deployment before product web sign-off. |
+| sf-start | complete | Density and coherence slices implemented for shared spacing, action rails, Home/Settings grouping, token provenance, and Voice/Clipboard/Snippets/Dictionary density; old-brand naming cleanup was completed locally on 2026-06-09. | Run `/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md` after review. |
+| sf-verify | complete | Latest local verification on 2026-06-09 passed with active-scope `rg` scan, `dart format`, `flutter analyze`, targeted suite/theme tests, full `flutter test` (268 tests), `git diff --check`, and ShipFlow metadata lint. Hosted Vercel smoke was not rerun because this patch is still local and unshipped. | Run `/sf-end shipflow_data/workflow/specs/winflowz-app-ui-coherence-localization-cleanup.md`. |
+| sf-end | pending | Implementation and local verification are complete; product web proof should be rerun only after this local patch is pushed and Vercel serves the matching build. | Close after review, metadata lint, and any requested deployed web smoke. |
+| sf-ship | pending | No commit or push was created in this run per repository guardrails. | Commit/push only on explicit request, then rerun `sf-browser` on the confirmed app URL. |

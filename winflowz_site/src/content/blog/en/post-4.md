@@ -34,7 +34,7 @@ Instead, every tool in the ecosystem is designed around one principle: **reduce 
 
 - **RSSFlowz** doesn't just collect RSS feeds — it surfaces the content you actually need, right inside Obsidian where you're already working
 - **PluginFlowz** eliminates the decision fatigue of managing dozens of Obsidian plugins
-- **TubeFlowz** captures YouTube insights the moment they happen, not "later when you get around to it"
+- **ReplayGlowz** captures YouTube insights the moment they happen, not "later when you get around to it"
 - **Windows Mastery** turns 200+ productivity tips into a searchable, actionable system
 
 ## Why Neurodivergence Is a Superpower (Sometimes)
