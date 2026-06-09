@@ -173,12 +173,13 @@ jobs:
         run: test -f winflowz_app/build/app/outputs/flutter-apk/app-debug.apk
 
       - name: Upload APK
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v7
         with:
           name: winflowz_app-debug-apk
           path: winflowz_app/build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 1
 
   firebase_auth_config:
     name: Validate Firebase Auth Config
