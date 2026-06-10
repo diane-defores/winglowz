@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.25"
+artifact_version: "1.0.26"
 project: "WinFlowz Suite"
 created: "2026-05-17"
 created_at: "2026-05-17 08:05:27 UTC"
-updated: "2026-06-09"
-updated_at: "2026-06-09 21:05:11 UTC"
+updated: "2026-06-10"
+updated_at: "2026-06-10 09:37:22 UTC"
 status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -73,6 +73,7 @@ evidence:
   - "Firebase CI/rules migration 2026-05-23: GitHub Actions WIF, deploy service account, Firestore database, rules/index deploy, auth-config validation and debug APK build now pass against `winflowz-suite`."
   - "Legacy Google Cloud project `winflowz` deletion requested 2026-05-23 after migration to `winflowz-suite`."
   - "User correction 2026-05-23: ReplayGlowz is the canonical YouTube product and `product_id=replayglowz`; the old YouTube product naming is legacy only."
+  - "User decision 2026-06-10: Diane prefers one central ledger across her operated products because she is the sole operator and has no current plan to sell separate businesses."
 next_step: "ship the Flutter web init/id-token error handling patch, redeploy `winflowz-app`, then rerun Google web and email/password auth smoke"
 ---
 
@@ -227,6 +228,8 @@ L'implémentation doit être progressive. La première tranche ne migre pas tous
 - Toute migration de compte historique doit être réversible ou au minimum auditable.
 - Le premier proof doit couvrir WinFlowz Formation et l'app WinFlowz Android, sinon on n'a pas prouvé la promesse suite.
 - Les `product_id` internes sont une allowlist stable. Les IDs externes Polar, Clerk Billing, Google Play, App Store ou Stripe restent des références de source (`source_ref`) et ne remplacent pas `product_id`.
+- Un seul ledger d'entitlements est le défaut pour les produits opérés par Diane. Un produit ne crée pas son propre ledger durable tant qu'il peut s'intégrer au ledger suite avec un `product_id`.
+- Un ledger séparé exige une spec dédiée et une raison explicite: vente/spin-out, entité juridique ou opérateur séparé, contrainte réglementaire/app-store/offline/tenant-isolation, ou adaptateur de migration temporaire avec plan de retrait.
 
 # Dependencies
 
@@ -308,6 +311,7 @@ Update or create:
 - A mobile app cannot use browser SSO cookies and needs token/session exchange.
 - Product id is misspelled or omitted in entitlement checks.
 - Custom claims are stale after entitlement update.
+- Nouveau produit Diane-operated, par exemple Temu Shopping Lists, tente d'ajouter billing, sync cloud, activation codes ou premium gates sans s'inscrire dans le ledger suite.
 - Firestore rules or Convex functions check identity but forget product entitlement.
 - Support manually grants access to the wrong product or environment.
 
@@ -503,6 +507,7 @@ Resolved decisions:
 - Provider gate: Clerk central identity + Firebase Android bridge.
 - First proof pair: WinFlowz Formation + WinFlowz Android app.
 - Product ID canon: internal allowlist `winflowz_formation`, `winflowz_app`, `replayglowz`; old YouTube product ids are migration input only and must be normalized before runtime entitlement checks; historical VoiceFlowz / VoiceFlows references map to `winflowz_app`; external billing IDs are stored as `source_ref`, not used as canonical `product_id`.
+- Ledger ownership: one suite-owned entitlement ledger is the default for Diane-operated products; future apps such as Temu Shopping Lists should add a `product_id` and product gates instead of creating a second durable ledger, unless a spec documents a sale, separate operator/legal boundary, hard platform/regulatory isolation, or temporary migration adapter.
 
 # Skill Run History
 
@@ -542,6 +547,7 @@ Resolved decisions:
 | 2026-05-23 14:30:13 UTC | sf-auth-debug | GPT-5 Codex | Migrated Firebase CI/rules ownership from legacy `winflowz` project to `winflowz-suite` and retested GitHub Actions | Passed: created `winflowz-suite` WIF pool/provider, deploy service account, Firestore `(default)` in `nam5`, GitHub secrets/variable; workflow run `26335153138` passed auth config, Firestore rules/indexes deploy, analyze, tests and debug APK upload; legacy `winflowz` deletion requested | ship/redeploy local Flutter web auth patch, then rerun deployed Google web and email/password account smoke |
 | 2026-05-23 19:33:42 UTC | sf-auth-debug | GPT-5 Codex | Read-only verification of the current WinFlowz Flutter web auth path after ReplayGlowz ClerkJS bridge discussion. | Confirmed: `winflowz_app` web currently uses Firebase Auth plus `google_sign_in_web` rendered GIS button, then maps the Firebase uid/id token through the suite identity bridge; no ClerkJS bridge exists in `web/index.html`, `auth_session_provider.dart`, or auth data code. | keep current Firebase web smoke path for WinFlowz app unless a new spec explicitly migrates Flutter web to ClerkJS |
 | 2026-05-24 14:08:24 UTC | sf-auth-debug | GPT-5 Codex | Verified hosted WinFlowz Formation + Flutter web auth flows after env/DNS setup | Partial and patched locally: `app.winflowz.com` initializes Firebase, Email/Password reaches Firebase with controlled invalid-credential UX, Google GIS button renders and opens Google, and focused email/password fields expose browser autofill metadata; production `www.winflowz.com/fr/signin` is blocked by CSP for Clerk custom-domain scripts and `/api/bridge/firebase` still returns `firebase_admin_not_configured`. Local Formation patch now allows Clerk custom-domain CSP and reads bridge secrets through server runtime env. | push/redeploy `/home/claude/winflowz`, run `/sf-prod winflowz`, then rerun real account suite-auth smoke |
+| 2026-06-10 09:37:22 UTC | sf-spec | GPT-5 Codex | Formalized the operator decision for entitlement ledger ownership after Temu Shopping Lists entitlement planning | Updated the active suite-auth spec: one suite-owned ledger is the default across Diane-operated products, with second ledgers allowed only for documented separation or migration exceptions | `/sf-ready Entitlements and access model for Temu Shopping Lists`, then map `temu_shopping_lists` into the suite ledger before protected sync or monetization |
 
 # Current Chantier Flow
 

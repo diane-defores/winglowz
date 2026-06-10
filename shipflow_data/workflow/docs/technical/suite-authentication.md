@@ -1,10 +1,10 @@
 ---
 artifact: technical_decision
 metadata_schema_version: "1.0"
-artifact_version: "1.0.10"
+artifact_version: "1.0.11"
 project: "WinFlowz"
 created: "2026-05-17"
-updated: "2026-05-23"
+updated: "2026-06-10"
 status: reviewed
 source_skill: sf-docs
 scope: "suite-authentication-provider-strategy"
@@ -48,6 +48,7 @@ evidence:
   - "Implementation tranche 2026-05-21: canonical support runbook added for operator triage, rollback, escalation and verification."
   - "User correction 2026-05-23: ReplayGlowz is the canonical YouTube product and `product_id=replayglowz`; the old YouTube product naming is legacy only."
   - "Implementation tranche 2026-05-23: `POST /api/bridge/entitlement` added on WinFlowz to verify a Clerk session token and return a redacted ReplayGlowz entitlement snapshot."
+  - "User decision 2026-06-10: because Diane is the sole operator and does not currently intend to sell separate businesses, the default access architecture is one suite-owned entitlement ledger with separate product ids, not one ledger per product."
 next_review: "2026-06-17"
 next_step: "/sf-spec unified-suite-authentication provider decision"
 ---
@@ -103,11 +104,40 @@ Entitlement Ledger
   owns: product_id, plan, status, source, environment, audit events
   sources: Polar, Clerk Billing later, app stores, manual grants, migrations
   forbids: granting access because the account merely exists
+  default: one suite ledger for Diane-operated products, with product ids
 
 Product Backends
   verify: token, issuer, audience, global_user_id, product entitlement
   store: product data under product/user namespaces
 ```
+
+## Ledger Ownership Decision
+
+The default WinFlowz access model is one suite-owned entitlement ledger for
+Diane-operated products, with a stable `product_id` per app or offer. Products
+must plug into the canonical ledger instead of creating their own durable access
+registry.
+
+This decision fits the current operating model because Diane is the only
+operator, there is no current plan to sell the businesses separately, and a
+single ledger keeps support, refunds, Lifetime Deals, manual grants, product
+bundles, account recovery and provider migrations auditable in one place.
+
+Separate product ledgers are exceptions, not defaults. A second durable ledger
+requires a new spec and one of these explicit reasons:
+
+- sale or spin-out of a product;
+- separate legal entity, partner, or operator boundary;
+- regulatory, app-store, tenant-isolation, or offline requirement that cannot
+  safely use the suite ledger;
+- temporary migration adapter with a documented retirement path.
+
+Future products, including products outside the historical WinFlowz naming such
+as Temu Shopping Lists, should join this model by adding a `product_id`,
+product-specific gates, support copy and provider ingestion to the canonical
+ledger. They must not duplicate `global_users`, `product_entitlements`,
+redemption-code, billing-event, or support-grant truth unless a spec documents
+one of the exceptions above.
 
 ## Product Boundaries
 
