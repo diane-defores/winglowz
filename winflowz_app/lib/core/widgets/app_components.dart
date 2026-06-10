@@ -474,16 +474,23 @@ class ProductSummaryStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (children.isEmpty) {
+    final visibleChildren = children.where((child) {
+      return !(child is AppLocalModeStatusPill && FirebaseBootstrap.isConfigured);
+    }).toList(growable: false);
+    if (visibleChildren.isEmpty) {
       return const SizedBox.shrink();
     }
     return Card(
       child: Padding(
         padding: AppInsets.compactCard,
-        child: Wrap(
-          spacing: AppSpacing.x2,
-          runSpacing: AppSpacing.x2,
-          children: children,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var index = 0; index < visibleChildren.length; index++) ...[
+              if (index > 0) AppGaps.horizontalX2,
+              Expanded(child: visibleChildren[index]),
+            ],
+          ],
         ),
       ),
     );
@@ -509,7 +516,7 @@ class AppMetricPill extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final effectiveColor = color ?? colorScheme.primary;
     return Container(
-      constraints: const BoxConstraints(minWidth: 118),
+      constraints: const BoxConstraints(minWidth: 0),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.x3,
         vertical: AppSpacing.x2,

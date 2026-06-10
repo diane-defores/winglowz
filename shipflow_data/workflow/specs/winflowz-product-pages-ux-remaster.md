@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-06-10"
 created_at: "2026-06-10 15:32:15 UTC"
 updated: "2026-06-10"
-updated_at: "2026-06-10 18:35:00 UTC"
+updated_at: "2026-06-10 19:18:02 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -63,12 +63,12 @@ evidence:
   - "Component audit 2026-06-10 found repeated private metric pill implementations in voice_screen.dart, clipboard_screen.dart, snippets_screen.dart, and dictionary_screen.dart."
   - "Component audit 2026-06-10 found large page widgets and no shared product-page frame beyond AppSectionCard, AppPageToolbar, AppSyncStatusAction, AppEntityCard, and AppEmptyStateCard."
   - "Code search 2026-06-10 confirmed duplicated metric/status primitives and parallel sync display concepts: AppSyncStatus, CloudSyncOverview, and LocalCloudSyncState."
-next_step: "/sf-prod winflowz_app"
+next_step: "Diane product-feel review on https://app.winflowz.com/ for page density, labels, and sync/status clarity"
 ---
 
 # Spec: WinFlowz Product Pages UX Remaster
 
-🟡 [WinFlowzApp] spec: WinFlowz Product Pages UX Remaster | status: shipped-needs-deploy | path: shipflow_data/workflow/specs/winflowz-product-pages-ux-remaster.md | next: /sf-prod winflowz_app | id: wfz-product-pages-ux-remaster
+🟢 [WinFlowzApp] spec: WinFlowz Product Pages UX Remaster | status: shipped-prod-browser-smoke-partial | path: shipflow_data/workflow/specs/winflowz-product-pages-ux-remaster.md | next: Diane product-feel review on https://app.winflowz.com/ | id: wfz-product-pages-ux-remaster
 
 ## Title
 
@@ -76,7 +76,7 @@ WinFlowz Product Pages UX Remaster
 
 ## Status
 
-Shipped, but deployed web smoke is blocked by deployment mismatch. Created on 2026-06-10 from user feedback, the product-pages exploration report, and the component-system audit. Passed readiness review on 2026-06-10 after tightening the proof contract and resolving non-blocking implementation choices. Implemented through `sf-start` on 2026-06-10 with local Flutter checks passing. `sf-verify` on 2026-06-10 confirmed local implementation, tests, docs, and status-source coherence. `sf-ship` on 2026-06-10 confirmed the remaster is already included in pushed commit `134ee64` on `origin/main`. `sf-browser` on 2026-06-10 found `https://winflowz-app.vercel.app/` returns Vercel `404 DEPLOYMENT_NOT_FOUND`, while `https://app.winflowz.com/` serves an older cached Flutter build from 2026-05-30 that still shows the pre-remaster pages. Final product verification needs `/sf-prod winflowz_app` to locate or redeploy the matching app build, then browser smoke on the confirmed URL.
+Shipped and deployed to the active Flutter web URL. Created on 2026-06-10 from user feedback, the product-pages exploration report, and the component-system audit. Passed readiness review on 2026-06-10 after tightening the proof contract and resolving non-blocking implementation choices. Implemented through `sf-start` on 2026-06-10 with local Flutter checks passing. `sf-verify` on 2026-06-10 confirmed local implementation, tests, docs, and status-source coherence. `sf-ship` on 2026-06-10 confirmed the remaster is included in pushed commit `134ee64` on `origin/main`. The operator clarified on 2026-06-10 that `https://app.winflowz.com/` is the active Flutter web validation URL for the monorepo. `sf-prod` on 2026-06-10 confirmed Vercel project `winflowz-app` production deployment `dpl_59sAwj2FnFsJPoGjAg1qX9VJpdEn` is Ready, aliased to `https://app.winflowz.com/`, and served with `last-modified: Wed, 10 Jun 2026 19:15:06 GMT`. `sf-browser` on 2026-06-10 used Chromium/CDP at `390x844`, entered local mode, and visually checked Accueil, Voix, Papier, Snippets, Dico, and Réglages without runtime exceptions or failed network loads. Final acceptance still needs Diane's product-feel review for density, wording, and sync/status clarity.
 
 ## User Story
 
@@ -396,16 +396,21 @@ Implementation decision: primary creation and capture actions stay visible by de
 | 2026-06-10 16:39:19 UTC | sf-verify | GPT-5 Codex | Verified local code, tests, docs, status-source contract, and Flutter proof ladder through automated checks | partial: Vercel Flutter web smoke still required on deployed build | `/sf-ship shipflow_data/workflow/specs/winflowz-product-pages-ux-remaster.md` |
 | 2026-06-10 18:24:57 UTC | sf-ship | GPT-5 Codex | Confirmed remaster files are included in commit `134ee64`, already pushed to `origin/main`; unrelated business-file edits left untouched | shipped: code already on remote; production/web smoke still required | `/sf-prod https://winflowz-app.vercel.app/`, then manual product-page smoke |
 | 2026-06-10 18:35:00 UTC | sf-browser | GPT-5 Codex | Checked documented Flutter web URLs with Chromium/CDP, screenshots, DOM, headers, console and reversible local-mode navigation | needs-deploy: `winflowz-app.vercel.app` is 404; `app.winflowz.com` is an old cached build still showing pre-remaster pages | `/sf-prod winflowz_app`, then rerun `sf-browser` on the confirmed deployment URL |
+| 2026-06-10 18:59:09 UTC | sf-prod | GPT-5 Codex | Verified Vercel/GitHub deployment status for latest commit `e0d1d53`, inspected `winflowz` deployment health and `app.winflowz.com` app health | partial: site deploy ready; active Flutter app URL `https://app.winflowz.com/` still serves the 2026-05-30 build | Deploy current monorepo Flutter app to `https://app.winflowz.com/`, then rerun `/sf-browser https://app.winflowz.com/` |
+| 2026-06-10 19:07:11 UTC | operator correction | Diane | Clarified that `https://app.winflowz.com/` is the correct Flutter web URL for monorepo app verification | corrected target: use `https://app.winflowz.com/` for Flutter web checks | Deploy current app build there, then rerun `/sf-browser https://app.winflowz.com/` |
+| 2026-06-10 19:15:06 UTC | sf-prod | GPT-5 Codex | Inspected `https://app.winflowz.com/` and Vercel project `winflowz-app` after the project was repointed to the monorepo root `winflowz_app` | pass: production deployment `dpl_59sAwj2FnFsJPoGjAg1qX9VJpdEn` is Ready, aliased to `app.winflowz.com`, and serving a 2026-06-10 build | `/sf-browser https://app.winflowz.com/` for product-page visual smoke |
+| 2026-06-10 19:18:02 UTC | sf-browser | GPT-5 Codex | Opened `https://app.winflowz.com/` in Chromium/CDP mobile viewport, entered local mode, captured Accueil, Voix, Papier, Snippets, Dico, and Réglages | partial/pass visual smoke: pages render, bottom labels show `Papier` and `Dico`, old large repeated page titles are absent, no runtime exceptions or network loading failures observed; full product-feel and data/action scenarios remain manual | Diane product-feel review on the deployed app |
 
 ## Current Chantier Flow
 
 - sf-spec: done, draft created.
 - sf-ready: done, ready.
 - sf-start: done, implemented locally.
-- sf-verify: partial, local implementation verified; deployed web smoke missing.
-- sf-browser: needs-deploy, current public app URLs do not serve the shipped remaster.
+- sf-verify: partial at local verification time; deployed web smoke was completed later through sf-prod/sf-browser.
+- sf-browser: partial/pass visual smoke, `https://app.winflowz.com/` renders the remastered local-mode product pages in Chromium/CDP at `390x844`; no runtime exception or network loading failure observed.
+- sf-prod: pass, Vercel project `winflowz-app` production deployment is Ready and aliased to `https://app.winflowz.com/`.
 - sf-end: not required in quick ship flow.
 - sf-ship: shipped, commit `134ee64` already on `origin/main`; no current chantier code changes remained dirty.
 
-Reste a faire: locate or redeploy the matching Vercel Flutter web build, then smoke scenarios `WFZ-PAGES-001` to `WFZ-PAGES-007`, then Diane product-feel review.
-Prochaine etape: `/sf-prod winflowz_app`, then rerun `sf-browser` on the confirmed app URL.
+Reste a faire: Diane product-feel review on `https://app.winflowz.com/`, especially first-viewport density, French copy, sync/status clarity, and create/search/refresh action behavior with real local data.
+Prochaine etape: Diane tests the deployed app; route any concrete visual or behavior regression to `/sf-fix`.

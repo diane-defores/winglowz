@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,6 +65,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   );
 
   int _index = 0;
+  int _navigationPulse = 0;
   bool _onboardingVisible = false;
   bool _onboardingDismissed = false;
   bool _onboardingOpenedManually = false;
@@ -82,6 +84,9 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
 
   void _selectTab(int value) {
     if (value == _index) {
+      setState(() {
+        _navigationPulse++;
+      });
       if (value == _voiceTabIndex) {
         _scheduleKeyboardVoiceSync(notifyVoice: true);
       }
@@ -93,7 +98,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     const titles = [
       'Accueil',
       'Voix',
-      'Papier',
+      'Papiers',
       'Snippets',
       'Dico',
       'Réglages',
@@ -104,6 +109,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     );
     setState(() {
       _index = value;
+      _navigationPulse++;
       _tabHistory.remove(value);
       _tabHistory.add(value);
     });
@@ -797,7 +803,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                           ),
                           NavigationRailDestination(
                             icon: Icon(Icons.content_paste_outlined),
-                            label: Text('Papier'),
+                            label: Text('Papiers'),
                           ),
                           NavigationRailDestination(
                             icon: Icon(Icons.text_snippet_outlined),
@@ -891,43 +897,209 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                 : NavigationBar(
                     selectedIndex: _index,
                     onDestinationSelected: _selectTab,
-                    destinations: const [
-                      NavigationDestination(
-                        icon: Icon(Icons.home_outlined),
-                        selectedIcon: Icon(Icons.home),
-                        label: 'Accueil',
-                      ),
-                      NavigationDestination(
-                        icon: Icon(Icons.keyboard_voice_outlined),
-                        selectedIcon: Icon(Icons.keyboard_voice),
-                        label: 'Voix',
-                      ),
-                      NavigationDestination(
-                        icon: Icon(Icons.content_paste_outlined),
-                        selectedIcon: Icon(Icons.content_paste),
-                        label: 'Papier',
-                      ),
-                      NavigationDestination(
-                        icon: Icon(Icons.text_snippet_outlined),
-                        selectedIcon: Icon(Icons.text_snippet),
-                        label: 'Snippets',
-                      ),
-                      NavigationDestination(
-                        icon: Icon(Icons.auto_fix_high_outlined),
-                        selectedIcon: Icon(Icons.auto_fix_high),
-                        label: 'Dico',
-                      ),
-                      NavigationDestination(
-                        icon: Icon(Icons.settings_outlined),
-                        selectedIcon: Icon(Icons.settings),
-                        label: 'Réglages',
-                      ),
-                    ],
+                    destinations: _bottomNavigationDestinations(),
                   ),
           ),
         );
       },
     );
+  }
+
+  List<NavigationDestination> _bottomNavigationDestinations() {
+    return [
+      _bottomNavigationDestination(
+        index: _homeTabIndex,
+        icon: Icons.home_outlined,
+        selectedIcon: Icons.home,
+        label: 'Accueil',
+        motion: _BottomNavIconMotion.lift,
+      ),
+      _bottomNavigationDestination(
+        index: _voiceTabIndex,
+        icon: Icons.keyboard_voice_outlined,
+        selectedIcon: Icons.keyboard_voice,
+        label: 'Voix',
+        motion: _BottomNavIconMotion.pulse,
+      ),
+      _bottomNavigationDestination(
+        index: _clipboardTabIndex,
+        icon: Icons.content_paste_outlined,
+        selectedIcon: Icons.content_paste,
+        label: 'Papiers',
+        motion: _BottomNavIconMotion.stack,
+      ),
+      _bottomNavigationDestination(
+        index: _snippetTabIndex,
+        icon: Icons.text_snippet_outlined,
+        selectedIcon: Icons.text_snippet,
+        label: 'Snippets',
+        motion: _BottomNavIconMotion.nudge,
+      ),
+      _bottomNavigationDestination(
+        index: _dictionaryTabIndex,
+        icon: Icons.auto_fix_high_outlined,
+        selectedIcon: Icons.auto_fix_high,
+        label: 'Dico',
+        motion: _BottomNavIconMotion.spark,
+      ),
+      _bottomNavigationDestination(
+        index: _settingsTabIndex,
+        icon: Icons.settings_outlined,
+        selectedIcon: Icons.settings,
+        label: 'Réglages',
+        motion: _BottomNavIconMotion.gear,
+      ),
+    ];
+  }
+
+  NavigationDestination _bottomNavigationDestination({
+    required int index,
+    required IconData icon,
+    required IconData selectedIcon,
+    required String label,
+    required _BottomNavIconMotion motion,
+  }) {
+    final selected = _index == index;
+    final animatedIcon = _AnimatedBottomNavIcon(
+      icon: icon,
+      selectedIcon: selectedIcon,
+      selected: selected,
+      pulse: selected ? _navigationPulse : 0,
+      motion: motion,
+    );
+    return NavigationDestination(
+      icon: animatedIcon,
+      selectedIcon: animatedIcon,
+      label: label,
+    );
+  }
+}
+
+enum _BottomNavIconMotion { lift, pulse, stack, nudge, spark, gear }
+
+class _AnimatedBottomNavIcon extends StatelessWidget {
+  const _AnimatedBottomNavIcon({
+    required this.icon,
+    required this.selectedIcon,
+    required this.selected,
+    required this.pulse,
+    required this.motion,
+  });
+
+  final IconData icon;
+  final IconData selectedIcon;
+  final bool selected;
+  final int pulse;
+  final _BottomNavIconMotion motion;
+
+  static const _size = 32.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final iconColor = selected
+        ? colorScheme.primary
+        : colorScheme.onSurfaceVariant;
+    return TweenAnimationBuilder<double>(
+      key: ValueKey('$selected-$pulse-$motion'),
+      tween: Tween(begin: selected ? 0 : 1, end: 1),
+      duration: selected
+          ? const Duration(milliseconds: 280)
+          : const Duration(milliseconds: 160),
+      curve: Curves.easeOutCubic,
+      builder: (context, progress, child) {
+        final burst = selected ? math.sin(progress * math.pi) : 0.0;
+        final rotation = motion == _BottomNavIconMotion.gear
+            ? burst * 0.11
+            : 0.0;
+        final offset = _offsetFor(burst);
+        final scale = selected ? 1 + burst * _scaleAmplitude : 1.0;
+        return SizedBox.square(
+          dimension: _size,
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              if (selected)
+                Opacity(
+                  opacity: 0.10 + burst * 0.10,
+                  child: Transform.scale(
+                    scale: 0.72 + burst * 0.14,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: iconColor,
+                      ),
+                      child: const SizedBox.square(dimension: _size),
+                    ),
+                  ),
+                ),
+              if (selected && motion == _BottomNavIconMotion.spark)
+                Positioned(
+                  top: 3 - burst * 2,
+                  right: 4,
+                  child: Opacity(
+                    opacity: 0.40 + burst * 0.45,
+                    child: Icon(
+                      Icons.star,
+                      color: iconColor,
+                      size: 8 + burst * 2,
+                    ),
+                  ),
+                ),
+              if (selected && motion == _BottomNavIconMotion.pulse)
+                Opacity(
+                  opacity: 0.18 + burst * 0.18,
+                  child: Transform.scale(
+                    scale: 0.82 + burst * 0.28,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: iconColor, width: 1.2),
+                      ),
+                      child: const SizedBox.square(dimension: _size),
+                    ),
+                  ),
+                ),
+              Transform.translate(
+                offset: offset,
+                child: Transform.rotate(
+                  angle: rotation,
+                  child: Transform.scale(
+                    scale: scale,
+                    child: Icon(
+                      selected ? selectedIcon : icon,
+                      color: iconColor,
+                      size: selected
+                          ? AppNavigationMetrics.bottomSelectedIconSize
+                          : AppNavigationMetrics.bottomIconSize,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  double get _scaleAmplitude {
+    return switch (motion) {
+      _BottomNavIconMotion.pulse => 0.09,
+      _BottomNavIconMotion.gear => 0.04,
+      _ => 0.07,
+    };
+  }
+
+  Offset _offsetFor(double burst) {
+    return switch (motion) {
+      _BottomNavIconMotion.lift => Offset(0, -2.5 * burst),
+      _BottomNavIconMotion.stack => Offset(1.2 * burst, -1.2 * burst),
+      _BottomNavIconMotion.nudge => Offset(0, -1.5 * burst),
+      _BottomNavIconMotion.spark => Offset(-0.6 * burst, -1.8 * burst),
+      _ => Offset.zero,
+    };
   }
 }
 
