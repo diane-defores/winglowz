@@ -1,10 +1,10 @@
 ---
 artifact: brand_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: "WinFlowz"
 created: "2026-03-18"
-updated: "2026-05-04"
+updated: "2026-06-10"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "branding"
@@ -17,6 +17,7 @@ evidence:
   - "docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md"
   - "shipflow_data/business/business.md"
   - "shipflow_data/business/product.md"
+  - "shipflow_data/workflow/audits/2026-06-10-winflowz-platform-parity.md"
 brand_voice: "Direct, productive, and honest about prerequisites"
 trust_posture: "Do not overpromise auth, billing, privacy, or AI quality beyond verified code paths"
 depends_on:
@@ -30,7 +31,7 @@ next_step: "$sf-docs update"
 
 ## Cadre
 
-Ce document cadre la marque pour la cible `target-reviewed` Flutter + Supabase. Les mentions Expo/Convex/Clerk appartiennent uniquement au contexte `legacy-current` pré-migration et ne doivent pas être utilisées comme promesse produit.
+Ce document cadre la marque pour la cible `target-reviewed` Flutter + backend-agnostic avec Firebase comme premier adaptateur. Les mentions Expo/Convex/Clerk/Supabase appartiennent uniquement au contexte de migration quand elles existent encore dans le repo et ne doivent pas être utilisées comme promesse produit.
 
 ## Nom et identité
 
@@ -69,8 +70,8 @@ WinFlowz peut rester visuellement relié à WinFlowz, avec une identité orient�
 
 - Direct, productif, sans jargon.
 - Orienté action : enregistrer, transcrire, copier, synchroniser.
-- Les messages de configuration doivent rester honnêtes sur les prérequis : compte Supabase, clé OpenAI BYO locale, clé Anthropic locale optionnelle, activation clavier Android, permissions Android overlay/accessibilité.
-- Les plateformes non Android ne doivent pas recevoir de promesse d'overlay système ou de clavier système WinFlowz.
+- Les messages de configuration doivent rester honnêtes sur les prérequis : compte via l'adaptateur actif, clé OpenAI BYO locale, clé Anthropic locale optionnelle, activation clavier Android, permissions Android overlay/accessibilité, hôte desktop natif ou adaptation iOS/web quand la plateforme le nécessite.
+- Les plateformes non Android ne doivent pas recevoir de promesse de clavier système WinFlowz. Elles peuvent recevoir une promesse d'overlay/quick action uniquement quand le host natif, l'adaptation ou la limitation dégradée est implémenté, testé et documenté.
 
 ## Valeurs de marque
 
@@ -86,9 +87,9 @@ WinFlowz peut rester visuellement relié à WinFlowz, avec une identité orient�
 ### Claims autorisés (target-reviewed)
 
 - "Application Flutter multi-plateforme."
-- "Connexion et synchronisation de données via Supabase."
+- "Connexion et synchronisation de données via l'adaptateur actif."
 - "Clés OpenAI/Anthropic BYO conservées localement."
-- "Overlay disponible uniquement sur Android."
+- "Overlay ou quick action disponible selon plateforme, avec hôte natif ou adaptation documentée."
 - "Clavier WinFlowz disponible uniquement sur Android."
 - "Snippets et dictionnaire personnel synchronisés par compte."
 
@@ -96,7 +97,8 @@ WinFlowz peut rester visuellement relié à WinFlowz, avec une identité orient�
 
 - "Billing premium actif", "quotas appliqués", "entitlements en production".
 - "Chiffrement bout-en-bout".
-- "Overlay système sur iOS/macOS/Windows/Linux/web".
+- "Overlay système identique sur iOS/macOS/Windows/Linux/web".
+- "Parité complète sur toutes les plateformes" sans preuve de QA et matrice de limites.
 
 ### Claims legacy-current à ne pas utiliser comme cible
 

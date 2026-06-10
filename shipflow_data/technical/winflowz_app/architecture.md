@@ -1,10 +1,10 @@
 ---
 artifact: architecture_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.1.0"
 project: "WinFlowz"
 created: "2026-04-26"
-updated: "2026-05-19"
+updated: "2026-06-10"
 status: "reviewed"
 source_skill: "sf-docs"
 scope: "architecture"
@@ -18,12 +18,14 @@ evidence:
   - "docs/DECISIONS.md"
   - "docs/API.md"
   - "modules/floating-overlay/android/src/main/java/expo/modules/floatingoverlay/FloatingOverlayModule.kt"
+  - "shipflow_data/workflow/audits/2026-06-10-winflowz-platform-parity.md"
 linked_systems:
   - "Flutter"
   - "Backend-agnostic stores"
   - "Firebase first adapter"
   - "Clerk suite identity"
   - "Android overlay services"
+  - "Desktop overlay hosts"
 external_dependencies:
   - "flutter_riverpod"
   - "go_router"
@@ -33,7 +35,7 @@ invariants:
   - "Target implementation is Flutter with backend-agnostic data contracts, not Expo/Convex/Supabase-coupled product code or direct Clerk Flutter/native app auth before proof."
   - "Clerk is valid as suite identity through a server-owned bridge; Firebase Auth remains the Android app adapter for now."
   - "All remote user data access is authorized by the selected adapter's auth and security rules."
-  - "Android overlay stays native and exposes a stable Flutter bridge."
+  - "System-level entrypoints stay native and expose stable Flutter bridges: Android overlay/IME, Windows/macOS/Linux desktop overlay hosts, and future iOS/web adaptations."
 depends_on:
   - "docs/DECISIONS.md@0.1.0"
   - "docs/MIGRATION_FLUTTER.md@0.1.0"
@@ -69,13 +71,8 @@ This stack is migration input only. It is not a target architecture.
 
 ### Platform scope
 
-Current execution target:
-
-- Android
-
-Other platforms remain Flutter project targets, but current implementation and QA focus is Android. Web is explicitly not a near-term backend/AI priority.
-
-Longer-term platform targets:
+Current platform direction: shared Flutter product/UI and backend-neutral stores
+with near-complete functional parity as the default target across:
 
 - Android
 - iOS
@@ -84,7 +81,12 @@ Longer-term platform targets:
 - Linux
 - web
 
-Android has additional native overlay capabilities. Other platforms do not promise equivalent system overlay.
+Android remains the first advanced native surface because it owns the system
+keyboard IME and Android overlay service. Windows, macOS and Linux use desktop
+native hosts for overlay/quick actions. iOS and web require explicit adaptation
+chantiers before public parity claims. Equivalent user outcomes should keep the
+shared interaction model; adaptations are accepted only when they are better or
+required by OS, browser, store, hardware, permission or security constraints.
 
 ### Runtime architecture
 
@@ -110,8 +112,14 @@ Suite identity bridge
 
 Android native
   -> overlay foreground service
+  -> input method service
   -> accessibility-based text injection
   -> Flutter bridge (plugin/platform channel)
+
+Desktop native
+  -> Windows MethodChannel for global hotkey, topmost window, clipboard and best-effort paste
+  -> macOS MethodChannel for floating window, Control+Option+Space, NSPasteboard and best-effort Command+V
+  -> Linux MethodChannel for GTK keep-above, scoped accelerator where available, clipboard-only fallback
 ```
 
 ### Layer contracts
@@ -123,7 +131,7 @@ Android native
 3. Store/repository layer:
    owns provider-neutral data contracts. UI and domain code must not depend on Firebase, Supabase or another vendor directly.
 4. Platform service layer:
-   owns speech/audio/clipboard/secure-storage/overlay bridges.
+   owns speech/audio/clipboard/secure-storage/overlay/quick-action bridges.
 
 ### Data and auth contract
 
@@ -149,16 +157,33 @@ In all cases:
 - empty/whitespace results are never persisted.
 - final text remains copyable even if auto-injection fails.
 
-### Android overlay contract
+### Platform entrypoint contract
 
-The Kotlin overlay module remains native and authoritative for:
+Flutter owns product logic, state, Settings patterns, actions, errors, and data
+stores. Native hosts own OS-specific entrypoints and delivery mechanics.
+
+The Android Kotlin overlay module remains native and authoritative for:
 
 - overlay permission flow,
 - foreground service lifecycle,
 - bubble events (`tap`, `stop`, `cancel`, `long-press`),
 - accessibility text injection and fallback behavior.
 
-Flutter integrates this through a narrow bridge interface; feature logic stays in Dart.
+The Android Kotlin IME remains native and authoritative for system keyboard
+activation, `InputConnection`, private-field policy, media keys, clipboard
+events, and Android speech entry from the keyboard.
+
+Windows, macOS and Linux desktop hosts remain native and authoritative for
+global or scoped hotkeys, floating/keep-above windows, focus recovery, clipboard,
+and best-effort text delivery. Linux must keep hotkey and paste limitations
+explicit until a compositor/portal integration is selected.
+
+iOS and web do not inherit the Android overlay or IME. They need explicit
+adaptation contracts such as app main flows, Share Sheet, Shortcuts/App Intents,
+browser-safe clipboard/recording flows, and documented degraded states.
+
+Flutter integrates each host through narrow bridge interfaces; feature logic
+stays in Dart.
 
 ## Cross-cutting invariants
 
