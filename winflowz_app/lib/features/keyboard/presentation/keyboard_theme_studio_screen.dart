@@ -922,16 +922,22 @@ class _StickyPreviewHeaderDelegate extends SliverPersistentHeaderDelegate {
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Padding(
         padding: EdgeInsets.fromLTRB(16, topPadding, 16, 6),
-        child: _PreviewSectionCard(
-          theme: theme,
-          dirty: dirty,
-          saving: saving,
-          saveFeedback: saveFeedback,
-          validation: validation,
-          onPresetChanged: onPresetChanged,
-          onDiscard: onDiscard,
-          onReset: onReset,
-          onSave: onSave,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: double.infinity,
+            child: _PreviewSectionCard(
+              theme: theme,
+              dirty: dirty,
+              saving: saving,
+              saveFeedback: saveFeedback,
+              validation: validation,
+              onPresetChanged: onPresetChanged,
+              onDiscard: onDiscard,
+              onReset: onReset,
+              onSave: onSave,
+            ),
+          ),
         ),
       ),
     );
@@ -1057,29 +1063,31 @@ class _PreviewActionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: dirty ? onDiscard : null,
-            child: const Text('Annuler'),
-          ),
+    return Align(
+      alignment: Alignment.centerRight,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerRight,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            OutlinedButton(
+              onPressed: dirty ? onDiscard : null,
+              child: const Text('Annuler'),
+            ),
+            const SizedBox(width: 8),
+            OutlinedButton(
+              onPressed: saving ? null : onReset,
+              child: const Text('Réinitialiser'),
+            ),
+            const SizedBox(width: 8),
+            _AnimatedSaveButton(
+              feedback: saveFeedback,
+              onPressed: saving || !validation.canSave ? null : onSave,
+            ),
+          ],
         ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: OutlinedButton(
-            onPressed: saving ? null : onReset,
-            child: const Text('Réinitialiser'),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _AnimatedSaveButton(
-            feedback: saveFeedback,
-            onPressed: saving || !validation.canSave ? null : onSave,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -1093,10 +1101,11 @@ class _AnimatedSaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return FilledButton.icon(
+    return FilledButton(
       key: const Key('keyboard-theme-save-button'),
       onPressed: onPressed,
       style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         backgroundColor: switch (feedback) {
           _SaveButtonFeedback.failure => colorScheme.error,
           _SaveButtonFeedback.success => colorScheme.primary,
@@ -1108,18 +1117,27 @@ class _AnimatedSaveButton extends StatelessWidget {
           _ => null,
         },
       ),
-      icon: SizedBox.square(
-        dimension: 22,
-        child: Center(child: _SaveFeedbackIcon(feedback: feedback)),
-      ),
-      label: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 180),
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        child: Text(
-          _saveButtonLabel(feedback),
-          key: ValueKey('keyboard-theme-save-label-${feedback.name}'),
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox.square(
+            dimension: 18,
+            child: Center(child: _SaveFeedbackIcon(feedback: feedback)),
+          ),
+          const SizedBox(width: 6),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            child: Text(
+              _saveButtonLabel(feedback),
+              key: ValueKey('keyboard-theme-save-label-${feedback.name}'),
+              maxLines: 1,
+              overflow: TextOverflow.visible,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1896,20 +1914,29 @@ class _PreviewKeyReliefPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final topInset = math.min(radius * 0.56, surfaceRect.height * 0.42);
+    final sideTopY = pressed
+        ? math.max(surfaceRect.top, surfaceRect.bottom - visibleDepth)
+        : surfaceRect.top + topInset;
 
     final clipBounds = Offset.zero & size;
     canvas.save();
     canvas.clipRect(clipBounds);
+    paint.color = _darkenThemeColor(
+      surfaceColor,
+      pressed ? 0.24 : 0.18,
+    ).withValues(alpha: faceAlpha);
+    paint.shader = null;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(clipBounds, Radius.circular(radius)),
+      paint,
+    );
 
     if (sideDepth > 0.35) {
       final leftPath = Path()
-        ..moveTo(surfaceRect.left, surfaceRect.top + topInset)
+        ..moveTo(surfaceRect.left, sideTopY)
         ..lineTo(surfaceRect.left, surfaceRect.bottom)
         ..lineTo(surfaceRect.left - sideDepth, surfaceRect.bottom + reliefDepth)
-        ..lineTo(
-          surfaceRect.left - sideDepth,
-          surfaceRect.top + topInset + reliefDepth,
-        )
+        ..lineTo(surfaceRect.left - sideDepth, sideTopY + reliefDepth)
         ..close();
       paint.shader = LinearGradient(
         colors: [
@@ -1923,11 +1950,8 @@ class _PreviewKeyReliefPainter extends CustomPainter {
 
     if (sideDepth > 0.35) {
       final rightPath = Path()
-        ..moveTo(surfaceRect.right, surfaceRect.top + topInset)
-        ..lineTo(
-          surfaceRect.right + sideDepth,
-          surfaceRect.top + topInset + reliefDepth,
-        )
+        ..moveTo(surfaceRect.right, sideTopY)
+        ..lineTo(surfaceRect.right + sideDepth, sideTopY + reliefDepth)
         ..lineTo(
           surfaceRect.right + sideDepth,
           surfaceRect.bottom + reliefDepth,

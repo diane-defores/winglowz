@@ -516,7 +516,6 @@ class _ClipboardOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final latestLabel = latest == null
         ? 'Aucune capture'
         : _formatShortDateTime(latest!.lastSeenAt);
@@ -526,41 +525,6 @@ class _ClipboardOverviewCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppRadii.md),
-                  ),
-                  child: Icon(
-                    Icons.content_paste_search_outlined,
-                    color: colorScheme.primary,
-                  ),
-                ),
-                AppGaps.horizontalX3,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Clipboard',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      AppGaps.x1,
-                      Text(
-                        'Historique local, captures clavier et éléments épinglés pour retrouver vite ce qui compte.',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            AppGaps.x3,
             Wrap(
               spacing: AppSpacing.x2,
               runSpacing: AppSpacing.x2,
@@ -661,7 +625,7 @@ class _ClipboardMetricPill extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final effectiveColor = color ?? colorScheme.primary;
     return Container(
-      constraints: const BoxConstraints(minWidth: 148),
+      constraints: const BoxConstraints(minWidth: 118),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.x3,
         vertical: AppSpacing.x2,

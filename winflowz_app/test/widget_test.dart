@@ -654,11 +654,11 @@ void main() {
     expect(find.text('Start here'), findsNothing);
     expect(find.textContaining('Missing Supabase config'), findsNothing);
     expect(find.textContaining('Cloud sync is disabled'), findsNothing);
-    expect(find.text('WinFlowz • Accueil'), findsOneWidget);
+    expect(find.text('Accueil'), findsWidgets);
 
     await tester.tap(find.byIcon(Icons.text_snippet_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('WinFlowz • Snippets'), findsOneWidget);
+    expect(find.text('Nouveau snippet (raccourci texte)'), findsOneWidget);
     expect(find.text('Déclencheur'), findsOneWidget);
     expect(find.text('Snippets'), findsWidgets);
 
@@ -666,7 +666,7 @@ void main() {
     await _pumpNavigationFrame(tester);
 
     expect(handled, isTrue);
-    expect(find.text('WinFlowz • Accueil'), findsOneWidget);
+    expect(find.text('Accueil'), findsWidgets);
   });
 
   testWidgets('new account welcome guide is shown once in app shell', (
@@ -714,7 +714,7 @@ void main() {
       await tester.pumpWidget(_appShellTestWidget());
       await _pumpNavigationFrame(tester);
 
-      expect(find.text('WinFlowz • Accueil'), findsOneWidget);
+      expect(find.text('Accueil'), findsWidgets);
       expect(find.text('Configuration WinFlowz'), findsOneWidget);
       final refreshAccessButton = find.widgetWithText(
         OutlinedButton,
@@ -742,7 +742,7 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'OK'));
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
       expect(find.text('Configuration WinFlowz'), findsNothing);
-      expect(find.text('WinFlowz • Réglages'), findsOneWidget);
+      expect(find.text('Apparence'), findsWidgets);
       expect(find.text('Onboarding mis en pause'), findsNothing);
 
       final resumeButton = find.widgetWithText(TextButton, 'Reprendre');
@@ -1260,7 +1260,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
       expect(find.text('Configuration WinFlowz'), findsNothing);
-      expect(find.text('WinFlowz • Accueil'), findsOneWidget);
+      expect(find.text('Accueil'), findsWidgets);
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();
@@ -1290,30 +1290,30 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
     }
 
-    expect(find.text('WinFlowz • Accueil'), findsOneWidget);
-    expect(find.textContaining('Ton fil global'), findsOneWidget);
+    expect(find.text('Accueil'), findsWidgets);
+    expect(find.text('Fil d’accueil'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.content_paste_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('WinFlowz • Presse-papiers'), findsOneWidget);
+    expect(find.text('Nouvel élément clipboard'), findsOneWidget);
     expect(find.text('Contenu'), findsOneWidget);
     expect(find.text('Ajouter'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.text_snippet_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('WinFlowz • Snippets'), findsOneWidget);
+    expect(find.text('Nouveau snippet (raccourci texte)'), findsOneWidget);
     expect(find.text('Déclencheur'), findsOneWidget);
     expect(find.text('Ajouter le snippet'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.auto_fix_high_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('WinFlowz • Dictionnaire'), findsOneWidget);
+    expect(find.text('Nouveau terme'), findsOneWidget);
     expect(find.text('Terme'), findsOneWidget);
     expect(find.text('Ajouter un terme'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.settings_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('WinFlowz • Réglages'), findsOneWidget);
+    expect(find.text('Apparence'), findsWidgets);
     expect(find.text('Apparence'), findsWidgets);
 
     debugDefaultTargetPlatformOverride = previousPlatform;

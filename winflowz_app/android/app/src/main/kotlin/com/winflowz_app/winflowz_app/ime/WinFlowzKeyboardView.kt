@@ -3586,16 +3586,24 @@ class WinFlowzKeyboardView(
         keyReliefDarkPaint.style = Paint.Style.FILL
         keyReliefDarkPaint.shader = null
         val faceAlpha = if (pressed) 0.62f else 0.92f
+        keyReliefDarkPaint.color = colorWithOpacity(adjustColor(baseColor, 0.62f), faceAlpha)
         val topInset = min(radius * 0.56f, surfaceRect.height() * 0.42f)
+        val sideTopY =
+            if (pressed) {
+                (surfaceRect.bottom - bottomDepth).coerceAtLeast(surfaceRect.top)
+            } else {
+                surfaceRect.top + topInset
+            }
         val save = canvas.save()
         canvas.clipRect(footprintRect)
+        canvas.drawRoundRect(footprintRect, radius, radius, keyReliefDarkPaint)
 
         if (leftDepth > 0.35f) {
             keyEffectPath.reset()
-            keyEffectPath.moveTo(surfaceRect.left, surfaceRect.top + topInset)
+            keyEffectPath.moveTo(surfaceRect.left, sideTopY)
             keyEffectPath.lineTo(surfaceRect.left, surfaceRect.bottom)
             keyEffectPath.lineTo(surfaceRect.left - leftDepth, surfaceRect.bottom + fullDepth)
-            keyEffectPath.lineTo(surfaceRect.left - leftDepth, surfaceRect.top + topInset + fullDepth)
+            keyEffectPath.lineTo(surfaceRect.left - leftDepth, sideTopY + fullDepth)
             keyEffectPath.close()
             keyEffectPath.computeBounds(scrollVisualRect, true)
             keyReliefDarkPaint.shader =
@@ -3617,8 +3625,8 @@ class WinFlowzKeyboardView(
 
         if (rightDepth > 0.35f) {
             keyEffectPath.reset()
-            keyEffectPath.moveTo(surfaceRect.right, surfaceRect.top + topInset)
-            keyEffectPath.lineTo(surfaceRect.right + rightDepth, surfaceRect.top + topInset + fullDepth)
+            keyEffectPath.moveTo(surfaceRect.right, sideTopY)
+            keyEffectPath.lineTo(surfaceRect.right + rightDepth, sideTopY + fullDepth)
             keyEffectPath.lineTo(surfaceRect.right + rightDepth, surfaceRect.bottom + fullDepth)
             keyEffectPath.lineTo(surfaceRect.right, surfaceRect.bottom)
             keyEffectPath.close()
@@ -3674,13 +3682,14 @@ class WinFlowzKeyboardView(
         baseColor: Int,
         pressed: Boolean,
     ) {
+        if (pressed) return
         keyReliefLightPaint.shader = null
         keyReliefLightPaint.style = Paint.Style.STROKE
         keyReliefLightPaint.strokeWidth = dp(0.75f)
         keyReliefLightPaint.color =
             colorWithOpacity(
                 adjustColor(baseColor, 1.20f),
-                if (pressed) 0.06f else 0.13f,
+                0.13f,
             )
         val lightInset = keyReliefLightPaint.strokeWidth / 2f
         scrollVisualRect.set(rect)
@@ -3690,21 +3699,6 @@ class WinFlowzKeyboardView(
         canvas.clipRect(rect.left, rect.top, rect.right, rect.top + rect.height() * 0.42f)
         canvas.drawRoundRect(scrollVisualRect, lightRadius, lightRadius, keyReliefLightPaint)
         canvas.restoreToCount(lightSave)
-
-        if (pressed) {
-            keyReliefDarkPaint.shader = null
-            keyReliefDarkPaint.style = Paint.Style.STROKE
-            keyReliefDarkPaint.strokeWidth = dp(0.8f)
-            keyReliefDarkPaint.color = colorWithOpacity(adjustColor(baseColor, 0.62f), 0.07f)
-            val darkInset = keyReliefDarkPaint.strokeWidth / 2f
-            scrollVisualRect.set(rect)
-            scrollVisualRect.inset(darkInset, darkInset)
-            val darkRadius = (radius - darkInset).coerceAtLeast(0f)
-            val darkSave = canvas.save()
-            canvas.clipRect(rect.left, rect.top, rect.right, rect.top + rect.height() * 0.48f)
-            canvas.drawRoundRect(scrollVisualRect, darkRadius, darkRadius, keyReliefDarkPaint)
-            canvas.restoreToCount(darkSave)
-        }
     }
 
     private fun adjustColor(color: Int, factor: Float): Int {

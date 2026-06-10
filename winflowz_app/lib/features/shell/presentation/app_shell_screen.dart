@@ -93,9 +93,9 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     const titles = [
       'Accueil',
       'Voix',
-      'Presse-papiers',
+      'Papier',
       'Snippets',
-      'Dictionnaire',
+      'Dico',
       'Réglages',
     ];
     AppDiagnostics.record(
@@ -739,15 +739,6 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
         },
       ),
     ];
-    const titles = [
-      'Accueil',
-      'Voix',
-      'Presse-papiers',
-      'Snippets',
-      'Dictionnaire',
-      'Réglages',
-    ];
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final useRail = constraints.maxWidth >= AppBreakpoints.navigationRail;
@@ -766,8 +757,15 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
           },
           child: Scaffold(
             appBar: AppBar(
-              title: Text('WinFlowz • ${titles[_index]}'),
-              titleSpacing: AppSpacing.x4,
+              toolbarHeight: 0,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(1),
+                child: Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: colorScheme.outlineVariant,
+                ),
+              ),
             ),
             body: DecoratedBox(
               decoration: BoxDecoration(
@@ -799,7 +797,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                           ),
                           NavigationRailDestination(
                             icon: Icon(Icons.content_paste_outlined),
-                            label: Text('Presse-papiers'),
+                            label: Text('Papier'),
                           ),
                           NavigationRailDestination(
                             icon: Icon(Icons.text_snippet_outlined),
@@ -807,7 +805,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                           ),
                           NavigationRailDestination(
                             icon: Icon(Icons.auto_fix_high_outlined),
-                            label: Text('Dictionnaire'),
+                            label: Text('Dico'),
                           ),
                           NavigationRailDestination(
                             icon: Icon(Icons.settings_outlined),
@@ -907,7 +905,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                       NavigationDestination(
                         icon: Icon(Icons.content_paste_outlined),
                         selectedIcon: Icon(Icons.content_paste),
-                        label: 'Presse-papiers',
+                        label: 'Papier',
                       ),
                       NavigationDestination(
                         icon: Icon(Icons.text_snippet_outlined),
@@ -917,7 +915,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                       NavigationDestination(
                         icon: Icon(Icons.auto_fix_high_outlined),
                         selectedIcon: Icon(Icons.auto_fix_high),
-                        label: 'Dictionnaire',
+                        label: 'Dico',
                       ),
                       NavigationDestination(
                         icon: Icon(Icons.settings_outlined),

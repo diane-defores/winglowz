@@ -8,12 +8,12 @@ import 'package:winflowz_app/features/auth/application/auth_session_provider.dar
 import 'package:winflowz_app/features/auth/domain/auth_session_store.dart';
 
 const _productRoutes = {
-  '/home': 'WinFlowz • Accueil',
-  '/voice': 'WinFlowz • Voix',
-  '/clipboard': 'WinFlowz • Presse-papiers',
-  '/snippets': 'WinFlowz • Snippets',
-  '/dictionary': 'WinFlowz • Dictionnaire',
-  '/settings': 'WinFlowz • Réglages',
+  '/home': 'Accueil',
+  '/voice': 'Capture automatique',
+  '/clipboard': 'Nouvel élément clipboard',
+  '/snippets': 'Nouveau snippet (raccourci texte)',
+  '/dictionary': 'Nouveau terme',
+  '/settings': 'Réglages',
 };
 
 const _signedOut = AuthSessionSnapshot(
@@ -86,7 +86,7 @@ void main() {
       await _pumpRouter(tester);
 
       expect(router.routeInformationProvider.value.uri.path, entry.key);
-      expect(find.text(entry.value), findsAtLeastNWidgets(1));
+      expect(find.textContaining(entry.value), findsAtLeastNWidgets(1));
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
@@ -104,7 +104,7 @@ void main() {
       await _pumpRouter(tester);
 
       expect(router.routeInformationProvider.value.uri.path, entry.key);
-      expect(find.text(entry.value), findsAtLeastNWidgets(1));
+      expect(find.textContaining(entry.value), findsAtLeastNWidgets(1));
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();

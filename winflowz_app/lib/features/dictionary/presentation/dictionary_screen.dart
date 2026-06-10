@@ -288,11 +288,21 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   Widget build(BuildContext context) {
     AppDiagnostics.record('screen_build', 'Dictionary');
     final visibleItems = _visibleItems();
+    final caseSensitiveCount = _items
+        .where((item) => item.caseSensitive)
+        .length;
+    final latest = _items.isEmpty ? null : _items.first;
     return ListView(
       padding: AppInsets.screen,
       children: [
         const LocalModeNotice(surface: 'Dictionary'),
         const LocalModeNoticeGap(),
+        _DictionaryOverviewCard(
+          totalCount: _items.length,
+          caseSensitiveCount: caseSensitiveCount,
+          latest: latest,
+        ),
+        AppGaps.x2,
         AppSectionCard(
           title: 'Nouveau terme',
           child: Column(
@@ -409,4 +419,115 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
       ],
     );
   }
+}
+
+class _DictionaryOverviewCard extends StatelessWidget {
+  const _DictionaryOverviewCard({
+    required this.totalCount,
+    required this.caseSensitiveCount,
+    required this.latest,
+  });
+
+  final int totalCount;
+  final int caseSensitiveCount;
+  final DictionaryTermRecord? latest;
+
+  @override
+  Widget build(BuildContext context) {
+    final latestLabel = latest == null
+        ? 'Aucun ajout'
+        : _formatShortDateTime(latest!.createdAt);
+    return Card(
+      child: Padding(
+        padding: AppInsets.compactCard,
+        child: Wrap(
+          spacing: AppSpacing.x2,
+          runSpacing: AppSpacing.x2,
+          children: [
+            _DictionaryMetricPill(
+              icon: Icons.auto_fix_high_outlined,
+              label: '$totalCount',
+              value: totalCount == 1 ? 'terme' : 'termes',
+            ),
+            _DictionaryMetricPill(
+              icon: Icons.text_fields,
+              label: '$caseSensitiveCount',
+              value: 'casse stricte',
+            ),
+            _DictionaryMetricPill(
+              icon: Icons.schedule,
+              label: latestLabel,
+              value: 'dernier ajout',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DictionaryMetricPill extends StatelessWidget {
+  const _DictionaryMetricPill({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      constraints: const BoxConstraints(minWidth: 118),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.x3,
+        vertical: AppSpacing.x2,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.58),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        border: Border.all(color: colorScheme.outlineVariant),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: colorScheme.primary, size: 18),
+          AppGaps.horizontalX2,
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _formatShortDateTime(DateTime value) {
+  final day = value.day.toString().padLeft(2, '0');
+  final month = value.month.toString().padLeft(2, '0');
+  final hour = value.hour.toString().padLeft(2, '0');
+  final minute = value.minute.toString().padLeft(2, '0');
+  return '$day/$month $hour:$minute';
 }

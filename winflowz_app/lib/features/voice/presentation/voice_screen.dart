@@ -919,43 +919,6 @@ class _VoiceOverviewCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color:
-                        (isRecording ? AppColors.danger : colorScheme.primary)
-                            .withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppRadii.md),
-                  ),
-                  child: Icon(
-                    isRecording ? Icons.graphic_eq : Icons.mic_none,
-                    color: isRecording ? AppColors.danger : colorScheme.primary,
-                  ),
-                ),
-                AppGaps.horizontalX3,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isRecording ? 'Dictée en cours' : 'Voix',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      AppGaps.x1,
-                      Text(
-                        'Capture, nettoie et retrouve les textes dictés depuis le clavier et l’overlay.',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            AppGaps.x3,
             Wrap(
               spacing: AppSpacing.x2,
               runSpacing: AppSpacing.x2,
@@ -1133,7 +1096,7 @@ class _MetricPill extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final effectiveColor = color ?? colorScheme.primary;
     return Container(
-      constraints: const BoxConstraints(minWidth: 156),
+      constraints: const BoxConstraints(minWidth: 118),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.x3,
         vertical: AppSpacing.x2,
