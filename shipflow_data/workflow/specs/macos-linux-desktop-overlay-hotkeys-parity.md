@@ -5,15 +5,15 @@ artifact_version: "1.0.0"
 project: "WinFlowz"
 created: "2026-05-31"
 created_at: "2026-05-31 00:00:00 UTC"
-updated: "2026-05-31"
-updated_at: "2026-05-31 00:00:00 UTC"
-status: active
+updated: "2026-06-10"
+updated_at: "2026-06-10 10:58:55 UTC"
+status: reviewed
 source_skill: sf-build
 source_model: "GPT-5 Codex"
 scope: "macos-linux-desktop-overlay-hotkeys-parity"
 owner: "Diane"
 confidence: medium
-user_story: "En tant qu'utilisateur macOS ou Linux de WinFlowz, je veux retrouver le concept d'overlay flottant, de raccourcis/quick actions et de livraison clipboard de l'app Android et du slice Windows, afin d'utiliser les actions WinFlowz dans mes apps desktop sans promesse d'IME."
+user_story: "En tant qu'utilisateur macOS ou Linux de WinFlowz, je veux retrouver le concept d'overlay flottant, de raccourcis/quick actions et de livraison clipboard de l'app Android et de la premiere version Windows, afin d'utiliser les actions WinFlowz dans mes apps desktop sans promesse d'IME."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -33,7 +33,7 @@ depends_on:
 supersedes: []
 evidence:
   - "User request 2026-05-31: after Windows, implement the same parity for Linux and Mac."
-  - "Windows slice established the target pattern: shared Flutter contract plus native desktop host."
+  - "The first Windows version established the target pattern: shared Flutter contract plus native desktop host."
 next_step: "/sf-test --local shipflow_data/workflow/verification/macos-linux-desktop-overlay-hotkeys-parity-checklist.md"
 ---
 
@@ -43,8 +43,8 @@ macOS And Linux Desktop Overlay And Hotkeys Parity
 
 # Status
 
-Active chantier opened from Diane's 2026-05-31 parity request. First local
-implementation slice is in place for typed Flutter desktop overlay contracts,
+Reviewed chantier opened from Diane's 2026-05-31 parity request. First local
+implementation version is in place for typed Flutter desktop overlay contracts,
 macOS native host, Linux native host, docs, tests, and manual QA checklists.
 Native macOS/Linux runner proof is still required before any public platform
 parity claim.
@@ -53,7 +53,7 @@ parity claim.
 
 En tant qu'utilisateur macOS ou Linux de WinFlowz, je veux retrouver le concept
 d'overlay flottant, de raccourcis/quick actions et de livraison clipboard de
-l'app Android et du slice Windows, afin d'utiliser les actions WinFlowz dans mes
+l'app Android et de la premiere version Windows, afin d'utiliser les actions WinFlowz dans mes
 apps desktop sans promesse d'IME.
 
 # Minimal Behavior Contract
@@ -113,7 +113,7 @@ pas choisie.
   et un Command+V best-effort vers la derniere app active.
 - Linux: `my_application.cc` enregistre `winflowz_app/linux_overlay`, utilise
   GTK keep-above, clipboard, event queue, et declare explicitement que le hotkey
-  est scoped au contexte GTK dans ce slice.
+  est scoped au contexte GTK dans cette premiere version.
 - Flutter: `lib/core/platform/desktop_overlay_bridge.dart` porte le contrat
   commun typed status/events/delivery pour les hotes desktop.
 
@@ -127,10 +127,11 @@ pas choisie.
 
 # Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ✅ -> sf-verify ⚠️ local Dart pass + native macOS/Linux QA pending -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ✅ -> sf-verify ⚠️ local Dart pass + native macOS/Linux QA pending -> sf-end ✅ -> sf-ship ✅🎯
 
 # Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-31 00:00:00 UTC | sf-build | GPT-5 Codex | Opened macOS/Linux desktop overlay parity chantier and implemented first native host slices. | partial: Dart checks pass; macOS/Linux native runner proof pending. | `/sf-test --local shipflow_data/workflow/verification/macos-linux-desktop-overlay-hotkeys-parity-checklist.md` |
+| 2026-05-31 00:00:00 UTC | sf-build | GPT-5 Codex | Opened macOS/Linux desktop overlay parity chantier and implemented first native host version. | partial: Dart checks pass; macOS/Linux native runner proof pending. | `/sf-test --local shipflow_data/workflow/verification/macos-linux-desktop-overlay-hotkeys-parity-checklist.md` |
+| 2026-06-10 10:58:55 UTC | sf-ship | GPT-5 Codex | Closed and shipped macOS/Linux desktop overlay parity for native QA handoff. | shipped: local checks passed; macOS/Linux native runner proof remains open. | `/sf-test --local shipflow_data/workflow/verification/macos-linux-desktop-overlay-hotkeys-parity-checklist.md` |

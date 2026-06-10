@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Added the first macOS and Linux desktop overlay host versions with a shared
+  Dart `DesktopOverlayBridge`, native macOS/Linux channels, clipboard fallback,
+  macOS best-effort paste delivery, Linux degraded hotkey/delivery status, and
+  manual QA checklists.
 - Added cross-surface `Envoyer vers` actions so Voice transcriptions can become Snippets or Clipboard WinFlowz items, Clipboard entries can become Snippets, and sensitive Voice-to-Clipboard content requires confirmation.
 - Added the WinFlowz app Accueil feed with global search, shared page search controls, shared refresh/sync/save status actions, page-scoped searches, and Settings save status feedback.
 - Added persistent local clipboard history for local/offline mode, including reload-safe deduplication, search, direct copy back to the system clipboard, and corruption-tolerant recovery tests.

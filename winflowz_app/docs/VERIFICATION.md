@@ -64,7 +64,7 @@ Still required outside local VM:
 - iOS/web: parity target, but native/browser overlay/quick-action hosts are not
   implemented in the current runtime. Keep platform limits documented and do
   not treat those builds as required proof for the Android MVP.
-- macOS/Linux desktop overlay/hotkeys are now separate parity slices. They are
+- macOS/Linux desktop overlay/hotkeys are now separate parity workstreams. They are
   not required proof for Android MVP closure, but they do require native
   runner/manual QA before any macOS/Linux parity claim.
 - Windows desktop overlay/hotkeys is now a separate chantier. It is not required

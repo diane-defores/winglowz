@@ -147,7 +147,7 @@ instead of a long-lived service account JSON key.
 - Overlay model: Flutter owns the shared WinFlowz product UI, actions, states,
   Settings patterns, and backend-agnostic stores. Each OS owns its system host:
   Android uses a native foreground overlay bubble; Windows now has a first
-  desktop overlay/hotkeys host slice with a native `winflowz_app/windows_overlay`
+  desktop overlay/hotkeys host version with a native `winflowz_app/windows_overlay`
   channel for global hotkey, always-on-top window behavior, clipboard and
   best-effort paste delivery. macOS and Linux now follow the same desktop-host
   pattern with native `winflowz_app/macos_overlay` and
@@ -157,7 +157,7 @@ instead of a long-lived service account JSON key.
 - Windows desktop target: no IME promise. The equivalent is a Flutter desktop
   overlay surface hosted by Windows-native hotkeys, always-on-top window
   behavior, clipboard, focus, and best-effort text delivery. The first native
-  host slice is implemented locally, but Windows runner/manual proof is still
+  host version is implemented locally, but Windows runner/manual proof is still
   required before making a public parity claim.
 - macOS desktop target: no IME promise. The equivalent is a Flutter desktop
   overlay surface hosted by macOS-native window floating behavior, a

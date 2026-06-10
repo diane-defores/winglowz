@@ -16,6 +16,7 @@
 🟡 [WinFlowzApp] task: Fix or refine Windows overlay host after first Windows QA results | status: todo | area: windows-overlay | id: wfz-windows-overlay-qa-followup
 🟠 [WinFlowzApp] task: Run macOS overlay/hotkeys native QA checklist on a macOS machine | status: todo | area: macos-overlay | id: wfz-macos-overlay-native-qa
 🟠 [WinFlowzApp] task: Run Linux overlay/hotkeys native QA checklist on a Linux machine | status: todo | area: linux-overlay | id: wfz-linux-overlay-native-qa
+✅ [WinFlowzApp] task: Ship first local macOS/Linux desktop overlay host version for native QA handoff | status: done | area: desktop-overlay | id: wfz-macos-linux-overlay-local-ship
 🟡 [WinFlowzApp] task: Decide and implement stronger Linux global hotkey/paste integration after first Linux QA results | status: todo | area: linux-overlay | id: wfz-linux-overlay-host-followup
 🟠 [winflowz] task: Configure Lemon Squeezy test-mode env and run hosted commerce proof for SocialGlowz LTD webhooks, idempotent replay, refund revoke, and Convex fulfillment | status: blocked | area: commerce | id: wfz-commerce-lemonsqueezy-hosted-smoke
 🟠 [WinFlowzApp] task: Retest BUG-2026-05-24-001 onboarding active-state info box on Android APK | status: fixed_pending_verify | area: onboarding | id: BUG-2026-05-24-001

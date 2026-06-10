@@ -31,7 +31,7 @@ evidence:
   - "Mapped before Android IME Settings bridge work."
   - "Updated for account-backed keyboard sync panel, backup service, and sync change notifier wiring."
   - "Updated for shared Voice/Clipboard Send to actions."
-  - "Updated for Windows desktop overlay bridge and runner host slice."
+  - "Updated for Windows desktop overlay bridge and runner host version."
 next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---

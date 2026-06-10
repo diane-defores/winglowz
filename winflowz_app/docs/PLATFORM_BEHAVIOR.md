@@ -53,9 +53,9 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 |---|---|---|---|---|---|---|
 | Android | supported when `speech_to_text` or Android speech recognition supports locale/device | supported | Android keystore via `flutter_secure_storage` | opt-in; respect background limits | supported | supported as native Kotlin IME |
 | iOS | supported when permission and locale allow | supported | Keychain via `flutter_secure_storage` | opt-in; no Android-style overlay | target parity; native host/recovery model still to spec | unavailable |
-| macOS | supported when package/platform allows | supported | keychain-backed where available | opt-in | first desktop host slice implemented locally: floating window + quick action + clipboard/delivery | unavailable |
+| macOS | supported when package/platform allows | supported | keychain-backed where available | opt-in | first desktop host version implemented locally: floating window + quick action + clipboard/delivery | unavailable |
 | Windows | supported when package/platform allows | supported | platform secure storage where available | opt-in | target chantier: desktop overlay window + global hotkeys + clipboard/delivery | unavailable |
-| Linux | local speech unavailable unless package support changes | supported via recording + Whisper | may be degraded; require explicit UI state | opt-in | first desktop host slice implemented locally with GTK keep-above + clipboard fallback; global hotkey scope still degraded | unavailable |
+| Linux | local speech unavailable unless package support changes | supported via recording + Whisper | may be degraded; require explicit UI state | opt-in | first desktop host version implemented locally with GTK keep-above + clipboard fallback; global hotkey scope still degraded | unavailable |
 | Web | browser-limited; target explicit degraded parity where safe | browser-limited unless a secure proxy/direct contract is specified | degraded compared with native keychain/keystore | target explicit degraded parity where safe | browser-limited quick actions; no OS overlay | unavailable |
 
 ## Android Keyboard IME
@@ -88,7 +88,7 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 
 ## Windows Desktop Overlay
 
-- Windows overlay is now implemented as a first native host slice, with Windows
+- Windows overlay is now implemented as a first native host version, with Windows
   runner proof still required before any public parity claim.
 - The Windows implementation must share Flutter UI, actions, stores, status
   states, and Settings patterns where possible, but use a Windows-native host
@@ -112,7 +112,7 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 
 ## macOS Desktop Overlay
 
-- macOS overlay is implemented as a first native host slice, with runner/manual
+- macOS overlay is implemented as a first native host version, with runner/manual
   proof still required before any public parity claim.
 - The channel is `winflowz_app/macos_overlay`. It exposes the shared typed
   desktop status/events/delivery contract for floating-window show/hide,
@@ -127,7 +127,7 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 
 ## Linux Desktop Overlay
 
-- Linux overlay is implemented as a first native host slice, with runner/manual
+- Linux overlay is implemented as a first native host version, with runner/manual
   proof still required before any public parity claim.
 - The channel is `winflowz_app/linux_overlay`. It exposes the shared typed
   desktop status/events/delivery contract for GTK keep-above show/hide,
