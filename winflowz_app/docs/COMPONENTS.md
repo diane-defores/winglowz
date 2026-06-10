@@ -57,6 +57,14 @@ This inventory separates:
   shared content containers for section framing, status rows, guided empty
   states, and entity lists. Prefer compact padding and avoid wrapping an entire
   page in a card when child cards or status blocks already provide structure.
+- `ProductPageScaffold`, `ProductSummaryStrip`, `AppMetricPill`,
+  `AppStatusPill`, and `AppLocalModeStatusPill`:
+  shared grammar for product pages such as Voix, Papier, Snippets, and Dico.
+  Product pages should render compact summary/status first, primary action
+  second, list controls third, then results. Local-only state belongs in the
+  summary strip as natural French copy, not in a large standalone English
+  notice. `AppStatusPill` must not label a page `Synchronisé` unless the page
+  has a concrete sync source proving that data scope is synced.
 
 ### Voice flow
 

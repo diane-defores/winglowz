@@ -6,7 +6,6 @@ import '../../../core/diagnostics/app_diagnostics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
-import '../../../core/widgets/local_mode_notice.dart';
 import '../../send_to/presentation/send_to_actions.dart';
 import '../../settings/application/settings_store_provider.dart';
 import '../../snippets/application/snippet_store_provider.dart';
@@ -330,126 +329,118 @@ class _ClipboardScreenState extends ConsumerState<ClipboardScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
-        const LocalModeNotice(surface: 'Clipboard'),
-        const LocalModeNoticeGap(),
-        _ClipboardOverviewCard(
-          totalCount: _items.length,
-          pinnedCount: pinnedCount,
-          pendingCount: pendingCount,
-          latest: latest,
-        ),
-        AppGaps.x2,
-        AppSectionCard(
-          title: 'Nouvel élément clipboard',
-          subtitle:
-              'Ajoute un texte utile à retrouver depuis le clavier, ou importe les captures automatiques.',
-          leading: Icon(
-            Icons.content_paste_go_outlined,
-            color: Theme.of(context).colorScheme.primary,
+        ProductPageScaffold(
+          summary: _ClipboardOverviewCard(
+            totalCount: _items.length,
+            pinnedCount: pinnedCount,
+            pendingCount: pendingCount,
+            latest: latest,
+            status: _pageStatus(pendingCount),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _contentController,
-                minLines: 2,
-                maxLines: 6,
-                textInputAction: TextInputAction.newline,
-                decoration: const InputDecoration(
-                  labelText: 'Contenu',
-                  hintText: 'Colle un message, un lien ou une commande...',
-                ),
-              ),
-              AppGaps.x2,
-              DropdownButtonFormField<ClipboardCanonicalSource>(
-                initialValue: _source,
-                items: ClipboardCanonicalSource.values
-                    .where(
-                      (source) =>
-                          source == ClipboardCanonicalSource.manual ||
-                          source == ClipboardCanonicalSource.system ||
-                          source == ClipboardCanonicalSource.keyboard ||
-                          source == ClipboardCanonicalSource.keyboardClipboard,
-                    )
-                    .map(
-                      (source) => DropdownMenuItem(
-                        value: source,
-                        child: _SourceOption(source: source),
-                      ),
-                    )
-                    .toList(growable: false),
-                onChanged: _busy
-                    ? null
-                    : (value) => setState(
-                        () =>
-                            _source = value ?? ClipboardCanonicalSource.manual,
-                      ),
-                decoration: const InputDecoration(labelText: 'Source'),
-              ),
-              if (draftClassification != ClipboardSensitiveClassification.none)
-                Padding(
-                  padding: AppInsets.stack,
-                  child: _ClipboardInlineNotice(
-                    icon: Icons.privacy_tip_outlined,
-                    text:
-                        'Contenu sensible détecté : ${draftClassification.label}. Une confirmation sera demandée avant la sauvegarde.',
-                    destructive: true,
+          primaryAction: AppSectionCard(
+            title: 'Nouvel élément',
+            leading: Icon(
+              Icons.content_paste_go_outlined,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _contentController,
+                  minLines: 2,
+                  maxLines: 6,
+                  textInputAction: TextInputAction.newline,
+                  decoration: const InputDecoration(
+                    labelText: 'Contenu',
+                    hintText: 'Colle un message, un lien ou une commande...',
                   ),
                 ),
-              AppGaps.x2,
-              _DraftStatsRow(content: draftContent, source: _source),
-              AppGaps.x2,
-              AppFormActions(
-                primaryLabel: 'Ajouter',
-                primaryIcon: Icons.add_link,
-                onPrimary: _busy || draftContent.isEmpty ? null : _add,
+                AppGaps.x2,
+                DropdownButtonFormField<ClipboardCanonicalSource>(
+                  initialValue: _source,
+                  items: ClipboardCanonicalSource.values
+                      .where(
+                        (source) =>
+                            source == ClipboardCanonicalSource.manual ||
+                            source == ClipboardCanonicalSource.system ||
+                            source == ClipboardCanonicalSource.keyboard ||
+                            source ==
+                                ClipboardCanonicalSource.keyboardClipboard,
+                      )
+                      .map(
+                        (source) => DropdownMenuItem(
+                          value: source,
+                          child: _SourceOption(source: source),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged: _busy
+                      ? null
+                      : (value) => setState(
+                          () => _source =
+                              value ?? ClipboardCanonicalSource.manual,
+                        ),
+                  decoration: const InputDecoration(labelText: 'Source'),
+                ),
+                if (draftClassification !=
+                    ClipboardSensitiveClassification.none)
+                  Padding(
+                    padding: AppInsets.stack,
+                    child: _ClipboardInlineNotice(
+                      icon: Icons.privacy_tip_outlined,
+                      text:
+                          'Contenu sensible détecté : ${draftClassification.label}. Une confirmation sera demandée avant la sauvegarde.',
+                      destructive: true,
+                    ),
+                  ),
+                AppGaps.x2,
+                _DraftStatsRow(content: draftContent, source: _source),
+                AppGaps.x2,
+                AppFormActions(
+                  primaryLabel: 'Ajouter',
+                  primaryIcon: Icons.add_link,
+                  onPrimary: _busy || draftContent.isEmpty ? null : _add,
+                ),
+              ],
+            ),
+          ),
+          busy: _busy,
+          message: _message,
+          messageBuilder: (context, message) =>
+              _ClipboardMessage(message: message),
+          listToolbar: AppPageToolbar(
+            searchField: AppSearchField(
+              controller: _searchController,
+              query: _searchController.text,
+              enabled: _items.isNotEmpty,
+              scopeLabel: 'Clipboard',
+              hintText: 'Rechercher un élément',
+              onChanged: (_) {},
+              onClear: _searchController.clear,
+            ),
+            syncAction: AppSyncStatusAction(
+              status: _pageStatus(pendingCount),
+              scopeLabel: 'Clipboard',
+              onPressed: _busy ? null : _load,
+            ),
+          ),
+          results: [
+            if (_items.isEmpty) const _EmptyClipboardState(),
+            if (_items.isNotEmpty && visibleItems.isEmpty)
+              const _EmptyClipboardSearchState(),
+            for (final item in visibleItems)
+              _ClipboardItemTile(
+                item: item,
+                sendToEnabled: !_busy,
+                onSendToSnippet: _busy ? null : () => _sendToSnippet(item),
+                onCopy: _busy ? null : () => _copyToSystemClipboard(item),
+                onEdit: _busy ? null : () => _edit(item),
+                onTogglePin: _busy ? null : () => _togglePin(item),
+                onDelete: _busy ? null : () => _remove(item.id),
               ),
-            ],
-          ),
+          ],
         ),
-        if (_busy)
-          const Padding(
-            padding: AppInsets.progress,
-            child: LinearProgressIndicator(),
-          ),
-        if (_message != null)
-          Padding(
-            padding: AppInsets.message,
-            child: _ClipboardMessage(message: _message!),
-          ),
-        AppGaps.x3,
-        const AppEntityListHeader(title: 'Éléments du clipboard'),
-        AppGaps.x2,
-        AppPageToolbar(
-          searchField: AppSearchField(
-            controller: _searchController,
-            query: _searchController.text,
-            enabled: _items.isNotEmpty,
-            scopeLabel: 'Clipboard',
-            hintText: 'Rechercher un élément',
-            onChanged: (_) {},
-            onClear: _searchController.clear,
-          ),
-          syncAction: AppSyncStatusAction(
-            status: _pageStatus(pendingCount),
-            scopeLabel: 'Clipboard',
-            onPressed: _busy ? null : _load,
-          ),
-        ),
-        AppGaps.x2,
-        if (_items.isEmpty) const _EmptyClipboardState(),
-        if (_items.isNotEmpty && visibleItems.isEmpty)
-          const _EmptyClipboardSearchState(),
-        for (final item in visibleItems)
-          _ClipboardItemTile(
-            item: item,
-            sendToEnabled: !_busy,
-            onSendToSnippet: _busy ? null : () => _sendToSnippet(item),
-            onCopy: _busy ? null : () => _copyToSystemClipboard(item),
-            onEdit: _busy ? null : () => _edit(item),
-            onTogglePin: _busy ? null : () => _togglePin(item),
-            onDelete: _busy ? null : () => _remove(item.id),
-          ),
       ],
     );
   }
@@ -507,60 +498,40 @@ class _ClipboardOverviewCard extends StatelessWidget {
     required this.pinnedCount,
     required this.pendingCount,
     required this.latest,
+    required this.status,
   });
 
   final int totalCount;
   final int pinnedCount;
   final int pendingCount;
   final ClipboardItemRecord? latest;
+  final AppSyncStatus status;
 
   @override
   Widget build(BuildContext context) {
     final latestLabel = latest == null
         ? 'Aucune capture'
         : _formatShortDateTime(latest!.lastSeenAt);
-    return Card(
-      child: Padding(
-        padding: AppInsets.compactCard,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Wrap(
-              spacing: AppSpacing.x2,
-              runSpacing: AppSpacing.x2,
-              children: [
-                _ClipboardMetricPill(
-                  icon: Icons.inventory_2_outlined,
-                  label: '$totalCount',
-                  value: totalCount == 1 ? 'item' : 'items',
-                ),
-                _ClipboardMetricPill(
-                  icon: Icons.push_pin_outlined,
-                  label: '$pinnedCount',
-                  value: pinnedCount == 1 ? 'épinglé' : 'épinglés',
-                ),
-                _ClipboardMetricPill(
-                  icon: pendingCount > 0
-                      ? Icons.sync_problem_outlined
-                      : Icons.verified_outlined,
-                  label: pendingCount > 0
-                      ? '$pendingCount en attente'
-                      : 'À jour',
-                  value: 'sync',
-                  color: pendingCount > 0
-                      ? AppColors.warning
-                      : AppColors.success,
-                ),
-                _ClipboardMetricPill(
-                  icon: Icons.schedule,
-                  label: latestLabel,
-                  value: 'dernier vu',
-                ),
-              ],
-            ),
-          ],
+    return ProductSummaryStrip(
+      children: [
+        const AppLocalModeStatusPill(),
+        AppStatusPill(status: status, label: status.statusLabel('Prêt')),
+        AppMetricPill(
+          icon: Icons.inventory_2_outlined,
+          label: '$totalCount',
+          value: totalCount == 1 ? 'item' : 'items',
         ),
-      ),
+        AppMetricPill(
+          icon: Icons.push_pin_outlined,
+          label: '$pinnedCount',
+          value: pinnedCount == 1 ? 'épinglé' : 'épinglés',
+        ),
+        AppMetricPill(
+          icon: Icons.schedule,
+          label: latestLabel,
+          value: 'dernier vu',
+        ),
+      ],
     );
   }
 }
@@ -603,67 +574,6 @@ class _DraftStatsRow extends StatelessWidget {
         AppTag(label: '$normalizedWords mot(s)'),
         AppTag(label: _sourceLabel(source)),
       ],
-    );
-  }
-}
-
-class _ClipboardMetricPill extends StatelessWidget {
-  const _ClipboardMetricPill({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final effectiveColor = color ?? colorScheme.primary;
-    return Container(
-      constraints: const BoxConstraints(minWidth: 118),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.x3,
-        vertical: AppSpacing.x2,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.58),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: effectiveColor, size: 18),
-          AppGaps.horizontalX2,
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

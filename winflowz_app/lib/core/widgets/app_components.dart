@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../bootstrap/firebase_bootstrap.dart';
 import '../theme/app_theme.dart';
 
 class AppSectionCard extends StatelessWidget {
@@ -414,6 +415,178 @@ class AppPageToolbar extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class ProductPageScaffold extends StatelessWidget {
+  const ProductPageScaffold({
+    super.key,
+    required this.summary,
+    required this.primaryAction,
+    required this.listToolbar,
+    required this.results,
+    this.busy = false,
+    this.message,
+    this.messageBuilder,
+  });
+
+  final Widget summary;
+  final Widget primaryAction;
+  final Widget listToolbar;
+  final List<Widget> results;
+  final bool busy;
+  final String? message;
+  final Widget Function(BuildContext context, String message)? messageBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final message = this.message;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        summary,
+        AppGaps.x2,
+        primaryAction,
+        if (busy)
+          const Padding(
+            padding: AppInsets.progress,
+            child: LinearProgressIndicator(),
+          ),
+        if (message != null)
+          Padding(
+            padding: AppInsets.message,
+            child: messageBuilder?.call(context, message) ?? Text(message),
+          ),
+        AppGaps.x2,
+        listToolbar,
+        AppGaps.x2,
+        ...results,
+      ],
+    );
+  }
+}
+
+class ProductSummaryStrip extends StatelessWidget {
+  const ProductSummaryStrip({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    if (children.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Card(
+      child: Padding(
+        padding: AppInsets.compactCard,
+        child: Wrap(
+          spacing: AppSpacing.x2,
+          runSpacing: AppSpacing.x2,
+          children: children,
+        ),
+      ),
+    );
+  }
+}
+
+class AppMetricPill extends StatelessWidget {
+  const AppMetricPill({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final effectiveColor = color ?? colorScheme.primary;
+    return Container(
+      constraints: const BoxConstraints(minWidth: 118),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.x3,
+        vertical: AppSpacing.x2,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.58),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        border: Border.all(color: colorScheme.outlineVariant),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: effectiveColor, size: 18),
+          AppGaps.horizontalX2,
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AppStatusPill extends StatelessWidget {
+  const AppStatusPill({
+    super.key,
+    required this.status,
+    this.label,
+    this.value,
+  });
+
+  final AppSyncStatus status;
+  final String? label;
+  final String? value;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppMetricPill(
+      icon: status.icon,
+      label: label ?? status.statusLabel('Prêt'),
+      value: value ?? 'statut',
+      color: status.semanticColor(context),
+    );
+  }
+}
+
+class AppLocalModeStatusPill extends StatelessWidget {
+  const AppLocalModeStatusPill({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (FirebaseBootstrap.isConfigured) {
+      return const SizedBox.shrink();
+    }
+    return const AppMetricPill(
+      icon: Icons.storage_outlined,
+      label: 'Mode local',
+      value: 'compte non configuré',
     );
   }
 }

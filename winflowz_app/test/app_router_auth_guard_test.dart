@@ -10,8 +10,8 @@ import 'package:winflowz_app/features/auth/domain/auth_session_store.dart';
 const _productRoutes = {
   '/home': 'Accueil',
   '/voice': 'Capture automatique',
-  '/clipboard': 'Nouvel élément clipboard',
-  '/snippets': 'Nouveau snippet (raccourci texte)',
+  '/clipboard': 'Nouvel élément',
+  '/snippets': 'Nouveau snippet',
   '/dictionary': 'Nouveau terme',
   '/settings': 'Réglages',
 };

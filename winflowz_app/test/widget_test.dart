@@ -658,7 +658,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.text_snippet_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('Nouveau snippet (raccourci texte)'), findsOneWidget);
+    expect(find.text('Nouveau snippet'), findsOneWidget);
     expect(find.text('Déclencheur'), findsOneWidget);
     expect(find.text('Snippets'), findsWidgets);
 
@@ -1295,13 +1295,13 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.content_paste_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('Nouvel élément clipboard'), findsOneWidget);
+    expect(find.text('Nouvel élément'), findsOneWidget);
     expect(find.text('Contenu'), findsOneWidget);
     expect(find.text('Ajouter'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.text_snippet_outlined).last);
     await _pumpNavigationFrame(tester);
-    expect(find.text('Nouveau snippet (raccourci texte)'), findsOneWidget);
+    expect(find.text('Nouveau snippet'), findsOneWidget);
     expect(find.text('Déclencheur'), findsOneWidget);
     expect(find.text('Ajouter le snippet'), findsOneWidget);
 

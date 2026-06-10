@@ -6,7 +6,6 @@ import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
-import '../../../core/widgets/local_mode_notice.dart';
 import '../../settings/application/settings_store_provider.dart';
 import '../application/dictionary_store_provider.dart';
 import '../domain/dictionary_store.dart';
@@ -295,127 +294,120 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
-        const LocalModeNotice(surface: 'Dictionary'),
-        const LocalModeNoticeGap(),
-        _DictionaryOverviewCard(
-          totalCount: _items.length,
-          caseSensitiveCount: caseSensitiveCount,
-          latest: latest,
-        ),
-        AppGaps.x2,
-        AppSectionCard(
-          title: 'Nouveau terme',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final useColumn = constraints.maxWidth < 560;
-                  final termField = TextField(
-                    controller: _termController,
-                    decoration: const InputDecoration(labelText: 'Terme'),
-                  );
-                  final replacementField = TextField(
-                    controller: _replacementController,
-                    decoration: const InputDecoration(
-                      labelText: 'Remplacement',
-                    ),
-                  );
-                  if (useColumn) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [termField, AppGaps.x2, replacementField],
-                    );
-                  }
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: termField),
-                      AppGaps.horizontalX2,
-                      Expanded(child: replacementField),
-                    ],
-                  );
-                },
-              ),
-              AppGaps.x2,
-              SwitchListTile(
-                contentPadding: AppInsets.none,
-                value: _caseSensitive,
-                onChanged: _busy
-                    ? null
-                    : (value) => setState(() => _caseSensitive = value),
-                title: const Text('Respecter la casse'),
-              ),
-              AppFormActions(
-                primaryLabel: 'Ajouter un terme',
-                onPrimary: _busy ? null : _add,
-              ),
-            ],
-          ),
-        ),
-        if (_busy)
-          const Padding(
-            padding: AppInsets.progress,
-            child: LinearProgressIndicator(),
-          ),
-        if (_message != null)
-          Padding(padding: AppInsets.message, child: Text(_message!)),
-        AppGaps.x3,
-        const AppEntityListHeader(title: 'Termes du dictionnaire'),
-        AppGaps.x2,
-        AppPageToolbar(
-          searchField: AppSearchField(
-            controller: _searchController,
-            query: _searchController.text,
-            enabled: _items.isNotEmpty,
-            scopeLabel: 'Dictionnaire',
-            hintText: 'Rechercher un terme',
-            onChanged: (_) {},
-            onClear: _searchController.clear,
-          ),
-          syncAction: AppSyncStatusAction(
+        ProductPageScaffold(
+          summary: _DictionaryOverviewCard(
+            totalCount: _items.length,
+            caseSensitiveCount: caseSensitiveCount,
+            latest: latest,
             status: _pageStatus(),
-            scopeLabel: 'Dictionnaire',
-            onPressed: _busy ? null : _load,
           ),
+          primaryAction: AppSectionCard(
+            title: 'Nouveau terme',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final useColumn = constraints.maxWidth < 560;
+                    final termField = TextField(
+                      controller: _termController,
+                      decoration: const InputDecoration(labelText: 'Terme'),
+                    );
+                    final replacementField = TextField(
+                      controller: _replacementController,
+                      decoration: const InputDecoration(
+                        labelText: 'Remplacement',
+                      ),
+                    );
+                    if (useColumn) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [termField, AppGaps.x2, replacementField],
+                      );
+                    }
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: termField),
+                        AppGaps.horizontalX2,
+                        Expanded(child: replacementField),
+                      ],
+                    );
+                  },
+                ),
+                AppGaps.x2,
+                SwitchListTile(
+                  contentPadding: AppInsets.none,
+                  value: _caseSensitive,
+                  onChanged: _busy
+                      ? null
+                      : (value) => setState(() => _caseSensitive = value),
+                  title: const Text('Respecter la casse'),
+                ),
+                AppFormActions(
+                  primaryLabel: 'Ajouter un terme',
+                  onPrimary: _busy ? null : _add,
+                ),
+              ],
+            ),
+          ),
+          busy: _busy,
+          message: _message,
+          listToolbar: AppPageToolbar(
+            searchField: AppSearchField(
+              controller: _searchController,
+              query: _searchController.text,
+              enabled: _items.isNotEmpty,
+              scopeLabel: 'Dictionnaire',
+              hintText: 'Rechercher un terme',
+              onChanged: (_) {},
+              onClear: _searchController.clear,
+            ),
+            syncAction: AppSyncStatusAction(
+              status: _pageStatus(),
+              scopeLabel: 'Dictionnaire',
+              onPressed: _busy ? null : _load,
+            ),
+          ),
+          results: [
+            if (_items.isEmpty)
+              const AppEmptyStateCard(
+                title: 'Aucun terme',
+                message:
+                    'Ajoute un terme personnalisé pour corriger tes expressions récurrentes.',
+              ),
+            if (_items.isNotEmpty && visibleItems.isEmpty)
+              const AppEmptyStateCard(
+                title: 'Aucun résultat',
+                message: 'Aucun terme ne correspond à cette recherche.',
+              ),
+            for (final item in visibleItems)
+              AppEntityCard(
+                title: Text(item.term),
+                subtitle: Text(item.replacement),
+                bodyMaxLines: 4,
+                tags: [
+                  AppTag(
+                    label: item.caseSensitive
+                        ? 'Respecter la casse'
+                        : 'Casse flexible',
+                  ),
+                ],
+                actions: [
+                  IconButton(
+                    tooltip: 'Modifier',
+                    onPressed: _busy ? null : () => _edit(item),
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
+                  IconButton(
+                    tooltip: 'Supprimer',
+                    onPressed: _busy ? null : () => _remove(item.id),
+                    icon: const Icon(Icons.delete_outline),
+                  ),
+                ],
+              ),
+          ],
         ),
-        AppGaps.x2,
-        if (_items.isEmpty)
-          const AppEmptyStateCard(
-            title: 'Aucun terme',
-            message:
-                'Ajoute un terme personnalisé pour corriger tes expressions récurrentes.',
-          ),
-        if (_items.isNotEmpty && visibleItems.isEmpty)
-          const AppEmptyStateCard(
-            title: 'Aucun résultat',
-            message: 'Aucun terme ne correspond à cette recherche.',
-          ),
-        for (final item in visibleItems)
-          AppEntityCard(
-            title: Text(item.term),
-            subtitle: Text(item.replacement),
-            bodyMaxLines: 4,
-            tags: [
-              AppTag(
-                label: item.caseSensitive
-                    ? 'Respecter la casse'
-                    : 'Casse flexible',
-              ),
-            ],
-            actions: [
-              IconButton(
-                tooltip: 'Modifier',
-                onPressed: _busy ? null : () => _edit(item),
-                icon: const Icon(Icons.edit_outlined),
-              ),
-              IconButton(
-                tooltip: 'Supprimer',
-                onPressed: _busy ? null : () => _remove(item.id),
-                icon: const Icon(Icons.delete_outline),
-              ),
-            ],
-          ),
       ],
     );
   }
@@ -426,100 +418,39 @@ class _DictionaryOverviewCard extends StatelessWidget {
     required this.totalCount,
     required this.caseSensitiveCount,
     required this.latest,
+    required this.status,
   });
 
   final int totalCount;
   final int caseSensitiveCount;
   final DictionaryTermRecord? latest;
+  final AppSyncStatus status;
 
   @override
   Widget build(BuildContext context) {
     final latestLabel = latest == null
         ? 'Aucun ajout'
         : _formatShortDateTime(latest!.createdAt);
-    return Card(
-      child: Padding(
-        padding: AppInsets.compactCard,
-        child: Wrap(
-          spacing: AppSpacing.x2,
-          runSpacing: AppSpacing.x2,
-          children: [
-            _DictionaryMetricPill(
-              icon: Icons.auto_fix_high_outlined,
-              label: '$totalCount',
-              value: totalCount == 1 ? 'terme' : 'termes',
-            ),
-            _DictionaryMetricPill(
-              icon: Icons.text_fields,
-              label: '$caseSensitiveCount',
-              value: 'casse stricte',
-            ),
-            _DictionaryMetricPill(
-              icon: Icons.schedule,
-              label: latestLabel,
-              value: 'dernier ajout',
-            ),
-          ],
+    return ProductSummaryStrip(
+      children: [
+        const AppLocalModeStatusPill(),
+        AppStatusPill(status: status, label: status.statusLabel('Prêt')),
+        AppMetricPill(
+          icon: Icons.auto_fix_high_outlined,
+          label: '$totalCount',
+          value: totalCount == 1 ? 'terme' : 'termes',
         ),
-      ),
-    );
-  }
-}
-
-class _DictionaryMetricPill extends StatelessWidget {
-  const _DictionaryMetricPill({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      constraints: const BoxConstraints(minWidth: 118),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.x3,
-        vertical: AppSpacing.x2,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.58),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: colorScheme.primary, size: 18),
-          AppGaps.horizontalX2,
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        AppMetricPill(
+          icon: Icons.text_fields,
+          label: '$caseSensitiveCount',
+          value: 'casse stricte',
+        ),
+        AppMetricPill(
+          icon: Icons.schedule,
+          label: latestLabel,
+          value: 'dernier ajout',
+        ),
+      ],
     );
   }
 }

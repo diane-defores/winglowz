@@ -6,7 +6,6 @@ import '../../../core/platform/android_keyboard_bridge.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
-import '../../../core/widgets/local_mode_notice.dart';
 import '../../settings/application/settings_store_provider.dart';
 import '../application/snippet_store_provider.dart';
 import '../domain/snippet_store.dart';
@@ -289,123 +288,118 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
-        const LocalModeNotice(surface: 'Snippets'),
-        const LocalModeNoticeGap(),
-        _SnippetsOverviewCard(
-          totalCount: _items.length,
-          labeledCount: labeledCount,
-          latest: latest,
-        ),
-        AppGaps.x2,
-        AppSectionCard(
-          title: 'Nouveau snippet (raccourci texte)',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final useColumn = constraints.maxWidth < 560;
-                  final triggerField = TextField(
-                    controller: _triggerController,
-                    decoration: const InputDecoration(labelText: 'Déclencheur'),
-                  );
-                  final labelField = TextField(
-                    controller: _labelController,
-                    decoration: const InputDecoration(
-                      labelText: 'Libellé (optionnel)',
-                    ),
-                  );
-                  if (useColumn) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [triggerField, AppGaps.x2, labelField],
-                    );
-                  }
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: triggerField),
-                      AppGaps.horizontalX2,
-                      Expanded(child: labelField),
-                    ],
-                  );
-                },
-              ),
-              AppGaps.x2,
-              TextField(
-                controller: _contentController,
-                minLines: 2,
-                maxLines: 4,
-                decoration: const InputDecoration(labelText: 'Contenu'),
-              ),
-              AppGaps.x3,
-              AppFormActions(
-                primaryLabel: 'Ajouter le snippet',
-                onPrimary: _busy ? null : _add,
-              ),
-            ],
-          ),
-        ),
-        if (_busy)
-          const Padding(
-            padding: AppInsets.progress,
-            child: LinearProgressIndicator(),
-          ),
-        if (_message != null)
-          Padding(padding: AppInsets.message, child: Text(_message!)),
-        AppGaps.x3,
-        const AppEntityListHeader(title: 'Snippets'),
-        AppGaps.x2,
-        AppPageToolbar(
-          searchField: AppSearchField(
-            controller: _searchController,
-            query: _searchController.text,
-            enabled: _items.isNotEmpty,
-            scopeLabel: 'Snippets',
-            hintText: 'Rechercher un snippet',
-            onChanged: (_) {},
-            onClear: _searchController.clear,
-          ),
-          syncAction: AppSyncStatusAction(
+        ProductPageScaffold(
+          summary: _SnippetsOverviewCard(
+            totalCount: _items.length,
+            labeledCount: labeledCount,
+            latest: latest,
             status: _pageStatus(),
-            scopeLabel: 'Snippets',
-            onPressed: _busy ? null : _load,
           ),
+          primaryAction: AppSectionCard(
+            title: 'Nouveau snippet',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final useColumn = constraints.maxWidth < 560;
+                    final triggerField = TextField(
+                      controller: _triggerController,
+                      decoration: const InputDecoration(
+                        labelText: 'Déclencheur',
+                      ),
+                    );
+                    final labelField = TextField(
+                      controller: _labelController,
+                      decoration: const InputDecoration(
+                        labelText: 'Libellé (optionnel)',
+                      ),
+                    );
+                    if (useColumn) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [triggerField, AppGaps.x2, labelField],
+                      );
+                    }
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: triggerField),
+                        AppGaps.horizontalX2,
+                        Expanded(child: labelField),
+                      ],
+                    );
+                  },
+                ),
+                AppGaps.x2,
+                TextField(
+                  controller: _contentController,
+                  minLines: 2,
+                  maxLines: 4,
+                  decoration: const InputDecoration(labelText: 'Contenu'),
+                ),
+                AppGaps.x3,
+                AppFormActions(
+                  primaryLabel: 'Ajouter le snippet',
+                  onPrimary: _busy ? null : _add,
+                ),
+              ],
+            ),
+          ),
+          busy: _busy,
+          message: _message,
+          listToolbar: AppPageToolbar(
+            searchField: AppSearchField(
+              controller: _searchController,
+              query: _searchController.text,
+              enabled: _items.isNotEmpty,
+              scopeLabel: 'Snippets',
+              hintText: 'Rechercher un snippet',
+              onChanged: (_) {},
+              onClear: _searchController.clear,
+            ),
+            syncAction: AppSyncStatusAction(
+              status: _pageStatus(),
+              scopeLabel: 'Snippets',
+              onPressed: _busy ? null : _load,
+            ),
+          ),
+          results: [
+            if (_items.isEmpty)
+              const AppEmptyStateCard(
+                title: 'Aucun snippet',
+                message: 'Aucun raccourci texte pour le moment.',
+                example: 'Exemple : `brb` → `Je reviens tout de suite`',
+              ),
+            if (_items.isNotEmpty && visibleItems.isEmpty)
+              const AppEmptyStateCard(
+                title: 'Aucun résultat',
+                message: 'Aucun snippet ne correspond à cette recherche.',
+              ),
+            for (final item in visibleItems)
+              AppEntityCard(
+                title: Text(item.trigger),
+                subtitle: Text(item.content),
+                bodyMaxLines: 4,
+                tags: [
+                  if (item.label != null && item.label!.isNotEmpty)
+                    AppTag(label: item.label!),
+                ],
+                actions: [
+                  IconButton(
+                    tooltip: 'Modifier',
+                    onPressed: _busy ? null : () => _edit(item),
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
+                  IconButton(
+                    tooltip: 'Supprimer',
+                    onPressed: _busy ? null : () => _remove(item.id),
+                    icon: const Icon(Icons.delete_outline),
+                  ),
+                ],
+              ),
+          ],
         ),
-        AppGaps.x2,
-        if (_items.isEmpty)
-          const AppEmptyStateCard(
-            title: 'Aucun snippet',
-            message: 'Aucun raccourci texte pour le moment.',
-            example: 'Exemple : `brb` → `Je reviens tout de suite`',
-          ),
-        if (_items.isNotEmpty && visibleItems.isEmpty)
-          const AppEmptyStateCard(
-            title: 'Aucun résultat',
-            message: 'Aucun snippet ne correspond à cette recherche.',
-          ),
-        for (final item in visibleItems)
-          AppEntityCard(
-            title: Text(item.trigger),
-            subtitle: Text(item.content),
-            bodyMaxLines: 4,
-            tags: [
-              if (item.label != null && item.label!.isNotEmpty)
-                AppTag(label: item.label!),
-            ],
-            actions: [
-              IconButton(
-                tooltip: 'Modifier',
-                onPressed: _busy ? null : () => _edit(item),
-                icon: const Icon(Icons.edit_outlined),
-              ),
-              IconButton(
-                tooltip: 'Supprimer',
-                onPressed: _busy ? null : () => _remove(item.id),
-                icon: const Icon(Icons.delete_outline),
-              ),
-            ],
-          ),
       ],
     );
   }
@@ -416,100 +410,39 @@ class _SnippetsOverviewCard extends StatelessWidget {
     required this.totalCount,
     required this.labeledCount,
     required this.latest,
+    required this.status,
   });
 
   final int totalCount;
   final int labeledCount;
   final SnippetRecord? latest;
+  final AppSyncStatus status;
 
   @override
   Widget build(BuildContext context) {
     final latestLabel = latest == null
         ? 'Aucun ajout'
         : _formatShortDateTime(latest!.createdAt);
-    return Card(
-      child: Padding(
-        padding: AppInsets.compactCard,
-        child: Wrap(
-          spacing: AppSpacing.x2,
-          runSpacing: AppSpacing.x2,
-          children: [
-            _SnippetMetricPill(
-              icon: Icons.text_snippet_outlined,
-              label: '$totalCount',
-              value: totalCount == 1 ? 'snippet' : 'snippets',
-            ),
-            _SnippetMetricPill(
-              icon: Icons.sell_outlined,
-              label: '$labeledCount',
-              value: labeledCount == 1 ? 'libellé' : 'libellés',
-            ),
-            _SnippetMetricPill(
-              icon: Icons.schedule,
-              label: latestLabel,
-              value: 'dernier ajout',
-            ),
-          ],
+    return ProductSummaryStrip(
+      children: [
+        const AppLocalModeStatusPill(),
+        AppStatusPill(status: status, label: status.statusLabel('Prêt')),
+        AppMetricPill(
+          icon: Icons.text_snippet_outlined,
+          label: '$totalCount',
+          value: totalCount == 1 ? 'snippet' : 'snippets',
         ),
-      ),
-    );
-  }
-}
-
-class _SnippetMetricPill extends StatelessWidget {
-  const _SnippetMetricPill({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      constraints: const BoxConstraints(minWidth: 118),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.x3,
-        vertical: AppSpacing.x2,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.58),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: colorScheme.primary, size: 18),
-          AppGaps.horizontalX2,
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        AppMetricPill(
+          icon: Icons.sell_outlined,
+          label: '$labeledCount',
+          value: labeledCount == 1 ? 'libellé' : 'libellés',
+        ),
+        AppMetricPill(
+          icon: Icons.schedule,
+          label: latestLabel,
+          value: 'dernier ajout',
+        ),
+      ],
     );
   }
 }

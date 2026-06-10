@@ -62,6 +62,10 @@ void main() {
       ],
     );
 
+    expect(find.byType(ProductPageScaffold), findsOneWidget);
+    expect(find.byType(ProductSummaryStrip), findsOneWidget);
+    expect(find.text('Mode local'), findsOneWidget);
+    expect(find.text('Synchronisé'), findsNothing);
     expect(find.byType(AppPageToolbar), findsOneWidget);
     expect(find.byType(AppSearchField), findsOneWidget);
     expect(find.widgetWithText(OutlinedButton, 'Actualiser'), findsOneWidget);
@@ -102,6 +106,10 @@ void main() {
       ],
     );
 
+    expect(find.byType(ProductPageScaffold), findsOneWidget);
+    expect(find.byType(ProductSummaryStrip), findsOneWidget);
+    expect(find.text('Mode local'), findsOneWidget);
+    expect(find.text('Synchronisé'), findsNothing);
     expect(find.byType(AppPageToolbar), findsOneWidget);
     expect(find.byType(AppSearchField), findsOneWidget);
     expect(find.widgetWithText(OutlinedButton, 'Actualiser'), findsOneWidget);
@@ -146,6 +154,9 @@ void main() {
       ],
     );
 
+    expect(find.byType(ProductPageScaffold), findsOneWidget);
+    expect(find.byType(ProductSummaryStrip), findsOneWidget);
+    expect(find.text('Mode local'), findsOneWidget);
     expect(find.byType(AppPageToolbar), findsOneWidget);
     expect(find.widgetWithText(OutlinedButton, 'En attente'), findsOneWidget);
 
@@ -193,6 +204,10 @@ void main() {
         ],
       );
 
+      expect(find.byType(ProductPageScaffold), findsOneWidget);
+      expect(find.byType(ProductSummaryStrip), findsOneWidget);
+      expect(find.text('Mode local'), findsOneWidget);
+      expect(find.text('Synchronisé'), findsNothing);
       expect(find.byType(AppPageToolbar), findsOneWidget);
       expect(find.widgetWithText(OutlinedButton, 'Actualiser'), findsOneWidget);
 

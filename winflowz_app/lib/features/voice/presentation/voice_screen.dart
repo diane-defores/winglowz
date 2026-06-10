@@ -10,7 +10,6 @@ import '../../../core/platform/platform_capabilities.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_components.dart';
 import '../../../core/widgets/confirm_action_dialog.dart';
-import '../../../core/widgets/local_mode_notice.dart';
 import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../clipboard/domain/clipboard_capture_event.dart';
 import '../../clipboard/domain/clipboard_normalizer.dart';
@@ -639,108 +638,114 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
-        const LocalModeNotice(surface: 'Voix'),
-        const LocalModeNoticeGap(),
-        if (shouldShowNoPackPrompt)
-          _MicroWithoutPackPromptCard(
-            languageTag: activeLanguageTag,
-            allowCloudFallback: catalogState.allowCloudFallback,
-            installedState: catalogState.installedStateFor(recommendedEntry),
-            onInstall: _busy
-                ? null
-                : () => _installRecommendedPack(recommendedEntry, catalogState),
-            onUseFallback: _busy
-                ? null
-                : () => _useExplicitFallback(activeLanguageTag),
+        ProductPageScaffold(
+          summary: _VoiceOverviewCard(
+            totalCount: _items.length,
+            latest: latest,
+            overlayStatus: overlayStatus,
+            overlaySupported: PlatformCapabilities.overlaySupported,
+            status: _pageStatus(),
           ),
-        if (shouldShowNoPackPrompt) AppGaps.x2,
-        AppSectionCard(
-          title: 'Capture automatique',
-          subtitle:
-              'Les transcriptions apparaissent ici après une dictée depuis le clavier, l’overlay ou le mode vocal.',
-          leading: Icon(
-            Icons.auto_awesome_outlined,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              spacing: AppSpacing.x2,
-              runSpacing: AppSpacing.x2,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                AppTag(
-                  label: _items.isEmpty
-                      ? 'Historique vide'
-                      : '${_items.length} capture${_items.length == 1 ? '' : 's'}',
+          primaryAction: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (shouldShowNoPackPrompt) ...[
+                _MicroWithoutPackPromptCard(
+                  languageTag: activeLanguageTag,
+                  allowCloudFallback: catalogState.allowCloudFallback,
+                  installedState: catalogState.installedStateFor(
+                    recommendedEntry,
+                  ),
+                  onInstall: _busy
+                      ? null
+                      : () => _installRecommendedPack(
+                          recommendedEntry,
+                          catalogState,
+                        ),
+                  onUseFallback: _busy
+                      ? null
+                      : () => _useExplicitFallback(activeLanguageTag),
+                ),
+                AppGaps.x2,
+              ],
+              AppSectionCard(
+                title: 'Capture automatique',
+                leading: Icon(
+                  Icons.auto_awesome_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Wrap(
+                    spacing: AppSpacing.x2,
+                    runSpacing: AppSpacing.x2,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      AppTag(
+                        label: _items.isEmpty
+                            ? 'Historique vide'
+                            : '${_items.length} capture${_items.length == 1 ? '' : 's'}',
+                      ),
+                      AppTag(label: _overlayStatusLabel(overlayStatus)),
+                      AppTag(label: _overlayPermissionLabel(overlayStatus)),
+                    ],
+                  ),
+                ),
+              ),
+              if (PlatformCapabilities.overlaySupported) ...[
+                AppGaps.x2,
+                _OverlayControlCard(
+                  status: overlayStatus,
+                  isRecording: overlayRecording,
+                  isBusy: _overlayBusy,
+                  onToggleRecording: _overlayBusy
+                      ? null
+                      : _toggleOverlayRecording,
+                  onStop: _overlayBusy ? null : _stopOverlay,
+                  onCancel: _overlayBusy ? null : _cancelOverlay,
+                  onRefresh: _overlayBusy ? null : _loadOverlayStatus,
                 ),
               ],
+            ],
+          ),
+          busy: _busy,
+          message: _message,
+          messageBuilder: (context, message) => _VoiceMessage(message: message),
+          listToolbar: AppPageToolbar(
+            searchField: AppSearchField(
+              controller: _searchController,
+              query: _searchController.text,
+              enabled: _items.isNotEmpty,
+              scopeLabel: 'Voix',
+              hintText: 'Rechercher une transcription',
+              onChanged: (_) {},
+              onClear: _searchController.clear,
+            ),
+            syncAction: AppSyncStatusAction(
+              status: _pageStatus(),
+              scopeLabel: 'Voix',
+              onPressed: _busy ? null : _load,
             ),
           ),
+          results: [
+            if (_items.isEmpty) const _EmptyVoiceState(),
+            if (_items.isNotEmpty && visibleItems.isEmpty)
+              const AppEmptyStateCard(
+                title: 'Aucun résultat',
+                message:
+                    'Aucune transcription ne correspond à cette recherche.',
+              ),
+            for (final item in visibleItems)
+              _TranscriptionTile(
+                item: item,
+                sendToEnabled: !_busy,
+                onSendToClipboard: _busy ? null : () => _sendToClipboard(item),
+                onSendToSnippet: _busy ? null : () => _sendToSnippet(item),
+                onEdit: _busy ? null : () => _quickEdit(item),
+                onDelete: _busy ? null : () => _delete(item.id),
+              ),
+          ],
         ),
-        AppGaps.x2,
-        _VoiceOverviewCard(
-          totalCount: _items.length,
-          latest: latest,
-          overlayStatus: overlayStatus,
-          overlaySupported: PlatformCapabilities.overlaySupported,
-        ),
-        if (PlatformCapabilities.overlaySupported) AppGaps.x2,
-        if (PlatformCapabilities.overlaySupported)
-          _OverlayControlCard(
-            status: overlayStatus,
-            isRecording: overlayRecording,
-            isBusy: _overlayBusy,
-            onToggleRecording: _overlayBusy ? null : _toggleOverlayRecording,
-            onStop: _overlayBusy ? null : _stopOverlay,
-            onCancel: _overlayBusy ? null : _cancelOverlay,
-            onRefresh: _overlayBusy ? null : _loadOverlayStatus,
-          ),
-        if (_busy)
-          const Padding(
-            padding: AppInsets.progress,
-            child: LinearProgressIndicator(),
-          ),
-        if (_message != null)
-          Padding(
-            padding: AppInsets.message,
-            child: _VoiceMessage(message: _message!),
-          ),
-        AppGaps.x3,
-        const AppEntityListHeader(title: 'Historique vocal'),
-        AppGaps.x2,
-        AppPageToolbar(
-          searchField: AppSearchField(
-            controller: _searchController,
-            query: _searchController.text,
-            enabled: _items.isNotEmpty,
-            scopeLabel: 'Voix',
-            hintText: 'Rechercher une transcription',
-            onChanged: (_) {},
-            onClear: _searchController.clear,
-          ),
-          syncAction: AppSyncStatusAction(
-            status: _pageStatus(),
-            scopeLabel: 'Voix',
-            onPressed: _busy ? null : _load,
-          ),
-        ),
-        AppGaps.x2,
-        if (_items.isEmpty) const _EmptyVoiceState(),
-        if (_items.isNotEmpty && visibleItems.isEmpty)
-          const AppEmptyStateCard(
-            title: 'Aucun résultat',
-            message: 'Aucune transcription ne correspond à cette recherche.',
-          ),
-        for (final item in visibleItems)
-          _TranscriptionTile(
-            item: item,
-            sendToEnabled: !_busy,
-            onSendToClipboard: _busy ? null : () => _sendToClipboard(item),
-            onSendToSnippet: _busy ? null : () => _sendToSnippet(item),
-            onEdit: _busy ? null : () => _quickEdit(item),
-            onDelete: _busy ? null : () => _delete(item.id),
-          ),
       ],
     );
   }
@@ -895,12 +900,14 @@ class _VoiceOverviewCard extends StatelessWidget {
     required this.latest,
     required this.overlayStatus,
     required this.overlaySupported,
+    required this.status,
   });
 
   final int totalCount;
   final TranscriptionRecord? latest;
   final AndroidOverlayStatus? overlayStatus;
   final bool overlaySupported;
+  final AppSyncStatus status;
 
   @override
   Widget build(BuildContext context) {
@@ -913,39 +920,29 @@ class _VoiceOverviewCard extends StatelessWidget {
         ? 'Aucune capture'
         : _formatShortDateTime(latest!.createdAt);
 
-    return Card(
-      child: Padding(
-        padding: AppInsets.compactCard,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Wrap(
-              spacing: AppSpacing.x2,
-              runSpacing: AppSpacing.x2,
-              children: [
-                _MetricPill(
-                  icon: Icons.history,
-                  label: '$totalCount',
-                  value: totalCount == 1 ? 'transcription' : 'transcriptions',
-                ),
-                _MetricPill(
-                  icon: Icons.schedule,
-                  label: latestLabel,
-                  value: 'dernière capture',
-                ),
-                _MetricPill(
-                  icon: isRecording
-                      ? Icons.fiber_manual_record
-                      : Icons.radio_button_unchecked,
-                  label: statusLabel,
-                  value: 'statut',
-                  color: isRecording ? AppColors.danger : colorScheme.primary,
-                ),
-              ],
-            ),
-          ],
+    return ProductSummaryStrip(
+      children: [
+        const AppLocalModeStatusPill(),
+        AppStatusPill(status: status, label: status.statusLabel('Prêt')),
+        AppMetricPill(
+          icon: Icons.history,
+          label: '$totalCount',
+          value: totalCount == 1 ? 'transcription' : 'transcriptions',
         ),
-      ),
+        AppMetricPill(
+          icon: Icons.schedule,
+          label: latestLabel,
+          value: 'dernière capture',
+        ),
+        AppMetricPill(
+          icon: isRecording
+              ? Icons.fiber_manual_record
+              : Icons.radio_button_unchecked,
+          label: statusLabel,
+          value: 'overlay',
+          color: isRecording ? AppColors.danger : colorScheme.primary,
+        ),
+      ],
     );
   }
 }
@@ -1071,67 +1068,6 @@ class _OverlayControlCard extends StatelessWidget {
                 ],
               );
             },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetricPill extends StatelessWidget {
-  const _MetricPill({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final effectiveColor = color ?? colorScheme.primary;
-    return Container(
-      constraints: const BoxConstraints(minWidth: 118),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.x3,
-        vertical: AppSpacing.x2,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.58),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: effectiveColor, size: 18),
-          AppGaps.horizontalX2,
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       ),

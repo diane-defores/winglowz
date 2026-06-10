@@ -24,6 +24,9 @@
 🟢 [WinFlowzApp] task: Reduce Android IME layout rebuilds during rapid typing | status: done | area: keyboard-ime-performance | id: wfz-ime-rapid-typing-layout-rebuild
 🟡 [WinFlowzApp] task: Verify Android IME multi-pointer rollover on hosted build and physical device | status: fixed_pending_verify | area: keyboard-ime-performance | id: wfz-ime-multipointer-touch-dispatch
 🟡 [WinFlowzApp] task: Fix keyboard theme preset auto light/dark switching after non-color theme options | status: fixed_pending_verify | area: keyboard-theme | id: BUG-2026-06-01-001
+🔴 [WinFlowzApp] task: Specify and implement a shared ProductPageScaffold for Voice, Papier, Snippets, and Dico | status: todo | area: product-pages-components | id: wfz-product-page-scaffold
+🟠 [WinFlowzApp] task: Extract shared metric/status pill primitives and remove duplicated private metric widgets across product pages | status: todo | area: product-pages-components | id: wfz-shared-metric-status-pills
+🟠 [WinFlowzApp] task: Split oversized Flutter page widgets and studios into smaller render/controller components with focused widget tests | status: todo | area: component-architecture | id: wfz-split-god-widgets
 
 ---
 

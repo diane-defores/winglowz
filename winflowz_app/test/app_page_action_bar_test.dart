@@ -95,4 +95,46 @@ void main() {
     await tester.pump();
     expect(retryCalls, 1);
   });
+
+  testWidgets('product page scaffold renders the shared page grammar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: ProductPageScaffold(
+            summary: const ProductSummaryStrip(
+              children: [
+                AppLocalModeStatusPill(),
+                AppMetricPill(
+                  icon: Icons.inventory_2_outlined,
+                  label: '2',
+                  value: 'items',
+                ),
+              ],
+            ),
+            primaryAction: const AppSectionCard(
+              title: 'Action principale',
+              child: Text('Créer'),
+            ),
+            listToolbar: const AppPageToolbar(
+              syncAction: AppSyncStatusAction(
+                status: AppSyncStatus(kind: AppSyncStatusKind.idle),
+                onPressed: null,
+              ),
+            ),
+            results: const [Text('Résultat')],
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(ProductPageScaffold), findsOneWidget);
+    expect(find.byType(ProductSummaryStrip), findsOneWidget);
+    expect(find.text('Mode local'), findsOneWidget);
+    expect(find.text('Action principale'), findsOneWidget);
+    expect(find.widgetWithText(OutlinedButton, 'Actualiser'), findsOneWidget);
+    expect(find.text('Résultat'), findsOneWidget);
+  });
 }
