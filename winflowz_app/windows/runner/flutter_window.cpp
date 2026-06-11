@@ -1,6 +1,7 @@
 #include "flutter_window.h"
 
 #include <chrono>
+#include <cctype>
 #include <cstring>
 #include <optional>
 
@@ -19,6 +20,54 @@ int64_t CurrentEpochMillis() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(
              now.time_since_epoch())
       .count();
+}
+
+std::optional<WORD> VirtualKeyFromName(const std::string& raw) {
+  if (raw.size() == 1) {
+    const char ch = static_cast<char>(std::toupper(raw[0]));
+    if ((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
+      return static_cast<WORD>(ch);
+    }
+  }
+  if (raw == "Tab") {
+    return VK_TAB;
+  }
+  if (raw == "Enter") {
+    return VK_RETURN;
+  }
+  if (raw == "Space") {
+    return VK_SPACE;
+  }
+  if (raw == "Escape") {
+    return VK_ESCAPE;
+  }
+  if (raw == "Left") {
+    return VK_LEFT;
+  }
+  if (raw == "Right") {
+    return VK_RIGHT;
+  }
+  if (raw == "Up") {
+    return VK_UP;
+  }
+  if (raw == "Down") {
+    return VK_DOWN;
+  }
+  if (raw == "Backspace") {
+    return VK_BACK;
+  }
+  if (raw == "Delete") {
+    return VK_DELETE;
+  }
+  return std::nullopt;
+}
+
+void AppendKeyInput(std::vector<INPUT>* inputs, WORD vk, bool key_up = false) {
+  INPUT input = {};
+  input.type = INPUT_KEYBOARD;
+  input.ki.wVk = vk;
+  input.ki.dwFlags = key_up ? KEYEVENTF_KEYUP : 0;
+  inputs->push_back(input);
 }
 
 }  // namespace
@@ -202,6 +251,32 @@ void FlutterWindow::RegisterWindowsOverlayChannel() {
               pasted ? "" : "Clipboard copied, but paste delivery failed."));
           return;
         }
+        if (method == "deliverWindowsOverlayKeySequence") {
+          int sent_steps = 0;
+          if (const auto* arguments =
+                  std::get_if<flutter::EncodableMap>(call.arguments())) {
+            const auto steps_it =
+                arguments->find(flutter::EncodableValue(std::string("steps")));
+            if (steps_it != arguments->end()) {
+              if (const auto* steps =
+                      std::get_if<flutter::EncodableList>(&steps_it->second)) {
+                if (DeliverKeySequence(*steps, &sent_steps)) {
+                  result->Success(WindowsOverlayCommandResult(
+                      "delivered", sent_steps, "", ""));
+                } else {
+                  result->Success(WindowsOverlayCommandResult(
+                      "failed", sent_steps, last_error_code_,
+                      last_error_message_));
+                }
+                return;
+              }
+            }
+          }
+          result->Success(WindowsOverlayCommandResult(
+              "failed", sent_steps, "INVALID_SEQUENCE",
+              "Key sequence payload is invalid."));
+          return;
+        }
         if (method == "drainWindowsOverlayEvents") {
           flutter::EncodableList events;
           events.reserve(windows_overlay_events_.size());
@@ -260,6 +335,24 @@ flutter::EncodableValue FlutterWindow::WindowsOverlayDeliveryResult(
       flutter::EncodableValue(paste_attempted);
   result[flutter::EncodableValue("pasteSucceeded")] =
       flutter::EncodableValue(paste_succeeded);
+  if (!error_code.empty()) {
+    result[flutter::EncodableValue("errorCode")] =
+        flutter::EncodableValue(error_code);
+    result[flutter::EncodableValue("errorMessage")] =
+        flutter::EncodableValue(error_message);
+  }
+  return flutter::EncodableValue(result);
+}
+
+flutter::EncodableValue FlutterWindow::WindowsOverlayCommandResult(
+    const std::string& status,
+    int sent_steps,
+    const std::string& error_code,
+    const std::string& error_message) const {
+  flutter::EncodableMap result;
+  result[flutter::EncodableValue("status")] = flutter::EncodableValue(status);
+  result[flutter::EncodableValue("sentSteps")] =
+      flutter::EncodableValue(sent_steps);
   if (!error_code.empty()) {
     result[flutter::EncodableValue("errorCode")] =
         flutter::EncodableValue(error_code);
@@ -360,6 +453,115 @@ bool FlutterWindow::DeliverClipboardToLastForeground() const {
   inputs[3].ki.wVk = VK_CONTROL;
   inputs[3].ki.dwFlags = KEYEVENTF_KEYUP;
   return SendInput(4, inputs, sizeof(INPUT)) == 4;
+}
+
+bool FlutterWindow::DeliverKeySequence(const flutter::EncodableList& steps,
+                                       int* sent_steps) {
+  last_error_code_.clear();
+  last_error_message_.clear();
+  if (steps.empty()) {
+    last_error_code_ = "EMPTY_SEQUENCE";
+    last_error_message_ = "No key sequence to deliver.";
+    return false;
+  }
+  if (last_foreground_window_ == nullptr ||
+      last_foreground_window_ == GetHandle()) {
+    last_error_code_ = "NO_TARGET_WINDOW";
+    last_error_message_ = "No target window is available for key delivery.";
+    return false;
+  }
+  SetForegroundWindow(last_foreground_window_);
+  ::Sleep(50);
+  *sent_steps = 0;
+  for (const auto& entry : steps) {
+    const auto* step_map = std::get_if<flutter::EncodableMap>(&entry);
+    if (step_map == nullptr) {
+      last_error_code_ = "INVALID_SEQUENCE_STEP";
+      last_error_message_ = "A key sequence step is malformed.";
+      return false;
+    }
+    const auto key_it =
+        step_map->find(flutter::EncodableValue(std::string("key")));
+    if (key_it == step_map->end()) {
+      last_error_code_ = "MISSING_SEQUENCE_KEY";
+      last_error_message_ = "A key sequence step is missing its key.";
+      return false;
+    }
+    const auto* key_name = std::get_if<std::string>(&key_it->second);
+    const auto vk = key_name == nullptr ? std::nullopt : VirtualKeyFromName(*key_name);
+    if (!vk.has_value()) {
+      last_error_code_ = "UNSUPPORTED_SEQUENCE_KEY";
+      last_error_message_ = "A key sequence step uses an unsupported key.";
+      return false;
+    }
+    bool ctrl = false;
+    bool alt = false;
+    bool shift = false;
+    bool meta = false;
+    const auto modifiers_it =
+        step_map->find(flutter::EncodableValue(std::string("modifiers")));
+    if (modifiers_it != step_map->end()) {
+      const auto* modifiers =
+          std::get_if<flutter::EncodableList>(&modifiers_it->second);
+      if (modifiers == nullptr) {
+        last_error_code_ = "INVALID_SEQUENCE_MODIFIERS";
+        last_error_message_ = "A key sequence modifier list is malformed.";
+        return false;
+      }
+      for (const auto& modifier_entry : *modifiers) {
+        const auto* modifier_name = std::get_if<std::string>(&modifier_entry);
+        if (modifier_name == nullptr) {
+          continue;
+        }
+        if (*modifier_name == "ctrl") {
+          ctrl = true;
+        } else if (*modifier_name == "alt") {
+          alt = true;
+        } else if (*modifier_name == "shift") {
+          shift = true;
+        } else if (*modifier_name == "meta") {
+          meta = true;
+        }
+      }
+    }
+    std::vector<INPUT> inputs;
+    if (ctrl) {
+      AppendKeyInput(&inputs, VK_CONTROL);
+    }
+    if (alt) {
+      AppendKeyInput(&inputs, VK_MENU);
+    }
+    if (shift) {
+      AppendKeyInput(&inputs, VK_SHIFT);
+    }
+    if (meta) {
+      AppendKeyInput(&inputs, VK_LWIN);
+    }
+    AppendKeyInput(&inputs, *vk);
+    AppendKeyInput(&inputs, *vk, true);
+    if (meta) {
+      AppendKeyInput(&inputs, VK_LWIN, true);
+    }
+    if (shift) {
+      AppendKeyInput(&inputs, VK_SHIFT, true);
+    }
+    if (alt) {
+      AppendKeyInput(&inputs, VK_MENU, true);
+    }
+    if (ctrl) {
+      AppendKeyInput(&inputs, VK_CONTROL, true);
+    }
+    const UINT sent = SendInput(static_cast<UINT>(inputs.size()), inputs.data(),
+                                sizeof(INPUT));
+    if (sent != inputs.size()) {
+      last_error_code_ = "KEY_SEQUENCE_DELIVERY_FAILED";
+      last_error_message_ = "Windows key injection failed.";
+      return false;
+    }
+    ++(*sent_steps);
+    ::Sleep(25);
+  }
+  return true;
 }
 
 void FlutterWindow::PushWindowsOverlayEvent(const std::string& trigger) {

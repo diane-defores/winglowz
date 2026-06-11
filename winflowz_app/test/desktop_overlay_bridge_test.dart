@@ -62,4 +62,14 @@ void main() {
     expect(result.pasteSucceeded, isFalse);
     expect(result.errorCode, 'PASTE_DELIVERY_FAILED');
   });
+
+  test('parses desktop overlay command result', () {
+    final result = DesktopOverlayCommandResult.fromMap({
+      'status': 'delivered',
+      'sentSteps': 2,
+    });
+
+    expect(result.status, DesktopOverlayCommandStatus.delivered);
+    expect(result.sentSteps, 2);
+  });
 }

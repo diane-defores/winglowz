@@ -9,6 +9,7 @@ import '../../../core/widgets/confirm_action_dialog.dart';
 import '../../settings/application/settings_store_provider.dart';
 import '../application/snippet_store_provider.dart';
 import '../domain/snippet_store.dart';
+import 'custom_action_buttons_panel.dart';
 
 class SnippetsScreen extends ConsumerStatefulWidget {
   const SnippetsScreen({super.key});
@@ -18,6 +19,8 @@ class SnippetsScreen extends ConsumerStatefulWidget {
 }
 
 class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
+  static const _snippetSurface = _SnippetLibrarySurface.snippets;
+
   final _triggerController = TextEditingController();
   final _contentController = TextEditingController();
   final _labelController = TextEditingController();
@@ -25,6 +28,7 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
   bool _busy = false;
   String? _message;
   List<SnippetRecord> _items = const [];
+  _SnippetLibrarySurface _surface = _snippetSurface;
 
   @override
   void initState() {
@@ -274,6 +278,35 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaceSelector = AppSectionCard(
+      title: 'Bibliothèque',
+      subtitle:
+          'Garde tes snippets texte d’un côté et tes boutons exécutables de l’autre.',
+      child: SegmentedButton<_SnippetLibrarySurface>(
+        segments: const [
+          ButtonSegment(
+            value: _SnippetLibrarySurface.snippets,
+            label: Text('Snippets'),
+            icon: Icon(Icons.text_snippet_outlined),
+          ),
+          ButtonSegment(
+            value: _SnippetLibrarySurface.buttons,
+            label: Text('Boutons'),
+            icon: Icon(Icons.smart_button_outlined),
+          ),
+        ],
+        selected: {_surface},
+        onSelectionChanged: (values) {
+          final next = values.isEmpty ? _surface : values.first;
+          if (next != _surface) {
+            setState(() => _surface = next);
+          }
+        },
+      ),
+    );
+    if (_surface == _SnippetLibrarySurface.buttons) {
+      return CustomActionButtonsPanel(surfaceSelector: surfaceSelector);
+    }
     ref.listen<int>(snippetRefreshSignalProvider, (previous, next) {
       if (previous != null && previous != next) {
         Future<void>.microtask(_load);
@@ -288,6 +321,8 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
     return ListView(
       padding: AppInsets.screen,
       children: [
+        surfaceSelector,
+        AppGaps.x2,
         ProductPageScaffold(
           summary: _SnippetsOverviewCard(
             totalCount: _items.length,
@@ -404,6 +439,8 @@ class _SnippetsScreenState extends ConsumerState<SnippetsScreen> {
     );
   }
 }
+
+enum _SnippetLibrarySurface { snippets, buttons }
 
 class _SnippetsOverviewCard extends StatelessWidget {
   const _SnippetsOverviewCard({

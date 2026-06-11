@@ -10,6 +10,8 @@ enum DesktopOverlayDeliveryMode { clipboardOnly, pasteAndClipboard }
 
 enum DesktopOverlayDeliveryStatus { delivered, clipboardOnly, failed }
 
+enum DesktopOverlayCommandStatus { delivered, unsupported, failed }
+
 class DesktopOverlayStatus {
   const DesktopOverlayStatus({
     required this.platform,
@@ -147,6 +149,60 @@ class DesktopOverlayDeliveryResult {
   }
 }
 
+enum DesktopOverlayKeyModifier { ctrl, alt, shift, meta }
+
+extension DesktopOverlayKeyModifierFromDomain on DesktopOverlayKeyModifier {
+  static DesktopOverlayKeyModifier fromDomain(dynamic modifier) {
+    final name = modifier.toString().split('.').last;
+    return DesktopOverlayKeyModifier.values.firstWhere(
+      (item) => item.name == name,
+      orElse: () => DesktopOverlayKeyModifier.ctrl,
+    );
+  }
+}
+
+class DesktopOverlayKeyStroke {
+  const DesktopOverlayKeyStroke({required this.key, required this.modifiers});
+
+  final String key;
+  final List<DesktopOverlayKeyModifier> modifiers;
+
+  Map<String, Object?> toMap() {
+    return {
+      'key': key,
+      'modifiers': modifiers.map((item) => item.name).toList(growable: false),
+    };
+  }
+}
+
+class DesktopOverlayCommandResult {
+  const DesktopOverlayCommandResult({
+    required this.status,
+    required this.sentSteps,
+    this.errorCode,
+    this.errorMessage,
+  });
+
+  final DesktopOverlayCommandStatus status;
+  final int sentSteps;
+  final String? errorCode;
+  final String? errorMessage;
+
+  factory DesktopOverlayCommandResult.fromMap(Map<Object?, Object?> map) {
+    final statusRaw = map['status'] as String? ?? 'failed';
+    return DesktopOverlayCommandResult(
+      status: switch (statusRaw) {
+        'delivered' => DesktopOverlayCommandStatus.delivered,
+        'unsupported' => DesktopOverlayCommandStatus.unsupported,
+        _ => DesktopOverlayCommandStatus.failed,
+      },
+      sentSteps: (map['sentSteps'] as num?)?.toInt() ?? 0,
+      errorCode: map['errorCode'] as String?,
+      errorMessage: map['errorMessage'] as String?,
+    );
+  }
+}
+
 class DesktopOverlayBridgeException implements Exception {
   const DesktopOverlayBridgeException({
     required this.code,
@@ -254,6 +310,18 @@ class DesktopOverlayBridge {
       {'text': text},
     );
     return DesktopOverlayDeliveryResult.fromMap(raw ?? const {});
+  }
+
+  static Future<DesktopOverlayCommandResult> deliverKeySequence(
+    List<DesktopOverlayKeyStroke> steps,
+  ) async {
+    final channel = _ensureSupported();
+    final raw = await _invoke<Map<Object?, Object?>>(
+      channel,
+      _methodName('deliver', 'KeySequence'),
+      {'steps': steps.map((item) => item.toMap()).toList(growable: false)},
+    );
+    return DesktopOverlayCommandResult.fromMap(raw ?? const {});
   }
 
   static Future<List<DesktopOverlayEvent>> drainEvents() async {

@@ -93,6 +93,22 @@ static FlValue* linux_overlay_delivery_result(gboolean clipboard_copied,
   return result;
 }
 
+static FlValue* linux_overlay_command_result(const gchar* status,
+                                             gint64 sent_steps,
+                                             const gchar* error_code,
+                                             const gchar* error_message) {
+  FlValue* result = fl_value_new_map();
+  fl_value_set_string_take(result, "status", fl_value_new_string(status));
+  fl_value_set_string_take(result, "sentSteps", fl_value_new_int(sent_steps));
+  if (error_code != nullptr && strlen(error_code) > 0) {
+    fl_value_set_string_take(result, "errorCode",
+                             fl_value_new_string(error_code));
+    fl_value_set_string_take(result, "errorMessage",
+                             fl_value_new_string(error_message));
+  }
+  return result;
+}
+
 static void linux_overlay_set_error(MyApplication* self, const gchar* code,
                                     const gchar* message) {
   g_clear_pointer(&self->last_error_code, g_free);
@@ -178,6 +194,11 @@ static void linux_overlay_method_call_cb(FlMethodChannel* channel,
     self->overlay_visible = FALSE;
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(
         linux_overlay_status(self)));
+  } else if (strcmp(method, "deliverLinuxOverlayKeySequence") == 0) {
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(
+        linux_overlay_command_result(
+            "unsupported", 0, "KEY_SEQUENCE_UNSUPPORTED",
+            "Linux desktop overlay does not support native key sequence delivery yet.")));
   } else if (strcmp(method, "setLinuxOverlayAppearance") == 0) {
     FlValue* args = fl_method_call_get_args(method_call);
     if (fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {

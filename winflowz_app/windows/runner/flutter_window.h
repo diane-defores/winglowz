@@ -37,11 +37,17 @@ class FlutterWindow : public Win32Window {
       bool paste_succeeded,
       const std::string& error_code,
       const std::string& error_message) const;
+  flutter::EncodableValue WindowsOverlayCommandResult(
+      const std::string& status,
+      int sent_steps,
+      const std::string& error_code,
+      const std::string& error_message) const;
   bool SetWindowsOverlayEnabled(bool enabled);
   bool ShowWindowsOverlay();
   bool HideWindowsOverlay();
   bool CopyTextToClipboard(const std::wstring& text) const;
   bool DeliverClipboardToLastForeground() const;
+  bool DeliverKeySequence(const flutter::EncodableList& steps, int* sent_steps);
   void PushWindowsOverlayEvent(const std::string& trigger);
   std::wstring Utf8ToWide(const std::string& value) const;
 
