@@ -44,6 +44,27 @@ enum class KeyboardEditorResult {
         get() = this == Applied
 }
 
+data class KeyboardEditorShortcut(
+    val keyCode: Int,
+    val metaState: Int,
+)
+
+object KeyboardUndoRedoPolicy {
+    val UndoShortcuts =
+        listOf(
+            KeyboardEditorShortcut(KeyEvent.KEYCODE_Z, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON),
+        )
+
+    val RedoShortcuts =
+        listOf(
+            KeyboardEditorShortcut(
+                KeyEvent.KEYCODE_Z,
+                KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON or KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON,
+            ),
+            KeyboardEditorShortcut(KeyEvent.KEYCODE_Y, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON),
+        )
+}
+
 class InputConnectionEditor(
     private val inputConnection: InputConnection?,
 ) {
@@ -197,6 +218,36 @@ class InputConnectionEditor(
         } else {
             KeyboardEditorResult.Rejected
         }
+    }
+
+    fun performUndo(): KeyboardEditorResult {
+        return performContextMenuActionWithShortcutFallbacks(
+            actionId = android.R.id.undo,
+            shortcuts = KeyboardUndoRedoPolicy.UndoShortcuts,
+        )
+    }
+
+    fun performRedo(): KeyboardEditorResult {
+        return performContextMenuActionWithShortcutFallbacks(
+            actionId = android.R.id.redo,
+            shortcuts = KeyboardUndoRedoPolicy.RedoShortcuts,
+        )
+    }
+
+    private fun performContextMenuActionWithShortcutFallbacks(
+        actionId: Int,
+        shortcuts: List<KeyboardEditorShortcut>,
+    ): KeyboardEditorResult {
+        val connection = inputConnection ?: return KeyboardEditorResult.Unavailable
+        if (connection.performContextMenuAction(actionId)) {
+            return KeyboardEditorResult.Applied
+        }
+        for (shortcut in shortcuts) {
+            if (sendSoftKey(shortcut.keyCode, shortcut.metaState).applied) {
+                return KeyboardEditorResult.Applied
+            }
+        }
+        return KeyboardEditorResult.Rejected
     }
 
     fun sendSoftKey(

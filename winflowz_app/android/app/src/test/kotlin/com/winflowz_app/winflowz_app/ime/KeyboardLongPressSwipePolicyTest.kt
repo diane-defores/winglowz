@@ -200,4 +200,59 @@ class KeyboardLongPressSwipePolicyTest {
         assertEquals(GestureSelection.Up, leftSide)
         assertEquals(GestureSelection.Up, rightSide)
     }
+
+    @Test
+    fun `repeats only gesture navigation and deletion actions`() {
+        val repeatableActions =
+            setOf(
+                KeyboardKeyAction.Backspace,
+                KeyboardKeyAction.DeleteWordAfter,
+                KeyboardKeyAction.NavigateLineUp,
+                KeyboardKeyAction.NavigateLineEnd,
+                KeyboardKeyAction.NavigateWordRight,
+            )
+
+        assertTrue(
+            KeyboardLongPressSwipePolicy.shouldRepeatGestureSelection(
+                selection = GestureSelection.Up,
+                value = KeyboardKeyValue.action(KeyboardKeyAction.NavigateLineUp),
+                repeatingActions = repeatableActions,
+            ),
+        )
+        assertTrue(
+            KeyboardLongPressSwipePolicy.shouldRepeatGestureSelection(
+                selection = GestureSelection.Right,
+                value = KeyboardKeyValue.action(KeyboardKeyAction.DeleteWordAfter),
+                repeatingActions = repeatableActions,
+            ),
+        )
+        assertTrue(
+            KeyboardLongPressSwipePolicy.shouldRepeatGestureSelection(
+                selection = GestureSelection.Down,
+                value = KeyboardKeyValue.action(KeyboardKeyAction.NavigateLineEnd),
+                repeatingActions = repeatableActions,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.shouldRepeatGestureSelection(
+                selection = GestureSelection.PrimaryTap,
+                value = KeyboardKeyValue.action(KeyboardKeyAction.NavigateLineUp),
+                repeatingActions = repeatableActions,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.shouldRepeatGestureSelection(
+                selection = GestureSelection.BottomRight,
+                value = KeyboardKeyValue.text("/"),
+                repeatingActions = repeatableActions,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.shouldRepeatGestureSelection(
+                selection = GestureSelection.TopLeft,
+                value = KeyboardKeyValue.action(KeyboardKeyAction.PasteClipboard),
+                repeatingActions = repeatableActions,
+            ),
+        )
+    }
 }

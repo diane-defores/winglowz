@@ -341,6 +341,9 @@ class WinFlowzKeyboardView(
     private val longPressSwipeHoveredKeyByPointerId = mutableMapOf<Int, String>()
     private val longPressSwipeHoveredSelectionByPointerId = mutableMapOf<Int, GestureSelection>()
     private val longPressSwipeHoveredKeyCountById = mutableMapOf<String, Int>()
+    private val gestureRepeatCandidateSelectionByPointerId = mutableMapOf<Int, GestureSelection>()
+    private val gestureRepeatCandidateKeyIdByPointerId = mutableMapOf<Int, String>()
+    private val gestureRepeatRunnablesByPointerId = mutableMapOf<Int, Runnable>()
 
     private val pointerTracker = KeyboardPointerTracker<KeyFrame>()
     private val longPressRunnablesByPointerId = mutableMapOf<Int, Runnable>()
@@ -374,6 +377,7 @@ class WinFlowzKeyboardView(
 
     private var debugGestureText = "idle"
     private var repeatActionKey: KeyboardKeySpec? = null
+    private var repeatActionSelection = GestureSelection.PrimaryTap
     private var repeatOwnerPointerId = MotionEvent.INVALID_POINTER_ID
     private var repeatSourceFrame: KeyFrame? = null
     private var repeatRunnable: Runnable? = null
@@ -585,6 +589,8 @@ class WinFlowzKeyboardView(
             KeyboardKeyAction.NavigateLineDown,
             KeyboardKeyAction.NavigateParagraphUp,
             KeyboardKeyAction.NavigateParagraphDown,
+            KeyboardKeyAction.NavigateLineStart,
+            KeyboardKeyAction.NavigateLineEnd,
         )
 
     private val actionBarController = KeyboardActionBarController(KeyboardActionCatalog.default())
@@ -1833,6 +1839,7 @@ class WinFlowzKeyboardView(
             handleSpaceSlider(updated, dx, dy)
             handleHorizontalRowScroll(updated, dx, updated.latestX)
             handleVerticalPanelScroll(updated, dy, updated.latestY)
+            maybeScheduleGestureRepeat(updated)
             val distance = hypot(dx.toDouble(), dy.toDouble()).toFloat()
             debugGestureText =
                 "move ptr=${updated.pointerId} dir=${directionFrom(dx, dy)} dist=${distance.toInt()} max=${updated.maxDistanceFromStart.toInt()} lock=${pointerTracker.protectedInteraction ?: "none"}"
@@ -2027,6 +2034,7 @@ class WinFlowzKeyboardView(
         }
         val updated = pointerTracker.updatePosition(pointerId, x, y) ?: state
         clearLongPress(pointerId)
+        clearGestureRepeatCandidate(pointerId)
         stopRepeat(pointerId)
         val key = updated.payload.key
         if (!key.enabled) {
@@ -2098,6 +2106,7 @@ class WinFlowzKeyboardView(
 
     private fun cleanupPointerStateAfterRemoval(pointerId: Int) {
         clearLongPress(pointerId)
+        clearGestureRepeatCandidate(pointerId)
         if (repeatOwnerPointerId == pointerId) {
             stopRepeat(pointerId)
         }
@@ -2185,7 +2194,6 @@ class WinFlowzKeyboardView(
             acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressRepeat)
             pointerTracker.markLongPressTriggered(pointerId)
             startRepeat(pointerId, key, state.payload)
-            dispatch(key, GestureSelection.PrimaryTap, state.payload)
         } else if (isCtrlModifierKey(key)) {
             if (KeyboardCtrlSurfaceModePolicy.shouldUnlockOnLongPress(ctrlActionSurfaceLocked)) {
                 clearLongPress(pointerId)
@@ -2266,10 +2274,13 @@ class WinFlowzKeyboardView(
         pointerId: Int,
         key: KeyboardKeySpec,
         sourceFrame: KeyFrame?,
+        selection: GestureSelection = GestureSelection.PrimaryTap,
+        dispatchImmediately: Boolean = true,
     ) {
         stopRepeat()
         repeatOwnerPointerId = pointerId
         repeatActionKey = key
+        repeatActionSelection = selection
         repeatSourceFrame = sourceFrame
         val runnable =
             object : Runnable {
@@ -2279,11 +2290,14 @@ class WinFlowzKeyboardView(
                         return
                     }
                     val repeatKey = repeatActionKey ?: return
-                    dispatch(repeatKey, GestureSelection.PrimaryTap, repeatSourceFrame)
+                    dispatch(repeatKey, repeatActionSelection, repeatSourceFrame)
                     postDelayed(this, repeatDelayMs)
                 }
             }
         repeatRunnable = runnable
+        if (dispatchImmediately) {
+            dispatch(key, selection, sourceFrame)
+        }
         postDelayed(runnable, repeatDelayMs)
     }
 
@@ -2294,6 +2308,7 @@ class WinFlowzKeyboardView(
         repeatRunnable?.let { removeCallbacks(it) }
         repeatRunnable = null
         repeatActionKey = null
+        repeatActionSelection = GestureSelection.PrimaryTap
         repeatSourceFrame = null
         repeatOwnerPointerId = MotionEvent.INVALID_POINTER_ID
     }
@@ -2346,6 +2361,135 @@ class WinFlowzKeyboardView(
             }
         }
         lastSlideStep = step
+    }
+
+    private fun maybeScheduleGestureRepeat(state: KeyboardPointerState<KeyFrame>) {
+        val pointerId = state.pointerId
+        if (
+            state.consumedByProtectedInteraction ||
+            state.longPressTriggered ||
+            slidingSpace ||
+            scrollingHorizontalRow ||
+            scrollingVerticalPanel ||
+            longPressSwipeDispatchPointerIds.contains(pointerId)
+        ) {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+        val key = state.payload.key
+        val selection =
+            effectiveGestureSelection(
+                key = key,
+                sample =
+                    GestureSample(
+                        startX = state.startX,
+                        startY = state.startY,
+                        endX = state.latestX,
+                        endY = state.latestY,
+                        maxDistanceFromStart = state.maxDistanceFromStart,
+                    ),
+            )
+        val value = keyValueForSelection(key, selection) ?: run {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+        if (!shouldRepeatGestureSelection(selection, value)) {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+
+        val nextCandidate = gestureRepeatCandidateSelectionByPointerId[pointerId]
+        val nextCandidateKeyId = gestureRepeatCandidateKeyIdByPointerId[pointerId]
+        if (nextCandidate == selection && nextCandidateKeyId == key.id) {
+            return
+        }
+
+        clearGestureRepeatCandidate(pointerId)
+        gestureRepeatCandidateSelectionByPointerId[pointerId] = selection
+        gestureRepeatCandidateKeyIdByPointerId[pointerId] = key.id
+        clearLongPress(pointerId)
+
+        val runnable =
+            Runnable {
+                triggerGestureRepeat(pointerId)
+            }
+        gestureRepeatRunnablesByPointerId[pointerId] = runnable
+        postDelayed(runnable, longPressDelayMs)
+    }
+
+    private fun triggerGestureRepeat(pointerId: Int) {
+        runKeyboardSafely("gestureRepeat:$pointerId") {
+            triggerGestureRepeatUnsafe(pointerId)
+        }
+    }
+
+    private fun triggerGestureRepeatUnsafe(pointerId: Int) {
+        val candidateSelection = gestureRepeatCandidateSelectionByPointerId[pointerId] ?: return
+        val keyId = gestureRepeatCandidateKeyIdByPointerId[pointerId] ?: return
+        val state = pointerTracker.get(pointerId) ?: return clearGestureRepeatCandidate(pointerId)
+        if (state.consumedByProtectedInteraction || state.longPressTriggered) {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+        val key = state.payload.key
+        if (key.id != keyId) {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+        val currentSelection =
+            effectiveGestureSelection(
+                key = key,
+                sample =
+                    GestureSample(
+                        startX = state.startX,
+                        startY = state.startY,
+                        endX = state.latestX,
+                        endY = state.latestY,
+                        maxDistanceFromStart = state.maxDistanceFromStart,
+                    ),
+            )
+        if (currentSelection != candidateSelection) {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+        val value = keyValueForSelection(key, candidateSelection) ?: run {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+        if (!shouldRepeatGestureSelection(candidateSelection, value)) {
+            clearGestureRepeatCandidate(pointerId)
+            return
+        }
+
+        clearGestureRepeatCandidate(pointerId)
+        clearLongPress(pointerId)
+        acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressRepeat)
+        pointerTracker.markLongPressTriggered(pointerId)
+        startRepeat(
+            pointerId = pointerId,
+            key = key,
+            sourceFrame = state.payload,
+            selection = candidateSelection,
+            dispatchImmediately = true,
+        )
+    }
+
+    private fun clearGestureRepeatCandidate(pointerId: Int) {
+        gestureRepeatCandidateSelectionByPointerId.remove(pointerId)
+        gestureRepeatCandidateKeyIdByPointerId.remove(pointerId)
+        val pending = gestureRepeatRunnablesByPointerId.remove(pointerId) ?: return
+        removeCallbacks(pending)
+    }
+
+    private fun shouldRepeatGestureSelection(
+        selection: GestureSelection,
+        value: KeyboardKeyValue,
+    ): Boolean {
+        return KeyboardLongPressSwipePolicy.shouldRepeatGestureSelection(
+            selection = selection,
+            value = value,
+            repeatingActions = repeatingActions,
+        )
     }
 
     private fun tryDispatchAfterLongPressSwipe(

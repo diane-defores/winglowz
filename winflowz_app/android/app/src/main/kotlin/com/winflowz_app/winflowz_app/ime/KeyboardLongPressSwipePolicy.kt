@@ -56,4 +56,15 @@ internal object KeyboardLongPressSwipePolicy {
     ): GestureSelection? {
         return targetSelections.firstOrNull { it in candidates }
     }
+
+    fun shouldRepeatGestureSelection(
+        selection: GestureSelection,
+        value: KeyboardKeyValue,
+        repeatingActions: Set<KeyboardKeyAction>,
+    ): Boolean {
+        if (selection == GestureSelection.PrimaryTap || selection == GestureSelection.Canceled) {
+            return false
+        }
+        return value.kind == KeyboardKeyValueKind.Action && value.action in repeatingActions
+    }
 }

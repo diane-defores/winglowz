@@ -601,11 +601,17 @@ class WinFlowzInputMethodService :
     }
 
     override fun onUndo(): Boolean {
-        return editor().performContextMenuAction(android.R.id.undo).reportFailure("Undo rejected by field")
+        return recordNavigationDiagnostic("undo") {
+            val result = editor().performUndo().reportFailure("Undo rejected by field")
+            result to "context_menu_or_shortcut_undo"
+        }
     }
 
     override fun onRedo(): Boolean {
-        return editor().performContextMenuAction(android.R.id.redo).reportFailure("Redo rejected by field")
+        return recordNavigationDiagnostic("redo") {
+            val result = editor().performRedo().reportFailure("Redo rejected by field")
+            result to "context_menu_or_shortcut_redo"
+        }
     }
 
     override fun onCancelSelection(): Boolean {
