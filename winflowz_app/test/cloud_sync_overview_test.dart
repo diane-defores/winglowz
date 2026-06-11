@@ -5,6 +5,7 @@ import 'package:winflowz_app/features/auth/domain/auth_session_store.dart';
 import 'package:winflowz_app/features/auth/domain/product_entitlement.dart';
 import 'package:winflowz_app/features/auth/domain/suite_identity.dart';
 import 'package:winflowz_app/features/keyboard/application/keyboard_sync_controller.dart';
+import 'package:winflowz_app/features/sync/domain/local_cloud_sync_models.dart';
 
 void main() {
   const signedInSession = AuthSessionSnapshot(
@@ -59,6 +60,7 @@ void main() {
       keyboardImeSupported: false,
       keyboardRemoteSyncActive: false,
       keyboardControllerState: const KeyboardSyncControllerState.initial(),
+      localCloudSyncState: LocalCloudSyncState.initial(),
       settingsStoreRemoteActive: true,
       clipboardStoreRemoteActive: true,
       snippetStoreRemoteActive: true,
@@ -99,6 +101,7 @@ void main() {
       keyboardImeSupported: true,
       keyboardRemoteSyncActive: false,
       keyboardControllerState: const KeyboardSyncControllerState.initial(),
+      localCloudSyncState: LocalCloudSyncState.initial(),
       settingsStoreRemoteActive: true,
       clipboardStoreRemoteActive: true,
       snippetStoreRemoteActive: true,
@@ -135,6 +138,7 @@ void main() {
       keyboardImeSupported: true,
       keyboardRemoteSyncActive: true,
       keyboardControllerState: syncEnabledReadyKeyboard,
+      localCloudSyncState: LocalCloudSyncState.initial(),
       settingsStoreRemoteActive: true,
       clipboardStoreRemoteActive: true,
       snippetStoreRemoteActive: true,
@@ -180,6 +184,7 @@ void main() {
       keyboardImeSupported: false,
       keyboardRemoteSyncActive: true,
       keyboardControllerState: syncEnabledReadyKeyboard,
+      localCloudSyncState: LocalCloudSyncState.initial(),
       settingsStoreRemoteActive: true,
       clipboardStoreRemoteActive: true,
       snippetStoreRemoteActive: true,
@@ -208,6 +213,7 @@ void main() {
       keyboardImeSupported: true,
       keyboardRemoteSyncActive: true,
       keyboardControllerState: syncFailedKeyboard,
+      localCloudSyncState: LocalCloudSyncState.initial(),
       settingsStoreRemoteActive: true,
       clipboardStoreRemoteActive: true,
       snippetStoreRemoteActive: true,
@@ -235,6 +241,7 @@ void main() {
       keyboardImeSupported: true,
       keyboardRemoteSyncActive: false,
       keyboardControllerState: const KeyboardSyncControllerState.initial(),
+      localCloudSyncState: LocalCloudSyncState.initial(),
       settingsStoreRemoteActive: false,
       clipboardStoreRemoteActive: false,
       snippetStoreRemoteActive: false,

@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function hasWinFlowzAppAccess(userId) {
+      return isOwner(userId) &&
+          firestore.exists(
+            /databases/(default)/documents/suiteAccess/$(userId),
+          ) &&
+          firestore.get(
+            /databases/(default)/documents/suiteAccess/$(userId),
+          ).data.products.winflowz_app.active == true;
+    }
+
+    function hasAllowedImageMetadata() {
+      return request.resource != null &&
+          request.resource.size > 0 &&
+          request.resource.size <= 8 * 1024 * 1024 &&
+          request.resource.contentType.matches('image/.*');
+    }
+
+    match /users/{uid}/keyboard_theme_assets/{assetId} {
+      allow read: if hasWinFlowzAppAccess(uid);
+      allow write: if hasWinFlowzAppAccess(uid) &&
+          assetId.size() > 0 &&
+          assetId.size() <= 128 &&
+          hasAllowedImageMetadata();
+      allow delete: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

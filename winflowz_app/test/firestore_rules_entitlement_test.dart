@@ -28,6 +28,13 @@ void main() {
       rules,
       contains('payload.sanitizationPolicy == \'keyboard_sync_v1\''),
     );
+    expect(rules, contains('payload.schemaVersion == 2'));
+    expect(
+      rules,
+      contains('payload.sanitizationPolicy == \'keyboard_sync_v2\''),
+    );
+    expect(rules, contains('hasSafeKeyboardThemeAsset(payload)'));
+    expect(rules, contains('match /keyboardThemeAssets/{assetId}'));
     expect(rules, contains('payload.profileRevision is int'));
     expect(rules, contains('payload.baseCloudRevision is int'));
     expect(rules, contains('!payload.payload.keys().hasAny(['));

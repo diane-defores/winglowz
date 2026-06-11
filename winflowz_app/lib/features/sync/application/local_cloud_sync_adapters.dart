@@ -550,6 +550,11 @@ class SettingsSyncAdapter implements LocalCloudSyncDomainAdapter {
       'onboardingMediaAccessSkipped': settings.onboardingMediaAccessSkipped,
       'onboardingBrightnessSkipped': settings.onboardingBrightnessSkipped,
       'onboardingOverlaySkipped': settings.onboardingOverlaySkipped,
+      'localSpeechNoticeDismissedForever':
+          settings.localSpeechNoticeDismissedForever,
+      'overlayNoticeDismissedForever': settings.overlayNoticeDismissedForever,
+      'onboardingNoticeDismissedForever':
+          settings.onboardingNoticeDismissedForever,
       'onboardingLastSeenAt': settings.onboardingLastSeenAt
           ?.toUtc()
           .toIso8601String(),
@@ -606,6 +611,18 @@ class SettingsSyncAdapter implements LocalCloudSyncDomainAdapter {
       onboardingOverlaySkipped: record['onboardingOverlaySkipped'] is bool
           ? record['onboardingOverlaySkipped'] as bool
           : fallback.onboardingOverlaySkipped,
+      localSpeechNoticeDismissedForever:
+          record['localSpeechNoticeDismissedForever'] is bool
+          ? record['localSpeechNoticeDismissedForever'] as bool
+          : fallback.localSpeechNoticeDismissedForever,
+      overlayNoticeDismissedForever:
+          record['overlayNoticeDismissedForever'] is bool
+          ? record['overlayNoticeDismissedForever'] as bool
+          : fallback.overlayNoticeDismissedForever,
+      onboardingNoticeDismissedForever:
+          record['onboardingNoticeDismissedForever'] is bool
+          ? record['onboardingNoticeDismissedForever'] as bool
+          : fallback.onboardingNoticeDismissedForever,
       onboardingLastSeenAt: DateTime.tryParse(
         (record['onboardingLastSeenAt'] ?? '').toString(),
       )?.toUtc(),

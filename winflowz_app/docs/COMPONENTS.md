@@ -87,6 +87,10 @@ This inventory separates:
 - `SettingsScreen`:
   language, permissions, key management status, auth session visibility,
   Android overlay status, and Android keyboard IME status/preferences.
+  The Compte & cloud area must distinguish measured states such as
+  `Synchronisé`, `En attente`, `Restauration partielle`, `Conflit`, and
+  `Local uniquement`; it must not imply full backup readiness when a keyboard
+  theme image is still local-only or pending.
 - `KeyboardCornerShortcutsScreen`:
   visual Android keyboard corner editor with selectable keyboard preview,
   draft-before-save state, guided accent/punctuation/snippet/action choices,
@@ -128,7 +132,8 @@ This inventory separates:
 - `AndroidKeyboardBridge`:
   Dart MethodChannel wrapper for IME enabled/active status, input-method
   settings, keyboard picker, non-sensitive preferences, and configurable
-  corner shortcut config.
+  corner shortcut config. The bridge also owns keyboard sync export/apply and
+  restored theme-image installation into app-private native storage.
 - `KeyboardPreviewScreen`:
   Flutter preview/sandbox for keyboard review, including simulated input,
   panels, numeric grid, scrollable snippets/clipboard rows, media status,

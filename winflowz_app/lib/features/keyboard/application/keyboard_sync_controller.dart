@@ -1,6 +1,8 @@
 import '../domain/keyboard_sync_models.dart';
 import '../domain/keyboard_sync_store.dart';
 import 'keyboard_sync_queue.dart';
+import '../data/local_keyboard_sync_queue_store.dart';
+import '../data/firebase_keyboard_theme_asset_store.dart';
 
 enum KeyboardSyncControllerStatus {
   waitingCloud,
@@ -8,6 +10,7 @@ enum KeyboardSyncControllerStatus {
   decisionNeeded,
   applying,
   ready,
+  partial,
   failed,
 }
 
@@ -93,25 +96,44 @@ class KeyboardSyncControllerState {
 typedef KeyboardSyncLocalExport = Future<KeyboardSyncProfile?> Function();
 typedef KeyboardSyncLocalApply =
     Future<void> Function(KeyboardSyncProfile profile);
+typedef KeyboardSyncLocalThemeAssetExport =
+    Future<KeyboardSyncThemeAssetUploadRequest?> Function();
+typedef KeyboardSyncLocalApplyWithRestoredThemeImage =
+    Future<void> Function(
+      KeyboardSyncProfile profile,
+      String restoredThemeImagePath,
+    );
 
 class KeyboardSyncController {
   KeyboardSyncController({
     required KeyboardSyncStore cloudStore,
     required KeyboardSyncQueue queue,
+    required KeyboardThemeAssetStore assetStore,
     required KeyboardSyncLocalExport exportLocalProfile,
     required KeyboardSyncLocalApply applyLocalProfile,
+    KeyboardSyncLocalThemeAssetExport? exportLocalThemeAsset,
+    KeyboardSyncLocalApplyWithRestoredThemeImage?
+    applyLocalProfileWithRestoredThemeImage,
     bool Function(KeyboardSyncProfile? profile)? isLocalProfileClean,
   }) : _cloudStore = cloudStore,
        _queue = queue,
+       _assetStore = assetStore,
        _exportLocalProfile = exportLocalProfile,
        _applyLocalProfile = applyLocalProfile,
+       _exportLocalThemeAsset = exportLocalThemeAsset,
+       _applyLocalProfileWithRestoredThemeImage =
+           applyLocalProfileWithRestoredThemeImage,
        _isLocalProfileClean =
            isLocalProfileClean ?? _defaultIsLocalProfileClean;
 
   final KeyboardSyncStore _cloudStore;
   final KeyboardSyncQueue _queue;
+  final KeyboardThemeAssetStore _assetStore;
   final KeyboardSyncLocalExport _exportLocalProfile;
   final KeyboardSyncLocalApply _applyLocalProfile;
+  final KeyboardSyncLocalThemeAssetExport? _exportLocalThemeAsset;
+  final KeyboardSyncLocalApplyWithRestoredThemeImage?
+      _applyLocalProfileWithRestoredThemeImage;
   final bool Function(KeyboardSyncProfile? profile) _isLocalProfileClean;
 
   KeyboardSyncControllerState _state =
@@ -156,10 +178,16 @@ class KeyboardSyncController {
     );
 
     KeyboardSyncProfile? localProfile;
+    KeyboardSyncThemeAssetUploadRequest? localThemeAsset;
     try {
       localProfile = await _exportLocalProfile();
+      final exportLocalThemeAsset = _exportLocalThemeAsset;
+      if (exportLocalThemeAsset != null) {
+        localThemeAsset = await exportLocalThemeAsset();
+      }
     } catch (_) {
       localProfile = null;
+      localThemeAsset = null;
     }
 
     final cloudProfile = await _loadCloudProfile();
@@ -190,6 +218,7 @@ class KeyboardSyncController {
           targetGlobalUserId: globalUserId,
           profile: queuedProfile,
           baseCloudRevision: 0,
+          themeAssetUpload: localThemeAsset,
         );
       }
       return _flushQueue(firebaseUid: firebaseUid, globalUserId: globalUserId);
@@ -201,7 +230,10 @@ class KeyboardSyncController {
         decision: KeyboardSyncDecisionKind.restoreLocalFromCloud,
       );
       try {
-        await _applyLocalProfile(cloudProfile);
+        await _applyCloudProfile(
+          context: context,
+          cloudProfile: cloudProfile,
+        );
       } catch (_) {
         _state = _state.copyWith(
           status: KeyboardSyncControllerStatus.failed,
@@ -236,6 +268,11 @@ class KeyboardSyncController {
     final firebaseUid = context.firebaseUid!.trim();
     final globalUserId = context.globalUserId!.trim();
     final localProfile = _state.localProfile ?? await _exportLocalProfile();
+    KeyboardSyncThemeAssetUploadRequest? themeAssetUpload;
+    final exportLocalThemeAsset = _exportLocalThemeAsset;
+    if (exportLocalThemeAsset != null) {
+      themeAssetUpload = await exportLocalThemeAsset();
+    }
     final cloudProfile = _state.cloudProfile ?? await _loadCloudProfile();
     if (localProfile == null || !localProfile.validate().isValid) {
       _state = _state.copyWith(
@@ -254,6 +291,7 @@ class KeyboardSyncController {
         baseCloudRevision: baseRevision,
       ),
       baseCloudRevision: baseRevision,
+      themeAssetUpload: themeAssetUpload,
     );
     _state = _state.copyWith(
       status: KeyboardSyncControllerStatus.applying,
@@ -288,7 +326,7 @@ class KeyboardSyncController {
       issueMessage: null,
     );
     try {
-      await _applyLocalProfile(cloudProfile);
+      await _applyCloudProfile(context: context, cloudProfile: cloudProfile);
       await _queue.clear();
     } catch (_) {
       _state = _state.copyWith(
@@ -299,6 +337,37 @@ class KeyboardSyncController {
       return _state;
     }
     return _flushQueue(firebaseUid: firebaseUid, globalUserId: globalUserId);
+  }
+
+  Future<void> _applyCloudProfile({
+    required KeyboardSyncAuthContext context,
+    required KeyboardSyncProfile cloudProfile,
+  }) async {
+    final themeAsset = cloudProfile.themeAsset;
+    if (themeAsset == null) {
+      await _applyLocalProfile(cloudProfile.withThemeAsset(null));
+      return;
+    }
+    final restoredThemeImagePath = await _assetStore.downloadThemeAsset(
+      firebaseUid: context.firebaseUid!.trim(),
+      globalUserId: context.globalUserId!.trim(),
+      manifest: themeAsset,
+    );
+    final applyWithRestoredThemeImage =
+        _applyLocalProfileWithRestoredThemeImage;
+    if (applyWithRestoredThemeImage != null) {
+      await applyWithRestoredThemeImage(
+        cloudProfile,
+        restoredThemeImagePath,
+      );
+      return;
+    }
+    await _applyLocalProfile(cloudProfile.withThemeAsset(null));
+    _state = _state.copyWith(
+      status: KeyboardSyncControllerStatus.partial,
+      issueCode: 'theme_asset_downloaded_not_applied',
+      issueMessage: 'Image du thème récupérée sans application native dédiée.',
+    );
   }
 
   Future<KeyboardSyncProfile?> _loadCloudProfile() async {
@@ -344,7 +413,9 @@ class KeyboardSyncController {
       targetGlobalUserId: globalUserId,
     );
     _state = _state.copyWith(
-      status: KeyboardSyncControllerStatus.ready,
+      status: result.failedCount > 0
+          ? KeyboardSyncControllerStatus.partial
+          : KeyboardSyncControllerStatus.ready,
       decision: KeyboardSyncDecisionKind.none,
       hasPendingQueue: pending.isNotEmpty || result.failedCount > 0,
       issueCode: null,

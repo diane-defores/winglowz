@@ -91,4 +91,29 @@ void main() {
       expect(nested.containsKey('imageBytes'), isFalse);
     },
   );
+
+  test('v2 allows safe theme asset manifest without local path', () {
+    final sanitized = KeyboardSyncPolicyV2.sanitizePayload({
+      'themeConfig': {
+        'presetId': 'custom',
+        'useImage': true,
+        'backgroundImagePath': '/data/user/0/private.png',
+      },
+      'themeAsset': {
+        'assetId': 'asset-1',
+        'storagePath': 'users/firebase-a/keyboard_theme_assets/asset-1',
+        'checksum': 'abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abcd',
+        'byteSize': 2048,
+        'mimeType': 'image/png',
+        'profileRevision': 4,
+        'createdAt': '2026-05-25T16:00:00Z',
+        'updatedAt': '2026-05-25T16:00:00Z',
+      },
+    });
+
+    final theme = sanitized['themeConfig'] as Map<String, Object?>;
+    expect(theme['useImage'], isTrue);
+    expect(theme.containsKey('backgroundImagePath'), isFalse);
+    expect(sanitized['themeAsset'], isA<Map<String, Object?>>());
+  });
 }

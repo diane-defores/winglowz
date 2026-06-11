@@ -604,6 +604,30 @@ class MainActivity : FlutterActivity() {
                         }
                         startActivityForResult(pickIntent, requestPickThemeImage)
                     }
+                    "installRestoredKeyboardThemeImage" -> {
+                        val sourcePath = call.argument<String>("sourcePath").orEmpty().trim()
+                        if (sourcePath.isEmpty()) {
+                            result.error(
+                                "KEYBOARD_THEME_IMAGE_INVALID",
+                                "Restored keyboard theme image path is required.",
+                                null,
+                            )
+                            return@setMethodCallHandler
+                        }
+                        try {
+                            result.success(
+                                mapOf(
+                                    "path" to keyboardState.installRestoredThemeImage(sourcePath),
+                                ),
+                            )
+                        } catch (error: IllegalArgumentException) {
+                            result.error(
+                                "KEYBOARD_THEME_IMAGE_INVALID",
+                                error.message ?: "Restored keyboard theme image is invalid.",
+                                null,
+                            )
+                        }
+                    }
                     "setKeyboardSnippetRules" -> {
                         keyboardState.replaceSnippetRules(keyboardTextRulesFromArgument(call.arguments))
                         result.success(true)

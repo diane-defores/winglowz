@@ -210,3 +210,135 @@ class KeyboardSyncPolicyV1 {
     return utf8.encode(jsonEncode(payload)).length;
   }
 }
+
+class KeyboardSyncPolicyV2 {
+  const KeyboardSyncPolicyV2._();
+
+  static const String id = 'keyboard_sync_v2';
+  static const int schemaVersion = 2;
+  static const int maxProfileBytes = KeyboardSyncPolicyV1.maxProfileBytes;
+
+  static Map<String, Object?> sanitizePayload(Map<String, Object?> source) {
+    final sanitized = Map<String, Object?>.from(
+      KeyboardSyncPolicyV1.sanitizePayload(source),
+    );
+    final themeAsset = source['themeAsset'];
+    if (themeAsset is Map) {
+      final normalizedAsset = _sanitizeThemeAsset(themeAsset);
+      if (normalizedAsset != null) {
+        sanitized['themeAsset'] = normalizedAsset;
+        final themeConfig = Map<String, Object?>.from(
+          (sanitized['themeConfig'] as Map?)?.cast<String, Object?>() ??
+              const <String, Object?>{},
+        );
+        themeConfig['useImage'] = true;
+        themeConfig['themeBackgroundSource'] = 'image';
+        sanitized['themeConfig'] = themeConfig;
+      }
+    }
+    return sanitized;
+  }
+
+  static Map<String, Object?>? _sanitizeThemeAsset(Map source) {
+    final assetId = _boundedString(source['assetId'], maxLength: 96);
+    final storagePath = _boundedString(source['storagePath'], maxLength: 256);
+    final checksum = _boundedString(source['checksum'], maxLength: 128);
+    final mimeType = _boundedString(source['mimeType'], maxLength: 64);
+    final createdAt = _boundedString(source['createdAt'], maxLength: 64);
+    final updatedAt = _boundedString(source['updatedAt'], maxLength: 64);
+    if (assetId == null ||
+        storagePath == null ||
+        checksum == null ||
+        mimeType == null ||
+        createdAt == null ||
+        updatedAt == null) {
+      return null;
+    }
+    if (storagePath.contains('..') ||
+        storagePath.startsWith('/') ||
+        storagePath.startsWith('file://') ||
+        storagePath.startsWith('http://') ||
+        storagePath.startsWith('https://')) {
+      return null;
+    }
+    if (!(mimeType == 'image/png' ||
+        mimeType == 'image/jpeg' ||
+        mimeType == 'image/webp')) {
+      return null;
+    }
+    final byteSize = _boundedInt(source['byteSize'], min: 1, max: 8 * 1024 * 1024);
+    final profileRevision = _boundedInt(
+      source['profileRevision'],
+      min: 0,
+      max: 1000000,
+    );
+    final width = _nullableBoundedInt(source['width'], min: 1, max: 4096);
+    final height = _nullableBoundedInt(source['height'], min: 1, max: 4096);
+    if (byteSize == null || profileRevision == null) {
+      return null;
+    }
+    final tombstonedAt = _boundedString(source['tombstonedAt'], maxLength: 64);
+    final result = <String, Object?>{
+      'assetId': assetId,
+      'storagePath': storagePath,
+      'checksum': checksum,
+      'byteSize': byteSize,
+      'mimeType': mimeType,
+      'profileRevision': profileRevision,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+    if (width != null) {
+      result['width'] = width;
+    }
+    if (height != null) {
+      result['height'] = height;
+    }
+    if (tombstonedAt != null) {
+      result['tombstonedAt'] = tombstonedAt;
+    }
+    return result;
+  }
+
+  static int estimatePayloadBytes(Map<String, Object?> payload) {
+    return utf8.encode(jsonEncode(payload)).length;
+  }
+
+  static String? _boundedString(Object? value, {required int maxLength}) {
+    if (value is! String) {
+      return null;
+    }
+    final normalized = value.trim();
+    if (normalized.isEmpty || normalized.length > maxLength) {
+      return null;
+    }
+    return normalized;
+  }
+
+  static int? _boundedInt(
+    Object? value, {
+    required int min,
+    required int max,
+  }) {
+    final intValue = switch (value) {
+      int() => value,
+      num() => value.toInt(),
+      _ => null,
+    };
+    if (intValue == null || intValue < min || intValue > max) {
+      return null;
+    }
+    return intValue;
+  }
+
+  static int? _nullableBoundedInt(
+    Object? value, {
+    required int min,
+    required int max,
+  }) {
+    if (value == null) {
+      return null;
+    }
+    return _boundedInt(value, min: min, max: max);
+  }
+}

@@ -1114,6 +1114,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       'diagnostic_version: 5',
       'generated_at_utc: ${DateTime.now().toUtc().toIso8601String()}',
       'secret_values_redacted: true',
+      ...AppBuildInfo.diagnosticHeader,
       'provider_contract: backend-agnostic',
       'status: $status',
       'build: ${AppBuildInfo.diagnosticSummary}',

@@ -93,3 +93,36 @@ final localCloudSyncControllerProvider = Provider<LocalCloudSyncController>((
     metadataStore: ref.watch(localCloudSyncMetadataStoreProvider),
   );
 });
+
+class LocalCloudSyncStateNotifier extends Notifier<LocalCloudSyncState> {
+  String? _lastAccountKey;
+
+  @override
+  LocalCloudSyncState build() {
+    return ref.watch(localCloudSyncControllerProvider).state;
+  }
+
+  Future<void> synchronizeIfNeeded() async {
+    final context = ref.read(localCloudSyncAuthContextProvider);
+    final accountKey =
+        '${context.firebaseUid ?? 'none'}|${context.globalUserId ?? 'none'}|${context.remoteSyncActive}';
+    if (accountKey == _lastAccountKey &&
+        state.status == LocalCloudSyncControllerStatus.ready) {
+      return;
+    }
+    _lastAccountKey = accountKey;
+    state = await ref
+        .read(localCloudSyncControllerProvider)
+        .synchronize(context);
+  }
+
+  Future<void> forceSynchronize() async {
+    _lastAccountKey = null;
+    await synchronizeIfNeeded();
+  }
+}
+
+final localCloudSyncStateProvider =
+    NotifierProvider<LocalCloudSyncStateNotifier, LocalCloudSyncState>(
+      LocalCloudSyncStateNotifier.new,
+    );

@@ -6,6 +6,56 @@ import '../domain/keyboard_sync_models.dart';
 
 enum KeyboardSyncQueueEntryState { pending, failed }
 
+class KeyboardSyncThemeAssetUploadRequest {
+  const KeyboardSyncThemeAssetUploadRequest({
+    required this.localFilePath,
+    required this.assetId,
+    required this.mimeType,
+    this.width,
+    this.height,
+  });
+
+  final String localFilePath;
+  final String assetId;
+  final String mimeType;
+  final int? width;
+  final int? height;
+
+  Map<String, Object?> toMap() {
+    return <String, Object?>{
+      'localFilePath': localFilePath,
+      'assetId': assetId,
+      'mimeType': mimeType,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+    };
+  }
+
+  static KeyboardSyncThemeAssetUploadRequest? fromMap(Object? raw) {
+    if (raw is! Map) {
+      return null;
+    }
+    final localFilePath = raw['localFilePath'];
+    final assetId = raw['assetId'];
+    final mimeType = raw['mimeType'];
+    if (localFilePath is! String ||
+        localFilePath.trim().isEmpty ||
+        assetId is! String ||
+        assetId.trim().isEmpty ||
+        mimeType is! String ||
+        mimeType.trim().isEmpty) {
+      return null;
+    }
+    return KeyboardSyncThemeAssetUploadRequest(
+      localFilePath: localFilePath.trim(),
+      assetId: assetId.trim(),
+      mimeType: mimeType.trim(),
+      width: (raw['width'] as num?)?.toInt(),
+      height: (raw['height'] as num?)?.toInt(),
+    );
+  }
+}
+
 class KeyboardSyncQueueEntry {
   const KeyboardSyncQueueEntry({
     required this.operationKey,
@@ -20,6 +70,7 @@ class KeyboardSyncQueueEntry {
     required this.updatedAtUtc,
     this.lastErrorCode,
     this.lastErrorMessage,
+    this.themeAssetUpload,
   });
 
   final String operationKey;
@@ -34,6 +85,7 @@ class KeyboardSyncQueueEntry {
   final DateTime updatedAtUtc;
   final String? lastErrorCode;
   final String? lastErrorMessage;
+  final KeyboardSyncThemeAssetUploadRequest? themeAssetUpload;
 
   bool isFlushReady(DateTime now) => !retryAfterUtc.isAfter(now.toUtc());
 
@@ -50,6 +102,7 @@ class KeyboardSyncQueueEntry {
     DateTime? updatedAtUtc,
     String? lastErrorCode,
     String? lastErrorMessage,
+    KeyboardSyncThemeAssetUploadRequest? themeAssetUpload,
   }) {
     return KeyboardSyncQueueEntry(
       operationKey: operationKey ?? this.operationKey,
@@ -64,6 +117,7 @@ class KeyboardSyncQueueEntry {
       updatedAtUtc: updatedAtUtc ?? this.updatedAtUtc,
       lastErrorCode: lastErrorCode,
       lastErrorMessage: lastErrorMessage,
+      themeAssetUpload: themeAssetUpload ?? this.themeAssetUpload,
     );
   }
 
@@ -81,6 +135,7 @@ class KeyboardSyncQueueEntry {
       'updatedAtUtc': updatedAtUtc.toUtc().toIso8601String(),
       'lastErrorCode': lastErrorCode,
       'lastErrorMessage': lastErrorMessage,
+      if (themeAssetUpload != null) 'themeAssetUpload': themeAssetUpload!.toMap(),
     };
   }
 
@@ -131,6 +186,9 @@ class KeyboardSyncQueueEntry {
       updatedAtUtc: updatedAt,
       lastErrorCode: _normalizedString(raw['lastErrorCode']),
       lastErrorMessage: _normalizedString(raw['lastErrorMessage']),
+      themeAssetUpload: KeyboardSyncThemeAssetUploadRequest.fromMap(
+        raw['themeAssetUpload'],
+      ),
     );
   }
 

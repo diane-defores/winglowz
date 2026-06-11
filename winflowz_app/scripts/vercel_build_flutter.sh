@@ -87,5 +87,11 @@ add_dart_define \
 add_dart_define \
   WINFLOWZ_APP_BUILD_REF \
   "${WINFLOWZ_APP_BUILD_REF:-${VERCEL_GIT_COMMIT_REF:-local}}"
+add_dart_define \
+  WINFLOWZ_APP_BUILD_AT_UTC \
+  "${WINFLOWZ_APP_BUILD_AT_UTC:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+add_dart_define \
+  WINFLOWZ_APP_BUILD_AT_PARIS \
+  "${WINFLOWZ_APP_BUILD_AT_PARIS:-$(TZ=Europe/Paris date '+%Y-%m-%d %H:%M')}"
 
 flutter build web --release --no-wasm-dry-run "${DART_DEFINES[@]}"

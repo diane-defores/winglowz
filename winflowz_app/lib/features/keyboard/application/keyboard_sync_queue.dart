@@ -1,4 +1,5 @@
 import '../data/local_keyboard_sync_queue_store.dart';
+import '../data/firebase_keyboard_theme_asset_store.dart';
 import '../domain/keyboard_sync_models.dart';
 import '../domain/keyboard_sync_store.dart';
 
@@ -22,6 +23,7 @@ abstract class KeyboardSyncQueue {
     required String targetGlobalUserId,
     required KeyboardSyncProfile profile,
     required int baseCloudRevision,
+    KeyboardSyncThemeAssetUploadRequest? themeAssetUpload,
   });
 
   Future<List<KeyboardSyncQueueEntry>> listEntries();
@@ -47,10 +49,12 @@ abstract class KeyboardSyncQueue {
 class DurableKeyboardSyncQueue implements KeyboardSyncQueue {
   DurableKeyboardSyncQueue({
     required KeyboardSyncStore cloudStore,
+    required KeyboardThemeAssetStore assetStore,
     required LocalKeyboardSyncQueueStore queueStore,
     DateTime Function()? clock,
     Duration Function(int attempts)? retryDelayForAttempt,
   }) : _cloudStore = cloudStore,
+       _assetStore = assetStore,
        _queueStore = queueStore,
        _clock = clock ?? DateTime.now,
        _retryDelayForAttempt = retryDelayForAttempt ?? _defaultRetryDelay;
@@ -58,6 +62,7 @@ class DurableKeyboardSyncQueue implements KeyboardSyncQueue {
   static const String defaultOperationKey = 'keyboardProfile:default';
 
   final KeyboardSyncStore _cloudStore;
+  final KeyboardThemeAssetStore _assetStore;
   final LocalKeyboardSyncQueueStore _queueStore;
   final DateTime Function() _clock;
   final Duration Function(int attempts) _retryDelayForAttempt;
@@ -68,6 +73,7 @@ class DurableKeyboardSyncQueue implements KeyboardSyncQueue {
     required String targetGlobalUserId,
     required KeyboardSyncProfile profile,
     required int baseCloudRevision,
+    KeyboardSyncThemeAssetUploadRequest? themeAssetUpload,
   }) async {
     final now = _clock().toUtc();
     await _queueStore.upsert(
@@ -82,6 +88,7 @@ class DurableKeyboardSyncQueue implements KeyboardSyncQueue {
         state: KeyboardSyncQueueEntryState.pending,
         createdAtUtc: now,
         updatedAtUtc: now,
+        themeAssetUpload: themeAssetUpload,
       ),
     );
   }
@@ -153,8 +160,18 @@ class DurableKeyboardSyncQueue implements KeyboardSyncQueue {
       }
 
       try {
+        var profile = entry.profile;
+        if (entry.themeAssetUpload != null) {
+          final assetManifest = await _assetStore.uploadThemeAsset(
+            firebaseUid: targetFirebaseUid,
+            globalUserId: targetGlobalUserId,
+            profileRevision: entry.profile.profileRevision,
+            request: entry.themeAssetUpload!,
+          );
+          profile = profile.withThemeAsset(assetManifest);
+        }
         await _cloudStore.saveDefault(
-          profile: entry.profile,
+          profile: profile,
           baseCloudRevision: entry.baseCloudRevision,
         );
         all.removeAt(index);

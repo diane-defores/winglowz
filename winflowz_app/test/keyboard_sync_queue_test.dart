@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winflowz_app/features/keyboard/application/keyboard_sync_queue.dart';
+import 'package:winflowz_app/features/keyboard/data/firebase_keyboard_theme_asset_store.dart';
 import 'package:winflowz_app/features/keyboard/data/local_keyboard_sync_queue_store.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_sync_models.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_sync_store.dart';
@@ -13,6 +14,7 @@ void main() {
     final cloud = _FakeKeyboardSyncStore();
     final queue = DurableKeyboardSyncQueue(
       cloudStore: cloud,
+      assetStore: _FakeAssetStore(),
       queueStore: store,
       clock: _fixedClock,
     );
@@ -47,6 +49,7 @@ void main() {
     );
     final queue = DurableKeyboardSyncQueue(
       cloudStore: _FakeKeyboardSyncStore(),
+      assetStore: _FakeAssetStore(),
       queueStore: store,
       clock: _fixedClock,
     );
@@ -74,6 +77,7 @@ void main() {
     final cloud = _FakeKeyboardSyncStore(initialCloudRevision: 0);
     final queue = DurableKeyboardSyncQueue(
       cloudStore: cloud,
+      assetStore: _FakeAssetStore(),
       queueStore: store,
       clock: _fixedClock,
     );
@@ -103,6 +107,7 @@ void main() {
     final cloud = _FakeKeyboardSyncStore(initialCloudRevision: 5);
     final queue = DurableKeyboardSyncQueue(
       cloudStore: cloud,
+      assetStore: _FakeAssetStore(),
       queueStore: store,
       clock: _fixedClock,
     );
@@ -211,5 +216,35 @@ class _FakeKeyboardSyncStore implements KeyboardSyncStore {
   @override
   Stream<KeyboardSyncProfile?> watchDefault() {
     return const Stream<KeyboardSyncProfile?>.empty();
+  }
+}
+
+class _FakeAssetStore implements KeyboardThemeAssetStore {
+  @override
+  Future<String> downloadThemeAsset({
+    required String firebaseUid,
+    required String globalUserId,
+    required KeyboardThemeAssetManifest manifest,
+  }) async {
+    return '/tmp/${manifest.assetId}.png';
+  }
+
+  @override
+  Future<KeyboardThemeAssetManifest> uploadThemeAsset({
+    required String firebaseUid,
+    required String globalUserId,
+    required int profileRevision,
+    required KeyboardSyncThemeAssetUploadRequest request,
+  }) async {
+    return KeyboardThemeAssetManifest(
+      assetId: request.assetId,
+      storagePath: 'users/$firebaseUid/keyboard_theme_assets/${request.assetId}',
+      checksum: 'abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abcd',
+      byteSize: 1024,
+      mimeType: request.mimeType,
+      profileRevision: profileRevision,
+      createdAt: '2026-05-25T17:00:00Z',
+      updatedAt: '2026-05-25T17:00:00Z',
+    );
   }
 }

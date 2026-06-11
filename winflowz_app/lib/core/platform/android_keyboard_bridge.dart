@@ -1,8 +1,10 @@
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../features/clipboard/domain/clipboard_capture_event.dart';
 import '../../features/keyboard/domain/keyboard_models.dart';
 import '../../features/keyboard/domain/keyboard_sync_models.dart';
+import '../../features/keyboard/data/local_keyboard_sync_queue_store.dart';
 import 'platform_capabilities.dart';
 
 class AndroidKeyboardBridgeException implements Exception {
@@ -24,6 +26,7 @@ class AndroidKeyboardBridge {
   AndroidKeyboardBridge._();
 
   static const MethodChannel _channel = MethodChannel('winflowz_app/keyboard');
+  static const Uuid _uuid = Uuid();
 
   static Future<AndroidKeyboardStatus> getStatus() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
@@ -498,6 +501,68 @@ class AndroidKeyboardBridge {
     await _invoke<void>('applyKeyboardSyncProfile', profile.toMap());
   }
 
+  static Future<void> applyKeyboardSyncProfileWithRestoredThemeImage({
+    required KeyboardSyncProfile profile,
+    required String restoredThemeImagePath,
+  }) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
+      );
+    }
+    final validation = profile.validate();
+    if (!validation.isValid) {
+      throw AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_SYNC_PROFILE_INVALID',
+        message:
+            'Keyboard sync profile is invalid: ${validation.errors.join(", ")}',
+        details: validation.verdict.name,
+      );
+    }
+    await _invoke<void>('applyKeyboardSyncProfile', {
+      ...profile.toMap(),
+      'restoredThemeImagePath': restoredThemeImagePath,
+    });
+  }
+
+  static Future<KeyboardSyncThemeAssetUploadRequest?> exportThemeAssetUploadRequest() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return null;
+    }
+    final themeConfig = await getKeyboardThemeConfig();
+    final localPath = themeConfig.backgroundImagePath?.trim();
+    if (!themeConfig.useImage || localPath == null || localPath.isEmpty) {
+      return null;
+    }
+    return KeyboardSyncThemeAssetUploadRequest(
+      localFilePath: localPath,
+      assetId: _uuid.v4(),
+      mimeType: _mimeTypeForPath(localPath),
+    );
+  }
+
+  static Future<String> installRestoredThemeImage(String sourcePath) async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      throw AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_UNSUPPORTED',
+        message: PlatformCapabilities.keyboardImeUnavailableReason,
+      );
+    }
+    final raw = await _invoke<Map<Object?, Object?>>(
+      'installRestoredKeyboardThemeImage',
+      {'sourcePath': sourcePath},
+    );
+    final installedPath = raw?['path'];
+    if (installedPath is! String || installedPath.trim().isEmpty) {
+      throw const AndroidKeyboardBridgeException(
+        code: 'KEYBOARD_THEME_IMAGE_INSTALL_FAILED',
+        message: 'Native keyboard theme image install returned no path.',
+      );
+    }
+    return installedPath.trim();
+  }
+
   static Future<AndroidKeyboardStatus> probeKeyboardLocalRuntimePath({
     required String languageTag,
     required String packId,
@@ -527,6 +592,17 @@ class AndroidKeyboardBridge {
         details: error.details,
       );
     }
+  }
+
+  static String _mimeTypeForPath(String path) {
+    final lower = path.toLowerCase();
+    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) {
+      return 'image/jpeg';
+    }
+    if (lower.endsWith('.webp')) {
+      return 'image/webp';
+    }
+    return 'image/png';
   }
 }
 

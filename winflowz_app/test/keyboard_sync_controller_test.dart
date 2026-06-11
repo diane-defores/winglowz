@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winflowz_app/features/keyboard/application/keyboard_sync_controller.dart';
 import 'package:winflowz_app/features/keyboard/application/keyboard_sync_queue.dart';
+import 'package:winflowz_app/features/keyboard/data/firebase_keyboard_theme_asset_store.dart';
 import 'package:winflowz_app/features/keyboard/data/local_keyboard_sync_queue_store.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_sync_models.dart';
 import 'package:winflowz_app/features/keyboard/domain/keyboard_sync_store.dart';
@@ -14,6 +15,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async => _profile(revision: 1, base: 0),
       applyLocalProfile: (_) async {},
     );
@@ -39,6 +41,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async => _profile(revision: 1, base: 0),
       applyLocalProfile: (_) async {},
     );
@@ -59,6 +62,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async => _profile(revision: 0, base: 0),
       applyLocalProfile: (profile) async => applied = profile,
       isLocalProfileClean: (_) => true,
@@ -79,6 +83,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async =>
           _profile(revision: 3, base: 2, themeMode: 'light'),
       applyLocalProfile: (_) async => applyCalls += 1,
@@ -101,6 +106,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async => _profile(
         revision: 0,
         base: 0,
@@ -132,6 +138,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async => _profile(revision: 1, base: 0),
       applyLocalProfile: (_) async {},
     );
@@ -149,6 +156,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async => _profile(revision: 1, base: 0),
       applyLocalProfile: (_) async {},
     );
@@ -187,6 +195,7 @@ void main() {
       final controller = KeyboardSyncController(
         cloudStore: cloud,
         queue: queue,
+        assetStore: _FakeAssetStore(),
         exportLocalProfile: () async =>
             _profile(revision: 0, base: 0, hasNativeCustomizations: true),
         applyLocalProfile: (_) async {},
@@ -209,6 +218,7 @@ void main() {
     final controller = KeyboardSyncController(
       cloudStore: cloud,
       queue: queue,
+      assetStore: _FakeAssetStore(),
       exportLocalProfile: () async =>
           _profile(revision: 0, base: 0, hasNativeCustomizations: true),
       applyLocalProfile: (profile) async => applied = profile,
@@ -306,6 +316,7 @@ class _FakeQueue implements KeyboardSyncQueue {
     required String targetGlobalUserId,
     required KeyboardSyncProfile profile,
     required int baseCloudRevision,
+    KeyboardSyncThemeAssetUploadRequest? themeAssetUpload,
   }) async {
     enqueuedProfiles.add(profile);
     baseCloudRevisions.add(baseCloudRevision);
@@ -339,5 +350,35 @@ class _FakeQueue implements KeyboardSyncQueue {
     required String targetGlobalUserId,
   }) async {
     purgeCalls.add((targetFirebaseUid, targetGlobalUserId));
+  }
+}
+
+class _FakeAssetStore implements KeyboardThemeAssetStore {
+  @override
+  Future<String> downloadThemeAsset({
+    required String firebaseUid,
+    required String globalUserId,
+    required KeyboardThemeAssetManifest manifest,
+  }) async {
+    return '/tmp/${manifest.assetId}.png';
+  }
+
+  @override
+  Future<KeyboardThemeAssetManifest> uploadThemeAsset({
+    required String firebaseUid,
+    required String globalUserId,
+    required int profileRevision,
+    required KeyboardSyncThemeAssetUploadRequest request,
+  }) async {
+    return KeyboardThemeAssetManifest(
+      assetId: request.assetId,
+      storagePath: 'users/$firebaseUid/keyboard_theme_assets/${request.assetId}',
+      checksum: 'abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abcd',
+      byteSize: 1024,
+      mimeType: request.mimeType,
+      profileRevision: profileRevision,
+      createdAt: '2026-05-25T18:00:00Z',
+      updatedAt: '2026-05-25T18:00:00Z',
+    );
   }
 }

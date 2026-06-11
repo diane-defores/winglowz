@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-import 'package:winflowz_app/features/keyboard/domain/keyboard_sync_policy.dart';
+
+import 'keyboard_sync_policy.dart';
 
 enum KeyboardSyncValidationVerdict {
   valid,
@@ -21,6 +22,106 @@ class KeyboardSyncValidationResult {
   final List<String> errors;
 
   bool get isValid => verdict == KeyboardSyncValidationVerdict.valid;
+}
+
+class KeyboardThemeAssetManifest {
+  const KeyboardThemeAssetManifest({
+    required this.assetId,
+    required this.storagePath,
+    required this.checksum,
+    required this.byteSize,
+    required this.mimeType,
+    required this.profileRevision,
+    required this.createdAt,
+    required this.updatedAt,
+    this.width,
+    this.height,
+    this.tombstonedAt,
+  });
+
+  final String assetId;
+  final String storagePath;
+  final String checksum;
+  final int byteSize;
+  final String mimeType;
+  final int profileRevision;
+  final String createdAt;
+  final String updatedAt;
+  final int? width;
+  final int? height;
+  final String? tombstonedAt;
+
+  bool get isTombstoned => tombstonedAt?.trim().isNotEmpty ?? false;
+
+  Map<String, Object?> toMap() {
+    return <String, Object?>{
+      'assetId': assetId,
+      'storagePath': storagePath,
+      'checksum': checksum,
+      'byteSize': byteSize,
+      'mimeType': mimeType,
+      'profileRevision': profileRevision,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (tombstonedAt != null) 'tombstonedAt': tombstonedAt,
+    };
+  }
+
+  KeyboardThemeAssetManifest copyWith({
+    String? assetId,
+    String? storagePath,
+    String? checksum,
+    int? byteSize,
+    String? mimeType,
+    int? profileRevision,
+    String? createdAt,
+    String? updatedAt,
+    int? width,
+    int? height,
+    String? tombstonedAt,
+  }) {
+    return KeyboardThemeAssetManifest(
+      assetId: assetId ?? this.assetId,
+      storagePath: storagePath ?? this.storagePath,
+      checksum: checksum ?? this.checksum,
+      byteSize: byteSize ?? this.byteSize,
+      mimeType: mimeType ?? this.mimeType,
+      profileRevision: profileRevision ?? this.profileRevision,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      tombstonedAt: tombstonedAt ?? this.tombstonedAt,
+    );
+  }
+
+  static KeyboardThemeAssetManifest? fromMap(Object? raw) {
+    if (raw is! Map) {
+      return null;
+    }
+    final wrapped = KeyboardSyncPolicyV2.sanitizePayload({
+      'themeAsset': Map<String, Object?>.from(raw),
+    });
+    final normalized = wrapped['themeAsset'];
+    if (normalized is! Map) {
+      return null;
+    }
+    return KeyboardThemeAssetManifest(
+      assetId: normalized['assetId'] as String,
+      storagePath: normalized['storagePath'] as String,
+      checksum: normalized['checksum'] as String,
+      byteSize: (normalized['byteSize'] as num).toInt(),
+      mimeType: normalized['mimeType'] as String,
+      profileRevision: (normalized['profileRevision'] as num).toInt(),
+      createdAt: normalized['createdAt'] as String,
+      updatedAt: normalized['updatedAt'] as String,
+      width: (normalized['width'] as num?)?.toInt(),
+      height: (normalized['height'] as num?)?.toInt(),
+      tombstonedAt: normalized['tombstonedAt'] as String?,
+    );
+  }
 }
 
 class KeyboardSyncProfile {
@@ -46,6 +147,9 @@ class KeyboardSyncProfile {
   final String checksum;
   final Map<String, Object?> payload;
 
+  KeyboardThemeAssetManifest? get themeAsset =>
+      KeyboardThemeAssetManifest.fromMap(payload['themeAsset']);
+
   factory KeyboardSyncProfile.sanitized({
     required int profileRevision,
     required int baseCloudRevision,
@@ -54,25 +158,25 @@ class KeyboardSyncProfile {
     required String sourcePlatform,
     required Map<String, Object?> rawPayload,
   }) {
-    final sanitized = KeyboardSyncPolicyV1.sanitizePayload(rawPayload);
+    final sanitized = KeyboardSyncPolicyV2.sanitizePayload(rawPayload);
     final checksum = computeChecksum(
-      schemaVersion: KeyboardSyncPolicyV1.schemaVersion,
+      schemaVersion: KeyboardSyncPolicyV2.schemaVersion,
       profileRevision: profileRevision,
       baseCloudRevision: baseCloudRevision,
       updatedAt: updatedAt,
       updatedByDeviceId: updatedByDeviceId,
       sourcePlatform: sourcePlatform,
-      sanitizationPolicy: KeyboardSyncPolicyV1.id,
+      sanitizationPolicy: KeyboardSyncPolicyV2.id,
       payload: sanitized,
     );
     return KeyboardSyncProfile(
-      schemaVersion: KeyboardSyncPolicyV1.schemaVersion,
+      schemaVersion: KeyboardSyncPolicyV2.schemaVersion,
       profileRevision: profileRevision,
       baseCloudRevision: baseCloudRevision,
       updatedAt: updatedAt,
       updatedByDeviceId: updatedByDeviceId,
       sourcePlatform: sourcePlatform,
-      sanitizationPolicy: KeyboardSyncPolicyV1.id,
+      sanitizationPolicy: KeyboardSyncPolicyV2.id,
       checksum: checksum,
       payload: sanitized,
     );
@@ -87,7 +191,7 @@ class KeyboardSyncProfile {
       updatedByDeviceId: map['updatedByDeviceId'] as String? ?? '',
       sourcePlatform: map['sourcePlatform'] as String? ?? 'unknown',
       sanitizationPolicy:
-          map['sanitizationPolicy'] as String? ?? KeyboardSyncPolicyV1.id,
+          map['sanitizationPolicy'] as String? ?? KeyboardSyncPolicyV2.id,
       checksum: map['checksum'] as String? ?? '',
       payload: (map['payload'] is Map)
           ? Map<String, Object?>.from(map['payload'] as Map)
@@ -155,15 +259,41 @@ class KeyboardSyncProfile {
     );
   }
 
+  KeyboardSyncProfile withThemeAsset(KeyboardThemeAssetManifest? asset) {
+    final nextPayload = Map<String, Object?>.from(payload);
+    final nextThemeConfig = Map<String, Object?>.from(
+      (nextPayload['themeConfig'] as Map?)?.cast<String, Object?>() ??
+          const <String, Object?>{},
+    );
+    if (asset == null) {
+      nextPayload.remove('themeAsset');
+      if (nextThemeConfig.isNotEmpty) {
+        nextThemeConfig['useImage'] = false;
+        nextThemeConfig['themeBackgroundSource'] = 'solid';
+        nextPayload['themeConfig'] = nextThemeConfig;
+      }
+      return copyWith(payload: nextPayload, recomputeChecksum: true);
+    }
+    nextPayload['themeAsset'] = asset.toMap();
+    nextThemeConfig['useImage'] = true;
+    nextThemeConfig['themeBackgroundSource'] = 'image';
+    nextPayload['themeConfig'] = nextThemeConfig;
+    return copyWith(
+      payload: nextPayload,
+      profileRevision: asset.profileRevision,
+      recomputeChecksum: true,
+    );
+  }
+
   KeyboardSyncValidationResult validate() {
-    if (schemaVersion != KeyboardSyncPolicyV1.schemaVersion) {
+    if (!_matchesDeclaredPolicy()) {
       return const KeyboardSyncValidationResult(
         verdict: KeyboardSyncValidationVerdict.invalidSchemaVersion,
         errors: ['Unsupported keyboard sync schemaVersion'],
       );
     }
 
-    final sanitizedPayload = KeyboardSyncPolicyV1.sanitizePayload(payload);
+    final sanitizedPayload = _sanitizeByPolicy(payload);
     if (!_deepEquals(payload, sanitizedPayload)) {
       return const KeyboardSyncValidationResult(
         verdict: KeyboardSyncValidationVerdict.invalidPayload,
@@ -171,13 +301,11 @@ class KeyboardSyncProfile {
       );
     }
 
-    final payloadBytes = KeyboardSyncPolicyV1.estimatePayloadBytes(payload);
-    if (payloadBytes > KeyboardSyncPolicyV1.maxProfileBytes) {
+    final payloadBytes = _estimatePayloadBytes(payload);
+    if (payloadBytes > _maxProfileBytes) {
       return KeyboardSyncValidationResult(
         verdict: KeyboardSyncValidationVerdict.oversizedPayload,
-        errors: [
-          'Payload exceeds size budget ${KeyboardSyncPolicyV1.maxProfileBytes}',
-        ],
+        errors: ['Payload exceeds size budget $_maxProfileBytes'],
       );
     }
 
@@ -274,5 +402,33 @@ class KeyboardSyncProfile {
       return true;
     }
     return false;
+  }
+
+  bool _matchesDeclaredPolicy() {
+    return switch ((schemaVersion, sanitizationPolicy)) {
+      (KeyboardSyncPolicyV1.schemaVersion, KeyboardSyncPolicyV1.id) => true,
+      (KeyboardSyncPolicyV2.schemaVersion, KeyboardSyncPolicyV2.id) => true,
+      _ => false,
+    };
+  }
+
+  Map<String, Object?> _sanitizeByPolicy(Map<String, Object?> source) {
+    if (sanitizationPolicy == KeyboardSyncPolicyV1.id) {
+      return KeyboardSyncPolicyV1.sanitizePayload(source);
+    }
+    return KeyboardSyncPolicyV2.sanitizePayload(source);
+  }
+
+  int _estimatePayloadBytes(Map<String, Object?> source) {
+    if (sanitizationPolicy == KeyboardSyncPolicyV1.id) {
+      return KeyboardSyncPolicyV1.estimatePayloadBytes(source);
+    }
+    return KeyboardSyncPolicyV2.estimatePayloadBytes(source);
+  }
+
+  int get _maxProfileBytes {
+    return sanitizationPolicy == KeyboardSyncPolicyV1.id
+        ? KeyboardSyncPolicyV1.maxProfileBytes
+        : KeyboardSyncPolicyV2.maxProfileBytes;
   }
 }

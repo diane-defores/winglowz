@@ -320,6 +320,14 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
           _state.issueMessage ?? 'La synchronisation clavier a échoué.',
           Icons.error_outline,
         );
+      case KeyboardSyncControllerStatus.partial:
+        return (
+          _KeyboardSyncPanelStatus.pending,
+          'Restauration partielle',
+          _state.issueMessage ??
+              'Le profil clavier est restauré sans tous les assets du thème.',
+          Icons.schedule_outlined,
+        );
       case KeyboardSyncControllerStatus.decisionNeeded:
         return (
           _KeyboardSyncPanelStatus.conflict,

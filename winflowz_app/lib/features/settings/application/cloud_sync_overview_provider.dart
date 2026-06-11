@@ -10,6 +10,7 @@ import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../dictionary/data/firebase_dictionary_store.dart';
 import '../../keyboard/application/keyboard_sync_controller.dart';
 import '../../keyboard/application/keyboard_sync_providers.dart';
+import '../../sync/application/local_cloud_sync_provider.dart';
 import '../../snippets/application/snippet_store_provider.dart';
 import '../../snippets/data/firebase_snippet_store.dart';
 import '../../voice/application/transcription_store_provider.dart';
@@ -24,6 +25,7 @@ final cloudSyncOverviewProvider = Provider<CloudSyncOverview>((ref) {
   final keyboardProviderState = _keyboardSyncControllerState(ref);
   final keyboardControllerState = keyboardProviderState.$1;
   final keyboardRemoteSyncActive = keyboardProviderState.$2;
+  final localCloudSyncState = ref.watch(localCloudSyncStateProvider);
 
   final remoteSettingsStore = ref.watch(settingsStoreProvider);
   final remoteClipboardStore = ref.watch(clipboardStoreProvider);
@@ -48,6 +50,7 @@ final cloudSyncOverviewProvider = Provider<CloudSyncOverview>((ref) {
     keyboardImeSupported: PlatformCapabilities.keyboardImeSupported,
     keyboardRemoteSyncActive: keyboardRemoteSyncActive,
     keyboardControllerState: keyboardControllerState,
+    localCloudSyncState: localCloudSyncState,
     settingsStoreRemoteActive: remoteSettingsStore is FirebaseSettingsStore,
     clipboardStoreRemoteActive:
         remoteClipboardStore is FirebaseClipboardHistoryStore,
@@ -70,9 +73,9 @@ String? _extractAsyncError(AsyncValue<Object?> asyncValue) {
 /// the keyboard sync controller provider can fail to initialize.
 (KeyboardSyncControllerState, bool) _keyboardSyncControllerState(Ref ref) {
   try {
-    final controller = ref.watch(keyboardSyncControllerProvider);
+    final controllerState = ref.watch(keyboardSyncControllerStateProvider);
     final authContext = ref.watch(keyboardSyncAuthContextProvider);
-    return (controller.state, authContext.remoteSyncActive);
+    return (controllerState, authContext.remoteSyncActive);
   } catch (_) {
     final authContext = ref.watch(keyboardSyncAuthContextProvider);
     return (

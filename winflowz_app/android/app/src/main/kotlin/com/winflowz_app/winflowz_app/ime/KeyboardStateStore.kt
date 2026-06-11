@@ -561,6 +561,8 @@ class KeyboardStateStore(private val context: Context) {
         }
         val payload = profile["payload"] as? Map<*, *>
             ?: throw IllegalArgumentException("Keyboard sync payload must be a map")
+        val restoredThemeImagePath =
+            (profile["restoredThemeImagePath"] as? String)?.trim().orEmpty().ifEmpty { null }
         val rawPreferences = payload["preferences"] as? Map<*, *> ?: emptyMap<Any?, Any?>()
         val rawThemeConfig = payload["themeConfig"] as? Map<*, *>
         val rawCornerConfig = payload["cornerConfig"] as? Map<*, *>
@@ -569,7 +571,10 @@ class KeyboardStateStore(private val context: Context) {
         try {
             applySyncablePreferences(rawPreferences)
             if (rawThemeConfig != null) {
-                val sanitizedTheme = sanitizeSyncThemeConfig(rawThemeConfig)
+                val sanitizedTheme = sanitizeSyncThemeConfig(
+                    rawThemeConfig,
+                    restoredThemeImagePath = restoredThemeImagePath,
+                )
                 val config = KeyboardThemeConfig.fromMap(sanitizedTheme).validated()
                 val encoded = config.toJson().toString()
                 if (encoded.length > MAX_THEME_CONFIG_JSON_LENGTH) {
@@ -604,6 +609,23 @@ class KeyboardStateStore(private val context: Context) {
             )
         }
         return mapOf("applied" to true, "rolledBack" to false)
+    }
+
+    fun installRestoredThemeImage(sourcePath: String): String {
+        val source = File(sourcePath.trim())
+        require(source.exists()) { "Restored keyboard theme image is missing." }
+        val directory = File(context.filesDir, "keyboard_themes").apply { mkdirs() }
+        val destination = File(directory, "theme_restored_${System.currentTimeMillis()}.png")
+        source.inputStream().use { input ->
+            destination.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        require(destination.length() in 1..(8L * 1024L * 1024L)) {
+            destination.delete()
+            "Restored keyboard theme image exceeds 8MB limit."
+        }
+        return destination.absolutePath
     }
 
     fun emojiRecents(limit: Int = 16): List<String> {
@@ -1118,7 +1140,10 @@ class KeyboardStateStore(private val context: Context) {
             preferences.contains(KEY_PRIVACY_MODE)
     }
 
-    private fun sanitizeSyncThemeConfig(rawConfig: Map<*, *>): Map<String, Any?> {
+    private fun sanitizeSyncThemeConfig(
+        rawConfig: Map<*, *>,
+        restoredThemeImagePath: String? = null,
+    ): Map<String, Any?> {
         val sanitized = rawConfig.mapNotNull { (key, value) ->
             val stringKey = key as? String ?: return@mapNotNull null
             stringKey to value
@@ -1128,7 +1153,11 @@ class KeyboardStateStore(private val context: Context) {
         sanitized.remove("imagePath")
         sanitized.remove("imageBytes")
         sanitized.remove("backgroundImageBytes")
-        sanitized["useImage"] = false
+        val wantsImage = sanitized["useImage"] == true || restoredThemeImagePath != null
+        if (restoredThemeImagePath != null) {
+            sanitized["backgroundImagePath"] = restoredThemeImagePath
+        }
+        sanitized["useImage"] = wantsImage && !restoredThemeImagePath.isNullOrBlank()
         if (sanitized["presetId"] == null) {
             sanitized["presetId"] = themeConfig().presetId
         }

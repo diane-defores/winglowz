@@ -73,6 +73,11 @@ service cloud.firestore {
         payload.sanitizationPolicy == 'keyboard_sync_v1';
     }
 
+    function hasKeyboardSyncV2Header(payload) {
+      return payload.schemaVersion == 2 &&
+        payload.sanitizationPolicy == 'keyboard_sync_v2';
+    }
+
     function hasKeyboardConfigBoundedRevisions(payload) {
       return payload.profileRevision is int &&
         payload.baseCloudRevision is int &&
@@ -121,13 +126,39 @@ service cloud.firestore {
         ]);
     }
 
+    function hasSafeKeyboardThemeAsset(payload) {
+      return !('themeAsset' in payload.payload) ||
+        (payload.payload.themeAsset is map &&
+          payload.payload.themeAsset.keys().hasOnly([
+            'assetId',
+            'storagePath',
+            'checksum',
+            'byteSize',
+            'mimeType',
+            'profileRevision',
+            'createdAt',
+            'updatedAt',
+            'width',
+            'height',
+            'tombstonedAt',
+          ]) &&
+          payload.payload.themeAsset.assetId is string &&
+          payload.payload.themeAsset.storagePath is string &&
+          payload.payload.themeAsset.storagePath.matches('users/' + request.auth.uid + '/keyboard_theme_assets/.*') &&
+          payload.payload.themeAsset.checksum is string &&
+          payload.payload.themeAsset.byteSize is int &&
+          payload.payload.themeAsset.mimeType is string &&
+          payload.payload.themeAsset.profileRevision is int);
+    }
+
     function hasValidKeyboardConfig(payload) {
       return hasKeyboardConfigAllowedKeys(payload) &&
         hasKeyboardConfigRequiredKeys(payload) &&
-        hasKeyboardSyncV1Header(payload) &&
+        (hasKeyboardSyncV1Header(payload) || hasKeyboardSyncV2Header(payload)) &&
         hasKeyboardConfigBoundedRevisions(payload) &&
         hasKeyboardConfigBoundedStrings(payload) &&
-        hasSafeKeyboardPayloadMap(payload);
+        hasSafeKeyboardPayloadMap(payload) &&
+        hasSafeKeyboardThemeAsset(payload);
     }
 
     match /users/{uid} {
@@ -179,6 +210,12 @@ service cloud.firestore {
         allow create, update: if hasWinFlowzAppAccess(uid) &&
           isDefaultKeyboardConfig(configId) &&
           hasValidKeyboardConfig(request.resource.data);
+        allow delete: if false;
+      }
+
+      match /keyboardThemeAssets/{assetId} {
+        allow read: if hasWinFlowzAppAccess(uid);
+        allow create, update: if hasWinFlowzAppAccess(uid);
         allow delete: if false;
       }
     }

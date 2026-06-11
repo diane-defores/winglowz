@@ -30,7 +30,7 @@ This doc captures Firebase CLI commands for the backend-agnostic migration slice
 
 - Active Firebase project ID: `winflowz-dev`
 - Display name may remain `WinFlowz Dev`; project IDs cannot use underscores.
-- Target: Auth + Firestore, single development environment (`dev`)
+- Target: Auth + Firestore + Cloud Storage, single development environment (`dev`)
 - Adapter scope: `users/{uid}` private subtree for settings/clipboard/transcriptions/snippets/dictionaryTerms/clientEvents
 
 ## CLI bootstrap commands
@@ -50,6 +50,7 @@ From repo root:
 
 ```bash
 firebase deploy --only firestore
+firebase deploy --only storage
 ```
 
 To deploy rules or indexes separately:
@@ -57,6 +58,7 @@ To deploy rules or indexes separately:
 ```bash
 firebase deploy --only firestore:rules
 firebase deploy --only firestore:indexes
+firebase deploy --only storage
 ```
 
 ## Emulator workflow
@@ -65,12 +67,14 @@ Start local emulators:
 
 ```bash
 firebase emulators:start --only firestore,auth
+firebase emulators:start --only firestore,auth,storage
 ```
 
 Start emulators with persistent emulator-state export:
 
 ```bash
 firebase emulators:start --only firestore,auth --import=./.firebase/emulator-data --export-on-exit
+firebase emulators:start --only firestore,auth,storage --import=./.firebase/emulator-data --export-on-exit
 ```
 
 ## Auth provider setup (required set)
@@ -130,6 +134,7 @@ Runtime adapters currently use:
 - Firestore settings behind `SettingsStore`
 - Firestore clipboard, transcriptions, snippets and dictionary stores behind
   feature store interfaces
+- Firebase Storage behind keyboard theme image backup and restore
 - Local fallback when Firebase config or user session is missing
 - Supabase only as legacy compatibility fallback when Firebase is not configured
 
@@ -137,6 +142,14 @@ Auth diagnostics must stay redacted. Support copy, local diagnostics, and Sentry
 events may include category/code context, but not API keys, OAuth/JWT tokens,
 password-like fields, raw provider payloads, clipboard text, transcripts, or
 other user content.
+
+Keyboard theme image backup specifics:
+
+- Cloud Storage bucket must be configured through `FIREBASE_DEV_STORAGE_BUCKET`.
+- The app stores keyboard theme images under owner-scoped paths `users/{uid}/keyboard_theme_assets/{assetId}`.
+- Firestore remains the manifest source of truth; image bytes and local device paths must never be written to Firestore.
+- Storage rules rely on the default Firestore database and the server-owned `suiteAccess/{uid}` mirror for `winflowz_app`.
+- Storage adds quota and billing impact; do not promise reinstall recovery until provider/device proof confirms upload + hydrate.
 
 ## GitHub Secrets / Blacksmith list
 

@@ -4,6 +4,7 @@ import '../../features/auth/domain/auth_session_store.dart';
 import '../../features/auth/domain/product_entitlement.dart';
 import '../../features/auth/domain/suite_identity.dart';
 import '../../features/keyboard/application/keyboard_sync_controller.dart';
+import '../../features/sync/domain/local_cloud_sync_models.dart';
 
 enum CloudSyncCategory {
   account,
@@ -111,6 +112,7 @@ CloudSyncOverview buildCloudSyncOverview({
   required bool keyboardImeSupported,
   required bool keyboardRemoteSyncActive,
   required KeyboardSyncControllerState keyboardControllerState,
+  required LocalCloudSyncState localCloudSyncState,
   required bool settingsStoreRemoteActive,
   required bool clipboardStoreRemoteActive,
   required bool snippetStoreRemoteActive,
@@ -163,6 +165,8 @@ CloudSyncOverview buildCloudSyncOverview({
         title: 'Apparence & paramètres',
         category: CloudSyncCategory.settings,
         remoteEnabled: settingsStoreRemoteActive,
+        localCloudDomainStatus:
+            localCloudSyncState.domains[LocalCloudSyncDomain.settings],
         remoteAuthConfigured: remoteAuthConfigured,
         authSession: authSession,
         authError: authError,
@@ -174,6 +178,7 @@ CloudSyncOverview buildCloudSyncOverview({
         title: 'Clipboard',
         category: CloudSyncCategory.clipboard,
         remoteEnabled: clipboardStoreRemoteActive,
+        localCloudDomainStatus: null,
         remoteAuthConfigured: remoteAuthConfigured,
         authSession: authSession,
         authError: authError,
@@ -185,6 +190,7 @@ CloudSyncOverview buildCloudSyncOverview({
         title: 'Snippets',
         category: CloudSyncCategory.snippets,
         remoteEnabled: snippetStoreRemoteActive,
+        localCloudDomainStatus: null,
         remoteAuthConfigured: remoteAuthConfigured,
         authSession: authSession,
         authError: authError,
@@ -196,6 +202,7 @@ CloudSyncOverview buildCloudSyncOverview({
         title: 'Dictionnaire',
         category: CloudSyncCategory.dictionary,
         remoteEnabled: dictionaryStoreRemoteActive,
+        localCloudDomainStatus: null,
         remoteAuthConfigured: remoteAuthConfigured,
         authSession: authSession,
         authError: authError,
@@ -207,6 +214,7 @@ CloudSyncOverview buildCloudSyncOverview({
         title: 'Transcriptions',
         category: CloudSyncCategory.transcriptions,
         remoteEnabled: transcriptionStoreRemoteActive,
+        localCloudDomainStatus: null,
         remoteAuthConfigured: remoteAuthConfigured,
         authSession: authSession,
         authError: authError,
@@ -383,6 +391,7 @@ CloudSyncCategoryStatus _dataCategoryStatus({
   required CloudSyncCategory category,
   required String title,
   required bool remoteEnabled,
+  required LocalCloudDomainStatus? localCloudDomainStatus,
   required bool remoteAuthConfigured,
   required AuthSessionSnapshot? authSession,
   required String? authError,
@@ -453,6 +462,13 @@ CloudSyncCategoryStatus _dataCategoryStatus({
           'Le statut cloud de cette donnée n’est pas encore mesuré pour cette session.',
     );
   }
+  if (localCloudDomainStatus != null) {
+    return _localCloudDomainToCategoryStatus(
+      category: category,
+      title: title,
+      status: localCloudDomainStatus,
+    );
+  }
   return CloudSyncCategoryStatus(
     category: category,
     title: title,
@@ -461,6 +477,71 @@ CloudSyncCategoryStatus _dataCategoryStatus({
     detail:
         '$title : le routeur cloud est actif, mais le statut de synchronisation n’est pas exposé.',
   );
+}
+
+CloudSyncCategoryStatus _localCloudDomainToCategoryStatus({
+  required CloudSyncCategory category,
+  required String title,
+  required LocalCloudDomainStatus status,
+}) {
+  return switch (status.state) {
+    LocalCloudSyncCategoryState.synced => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.synced,
+      stateLabel: 'Synchronisé',
+      detail: status.detail,
+    ),
+    LocalCloudSyncCategoryState.syncing => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.syncing,
+      stateLabel: 'Synchronisation',
+      detail: status.detail,
+    ),
+    LocalCloudSyncCategoryState.pending => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.pending,
+      stateLabel: 'En attente',
+      detail: status.detail,
+    ),
+    LocalCloudSyncCategoryState.conflict => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.conflict,
+      stateLabel: 'Conflit',
+      detail: status.detail,
+    ),
+    LocalCloudSyncCategoryState.failed => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.failed,
+      stateLabel: 'Erreur',
+      detail: status.detail,
+    ),
+    LocalCloudSyncCategoryState.blocked => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.conflict,
+      stateLabel: 'Confirmation requise',
+      detail: status.detail,
+    ),
+    LocalCloudSyncCategoryState.localOnly => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.localOnly,
+      stateLabel: 'Local uniquement',
+      detail: status.detail,
+    ),
+    LocalCloudSyncCategoryState.unavailable => CloudSyncCategoryStatus(
+      category: category,
+      title: title,
+      state: CloudSyncCategoryState.unavailable,
+      stateLabel: 'Indisponible',
+      detail: status.detail,
+    ),
+  };
 }
 
 CloudSyncCategoryStatus _keyboardCategoryStatus({
@@ -592,6 +673,16 @@ CloudSyncCategoryStatus _keyboardStatus({
               stateLabel: 'Synchronisé',
               detail: 'Le profil clavier est aligné avec le cloud.',
             );
+    case KeyboardSyncControllerStatus.partial:
+      return CloudSyncCategoryStatus(
+        category: CloudSyncCategory.keyboardProfile,
+        title: 'Profil clavier Android',
+        state: CloudSyncCategoryState.pending,
+        stateLabel: 'Restauration partielle',
+        detail:
+            keyboardControllerState.issueMessage ??
+            'Le profil clavier est restauré partiellement.',
+      );
     case KeyboardSyncControllerStatus.failed:
       return CloudSyncCategoryStatus(
         category: CloudSyncCategory.keyboardProfile,

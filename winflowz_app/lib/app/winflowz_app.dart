@@ -9,6 +9,8 @@ import '../core/theme/app_theme.dart';
 import '../features/settings/application/settings_store_provider.dart';
 import '../features/settings/data/local_settings_store.dart';
 import '../features/settings/domain/settings_store.dart';
+import '../features/sync/application/local_cloud_sync_provider.dart';
+import '../features/keyboard/application/keyboard_sync_providers.dart';
 
 final initialAppThemeModeProvider = Provider<AppThemeMode>(
   (ref) => AppThemeMode.system,
@@ -176,11 +178,49 @@ final appThemeModeProvider =
       AppThemeModeController.new,
     );
 
-class WinFlowz extends ConsumerWidget {
+class WinFlowz extends ConsumerStatefulWidget {
   const WinFlowz({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WinFlowz> createState() => _WinFlowzState();
+}
+
+class _WinFlowzState extends ConsumerState<WinFlowz> {
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(localCloudSyncAuthContextProvider, (_, _) {
+      Future<void>.microtask(
+        () =>
+            ref.read(localCloudSyncStateProvider.notifier).synchronizeIfNeeded(),
+      );
+    });
+    ref.listenManual(keyboardSyncAuthContextProvider, (_, _) {
+      Future<void>.microtask(
+        () => ref
+            .read(keyboardSyncControllerStateProvider.notifier)
+            .synchronizeIfNeeded(),
+      );
+    });
+    ref.listenManual(keyboardSyncChangeNotifierProvider, (_, _) {
+      Future<void>.microtask(
+        () => ref
+            .read(keyboardSyncControllerStateProvider.notifier)
+            .forceSynchronize(),
+      );
+    });
+    Future<void>.microtask(
+      () => ref.read(localCloudSyncStateProvider.notifier).synchronizeIfNeeded(),
+    );
+    Future<void>.microtask(
+      () => ref
+          .read(keyboardSyncControllerStateProvider.notifier)
+          .synchronizeIfNeeded(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
     final themeMode = ref.watch(appThemeModeProvider);
     final disableAnimations = SchedulerBinding

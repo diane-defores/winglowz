@@ -106,7 +106,11 @@ Keyboard clipboard action
 - Replacing or resetting a theme cleans up superseded app-private theme images under `filesDir/keyboard_themes` to avoid orphaned files.
 - Keyboard diagnostics now expose `themePresetId`, `themePressEffect`, `themePressEffectRenderingMode`, `themeKeyReliefDepth`, `themeBackgroundSource`, `themeConfigSize`, and `themeFallbackStatus` without exposing private image paths.
 - Keyboard sync/recovery bridge methods are `exportKeyboardSyncProfile` and `applyKeyboardSyncProfile`. Flutter must validate checksum/schema before apply; native apply is atomic-or-recoverable and must never claim cloud success on unsupported platforms.
-- Keyboard sync V1 stays local-first: the IME keeps working even if cloud sync fails. Cloud payload excludes image bytes/private paths, sensitive shortcuts, clipboard/history content, dictation raw content, recents, diagnostics, tokens, and secrets.
+- Keyboard sync stays local-first: the IME keeps working even if cloud sync fails. Cloud payload excludes image bytes/private paths, sensitive shortcuts, clipboard/history content, dictation raw content, recents, diagnostics, tokens, and secrets.
+- Keyboard theme image recovery is now split cleanly:
+  - cloud profile may reference a safe Cloud Storage asset manifest (`keyboard_sync_v2`)
+  - cloud profile still must not contain local file paths or image bytes
+  - restored images are copied back into app-private native storage before apply
 - Account-backed keyboard sync/recovery requires Blacksmith/GitHub Actions Android build proof plus Diane device QA for IME-native behavior (restore while keyboard is active, permissions, lifecycle). Do not validate this slice with local Android/Gradle builds on the shared VM.
 - Keyboard crash recovery records only allowlisted native diagnostics: action id, panel, mode, layout profile, compact flag, height scale, theme preset/source, private-mode flag, exception class/message redigés, short stack, UTC timestamp, and recovery counter. It must never persist typed text, clipboard contents, snippets, dictation, emails, tokens, JWTs, prompts, or provider payloads.
 - `WinFlowzKeyboardView` wraps draw/touch/dispatch/layout refresh paths. A recoverable exception stops repeat runnables, clears the active gesture, stores the diagnostic through `KeyboardCrashReporter`, and switches to a neutral `KeyboardLayoutBuilder.safeFallback()` snapshot without deleting user preferences.

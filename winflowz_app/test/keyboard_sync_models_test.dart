@@ -13,6 +13,16 @@ void main() {
       rawPayload: {
         'preferences': {'themeMode': 'system', 'keySoundEnabled': false},
         'themeConfig': {'presetId': 'winflowz_light', 'useImage': true},
+        'themeAsset': {
+          'assetId': 'asset-1',
+          'storagePath': 'users/firebase-a/keyboard_theme_assets/asset-1',
+          'checksum': 'abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abcd',
+          'byteSize': 1024,
+          'mimeType': 'image/png',
+          'profileRevision': 3,
+          'createdAt': '2026-05-25T16:00:00Z',
+          'updatedAt': '2026-05-25T16:00:00Z',
+        },
         'cornerConfig': {
           'overrides': [
             {
@@ -29,31 +39,32 @@ void main() {
 
     final parsed = KeyboardSyncProfile.fromMap(profile.toMap());
     expect(parsed.validate().isValid, isTrue);
+    expect(parsed.themeAsset, isNotNull);
     expect(parsed.toMap(), profile.toMap());
   });
 
   test('checksum is deterministic regardless of map insertion order', () {
     final checksumA = KeyboardSyncProfile.computeChecksum(
-      schemaVersion: 1,
+      schemaVersion: 2,
       profileRevision: 10,
       baseCloudRevision: 9,
       updatedAt: '2026-05-25T16:10:00Z',
       updatedByDeviceId: 'd-1',
       sourcePlatform: 'android',
-      sanitizationPolicy: KeyboardSyncPolicyV1.id,
+      sanitizationPolicy: KeyboardSyncPolicyV2.id,
       payload: {
         'preferences': {'b': 2, 'a': 1},
         'metadata': {'k2': 'v2', 'k1': 'v1'},
       },
     );
     final checksumB = KeyboardSyncProfile.computeChecksum(
-      schemaVersion: 1,
+      schemaVersion: 2,
       profileRevision: 10,
       baseCloudRevision: 9,
       updatedAt: '2026-05-25T16:10:00Z',
       updatedByDeviceId: 'd-1',
       sourcePlatform: 'android',
-      sanitizationPolicy: KeyboardSyncPolicyV1.id,
+      sanitizationPolicy: KeyboardSyncPolicyV2.id,
       payload: {
         'metadata': {'k1': 'v1', 'k2': 'v2'},
         'preferences': {'a': 1, 'b': 2},
@@ -85,7 +96,7 @@ void main() {
   });
 
   test('rejects oversized payload', () {
-    final tooLarge = 'x' * (KeyboardSyncPolicyV1.maxProfileBytes + 2048);
+    final tooLarge = 'x' * (KeyboardSyncPolicyV2.maxProfileBytes + 2048);
     final profile = KeyboardSyncProfile.sanitized(
       profileRevision: 5,
       baseCloudRevision: 4,
