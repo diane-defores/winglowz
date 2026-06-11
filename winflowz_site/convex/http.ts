@@ -64,7 +64,7 @@ http.route({
 
     const key = await crypto.subtle.importKey(
       "raw",
-      secretBytes,
+      toArrayBuffer(secretBytes),
       { name: "HMAC", hash: "SHA-256" },
       false,
       ["sign"]
@@ -316,7 +316,7 @@ http.route({
 
     const key = await crypto.subtle.importKey(
       "raw",
-      secretBytes,
+      toArrayBuffer(secretBytes),
       { name: "HMAC", hash: "SHA-256" },
       false,
       ["sign"]
@@ -461,4 +461,11 @@ function isEffectiveSubscriptionRevocation(subscription: Record<string, unknown>
   }
 
   return false;
+}
+
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  return bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  ) as ArrayBuffer;
 }

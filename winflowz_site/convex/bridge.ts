@@ -206,8 +206,10 @@ async function upsertSocialGlowzCommerceEntitlement(
     })
   }
 
-  const accessEventIdempotencyKey = buildCommerceEventIdempotency(
+  const accessEventIdempotencyKey = buildCommerceEventIdempotencyKey(
+    'suite',
     'granted',
+    args.idempotencyKey,
     args.idempotencyKey
   )
   await upsertCommerceAccessEvent(ctx, {
@@ -290,12 +292,12 @@ async function upsertSocialGlowzCommerceAccessEvent(
   return upsertCommerceAccessEvent(ctx, {
     source: SOCIALGLOWZ_COMMERCE_EVENT_SOURCE,
     eventType: params.eventType,
-    sourceRef: params.sourceRef,
+    sourceRef: params.sourceRef ?? params.idempotencyKey,
     idempotencyKey: params.idempotencyKey,
     environment: params.environment,
     productId: SOCIALGLOWZ_PRODUCT_ID,
     status: params.status,
-    providerEventId: params.providerEventId,
+    providerEventId: params.providerEventId ?? params.idempotencyKey,
     providerCustomerId: params.providerCustomerId,
     customerEmail: params.customerEmail,
     reason: params.reason,
@@ -499,7 +501,7 @@ async function resolveVerifiedSocialGlowzGlobalUser(
     }
 
     if (args.provider && args.providerAccountId) {
-      await upsertSocialGlowzProviderIdentity({
+      await upsertSocialGlowzProviderIdentity(ctx, {
         ...(args as {
           provider: string
           providerAccountId: string
@@ -731,7 +733,7 @@ async function upsertSocialGlowzAccessEvent(
     sourceRef?: string
     eventIdempotencyKey: string
     environment: string
-    globalUserDocId?: string
+    globalUserDocId?: Id<'globalUsers'>
     status: string
   }
 ) {

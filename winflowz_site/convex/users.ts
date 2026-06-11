@@ -130,10 +130,11 @@ export const getFormationAccessByClerkId = query({
       };
     }
 
-    if (user.globalUserId) {
+    const globalUserId = user.globalUserId;
+    if (globalUserId) {
       const entitlements = await ctx.db
         .query("productEntitlements")
-        .withIndex("by_globalUserId", (q) => q.eq("globalUserId", user.globalUserId))
+        .withIndex("by_globalUserId", (q) => q.eq("globalUserId", globalUserId))
         .collect();
 
       const hasActiveFormationEntitlement = entitlements.some((entitlement) =>
