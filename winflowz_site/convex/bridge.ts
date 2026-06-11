@@ -8,6 +8,7 @@ const SUITE_PRODUCT_ALLOWLIST = new Set([
   'winflowz_formation',
   'replayglowz',
   'socialglowz',
+  'temu_shopping_lists',
 ])
 const ACTIVE_ENTITLEMENT_STATUSES = new Set(['active', 'trialing'])
 const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
@@ -29,6 +30,9 @@ const SOCIALGLOWZ_REVOKE_EVENT_SOURCE = 'socialglowz_revoke'
 const SOCIALGLOWZ_COMMERCE_EVENT_SOURCE = 'socialglowz_commerce'
 const SOCIALGLOWZ_COMMERCE_GRANT_SOURCE = 'socialglowz_commerce'
 const SOCIALGLOWZ_COMMERCE_EVENT_SOURCE_PREFIX = 'socialglowz:commerce'
+const TEMU_SHOPPING_LISTS_PRODUCT_ID = 'temu_shopping_lists'
+const TEMU_SHOPPING_LISTS_PROVIDER = 'temu_shopping_lists_convex'
+const TEMU_SHOPPING_LISTS_BRIDGE_SOURCE = 'temu_shopping_lists_bridge_api'
 
 type SocialGlowzOperationResult = {
   status: 'ok' | 'already_active' | 'already_revoked'
@@ -632,18 +636,22 @@ function normalizeCommerceMetadataSource(value: string | undefined) {
 async function getOrCreateSocialGlowzIdentity(
   ctx: MutationCtx,
   args: {
+    provider?: string
     providerAccountId: string
     email?: string
     environment: string
+    source?: string
     sourceRef?: string
   }
 ) {
   const now = Date.now()
+  const provider = args.provider ?? SOCIALGLOWZ_PROVIDER
+  const source = args.source ?? SOCIALGLOWZ_BRIDGE_SOURCE
   let identity = await ctx.db
     .query('identityAccounts')
     .withIndex('by_providerAccount', (q) =>
       q
-        .eq('provider', SOCIALGLOWZ_PROVIDER)
+        .eq('provider', provider)
         .eq('providerAccountId', args.providerAccountId)
     )
     .first()
@@ -664,10 +672,10 @@ async function getOrCreateSocialGlowzIdentity(
       'identityAccounts',
       withoutUndefined({
         globalUserId: globalUserDocId,
-        provider: SOCIALGLOWZ_PROVIDER,
+        provider,
         providerAccountId: args.providerAccountId,
         email: args.email,
-        source: SOCIALGLOWZ_BRIDGE_SOURCE,
+        source,
         sourceRef: args.sourceRef,
         environment: args.environment,
         createdAt: now,
@@ -679,7 +687,7 @@ async function getOrCreateSocialGlowzIdentity(
       .query('identityAccounts')
       .withIndex('by_providerAccount', (q) =>
         q
-          .eq('provider', SOCIALGLOWZ_PROVIDER)
+          .eq('provider', provider)
           .eq('providerAccountId', args.providerAccountId)
       )
       .first()
@@ -936,6 +944,35 @@ function resolveSocialGlowzAccess(args: {
   const entitlement = args.entitlements.find(
     (entry) =>
       entry.productId === SOCIALGLOWZ_PRODUCT_ID &&
+      isActiveAccessStatus(entry.status)
+  )
+
+  if (!entitlement) {
+    return {
+      hasAccess: false,
+      globalUserId: args.globalUserId,
+      planId: null,
+      source: null,
+      reasonCode: 'missing_product_entitlement' as const,
+    }
+  }
+
+  return {
+    hasAccess: true,
+    globalUserId: args.globalUserId,
+    planId: entitlement.plan,
+    source: entitlement.source,
+    reasonCode: 'active_entitlement' as const,
+  }
+}
+
+function resolveTemuShoppingListsAccess(args: {
+  globalUserId: string
+  entitlements: { productId: string; status: string; plan: string; source: string }[]
+}) {
+  const entitlement = args.entitlements.find(
+    (entry) =>
+      entry.productId === TEMU_SHOPPING_LISTS_PRODUCT_ID &&
       isActiveAccessStatus(entry.status)
   )
 
@@ -1387,6 +1424,47 @@ export const ensureSocialGlowzEntitlementSnapshotByProviderAccount = mutation({
       .collect()
 
     return resolveSocialGlowzAccess({
+      globalUserId: globalUser.globalUserId,
+      entitlements: rawEntitlements,
+    })
+  },
+})
+
+export const ensureTemuShoppingListsEntitlementSnapshotByProviderAccount = mutation({
+  args: {
+    providerAccountId: v.string(),
+    email: v.optional(v.string()),
+    environment: v.optional(v.string()),
+    sourceRef: v.optional(v.string()),
+    bridgeSecret: v.string(),
+  },
+  handler: async (ctx, args) => {
+    requireBridgeSecret(args.bridgeSecret)
+
+    const environment = args.environment ?? 'production'
+    const providerAccountId = args.providerAccountId.trim()
+    if (!providerAccountId) {
+      throw new Error('provider_account_id_required')
+    }
+
+    const { globalUser, globalUserDocId } = await getOrCreateSocialGlowzIdentity(
+      ctx,
+      {
+        provider: TEMU_SHOPPING_LISTS_PROVIDER,
+        providerAccountId,
+        email: args.email,
+        environment,
+        sourceRef: args.sourceRef,
+        source: TEMU_SHOPPING_LISTS_BRIDGE_SOURCE,
+      }
+    )
+
+    const rawEntitlements = await ctx.db
+      .query('productEntitlements')
+      .withIndex('by_globalUserId', (q) => q.eq('globalUserId', globalUserDocId))
+      .collect()
+
+    return resolveTemuShoppingListsAccess({
       globalUserId: globalUser.globalUserId,
       entitlements: rawEntitlements,
     })

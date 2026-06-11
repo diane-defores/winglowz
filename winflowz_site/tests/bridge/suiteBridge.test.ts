@@ -7,6 +7,7 @@ import {
   getReplayGlowzProductJwtAudience,
   getReplayGlowzProductJwtIssuer,
   getSocialGlowzBridgeSecret,
+  getTemuShoppingListsBridgeSecret,
   getSuiteEntitlementVerifySecret,
   getReplayGlowzProductTokenJwks,
   hasActiveEntitlement,
@@ -104,6 +105,8 @@ describe('suiteBridge helpers', () => {
     expect(isAllowedSuiteProduct('winflowz_app')).toBe(true)
     expect(isAllowedSuiteProduct('winflowz_formation')).toBe(true)
     expect(isAllowedSuiteProduct('replayglowz')).toBe(true)
+    expect(isAllowedSuiteProduct('socialglowz')).toBe(true)
+    expect(isAllowedSuiteProduct('temu_shopping_lists')).toBe(true)
     expect(isAllowedSuiteProduct('old_youtube_product')).toBe(false)
     expect(isAllowedSuiteProduct('legacy_product')).toBe(false)
   })
@@ -225,6 +228,24 @@ describe('suiteBridge helpers', () => {
     expect(
       getSocialGlowzBridgeSecret({
         SOCIALGLOWZ_SUITE_BRIDGE_SECRET: '  ',
+      })
+    ).toBeNull()
+  })
+
+  test('resolves temu shopping lists bridge secret from dedicated env keys', () => {
+    expect(
+      getTemuShoppingListsBridgeSecret({
+        TEMU_SHOPPING_LISTS_SUITE_BRIDGE_SECRET: 'temu-bridge-secret',
+      })
+    ).toBe('temu-bridge-secret')
+    expect(
+      getTemuShoppingListsBridgeSecret({
+        SUITE_TEMU_SHOPPING_LISTS_BRIDGE_SECRET: 'suite-temu-secret',
+      })
+    ).toBe('suite-temu-secret')
+    expect(
+      getTemuShoppingListsBridgeSecret({
+        TEMU_SHOPPING_LISTS_SUITE_BRIDGE_SECRET: '  ',
       })
     ).toBeNull()
   })

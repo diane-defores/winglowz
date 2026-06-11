@@ -3,10 +3,12 @@ export const SUITE_PRODUCT_ALLOWLIST = [
   'winflowz_formation',
   'replayglowz',
   'socialglowz',
+  'temu_shopping_lists',
 ] as const
 
 export const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
 export const SOCIALGLOWZ_PRODUCT_ID = 'socialglowz'
+export const TEMU_SHOPPING_LISTS_PRODUCT_ID = 'temu_shopping_lists'
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_KEY_ID =
   'replayglowz-suite-2026-06-02'
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_ISSUER = 'https://winflowz.com'
@@ -621,6 +623,15 @@ export function getSocialGlowzBridgeSecret(
   return (
     cleanSecret(env.SOCIALGLOWZ_SUITE_BRIDGE_SECRET) ??
     cleanSecret(env.SUITE_SOCIALGLOWZ_BRIDGE_SECRET)
+  )
+}
+
+export function getTemuShoppingListsBridgeSecret(
+  env: Record<string, string | undefined>
+): string | null {
+  return (
+    cleanSecret(env.TEMU_SHOPPING_LISTS_SUITE_BRIDGE_SECRET) ??
+    cleanSecret(env.SUITE_TEMU_SHOPPING_LISTS_BRIDGE_SECRET)
   )
 }
 
