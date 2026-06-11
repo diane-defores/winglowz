@@ -1973,11 +1973,7 @@ class KeyboardPreviewSnapshot {
       return KeyboardPreviewRow(
         height: AppKeyboardPreview.rowHeightControl,
         keys: [
-          const KeyboardPreviewKey(
-            label: 'Shift',
-            special: true,
-            action: KeyboardPreviewKeyAction.shift,
-          ),
+          _modeKey('ABC', KeyboardPreviewMode.letters),
           const KeyboardPreviewKey(
             label: 'Ctrl',
             special: true,
@@ -2044,6 +2040,7 @@ class KeyboardPreviewSnapshot {
       return KeyboardPreviewRow(
         height: AppKeyboardPreview.rowHeightControl,
         keys: [
+          _modeKey('ABC', KeyboardPreviewMode.letters),
           const KeyboardPreviewKey(
             label: 'Tab',
             special: true,
@@ -2101,16 +2098,7 @@ class KeyboardPreviewSnapshot {
     return KeyboardPreviewRow(
       height: AppKeyboardPreview.rowHeightControl,
       keys: [
-        KeyboardPreviewKey(
-          label: left,
-          special: true,
-          active: left == 'Shift' && shiftEnabled,
-          weight: 1.2,
-          action: left == 'Shift'
-              ? KeyboardPreviewKeyAction.shift
-              : KeyboardPreviewKeyAction.text,
-          output: left == 'Shift' ? null : left,
-        ),
+        _modeKey('ABC', KeyboardPreviewMode.letters),
         _withCorners(
           keyId: 'space',
           specialKey: true,

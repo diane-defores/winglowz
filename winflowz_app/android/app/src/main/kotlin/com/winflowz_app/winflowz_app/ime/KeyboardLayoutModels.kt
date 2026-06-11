@@ -1500,7 +1500,6 @@ object KeyboardLayoutBuilder {
                 KeyboardFieldContextMode.Search,
                 -> "."
             }
-        val shiftLabel = if (mode == KeyboardLayoutMode.Letters) "Maj" else "Shift"
         if (mode == KeyboardLayoutMode.Letters) {
             return KeyboardRowSpec(
                 keys =
@@ -1519,7 +1518,7 @@ object KeyboardLayoutBuilder {
             return KeyboardRowSpec(
                 keys =
                     listOf(
-                        shiftKey(shiftLabel, active = false, span = 1),
+                        modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                         modifierKey("Alt", KeyboardSystemModifier.Alt),
                         KeyboardKeySpec("tab-number-control", "Tab", KeyboardKeyAction.InsertTab),
@@ -1535,7 +1534,7 @@ object KeyboardLayoutBuilder {
             return KeyboardRowSpec(
                 keys =
                     listOf(
-                        shiftKey(shiftLabel, active = false, span = 1),
+                        modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                         modifierKey("Fn", KeyboardSystemModifier.Fn),
                         textKey(leftSymbol),
@@ -1549,7 +1548,7 @@ object KeyboardLayoutBuilder {
             return KeyboardRowSpec(
                 keys =
                     listOf(
-                        shiftKey(shiftLabel, active = false, span = 1),
+                        modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
                         modifierKey("Alt", KeyboardSystemModifier.Alt),
                         modifierKey("Fn", KeyboardSystemModifier.Fn),
@@ -1578,7 +1577,7 @@ object KeyboardLayoutBuilder {
         return KeyboardRowSpec(
             keys =
                 listOf(
-                shiftKey(shiftLabel, active = false),
+                modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
             ) +
                 modifierKeys +
                 listOf(

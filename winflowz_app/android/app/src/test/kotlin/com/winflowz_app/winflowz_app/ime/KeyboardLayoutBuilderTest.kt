@@ -294,7 +294,7 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
-    fun `number control row exposes tab and gives ctrl and alt wider keys`() {
+    fun `number control row exposes abc return and tab`() {
         val snapshot =
             KeyboardLayoutBuilder.build(
                 KeyboardLayoutRequest(
@@ -319,11 +319,51 @@ class KeyboardLayoutBuilderTest {
 
         val controlRow = snapshot.rows.last()
 
+        assertEquals("ABC", controlRow.keys.first().label)
+        assertEquals(KeyboardKeyAction.ModeLetters, controlRow.keys.first().action)
         assertTrue(controlRow.keys.any { it.label == "Tab" && it.action == KeyboardKeyAction.InsertTab })
-        assertEquals(2, controlRow.keys.first { it.label == "Ctrl" }.span)
-        assertEquals(2, controlRow.keys.first { it.label == "Alt" }.span)
         assertTrue(controlRow.keys.none { it.label == "Fn" })
         assertTrue(controlRow.keys.indexOfFirst { it.label == "Del" } < controlRow.keys.indexOfFirst { it.action == KeyboardKeyAction.Enter })
+    }
+
+    @Test
+    fun `non letter modes keep abc return in bottom left control key`() {
+        val modes =
+            listOf(
+                KeyboardLayoutMode.Numbers,
+                KeyboardLayoutMode.Accents,
+                KeyboardLayoutMode.Symbols,
+                KeyboardLayoutMode.Navigation,
+            )
+
+        modes.forEach { mode ->
+            val snapshot =
+                KeyboardLayoutBuilder.build(
+                    KeyboardLayoutRequest(
+                        mode = mode,
+                        panel = KeyboardPanelMode.None,
+                        shifted = false,
+                        fieldContext = KeyboardFieldContextMode.Text,
+                        layoutProfile = KeyboardLayoutProfile.QWERTY,
+                        cornerModeEnabled = false,
+                        debugTouchOverlayEnabled = false,
+                        doubleSpacePeriodEnabled = true,
+                        punctuationAutoSpacingEnabled = true,
+                        emojiCategory = KeyboardEmojiCategory.Recents,
+                        recentEmojis = emptyList(),
+                        enterLabel = "Enter",
+                        clipboardAllowed = true,
+                        voiceAllowed = true,
+                        snippetsAllowed = true,
+                        suggestions = emptyList(),
+                    ),
+                )
+
+            val bottomLeftKey = snapshot.rows.last().keys.first()
+
+            assertEquals(mode.name, "ABC", bottomLeftKey.label)
+            assertEquals(mode.name, KeyboardKeyAction.ModeLetters, bottomLeftKey.action)
+        }
     }
 
     @Test
