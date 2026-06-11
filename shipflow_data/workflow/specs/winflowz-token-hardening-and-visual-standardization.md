@@ -282,12 +282,15 @@ None.
 | 2026-06-11 15:06:43 UTC | 100-sf-spec | GPT-5 Codex | create | draft | /101-sf-ready WinFlowz token hardening and visual standardization |
 | 2026-06-11 15:07:15 UTC | 101-sf-ready | GPT-5 Codex | readiness-check | ready | /102-sf-start WinFlowz token hardening and visual standardization |
 | 2026-06-11 15:47:26 UTC | 102-sf-start | GPT-5 Codex | implementation | partial | /103-sf-verify WinFlowz token hardening and visual standardization |
+| 2026-06-11 19:46:43 UTC | 006-sf-design | GPT-5 Codex | app-input-token-standardization | partial | Continue field-token sweep or /103-sf-verify after full token scope |
+| 2026-06-11 19:51:04 UTC | 006-sf-design | GPT-5 Codex | app-field-row-standardization | partial | Continue full token scope or /103-sf-verify after remaining surfaces |
 
 ## Current Chantier Flow
 
 - 100-sf-spec: done
 - 101-sf-ready: done
 - 102-sf-start: partial
+- 006-sf-design: partial
 - 103-sf-verify: not launched
 - 104-sf-end: not launched
 - 005-sf-ship: not launched

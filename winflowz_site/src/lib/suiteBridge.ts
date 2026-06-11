@@ -515,12 +515,20 @@ export function buildFirestoreSuiteAccessMirror({
   globalUserId: string
   entitlements: BridgeEntitlement[]
 }) {
+  const selectActiveEntitlement = (productId: string) => {
+    const activeEntitlements = entitlements.filter(
+      (entry) =>
+        entry.productId === productId && isActiveAccessStatus(entry.status)
+    )
+    return (
+      activeEntitlements.find((entry) => entry.plan !== 'free') ??
+      activeEntitlements[0]
+    )
+  }
+
   const products = Object.fromEntries(
     FIRESTORE_ENTITLEMENT_PRODUCTS.map((productId) => {
-      const entitlement = entitlements.find(
-        (entry) =>
-          entry.productId === productId && isActiveAccessStatus(entry.status)
-      )
+      const entitlement = selectActiveEntitlement(productId)
 
       return [
         productId,

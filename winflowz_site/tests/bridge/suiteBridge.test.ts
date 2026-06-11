@@ -165,6 +165,35 @@ describe('suiteBridge helpers', () => {
     ).toBe(false)
   })
 
+  test('treats WinFlowz free plan as active sync access and prefers paid plan metadata', () => {
+    expect(
+      buildFirestoreSuiteAccessMirror({
+        globalUserId: 'gu_123',
+        entitlements: [
+          { productId: 'winflowz_app', status: 'active', plan: 'free' },
+        ],
+      }).products.winflowz_app
+    ).toEqual({
+      active: true,
+      status: 'active',
+      plan: 'free',
+    })
+
+    expect(
+      buildFirestoreSuiteAccessMirror({
+        globalUserId: 'gu_123',
+        entitlements: [
+          { productId: 'winflowz_app', status: 'active', plan: 'free' },
+          { productId: 'winflowz_app', status: 'active', plan: 'pro' },
+        ],
+      }).products.winflowz_app
+    ).toEqual({
+      active: true,
+      status: 'active',
+      plan: 'pro',
+    })
+  })
+
   test('masks provider account identifiers', () => {
     expect(maskProviderAccountId('1234567890')).toBe('123***890')
     expect(maskProviderAccountId('abc12')).toBe('a***2')

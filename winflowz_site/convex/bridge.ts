@@ -11,6 +11,9 @@ const SUITE_PRODUCT_ALLOWLIST = new Set([
   'temu_shopping_lists',
 ])
 const ACTIVE_ENTITLEMENT_STATUSES = new Set(['active', 'trialing'])
+const WINFLOWZ_APP_PRODUCT_ID = 'winflowz_app'
+const WINFLOWZ_APP_DEFAULT_FREE_PLAN = 'free'
+const WINFLOWZ_APP_DEFAULT_FREE_SOURCE = 'product_default'
 const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
 const REPLAYGLOWZ_DEFAULT_FREE_PLAN = 'free'
 const REPLAYGLOWZ_DEFAULT_FREE_SOURCE = 'product_default'
@@ -393,6 +396,84 @@ function resolveReplayGlowzAccess(args: {
 
 function replayGlowzDefaultFreeIdempotencyKey(globalUserId: string) {
   return `${REPLAYGLOWZ_DEFAULT_FREE_SOURCE}:${REPLAYGLOWZ_PRODUCT_ID}:${globalUserId}`
+}
+
+function winFlowzAppDefaultFreeIdempotencyKey(globalUserId: string) {
+  return `${WINFLOWZ_APP_DEFAULT_FREE_SOURCE}:${WINFLOWZ_APP_PRODUCT_ID}:${globalUserId}`
+}
+
+async function ensureWinFlowzAppDefaultFreeEntitlement(
+  ctx: MutationCtx,
+  args: {
+    globalUserDocId: Id<'globalUsers'>
+    globalUserPublicId: string
+    firebaseUid: string
+    environment: string
+    now: number
+  }
+) {
+  const idempotencyKey = winFlowzAppDefaultFreeIdempotencyKey(
+    args.globalUserPublicId
+  )
+  const existingDefaultEntitlement = await ctx.db
+    .query('productEntitlements')
+    .withIndex('by_idempotencyKey', (q) =>
+      q.eq('idempotencyKey', idempotencyKey)
+    )
+    .first()
+
+  if (existingDefaultEntitlement) {
+    if (
+      existingDefaultEntitlement.productId !== WINFLOWZ_APP_PRODUCT_ID ||
+      existingDefaultEntitlement.status !== 'active' ||
+      existingDefaultEntitlement.plan !== WINFLOWZ_APP_DEFAULT_FREE_PLAN
+    ) {
+      await ctx.db.patch(existingDefaultEntitlement._id, {
+        productId: WINFLOWZ_APP_PRODUCT_ID,
+        plan: WINFLOWZ_APP_DEFAULT_FREE_PLAN,
+        status: 'active',
+        source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
+        sourceRef: args.firebaseUid,
+        environment: args.environment,
+        grantedAt: existingDefaultEntitlement.grantedAt ?? args.now,
+        updatedAt: args.now,
+      })
+    }
+  } else {
+    await ctx.db.insert('productEntitlements', {
+      globalUserId: args.globalUserDocId,
+      productId: WINFLOWZ_APP_PRODUCT_ID,
+      plan: WINFLOWZ_APP_DEFAULT_FREE_PLAN,
+      status: 'active',
+      source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
+      sourceRef: args.firebaseUid,
+      environment: args.environment,
+      idempotencyKey,
+      grantedAt: args.now,
+      createdAt: args.now,
+      updatedAt: args.now,
+    })
+  }
+
+  const existingGrantEvent = await ctx.db
+    .query('productAccessEvents')
+    .withIndex('by_idempotencyKey', (q) =>
+      q.eq('idempotencyKey', idempotencyKey)
+    )
+    .first()
+  if (!existingGrantEvent) {
+    await ctx.db.insert('productAccessEvents', {
+      source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
+      eventType: 'default_free.granted',
+      sourceRef: args.firebaseUid,
+      idempotencyKey,
+      environment: args.environment,
+      productId: WINFLOWZ_APP_PRODUCT_ID,
+      globalUserId: args.globalUserDocId,
+      status: 'granted',
+      createdAt: args.now,
+    })
+  }
 }
 
 function requireBridgeSecret(providedSecret: string) {
@@ -1099,12 +1180,35 @@ export const upsertFirebaseIdentity = mutation({
       })
     }
 
-    const rawEntitlements = await ctx.db
+    let rawEntitlements = await ctx.db
       .query('productEntitlements')
       .withIndex('by_globalUserId', (q) =>
         q.eq('globalUserId', identity.globalUserId)
       )
       .collect()
+
+    if (
+      !rawEntitlements.some(
+        (entry) =>
+          entry.productId === WINFLOWZ_APP_PRODUCT_ID &&
+          isActiveAccessStatus(entry.status)
+      )
+    ) {
+      await ensureWinFlowzAppDefaultFreeEntitlement(ctx, {
+        globalUserDocId: identity.globalUserId,
+        globalUserPublicId: globalUser.globalUserId,
+        firebaseUid: args.firebaseUid,
+        environment,
+        now,
+      })
+
+      rawEntitlements = await ctx.db
+        .query('productEntitlements')
+        .withIndex('by_globalUserId', (q) =>
+          q.eq('globalUserId', identity.globalUserId)
+        )
+        .collect()
+    }
 
     const entitlements = rawEntitlements
       .filter((entry) => isAllowedSuiteProduct(entry.productId))

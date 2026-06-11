@@ -23,7 +23,11 @@
 ✅ [WinFlowzApp] task: Retest BUG-2026-05-24-002 clipboard edit dialog cancel/save on Android APK | status: done | area: clipboard | id: BUG-2026-05-24-002
 🟢 [WinFlowzApp] task: Reduce Android IME layout rebuilds during rapid typing | status: done | area: keyboard-ime-performance | id: wfz-ime-rapid-typing-layout-rebuild
 🟡 [WinFlowzApp] task: Verify Android IME multi-pointer rollover on hosted build and physical device | status: fixed_pending_verify | area: keyboard-ime-performance | id: wfz-ime-multipointer-touch-dispatch
+🟢 [WinFlowzApp] task: Downsample Android IME theme background images before drawing key visuals | status: done | area: keyboard-ime-visual-performance | id: wfz-ime-theme-image-downsample
+🟡 [WinFlowzApp] task: Validate Android IME image-background memory and scroll smoothness on hosted build and physical device | status: fixed_pending_verify | area: keyboard-ime-visual-performance | id: wfz-ime-theme-image-device-verify
+🟢 [WinFlowzApp] task: Remove expensive theme draft serialization from Flutter keyboard theme studio dirty checks | status: done | area: keyboard-theme-performance | id: wfz-keyboard-theme-dirty-check
 🟡 [WinFlowzApp] task: Fix keyboard theme preset auto light/dark switching after non-color theme options | status: fixed_pending_verify | area: keyboard-theme | id: BUG-2026-06-01-001
+🟠 [WinFlowzApp] task: Run Android physical-device QA for IME navigation/editing actions with the new navigation diagnostics playground (`DelW←`, `DelW→`, `DelS←`, `DelS→`, `Début`, `Fin`, `All`) and capture per-app failures/fallbacks | status: todo | area: keyboard-ime-navigation | id: wfz-ime-navigation-diagnostics-device-qa
 🔴 [WinFlowzApp] task: Specify and implement a shared ProductPageScaffold for Voice, Papier, Snippets, and Dico | status: todo | area: product-pages-components | id: wfz-product-page-scaffold
 🟠 [WinFlowzApp] task: Extract shared metric/status pill primitives and remove duplicated private metric widgets across product pages | status: todo | area: product-pages-components | id: wfz-shared-metric-status-pills
 🟠 [WinFlowzApp] task: Split oversized Flutter page widgets and studios into smaller render/controller components with focused widget tests | status: todo | area: component-architecture | id: wfz-split-god-widgets
