@@ -1,5 +1,7 @@
 package com.winflowz_app.winflowz_app.ime
 
+import kotlin.math.abs
+
 internal object KeyboardLongPressSwipePolicy {
     private val targetSelections =
         listOf(
@@ -19,6 +21,30 @@ internal object KeyboardLongPressSwipePolicy {
             !longPressTriggered &&
             keyEnabled &&
             !pointerInsideStartKey
+    }
+
+    fun canLaunchCtrlSwipeFromRow(
+        startRowIndex: Int?,
+        ctrlRowIndex: Int?,
+        rowScrollable: Boolean,
+        panelScrollable: Boolean,
+    ): Boolean {
+        return startRowIndex != null &&
+            ctrlRowIndex != null &&
+            startRowIndex == ctrlRowIndex &&
+            !rowScrollable &&
+            !panelScrollable
+    }
+
+    fun shouldPreserveSpaceSliderGesture(
+        startKeyIsSpace: Boolean,
+        dx: Float,
+        dy: Float,
+        spaceSlideStartPx: Float,
+    ): Boolean {
+        return startKeyIsSpace &&
+            abs(dx) >= spaceSlideStartPx &&
+            abs(dx) >= abs(dy) * 1.25f
     }
 
     fun chooseTargetSelection(

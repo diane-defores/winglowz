@@ -46,6 +46,102 @@ class KeyboardLongPressSwipePolicyTest {
     }
 
     @Test
+    fun `ctrl swipe can launch from any non-scrollable frame in the ctrl row`() {
+        assertTrue(
+            KeyboardLongPressSwipePolicy.canLaunchCtrlSwipeFromRow(
+                startRowIndex = 4,
+                ctrlRowIndex = 4,
+                rowScrollable = false,
+                panelScrollable = false,
+            ),
+        )
+    }
+
+    @Test
+    fun `ctrl swipe row launcher ignores other rows and scrollable surfaces`() {
+        assertFalse(
+            KeyboardLongPressSwipePolicy.canLaunchCtrlSwipeFromRow(
+                startRowIndex = 2,
+                ctrlRowIndex = 4,
+                rowScrollable = false,
+                panelScrollable = false,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.canLaunchCtrlSwipeFromRow(
+                startRowIndex = 4,
+                ctrlRowIndex = 4,
+                rowScrollable = true,
+                panelScrollable = false,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.canLaunchCtrlSwipeFromRow(
+                startRowIndex = 4,
+                ctrlRowIndex = 4,
+                rowScrollable = false,
+                panelScrollable = true,
+            ),
+        )
+    }
+
+    @Test
+    fun `space horizontal slider keeps priority over ctrl row swipe launcher`() {
+        assertTrue(
+            KeyboardLongPressSwipePolicy.shouldPreserveSpaceSliderGesture(
+                startKeyIsSpace = true,
+                dx = 24f,
+                dy = 4f,
+                spaceSlideStartPx = 18f,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.shouldPreserveSpaceSliderGesture(
+                startKeyIsSpace = true,
+                dx = 12f,
+                dy = 2f,
+                spaceSlideStartPx = 18f,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.shouldPreserveSpaceSliderGesture(
+                startKeyIsSpace = true,
+                dx = 24f,
+                dy = 24f,
+                spaceSlideStartPx = 18f,
+            ),
+        )
+        assertFalse(
+            KeyboardLongPressSwipePolicy.shouldPreserveSpaceSliderGesture(
+                startKeyIsSpace = false,
+                dx = 24f,
+                dy = 4f,
+                spaceSlideStartPx = 18f,
+            ),
+        )
+    }
+
+    @Test
+    fun `space vertical swipe stays eligible for ctrl row launcher`() {
+        assertFalse(
+            KeyboardLongPressSwipePolicy.shouldPreserveSpaceSliderGesture(
+                startKeyIsSpace = true,
+                dx = 4f,
+                dy = 24f,
+                spaceSlideStartPx = 18f,
+            ),
+        )
+        assertTrue(
+            KeyboardLongPressSwipePolicy.canLaunchCtrlSwipeFromRow(
+                startRowIndex = 4,
+                ctrlRowIndex = 4,
+                rowScrollable = false,
+                panelScrollable = false,
+            ),
+        )
+    }
+
+    @Test
     fun `chooses the only target action even when the pointer is centered`() {
         val selection =
             KeyboardLongPressSwipePolicy.chooseTargetSelection(

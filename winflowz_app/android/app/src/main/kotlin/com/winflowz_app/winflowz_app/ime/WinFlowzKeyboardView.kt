@@ -180,6 +180,7 @@ class WinFlowzKeyboardView(
         val slotRect: RectF,
         val visualRect: RectF,
         val touchRect: RectF,
+        val rowIndex: Int,
         val rowId: String? = null,
         val rowScrollable: Boolean = false,
         val rowPagedScrollable: Boolean = false,
@@ -188,7 +189,8 @@ class WinFlowzKeyboardView(
     )
 
     private data class LongPressSwipeVisual(
-        val startKeyId: String,
+        val startX: Float,
+        val startY: Float,
         val startedAtMs: Long,
     )
 
@@ -316,7 +318,8 @@ class WinFlowzKeyboardView(
     private var cornerConfig = KeyboardCornerConfig()
     private val activeSystemModifiers = linkedSetOf<KeyboardSystemModifier>()
     private val ctrlHoldPointerIds = linkedSetOf<Int>()
-    private val ctrlHoldForceAddedPointerIds = linkedSetOf<Int>()
+    private var ctrlActionSurfaceLocked = false
+    private var lastCtrlTapAtMs = 0L
     private val longPressSwipeDispatchPointerIds = linkedSetOf<Int>()
     private val longPressSwipeStartKeyIdByPointerId = mutableMapOf<Int, String>()
     private val longPressSwipeActionDescriptorByPointerId = mutableMapOf<Int, String?>()
@@ -542,6 +545,7 @@ class WinFlowzKeyboardView(
             cornerThresholdPx = dp(16f),
             returnCenterRadiusPx = dp(12f),
         )
+    private val ctrlSurfaceDoubleTapTimeoutMs = 300L
     private val longPressDelayMs = 420L
     private val repeatDelayMs = 72L
     private val spaceSlideStartPx = dp(18f)
@@ -1095,7 +1099,7 @@ class WinFlowzKeyboardView(
                 return@forEachIndexed
             }
             val rowHeight = rowHeightFor(index)
-            drawRow(canvas, row, left, y, right - left, rowHeight)
+            drawRow(canvas, row, index, left, y, right - left, rowHeight)
             y += rowHeight + rowGap()
         }
 
@@ -1134,15 +1138,10 @@ class WinFlowzKeyboardView(
                 toClear.add(pointerId)
                 continue
             }
-            val startFrame = keyFrameForId(visual.startKeyId)
-            if (startFrame == null) {
-                toClear.add(pointerId)
-                continue
-            }
             drawLongPressSwipeVisual(
                 canvas = canvas,
-                startX = startFrame.visualRect.centerX(),
-                startY = startFrame.visualRect.centerY(),
+                startX = visual.startX,
+                startY = visual.startY,
                 endX = state.latestX,
                 endY = state.latestY,
                 effectSpec = swipeEffect,
@@ -1617,12 +1616,14 @@ class WinFlowzKeyboardView(
         }
     }
 
-    private fun keyFrameForId(keyId: String): KeyFrame? {
-        return keyFrames.firstOrNull { it.key.id == keyId }
-    }
-
-    private fun registerLongPressSwipeVisual(pointerId: Int, startKeyId: String) {
-        longPressSwipeVisualByPointerId[pointerId] = LongPressSwipeVisual(startKeyId, SystemClock.uptimeMillis())
+    private fun registerLongPressSwipeVisual(pointerId: Int) {
+        val state = pointerTracker.get(pointerId) ?: return
+        longPressSwipeVisualByPointerId[pointerId] =
+            LongPressSwipeVisual(
+                startX = state.startX,
+                startY = state.startY,
+                startedAtMs = SystemClock.uptimeMillis(),
+            )
     }
 
     private fun updateLongPressSwipeHoveredTarget(state: KeyboardPointerState<KeyFrame>) {
@@ -1848,7 +1849,7 @@ class WinFlowzKeyboardView(
         ) {
             return false
         }
-        if (isCtrlModifierKey(key)) {
+        if (isCtrlModifierKey(key) || canLaunchCtrlSwipeFromFrame(state)) {
             return activateCtrlHoldSwipeMode(state.pointerId, key)
         }
         if (key.actionDescriptorPrimary && key.actionDescriptorId != null) {
@@ -1865,7 +1866,7 @@ class WinFlowzKeyboardView(
         pointerId: Int,
         key: KeyboardKeySpec,
     ): Boolean {
-        if (!activateCtrlHoldMode(pointerId, key)) {
+        if (!activateCtrlHoldMode(pointerId, lockSurface = false)) {
             return false
         }
         activateCtrlHoldSwipeDispatchMode(pointerId, key)
@@ -1874,23 +1875,49 @@ class WinFlowzKeyboardView(
         return true
     }
 
+    private fun canLaunchCtrlSwipeFromFrame(state: KeyboardPointerState<KeyFrame>): Boolean {
+        val frame = state.payload
+        if (
+            KeyboardLongPressSwipePolicy.shouldPreserveSpaceSliderGesture(
+                startKeyIsSpace = isSpaceKey(frame.key),
+                dx = state.latestX - state.startX,
+                dy = state.latestY - state.startY,
+                spaceSlideStartPx = spaceSlideStartPx,
+            )
+        ) {
+            return false
+        }
+        return KeyboardLongPressSwipePolicy.canLaunchCtrlSwipeFromRow(
+            startRowIndex = frame.rowIndex,
+            ctrlRowIndex = ctrlSwipeLaunchRowIndex(),
+            rowScrollable = frame.rowScrollable,
+            panelScrollable = frame.panelScrollable,
+        )
+    }
+
+    private fun ctrlSwipeLaunchRowIndex(): Int? {
+        return keyFrames.firstOrNull { isCtrlModifierKey(it.key) }?.rowIndex
+    }
+
     private fun activateCtrlHoldMode(
         pointerId: Int,
-        key: KeyboardKeySpec,
+        lockSurface: Boolean,
     ): Boolean {
-        val hadCtrlBefore = activeSystemModifiers.contains(KeyboardSystemModifier.Ctrl)
-        if (hadCtrlBefore && ctrlHoldPointerIds.contains(pointerId)) {
+        if (ctrlHoldPointerIds.contains(pointerId)) {
             return false
         }
         clearLongPress(pointerId)
         acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressAction)
         pointerTracker.markLongPressTriggered(pointerId)
-        activeSystemModifiers.add(KeyboardSystemModifier.Ctrl)
         ctrlHoldPointerIds.add(pointerId)
-        if (!hadCtrlBefore) {
-            ctrlHoldForceAddedPointerIds.add(pointerId)
+        activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
+        lastCtrlTapAtMs = 0L
+        if (lockSurface) {
+            ctrlActionSurfaceLocked = true
+            setStatus("Ctrl actions locked")
+        } else {
+            setStatus("Ctrl")
         }
-        setStatus("Ctrl")
         return true
     }
 
@@ -1906,7 +1933,7 @@ class WinFlowzKeyboardView(
         longPressSwipeActionDescriptorByPointerId[pointerId] = null
         longPressSwipeActionPinnedBeforeByPointerId[pointerId] = false
         longPressSwipeActionRowsBeforeByPointerId[pointerId] = emptySet()
-        registerLongPressSwipeVisual(pointerId, key.id)
+        registerLongPressSwipeVisual(pointerId)
         return true
     }
 
@@ -1939,7 +1966,7 @@ class WinFlowzKeyboardView(
                 .filter { it.providerActionId == actionDescriptorId }
                 .map { it.rowId }
                 .toSet()
-        registerLongPressSwipeVisual(pointerId, startKeyId)
+        registerLongPressSwipeVisual(pointerId)
         val safeResult = removeSwipePinMutationOnly(baselineState, result)
         setActionBarState(safeResult.nextState)
         if (actionDescriptorId == "numbers" && layoutMode == KeyboardLayoutMode.Numbers) {
@@ -2062,12 +2089,7 @@ class WinFlowzKeyboardView(
         if (repeatOwnerPointerId == pointerId) {
             stopRepeat(pointerId)
         }
-        if (ctrlHoldPointerIds.remove(pointerId)) {
-            ctrlHoldForceAddedPointerIds.remove(pointerId)
-            if (ctrlHoldForceAddedPointerIds.isEmpty()) {
-                activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
-            }
-        }
+        ctrlHoldPointerIds.remove(pointerId)
         val hadSwipeVisual = longPressSwipeVisualByPointerId.remove(pointerId) != null
         if (longPressSwipeDispatchPointerIds.remove(pointerId) || hadSwipeVisual) {
             longPressSwipeStartKeyIdByPointerId.remove(pointerId)
@@ -2153,7 +2175,15 @@ class WinFlowzKeyboardView(
             startRepeat(pointerId, key, state.payload)
             dispatch(key, GestureSelection.PrimaryTap, state.payload)
         } else if (isCtrlModifierKey(key)) {
-            if (!activateCtrlHoldMode(pointerId, key)) {
+            if (KeyboardCtrlSurfaceModePolicy.shouldUnlockOnLongPress(ctrlActionSurfaceLocked)) {
+                clearLongPress(pointerId)
+                acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressAction)
+                pointerTracker.markLongPressTriggered(pointerId)
+                unlockCtrlActionSurface()
+                invalidate()
+                return
+            }
+            if (!activateCtrlHoldMode(pointerId, lockSurface = true)) {
                 invalidate()
                 return
             }
@@ -2818,13 +2848,14 @@ class WinFlowzKeyboardView(
     private fun drawRow(
         canvas: Canvas,
         row: KeyboardRowSpec,
+        rowIndex: Int,
         left: Float,
         top: Float,
         width: Float,
         height: Float,
     ) {
         if (row.horizontalScrollable) {
-            drawScrollableRow(canvas, row, left, top, width, height)
+            drawScrollableRow(canvas, row, rowIndex, left, top, width, height)
             return
         }
 
@@ -2846,6 +2877,7 @@ class WinFlowzKeyboardView(
                     slotRect = cell.slotRect,
                     visualRect = cell.visualRect,
                     touchRect = cell.touchRect,
+                    rowIndex = rowIndex,
                     rowId = row.rowId,
                 ),
             )
@@ -2856,6 +2888,7 @@ class WinFlowzKeyboardView(
     private fun drawScrollableRow(
         canvas: Canvas,
         row: KeyboardRowSpec,
+        rowIndex: Int,
         left: Float,
         top: Float,
         width: Float,
@@ -2946,6 +2979,7 @@ class WinFlowzKeyboardView(
                         slotRect = RectF(cell.slotRect),
                         visualRect = drawRect,
                         touchRect = RectF(cell.touchRect),
+                        rowIndex = rowIndex,
                         rowId = rowId,
                         rowScrollable = true,
                         rowPagedScrollable = row.pagedHorizontalScrollable,
@@ -3127,9 +3161,18 @@ class WinFlowzKeyboardView(
         canvas.clipRect(left, top, left + width, top + height)
         val panelViewport = RectF(left, top, left + width, top + height)
         var y = top - verticalPanelScrollOffset
-        panelRows.forEach { row ->
+        panelRows.forEachIndexed { index, row ->
             if (y + panelRowHeight >= top && y <= top + height) {
-                drawPanelScrollRow(canvas, row, left, y, width, panelRowHeight, panelViewport)
+                drawPanelScrollRow(
+                    canvas,
+                    row,
+                    firstPanelIndex + index,
+                    left,
+                    y,
+                    width,
+                    panelRowHeight,
+                    panelViewport,
+                )
             }
             y += panelRowHeight + rowGap()
         }
@@ -3140,6 +3183,7 @@ class WinFlowzKeyboardView(
     private fun drawPanelScrollRow(
         canvas: Canvas,
         row: KeyboardRowSpec,
+        rowIndex: Int,
         left: Float,
         top: Float,
         width: Float,
@@ -3147,7 +3191,7 @@ class WinFlowzKeyboardView(
         touchClipRect: RectF? = null,
     ) {
         if (row.horizontalScrollable) {
-            drawScrollableRow(canvas, row, left, top, width, height, touchClipRect)
+            drawScrollableRow(canvas, row, rowIndex, left, top, width, height, touchClipRect)
             return
         }
 
@@ -3170,6 +3214,7 @@ class WinFlowzKeyboardView(
                     slotRect = cell.slotRect,
                     visualRect = cell.visualRect,
                     touchRect = cell.touchRect,
+                    rowIndex = rowIndex,
                     rowId = row.rowId,
                     panelScrollable = true,
                 ),
@@ -4987,6 +5032,14 @@ class WinFlowzKeyboardView(
         selection: GestureSelection,
         clearModifiersAfter: Boolean,
     ): Boolean {
+        if (
+            selection == GestureSelection.PrimaryTap &&
+            value.kind == KeyboardKeyValueKind.Modifier &&
+            value.modifier == KeyboardSystemModifier.Ctrl
+        ) {
+            handleCtrlPrimaryTap()
+            return true
+        }
         val effectiveValue =
             if (value.kind == KeyboardKeyValueKind.Modifier) {
                 value
@@ -5029,6 +5082,43 @@ class WinFlowzKeyboardView(
             clearTransientModifiers()
         }
         return result
+    }
+
+    private fun handleCtrlPrimaryTap() {
+        val nowAtMs = SystemClock.uptimeMillis()
+        when (
+            KeyboardCtrlSurfaceModePolicy.actionForPrimaryTap(
+                locked = ctrlActionSurfaceLocked,
+                lastTapAtMs = lastCtrlTapAtMs,
+                nowAtMs = nowAtMs,
+                doubleTapTimeoutMs = ctrlSurfaceDoubleTapTimeoutMs,
+            )
+        ) {
+            KeyboardCtrlSurfaceTapAction.ToggleModifier -> {
+                lastCtrlTapAtMs = nowAtMs
+                toggleSystemModifier(KeyboardSystemModifier.Ctrl)
+            }
+            KeyboardCtrlSurfaceTapAction.LockSurface -> {
+                lockCtrlActionSurface()
+            }
+            KeyboardCtrlSurfaceTapAction.UnlockSurface -> {
+                unlockCtrlActionSurface()
+            }
+        }
+    }
+
+    private fun lockCtrlActionSurface() {
+        ctrlActionSurfaceLocked = true
+        activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
+        lastCtrlTapAtMs = 0L
+        setStatus("Ctrl actions locked")
+    }
+
+    private fun unlockCtrlActionSurface() {
+        ctrlActionSurfaceLocked = false
+        activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
+        lastCtrlTapAtMs = 0L
+        setStatus("Ctrl actions unlocked")
     }
 
     private fun toggleSystemModifier(modifier: KeyboardSystemModifier) {
@@ -5100,8 +5190,7 @@ class WinFlowzKeyboardView(
     }
 
     private fun isCtrlHoldVisualModeActive(): Boolean {
-        return ctrlHoldPointerIds.isNotEmpty() &&
-            KeyboardSystemModifier.Ctrl in currentSystemModifiers()
+        return ctrlActionSurfaceLocked || ctrlHoldPointerIds.isNotEmpty()
     }
 
     private fun togglePanel(target: KeyboardPanelMode) {
@@ -5201,7 +5290,7 @@ class WinFlowzKeyboardView(
         if (key.action != KeyboardKeyAction.Text) {
             return key.label
         }
-        if (KeyboardSystemModifier.Ctrl in currentSystemModifiers()) {
+        if (isCtrlHoldVisualModeActive()) {
             val ctrlPrimary = ctrlPrimaryCornerActionLabel(key)
             if (ctrlPrimary != null) {
                 return ctrlPrimary
@@ -5233,7 +5322,7 @@ class WinFlowzKeyboardView(
         if (key.action != KeyboardKeyAction.Text || key.id == "space") {
             return null
         }
-        if (KeyboardSystemModifier.Ctrl !in currentSystemModifiers()) {
+        if (!isCtrlHoldVisualModeActive()) {
             return null
         }
         val candidates = listOfNotNull(
