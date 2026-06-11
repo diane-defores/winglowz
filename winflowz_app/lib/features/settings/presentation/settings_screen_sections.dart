@@ -730,6 +730,7 @@ class _KeyboardSettingsSection extends StatelessWidget {
     required this.onOpenInputSettings,
     required this.onShowPicker,
     required this.onOpenCornerShortcuts,
+    required this.onOpenNavigationDiagnostics,
     required this.onOpenKeyboardThemeStudio,
     required this.onThemePresetChanged,
     required this.onReliefChanged,
@@ -748,6 +749,7 @@ class _KeyboardSettingsSection extends StatelessWidget {
   final VoidCallback onOpenInputSettings;
   final VoidCallback onShowPicker;
   final VoidCallback onOpenCornerShortcuts;
+  final VoidCallback onOpenNavigationDiagnostics;
   final VoidCallback onOpenKeyboardThemeStudio;
   final ValueChanged<String> onThemePresetChanged;
   final ValueChanged<bool> onReliefChanged;
@@ -1270,6 +1272,17 @@ class _KeyboardSettingsSection extends StatelessWidget {
                     child: SelectableText(status!.lastKeyboardError!),
                   ),
                 ],
+                AppGaps.x2,
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.science_outlined),
+                  title: const Text('Playground navigation'),
+                  subtitle: const Text(
+                    'Ouvre le banc de test Flutter et le journal natif des actions Del, Word, Sent, Debut, Fin et All.',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: busy ? null : onOpenNavigationDiagnostics,
+                ),
               ],
             ),
           ],

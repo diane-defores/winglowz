@@ -288,6 +288,13 @@ class MainActivity : FlutterActivity() {
                         keyboardState.clearKeyboardDiagnostics()
                         result.success(keyboardState.buildStatusMap())
                     }
+                    "getKeyboardNavigationDiagnostics" -> {
+                        result.success(keyboardState.navigationDiagnostics())
+                    }
+                    "clearKeyboardNavigationDiagnostics" -> {
+                        keyboardState.clearNavigationDiagnostics()
+                        result.success(true)
+                    }
                     "getKeyboardCornerConfig" -> {
                         result.success(keyboardState.cornerConfig().toMap(includePresets = true))
                     }

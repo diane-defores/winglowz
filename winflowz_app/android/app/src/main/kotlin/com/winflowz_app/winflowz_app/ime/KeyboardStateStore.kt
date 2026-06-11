@@ -377,6 +377,37 @@ class KeyboardStateStore(private val context: Context) {
             .apply()
     }
 
+    fun navigationDiagnostics(): List<Map<String, Any?>> {
+        val raw = preferences.getString(KEY_NAVIGATION_DIAGNOSTICS, null).orEmpty()
+        if (raw.isBlank()) {
+            return emptyList()
+        }
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    add(jsonObjectToMap(item))
+                }
+            }
+        }.getOrDefault(emptyList())
+    }
+
+    fun appendNavigationDiagnostic(entry: Map<String, Any?>) {
+        val current =
+            navigationDiagnostics()
+                .takeLast(MAX_NAVIGATION_DIAGNOSTIC_ENTRIES - 1)
+                .toMutableList()
+        current.add(entry)
+        val array = JSONArray()
+        current.forEach { item -> array.put(JSONObject(item)) }
+        preferences.edit().putString(KEY_NAVIGATION_DIAGNOSTICS, array.toString()).apply()
+    }
+
+    fun clearNavigationDiagnostics() {
+        preferences.edit().remove(KEY_NAVIGATION_DIAGNOSTICS).apply()
+    }
+
     private fun pressEffectRenderingMode(theme: KeyboardThemeConfig): String {
         return when (theme.pressEffect) {
             "none" -> "none"
@@ -700,6 +731,38 @@ class KeyboardStateStore(private val context: Context) {
 
     private fun isSymbolRecentCandidate(value: String): Boolean {
         return value.isNotBlank() && value.codePointCount(0, value.length) <= 2
+    }
+
+    private fun jsonObjectToMap(value: JSONObject): Map<String, Any?> {
+        val result = linkedMapOf<String, Any?>()
+        val keys = value.keys()
+        while (keys.hasNext()) {
+            val key = keys.next()
+            result[key] =
+                when (val raw = value.opt(key)) {
+                    JSONObject.NULL -> null
+                    is JSONObject -> jsonObjectToMap(raw)
+                    is JSONArray -> raw.toList()
+                    else -> raw
+                }
+        }
+        return result
+    }
+
+    private fun JSONArray.toList(): List<Any?> {
+        return buildList {
+            for (index in 0 until length()) {
+                val item = opt(index)
+                add(
+                    when (item) {
+                        JSONObject.NULL -> null
+                        is JSONObject -> jsonObjectToMap(item)
+                        is JSONArray -> item.toList()
+                        else -> item
+                    },
+                )
+            }
+        }
     }
 
     fun textRules(): List<KeyboardTextRule> {
@@ -1408,6 +1471,7 @@ class KeyboardStateStore(private val context: Context) {
         const val KEY_LAST_KEYBOARD_ERROR = "last_keyboard_error"
         const val KEY_LAST_KEYBOARD_ERROR_AT = "last_keyboard_error_at"
         const val KEY_KEYBOARD_RECOVERY_COUNT = "keyboard_recovery_count"
+        const val KEY_NAVIGATION_DIAGNOSTICS = "keyboard_navigation_diagnostics"
         const val KEY_VOICE_RUNTIME_MODE = "voice_runtime_mode"
         const val KEY_VOICE_LANGUAGE_TAG = "voice_language_tag"
         const val KEY_VOICE_PACK_ID = "voice_pack_id"
@@ -1425,6 +1489,7 @@ class KeyboardStateStore(private val context: Context) {
         const val MAX_CLIPBOARD_ENTRIES = 60
         const val MAX_CORNER_CONFIG_JSON_LENGTH = 24000
         const val MAX_THEME_CONFIG_JSON_LENGTH = 48000
+        const val MAX_NAVIGATION_DIAGNOSTIC_ENTRIES = 40
         const val PRIVACY_AUTO = "auto"
         const val PRIVACY_STRICT = "strict"
         const val PRIVACY_STANDARD = "standard"

@@ -5,6 +5,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../features/auth/application/auth_session_provider.dart';
 import '../../features/auth/presentation/auth_gate_screen.dart';
+import '../../features/keyboard/presentation/keyboard_navigation_diagnostics_screen.dart';
 import '../../features/keyboard/presentation/keyboard_theme_studio_screen.dart';
 import '../../features/shell/presentation/app_shell_screen.dart';
 
@@ -67,6 +68,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/keyboard/theme',
         name: 'keyboard_theme_studio',
         builder: (context, state) => const KeyboardThemeStudioScreen(),
+      ),
+      GoRoute(
+        path: '/keyboard/navigation-diagnostics',
+        name: 'keyboard_navigation_diagnostics',
+        builder: (context, state) =>
+            const KeyboardNavigationDiagnosticsScreen(),
       ),
       GoRoute(
         path: '/snippets',

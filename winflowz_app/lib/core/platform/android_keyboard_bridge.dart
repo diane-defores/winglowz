@@ -97,6 +97,30 @@ class AndroidKeyboardBridge {
     return AndroidKeyboardStatus.fromMap(raw ?? const {});
   }
 
+  static Future<List<AndroidKeyboardNavigationDiagnosticEntry>>
+  getNavigationDiagnostics() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return const <AndroidKeyboardNavigationDiagnosticEntry>[];
+    }
+    final raw = await _invoke<List<Object?>>(
+      'getKeyboardNavigationDiagnostics',
+    );
+    if (raw == null) {
+      return const <AndroidKeyboardNavigationDiagnosticEntry>[];
+    }
+    return raw
+        .whereType<Map<Object?, Object?>>()
+        .map(AndroidKeyboardNavigationDiagnosticEntry.fromMap)
+        .toList(growable: false);
+  }
+
+  static Future<void> clearNavigationDiagnostics() async {
+    if (!PlatformCapabilities.keyboardImeSupported) {
+      return;
+    }
+    await _invoke<void>('clearKeyboardNavigationDiagnostics');
+  }
+
   static Future<AndroidKeyboardCornerConfig> getCornerConfig() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
       return AndroidKeyboardCornerConfig.defaults();
@@ -528,7 +552,8 @@ class AndroidKeyboardBridge {
     });
   }
 
-  static Future<KeyboardSyncThemeAssetUploadRequest?> exportThemeAssetUploadRequest() async {
+  static Future<KeyboardSyncThemeAssetUploadRequest?>
+  exportThemeAssetUploadRequest() async {
     if (!PlatformCapabilities.keyboardImeSupported) {
       return null;
     }
@@ -626,6 +651,87 @@ class AndroidKeyboardTextRule {
       'caseSensitive': caseSensitive,
     };
   }
+}
+
+class AndroidKeyboardNavigationDiagnosticEntry {
+  const AndroidKeyboardNavigationDiagnosticEntry({
+    required this.timestamp,
+    required this.actionId,
+    required this.success,
+    required this.strategy,
+    required this.packageName,
+    required this.fieldContext,
+    required this.inputActionLabel,
+    required this.selectionModeAllowed,
+    required this.selectionStart,
+    required this.selectionEnd,
+    required this.hasSelection,
+    required this.privateMode,
+    required this.inputAllowed,
+    required this.clipboardAllowed,
+    required this.voiceAllowed,
+    required this.selectedTextBefore,
+    required this.selectedTextAfter,
+    required this.textBeforeCursor,
+    required this.textAfterCursor,
+  });
+
+  final DateTime timestamp;
+  final String actionId;
+  final bool success;
+  final String strategy;
+  final String packageName;
+  final String fieldContext;
+  final String inputActionLabel;
+  final bool selectionModeAllowed;
+  final int selectionStart;
+  final int selectionEnd;
+  final bool hasSelection;
+  final bool privateMode;
+  final bool inputAllowed;
+  final bool clipboardAllowed;
+  final bool voiceAllowed;
+  final String? selectedTextBefore;
+  final String? selectedTextAfter;
+  final String? textBeforeCursor;
+  final String? textAfterCursor;
+
+  factory AndroidKeyboardNavigationDiagnosticEntry.fromMap(
+    Map<Object?, Object?> map,
+  ) {
+    return AndroidKeyboardNavigationDiagnosticEntry(
+      timestamp: DateTime.fromMillisecondsSinceEpoch(
+        (map['timestamp'] as num?)?.toInt() ?? 0,
+      ),
+      actionId: (map['actionId'] as String? ?? 'unknown').trim(),
+      success: map['success'] as bool? ?? false,
+      strategy: (map['strategy'] as String? ?? 'unknown').trim(),
+      packageName: (map['packageName'] as String? ?? 'unknown').trim(),
+      fieldContext: (map['fieldContext'] as String? ?? 'unknown').trim(),
+      inputActionLabel: (map['inputActionLabel'] as String? ?? '').trim(),
+      selectionModeAllowed: map['selectionModeAllowed'] as bool? ?? false,
+      selectionStart: (map['selectionStart'] as num?)?.toInt() ?? -1,
+      selectionEnd: (map['selectionEnd'] as num?)?.toInt() ?? -1,
+      hasSelection: map['hasSelection'] as bool? ?? false,
+      privateMode: map['privateMode'] as bool? ?? false,
+      inputAllowed: map['inputAllowed'] as bool? ?? false,
+      clipboardAllowed: map['clipboardAllowed'] as bool? ?? false,
+      voiceAllowed: map['voiceAllowed'] as bool? ?? false,
+      selectedTextBefore: _trimmedNullableString(map['selectedTextBefore']),
+      selectedTextAfter: _trimmedNullableString(map['selectedTextAfter']),
+      textBeforeCursor: _trimmedNullableString(map['textBeforeCursor']),
+      textAfterCursor: _trimmedNullableString(map['textAfterCursor']),
+    );
+  }
+}
+
+String? _trimmedNullableString(Object? value) {
+  final raw = value as String?;
+  if (raw == null) {
+    return null;
+  }
+  final trimmed = raw.trim();
+  return trimmed.isEmpty ? null : trimmed;
 }
 
 class AndroidKeyboardClipboardEvent {

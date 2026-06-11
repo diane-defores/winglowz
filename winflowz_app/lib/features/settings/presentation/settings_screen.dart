@@ -25,6 +25,7 @@ import '../../clipboard/application/clipboard_store_provider.dart';
 import '../../dictionary/application/dictionary_store_provider.dart';
 import '../../keyboard/domain/keyboard_models.dart';
 import '../../keyboard/presentation/keyboard_corner_shortcuts_screen.dart';
+import '../../keyboard/presentation/keyboard_navigation_diagnostics_screen.dart';
 import '../../keyboard/presentation/keyboard_sync_panel.dart';
 import '../../keyboard/presentation/keyboard_theme_studio_screen.dart';
 import '../../auth/application/suite_identity_provider.dart';
@@ -627,6 +628,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (mounted) {
       await _loadKeyboardState();
     }
+  }
+
+  Future<void> _openKeyboardNavigationDiagnostics() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const KeyboardNavigationDiagnosticsScreen(),
+      ),
+    );
   }
 
   Future<void> _setKeyboardPreferences({
@@ -1700,6 +1709,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onOpenInputSettings: _openKeyboardSettings,
               onShowPicker: _showKeyboardPicker,
               onOpenCornerShortcuts: _openCornerShortcuts,
+              onOpenNavigationDiagnostics: _openKeyboardNavigationDiagnostics,
               onOpenKeyboardThemeStudio: _openKeyboardThemeStudio,
               onThemePresetChanged: _setKeyboardThemePreset,
               onReliefChanged: _setKeyboardRelief,

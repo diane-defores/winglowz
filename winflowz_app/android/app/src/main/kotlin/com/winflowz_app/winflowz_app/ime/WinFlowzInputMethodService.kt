@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.winflowz_app.winflowz_app.MainActivity
 import com.winflowz_app.winflowz_app.ime.actions.KeyboardActionBarState
+import java.util.Date
 import kotlin.math.roundToInt
 
 class WinFlowzInputMethodService :
@@ -226,21 +227,25 @@ class WinFlowzInputMethodService :
             showStatus("Delete unavailable: no active field")
             return false
         }
-        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            refreshTypingAssistantState(editor)
-            return deleted
+        return recordNavigationDiagnostic("backspace") {
+            if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+                val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+                refreshTypingAssistantState(editor)
+                deleted to "selection_clear"
+            } else {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, 0)
+                if (sent) {
+                    true to "soft_key_delete"
+                } else {
+                    val deleted = editor.deleteCodePointsBefore(1)
+                    if (!deleted.applied) {
+                        showStatus("Delete rejected by field")
+                    }
+                    refreshTypingAssistantState(editor)
+                    deleted.applied to "delete_code_points_before:${deleted.name}"
+                }
+            }
         }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, 0)
-        if (sent) {
-            return true
-        }
-        val deleted = editor.deleteCodePointsBefore(1)
-        if (!deleted.applied) {
-            showStatus("Delete rejected by field")
-        }
-        refreshTypingAssistantState(editor)
-        return deleted.applied
     }
 
     override fun onForwardDelete(): Boolean {
@@ -249,18 +254,22 @@ class WinFlowzInputMethodService :
             showStatus("Forward delete unavailable: no active field")
             return false
         }
-        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            refreshTypingAssistantState(editor)
-            return deleted
+        return recordNavigationDiagnostic("forward_delete") {
+            if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+                val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+                refreshTypingAssistantState(editor)
+                deleted to "selection_clear"
+            } else {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, 0)
+                if (sent) {
+                    true to "soft_key_forward_delete"
+                } else {
+                    val deleted = editor.deleteCodePointsAfter(1)
+                    refreshTypingAssistantState(editor)
+                    deleted.applied to "delete_code_points_after:${deleted.name}"
+                }
+            }
         }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, 0)
-        if (sent) {
-            return true
-        }
-        val deleted = editor.deleteCodePointsAfter(1)
-        refreshTypingAssistantState(editor)
-        return deleted.applied
     }
 
     override fun onDeleteWordBefore(): Boolean {
@@ -272,28 +281,31 @@ class WinFlowzInputMethodService :
             TAG,
             "word delete before pressed | package=$inputPackageName | hasSelection=${selectionState.hasSelection} | selectedText=${editor.selectedText()?.isNotEmpty()}",
         )
-        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            Log.d(TAG, "word delete before fallback-to-selection-clear | result=$deleted")
-            refreshTypingAssistantState(editor)
-            return deleted
+        return recordNavigationDiagnostic("delete_word_before") {
+            if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+                val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+                Log.d(TAG, "word delete before fallback-to-selection-clear | result=$deleted")
+                refreshTypingAssistantState(editor)
+                deleted to "selection_clear"
+            } else if (isTermuxInputTarget()) {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+                Log.d(TAG, "word delete before termux-path | sent=$sent")
+                refreshTypingAssistantState(editor)
+                sent to "termux_ctrl_delete"
+            } else {
+                val deleted = editor.deleteWordBeforeCursor()
+                if (deleted.applied) {
+                    Log.d(TAG, "word delete before common-path | result=applied")
+                    refreshTypingAssistantState(editor)
+                    true to "delete_word_before:${deleted.name}"
+                } else {
+                    val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+                    Log.d(TAG, "word delete before fallback-to-softkey | result=$sent")
+                    refreshTypingAssistantState(editor)
+                    sent to "fallback_ctrl_delete:${deleted.name}"
+                }
+            }
         }
-        if (isTermuxInputTarget()) {
-            val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
-            Log.d(TAG, "word delete before termux-path | sent=$sent")
-            refreshTypingAssistantState(editor)
-            return sent
-        }
-        val deleted = editor.deleteWordBeforeCursor()
-        if (deleted.applied) {
-            Log.d(TAG, "word delete before common-path | result=applied")
-            refreshTypingAssistantState(editor)
-            return true
-        }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
-        Log.d(TAG, "word delete before fallback-to-softkey | result=$sent")
-        refreshTypingAssistantState(editor)
-        return sent
     }
 
     override fun onDeleteWordAfter(): Boolean {
@@ -305,28 +317,31 @@ class WinFlowzInputMethodService :
             TAG,
             "word delete after pressed | package=$inputPackageName | hasSelection=${selectionState.hasSelection} | selectedText=${editor.selectedText()?.isNotEmpty()}",
         )
-        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            Log.d(TAG, "word delete after fallback-to-selection-clear | result=$deleted")
-            refreshTypingAssistantState(editor)
-            return deleted
+        return recordNavigationDiagnostic("delete_word_after") {
+            if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+                val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+                Log.d(TAG, "word delete after fallback-to-selection-clear | result=$deleted")
+                refreshTypingAssistantState(editor)
+                deleted to "selection_clear"
+            } else if (isObsidianInputTarget()) {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+                Log.d(TAG, "word delete after obsidian-path | sent=$sent")
+                refreshTypingAssistantState(editor)
+                sent to "obsidian_ctrl_forward_delete"
+            } else {
+                val deleted = editor.deleteWordAfterCursor()
+                if (deleted.applied) {
+                    Log.d(TAG, "word delete after common-path | result=applied")
+                    refreshTypingAssistantState(editor)
+                    true to "delete_word_after:${deleted.name}"
+                } else {
+                    val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+                    Log.d(TAG, "word delete after fallback-to-softkey | result=$sent")
+                    refreshTypingAssistantState(editor)
+                    sent to "fallback_ctrl_forward_delete:${deleted.name}"
+                }
+            }
         }
-        if (isObsidianInputTarget()) {
-            val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
-            Log.d(TAG, "word delete after obsidian-path | sent=$sent")
-            refreshTypingAssistantState(editor)
-            return sent
-        }
-        val deleted = editor.deleteWordAfterCursor()
-        if (deleted.applied) {
-            Log.d(TAG, "word delete after common-path | result=applied")
-            refreshTypingAssistantState(editor)
-            return true
-        }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
-        Log.d(TAG, "word delete after fallback-to-softkey | result=$sent")
-        refreshTypingAssistantState(editor)
-        return sent
     }
 
     override fun onDeleteSentenceBefore(): Boolean {
@@ -334,24 +349,27 @@ class WinFlowzInputMethodService :
         if (!editor.hasActiveConnection()) {
             return false
         }
-        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            refreshTypingAssistantState(editor)
-            return deleted
+        return recordNavigationDiagnostic("delete_sentence_before") {
+            if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+                val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+                refreshTypingAssistantState(editor)
+                deleted to "selection_clear"
+            } else if (isTermuxInputTarget()) {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
+                refreshTypingAssistantState(editor)
+                sent to "termux_ctrl_alt_delete"
+            } else {
+                val deleted = editor.deleteSentenceBeforeCursor()
+                if (deleted.applied) {
+                    refreshTypingAssistantState(editor)
+                    true to "delete_sentence_before:${deleted.name}"
+                } else {
+                    val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
+                    refreshTypingAssistantState(editor)
+                    sent to "fallback_ctrl_alt_delete:${deleted.name}"
+                }
+            }
         }
-        if (isTermuxInputTarget()) {
-            val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
-            refreshTypingAssistantState(editor)
-            return sent
-        }
-        val deleted = editor.deleteSentenceBeforeCursor()
-        if (deleted.applied) {
-            refreshTypingAssistantState(editor)
-            return true
-        }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
-        refreshTypingAssistantState(editor)
-        return sent
     }
 
     override fun onDeleteSentenceAfter(): Boolean {
@@ -359,19 +377,23 @@ class WinFlowzInputMethodService :
         if (!editor.hasActiveConnection()) {
             return false
         }
-        if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
-            val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
-            refreshTypingAssistantState(editor)
-            return deleted
+        return recordNavigationDiagnostic("delete_sentence_after") {
+            if (selectionState.hasSelection || !editor.selectedText().isNullOrEmpty()) {
+                val deleted = editor.commitText("").reportFailure("Delete selection rejected by field")
+                refreshTypingAssistantState(editor)
+                deleted to "selection_clear"
+            } else {
+                val deleted = editor.deleteSentenceAfterCursor()
+                if (deleted.applied) {
+                    refreshTypingAssistantState(editor)
+                    true to "delete_sentence_after:${deleted.name}"
+                } else {
+                    val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
+                    refreshTypingAssistantState(editor)
+                    sent to "fallback_ctrl_alt_forward_delete:${deleted.name}"
+                }
+            }
         }
-        val deleted = editor.deleteSentenceAfterCursor()
-        if (deleted.applied) {
-            refreshTypingAssistantState(editor)
-            return true
-        }
-        val sent = sendSoftKey(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
-        refreshTypingAssistantState(editor)
-        return sent
     }
 
     override fun onEnter(): Boolean {
@@ -572,7 +594,10 @@ class WinFlowzInputMethodService :
             showStatus("Selection unavailable in this field")
             return false
         }
-        return editor().performContextMenuAction(android.R.id.selectAll).reportFailure("Select all rejected by field")
+        return recordNavigationDiagnostic("select_all") {
+            val result = editor().performContextMenuAction(android.R.id.selectAll).reportFailure("Select all rejected by field")
+            result to "context_menu_select_all"
+        }
     }
 
     override fun onUndo(): Boolean {
@@ -800,25 +825,49 @@ class WinFlowzInputMethodService :
 
     override fun onNavigateCharRight(): Boolean = sendSoftKey(KeyEvent.KEYCODE_DPAD_RIGHT, 0)
 
-    override fun onNavigateWordLeft(): Boolean {
-        val moved = if (inputContext.selectionModeAllowed) editor().moveWordCursor(left = true).applied else false
-        return moved || sendSoftKey(KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.META_CTRL_ON)
-    }
+    override fun onNavigateWordLeft(): Boolean =
+        recordNavigationDiagnostic("navigate_word_left") {
+            val moved = if (inputContext.selectionModeAllowed) editor().moveWordCursor(left = true).applied else false
+            if (moved) {
+                true to "move_word_cursor"
+            } else {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.META_CTRL_ON)
+                sent to "fallback_ctrl_dpad_left"
+            }
+        }
 
-    override fun onNavigateWordRight(): Boolean {
-        val moved = if (inputContext.selectionModeAllowed) editor().moveWordCursor(left = false).applied else false
-        return moved || sendSoftKey(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.META_CTRL_ON)
-    }
+    override fun onNavigateWordRight(): Boolean =
+        recordNavigationDiagnostic("navigate_word_right") {
+            val moved = if (inputContext.selectionModeAllowed) editor().moveWordCursor(left = false).applied else false
+            if (moved) {
+                true to "move_word_cursor"
+            } else {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.META_CTRL_ON)
+                sent to "fallback_ctrl_dpad_right"
+            }
+        }
 
-    override fun onNavigateSentenceLeft(): Boolean {
-        val moved = if (inputContext.selectionModeAllowed) editor().moveSentenceCursor(left = true).applied else false
-        return moved || sendSoftKey(KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
-    }
+    override fun onNavigateSentenceLeft(): Boolean =
+        recordNavigationDiagnostic("navigate_sentence_left") {
+            val moved = if (inputContext.selectionModeAllowed) editor().moveSentenceCursor(left = true).applied else false
+            if (moved) {
+                true to "move_sentence_cursor"
+            } else {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
+                sent to "fallback_alt_dpad_left"
+            }
+        }
 
-    override fun onNavigateSentenceRight(): Boolean {
-        val moved = if (inputContext.selectionModeAllowed) editor().moveSentenceCursor(left = false).applied else false
-        return moved || sendSoftKey(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
-    }
+    override fun onNavigateSentenceRight(): Boolean =
+        recordNavigationDiagnostic("navigate_sentence_right") {
+            val moved = if (inputContext.selectionModeAllowed) editor().moveSentenceCursor(left = false).applied else false
+            if (moved) {
+                true to "move_sentence_cursor"
+            } else {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON)
+                sent to "fallback_alt_dpad_right"
+            }
+        }
 
     override fun onNavigateLineUp(): Boolean = sendSoftKey(KeyEvent.KEYCODE_DPAD_UP, 0)
 
@@ -834,21 +883,37 @@ class WinFlowzInputMethodService :
         return moved || sendSoftKey(KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.META_CTRL_ON)
     }
 
-    override fun onNavigateLineStart(): Boolean {
-        if (isTermuxInputTarget()) {
-            return sendSoftKey(KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+    override fun onNavigateLineStart(): Boolean =
+        recordNavigationDiagnostic("navigate_line_start") {
+            if (isTermuxInputTarget()) {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+                sent to "termux_ctrl_a"
+            } else {
+                val moved = if (inputContext.selectionModeAllowed) editor().moveDocumentBoundary(start = true).applied else false
+                if (moved) {
+                    true to "move_document_boundary_start"
+                } else {
+                    val sent = sendSoftKey(KeyEvent.KEYCODE_MOVE_HOME, KeyEvent.META_CTRL_ON)
+                    sent to "fallback_ctrl_home"
+                }
+            }
         }
-        val moved = if (inputContext.selectionModeAllowed) editor().moveDocumentBoundary(start = true).applied else false
-        return moved || sendSoftKey(KeyEvent.KEYCODE_MOVE_HOME, KeyEvent.META_CTRL_ON)
-    }
 
-    override fun onNavigateLineEnd(): Boolean {
-        if (isTermuxInputTarget()) {
-            return sendSoftKey(KeyEvent.KEYCODE_E, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+    override fun onNavigateLineEnd(): Boolean =
+        recordNavigationDiagnostic("navigate_line_end") {
+            if (isTermuxInputTarget()) {
+                val sent = sendSoftKey(KeyEvent.KEYCODE_E, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON)
+                sent to "termux_ctrl_e"
+            } else {
+                val moved = if (inputContext.selectionModeAllowed) editor().moveDocumentBoundary(start = false).applied else false
+                if (moved) {
+                    true to "move_document_boundary_end"
+                } else {
+                    val sent = sendSoftKey(KeyEvent.KEYCODE_MOVE_END, KeyEvent.META_CTRL_ON)
+                    sent to "fallback_ctrl_end"
+                }
+            }
         }
-        val moved = if (inputContext.selectionModeAllowed) editor().moveDocumentBoundary(start = false).applied else false
-        return moved || sendSoftKey(KeyEvent.KEYCODE_MOVE_END, KeyEvent.META_CTRL_ON)
-    }
 
     override fun onKeyEvent(
         keyCode: Int,
@@ -982,6 +1047,44 @@ class WinFlowzInputMethodService :
 
     override fun onActionBarStateChanged(state: KeyboardActionBarState) {
         stateStore.replaceActionBarState(state)
+    }
+
+    private fun recordNavigationDiagnostic(
+        actionId: String,
+        block: () -> Pair<Boolean, String>,
+    ): Boolean {
+        val beforeEditor = editor()
+        val beforeSelected = beforeEditor.selectedText()?.toString()
+        val beforeText = beforeEditor.textBeforeCursor(96)?.toString()
+        val afterText = beforeEditor.textAfterCursor(96)?.toString()
+        val selectionStart = selectionState.selectionStart
+        val selectionEnd = selectionState.selectionEnd
+        val (success, strategy) = block()
+        val afterEditor = editor()
+        stateStore.appendNavigationDiagnostic(
+            mapOf(
+                "timestamp" to Date().time,
+                "actionId" to actionId,
+                "success" to success,
+                "strategy" to strategy,
+                "packageName" to inputPackageName,
+                "fieldContext" to inputContext.fieldContext.name,
+                "inputActionLabel" to inputContext.enterLabel,
+                "selectionModeAllowed" to inputContext.selectionModeAllowed,
+                "selectionStart" to selectionStart,
+                "selectionEnd" to selectionEnd,
+                "hasSelection" to selectionState.hasSelection,
+                "privateMode" to fieldPolicy.privateMode,
+                "inputAllowed" to fieldPolicy.inputAllowed,
+                "clipboardAllowed" to fieldPolicy.clipboardAllowed,
+                "voiceAllowed" to fieldPolicy.voiceAllowed,
+                "selectedTextBefore" to beforeSelected?.take(96),
+                "selectedTextAfter" to afterEditor.selectedText()?.toString()?.take(96),
+                "textBeforeCursor" to beforeText?.takeLast(96),
+                "textAfterCursor" to afterText?.take(96),
+            ),
+        )
+        return success
     }
 
     private fun applyRuntimePreferencesToView() {

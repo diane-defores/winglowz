@@ -3359,7 +3359,7 @@ class WinFlowzKeyboardView(
         textPaint.textSize = keyTextSize(key) * textScale.coerceIn(0.86f, 1f)
         val baseline = drawRect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
         val label =
-            longPressSwipeSurfaceAssignment?.label
+            longPressSwipeSurfaceAssignment?.let(KeyboardActionSurfacePolicy::displayLabel)
                 ?: if (isLongPressSwipeTarget && !isLongPressSwipeOrigin) {
                     ""
                 } else {
@@ -3474,12 +3474,7 @@ class WinFlowzKeyboardView(
                     key.cornerAssignments.forSelection(selection)?.let { return it }
                 }
             }
-        val selections = longPressSwipeTargetSelections(key)
-        return if (selections.size == 1) {
-            key.cornerAssignments.forSelection(selections.first())
-        } else {
-            null
-        }
+        return KeyboardActionSurfacePolicy.preferredLongPressSwipeAssignment(key.cornerAssignments)
     }
 
     private fun materialPressEffect(pressed: Boolean): String {
@@ -5347,7 +5342,7 @@ class WinFlowzKeyboardView(
     }
 
     private fun ctrlPrimaryCornerActionLabel(key: KeyboardKeySpec): String? {
-        return ctrlPrimaryCornerAction(key)?.label
+        return ctrlPrimaryCornerAction(key)?.let(KeyboardActionSurfacePolicy::displayLabel)
     }
 
     private fun ctrlPrimaryCornerAction(key: KeyboardKeySpec): KeyboardCornerAssignment? {

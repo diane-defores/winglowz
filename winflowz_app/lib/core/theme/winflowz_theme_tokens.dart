@@ -127,7 +127,7 @@ class WinFlowzThemeTokens {
   static const double typographySm = 14.0;
   static const double typographyBase = 16.0;
   static const double typographyMd = 20.0;
-  static const double typographyLg = 24.0;
+  static const double typographyDisplayLg = 24.0;
   static const double typographyXl = 32.0;
   static const double typographyXxl = 40.0;
   static const double lineHeightTight = 1.2;
