@@ -383,7 +383,7 @@ CloudSyncCategoryStatus _suiteAccessStatus({
         : 'Inactif',
     detail: suiteIdentity?.status == SuiteAccountStatus.linkingRequired
         ? 'La liaison de compte WinFlowz doit être confirmée.'
-        : 'Abonnement absent ou inactif, les données restent locales.',
+        : 'Accès cloud non activé pour ce compte, les données restent locales.',
   );
 }
 

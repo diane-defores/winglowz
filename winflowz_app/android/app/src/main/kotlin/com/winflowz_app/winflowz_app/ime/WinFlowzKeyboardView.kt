@@ -5771,7 +5771,7 @@ class WinFlowzKeyboardView(
         if (fieldPolicy.privateMode || keyBorderPaint.strokeWidth <= 0f || Color.alpha(keyBorderPaint.color) <= 0) {
             return 0f
         }
-        return (keyBorderPaint.strokeWidth + keyboardVisualHairline()).coerceAtLeast(0f)
+        return (keyBorderPaint.strokeWidth + keyboardVisualHairline() + dp(2f)).coerceAtLeast(0f)
     }
 
     private fun keyboardThemeMinimumRowGap(): Float {
