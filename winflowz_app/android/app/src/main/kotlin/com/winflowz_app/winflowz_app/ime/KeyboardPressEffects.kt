@@ -416,7 +416,6 @@ class KeyboardPressEffects(
             } else {
                 alphaColor(accentColor, alpha)
             }
-        }
         canvas.drawPath(path, strokePaint)
         if (state.effect == "spiderTrail") {
             drawSpiderWeb(canvas, state, now)

@@ -1400,7 +1400,7 @@ class KeyboardStateStore(private val context: Context) {
                             values.add(
                                 when (entry) {
                                     is JSONObject -> entry.toMap()
-                                    is JSONArray -> entry.toList()
+                                    is JSONArray -> entry.toRestoreList()
                                     else -> entry
                                 },
                             )
@@ -1413,12 +1413,12 @@ class KeyboardStateStore(private val context: Context) {
         }
     }
 
-    private fun JSONArray.toList(): List<Any> {
+    private fun JSONArray.toRestoreList(): List<Any> {
         return List(length()) { index ->
             val entry = this.opt(index)
             when (entry) {
                 is JSONObject -> entry.toMap()
-                is JSONArray -> entry.toList()
+                is JSONArray -> entry.toRestoreList()
                 else -> entry
             }
         }
