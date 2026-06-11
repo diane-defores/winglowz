@@ -33,7 +33,7 @@ evidence:
   - "Updated for account-backed keyboard sync panel, backup service, and sync change notifier wiring."
   - "Updated for shared Voice/Clipboard Send to actions."
   - "Updated for Windows desktop overlay bridge and runner host version."
-  - "Updated for custom action buttons, typed desktop key-sequence delivery, and snippets library split."
+  - "Updated for custom action buttons, action-bar rows, typed desktop key-sequence delivery, clipboard commands, and snippets library split."
 next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
@@ -70,7 +70,7 @@ security, store policy, or runtime limitation makes that unsafe or impossible.
 | `lib/features/clipboard/domain/**` | Backend-neutral clipboard sources, sync state, sensitivity and dedupe contracts | Keep provider names, SQL columns and native Android details out of the domain. |
 | `lib/features/clipboard/data/**` | Local/offline clipboard stores | Local fallback history is persisted through secure storage; keep provider adapters outside this module. |
 | `lib/features/send_to/**` | Shared cross-surface text transformation actions | Keep Voice/Clipboard send-to behavior behind common UI/dialog primitives and write through feature stores. |
-| `lib/features/custom_action_buttons/**` | Reusable executable button models, stores and runner | Keep actions typed (`text`, `desktop key sequence`, `keyboard expression`) and never expose arbitrary shell commands. |
+| `lib/features/custom_action_buttons/**` | Reusable action-bar button models, stores and runner | Keep buttons separate from actions: a button has label/icon/row/order, while the action is typed (`insert text`, `desktop key sequence`, `keyboard expression`, `clipboard command`, `media command`, or `macro`). Never expose arbitrary shell commands. |
 | `lib/data/supabase/**` | Legacy Supabase adapter implementations | Keep compiling until Firebase parity exists; do not add new target behavior here. |
 | `lib/data/firebase/**` | Firebase adapter implementations | Keep Firebase behind backend-agnostic stores and Firestore Security Rules. |
 | `test/**` | Dart/widget tests | Cover model validation and bridge parsing when native contracts change. |
@@ -122,8 +122,9 @@ Send to actions
 Custom action buttons
   -> Snippets library split (`Snippets` / `Boutons`)
   -> CustomActionButtonStore provider
-  -> typed action contract (`text`, `desktop key sequence`, `keyboard expression`)
-  -> DesktopOverlayBridge text or key-sequence delivery when the host supports it
+  -> action-bar layout derived from button row/order metadata
+  -> typed action contract (`insert text`, `desktop key sequence`, `keyboard expression`, `clipboard command`, `media command`, `macro`)
+  -> DesktopOverlayBridge text, key-sequence, or bounded clipboard command delivery when the host supports it
   -> explicit unsupported messaging when the current platform cannot execute
 
 Keyboard sync panel
@@ -157,8 +158,10 @@ Keyboard sync panel
   recoverable through clipboard even when focus or paste delivery fails.
 - Keyboard clipboard bridge events are imported by Flutter before listing clipboard items; sensitive automatic content can be rejected by the store without user confirmation.
 - Cross-surface `Envoyer vers` actions must reuse existing feature stores and preserve sensitive clipboard confirmation before writing private text.
-- Custom action buttons must remain a separate executable resource from snippets. A text field must never silently become an arbitrary command executor.
+- Custom action buttons must remain a separate executable resource from snippets. A snippet is only an `insertText` action payload; the button itself owns visual placement, icon, label, and action binding.
+- Action-bar layout state must stay explicit through button row/order metadata so future keyboard rows, reordering, and drag/drop can evolve without reclassifying snippets as buttons.
 - Desktop key-sequence delivery is intentionally bounded: typed keys and modifiers only, no arbitrary process launch, shell execution, or hidden script payload.
+- Clipboard actions are first-class typed commands (`copy`, `cut`, `paste`) and may be translated to bounded desktop key sequences. Media and macro actions can be stored before their execution host exists, but must report unsupported execution clearly.
 - Keyboard corner config models in `lib/features/keyboard/domain/keyboard_models.dart` mirror the native preset/override wire shape. Kotlin native owns functional preset tables; Flutter keeps preset ids/names as DTO/UI fallback and resolves only explicit overrides.
 - `KeyboardCornerShortcutsScreen` edits corner shortcuts as a draft. It must not call the native save bridge until the user explicitly saves, and unsupported platforms must remain simulation-only.
 - `KeyboardThemeStudioScreen` and `KeyboardCornerShortcutsScreen` notify `keyboardSyncChangeNotifierProvider` only after successful native saves; these screens must not call Firestore directly.
