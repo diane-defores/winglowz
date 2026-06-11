@@ -700,18 +700,35 @@ class KeyboardLayoutBuilderTest {
         val categoryLabels = panelRows[0].keys.map { it.label }
         val emojiRows = panelRows.drop(1)
         val emojiLabels = emojiRows.flatMap { row -> row.keys.map { it.label } }
-        assertTrue(categoryLabels.containsAll(listOf("🕘", "😀", "👏", "✨", "🌿", "🍔", "💡", "⚽", "🚗")))
+        assertTrue(categoryLabels.containsAll(listOf("🕘", "😀", "👏", "✨", "🌿", "🍔", "💡", "⚽", "🚗", "🏳️")))
         assertFalse(categoryLabels.contains("×"))
-        assertEquals(9, categoryLabels.size)
-        assertEquals(5, snapshot.panelRowCount)
+        assertEquals(10, categoryLabels.size)
+        assertEquals(1 + KeyboardEmojiCatalog.expandedVisibleEmojiRows, snapshot.panelRowCount)
         assertTrue(emojiRows.all { it.horizontalScrollable && it.pagedHorizontalScrollable && it.visiblePageKeyCount == 10 })
         assertEquals("🔥", emojiLabels.first())
         assertTrue(emojiLabels.contains("😀"))
-        assertTrue(emojiLabels.size >= 40)
+        assertEquals(KeyboardEmojiCatalog.recentFallbackCount, emojiLabels.size)
         assertTrue(emojiLabels.all { it.isNotBlank() })
         assertFalse(snapshot.rows.drop(1 + snapshot.panelRowCount).any { row ->
             row.keys.any { it.label == "q" }
         })
+    }
+
+    @Test
+    fun `emoji catalog exposes unicode keyboard emoji across every category`() {
+        assertEquals(3944, KeyboardEmojiCatalog.totalFullyQualifiedCount)
+        assertEquals("17.0", KeyboardEmojiCatalog.unicodeEmojiVersion)
+        assertEquals(171, KeyboardEmojiCatalog.Smileys.size)
+        assertEquals(2418, KeyboardEmojiCatalog.Hands.size)
+        assertEquals(160, KeyboardEmojiCatalog.Nature.size)
+        assertEquals(131, KeyboardEmojiCatalog.Food.size)
+        assertEquals(219, KeyboardEmojiCatalog.Travel.size)
+        assertEquals(85, KeyboardEmojiCatalog.Activities.size)
+        assertEquals(266, KeyboardEmojiCatalog.Objects.size)
+        assertEquals(224, KeyboardEmojiCatalog.Symbols.size)
+        assertEquals(270, KeyboardEmojiCatalog.Flags.size)
+        assertTrue(KeyboardEmojiCatalog.Hands.contains("🫱🏻‍🫲🏿"))
+        assertTrue(KeyboardEmojiCatalog.Flags.contains("🇿🇼"))
     }
 
     @Test
