@@ -78,86 +78,10 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   bool _notifyClipboardAfterImport = false;
   bool _voiceImportBusy = false;
   bool _notifyVoiceAfterImport = false;
-  bool _localSpeechNoticeDismissed = false;
-  bool _overlayNoticeDismissed = false;
-  bool _localSpeechNoticeDismissedForever = false;
-  bool _overlayNoticeDismissedForever = false;
-  DateTime? _localSpeechNoticeSnoozedUntil;
-  DateTime? _overlayNoticeSnoozedUntil;
   final List<int> _tabHistory = [0];
   OnboardingReadiness? _onboardingReadiness;
   String? _onboardingMessage;
   UserSettingsSnapshot? _onboardingSettings;
-
-  static const _noticeSnoozeDuration = Duration(hours: 24);
-
-  bool _isNoticeSnoozed(DateTime? until) =>
-      until != null && until.isAfter(DateTime.now());
-
-  Future<void> _updateNoticeDismissal({
-    bool? localSpeechNoticeDismissedForever,
-    bool? overlayNoticeDismissedForever,
-  }) async {
-    final store = ref.read(settingsStoreProvider);
-    final current = await store.load();
-    final next = current.copyWith(
-      localSpeechNoticeDismissedForever:
-          localSpeechNoticeDismissedForever ??
-          current.localSpeechNoticeDismissedForever,
-      overlayNoticeDismissedForever:
-          overlayNoticeDismissedForever ??
-          current.overlayNoticeDismissedForever,
-    );
-    await _saveOnboardingSettings(next);
-  }
-
-  void _dismissLocalSpeechNotice() {
-    setState(() {
-      _localSpeechNoticeDismissed = true;
-      _localSpeechNoticeSnoozedUntil = null;
-    });
-  }
-
-  void _snoozeLocalSpeechNotice() {
-    setState(() {
-      _localSpeechNoticeDismissed = false;
-      _localSpeechNoticeSnoozedUntil = DateTime.now().add(
-        _noticeSnoozeDuration,
-      );
-    });
-  }
-
-  void _dismissLocalSpeechNoticeForever() {
-    setState(() {
-      _localSpeechNoticeDismissed = true;
-      _localSpeechNoticeDismissedForever = true;
-      _localSpeechNoticeSnoozedUntil = null;
-    });
-    unawaited(_updateNoticeDismissal(localSpeechNoticeDismissedForever: true));
-  }
-
-  void _dismissOverlayNotice() {
-    setState(() {
-      _overlayNoticeDismissed = true;
-      _overlayNoticeSnoozedUntil = null;
-    });
-  }
-
-  void _snoozeOverlayNotice() {
-    setState(() {
-      _overlayNoticeDismissed = false;
-      _overlayNoticeSnoozedUntil = DateTime.now().add(_noticeSnoozeDuration);
-    });
-  }
-
-  void _dismissOverlayNoticeForever() {
-    setState(() {
-      _overlayNoticeDismissed = true;
-      _overlayNoticeDismissedForever = true;
-      _overlayNoticeSnoozedUntil = null;
-    });
-    unawaited(_updateNoticeDismissal(overlayNoticeDismissedForever: true));
-  }
 
   void _selectTab(int value) {
     if (value == _index) {
@@ -462,10 +386,6 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       setState(() {
         _onboardingReadiness = readiness;
         _onboardingSettings = nextSettings;
-        _localSpeechNoticeDismissedForever =
-            nextSettings.localSpeechNoticeDismissedForever;
-        _overlayNoticeDismissedForever =
-            nextSettings.overlayNoticeDismissedForever;
         _onboardingBusy = false;
         if (forcedStep != null) {
           _onboardingVisible = true;
@@ -907,53 +827,6 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                   Expanded(
                     child: Column(
                       children: [
-                        if (!PlatformCapabilities.localSpeechSupported &&
-                            !_localSpeechNoticeDismissed &&
-                            !_localSpeechNoticeDismissedForever &&
-                            !_isNoticeSnoozed(_localSpeechNoticeSnoozedUntil))
-                          Padding(
-                            padding: AppInsets.screen,
-                            child: AppNotificationCard(
-                              icon: Icons.mic_off_outlined,
-                              title:
-                                  'Dictée locale indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
-                              message:
-                                  '${PlatformCapabilities.localSpeechUnavailableReason} Utilise le mode Whisper avancé à la place.',
-                              accentColor: AppColors.warning,
-                              onDismiss: _dismissLocalSpeechNotice,
-                              primaryAction: TextButton(
-                                onPressed: _dismissLocalSpeechNoticeForever,
-                                child: const Text('Ne plus afficher'),
-                              ),
-                              secondaryAction: TextButton(
-                                onPressed: _snoozeLocalSpeechNotice,
-                                child: const Text('Plus tard'),
-                              ),
-                            ),
-                          ),
-                        if (!PlatformCapabilities.overlaySupported &&
-                            !_overlayNoticeDismissed &&
-                            !_overlayNoticeDismissedForever &&
-                            !_isNoticeSnoozed(_overlayNoticeSnoozedUntil))
-                          Padding(
-                            padding: AppInsets.screen,
-                            child: AppNotificationCard(
-                              icon: Icons.layers_clear_outlined,
-                              title:
-                                  'Overlay Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
-                              message:
-                                  PlatformCapabilities.overlayUnavailableReason,
-                              onDismiss: _dismissOverlayNotice,
-                              primaryAction: TextButton(
-                                onPressed: _dismissOverlayNoticeForever,
-                                child: const Text('Ne plus afficher'),
-                              ),
-                              secondaryAction: TextButton(
-                                onPressed: _snoozeOverlayNotice,
-                                child: const Text('Plus tard'),
-                              ),
-                            ),
-                          ),
                         Expanded(
                           child: Stack(
                             children: [

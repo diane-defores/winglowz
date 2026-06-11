@@ -105,6 +105,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _onboardingLoading = true;
   bool _saving = false;
   bool _onboardingTileDismissed = false;
+  bool _localSpeechNoticeDismissed = false;
+  bool _overlayNoticeDismissed = false;
+  DateTime? _localSpeechNoticeSnoozedUntil;
+  DateTime? _overlayNoticeSnoozedUntil;
   static const _onboardingOverlayFallback = AndroidOverlayStatus(
     enabled: false,
     requestedEnabled: false,
@@ -141,6 +145,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     'overlay': false,
     'maintenance': false,
   };
+  static const _noticeSnoozeDuration = Duration(hours: 24);
 
   @override
   void initState() {
@@ -186,6 +191,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       setState(() {
         _onboardingSettings = settings;
         _appearanceSyncStatus = _settingsSyncStatusFromSnapshot(settings);
+        _localSpeechNoticeDismissed = false;
+        _overlayNoticeDismissed = false;
+        _localSpeechNoticeSnoozedUntil = null;
+        _overlayNoticeSnoozedUntil = null;
       });
     } catch (error) {
       if (!mounted) {
@@ -202,10 +211,81 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _persistNoticeDismissal({
+    bool? localSpeechNoticeDismissedForever,
+    bool? overlayNoticeDismissedForever,
+    bool? onboardingNoticeDismissedForever,
+  }) async {
+    final store = ref.read(settingsStoreProvider);
+    final current = _onboardingSettings ?? await store.load();
+    final next = current.copyWith(
+      localSpeechNoticeDismissedForever:
+          localSpeechNoticeDismissedForever ??
+          current.localSpeechNoticeDismissedForever,
+      overlayNoticeDismissedForever:
+          overlayNoticeDismissedForever ??
+          current.overlayNoticeDismissedForever,
+      onboardingNoticeDismissedForever:
+          onboardingNoticeDismissedForever ??
+          current.onboardingNoticeDismissedForever,
+    );
+    await _persistAppearanceSettings(next);
+  }
+
+  bool _isNoticeSnoozed(DateTime? until) =>
+      until != null && until.isAfter(DateTime.now());
+
+  void _dismissLocalSpeechNotice() {
+    setState(() {
+      _localSpeechNoticeDismissed = true;
+      _localSpeechNoticeSnoozedUntil = null;
+    });
+  }
+
+  void _snoozeLocalSpeechNotice() {
+    setState(() {
+      _localSpeechNoticeDismissed = false;
+      _localSpeechNoticeSnoozedUntil = DateTime.now().add(
+        _noticeSnoozeDuration,
+      );
+    });
+  }
+
+  void _dismissLocalSpeechNoticeForever() {
+    setState(() {
+      _localSpeechNoticeDismissed = true;
+      _localSpeechNoticeSnoozedUntil = null;
+    });
+    unawaited(_persistNoticeDismissal(localSpeechNoticeDismissedForever: true));
+  }
+
+  void _dismissOverlayNotice() {
+    setState(() {
+      _overlayNoticeDismissed = true;
+      _overlayNoticeSnoozedUntil = null;
+    });
+  }
+
+  void _snoozeOverlayNotice() {
+    setState(() {
+      _overlayNoticeDismissed = false;
+      _overlayNoticeSnoozedUntil = DateTime.now().add(_noticeSnoozeDuration);
+    });
+  }
+
+  void _dismissOverlayNoticeForever() {
+    setState(() {
+      _overlayNoticeDismissed = true;
+      _overlayNoticeSnoozedUntil = null;
+    });
+    unawaited(_persistNoticeDismissal(overlayNoticeDismissedForever: true));
+  }
+
   void _dismissOnboardingTile() {
     setState(() {
       _onboardingTileDismissed = true;
     });
+    unawaited(_persistNoticeDismissal(onboardingNoticeDismissedForever: true));
   }
 
   Future<void> _setConfirmDestructiveActions(bool value) async {
@@ -1390,6 +1470,77 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return events.map((event) => _sanitizeDiagnostic(event)).join(' || ');
   }
 
+  List<Widget> _compatibilityNotices() {
+    final settings =
+        _onboardingSettings ?? const UserSettingsSnapshot.defaults();
+    final notices = <Widget>[];
+
+    if (!PlatformCapabilities.localSpeechSupported &&
+        !_localSpeechNoticeDismissed &&
+        !_isNoticeSnoozed(_localSpeechNoticeSnoozedUntil) &&
+        !settings.localSpeechNoticeDismissedForever) {
+      notices.add(
+        AppNotificationCard(
+          icon: Icons.mic_off_outlined,
+          title:
+              'Dictée locale indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
+          message:
+              '${PlatformCapabilities.localSpeechUnavailableReason} Utilise le mode Whisper avancé à la place.',
+          accentColor: AppColors.warning,
+          onDismiss: _dismissLocalSpeechNotice,
+          primaryAction: TextButton(
+            onPressed: _dismissLocalSpeechNoticeForever,
+            child: const Text('Ne plus afficher'),
+          ),
+          secondaryAction: TextButton(
+            onPressed: _snoozeLocalSpeechNotice,
+            child: const Text('Plus tard'),
+          ),
+        ),
+      );
+    }
+
+    if (!PlatformCapabilities.overlaySupported &&
+        !_overlayNoticeDismissed &&
+        !_isNoticeSnoozed(_overlayNoticeSnoozedUntil) &&
+        !settings.overlayNoticeDismissedForever) {
+      notices.add(
+        AppNotificationCard(
+          icon: Icons.layers_clear_outlined,
+          title:
+              'Overlay Android indisponible sur ${PlatformCapabilities.currentPlatformLabel}',
+          message: PlatformCapabilities.overlayUnavailableReason,
+          onDismiss: _dismissOverlayNotice,
+          primaryAction: TextButton(
+            onPressed: _dismissOverlayNoticeForever,
+            child: const Text('Ne plus afficher'),
+          ),
+          secondaryAction: TextButton(
+            onPressed: _snoozeOverlayNotice,
+            child: const Text('Plus tard'),
+          ),
+        ),
+      );
+    }
+
+    return notices;
+  }
+
+  Widget? _notificationStack(List<Widget> notices) {
+    if (notices.isEmpty) {
+      return null;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < notices.length; i++) ...[
+          notices[i],
+          if (i + 1 < notices.length) AppGaps.x1,
+        ],
+      ],
+    );
+  }
+
   Widget _settingsList({required List<Widget> sections}) {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -1470,9 +1621,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     AppDiagnostics.record('screen_build', 'Settings');
     final storageStatusAsync = ref.watch(_storageStatusProvider);
     final onboardingReadiness = _onboardingReadiness();
+    final onboardingSettings = _onboardingSettings;
+    final onboardingNoticeDismissedForever =
+        onboardingSettings?.onboardingNoticeDismissedForever == true;
     final onboardingTile = widget.onResumeOnboarding == null
         ? null
-        : (_onboardingTileDismissed
+        : (onboardingNoticeDismissedForever || _onboardingTileDismissed
               ? null
               : _OnboardingSettingsTile(
                   onResume: widget.onResumeOnboarding!,
@@ -1480,14 +1634,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   highlightResume: widget.highlightOnboardingResume,
                   onDismiss: _dismissOnboardingTile,
                 ));
-    final moveOnboardingTileToEnd =
-        onboardingReadiness.onboardingCompleted &&
-        onboardingReadiness.steps.isNotEmpty &&
-        onboardingReadiness.steps.every((step) => step.satisfied);
+    final notificationStack = _notificationStack([
+      ..._compatibilityNotices(),
+      ?onboardingTile,
+    ]);
     if (_loading || _onboardingLoading) {
       return _settingsList(
         sections: [
-          ?onboardingTile,
+          ?notificationStack,
           const Center(child: CircularProgressIndicator()),
         ],
       );
@@ -1503,7 +1657,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final voiceCatalogState = ref.watch(languagePackCatalogProvider);
     return _settingsList(
       sections: [
-        if (onboardingTile != null && !moveOnboardingTileToEnd) onboardingTile,
+        ?notificationStack,
         _collapsibleSection(
           id: 'account_cloud',
           title: 'Compte & cloud',
@@ -1629,7 +1783,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ],
           ),
         ),
-        if (onboardingTile != null && moveOnboardingTileToEnd) onboardingTile,
       ],
     );
   }

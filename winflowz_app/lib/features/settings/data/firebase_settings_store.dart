@@ -72,6 +72,8 @@ class FirebaseSettingsStore implements SettingsStore {
       'localSpeechNoticeDismissedForever':
           settings.localSpeechNoticeDismissedForever,
       'overlayNoticeDismissedForever': settings.overlayNoticeDismissedForever,
+      'onboardingNoticeDismissedForever':
+          settings.onboardingNoticeDismissedForever,
       'updatedAt': FieldValue.serverTimestamp(),
     };
   }
@@ -109,6 +111,8 @@ class FirebaseSettingsStore implements SettingsStore {
           data['localSpeechNoticeDismissedForever'] as bool? ?? false,
       overlayNoticeDismissedForever:
           data['overlayNoticeDismissedForever'] as bool? ?? false,
+      onboardingNoticeDismissedForever:
+          data['onboardingNoticeDismissedForever'] as bool? ?? false,
       syncStatus: const SyncStatus(health: SyncHealth.synced),
       updatedAt: _timestampToDate(data['updatedAt']),
     );

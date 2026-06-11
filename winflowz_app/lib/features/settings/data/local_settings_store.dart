@@ -35,6 +35,8 @@ class LocalSettingsStore implements SettingsStore {
       'settings_local_speech_notice_dismissed_forever';
   static const _overlayNoticeDismissedForeverKey =
       'settings_overlay_notice_dismissed_forever';
+  static const _onboardingNoticeDismissedForeverKey =
+      'settings_onboarding_notice_dismissed_forever';
 
   final FlutterSecureStorage _storage;
   final _controller = StreamController<UserSettingsSnapshot>.broadcast();
@@ -100,6 +102,10 @@ class LocalSettingsStore implements SettingsStore {
       await _read(_overlayNoticeDismissedForeverKey),
       fallback: false,
     );
+    final onboardingNoticeDismissedForever = _boolFromValue(
+      await _read(_onboardingNoticeDismissedForeverKey),
+      fallback: false,
+    );
 
     return UserSettingsSnapshot.defaults().copyWith(
       themeMode: themeMode,
@@ -118,6 +124,7 @@ class LocalSettingsStore implements SettingsStore {
       onboardingOverlaySkipped: onboardingOverlaySkipped,
       localSpeechNoticeDismissedForever: localSpeechNoticeDismissedForever,
       overlayNoticeDismissedForever: overlayNoticeDismissedForever,
+      onboardingNoticeDismissedForever: onboardingNoticeDismissedForever,
     );
   }
 
@@ -174,6 +181,10 @@ class LocalSettingsStore implements SettingsStore {
     await _write(
       _overlayNoticeDismissedForeverKey,
       settings.overlayNoticeDismissedForever.toString(),
+    );
+    await _write(
+      _onboardingNoticeDismissedForeverKey,
+      settings.onboardingNoticeDismissedForever.toString(),
     );
     _controller.add(settings);
   }

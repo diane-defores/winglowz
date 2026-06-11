@@ -22,6 +22,7 @@ class UserSettingsSnapshot {
     this.onboardingOverlaySkipped = false,
     this.localSpeechNoticeDismissedForever = false,
     this.overlayNoticeDismissedForever = false,
+    this.onboardingNoticeDismissedForever = false,
     this.updatedAt,
   });
 
@@ -43,6 +44,7 @@ class UserSettingsSnapshot {
       onboardingOverlaySkipped = false,
       localSpeechNoticeDismissedForever = false,
       overlayNoticeDismissedForever = false,
+      onboardingNoticeDismissedForever = false,
       updatedAt = null;
 
   final ThemeMode themeMode;
@@ -62,6 +64,7 @@ class UserSettingsSnapshot {
   final bool onboardingOverlaySkipped;
   final bool localSpeechNoticeDismissedForever;
   final bool overlayNoticeDismissedForever;
+  final bool onboardingNoticeDismissedForever;
   final DateTime? updatedAt;
 
   UserSettingsSnapshot copyWith({
@@ -82,6 +85,7 @@ class UserSettingsSnapshot {
     bool? onboardingOverlaySkipped,
     bool? localSpeechNoticeDismissedForever,
     bool? overlayNoticeDismissedForever,
+    bool? onboardingNoticeDismissedForever,
     DateTime? updatedAt,
   }) {
     return UserSettingsSnapshot(
@@ -113,6 +117,9 @@ class UserSettingsSnapshot {
           this.localSpeechNoticeDismissedForever,
       overlayNoticeDismissedForever:
           overlayNoticeDismissedForever ?? this.overlayNoticeDismissedForever,
+      onboardingNoticeDismissedForever:
+          onboardingNoticeDismissedForever ??
+          this.onboardingNoticeDismissedForever,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
