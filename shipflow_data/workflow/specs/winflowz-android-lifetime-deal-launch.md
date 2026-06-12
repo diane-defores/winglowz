@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-06-11"
 created_at: "2026-06-11 19:07:18 UTC"
 updated: "2026-06-12"
-updated_at: "2026-06-12 10:16:22 UTC"
+updated_at: "2026-06-12 10:39:02 UTC"
 status: draft
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
@@ -74,6 +74,8 @@ evidence:
   - "winflowz_site/src/pages/api/polar/checkout.ts is tied to gated course lessons, not a general app LTD checkout."
   - "shipflow_data/business/winflowz-android-ltd-pricing-audit.md recommends a tiered LTD ladder: $79 local platform, $149 platform pro, $249 all-platform local/BYO, and $599+ or waitlist for all-platform cloud."
   - "User decision context 2026-06-12: AppSumo is likely later, and direct-site pricing must preserve room for AppSumo to negotiate the lowest available public deal."
+  - "User decision 2026-06-12: the direct-site launch is a pre-AppSumo founder pricing window."
+  - "User decision 2026-06-12: LTD licenses should grant access to all present and future released platforms, with the tier differentiated by the number of active device activations rather than by platform family."
 next_step: "/100-sf-spec validate WinFlowz Android LTD offer policy decisions before readiness"
 ---
 
@@ -226,6 +228,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 
 - WinFlowz Android LTD is a separate offer from SocialGlowz LTD and from Windows Mastery training.
 - Public copy must make Android availability clear before the first paid CTA.
+- LTD entitlement is cross-platform over released platforms; tiers differ by active device activation count, not by platform family.
 - Claims must stay inside the app target-reviewed truth: Android-native entrypoints first, BYO keys local, supported language packs only, no universal offline promise, no all-platform parity promise.
 - A buyer must not be able to click a WinFlowz Android CTA and land in a SocialGlowz or Windows training checkout by default.
 - Checkout metadata must preserve `offer_id`, `product_id`, `plan`, and source attribution for fulfillment and support.
@@ -260,6 +263,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - Provider checkout succeeds but entitlement/access is manual or pending review.
 - Early Bird price changes after launch assets are published.
 - Lifetime Deal includes future updates but not every future platform or premium AI cost.
+- Lifetime Deal grants access to future released platforms without deadline promises, but activation count limits how many devices can be active at once.
 - Future AppSumo negotiation needs the lowest available public deal, making the direct-site Early Bird price architecture and wording important.
 - Support promise is operationally weaker than "priority support" copy.
 - Product page and training page both use the name WinFlowz and compete in search/navigation.
@@ -417,6 +421,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - Implementation should start with the offer/checkout source of truth, not the visual page, because public CTAs depend on correct payment behavior.
 - Pricing started with a market/pricing audit before any public price was hardcoded. The current recommendation is documented in `shipflow_data/business/winflowz-android-ltd-pricing-audit.md`; Diane must validate or adjust it before public prices are implemented.
 - Future AppSumo pricing is a channel constraint: the direct-site Early Bird should validate demand, then public prices should rise before AppSumo negotiation so AppSumo can receive the lowest currently available public deal without forcing an unsustainable all-in package.
+- License architecture is now activation-based: all LTD tiers can access present and future released platforms, but each tier has a maximum number of active devices regardless of platform mix. Implementation should model this as per-user entitlement plus activation ledger, not as per-platform product SKUs.
 - After the offer source is clear, implementation should treat page quality as a first-class deliverable: build the sales narrative and visual direction before coding the final route.
 - Before finishing, run browser screenshot proof and inspect the page visually. A passing build is not enough for this chantier.
 - If no real app screenshots are available, create a bounded asset plan: either capture screenshots from the app/web surface or generate honest bitmap visuals that clearly represent the Android offer without inventing unsupported UI.
@@ -432,10 +437,10 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - Should Diane accept, adjust, or reject the recommended public ladder: $79 Android Local Early Bird, $149 Android Pro Early Bird, $249 All Platforms Founder, and $599+ or waitlist for Everything / Cloud Founder?
 - Should the Everything / Cloud tier be public at $599+ or private/waitlist-only until cloud usage is measured?
 - What exact currency and tax/VAT display should be published with Lemon Squeezy: USD prices with tax handled at checkout, localized tax-inclusive display, or another policy?
-- Should the direct-site Early Bird be explicitly positioned as pre-AppSumo founder pricing that can end before a later AppSumo negotiation?
+- Resolved 2026-06-12: the direct-site Early Bird should be positioned as pre-AppSumo founder pricing that can end or increase before a later AppSumo negotiation.
 - Resolved 2026-06-11: Lemon Squeezy owns the first paid launch; Polar is unavailable for now.
-- Should the $79 entry tier be Android-only forever or "one platform family" when future platform families exist?
-- Are the recommended device caps accepted: 2 devices for local platform, 3 for platform pro, 5 for all-platform tiers?
+- Resolved 2026-06-12: the LTD license model is cross-platform access to present and future released platforms, differentiated by active device activations rather than platform family.
+- Should the activation caps be 1 device for $79, 3 devices for $149, and 5 devices for $249/Everything?
 - What exactly does each "Lifetime Deal" tier include: future Android updates, fair-use cloud sync, local packs, BYO AI features, future desktop/iOS/Linux access, and support tier?
 - After purchase, is access automatic via Lemon Squeezy entitlement, manual, activation-code based, or "APK/download + email" for Early Bird?
 - Resolved 2026-06-11: first launch language is English-first; French can follow or stay secondary unless Diane chooses bilingual launch.
@@ -445,6 +450,8 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
+| 2026-06-12 10:39:02 UTC | 100-sf-spec | GPT-5 Codex | Recorded Diane's decision that LTD licensing should be cross-platform across present and future released platforms, differentiated by active device activation count rather than by platform family. | partial | Confirm activation caps, cloud tier visibility, support, tax/currency display, and access delivery. |
+| 2026-06-12 10:36:31 UTC | 100-sf-spec | GPT-5 Codex | Recorded Diane's decision that direct-site Early Bird is a pre-AppSumo founder pricing window and should not promise "lowest price ever." | partial | Ask Diane specific offer and fulfillment questions, then rerun readiness. |
 | 2026-06-12 10:16:22 UTC | 101-sf-ready | GPT-5 Codex | Re-reviewed the WinFlowz Android LTD launch spec against readiness, adversarial, security, design-system, language, documentation freshness, and external provider gates. | not ready | Resolve remaining offer-policy decisions: exact public ladder, cloud tier visibility, tax/currency display, AppSumo sequencing, entry-tier scope, device caps, tier inclusions, access delivery, support, and founder allocation. |
 | 2026-06-12 10:15:04 UTC | 706-continue | GPT-5 Codex | Reprised the launch chantier after AppSumo/pricing discussion, checked repo status and task context, and routed the next step. | blocked | Diane validates the direct-site Early Bird ladder, AppSumo sequencing, cloud tier visibility, device caps, and access/support policy before 101-sf-ready or 102-sf-start. |
 | 2026-06-12 01:24:00 UTC | 204-sf-market-study | GPT-5 Codex | Added future AppSumo pricing-parity constraint to the pricing audit and spec: direct-site Early Bird must preserve room for later AppSumo negotiation and avoid "lowest price ever" claims. | partial | Validate direct-site pricing ladder and AppSumo sequencing before public page implementation. |

@@ -3623,7 +3623,6 @@ class WinFlowzKeyboardView(
                 nativeColors.disabledText
         }
         textPaint.textSize = keyTextSize(key) * textScale.coerceIn(0.86f, 1f)
-        val baseline = drawRect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
         val label =
             longPressSwipeSurfaceAssignment?.let(KeyboardActionSurfacePolicy::displayLabel)
                 ?: if (isLongPressSwipeTarget && !isLongPressSwipeOrigin) {
@@ -3632,7 +3631,25 @@ class WinFlowzKeyboardView(
                     displayLabelForRect(key, drawRect)
                 }
         if (label.isNotEmpty()) {
-            canvas.drawText(label, drawRect.centerX(), baseline, textPaint)
+            val secondaryLabel = key.secondaryLabel?.takeIf { !isLongPressSwipeTarget }
+            if (secondaryLabel == null) {
+                val baseline = drawRect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2f
+                canvas.drawText(label, drawRect.centerX(), baseline, textPaint)
+            } else {
+                val primaryBaseline = drawRect.centerY() - dp(3f)
+                canvas.drawText(label, drawRect.centerX(), primaryBaseline, textPaint)
+                secondaryTextPaint.textSize = sp(8f)
+                secondaryTextPaint.color =
+                    if (hideInactiveLongPressSwipeSurface) {
+                        colorWithOpacity(resolvedCornerTextColor, 0.22f)
+                    } else if (key.active || isActiveModifierKey(key) || isLongPressSwipeTarget || isCtrlPrimaryCornerTarget) {
+                        colorWithOpacity(textPaint.color, 0.78f)
+                    } else {
+                        resolvedCornerTextColor
+                    }
+                val secondaryBaseline = drawRect.centerY() + dp(11f)
+                canvas.drawText(secondaryLabel, drawRect.centerX(), secondaryBaseline, secondaryTextPaint)
+            }
         }
 
         if (shouldRenderCorners(key) && !isLongPressSwipeTarget) {
@@ -4651,7 +4668,9 @@ class WinFlowzKeyboardView(
         }
         triggerPressEffect(key, sourceFrame)
         performKeyboardHaptic(HapticFeedbackConstants.KEYBOARD_TAP)
-        performKeySound()
+        if (shouldPlayKeySoundBeforeDispatch(commandKey)) {
+            performKeySound()
+        }
         if (selection != GestureSelection.PrimaryTap) {
             val cornerValue = keyValueForSelection(key, selection)
             if (cornerValue == null) {
@@ -4966,6 +4985,7 @@ class WinFlowzKeyboardView(
                     }
                 callbacks.onKeySoundModeChanged(keySoundIntensity)
                 callbacks.onKeySoundChanged(keySoundEnabled)
+                performKeySound()
                 setStatus(soundModeStatusText())
             }
             KeyboardKeyAction.ToggleSpellingSuggestions -> {
@@ -5205,19 +5225,9 @@ class WinFlowzKeyboardView(
     private val keySoundProfiles = arrayOf(
         listOf(),
         listOf(KeySoundStep(ToneGenerator.TONE_PROP_BEEP, 24)),
-        listOf(
-            KeySoundStep(ToneGenerator.TONE_PROP_BEEP, 18),
-            KeySoundStep(ToneGenerator.TONE_PROP_BEEP2, 18, postDelayMs = 30L),
-        ),
-        listOf(
-            KeySoundStep(ToneGenerator.TONE_PROP_BEEP, 28, postDelayMs = 0L),
-            KeySoundStep(ToneGenerator.TONE_PROP_ACK, 18, postDelayMs = 32L),
-        ),
-        listOf(
-            KeySoundStep(ToneGenerator.TONE_PROP_BEEP2, 16),
-            KeySoundStep(ToneGenerator.TONE_PROP_BEEP, 16, postDelayMs = 18L),
-            KeySoundStep(ToneGenerator.TONE_PROP_ACK, 18, postDelayMs = 18L),
-        ),
+        listOf(KeySoundStep(ToneGenerator.TONE_PROP_BEEP2, 22)),
+        listOf(KeySoundStep(ToneGenerator.TONE_PROP_ACK, 28)),
+        listOf(KeySoundStep(ToneGenerator.TONE_PROP_NACK, 26)),
     )
 
     private fun performKeySound() {
@@ -5246,12 +5256,23 @@ class WinFlowzKeyboardView(
         }
     }
 
-    private fun soundModeStatusText(): String {
-        return if (keySoundEnabled) {
-            "Key sound on"
-        } else {
-            "Key sound off"
+    private fun shouldPlayKeySoundBeforeDispatch(key: KeyboardKeySpec): Boolean {
+        return key.action != KeyboardKeyAction.ToggleKeySound
+    }
+
+    private fun currentSoundModeLabel(): String {
+        return when (keySoundIntensity) {
+            KeyboardStateStore.KEY_SOUND_INTENSITY_OFF -> "Muted"
+            KeyboardStateStore.KEY_SOUND_INTENSITY_SHORT -> "Click"
+            KeyboardStateStore.KEY_SOUND_INTENSITY_MEDIUM -> "Tick"
+            KeyboardStateStore.KEY_SOUND_INTENSITY_LONG -> "Clack"
+            KeyboardStateStore.KEY_SOUND_INTENSITY_EXTRA -> "Pop"
+            else -> "Click"
         }
+    }
+
+    private fun soundModeStatusText(): String {
+        return if (keySoundEnabled) "Key sound ${currentSoundModeLabel()}" else "Key sound off"
     }
 
     override fun onDetachedFromWindow() {

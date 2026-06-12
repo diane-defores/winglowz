@@ -52,6 +52,26 @@ enum KeyboardPreviewMode {
   final String label;
 }
 
+enum KeyboardPreviewSoundMode {
+  off('Muted'),
+  short('Click'),
+  medium('Tick'),
+  long('Clack'),
+  extra('Pop');
+
+  const KeyboardPreviewSoundMode(this.label);
+
+  final String label;
+
+  KeyboardPreviewSoundMode get next => switch (this) {
+    KeyboardPreviewSoundMode.off => KeyboardPreviewSoundMode.short,
+    KeyboardPreviewSoundMode.short => KeyboardPreviewSoundMode.medium,
+    KeyboardPreviewSoundMode.medium => KeyboardPreviewSoundMode.long,
+    KeyboardPreviewSoundMode.long => KeyboardPreviewSoundMode.extra,
+    KeyboardPreviewSoundMode.extra => KeyboardPreviewSoundMode.off,
+  };
+}
+
 class KeyboardPreviewScreen extends StatefulWidget {
   const KeyboardPreviewScreen({super.key});
 
@@ -68,7 +88,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
   bool _corners = true;
   bool _debug = false;
   bool _vibration = true;
-  bool _sound = false;
+  KeyboardPreviewSoundMode _soundMode = KeyboardPreviewSoundMode.off;
   bool _suggestions = true;
   bool _specialCorners = false;
   bool _french = true;
@@ -268,8 +288,10 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
         break;
       case KeyboardPreviewKeyAction.toggleSound:
         setState(() {
-          _sound = !_sound;
-          _status = _sound ? 'Key sound on.' : 'Key sound off.';
+          _soundMode = _soundMode.next;
+          _status = _soundMode == KeyboardPreviewSoundMode.off
+              ? 'Key sound off.'
+              : 'Key sound ${_soundMode.label}.';
         });
         break;
       case KeyboardPreviewKeyAction.toggleSuggestions:
@@ -384,7 +406,7 @@ class _KeyboardPreviewScreenState extends State<KeyboardPreviewScreen> {
       corners: _corners,
       debug: _debug,
       vibration: _vibration,
-      sound: _sound,
+      soundMode: _soundMode,
       suggestionsEnabled: _suggestions,
       specialCorners: _specialCorners,
       frenchEnabled: _french,

@@ -976,7 +976,16 @@ class WinFlowzInputMethodService :
     override fun onKeySoundModeChanged(level: Int) {
         stateStore.keySoundIntensity = level
         applyRuntimePreferencesToView()
-        showStatus(if (stateStore.keySoundEnabled) "Key sound on" else "Key sound off")
+        showStatus(
+            when (level) {
+                KeyboardStateStore.KEY_SOUND_INTENSITY_OFF -> "Key sound off"
+                KeyboardStateStore.KEY_SOUND_INTENSITY_SHORT -> "Key sound Click"
+                KeyboardStateStore.KEY_SOUND_INTENSITY_MEDIUM -> "Key sound Tick"
+                KeyboardStateStore.KEY_SOUND_INTENSITY_LONG -> "Key sound Clack"
+                KeyboardStateStore.KEY_SOUND_INTENSITY_EXTRA -> "Key sound Pop"
+                else -> if (stateStore.keySoundEnabled) "Key sound on" else "Key sound off"
+            },
+        )
     }
 
     override fun onSpellingSuggestionsChanged(enabled: Boolean) {

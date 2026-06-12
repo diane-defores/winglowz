@@ -62,9 +62,9 @@ The sustainable shape is a ladder:
 
 | Tier | Early Bird recommendation | Regular anchor | Core promise | Cloud risk |
 | --- | ---: | ---: | --- | --- |
-| Local-first Platform LTD | **$79** | $149 | One user, Android now, local/BYO features, no meaningful hosted usage included | Low |
-| Platform Pro LTD | **$149** | $249 | One user, one platform family, Android now, fair-use cloud sync when available | Medium |
-| All-platforms Local/BYO LTD | **$249** | $399 | One user, all released platforms over time, no guaranteed release dates, local/BYO focus | Medium-low |
+| Starter Activation LTD | **$79** | $149 | One user, all released platforms over time, 1 active device, local/BYO features, no meaningful hosted usage included | Low |
+| Pro Activation LTD | **$149** | $249 | One user, all released platforms over time, 3 active devices, fair-use cloud sync when available | Medium |
+| Founder Activation LTD | **$249** | $399 | One user, all released platforms over time, 5 active devices, no guaranteed release dates, local/BYO focus | Medium-low |
 | Everything / Cloud LTD | **$599 minimum** | $899+ | One user, all released platforms, bounded cloud sync/fair-use, stronger support | High |
 
 Recommendation: launch with **three visible tiers** and keep Everything/Cloud as either a capped high-ticket tier or a "contact / limited beta" tier until cloud sync usage is measured.
@@ -75,7 +75,7 @@ Minimum no-bankruptcy rule: **do not sell all-platforms + cloud sync below $499*
 
 - First launch language: English.
 - Payment provider: Lemon Squeezy.
-- License basis: per user, not per machine, with a reasonable personal-device cap.
+- License basis: per user, not per platform and not per machine, with a fixed number of active device activations across any released platform.
 - Early Bird framing: beta pricing that may change, not a fake fixed deadline.
 - Other platforms: Windows, iOS, and Linux can be promised as intended future directions only; no release date commitment.
 - Cloud: must be fair-use/capped or separated from cheap tiers.
@@ -150,55 +150,55 @@ At $0.003/minute, 10 hours/month costs about $1.80/month before infrastructure a
 
 ## Recommended License Semantics
 
-Use **per-user personal license**, not per-machine:
+Use **per-user personal license with cross-platform activation limits**, not per-platform or per-machine:
 
 - Better for a future multi-platform promise.
 - Easier to explain on a sales page.
 - More attractive than per-machine licensing.
-- Still controllable with an activation/device cap.
+- Easier to manage operationally: the entitlement owns `max_active_devices`, while each activation records device and platform metadata.
 
 Recommended default cap for audit and implementation:
 
 | Tier | Device policy |
 | --- | --- |
-| Local-first Platform LTD | 1 user, up to 2 active devices on the purchased platform family |
-| Platform Pro LTD | 1 user, up to 3 active devices on that platform family |
-| All-platforms Local/BYO LTD | 1 user, up to 5 active personal devices across released platforms |
-| Everything / Cloud LTD | 1 user, up to 5 active personal devices, cloud fair-use and anti-abuse controls |
+| Starter Activation LTD | 1 user, 1 active personal device across any released platform |
+| Pro Activation LTD | 1 user, up to 3 active personal devices across any released platform |
+| Founder Activation LTD | 1 user, up to 5 active personal devices across any released platform |
+| Everything / Cloud LTD | 1 user, up to 5 active personal devices across any released platform, cloud fair-use and anti-abuse controls |
 
 Do not sell team use under individual LTD. Team/commercial multi-seat use should become a future subscription or business license.
 
 ## Recommended Offer Architecture
 
-### Tier 1: Local-first Platform LTD
+### Tier 1: Starter Activation LTD
 
 **Early Bird: $79. Do not go below $59.**
 
 Includes:
 - Android app now.
-- Future Android updates.
+- Access to future released platforms if and when they ship, with no deadline promise.
+- 1 active personal device at a time, regardless of platform.
 - Local-first features: keyboard, snippets, dictionary, clipboard workflows where available.
 - BYO keys for advanced AI features where implemented.
 - No included hosted transcription.
-- No guaranteed Windows/iOS/Linux access.
 - Minimal cloud/account usage only if needed for activation.
 
-Why: This tier captures price-sensitive early adopters without creating a cloud liability. It is close enough to the user's $49 instinct, but safer and more aligned with the product's value.
+Why: This tier captures price-sensitive early adopters without creating a cloud liability. The low activation count keeps the entry tier simple and sustainable while preserving the multi-platform founder promise.
 
-### Tier 2: Platform Pro LTD
+### Tier 2: Pro Activation LTD
 
 **Early Bird: $149. Regular anchor: $249.**
 
 Includes:
-- One platform family, Android now.
-- More generous activation/device cap.
+- Android now, future released platforms if and when they ship.
+- 3 active personal devices across any released platform.
 - Fair-use cloud sync for text/snippets/settings when available.
 - Beta updates.
 - Standard support.
 
 Why: $149 is a reasonable bridge between low-cost tools and premium lifetime dictation. It stays below Superwhisper lifetime while allowing some future cloud cost.
 
-### Tier 3: All-platforms Local/BYO LTD
+### Tier 3: Founder Activation LTD
 
 **Early Bird: $249. Regular anchor: $399.**
 
@@ -206,10 +206,11 @@ Includes:
 - Access to Android now.
 - Access to Windows, iOS, Linux if and when released.
 - Explicit no-deadline language.
+- 5 active personal devices across any released platform.
 - Local/BYO-first workflow.
 - Cloud sync limited or excluded except activation/basic account state.
 
-Why: Superwhisper anchors all-platform lifetime around $249. WinFlowz can match this if the promise is future platform access without guaranteed deadlines and without unbounded cloud.
+Why: Superwhisper anchors all-platform lifetime around $249. WinFlowz can match this if the promise is future platform access with activation limits, no guaranteed deadlines, and no unbounded cloud.
 
 ### Tier 4: Everything / Cloud LTD
 
@@ -245,9 +246,9 @@ Avoid:
 
 For the first page, show three public cards:
 
-1. **Android Local Early Bird - $79**
-2. **Android Pro Early Bird - $149**
-3. **All Platforms Founder - $249**
+1. **Starter Founder - $79**: 1 active device, all released platforms over time
+2. **Pro Founder - $149**: 3 active devices, all released platforms over time
+3. **Studio Founder - $249**: 5 active devices, all released platforms over time
 
 Then show **Everything / Cloud Founder** as:
 
@@ -265,10 +266,9 @@ Before implementation:
 
 1. Accept, adjust, or reject the recommended pricing ladder.
 2. Decide whether Everything / Cloud is public at $599+ or waitlist only.
-3. Choose the exact device caps for each tier.
-4. Decide whether the $79 tier is Android-only forever or "one platform family".
-5. Decide whether direct-site Early Bird should be explicitly positioned as pre-AppSumo founder pricing that can end before AppSumo negotiation.
-6. Confirm support language: community/basic support vs priority/founder support.
+3. Confirm the exact activation caps: 1 active device for Starter, 3 for Pro, 5 for Studio/Everything.
+4. Decide whether direct-site Early Bird should be explicitly positioned as pre-AppSumo founder pricing that can end before AppSumo negotiation.
+5. Confirm support language: community/basic support vs priority/founder support.
 
 ## Sources
 

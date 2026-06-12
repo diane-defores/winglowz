@@ -1978,6 +1978,7 @@ class AndroidKeyboardStatus {
     required this.keyVibrationEnabled,
     required this.keyVibrationIntensity,
     required this.keySoundEnabled,
+    required this.keySoundIntensity,
     required this.spellingSuggestionsEnabled,
     required this.specialKeyCornersEnabled,
     required this.frenchLanguageEnabled,
@@ -2035,6 +2036,7 @@ class AndroidKeyboardStatus {
   final bool keyVibrationEnabled;
   final int keyVibrationIntensity;
   final bool keySoundEnabled;
+  final int keySoundIntensity;
   final bool spellingSuggestionsEnabled;
   final bool specialKeyCornersEnabled;
   final bool frenchLanguageEnabled;
@@ -2093,6 +2095,7 @@ class AndroidKeyboardStatus {
       keyVibrationEnabled: true,
       keyVibrationIntensity: 2,
       keySoundEnabled: false,
+      keySoundIntensity: 0,
       spellingSuggestionsEnabled: true,
       specialKeyCornersEnabled: false,
       frenchLanguageEnabled: true,
@@ -2169,6 +2172,9 @@ class AndroidKeyboardStatus {
         (map['keyVibrationIntensity'] as num?)?.toInt(),
       ),
       keySoundEnabled: map['keySoundEnabled'] as bool? ?? false,
+      keySoundIntensity: _normalizeKeySoundIntensity(
+        (map['keySoundIntensity'] as num?)?.toInt(),
+      ),
       spellingSuggestionsEnabled:
           map['spellingSuggestionsEnabled'] as bool? ?? true,
       specialKeyCornersEnabled:
@@ -2250,6 +2256,7 @@ class AndroidKeyboardStatus {
     bool? keyVibrationEnabled,
     int? keyVibrationIntensity,
     bool? keySoundEnabled,
+    int? keySoundIntensity,
     bool? spellingSuggestionsEnabled,
     bool? specialKeyCornersEnabled,
     bool? frenchLanguageEnabled,
@@ -2284,6 +2291,9 @@ class AndroidKeyboardStatus {
         keyVibrationIntensity ?? this.keyVibrationIntensity,
       ),
       'keySoundEnabled': keySoundEnabled ?? this.keySoundEnabled,
+      'keySoundIntensity': _normalizeKeySoundIntensity(
+        keySoundIntensity ?? this.keySoundIntensity,
+      ),
       'spellingSuggestionsEnabled':
           spellingSuggestionsEnabled ?? this.spellingSuggestionsEnabled,
       'specialKeyCornersEnabled':
@@ -2323,6 +2333,19 @@ class AndroidKeyboardStatus {
         return value!;
       default:
         return 2;
+    }
+  }
+
+  static int _normalizeKeySoundIntensity(int? value) {
+    switch (value) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+        return value!;
+      default:
+        return 1;
     }
   }
 }

@@ -154,14 +154,14 @@ void main() {
       'supported': true,
       'keyVibrationEnabled': true,
       'keyVibrationIntensity': 3,
+      'keySoundIntensity': 4,
     });
 
     expect(status.keyVibrationEnabled, isTrue);
     expect(status.keyVibrationIntensity, 3);
-    expect(
-      status.toPreferencesMap()['keyVibrationIntensity'],
-      3,
-    );
+    expect(status.keySoundIntensity, 4);
+    expect(status.toPreferencesMap()['keyVibrationIntensity'], 3);
+    expect(status.toPreferencesMap()['keySoundIntensity'], 4);
   });
 
   test('AndroidKeyboardStatus parses device profile fields', () {

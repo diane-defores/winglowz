@@ -1039,6 +1039,7 @@ class KeyboardLayoutBuilderTest {
         assertEquals("ABC", panelRows.last().keys.first().label)
         assertEquals(KeyboardKeyAction.ModeLetters, panelRows.last().keys.first().action)
         assertTrue(labels.containsAll(listOf("Keyboard", "App", "Theme", "QWERTY", "Vibe med", "Sound off", "Suggest on", "FR on", "EN on", "H-", "Compact", "Auto close on", "H+", "H 05%", "V 5%", "Special G off", "Gestures on", "2sp on", "Punc on", "Debug off")))
+        assertEquals("Muted", panelRows[1].keys.first { it.id == "setting-sound" }.secondaryLabel)
         assertTrue(snapshot.rows.drop(1 + snapshot.panelRowCount).none { row ->
             row.keys.any { it.action == KeyboardKeyAction.Text || it.action == KeyboardKeyAction.KeyValue }
         })

@@ -440,21 +440,50 @@ class _KeyCap extends StatelessWidget {
                 ),
               if (keySpec.pinned) const _PinnedBadge(),
               Center(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.x1,
-                    ),
-                    child: Text(
-                      keySpec.label,
-                      maxLines: 1,
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: foreground,
-                        fontWeight: AppFontWeights.bold,
-                      ),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.x1,
                   ),
+                  child: keySpec.secondaryLabel == null
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            keySpec.label,
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.labelLarge
+                                ?.copyWith(
+                                  color: foreground,
+                                  fontWeight: AppFontWeights.bold,
+                                ),
+                          ),
+                        )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                keySpec.label,
+                                maxLines: 1,
+                                style: Theme.of(context).textTheme.labelLarge
+                                    ?.copyWith(
+                                      color: foreground,
+                                      fontWeight: AppFontWeights.bold,
+                                    ),
+                              ),
+                            ),
+                            Text(
+                              keySpec.secondaryLabel!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.labelSmall
+                                  ?.copyWith(
+                                    color: foreground.withValues(alpha: 0.8),
+                                    fontWeight: AppFontWeights.medium,
+                                  ),
+                            ),
+                          ],
+                        ),
                 ),
               ),
             ],
@@ -704,7 +733,9 @@ class KeyboardCornerSelectablePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rows = <int, List<KeyboardConfigurableKey>>{};
-    for (final key in KeyboardConfigurableKeyCatalog.keysForProfile(layoutProfile)) {
+    for (final key in KeyboardConfigurableKeyCatalog.keysForProfile(
+      layoutProfile,
+    )) {
       rows.putIfAbsent(key.row, () => <KeyboardConfigurableKey>[]).add(key);
     }
     return FocusTraversalGroup(
@@ -1085,7 +1116,7 @@ class KeyboardPreviewSnapshot {
     required this.corners,
     required this.debug,
     required this.vibration,
-    required this.sound,
+    required this.soundMode,
     required this.suggestionsEnabled,
     required this.specialCorners,
     required this.frenchEnabled,
@@ -1103,7 +1134,7 @@ class KeyboardPreviewSnapshot {
   final bool corners;
   final bool debug;
   final bool vibration;
-  final bool sound;
+  final KeyboardPreviewSoundMode soundMode;
   final bool suggestionsEnabled;
   final bool specialCorners;
   final bool frenchEnabled;
@@ -1555,9 +1586,12 @@ class KeyboardPreviewSnapshot {
                 action: KeyboardPreviewKeyAction.toggleVibration,
               ),
               KeyboardPreviewKey(
-                label: sound ? 'Sound on' : 'Sound off',
+                label: soundMode == KeyboardPreviewSoundMode.off
+                    ? 'Sound off'
+                    : 'Sound on',
+                secondaryLabel: soundMode.label,
                 special: true,
-                active: sound,
+                active: soundMode != KeyboardPreviewSoundMode.off,
                 action: KeyboardPreviewKeyAction.toggleSound,
               ),
               KeyboardPreviewKey(
@@ -2300,6 +2334,7 @@ class KeyboardPreviewRow {
 class KeyboardPreviewKey {
   const KeyboardPreviewKey({
     required this.label,
+    this.secondaryLabel,
     this.weight = 1,
     this.enabled = true,
     this.active = false,
@@ -2321,6 +2356,7 @@ class KeyboardPreviewKey {
   });
 
   final String label;
+  final String? secondaryLabel;
   final double weight;
   final bool enabled;
   final bool active;
@@ -2352,6 +2388,7 @@ class KeyboardPreviewKey {
   }) {
     return KeyboardPreviewKey(
       label: label,
+      secondaryLabel: secondaryLabel,
       weight: weight,
       enabled: enabled,
       active: active,

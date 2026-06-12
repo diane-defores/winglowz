@@ -177,6 +177,7 @@ data class KeyboardClipboardEntry(
 data class KeyboardKeySpec(
     val id: String,
     val label: String,
+    val secondaryLabel: String? = null,
     val action: KeyboardKeyAction,
     val glyph: KeyboardKeyGlyph? = null,
     val keyValue: KeyboardKeyValue? = null,
@@ -1020,6 +1021,15 @@ object KeyboardLayoutBuilder {
                         KeyboardKeySpec(
                             id = "setting-sound",
                             label = if (request.keySoundIntensity == KeyboardStateStore.KEY_SOUND_INTENSITY_OFF) "Sound off" else "Sound on",
+                            secondaryLabel =
+                                when (request.keySoundIntensity) {
+                                    KeyboardStateStore.KEY_SOUND_INTENSITY_OFF -> "Muted"
+                                    KeyboardStateStore.KEY_SOUND_INTENSITY_SHORT -> "Click"
+                                    KeyboardStateStore.KEY_SOUND_INTENSITY_MEDIUM -> "Tick"
+                                    KeyboardStateStore.KEY_SOUND_INTENSITY_LONG -> "Clack"
+                                    KeyboardStateStore.KEY_SOUND_INTENSITY_EXTRA -> "Pop"
+                                    else -> "Click"
+                                },
                             action = KeyboardKeyAction.ToggleKeySound,
                             active = request.keySoundIntensity != KeyboardStateStore.KEY_SOUND_INTENSITY_OFF,
                         ),

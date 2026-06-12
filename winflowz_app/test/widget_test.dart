@@ -2017,6 +2017,7 @@ void main() {
     expect(find.text('AZERTY'), findsWidgets);
     expect(find.text('Vibe on'), findsOneWidget);
     expect(find.text('Sound off'), findsOneWidget);
+    expect(find.text('Muted'), findsOneWidget);
     expect(find.text('Suggest on'), findsOneWidget);
     expect(find.text('FR on'), findsOneWidget);
     expect(find.text('EN on'), findsOneWidget);
