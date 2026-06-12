@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { useState, useEffect } from "react"
 
-const testimonials = [
+export const testimonials = [
   {
     name: "Florin Muresan",
     role: "CEO & Co-Founder at Squirrly",

@@ -1,9 +1,10 @@
 ---
 import Avatar from "@components/ui/avatars/Avatar.astro";
 import FullStar from "@components/ui/stars/FullStar.astro";
+import { getLocalizedPath } from "@/utils/routing";
 
 const { avatars, starCount = 0, rating, reviews } = Astro.props;
-const productsUrl = Astro.currentLocale === "fr" ? "/fr/produits#testimonials" : "/products#testimonials";
+const productsUrl = getLocalizedPath(Astro.currentLocale === "fr" ? "fr" : "en", "testimonials");
 
 interface Props {
   avatars?: Array<string>;
