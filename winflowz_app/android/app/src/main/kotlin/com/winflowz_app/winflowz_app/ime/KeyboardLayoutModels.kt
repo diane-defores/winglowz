@@ -177,8 +177,8 @@ data class KeyboardClipboardEntry(
 data class KeyboardKeySpec(
     val id: String,
     val label: String,
-    val secondaryLabel: String? = null,
     val action: KeyboardKeyAction,
+    val secondaryLabel: String? = null,
     val glyph: KeyboardKeyGlyph? = null,
     val keyValue: KeyboardKeyValue? = null,
     val weight: Float = 1f,
