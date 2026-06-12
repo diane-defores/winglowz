@@ -4,7 +4,7 @@ import MainLayout from '@/layouts/MainLayout.astro'
 import type { Language } from '@/types'
 import { generateStaticPaths } from '@/utils/routing'
 import { getLocalizedSiteUrl } from '@/constants'
-import { recommendationImages } from '@/data/recommendations'
+import { recommendationImages, recommendationSections } from '@/data/recommendations'
 
 export const getStaticPaths = () => generateStaticPaths('recommendations')
 
@@ -17,8 +17,12 @@ const title = lang === 'fr' ? 'Recommandations' : 'Recommendations'
 const eyebrow = lang === 'fr' ? 'Preuves sociales' : 'Social proof'
 const description =
   lang === 'fr'
-    ? 'Captures réelles d’avis clients et de recommandations autour du produit.'
-    : 'Real customer review captures and recommendations around the product.'
+    ? 'Né d’un lancement AppSumo en juillet 2024, ce projet a commencé comme un template Notion avec 200 astuces Windows avant de devenir une formation plus large.'
+    : 'Born from a July 2024 AppSumo launch, this project started as a Notion template with 200 Windows tips before becoming a larger course.'
+const introLead =
+  lang === 'fr'
+    ? 'Les captures ci-dessous ne servent pas de décoration. Elles racontent pourquoi les premiers acheteurs ont réagi: gain de temps, meilleure structure, et sentiment de trouver enfin un produit utile et bien présenté.'
+    : 'The captures below are not decoration. They explain why early buyers reacted: less time wasted, clearer structure, and the feeling of finally finding something useful and well presented.'
 ---
 
 <MainLayout
@@ -49,18 +53,73 @@ const description =
         </p>
       </div>
 
-      <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {recommendationImages.map((image) => (
-          <figure class="landing-surface overflow-hidden rounded-2xl border shadow-sm transition-transform duration-300 hover:-translate-y-1">
-            <img
-              src={image.src}
-              alt={image.alt}
-              class="h-full w-full object-cover"
-              loading="lazy"
-            />
-          </figure>
+      <div class="mx-auto mt-10 max-w-3xl rounded-3xl border bg-white/70 p-6 text-left shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-black/30 sm:p-8">
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-zinc-500">
+          {lang === 'fr' ? 'Comment lire cette page' : 'How to read this page'}
+        </p>
+        <p class="mt-3 text-pretty text-lg leading-relaxed text-neutral-700 dark:text-zinc-300">
+          {introLead}
+        </p>
+        <p class="mt-4 text-pretty text-sm leading-relaxed text-neutral-600 dark:text-zinc-400">
+          {lang === 'fr'
+            ? 'L’ordre va du bénéfice le plus immédiat vers la preuve la plus profonde: d’abord le temps gagné, ensuite la qualité perçue, puis l’origine du produit et le contexte du lancement.'
+            : 'The order moves from the most immediate benefit to the deepest proof: time saved first, then perceived quality, then the product origin and launch context.'}
+        </p>
+      </div>
+
+      <div class="mt-12 space-y-10">
+        {recommendationSections.map((section) => (
+          <section class="space-y-5">
+            <div class="max-w-3xl">
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-zinc-500">
+                {section.key === 'time'
+                  ? (lang === 'fr' ? 'Gain de temps' : 'Time saved')
+                  : section.key === 'quality'
+                    ? (lang === 'fr' ? 'Qualité perçue' : 'Perceived quality')
+                    : (lang === 'fr' ? 'Contexte du lancement' : 'Launch context')}
+              </p>
+              <h2 class="mt-2 text-balance text-2xl font-bold tracking-tight text-neutral-950 dark:text-white sm:text-3xl">
+                {lang === 'fr' ? section.title.fr : section.title.en}
+              </h2>
+              <p class="mt-3 max-w-2xl text-pretty text-base leading-relaxed text-neutral-600 dark:text-zinc-400">
+                {lang === 'fr' ? section.summary.fr : section.summary.en}
+              </p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {section.imageIndexes.map((index) => {
+                const image = recommendationImages[index]
+                return (
+                  <figure class="landing-surface overflow-hidden rounded-2xl border shadow-sm transition-transform duration-300 hover:-translate-y-1">
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      class="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </figure>
+                )
+              })}
+            </div>
+          </section>
         ))}
       </div>
+
+      <section class="mt-12 rounded-3xl border bg-neutral-950 px-6 py-8 text-white shadow-lg dark:bg-white dark:text-neutral-950 sm:px-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-300 dark:text-neutral-500">
+          {lang === 'fr' ? 'Angle de vente' : 'Sales angle'}
+        </p>
+        <h2 class="mt-2 text-balance text-2xl font-bold sm:text-3xl">
+          {lang === 'fr'
+            ? 'Un petit produit utile devenu une vraie formation'
+            : 'A small useful product that became a real course'}
+        </h2>
+        <p class="mt-4 max-w-3xl text-pretty text-base leading-relaxed text-neutral-200 dark:text-neutral-700">
+          {lang === 'fr'
+            ? 'Au départ, il y avait un template Notion et un besoin simple: aider les gens à retrouver du temps et de la clarté sur Windows. Les retours positifs et le lancement AppSumo de juillet 2024 ont validé l’idée, puis le projet a été porté vers une formation plus complète.'
+            : 'At the start, there was a Notion template and a simple need: help people regain time and clarity on Windows. Positive feedback and the July 2024 AppSumo launch validated the idea, then the project was turned into a fuller course.'}
+        </p>
+      </section>
     </section>
   </main>
 </MainLayout>

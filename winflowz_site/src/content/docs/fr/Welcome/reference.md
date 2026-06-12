@@ -22,14 +22,11 @@ description: Explore WinFlowz's comprehensive documentation for an in-depth look
 
 ### Démonstration des Fonctionnalités
 <div class="video-container">
-  <video 
-    width="100%" 
-    height="400" 
-    controls
-  >
-    <source src="/videos/demo-winflowz.mp4" type="video/mp4">
-    Votre navigateur ne supporte pas la lecture de vidéos.
-  </video>
+  <img
+    src="/images/WinFlowz.png"
+    alt="Aperçu WinFlowz"
+    loading="lazy"
+  />
 </div>
 
 <style>
