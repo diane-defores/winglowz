@@ -107,6 +107,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version-file: winflowz_app/pubspec.yaml
           cache: true
 
       - name: Resolve dependencies
@@ -200,6 +201,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version-file: winflowz_app/pubspec.yaml
           cache: true
 
       - name: Resolve dependencies

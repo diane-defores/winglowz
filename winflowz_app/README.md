@@ -56,7 +56,30 @@ This subproject now contains:
 
 ```bash
 flutter pub get
-flutter run
+flutter analyze
+flutter test
+```
+
+## Toolchain Source Of Truth
+
+- `winflowz_app/pubspec.yaml` is the canonical Flutter SDK source of truth.
+- The app currently pins `environment.flutter: 3.41.7`.
+- `.github/workflows/android-build.yml` reads that exact version through `subosito/flutter-action` `flutter-version-file`.
+- `.flox/env/manifest.toml` should mirror the same Flutter version for contributors using Flox.
+- If you are not using Flox, install Flutter `3.41.7` explicitly before running dependency or CI-facing checks.
+
+## Dependency Maintenance Rules
+
+- Use `flutter pub outdated` before changing package constraints.
+- Upgrade only safe non-major direct dependencies for the active runtime and shared UI surface.
+- Keep `pubspec.lock` committed and regenerate it with `flutter pub upgrade <package...>` or `flutter pub get` after manifest changes.
+- Do not upgrade `go_router` or `record` across majors in routine maintenance; those need their own migration scope.
+- Treat `supabase_flutter` as legacy compile-compat debt. Do not refresh or expand Supabase ownership unless a dedicated retirement or migration spec says otherwise.
+- After dependency changes, run the allowed local proof path:
+
+```bash
+flutter analyze
+flutter test
 ```
 
 ## Product Feature Notes
@@ -193,15 +216,21 @@ dart format --set-exit-if-changed .
 git diff --check
 flutter analyze
 flutter test
-flutter build web
-flutter build apk --debug
 ```
 
-Before selling or publicly claiming production auth readiness, also run the
-Android/Firebase auth smoke in `docs/VERIFICATION.md`: email/password,
-Google success, controlled Google config failure or equivalent evidence, local
-mode, sign-out, and protected deep-link redirects.
+Local Android builds, APK packaging, `flutter run -d android`, and Gradle tasks are intentionally out of scope on this VM. Use GitHub Actions/Blacksmith for Android build proof.
 
-On Linux ARM64 hosts, Android resource tooling can fail because Google-distributed
-AAPT2 binaries are x86_64. Use an x64 Android runner for APK/AAB proof if local
-debug builds fail at AAPT2 startup.
+## License Baseline
+
+- Project license position: no app-level or monorepo-root `LICENSE` file is declared by this slice. Do not make redistribution or compliance claims beyond the package sources themselves until Diane lands the repository license decision.
+- Dependency inventory baseline: keep `pubspec.lock` committed and regenerate a reviewable dependency snapshot with:
+
+```bash
+flutter pub deps --json > /tmp/winflowz_app-pub-deps.json
+flutter pub outdated
+```
+
+- That baseline is an inventory input, not a legal attestation. A future legal/compliance pass still needs to review package license texts from the resolved package sources before any formal compliance claim.
+
+Before selling or publicly claiming production auth readiness, also run the
+Android/Firebase auth 
