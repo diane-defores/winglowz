@@ -43,6 +43,8 @@ evidence:
   - "https://textexpander.com/pricing"
   - "https://dictanote.co/voicein/"
   - "https://zplatform.ai/ai-deal/blip-ai/"
+  - "https://help.appsumo.com/article/680-how-is-the-list-price-calculated"
+  - "https://help.appsumo.com/article/678-how-can-i-list-multiple-plan-tiers"
   - "https://www.lemonsqueezy.com/pricing"
   - "https://firebase.google.com/pricing"
   - "https://developers.openai.com/api/docs/pricing"
@@ -77,6 +79,7 @@ Minimum no-bankruptcy rule: **do not sell all-platforms + cloud sync below $499*
 - Early Bird framing: beta pricing that may change, not a fake fixed deadline.
 - Other platforms: Windows, iOS, and Linux can be promised as intended future directions only; no release date commitment.
 - Cloud: must be fair-use/capped or separated from cheap tiers.
+- Future AppSumo launch is likely; site pricing should preserve room for AppSumo to negotiate the lowest public deal without forcing WinFlowz into an unsustainable all-in package.
 
 ## Competitor Pricing Snapshot
 
@@ -90,6 +93,27 @@ Minimum no-bankruptcy rule: **do not sell all-platforms + cloud sync below $499*
 | Descript | Official pricing shows annual Hobbyist at $16/person/month and monthly at $24/person/month. Source: [Descript pricing](https://www.descript.com/pricing). | Advanced media/AI tools monetize above simple dictation; strong AI/editorial features justify higher tiers. |
 | TextExpander | Individual $4.16/month, Business $10.41/month, Growth $13.54/month, billed annually. Source: [TextExpander pricing](https://textexpander.com/pricing). | Snippets/text productivity alone supports low recurring prices; WinFlowz needs voice + Android IME + future platform story to justify higher LTD. |
 | Voice In | Voice In positions Plus at $60/year and compares against Dragon at $300-$2500+. Source: [Voice In](https://dictanote.co/voicein/). | Browser dictation is cheaper; native app + keyboard + workflow reuse must be the differentiator. |
+
+## Future AppSumo Constraint
+
+AppSumo should be treated as a future negotiated channel, not as the first source of truth for the offer. AppSumo's public help center explains that its displayed list price is based on the partner's existing monthly plan annualized plus extra included features, and that AppSumo commonly negotiates better price and/or better terms for the deal. AppSumo also supports multiple deal tiers. Sources: [AppSumo list price calculation](https://help.appsumo.com/article/680-how-is-the-list-price-calculated), [AppSumo multiple tiers](https://help.appsumo.com/article/678-how-can-i-list-multiple-plan-tiers).
+
+Practical rule for WinFlowz:
+
+- Do not make the site Early Bird a permanent low reference price.
+- Keep the site launch framed as a limited beta founder price that can end or increase before AppSumo.
+- AppSumo can later get the lowest available public price, but only for a defined AppSumo package with explicit limits.
+- Avoid giving the direct site a better effective deal than AppSumo during an AppSumo campaign.
+- Preserve negotiation room by increasing direct-site pricing before AppSumo, or by making AppSumo terms different from the direct-site terms.
+
+Recommended sequence:
+
+1. Direct-site Early Bird on Lemon Squeezy to validate demand and collect first users.
+2. Raise direct-site prices to the regular anchors before any AppSumo negotiation.
+3. Negotiate AppSumo with stackable or tiered offers that are cheaper than the then-current public direct price, but not broader than the sustainable entitlement policy.
+4. After AppSumo, either close the LTD or move the direct site to higher LTD pricing / subscription / waitlist.
+
+AppSumo should not receive an all-platform + unlimited-cloud promise at a low headline price. If AppSumo requires a very low entry point, that entry point should map to local-first Android or tightly capped usage, not the premium cloud/all-platform tier.
 
 ## Cost And Margin Constraints
 
@@ -233,6 +257,8 @@ Then show **Everything / Cloud Founder** as:
 
 This lets the launch start without underpricing the highest-risk promise.
 
+Direct-site launch copy should avoid wording like "lowest price ever" unless Diane is ready to preserve that promise through AppSumo. Safer wording: "Early Bird beta pricing", "Founder pricing", or "price may increase as the product matures."
+
 ## Remaining Decisions For Diane
 
 Before implementation:
@@ -241,7 +267,8 @@ Before implementation:
 2. Decide whether Everything / Cloud is public at $599+ or waitlist only.
 3. Choose the exact device caps for each tier.
 4. Decide whether the $79 tier is Android-only forever or "one platform family".
-5. Confirm support language: community/basic support vs priority/founder support.
+5. Decide whether direct-site Early Bird should be explicitly positioned as pre-AppSumo founder pricing that can end before AppSumo negotiation.
+6. Confirm support language: community/basic support vs priority/founder support.
 
 ## Sources
 
@@ -253,6 +280,8 @@ Before implementation:
 - [TextExpander pricing](https://textexpander.com/pricing)
 - [Voice In](https://dictanote.co/voicein/)
 - [Blip AI deal analysis](https://zplatform.ai/ai-deal/blip-ai/)
+- [AppSumo list price calculation](https://help.appsumo.com/article/680-how-is-the-list-price-calculated)
+- [AppSumo multiple tiers](https://help.appsumo.com/article/678-how-can-i-list-multiple-plan-tiers)
 - [Lemon Squeezy pricing](https://www.lemonsqueezy.com/pricing)
 - [Firebase pricing](https://firebase.google.com/pricing)
 - [OpenAI API pricing](https://developers.openai.com/api/docs/pricing)

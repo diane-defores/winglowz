@@ -42,6 +42,51 @@
     --ui-button-icon-size: 1.1rem;
     --ui-button-icon-stroke: 2;
     --ui-button-border-width: 2px;
+
+    /* Bio page visual tokens */
+    --bio-bg: #000;
+    --bio-card-bg: rgba(255, 255, 255, 0.03);
+    --bio-card-border: rgba(255, 255, 255, 0.08);
+    --bio-text: #fff;
+    --bio-text-muted: rgba(255, 255, 255, 0.6);
+    --bio-accent: #ff00c8;
+    --bio-accent-glow: rgba(255, 0, 200, 0.3);
+    --bio-font-logo: 'Audiowide', cursive;
+    --bio-font-body: 'DM Sans', sans-serif;
+    --bio-font-ui: 'Manrope', sans-serif;
+    --bio-body-padding-inline: 1rem;
+    --bio-body-padding-block: 2rem;
+    --bio-container-max-width: 480px;
+    --bio-container-gap: 1.5rem;
+    --bio-avatar-size: 96px;
+    --bio-avatar-border-width: 2px;
+    --bio-avatar-border-color: var(--bio-accent);
+    --bio-avatar-shadow: 0 0 30px var(--bio-accent-glow);
+    --bio-name-size: 1.5rem;
+    --bio-name-letter-spacing: 0.05em;
+    --bio-tagline-size: 0.95rem;
+    --bio-tagline-line-height: 1.5;
+    --bio-tagline-max-width: 340px;
+    --bio-links-gap: 0.75rem;
+    --bio-link-padding-y: 1rem;
+    --bio-link-padding-x: 1.25rem;
+    --bio-link-font-size: 0.95rem;
+    --bio-link-weight: 600;
+    --bio-link-radius: 0.5rem;
+    --bio-link-border-width: 1px;
+    --bio-link-cta-shadow: 0 0 30px var(--bio-accent-glow);
+    --bio-link-hover-border-color: var(--bio-accent);
+    --bio-link-hover-shadow: 0 0 20px var(--bio-accent-glow);
+    --bio-link-hover-shadow-strong: 0 0 40px var(--bio-accent-glow);
+    --bio-link-hover-transform: -2px;
+    --bio-link-transition: 0.3s;
+    --bio-social-gap: 1.25rem;
+    --bio-social-margin-top: 0.5rem;
+    --bio-social-icon-size: 26px;
+    --bio-social-transition: 0.2s;
+    --bio-footer-size: 0.8rem;
+    --bio-footer-opacity: 0.5;
+    --bio-footer-margin-top: 1rem;
   }
 
   /* Base font size */

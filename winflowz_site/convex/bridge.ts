@@ -18,10 +18,13 @@ const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
 const REPLAYGLOWZ_DEFAULT_FREE_PLAN = 'free'
 const REPLAYGLOWZ_DEFAULT_FREE_SOURCE = 'product_default'
 const SOCIALGLOWZ_PRODUCT_ID = 'socialglowz'
+const SOCIALGLOWZ_DEFAULT_FREE_PLAN = 'free'
+const SOCIALGLOWZ_DEFAULT_FREE_SOURCE = 'product_default'
 const SOCIALGLOWZ_PROVIDER = 'socialglowz_convex'
 const SOCIALGLOWZ_BRIDGE_SOURCE = 'socialglowz_bridge_api'
-const SOCIALGLOWZ_PLAN_ALLOWLIST = new Set(['lifetime_deal', 'founder_ltd', 'ltd'])
+const SOCIALGLOWZ_PLAN_ALLOWLIST = new Set(['free', 'lifetime_deal', 'founder_ltd', 'ltd'])
 const SOCIALGLOWZ_SOURCE_ALLOWLIST = new Set([
+  'product_default',
   'manual',
   'partner',
   'appsumo',
@@ -34,8 +37,32 @@ const SOCIALGLOWZ_COMMERCE_EVENT_SOURCE = 'socialglowz_commerce'
 const SOCIALGLOWZ_COMMERCE_GRANT_SOURCE = 'socialglowz_commerce'
 const SOCIALGLOWZ_COMMERCE_EVENT_SOURCE_PREFIX = 'socialglowz:commerce'
 const TEMU_SHOPPING_LISTS_PRODUCT_ID = 'temu_shopping_lists'
+const TEMU_SHOPPING_LISTS_DEFAULT_FREE_PLAN = 'free'
+const TEMU_SHOPPING_LISTS_DEFAULT_FREE_SOURCE = 'product_default'
 const TEMU_SHOPPING_LISTS_PROVIDER = 'temu_shopping_lists_convex'
 const TEMU_SHOPPING_LISTS_BRIDGE_SOURCE = 'temu_shopping_lists_bridge_api'
+const DEFAULT_FREE_ENTITLEMENT_POLICIES = [
+  {
+    productId: WINFLOWZ_APP_PRODUCT_ID,
+    plan: WINFLOWZ_APP_DEFAULT_FREE_PLAN,
+    source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
+  },
+  {
+    productId: REPLAYGLOWZ_PRODUCT_ID,
+    plan: REPLAYGLOWZ_DEFAULT_FREE_PLAN,
+    source: REPLAYGLOWZ_DEFAULT_FREE_SOURCE,
+  },
+  {
+    productId: SOCIALGLOWZ_PRODUCT_ID,
+    plan: SOCIALGLOWZ_DEFAULT_FREE_PLAN,
+    source: SOCIALGLOWZ_DEFAULT_FREE_SOURCE,
+  },
+  {
+    productId: TEMU_SHOPPING_LISTS_PRODUCT_ID,
+    plan: TEMU_SHOPPING_LISTS_DEFAULT_FREE_PLAN,
+    source: TEMU_SHOPPING_LISTS_DEFAULT_FREE_SOURCE,
+  },
+] as const
 
 type SocialGlowzOperationResult = {
   status: 'ok' | 'already_active' | 'already_revoked'
@@ -356,6 +383,19 @@ function isActiveAccessStatus(status: string): boolean {
   return ACTIVE_ENTITLEMENT_STATUSES.has(status)
 }
 
+function selectPreferredActiveProductEntitlement<
+  T extends { productId: string; status: string; plan?: string }
+>(entitlements: T[], productId: string): T | undefined {
+  const activeEntitlements = entitlements.filter(
+    (entry) =>
+      entry.productId === productId && isActiveAccessStatus(entry.status)
+  )
+  return (
+    activeEntitlements.find((entry) => entry.plan !== 'free') ??
+    activeEntitlements[0]
+  )
+}
+
 function resolveReplayGlowzAccess(args: {
   globalUserId: string | null
   entitlements: { productId: string; status: string }[]
@@ -394,25 +434,40 @@ function resolveReplayGlowzAccess(args: {
   }
 }
 
-function replayGlowzDefaultFreeIdempotencyKey(globalUserId: string) {
-  return `${REPLAYGLOWZ_DEFAULT_FREE_SOURCE}:${REPLAYGLOWZ_PRODUCT_ID}:${globalUserId}`
+function getDefaultFreeEntitlementPolicy(productId: string) {
+  return (
+    DEFAULT_FREE_ENTITLEMENT_POLICIES.find(
+      (policy) => policy.productId === productId
+    ) ?? null
+  )
 }
 
-function winFlowzAppDefaultFreeIdempotencyKey(globalUserId: string) {
-  return `${WINFLOWZ_APP_DEFAULT_FREE_SOURCE}:${WINFLOWZ_APP_PRODUCT_ID}:${globalUserId}`
+function defaultFreeIdempotencyKey(productId: string, globalUserId: string) {
+  const policy = getDefaultFreeEntitlementPolicy(productId)
+  if (!policy) {
+    throw new Error('default_free_product_not_supported')
+  }
+  return `${policy.source}:${productId}:${globalUserId}`
 }
 
-async function ensureWinFlowzAppDefaultFreeEntitlement(
+async function ensureDefaultFreeEntitlement(
   ctx: MutationCtx,
   args: {
+    productId: string
     globalUserDocId: Id<'globalUsers'>
     globalUserPublicId: string
-    firebaseUid: string
+    sourceRef: string
     environment: string
     now: number
   }
 ) {
-  const idempotencyKey = winFlowzAppDefaultFreeIdempotencyKey(
+  const policy = getDefaultFreeEntitlementPolicy(args.productId)
+  if (!policy) {
+    throw new Error('default_free_product_not_supported')
+  }
+
+  const idempotencyKey = defaultFreeIdempotencyKey(
+    policy.productId,
     args.globalUserPublicId
   )
   const existingDefaultEntitlement = await ctx.db
@@ -424,16 +479,17 @@ async function ensureWinFlowzAppDefaultFreeEntitlement(
 
   if (existingDefaultEntitlement) {
     if (
-      existingDefaultEntitlement.productId !== WINFLOWZ_APP_PRODUCT_ID ||
+      existingDefaultEntitlement.productId !== policy.productId ||
       existingDefaultEntitlement.status !== 'active' ||
-      existingDefaultEntitlement.plan !== WINFLOWZ_APP_DEFAULT_FREE_PLAN
+      existingDefaultEntitlement.plan !== policy.plan ||
+      existingDefaultEntitlement.source !== policy.source
     ) {
       await ctx.db.patch(existingDefaultEntitlement._id, {
-        productId: WINFLOWZ_APP_PRODUCT_ID,
-        plan: WINFLOWZ_APP_DEFAULT_FREE_PLAN,
+        productId: policy.productId,
+        plan: policy.plan,
         status: 'active',
-        source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
-        sourceRef: args.firebaseUid,
+        source: policy.source,
+        sourceRef: args.sourceRef,
         environment: args.environment,
         grantedAt: existingDefaultEntitlement.grantedAt ?? args.now,
         updatedAt: args.now,
@@ -442,11 +498,11 @@ async function ensureWinFlowzAppDefaultFreeEntitlement(
   } else {
     await ctx.db.insert('productEntitlements', {
       globalUserId: args.globalUserDocId,
-      productId: WINFLOWZ_APP_PRODUCT_ID,
-      plan: WINFLOWZ_APP_DEFAULT_FREE_PLAN,
+      productId: policy.productId,
+      plan: policy.plan,
       status: 'active',
-      source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
-      sourceRef: args.firebaseUid,
+      source: policy.source,
+      sourceRef: args.sourceRef,
       environment: args.environment,
       idempotencyKey,
       grantedAt: args.now,
@@ -463,17 +519,48 @@ async function ensureWinFlowzAppDefaultFreeEntitlement(
     .first()
   if (!existingGrantEvent) {
     await ctx.db.insert('productAccessEvents', {
-      source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
+      source: policy.source,
       eventType: 'default_free.granted',
-      sourceRef: args.firebaseUid,
+      sourceRef: args.sourceRef,
       idempotencyKey,
       environment: args.environment,
-      productId: WINFLOWZ_APP_PRODUCT_ID,
+      productId: policy.productId,
       globalUserId: args.globalUserDocId,
       status: 'granted',
       createdAt: args.now,
     })
   }
+}
+
+async function ensureMissingDefaultFreeEntitlements(
+  ctx: MutationCtx,
+  args: {
+    rawEntitlements: { productId: string; status: string; plan?: string }[]
+    productIds: string[]
+    globalUserDocId: Id<'globalUsers'>
+    globalUserPublicId: string
+    sourceRef: string
+    environment: string
+    now: number
+  }
+) {
+  let didWrite = false
+  for (const productId of args.productIds) {
+    if (selectPreferredActiveProductEntitlement(args.rawEntitlements, productId)) {
+      continue
+    }
+
+    await ensureDefaultFreeEntitlement(ctx, {
+      productId,
+      globalUserDocId: args.globalUserDocId,
+      globalUserPublicId: args.globalUserPublicId,
+      sourceRef: args.sourceRef,
+      environment: args.environment,
+      now: args.now,
+    })
+    didWrite = true
+  }
+  return didWrite
 }
 
 function requireBridgeSecret(providedSecret: string) {
@@ -1024,10 +1111,9 @@ function resolveSocialGlowzAccess(args: {
   globalUserId: string
   entitlements: { productId: string; status: string; plan: string; source: string }[]
 }) {
-  const entitlement = args.entitlements.find(
-    (entry) =>
-      entry.productId === SOCIALGLOWZ_PRODUCT_ID &&
-      isActiveAccessStatus(entry.status)
+  const entitlement = selectPreferredActiveProductEntitlement(
+    args.entitlements,
+    SOCIALGLOWZ_PRODUCT_ID
   )
 
   if (!entitlement) {
@@ -1053,10 +1139,9 @@ function resolveTemuShoppingListsAccess(args: {
   globalUserId: string
   entitlements: { productId: string; status: string; plan: string; source: string }[]
 }) {
-  const entitlement = args.entitlements.find(
-    (entry) =>
-      entry.productId === TEMU_SHOPPING_LISTS_PRODUCT_ID &&
-      isActiveAccessStatus(entry.status)
+  const entitlement = selectPreferredActiveProductEntitlement(
+    args.entitlements,
+    TEMU_SHOPPING_LISTS_PRODUCT_ID
   )
 
   if (!entitlement) {
@@ -1187,21 +1272,20 @@ export const upsertFirebaseIdentity = mutation({
       )
       .collect()
 
-    if (
-      !rawEntitlements.some(
-        (entry) =>
-          entry.productId === WINFLOWZ_APP_PRODUCT_ID &&
-          isActiveAccessStatus(entry.status)
-      )
-    ) {
-      await ensureWinFlowzAppDefaultFreeEntitlement(ctx, {
+    const didEnsureDefaultFreeEntitlements =
+      await ensureMissingDefaultFreeEntitlements(ctx, {
+        rawEntitlements,
+        productIds: DEFAULT_FREE_ENTITLEMENT_POLICIES.map(
+          (policy) => policy.productId
+        ),
         globalUserDocId: identity.globalUserId,
         globalUserPublicId: globalUser.globalUserId,
-        firebaseUid: args.firebaseUid,
+        sourceRef: args.firebaseUid,
         environment,
         now,
       })
 
+    if (didEnsureDefaultFreeEntitlements) {
       rawEntitlements = await ctx.db
         .query('productEntitlements')
         .withIndex('by_globalUserId', (q) =>
@@ -1429,64 +1513,14 @@ export const ensureReplayGlowzEntitlementSnapshotByClerkId = mutation({
 
     const now = Date.now()
     const environment = args.environment ?? 'production'
-    const idempotencyKey = replayGlowzDefaultFreeIdempotencyKey(
-      globalUser.globalUserId
-    )
-    const existingDefaultEntitlement = rawEntitlements.find(
-      (entry) => entry.idempotencyKey === idempotencyKey
-    )
-
-    if (existingDefaultEntitlement) {
-      if (
-        existingDefaultEntitlement.status !== 'active' ||
-        existingDefaultEntitlement.plan !== REPLAYGLOWZ_DEFAULT_FREE_PLAN
-      ) {
-        await ctx.db.patch(existingDefaultEntitlement._id, {
-          productId: REPLAYGLOWZ_PRODUCT_ID,
-          plan: REPLAYGLOWZ_DEFAULT_FREE_PLAN,
-          status: 'active',
-          source: REPLAYGLOWZ_DEFAULT_FREE_SOURCE,
-          sourceRef: args.clerkId,
-          environment,
-          grantedAt: existingDefaultEntitlement.grantedAt ?? now,
-          updatedAt: now,
-        })
-      }
-    } else {
-      await ctx.db.insert('productEntitlements', {
-        globalUserId: globalUserDocId,
-        productId: REPLAYGLOWZ_PRODUCT_ID,
-        plan: REPLAYGLOWZ_DEFAULT_FREE_PLAN,
-        status: 'active',
-        source: REPLAYGLOWZ_DEFAULT_FREE_SOURCE,
-        sourceRef: args.clerkId,
-        environment,
-        idempotencyKey,
-        grantedAt: now,
-        createdAt: now,
-        updatedAt: now,
-      })
-    }
-
-    const existingGrantEvent = await ctx.db
-      .query('productAccessEvents')
-      .withIndex('by_idempotencyKey', (q) =>
-        q.eq('idempotencyKey', idempotencyKey)
-      )
-      .first()
-    if (!existingGrantEvent) {
-      await ctx.db.insert('productAccessEvents', {
-        source: REPLAYGLOWZ_DEFAULT_FREE_SOURCE,
-        eventType: 'default_free.granted',
-        sourceRef: args.clerkId,
-        idempotencyKey,
-        environment,
-        productId: REPLAYGLOWZ_PRODUCT_ID,
-        globalUserId: globalUserDocId,
-        status: 'granted',
-        createdAt: now,
-      })
-    }
+    await ensureDefaultFreeEntitlement(ctx, {
+      productId: REPLAYGLOWZ_PRODUCT_ID,
+      globalUserDocId,
+      globalUserPublicId: globalUser.globalUserId,
+      sourceRef: args.clerkId,
+      environment,
+      now,
+    })
 
     return {
       hasAccess: true,
@@ -1524,10 +1558,30 @@ export const ensureSocialGlowzEntitlementSnapshotByProviderAccount = mutation({
       }
     )
 
-    const rawEntitlements = await ctx.db
+    let rawEntitlements = await ctx.db
       .query('productEntitlements')
       .withIndex('by_globalUserId', (q) => q.eq('globalUserId', globalUserDocId))
       .collect()
+
+    const didEnsureDefaultFreeEntitlement =
+      await ensureMissingDefaultFreeEntitlements(ctx, {
+        rawEntitlements,
+        productIds: [SOCIALGLOWZ_PRODUCT_ID],
+        globalUserDocId,
+        globalUserPublicId: globalUser.globalUserId,
+        sourceRef: args.sourceRef ?? providerAccountId,
+        environment,
+        now: Date.now(),
+      })
+
+    if (didEnsureDefaultFreeEntitlement) {
+      rawEntitlements = await ctx.db
+        .query('productEntitlements')
+        .withIndex('by_globalUserId', (q) =>
+          q.eq('globalUserId', globalUserDocId)
+        )
+        .collect()
+    }
 
     return resolveSocialGlowzAccess({
       globalUserId: globalUser.globalUserId,
@@ -1565,10 +1619,30 @@ export const ensureTemuShoppingListsEntitlementSnapshotByProviderAccount = mutat
       }
     )
 
-    const rawEntitlements = await ctx.db
+    let rawEntitlements = await ctx.db
       .query('productEntitlements')
       .withIndex('by_globalUserId', (q) => q.eq('globalUserId', globalUserDocId))
       .collect()
+
+    const didEnsureDefaultFreeEntitlement =
+      await ensureMissingDefaultFreeEntitlements(ctx, {
+        rawEntitlements,
+        productIds: [TEMU_SHOPPING_LISTS_PRODUCT_ID],
+        globalUserDocId,
+        globalUserPublicId: globalUser.globalUserId,
+        sourceRef: args.sourceRef ?? providerAccountId,
+        environment,
+        now: Date.now(),
+      })
+
+    if (didEnsureDefaultFreeEntitlement) {
+      rawEntitlements = await ctx.db
+        .query('productEntitlements')
+        .withIndex('by_globalUserId', (q) =>
+          q.eq('globalUserId', globalUserDocId)
+        )
+        .collect()
+    }
 
     return resolveTemuShoppingListsAccess({
       globalUserId: globalUser.globalUserId,

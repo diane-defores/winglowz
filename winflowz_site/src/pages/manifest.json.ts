@@ -3,6 +3,7 @@ import type { APIRoute, ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import icon from "@/assets/images/WinFlowz.png";
 import maskableIcon from "@/assets/images/WinFlowz.png";
+import { OG, SITE, SITE_VISUAL_TOKENS } from "@/constants";
 
 interface Favicon {
   purpose: 'any' | 'maskable' | 'monochrome';
@@ -45,15 +46,15 @@ export const GET: APIRoute = async () => {
   );
 
   const manifest = {
-    short_name: "WinFlowz",
-    name: "WinFlowz",
-    description: "Optimize your Windows workflow",
+    short_name: SITE.name,
+    name: SITE.title,
+    description: OG.description,
     icons,
     display: "standalone",
     id: "/",
     start_url: "/",
-    theme_color: "#000000",
-    background_color: "#ffffff",
+    theme_color: SITE_VISUAL_TOKENS.themeMeta.manifestTheme,
+    background_color: SITE_VISUAL_TOKENS.themeMeta.manifestBackground,
   };
 
   return new Response(JSON.stringify(manifest));

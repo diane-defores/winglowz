@@ -57,11 +57,22 @@ const { link, variant, icon } = propsSchema.parse(Astro.props);
 		padding-inline: 0;
 	}
 
-	@media (min-width: 50rem) {
-		.action {
-			font-size: var(--ui-button-font-size-lg);
-			padding: var(--ui-button-padding-y-lg) var(--ui-button-padding-x-lg);
-		}
+	.action {
+		font-size: clamp(
+			var(--ui-button-font-size),
+			var(--ui-button-font-size-lg),
+			var(--ui-button-font-size-lg)
+		);
+		padding: clamp(
+				var(--ui-button-padding-y),
+				var(--ui-button-padding-y-lg),
+				var(--ui-button-padding-y-lg)
+			)
+			clamp(
+				var(--ui-button-padding-x),
+				var(--ui-button-padding-x-lg),
+				var(--ui-button-padding-x-lg)
+			);
 	}
 
 	.icon {

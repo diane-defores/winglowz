@@ -73,6 +73,7 @@ evidence:
   - "winflowz_site/src/pages/api/commerce/checkout.ts defaults to socialglowz/lifetime_deal when offerId is omitted."
   - "winflowz_site/src/pages/api/polar/checkout.ts is tied to gated course lessons, not a general app LTD checkout."
   - "shipflow_data/business/winflowz-android-ltd-pricing-audit.md recommends a tiered LTD ladder: $79 local platform, $149 platform pro, $249 all-platform local/BYO, and $599+ or waitlist for all-platform cloud."
+  - "User decision context 2026-06-12: AppSumo is likely later, and direct-site pricing must preserve room for AppSumo to negotiate the lowest available public deal."
 next_step: "Diane validates the pricing ladder and remaining offer-policy choices before /101-sf-ready"
 ---
 
@@ -158,6 +159,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - Préserver le français naturel et accentué sur les surfaces publiques françaises.
 - Ne pas ajouter de secrets, IDs fournisseurs réels, emails clients ou payloads checkout dans le repo.
 - Ne pas publier de prix, quota, durée de promo, nombre de places, "support prioritaire", "lifetime updates", ou "accès instantané" sans source d'offre ou politique documentée.
+- Ne pas présenter le prix direct-site comme "lowest price ever" ou "best price forever" tant qu'un lancement AppSumo futur reste probable.
 - Ne pas réutiliser `socialglowz/lifetime_deal` pour WinFlowz Android.
 - Ne pas laisser `/api/commerce/checkout` tomber silencieusement sur l'offre SocialGlowz quand une page WinFlowz appelle un checkout sans `offerId`.
 - Les changements UI du site doivent consommer les tokens déclarés dans `winflowz_site/src/assets/styles/global.css` et `winflowz_site/tailwind.config.mjs`.
@@ -258,6 +260,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - Provider checkout succeeds but entitlement/access is manual or pending review.
 - Early Bird price changes after launch assets are published.
 - Lifetime Deal includes future updates but not every future platform or premium AI cost.
+- Future AppSumo negotiation needs the lowest available public deal, making the direct-site Early Bird price architecture and wording important.
 - Support promise is operationally weaker than "priority support" copy.
 - Product page and training page both use the name WinFlowz and compete in search/navigation.
 - French and English pages diverge in legal/commercial meaning.
@@ -413,6 +416,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - Read first: `shipflow_data/business/winflowz_app/product.md`, `shipflow_data/business/winflowz_app/gtm.md`, `shipflow_data/editorial/claim-register.md`, `winflowz_site/src/lib/commerce/offers.ts`, and `winflowz_site/src/content/products/fr/winflowz.md`.
 - Implementation should start with the offer/checkout source of truth, not the visual page, because public CTAs depend on correct payment behavior.
 - Pricing started with a market/pricing audit before any public price was hardcoded. The current recommendation is documented in `shipflow_data/business/winflowz-android-ltd-pricing-audit.md`; Diane must validate or adjust it before public prices are implemented.
+- Future AppSumo pricing is a channel constraint: the direct-site Early Bird should validate demand, then public prices should rise before AppSumo negotiation so AppSumo can receive the lowest currently available public deal without forcing an unsustainable all-in package.
 - After the offer source is clear, implementation should treat page quality as a first-class deliverable: build the sales narrative and visual direction before coding the final route.
 - Before finishing, run browser screenshot proof and inspect the page visually. A passing build is not enough for this chantier.
 - If no real app screenshots are available, create a bounded asset plan: either capture screenshots from the app/web surface or generate honest bitmap visuals that clearly represent the Android offer without inventing unsupported UI.
@@ -428,6 +432,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - Should Diane accept, adjust, or reject the recommended public ladder: $79 Android Local Early Bird, $149 Android Pro Early Bird, $249 All Platforms Founder, and $599+ or waitlist for Everything / Cloud Founder?
 - Should the Everything / Cloud tier be public at $599+ or private/waitlist-only until cloud usage is measured?
 - What exact currency and tax/VAT display should be published with Lemon Squeezy: USD prices with tax handled at checkout, localized tax-inclusive display, or another policy?
+- Should the direct-site Early Bird be explicitly positioned as pre-AppSumo founder pricing that can end before a later AppSumo negotiation?
 - Resolved 2026-06-11: Lemon Squeezy owns the first paid launch; Polar is unavailable for now.
 - Should the $79 entry tier be Android-only forever or "one platform family" when future platform families exist?
 - Are the recommended device caps accepted: 2 devices for local platform, 3 for platform pro, 5 for all-platform tiers?
@@ -440,6 +445,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
+| 2026-06-12 01:24:00 UTC | 204-sf-market-study | GPT-5 Codex | Added future AppSumo pricing-parity constraint to the pricing audit and spec: direct-site Early Bird must preserve room for later AppSumo negotiation and avoid "lowest price ever" claims. | partial | Validate direct-site pricing ladder and AppSumo sequencing before public page implementation. |
 | 2026-06-12 01:07:25 UTC | 204-sf-market-study | GPT-5 Codex | Created `shipflow_data/business/winflowz-android-ltd-pricing-audit.md` with competitor pricing, LTD precedents, Lemon Squeezy net-price estimates, cloud/AI cost exposure, license semantics, and a recommended tier ladder. | partial | Diane validates or adjusts the pricing ladder, cloud tier visibility, device caps, and support/access policy before readiness. |
 | 2026-06-11 19:20:34 UTC | 100-sf-spec | GPT-5 Codex | Added pricing audit as a prerequisite before setting the Early Bird price, including competitor pricing, LTD history where sourced, cloud-cost exposure, support burden, and no-bankruptcy floor. | partial | Run /204-sf-market-study WinFlowz Android LTD pricing audit. |
 | 2026-06-11 19:15:06 UTC | 100-sf-spec | GPT-5 Codex | Strengthened the spec to require a premium, visually persuasive sales page with product visuals, dedicated creative direction, visual proof, and acceptance criteria against generic catalog-page output. | partial | Clarify remaining offer policy, then rerun readiness. |

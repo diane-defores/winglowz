@@ -9,6 +9,12 @@ export const SUITE_PRODUCT_ALLOWLIST = [
 export const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
 export const SOCIALGLOWZ_PRODUCT_ID = 'socialglowz'
 export const TEMU_SHOPPING_LISTS_PRODUCT_ID = 'temu_shopping_lists'
+export const DEFAULT_FREE_PRODUCT_IDS = [
+  'winflowz_app',
+  REPLAYGLOWZ_PRODUCT_ID,
+  SOCIALGLOWZ_PRODUCT_ID,
+  TEMU_SHOPPING_LISTS_PRODUCT_ID,
+] as const
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_KEY_ID =
   'replayglowz-suite-2026-06-02'
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_ISSUER = 'https://winflowz.com'
@@ -17,11 +23,13 @@ export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_AUDIENCE =
 export const REPLAYGLOWZ_PRODUCT_JWT_TTL_SECONDS = 10 * 60
 export const SOCIALGLOWZ_DEFAULT_PLAN = 'lifetime_deal' as const
 export const SOCIALGLOWZ_ALLOWED_PLANS = [
+  'free',
   'lifetime_deal',
   'founder_ltd',
   'ltd',
 ] as const
 export const SOCIALGLOWZ_ALLOWED_SOURCES = [
+  'product_default',
   'manual',
   'partner',
   'appsumo',
@@ -419,6 +427,20 @@ export function hasActiveEntitlement(
   )
 }
 
+function selectPreferredActiveEntitlement(
+  entitlements: BridgeEntitlement[],
+  productId: string
+): BridgeEntitlement | undefined {
+  const activeEntitlements = entitlements.filter(
+    (entry) =>
+      entry.productId === productId && isActiveAccessStatus(entry.status)
+  )
+  return (
+    activeEntitlements.find((entry) => entry.plan !== 'free') ??
+    activeEntitlements[0]
+  )
+}
+
 export function isAllowedSocialGlowzPlan(planId: string): boolean {
   return SOCIALGLOWZ_PLAN_SET.has(planId)
 }
@@ -434,10 +456,9 @@ export function resolveSocialGlowzEntitlementSnapshot({
   globalUserId: string | null
   entitlements: BridgeEntitlement[]
 }): SocialGlowzEntitlementSnapshot {
-  const socialEntitlement = entitlements.find(
-    (entry) =>
-      entry.productId === SOCIALGLOWZ_PRODUCT_ID &&
-      isActiveAccessStatus(entry.status)
+  const socialEntitlement = selectPreferredActiveEntitlement(
+    entitlements,
+    SOCIALGLOWZ_PRODUCT_ID
   )
   if (!globalUserId) {
     return {
@@ -515,20 +536,12 @@ export function buildFirestoreSuiteAccessMirror({
   globalUserId: string
   entitlements: BridgeEntitlement[]
 }) {
-  const selectActiveEntitlement = (productId: string) => {
-    const activeEntitlements = entitlements.filter(
-      (entry) =>
-        entry.productId === productId && isActiveAccessStatus(entry.status)
-    )
-    return (
-      activeEntitlements.find((entry) => entry.plan !== 'free') ??
-      activeEntitlements[0]
-    )
-  }
-
   const products = Object.fromEntries(
     FIRESTORE_ENTITLEMENT_PRODUCTS.map((productId) => {
-      const entitlement = selectActiveEntitlement(productId)
+      const entitlement = selectPreferredActiveEntitlement(
+        entitlements,
+        productId
+      )
 
       return [
         productId,

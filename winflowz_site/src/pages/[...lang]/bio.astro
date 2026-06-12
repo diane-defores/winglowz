@@ -1,6 +1,7 @@
 ---
 import type { Language } from '@/types'
-import { getLocalizedSiteUrl } from '@/constants'
+import { getLocalizedSiteUrl, SITE_VISUAL_TOKENS } from '@/constants'
+import { SITE_VISUAL_TOKENS } from '@/constants'
 
 export const prerender = true
 
@@ -60,27 +61,17 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Manrope:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" />
 
-	<style>
-		:root {
-			--bg: #000;
-			--card-bg: rgba(255, 255, 255, 0.03);
-			--card-border: rgba(255, 255, 255, 0.08);
-			--text: #fff;
-			--text-muted: rgba(255, 255, 255, 0.6);
-			--accent: #ff00c8;
-			--accent-glow: rgba(255, 0, 200, 0.3);
-		}
-
+<style>
 		* { margin: 0; padding: 0; box-sizing: border-box; }
 
 		body {
-			font-family: 'DM Sans', system-ui, sans-serif;
-			background: var(--bg);
-			color: var(--text);
+			font-family: var(--bio-font-body), system-ui, sans-serif;
+			background: var(--bio-bg);
+			color: var(--bio-text);
 			min-height: 100vh;
 			display: flex;
 			justify-content: center;
-			padding: 2rem 1rem;
+			padding: var(--bio-body-padding-block) var(--bio-body-padding-inline);
 		}
 
 		/* Noise overlay */
@@ -95,25 +86,25 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 
 		.bio-container {
 			width: 100%;
-			max-width: 480px;
+			max-width: var(--bio-container-max-width);
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			gap: 1.5rem;
+			gap: var(--bio-container-gap);
 			position: relative;
 			z-index: 1;
 		}
 
 		.bio-avatar {
-			width: 96px;
-			height: 96px;
+			width: var(--bio-avatar-size);
+			height: var(--bio-avatar-size);
 			border-radius: 50%;
-			border: 2px solid var(--accent);
+			border: var(--bio-avatar-border-width) solid var(--bio-avatar-border-color);
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			background: var(--card-bg);
-			box-shadow: 0 0 30px var(--accent-glow);
+			background: var(--bio-card-bg);
+			box-shadow: var(--bio-avatar-shadow);
 			overflow: hidden;
 		}
 
@@ -124,88 +115,88 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 		}
 
 		.bio-name {
-			font-family: 'Audiowide', cursive;
-			font-size: 1.5rem;
+			font-family: var(--bio-font-logo);
+			font-size: var(--bio-name-size);
 			text-align: center;
-			color: var(--text);
-			letter-spacing: 0.05em;
+			color: var(--bio-text);
+			letter-spacing: var(--bio-name-letter-spacing);
 		}
 
 		.bio-tagline {
-			font-family: 'DM Sans', sans-serif;
-			font-size: 0.95rem;
+			font-family: var(--bio-font-body);
+			font-size: var(--bio-tagline-size);
 			text-align: center;
-			color: var(--text-muted);
-			line-height: 1.5;
-			max-width: 340px;
+			color: var(--bio-text-muted);
+			line-height: var(--bio-tagline-line-height);
+			max-width: var(--bio-tagline-max-width);
 		}
 
 		.bio-links {
 			width: 100%;
 			display: flex;
 			flex-direction: column;
-			gap: 0.75rem;
+			gap: var(--bio-links-gap);
 		}
 
 		.bio-link {
 			display: block;
 			width: 100%;
-			padding: 1rem 1.25rem;
+			padding: var(--bio-link-padding-y) var(--bio-link-padding-x);
 			text-align: center;
 			text-decoration: none;
-			font-family: 'Manrope', sans-serif;
-			font-weight: 600;
-			font-size: 0.95rem;
-			color: var(--text);
-			background: var(--card-bg);
-			border: 1px solid var(--card-border);
-			border-radius: 0.5rem;
-			transition: all 0.3s ease;
+			font-family: var(--bio-font-ui);
+			font-weight: var(--bio-link-weight);
+			font-size: var(--bio-link-font-size);
+			color: var(--bio-text);
+			background: var(--bio-card-bg);
+			border: var(--bio-link-border-width) solid var(--bio-card-border);
+			border-radius: var(--bio-link-radius);
+			transition: all var(--bio-link-transition) ease;
 		}
 
 		.bio-link:hover {
-			border-color: var(--accent);
-			box-shadow: 0 0 20px var(--accent-glow);
-			transform: translateY(-2px);
+			border-color: var(--bio-link-hover-border-color);
+			box-shadow: var(--bio-link-hover-shadow);
+			transform: translateY(var(--bio-link-hover-transform));
 		}
 
 		.bio-link.cta {
-			background: var(--accent);
+			background: var(--bio-accent);
 			color: #fff;
 			border: none;
-			box-shadow: 0 0 30px var(--accent-glow);
+			box-shadow: var(--bio-link-cta-shadow);
 		}
 
 		.bio-link.cta:hover {
-			box-shadow: 0 0 40px var(--accent-glow);
-			transform: translateY(-2px);
+			box-shadow: var(--bio-link-hover-shadow-strong);
+			transform: translateY(var(--bio-link-hover-transform));
 		}
 
 		.bio-socials {
 			display: flex;
-			gap: 1.25rem;
-			margin-top: 0.5rem;
+			gap: var(--bio-social-gap);
+			margin-top: var(--bio-social-margin-top);
 		}
 
 		.bio-socials a {
-			color: var(--text-muted);
-			transition: color 0.2s ease;
+			color: var(--bio-text-muted);
+			transition: color var(--bio-social-transition) ease;
 		}
 
 		.bio-socials a:hover {
-			color: var(--accent);
+			color: var(--bio-accent);
 		}
 
 		.bio-socials svg {
-			width: 26px;
-			height: 26px;
+			width: var(--bio-social-icon-size);
+			height: var(--bio-social-icon-size);
 		}
 
 		.bio-footer {
-			font-size: 0.8rem;
-			color: var(--text-muted);
-			opacity: 0.5;
-			margin-top: 1rem;
+			font-size: var(--bio-footer-size);
+			color: var(--bio-text-muted);
+			opacity: var(--bio-footer-opacity);
+			margin-top: var(--bio-footer-margin-top);
 		}
 
 	</style>
@@ -213,7 +204,12 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 <body>
 	<div class="bio-container">
 		<div class="bio-avatar">
-			<img src="/images/WinFlowz.png" alt="WinFlowz" width="96" height="96" />
+			<img
+				src="/images/WinFlowz.png"
+				alt="WinFlowz"
+				width={SITE_VISUAL_TOKENS.bio.avatarSize}
+				height={SITE_VISUAL_TOKENS.bio.avatarSize}
+			/>
 		</div>
 
 		<h1 class="bio-name">WinFlowz</h1>
@@ -257,7 +253,9 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 			</a>
 		</div>
 
-		<p class="bio-footer">&copy; 2026 WinFlowz</p>
+		<p class="bio-footer">
+			&copy; {SITE_VISUAL_TOKENS.bio.footerYear} WinFlowz
+		</p>
 	</div>
 </body>
 </html>

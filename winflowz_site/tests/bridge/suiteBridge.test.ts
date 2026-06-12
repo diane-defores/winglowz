@@ -1,4 +1,5 @@
 import {
+  DEFAULT_FREE_PRODUCT_IDS,
   buildFirestoreSuiteAccessMirror,
   buildReplayGlowzProductToken,
   getBridgeEndpointSecret,
@@ -109,6 +110,16 @@ describe('suiteBridge helpers', () => {
     expect(isAllowedSuiteProduct('temu_shopping_lists')).toBe(true)
     expect(isAllowedSuiteProduct('old_youtube_product')).toBe(false)
     expect(isAllowedSuiteProduct('legacy_product')).toBe(false)
+  })
+
+  test('keeps default free access scoped to free-tier products', () => {
+    expect(DEFAULT_FREE_PRODUCT_IDS).toEqual([
+      'winflowz_app',
+      'replayglowz',
+      'socialglowz',
+      'temu_shopping_lists',
+    ])
+    expect(DEFAULT_FREE_PRODUCT_IDS).not.toContain('winflowz_formation')
   })
 
   test('accepts only active and trialing status for access', () => {
@@ -280,10 +291,12 @@ describe('suiteBridge helpers', () => {
   })
 
   test('allows only allowlisted socialglowz plan/source values', () => {
+    expect(isAllowedSocialGlowzPlan('free')).toBe(true)
     expect(isAllowedSocialGlowzPlan('lifetime_deal')).toBe(true)
     expect(isAllowedSocialGlowzPlan('founder_ltd')).toBe(true)
     expect(isAllowedSocialGlowzPlan('monthly')).toBe(false)
 
+    expect(isAllowedSocialGlowzSource('product_default')).toBe(true)
     expect(isAllowedSocialGlowzSource('manual')).toBe(true)
     expect(isAllowedSocialGlowzSource('direct')).toBe(true)
     expect(isAllowedSocialGlowzSource('stripe')).toBe(false)
@@ -294,6 +307,54 @@ describe('suiteBridge helpers', () => {
       resolveSocialGlowzEntitlementSnapshot({
         globalUserId: 'gu_123',
         entitlements: [
+          {
+            productId: 'socialglowz',
+            status: 'active',
+            plan: 'lifetime_deal',
+            source: 'manual',
+          },
+        ],
+      })
+    ).toEqual({
+      hasAccess: true,
+      planId: 'lifetime_deal',
+      source: 'manual',
+      globalUserId: 'gu_123',
+      reasonCode: 'active_entitlement',
+    })
+  })
+
+  test('resolves socialglowz free access and prefers paid metadata', () => {
+    expect(
+      resolveSocialGlowzEntitlementSnapshot({
+        globalUserId: 'gu_123',
+        entitlements: [
+          {
+            productId: 'socialglowz',
+            status: 'active',
+            plan: 'free',
+            source: 'product_default',
+          },
+        ],
+      })
+    ).toEqual({
+      hasAccess: true,
+      planId: 'free',
+      source: 'product_default',
+      globalUserId: 'gu_123',
+      reasonCode: 'active_entitlement',
+    })
+
+    expect(
+      resolveSocialGlowzEntitlementSnapshot({
+        globalUserId: 'gu_123',
+        entitlements: [
+          {
+            productId: 'socialglowz',
+            status: 'active',
+            plan: 'free',
+            source: 'product_default',
+          },
           {
             productId: 'socialglowz',
             status: 'active',

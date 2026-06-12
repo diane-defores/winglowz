@@ -61,3 +61,26 @@ export const OG = {
   description: "Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a smoother workflow with 200+ tested tips. Built by a neurodivergent solopreneur with dozens of 5-star AppSumo reviews.",
   image: ogImageSrc,
 };
+
+export const SITE_VISUAL_TOKENS = {
+  themeMeta: {
+    website: '#facc15',
+    manifestTheme: '#000000',
+    manifestBackground: '#ffffff',
+    manifestDescription: OG.description,
+    twitterCard: 'summary_large_image',
+  },
+  socialImage: {
+    width: 1200,
+    height: 600,
+    type: 'image/png',
+  },
+  manifestIcons: {
+    sizes: [192, 512],
+  },
+  bio: {
+    avatarSize: 96,
+    socialIconSize: 26,
+    footerYear: 2026,
+  },
+}
