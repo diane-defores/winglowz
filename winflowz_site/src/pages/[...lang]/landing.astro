@@ -36,7 +36,6 @@ const t = await useTranslations(lang, 'home')
 const featuresData = await useTranslations(lang, 'features')
 const metaDescription = t.meta?.description ?? ''
 const windowsMasteryUrl = lang === 'fr' ? '/fr/maitrise-windows' : '/windows-mastery'
-const productsUrl = lang === 'fr' ? '/fr/produits' : '/products'
 
 const features = Object.entries(featuresData).map(([key, value]) => ({
 	heading: value.title,
@@ -62,6 +61,7 @@ const defaultTestimonial = {
 
 const statistics = t.testimonials?.statistics || []
 const hasValidStats = Array.isArray(statistics) && statistics.length > 0
+const testimonialsUrl = lang === 'fr' ? '/fr/produits#testimonials' : '/products#testimonials'
 ---
 
 <MainLayout
@@ -86,7 +86,7 @@ const hasValidStats = Array.isArray(statistics) && statistics.length > 0
 		primaryBtn={t.hero.primaryBtn}
 		primaryBtnURL={t.hero.primaryBtnURL}
 		secondaryBtn={t.hero.secondaryBtn}
-		secondaryBtnURL={windowsMasteryUrl}
+		secondaryBtnURL={testimonialsUrl}
 		withReview={true}
 		avatars={avatarSrcs}
 		rating={t.hero.rating}

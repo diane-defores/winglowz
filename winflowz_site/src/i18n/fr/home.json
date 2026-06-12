@@ -6,10 +6,10 @@
   "hero": {
     "title": "Plugins <span class=\"relative inline-flex sm:inline\"><span class=\"relative text-magenta\">Obsidian</span><span class=\"absolute inset-0 h-full w-full bg-gradient-rainbow opacity-30 blur-lg filter\"></span></span> et Formation <span class=\"text-yellow\">Windows</span>",
     "subTitle": "Outils Chrome pour la recherche YouTube, plugins Obsidian pour la curation de contenu, et une formation Windows axée sur des usages concrets.",
-    "primaryBtn": "Témoignages",
-    "primaryBtnURL": "/fr/produits#testimonials",
-    "secondaryBtn": "Voir la formation",
-    "secondaryBtnURL": "/fr/maitrise-windows",
+    "primaryBtn": "Voir la formation",
+    "primaryBtnURL": "/fr/maitrise-windows",
+    "secondaryBtn": "Témoignages",
+    "secondaryBtnURL": "/fr/produits#testimonials",
     "review": {
       "rating": "",
       "starCount": 0,
@@ -60,12 +60,12 @@
       },
       {
         "count": "2",
-        "description": "langues du site : anglais et francais"
+        "description": "langues du site : anglais et français"
       }
     ]
   },
   "cta": {
-    "title": "Construisez un systeme vraiment utilisable",
-    "subTitle": "Commencez par l'aperçu gratuit du module, puis debloquez la formation et les outils qui correspondent a votre workflow."
+    "title": "Construisez un système vraiment utilisable",
+    "subTitle": "Commencez par le parcours de formation, puis ajoutez les outils qui correspondent à votre workflow."
   }
 }

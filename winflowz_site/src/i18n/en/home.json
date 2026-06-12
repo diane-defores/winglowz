@@ -6,10 +6,10 @@
   "hero": {
     "title": "<span class=\"relative inline-flex sm:inline\"><span class=\"relative text-magenta\">Productivity</span><span class=\"absolute inset-0 h-full w-full bg-gradient-rainbow opacity-30 blur-lg filter\"></span></span> Plugins & <span class=\"text-yellow\">Windows</span> Training",
     "subTitle": "Chrome tools for YouTube workflows, Obsidian plugins for content curation, and a Windows productivity course built around practical lessons.",
-    "primaryBtn": "Testimonials",
-    "primaryBtnURL": "/products#testimonials",
-    "secondaryBtn": "See Windows Mastery",
-    "secondaryBtnURL": "/windows-mastery",
+    "primaryBtn": "See Windows Mastery",
+    "primaryBtnURL": "/windows-mastery",
+    "secondaryBtn": "Testimonials",
+    "secondaryBtnURL": "/products#testimonials",
     "review": {
       "rating": "",
       "starCount": 0,
@@ -66,6 +66,6 @@
   },
   "cta": {
     "title": "Build a system you can actually use",
-    "subTitle": "Start with the free module preview, then unlock the training and tools that match your workflow."
+    "subTitle": "Start with the training path, then add tools as your workflow evolves."
   }
 }
