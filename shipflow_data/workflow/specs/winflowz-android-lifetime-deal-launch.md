@@ -5,8 +5,8 @@ artifact_version: "0.1.0"
 project: "WinFlowz"
 created: "2026-06-11"
 created_at: "2026-06-11 19:07:18 UTC"
-updated: "2026-06-11"
-updated_at: "2026-06-11 19:20:34 UTC"
+updated: "2026-06-12"
+updated_at: "2026-06-12 01:07:25 UTC"
 status: draft
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
@@ -54,6 +54,9 @@ depends_on:
   - artifact: "shipflow_data/technical/platforms/lemonsqueezy.md"
     artifact_version: "unknown"
     required_status: "reviewed"
+  - artifact: "shipflow_data/business/winflowz-android-ltd-pricing-audit.md"
+    artifact_version: "0.1.0"
+    required_status: "draft"
 supersedes: []
 evidence:
   - "User request 2026-06-11: commencer à vendre l'application Android WinFlowz en Lifetime Deal Early Bird."
@@ -69,7 +72,8 @@ evidence:
   - "winflowz_site/src/lib/commerce/offers.ts currently contains only socialglowz/lifetime_deal as a generic commerce offer."
   - "winflowz_site/src/pages/api/commerce/checkout.ts defaults to socialglowz/lifetime_deal when offerId is omitted."
   - "winflowz_site/src/pages/api/polar/checkout.ts is tied to gated course lessons, not a general app LTD checkout."
-next_step: "/204-sf-market-study WinFlowz Android LTD pricing audit"
+  - "shipflow_data/business/winflowz-android-ltd-pricing-audit.md recommends a tiered LTD ladder: $79 local platform, $149 platform pro, $249 all-platform local/BYO, and $599+ or waitlist for all-platform cloud."
+next_step: "Diane validates the pricing ladder and remaining offer-policy choices before /101-sf-ready"
 ---
 
 # Spec: WinFlowz Android Lifetime Deal Launch
@@ -80,7 +84,7 @@ WinFlowz Android Lifetime Deal Launch
 
 ## Status
 
-Draft created on 2026-06-11 from Diane's launch request and a repository scan of the WinFlowz app business docs, editorial governance, product pages, navigation, and checkout code. Diane confirmed on 2026-06-11 that this launch must use Lemon Squeezy because Polar is not currently available. Diane also clarified that price must not be decided by instinct: cloud sync and future cloud-dependent features can create material cost and bankruptcy risk, so an explicit pricing/competitor audit is required before setting the Early Bird price. The chantier is intentionally high-risk because it touches public claims, payment routing, access promises, pricing sustainability, and launch planning. It is not ready for implementation until the Early Bird offer policy is explicit enough for public copy and checkout validation.
+Draft created on 2026-06-11 from Diane's launch request and a repository scan of the WinFlowz app business docs, editorial governance, product pages, navigation, and checkout code. Diane confirmed on 2026-06-11 that this launch must use Lemon Squeezy because Polar is not currently available. Diane also clarified that price must not be decided by instinct: cloud sync and future cloud-dependent features can create material cost and bankruptcy risk, so an explicit pricing/competitor audit is required before setting the Early Bird price. The pricing audit was created on 2026-06-12 and recommends a tiered, sustainability-first LTD ladder rather than one cheap all-in offer. The chantier is intentionally high-risk because it touches public claims, payment routing, access promises, pricing sustainability, and launch planning. It is not ready for implementation until Diane validates the pricing ladder and the offer policy is explicit enough for public copy and checkout validation.
 
 ## User Story
 
@@ -261,13 +265,13 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 
 ## Implementation Tasks
 
-- [ ] Task 1: Run the WinFlowz Android LTD pricing audit.
+- [x] Task 1: Run the WinFlowz Android LTD pricing audit.
   - File: `shipflow_data/business/winflowz-android-ltd-pricing-audit.md`
   - Action: Research direct and adjacent competitors, current pricing, LTD/AppSumo history where public, pricing tiers, cloud-cost exposure, support burden, and sustainable Early Bird price bands.
   - User story link: prevents underpricing an offer with cloud-dependent costs.
   - Depends on: competitor seed list and Diane's target market assumptions.
   - Validate with: cited sources, dated pricing evidence, and a recommended no-bankruptcy floor.
-  - Notes: Use current web sources for pricing and acquisition/history claims; do not infer private revenue or company outcomes without sources.
+  - Notes: Completed in `shipflow_data/business/winflowz-android-ltd-pricing-audit.md`. Recommendation: avoid a cheap all-in LTD; use $79 local platform, $149 platform pro, $249 all-platform local/BYO, and keep all-platform cloud at $599+ or waitlist until usage is measured.
 
 - [ ] Task 2: Decide and encode the WinFlowz Android offer contract.
   - File: `winflowz_site/src/lib/commerce/offers.ts`
@@ -408,7 +412,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 
 - Read first: `shipflow_data/business/winflowz_app/product.md`, `shipflow_data/business/winflowz_app/gtm.md`, `shipflow_data/editorial/claim-register.md`, `winflowz_site/src/lib/commerce/offers.ts`, and `winflowz_site/src/content/products/fr/winflowz.md`.
 - Implementation should start with the offer/checkout source of truth, not the visual page, because public CTAs depend on correct payment behavior.
-- Pricing must start with a market/pricing audit before any public price is hardcoded. The audit should compare direct voice/transcription/dictation tools, adjacent productivity tools, AppSumo/LTD precedents where public, and cloud-cost exposure.
+- Pricing started with a market/pricing audit before any public price was hardcoded. The current recommendation is documented in `shipflow_data/business/winflowz-android-ltd-pricing-audit.md`; Diane must validate or adjust it before public prices are implemented.
 - After the offer source is clear, implementation should treat page quality as a first-class deliverable: build the sales narrative and visual direction before coding the final route.
 - Before finishing, run browser screenshot proof and inspect the page visually. A passing build is not enough for this chantier.
 - If no real app screenshots are available, create a bounded asset plan: either capture screenshots from the app/web surface or generate honest bitmap visuals that clearly represent the Android offer without inventing unsupported UI.
@@ -416,22 +420,27 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 - If automatic entitlement is required, route through `601-sf-product-entitlements` before implementing checkout fulfillment.
 - Fresh external docs are required before changing provider API behavior for Lemon Squeezy. Current spec scan used local provider docs only; implementation must verify official Lemon Squeezy docs if provider integration code changes.
 - Stop if exact Early Bird price, Lemon Squeezy product/variant, access delivery policy, or support promise remains undefined and the page would need to publish those claims.
-- Stop if pricing is chosen without an evidence-backed no-bankruptcy floor.
+- Stop if pricing deviates materially from the audit without an updated evidence-backed no-bankruptcy floor.
 - Stop if checkout proof is unavailable but the proposed launch status claims "ready to sell."
 
 ## Open Questions
 
-- Pending pricing audit: what Early Bird price, currency, and tax/VAT display should be published?
+- Should Diane accept, adjust, or reject the recommended public ladder: $79 Android Local Early Bird, $149 Android Pro Early Bird, $249 All Platforms Founder, and $599+ or waitlist for Everything / Cloud Founder?
+- Should the Everything / Cloud tier be public at $599+ or private/waitlist-only until cloud usage is measured?
+- What exact currency and tax/VAT display should be published with Lemon Squeezy: USD prices with tax handled at checkout, localized tax-inclusive display, or another policy?
 - Resolved 2026-06-11: Lemon Squeezy owns the first paid launch; Polar is unavailable for now.
-- What exactly does "Lifetime Deal" include: Android app only, future Android updates, cloud sync, local packs, BYO AI features, future desktop/iOS/web access, support tier?
-- After purchase, is access automatic, manual, activation-code based, or "APK/download + email" for Early Bird?
-- Is the first launch language French-first, English-first, or bilingual at the same time?
-- Is there a hard Early Bird limit, deadline, seat count, or price increase date? If yes, what proof/source owns that policy?
+- Should the $79 entry tier be Android-only forever or "one platform family" when future platform families exist?
+- Are the recommended device caps accepted: 2 devices for local platform, 3 for platform pro, 5 for all-platform tiers?
+- What exactly does each "Lifetime Deal" tier include: future Android updates, fair-use cloud sync, local packs, BYO AI features, future desktop/iOS/Linux access, and support tier?
+- After purchase, is access automatic via Lemon Squeezy entitlement, manual, activation-code based, or "APK/download + email" for Early Bird?
+- Resolved 2026-06-11: first launch language is English-first; French can follow or stay secondary unless Diane chooses bilingual launch.
+- Resolved 2026-06-11: no fake hard deadline by default; use beta Early Bird pricing that may change as the product matures. Still open: should there be a real seat cap or founder allocation?
 
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
+| 2026-06-12 01:07:25 UTC | 204-sf-market-study | GPT-5 Codex | Created `shipflow_data/business/winflowz-android-ltd-pricing-audit.md` with competitor pricing, LTD precedents, Lemon Squeezy net-price estimates, cloud/AI cost exposure, license semantics, and a recommended tier ladder. | partial | Diane validates or adjusts the pricing ladder, cloud tier visibility, device caps, and support/access policy before readiness. |
 | 2026-06-11 19:20:34 UTC | 100-sf-spec | GPT-5 Codex | Added pricing audit as a prerequisite before setting the Early Bird price, including competitor pricing, LTD history where sourced, cloud-cost exposure, support burden, and no-bankruptcy floor. | partial | Run /204-sf-market-study WinFlowz Android LTD pricing audit. |
 | 2026-06-11 19:15:06 UTC | 100-sf-spec | GPT-5 Codex | Strengthened the spec to require a premium, visually persuasive sales page with product visuals, dedicated creative direction, visual proof, and acceptance criteria against generic catalog-page output. | partial | Clarify remaining offer policy, then rerun readiness. |
 | 2026-06-11 19:13:17 UTC | 100-sf-spec | GPT-5 Codex | Integrated Diane's provider decision: WinFlowz Android LTD launch uses Lemon Squeezy for now because Polar is unavailable. Updated scope, tasks, dependencies, and open questions accordingly. | partial | Clarify price, LTD inclusion, access delivery, launch language, and Early Bird limit/deadline; then rerun readiness. |
@@ -442,8 +451,8 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
 
 | Step | Status | Evidence | Next |
 |------|--------|----------|------|
-| 100-sf-spec | partial | Draft spec created on 2026-06-11, updated with Lemon Squeezy as selected provider, strengthened to require premium sales-page quality, and updated to require pricing audit before setting price. | Run pricing audit. |
-| 101-sf-ready | not ready | Readiness review on 2026-06-11 found blocking offer-policy questions. Provider is resolved to Lemon Squeezy; price now depends on pricing audit. Remaining blockers are exact LTD inclusion, access delivery, launch languages, and limit/deadline. | Run pricing audit and clarify offer policy, then rerun readiness. |
+| 100-sf-spec | partial | Draft spec created on 2026-06-11, updated with Lemon Squeezy as selected provider, strengthened to require premium sales-page quality, and updated on 2026-06-12 with the pricing-audit recommendation. | Diane validates offer-policy choices. |
+| 101-sf-ready | not ready | Readiness review on 2026-06-11 found blocking offer-policy questions. Provider is resolved to Lemon Squeezy, launch language is English-first, and pricing now has an audit-backed recommendation. Remaining blockers are Diane's final pricing approval, cloud tier visibility, exact LTD inclusion, access delivery, device caps, and support policy. | Clarify offer policy, then rerun readiness. |
 | 102-sf-start | pending | Not started. | Wait for ready spec. |
 | 103-sf-verify | pending | Not started. | After implementation. |
 | 104-sf-end | pending | Not started. | After verification. |
