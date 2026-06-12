@@ -11,6 +11,7 @@ enum AndroidOverlayEventType {
   recordPause,
   recordResume,
   longPress,
+  overlayTextDelivery,
   serviceError,
   permissionRevoked,
   unknown,
@@ -103,7 +104,8 @@ class AndroidOverlayEvent {
             (value == null ||
                 value is String ||
                 value is num ||
-                value is bool)) {
+                value is bool ||
+                value is Map)) {
           payload[key] = value;
         }
       }
@@ -126,6 +128,7 @@ class AndroidOverlayEvent {
       'recordPause' => AndroidOverlayEventType.recordPause,
       'recordResume' => AndroidOverlayEventType.recordResume,
       'longPress' => AndroidOverlayEventType.longPress,
+      'overlayTextDelivery' => AndroidOverlayEventType.overlayTextDelivery,
       'serviceError' => AndroidOverlayEventType.serviceError,
       'permissionRevoked' => AndroidOverlayEventType.permissionRevoked,
       _ => AndroidOverlayEventType.unknown,
@@ -138,17 +141,69 @@ class AndroidOverlayDeliveryResult {
     required this.injected,
     required this.clipboardCopied,
     required this.sensitiveField,
+    required this.deliveryPolicy,
   });
 
   final bool injected;
   final bool clipboardCopied;
   final bool sensitiveField;
+  final String deliveryPolicy;
 
   factory AndroidOverlayDeliveryResult.fromMap(Map<Object?, Object?> map) {
     return AndroidOverlayDeliveryResult(
       injected: map['injected'] as bool? ?? false,
       clipboardCopied: map['clipboardCopied'] as bool? ?? false,
       sensitiveField: map['sensitiveField'] as bool? ?? false,
+      deliveryPolicy: map['deliveryPolicy'] as String? ?? 'clipboard_only',
+    );
+  }
+}
+
+class AndroidOverlayEventTextDelivery {
+  const AndroidOverlayEventTextDelivery({
+    required this.rawText,
+    required this.cleanedText,
+    required this.language,
+    required this.source,
+    required this.durationMs,
+    required this.delivery,
+  });
+
+  final String rawText;
+  final String cleanedText;
+  final String language;
+  final String source;
+  final int durationMs;
+  final AndroidOverlayDeliveryResult delivery;
+
+  static AndroidOverlayEventTextDelivery? fromOverlayEvent(
+    AndroidOverlayEvent event,
+  ) {
+    if (event.type != AndroidOverlayEventType.overlayTextDelivery) {
+      return null;
+    }
+    final rawText = event.payload['rawText'];
+    final cleanedText = event.payload['cleanedText'];
+    final language = event.payload['language'];
+    final source = event.payload['source'];
+    final durationMs = event.payload['durationMs'];
+    final delivery = event.payload['delivery'];
+    if (rawText is! String ||
+        cleanedText is! String ||
+        language is! String ||
+        source is! String ||
+        durationMs is! num ||
+        delivery is! Map<Object?, Object?>) {
+      return null;
+    }
+    final deliveryResult = AndroidOverlayDeliveryResult.fromMap(delivery);
+    return AndroidOverlayEventTextDelivery(
+      rawText: rawText,
+      cleanedText: cleanedText,
+      language: language,
+      source: source,
+      durationMs: durationMs.toInt(),
+      delivery: deliveryResult,
     );
   }
 }

@@ -36,6 +36,7 @@ const altLangLabel = lang === 'fr' ? 'EN' : 'FR'
 
 const routeMappings: Record<string, string> = {
 	about: 'a-propos',
+	'windows-mastery': 'maitrise-windows',
 	terms: 'cgu',
 	disclaimer: 'non-responsabilite',
 	privacy: 'confidentialite',
@@ -81,9 +82,9 @@ function getTranslatedPath(path: string, targetLang: string): string {
 const altLangUrl = getTranslatedPath(Astro.url.pathname, altLang)
 
 const signInLabel = lang === 'fr' ? 'Connexion' : 'Sign In'
-const ctaLabel = lang === 'fr' ? 'Commencer' : 'Get Started'
+const ctaLabel = lang === 'fr' ? 'Parcours Windows' : 'Start with Windows'
 const signInUrl = lang === 'fr' ? '/fr/connexion' : '/signin'
-const ctaUrl = lang === 'fr' ? '/fr/produits' : '/products'
+const ctaUrl = lang === 'fr' ? '/fr/maitrise-windows' : '/windows-mastery'
 const menuLabel = lang === 'fr' ? 'Ouvrir le menu' : 'Open menu'
 const darkModeLabel = lang === 'fr' ? 'Mode sombre' : 'Dark mode'
 const lightModeLabel = lang === 'fr' ? 'Mode clair' : 'Light mode'

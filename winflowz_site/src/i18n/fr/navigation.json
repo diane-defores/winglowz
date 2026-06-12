@@ -1,5 +1,6 @@
 {
   "navBarLinks": [
+    { "name": "Maîtrise Windows", "url": "/fr/maitrise-windows" },
     { "name": "Apps", "url": "/fr/produits" },
     { "name": "Formations", "url": "/fr/formations/" },
     { "name": "Roadmap", "url": "/fr/roadmap" },
@@ -20,10 +21,10 @@
     {
       "section": "Produits",
       "links": [
-        { "name": "ObsiFlowz", "url": "/fr/produits" },
-        { "name": "ReplayGlowz", "url": "/fr/produits" },
-        { "name": "Windows Mastery", "url": "/fr/produits" },
-        { "name": "Suite Productivité", "url": "/fr/produits" }
+        { "name": "ObsiFlowz", "url": "/fr/produits/obsidian-plugins" },
+        { "name": "ReplayGlowz", "url": "/fr/produits/chrome-extensions" },
+        { "name": "Windows Mastery", "url": "/fr/maitrise-windows" },
+        { "name": "Suite Productivité", "url": "/fr/produits/productivity-suite" }
       ]
     },
     {

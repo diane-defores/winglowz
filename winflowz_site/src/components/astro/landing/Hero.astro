@@ -18,15 +18,13 @@ const avatars = [
 const stats = lang === 'fr'
   ? [
       { value: "8", label: "modules" },
-      { value: "40", label: "lecons" },
-      { value: "200+", label: "astuces testees" },
       { value: "2", label: "langues" },
+      { value: "3", label: "piliers de parcours" },
     ]
   : [
       { value: "8", label: "modules" },
-      { value: "40", label: "lessons" },
-      { value: "200+", label: "tested tips & tools" },
       { value: "2", label: "languages" },
+      { value: "3", label: "core tracks" },
     ]
 
 const heroText = lang === 'fr'
@@ -34,19 +32,19 @@ const heroText = lang === 'fr'
       badge: "Formation Windows & outils de workflow",
       h1Line1: "Moins de friction.",
       h1Line2: "Plus de travail utile.",
-      sub: "WinFlowz vous aide a reprendre le controle d'un environnement Windows trop bruyant, trop fragmente et trop fatigant. Commencez par la page dediee a la formation Windows.",
+      sub: "WinFlowz vous aide à reprendre le contrôle d’un environnement Windows trop bruyant, trop fragmenté et trop fatigant. Le premier pas reste la page dédiée à la formation.",
       cta: "Voir la formation Windows",
-      testimonials: "Temoignages",
-      reviews: "sur des dizaines d'avis 5 etoiles AppSumo",
+      testimonials: "Témoignages",
+      reviews: "issues de la communauté",
     }
   : {
       badge: "Windows training & workflow tools",
       h1Line1: "Less friction.",
       h1Line2: "More real work.",
-      sub: "WinFlowz helps you regain control over a Windows environment that is too noisy, too fragmented, and too tiring. Start with the dedicated Windows course page.",
+      sub: "WinFlowz helps you regain control over a Windows environment that is too noisy, too fragmented, and too tiring. Start from the dedicated Windows course path.",
       cta: "See the Windows course",
       testimonials: "Testimonials",
-      reviews: "from dozens of 5-star AppSumo reviews",
+      reviews: "from community feedback",
     }
 ---
 
@@ -102,7 +100,7 @@ const heroText = lang === 'fr'
     </div>
 
     <!-- Social Proof Avatars -->
-    <div class="hero-fade flex flex-col items-center gap-4 mb-12" style="animation-delay: 0.7s;">
+      <div class="hero-fade flex flex-col items-center gap-4 mb-12" style="animation-delay: 0.7s;">
       <div class="flex items-center -space-x-3">
         {avatars.map((avatar, index) => (
           <div class="hero-avatar relative" style={`animation-delay: ${0.8 + index * 0.1}s;`}>
@@ -116,7 +114,7 @@ const heroText = lang === 'fr'
         ))}
       </div>
       <p class="text-sm text-neutral-500 dark:text-zinc-500">
-        <span class="font-medium text-neutral-800 dark:text-zinc-300">5 / 5</span> {heroText.reviews}
+        <span class="font-medium text-neutral-800 dark:text-zinc-300">Avis</span> {heroText.reviews}
       </p>
     </div>
 

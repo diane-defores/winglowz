@@ -1,6 +1,6 @@
 ---
 title: "WinFlowz"
-description: "Practical Windows productivity training for daily workflows"
+description: "Practical Windows productivity training at the center of the WinFlowz ecosystem"
 status: "available"
 main:
   id: 1
@@ -10,7 +10,7 @@ main:
   imgAlt: "WinFlowz product illustration"
 longDescription:
   title: "Learn Windows workflows that actually save time"
-  subTitle: "WinFlowz is the training hub for people who want a faster Windows setup, better focus habits, and a clearer way to work each day."
+  subTitle: "WinFlowz is the flagship training path, with companion Obsidian and Chrome tools to support it."
   btnTitle: "See the sales page"
   btnURL: "/windows-mastery"
 descriptionList:

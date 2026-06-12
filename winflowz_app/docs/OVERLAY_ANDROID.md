@@ -66,9 +66,11 @@ The Flutter port now owns an actual native overlay bubble through `OverlayForegr
 - Stop and cancel are always available.
 - The collapsed bubble can be dragged to reposition it; expanded recording controls expose a dedicated drag handle so stop/cancel taps stay reliable.
 - If no editable field is focused, injection is skipped and final text is copied to clipboard.
-- If the focused field appears sensitive/password-like where detectable, injection is skipped.
+- If the focused field appears sensitive/password-like where detectable, injection is skipped and clipboard copy is disabled for that result.
 - Rapid tap/stop/cancel events are debounced and cannot start concurrent recordings.
 - Service cleanup must run on app logout, permission revoke, crash recovery, and app shutdown where the platform allows.
+
+If both overlay and IME attempt to start recording at the same time, the second surface is rejected through the shared microphone-session coordinator.
 
 ## Flutter Bridge (MethodChannel `winflowz_app/overlay`)
 
@@ -76,8 +78,11 @@ The Flutter port now owns an actual native overlay bubble through `OverlayForegr
 - `setOverlayEnabled`: enables/disables overlay runtime capability.
 - `startOverlayRecording`, `stopOverlayRecording`, `cancelOverlayRecording`: foreground service controls with idempotent stop/cancel and guarded start.
 - `drainOverlayEvents`: returns queued native overlay events such as `bubbleTap`, `longPress`, `recordStop`, `recordCancel`, and `serviceError`.
+- `drainOverlayEvents` also delivers `overlayTextDelivery` events with a validated final transcription payload (`rawText`, `cleanedText`, `language`, `source`, `durationMs`) and `delivery` metadata (`injected`, `clipboardCopied`, `sensitiveField`, `deliveryPolicy`), which are persisted in Flutter as `source=overlay` transcriptions.
 - `setOverlayState`, `updateMeterLevel`, `setResultText`: lets Flutter mirror voice pipeline state into the native bubble.
-- `deliverText`: attempts accessibility injection and always attempts clipboard fallback for non-empty text.
+- `deliverText`: attempts accessibility injection with explicit policy and only copies to clipboard when the policy allows it.
+
+`deliverText` now returns the current delivery policy (`clipboard_only` or `injection_and_clipboard`) so Flutter can report when a text delivery was blocked by sensitive target detection.
 - `openOverlayPermissionSettings`, `openAccessibilitySettings`: deep-links to Android settings recovery paths.
 
 `deliveryMode` is `clipboard_only` when accessibility is disabled, and `injection_and_clipboard` when enabled.

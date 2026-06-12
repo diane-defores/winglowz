@@ -574,16 +574,50 @@ void main() {
     expect(resumeEvent?.type, AndroidOverlayEventType.recordResume);
   });
 
+  test('android overlay text delivery event parses native bridge map', () {
+    final event = AndroidOverlayEvent.fromMap({
+      'type': 'overlayTextDelivery',
+      'capturedAtEpochMillis': 1778263200002,
+      'payload': {
+        'rawText': ' hello ',
+        'cleanedText': 'hello',
+        'language': 'fr-FR',
+        'source': 'overlay',
+        'durationMs': 1200,
+        'delivery': {
+          'injected': true,
+          'clipboardCopied': false,
+          'sensitiveField': false,
+          'deliveryPolicy': 'injection_and_clipboard',
+        },
+      },
+    });
+
+    expect(event, isNotNull);
+    expect(event?.type, AndroidOverlayEventType.overlayTextDelivery);
+
+    final delivery = AndroidOverlayEventTextDelivery.fromOverlayEvent(event!);
+    expect(delivery, isNotNull);
+    expect(delivery?.cleanedText, 'hello');
+    expect(delivery?.source, 'overlay');
+    expect(delivery?.durationMs, 1200);
+    expect(delivery?.delivery.deliveryPolicy, 'injection_and_clipboard');
+    expect(delivery?.delivery.injected, true);
+    expect(delivery?.delivery.clipboardCopied, false);
+  });
+
   test('android overlay delivery result parses native bridge maps', () {
     final result = AndroidOverlayDeliveryResult.fromMap({
       'injected': true,
       'clipboardCopied': true,
       'sensitiveField': false,
+      'deliveryPolicy': 'clipboard_only',
     });
 
     expect(result.injected, isTrue);
     expect(result.clipboardCopied, isTrue);
     expect(result.sensitiveField, isFalse);
+    expect(result.deliveryPolicy, 'clipboard_only');
   });
 
   test('clipboard normalized hash is stable across whitespace', () {

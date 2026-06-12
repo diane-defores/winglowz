@@ -8,13 +8,24 @@ import android.text.InputType
 import android.view.accessibility.AccessibilityNodeInfo
 
 object OverlayTextInjectionHelper {
-    fun deliverText(context: Context, text: String): Map<String, Any> {
+    const val DELIVERY_POLICY_CLIPBOARD_ONLY = "clipboard_only"
+    const val DELIVERY_POLICY_INJECTION_AND_CLIPBOARD = "injection_and_clipboard"
+
+    fun deliverText(
+        context: Context,
+        text: String,
+        deliveryPolicy: String = DELIVERY_POLICY_INJECTION_AND_CLIPBOARD,
+        allowClipboardCopy: Boolean = true,
+    ): Map<String, Any> {
         val normalizedText = text.trim()
         if (normalizedText.isEmpty()) {
             return mapOf(
                 "injected" to false,
                 "clipboardCopied" to false,
+                "deliveryPolicy" to normalizedPolicy(deliveryPolicy),
                 "sensitiveField" to false,
+                "deliveryMode" to "empty",
+                "blockedReason" to "empty_text",
             )
         }
         val dictatedText = "$normalizedText "
@@ -22,12 +33,63 @@ object OverlayTextInjectionHelper {
         var sensitiveField = false
         val injected =
             injectViaAccessibility(dictatedText) { isSensitive -> sensitiveField = isSensitive }
-        val clipboardCopied = copyToClipboard(context, dictatedText)
+        val shouldCopyToClipboard =
+            allowClipboardCopy &&
+                shouldCopyToClipboard(
+                    injectionSucceeded = injected,
+                    sensitiveField = sensitiveField,
+                    deliveryPolicy = deliveryPolicy,
+                )
+        val clipboardCopied =
+            if (shouldCopyToClipboard) {
+                copyToClipboard(context, dictatedText)
+            } else {
+                false
+            }
+        val deliveryMode =
+            when {
+                injected -> "accessibility_injection"
+                clipboardCopied -> "clipboard_fallback"
+                sensitiveField -> "blocked_sensitive"
+                else -> "delivery_failed"
+            }
+        val blockedReason =
+            when {
+                sensitiveField -> "sensitive_field"
+                injected || clipboardCopied -> "none"
+                else -> "delivery_unavailable"
+            }
         return mapOf(
             "injected" to injected,
             "clipboardCopied" to clipboardCopied,
+            "deliveryPolicy" to normalizedPolicy(deliveryPolicy),
             "sensitiveField" to sensitiveField,
+            "deliveryMode" to deliveryMode,
+            "blockedReason" to blockedReason,
         )
+    }
+
+    private fun shouldCopyToClipboard(
+        injectionSucceeded: Boolean,
+        sensitiveField: Boolean,
+        deliveryPolicy: String,
+    ): Boolean {
+        if (sensitiveField) {
+            return false
+        }
+        return when (normalizedPolicy(deliveryPolicy)) {
+            DELIVERY_POLICY_CLIPBOARD_ONLY -> true
+            DELIVERY_POLICY_INJECTION_AND_CLIPBOARD -> !injectionSucceeded
+            else -> false
+        }
+    }
+
+    private fun normalizedPolicy(policy: String): String {
+        return if (policy == DELIVERY_POLICY_INJECTION_AND_CLIPBOARD) {
+            DELIVERY_POLICY_INJECTION_AND_CLIPBOARD
+        } else {
+            DELIVERY_POLICY_CLIPBOARD_ONLY
+        }
     }
 
     private fun injectViaAccessibility(text: String, onSensitive: (Boolean) -> Unit): Boolean {

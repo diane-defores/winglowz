@@ -80,6 +80,8 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   bool _notifyClipboardAfterImport = false;
   bool _voiceImportBusy = false;
   bool _notifyVoiceAfterImport = false;
+  bool _overlayImportBusy = false;
+  bool _notifyOverlayAfterImport = false;
   final List<int> _tabHistory = [0];
   OnboardingReadiness? _onboardingReadiness;
   String? _onboardingMessage;
@@ -92,6 +94,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       });
       if (value == _voiceTabIndex) {
         _scheduleKeyboardVoiceSync(notifyVoice: true);
+        _scheduleOverlayVoiceSync(notifyOverlay: true);
       }
       if (value == _clipboardTabIndex) {
         _scheduleKeyboardClipboardSync(notifyClipboard: true);
@@ -119,6 +122,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     });
     if (value == _voiceTabIndex) {
       _scheduleKeyboardVoiceSync(notifyVoice: true);
+      _scheduleOverlayVoiceSync(notifyOverlay: true);
     }
     if (value == _clipboardTabIndex) {
       _scheduleKeyboardClipboardSync(notifyClipboard: true);
@@ -146,6 +150,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     Future.microtask(_consumePendingSignupWelcome);
     Future.microtask(_refreshOnboardingState);
     _scheduleKeyboardVoiceSync();
+    _scheduleOverlayVoiceSync();
     _scheduleKeyboardClipboardSync();
   }
 
@@ -163,9 +168,93 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
         ref.read(appThemeModeProvider.notifier).syncFromKeyboardThemeMode(),
       );
       _scheduleKeyboardVoiceSync(notifyVoice: _index == _voiceTabIndex);
+      _scheduleOverlayVoiceSync(notifyOverlay: _index == _voiceTabIndex);
       _scheduleKeyboardClipboardSync(
         notifyClipboard: _index == _clipboardTabIndex,
       );
+    }
+  }
+
+  void _scheduleOverlayVoiceSync({bool notifyOverlay = false}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      unawaited(_syncOverlayVoiceEvents(notifyOverlay: notifyOverlay));
+    });
+  }
+
+  Future<void> _syncOverlayVoiceEvents({bool notifyOverlay = false}) async {
+    if (!PlatformCapabilities.overlaySupported) {
+      return;
+    }
+    _notifyOverlayAfterImport = _notifyOverlayAfterImport || notifyOverlay;
+    if (_overlayImportBusy) {
+      return;
+    }
+    _overlayImportBusy = true;
+    var imported = 0;
+    try {
+      await ref.read(suiteIdentityProvider.future);
+      final events = await AndroidOverlayBridge.drainEvents();
+      if (events.isEmpty) {
+        return;
+      }
+      final store = ref.read(transcriptionStoreProvider);
+      final existing = await store.list();
+      final seen = existing
+          .map(
+            (item) =>
+                '${item.rawText}|${item.cleanedText}|${item.language}|${item.source}|${item.durationMs}',
+          )
+          .toSet();
+      for (final event in events) {
+        final draftEvent = AndroidOverlayEventTextDelivery.fromOverlayEvent(
+          event,
+        );
+        if (draftEvent == null) {
+          continue;
+        }
+        final draft = TranscriptionDraft(
+          rawText: draftEvent.rawText,
+          cleanedText: draftEvent.cleanedText,
+          language: draftEvent.language,
+          source: draftEvent.source,
+          durationMs: draftEvent.durationMs,
+        );
+        if (!draft.isValid) {
+          continue;
+        }
+        final key =
+            '${draft.rawText}|${draft.cleanedText}|${draft.language}|${draft.source}|${draft.durationMs}';
+        if (seen.contains(key)) {
+          continue;
+        }
+        await store.insert(draft);
+        imported += 1;
+        seen.add(key);
+      }
+      if (events.isNotEmpty) {
+        AppDiagnostics.record(
+          'voice_overlay_auto_import',
+          'events=${events.length}; imported=$imported',
+        );
+      }
+    } catch (error) {
+      AppDiagnostics.record('overlay_voice_auto_import_error', error);
+    } finally {
+      final shouldNotify =
+          mounted &&
+          _index == _voiceTabIndex &&
+          (_notifyOverlayAfterImport || imported > 0);
+      _notifyOverlayAfterImport = false;
+      _overlayImportBusy = false;
+      if (shouldNotify) {
+        final notifier = ref.read(
+          transcriptionHistoryRefreshSignalProvider.notifier,
+        );
+        notifier.markChanged();
+      }
     }
   }
 

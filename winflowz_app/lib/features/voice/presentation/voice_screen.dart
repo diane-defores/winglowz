@@ -70,6 +70,7 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
       await _syncKeyboardVoiceRuntimeEvents();
       final store = ref.read(transcriptionStoreProvider);
       await _importKeyboardVoiceEvents(store);
+      await _importOverlayVoiceEvents(store);
       final rows = await store.list();
       AppDiagnostics.record(
         'voice_load',
@@ -140,6 +141,56 @@ class _VoiceScreenState extends ConsumerState<VoiceScreen> {
     }
     if (events.isNotEmpty) {
       AppDiagnostics.record('voice_keyboard_import', 'events=${events.length}');
+    }
+  }
+
+  Future<void> _importOverlayVoiceEvents(TranscriptionStore store) async {
+    if (!PlatformCapabilities.overlaySupported) {
+      return;
+    }
+    final events = await AndroidOverlayBridge.drainEvents();
+    var imported = 0;
+    if (events.isEmpty) {
+      return;
+    }
+    final existing = await store.list();
+    final seen = existing
+        .map(
+          (item) =>
+              '${item.rawText}|${item.cleanedText}|${item.language}|${item.source}|${item.durationMs}',
+        )
+        .toSet();
+    for (final event in events) {
+      final draftEvent = AndroidOverlayEventTextDelivery.fromOverlayEvent(
+        event,
+      );
+      if (draftEvent == null) {
+        continue;
+      }
+      final draft = TranscriptionDraft(
+        rawText: draftEvent.rawText,
+        cleanedText: draftEvent.cleanedText,
+        language: draftEvent.language,
+        source: draftEvent.source,
+        durationMs: draftEvent.durationMs,
+      );
+      if (!draft.isValid) {
+        continue;
+      }
+      final key =
+          '${draft.rawText}|${draft.cleanedText}|${draft.language}|${draft.source}|${draft.durationMs}';
+      if (seen.contains(key)) {
+        continue;
+      }
+      await store.insert(draft);
+      imported += 1;
+      seen.add(key);
+    }
+    if (events.isNotEmpty) {
+      AppDiagnostics.record(
+        'voice_overlay_import',
+        'events=${events.length}; imported=$imported',
+      );
     }
   }
 

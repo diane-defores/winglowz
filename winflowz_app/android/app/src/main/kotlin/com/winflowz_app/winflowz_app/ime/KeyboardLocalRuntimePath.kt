@@ -67,11 +67,10 @@ object KeyboardLocalRuntimePath {
                 androidFallbackAvailable = androidFallbackAvailable,
             )
         }
-        return LocalRuntimeValidation(
-            canStartLocal = true,
-            fallbackRuntimeMode = "local",
-            fallbackReason = "none",
-            errorCode = "none",
+        return fallback(
+            reason = "runtime_load_failed",
+            errorCode = "local_runtime_unproven",
+            androidFallbackAvailable = androidFallbackAvailable,
         )
     }
 

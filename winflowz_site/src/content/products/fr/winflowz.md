@@ -1,6 +1,6 @@
 ---
 title: "WinFlowz"
-description: "Formation Windows pratique pour vos workflows quotidiens"
+description: "Formation Windows pratique, cœur de l'écosystème WinFlowz"
 status: "available"
 main:
   id: 1
@@ -10,7 +10,7 @@ main:
   imgAlt: "WinFlowz product illustration"
 longDescription:
   title: "Apprenez des workflows Windows qui font vraiment gagner du temps"
-  subTitle: "WinFlowz est la colonne vertébrale de la formation pour celles et ceux qui veulent un poste Windows plus rapide, de meilleures habitudes de focus et une manière plus claire de travailler chaque jour."
+  subTitle: "WinFlowz est le parcours principal: une formation Windows d'abord, puis les outils Obsidian et navigateur pour prolonger les habitudes."
   btnTitle: "Voir la page de vente"
   btnURL: "/fr/maitrise-windows"
 descriptionList:

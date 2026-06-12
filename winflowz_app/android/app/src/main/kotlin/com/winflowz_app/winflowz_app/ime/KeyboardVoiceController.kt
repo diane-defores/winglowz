@@ -11,6 +11,7 @@ import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import com.winflowz_app.winflowz_app.MicrophoneSessionCoordinator
 import java.util.Locale
 
 class KeyboardVoiceController(
@@ -117,6 +118,12 @@ class KeyboardVoiceController(
             onState("Microphone permission required")
             return
         }
+        if (!MicrophoneSessionCoordinator.requestKeyboardSession(context)) {
+            setActive(false)
+            recordUnavailable("voice_session_active")
+            onState("Microphone already active on another surface")
+            return
+        }
         clearAndroidFallbackTimeout()
         pauseRequested = false
         manualStopRequested = false
@@ -127,6 +134,10 @@ class KeyboardVoiceController(
         when (localStartDecision.result) {
             LocalRuntimeStartResult.StartedLocal -> return
             LocalRuntimeStartResult.FallbackUnavailable -> {
+                MicrophoneSessionCoordinator.clearSession(
+                    context,
+                    MicrophoneSessionCoordinator.SURFACE_KEYBOARD,
+                )
                 onState("Local runtime unavailable")
                 return
             }
@@ -189,6 +200,10 @@ class KeyboardVoiceController(
         recognizer?.stopListening()
         listening = false
         setActive(false)
+        MicrophoneSessionCoordinator.clearSession(
+            context,
+            MicrophoneSessionCoordinator.SURFACE_KEYBOARD,
+        )
         onState("Dictation paused")
     }
 
@@ -231,6 +246,10 @@ class KeyboardVoiceController(
         recognizer?.destroy()
         recognizer = null
         activeAndroidFallbackReason = null
+        MicrophoneSessionCoordinator.clearSession(
+            context,
+            MicrophoneSessionCoordinator.SURFACE_KEYBOARD,
+        )
     }
 
     private fun startAndroidFallback(
@@ -489,21 +508,6 @@ class KeyboardVoiceController(
         val engine = stateStore.voiceEngine
         val modelArtifactPath = stateStore.voiceModelArtifactPath
         val androidFallbackAvailable = SpeechRecognizer.isRecognitionAvailable(context)
-        val loadingStatus =
-            KeyboardVoiceRuntimeStatus.normalized(
-                runtimeMode = "local",
-                languageTag = languageTag,
-                packId = packId,
-                engine = engine,
-                fallbackReason = "none",
-                lastErrorCode = "none",
-            )
-        KeyboardVoiceRuntimeEventQueue.enqueue(
-            status = loadingStatus,
-            runtimeStateOverride = "local_loading",
-            source = "ime_local_runtime",
-        )
-        onState("Loading local runtime")
         val validation =
             KeyboardLocalRuntimePath.validate(
                 packId = packId,
@@ -540,6 +544,21 @@ class KeyboardVoiceController(
                 )
             }
         }
+        val loadingStatus =
+            KeyboardVoiceRuntimeStatus.normalized(
+                runtimeMode = "local",
+                languageTag = languageTag,
+                packId = packId,
+                engine = engine,
+                fallbackReason = "none",
+                lastErrorCode = "none",
+            )
+        KeyboardVoiceRuntimeEventQueue.enqueue(
+            status = loadingStatus,
+            runtimeStateOverride = "local_loading",
+            source = "ime_local_runtime",
+        )
+        onState("Loading local runtime")
         val localEngine = KeyboardLocalVoiceEngineFactory.create(engine)
         scheduleLocalRuntimeStartupTimeout()
         val engineStartResult =
@@ -640,6 +659,10 @@ class KeyboardVoiceController(
         localVoiceEngine = null
         localRuntimeActive = false
         setActive(false)
+        MicrophoneSessionCoordinator.clearSession(
+            context,
+            MicrophoneSessionCoordinator.SURFACE_KEYBOARD,
+        )
         stateStore.updateVoiceRuntimeStatus(
             runtimeMode = "unavailable",
             languageTag = Locale.getDefault().toLanguageTag(),

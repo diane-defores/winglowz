@@ -3,7 +3,7 @@ import ogImageSrc from "@/assets/images/WinFlowz.png";
 export const SITE = {
   name: 'WinFlowz',
   title: 'WinFlowz - Productivity Plugins & Windows Training',
-  description: 'Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a smoother workflow with 200+ tested tips.',
+  description: 'Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a practical workflow.',
   author: 'Diane Defores',
   authorName: 'Diane Defores',
   url: 'https://winflowz.com',
@@ -58,7 +58,7 @@ export const OG = {
   type: "website",
   url: SITE.url,
   title: `WinFlowz - Productivity Plugins & Windows Training`,
-  description: "Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a smoother workflow with 200+ tested tips. Built by a neurodivergent solopreneur with dozens of 5-star AppSumo reviews.",
+  description: "Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a practical workflow.",
   image: ogImageSrc,
 };
 

@@ -9,33 +9,38 @@ const lang = getLangFromUrl(Astro.url)
 
 const bentoText = lang === 'fr'
   ? {
-      sectionTitle: "Tout ce dont vous avez besoin pour etre productif",
-      sectionSub: "En tant que personne atteinte de TDAH et d'autisme, j'ai cree des outils qui rendent deraisonnable de laisser la friction gagner.",
+      sectionTitle: "Tout ce qu'il vous faut pour travailler sans friction",
+      sectionSub:
+        "Je développe pour les personnes avec TDAH et autisme des outils qui transforment un poste de travail éclaté en environnement stable.",
       obsiTitle: "ObsiFlowz -- Plugins Obsidian",
-      obsiDesc: "Transformez votre curation de contenu avec RSSFlowz et optimisez votre gestion de plugins avec PluginFlowz. Des plugins puissants pour la productivite et la gestion de contenu.",
+      obsiDesc:
+        "Gérez vos contenus avec RSSFlowz et PluginFlowz pour garder une organisation simple et durable.",
       tubeTitle: "ReplayGlowz",
-      tubeDesc: "Revolutionnez vos recherches YouTube avec une puissante extension Chrome d'annotation et de mise en favoris.",
-      winTitle: "Maitrise Windows",
-      winDesc: "Debloquez tout le potentiel de Windows avec plus de 200 conseils et outils de productivite testes et approuves.",
-      blazingTitle: "Formation structuree",
-      blazingDesc: "8 modules, 40 lecons et 200+ conseils et outils testes pour construire un systeme Windows plus fluide.",
+      tubeDesc:
+        "Rationalisez vos recherches YouTube avec une extension Chrome pour l'annotation et la navigation par marque-pages.",
+      winTitle: "Maîtrise Windows",
+      winDesc: "Débloquez votre environnement Windows avec une méthode d'adoption pratique et répétable.",
+      blazingTitle: "Formation structurée",
+      blazingDesc: "8 modules pour construire un système Windows plus simple, plus net.",
       smartTitle: "Organisation Intelligente",
-      smartDesc: "Categorisez, decouvrez et sauvegardez -- un flux de travail structure pour dompter le chaos numerique.",
+      smartDesc: "Classez, découvrez et reprenez le contrôle de vos informations sans surcharge cognitive.",
       avgEfficiency: "modules de formation",
     }
   : {
       sectionTitle: "Everything you need to be productive",
-      sectionSub: "As someone with ADHD and autism, I created tools that make it unreasonable to let friction win.",
+      sectionSub:
+        "I build tools for people with ADHD and autism to replace noisy, fragmented workflows with calmer systems.",
       obsiTitle: "ObsiFlowz -- Obsidian Plugins",
-      obsiDesc: "Transform your content curation with RSSFlowz and optimize your plugin management with PluginFlowz. Powerful plugins designed for productivity and content management.",
+      obsiDesc: "Use RSSFlowz and PluginFlowz to keep content curation reliable, searchable, and easy to maintain.",
       tubeTitle: "ReplayGlowz",
-      tubeDesc: "Revolutionize your YouTube searches with a powerful Chrome extension for annotation and bookmarking.",
+      tubeDesc:
+        "Streamline YouTube research with a Chrome extension for quick annotation and bookmark workflows.",
       winTitle: "Windows Mastery",
-      winDesc: "Unlock the full potential of Windows with over 200 tested and approved productivity tips and tools.",
+      winDesc: "Build a practical training path for a clearer Windows system and fewer setup blocks.",
       blazingTitle: "Structured training",
-      blazingDesc: "8 modules, 40 lessons, and 200+ tested tips and tools for building a smoother Windows system.",
+      blazingDesc: "8 practical modules to build a clearer Windows system.",
       smartTitle: "Smart Organization",
-      smartDesc: "Categorize, discover and save -- a structured workflow to tame digital chaos and find anything instantly.",
+      smartDesc: "Create a repeatable process to classify, retrieve, and reuse what matters.",
       avgEfficiency: "training modules",
     }
 ---

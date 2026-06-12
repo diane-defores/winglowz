@@ -72,7 +72,7 @@ class KeyboardLocalRuntimePathTest {
     }
 
     @Test
-    fun `sherpa linked path can start local runtime`() {
+    fun `sherpa linked path is treated as unproven for now`() {
         val validation =
             KeyboardLocalRuntimePath.validate(
                 packId = "sherpa_onnx.fr-fr.whisper_candidate.2026_05_15",
@@ -82,10 +82,10 @@ class KeyboardLocalRuntimePathTest {
                 isEngineLinked = { true },
             )
 
-        assertEquals(true, validation.canStartLocal)
-        assertEquals("local", validation.fallbackRuntimeMode)
-        assertEquals("none", validation.fallbackReason)
-        assertEquals("none", validation.errorCode)
+        assertEquals(false, validation.canStartLocal)
+        assertEquals("android_fallback", validation.fallbackRuntimeMode)
+        assertEquals("runtime_load_failed", validation.fallbackReason)
+        assertEquals("local_runtime_unproven", validation.errorCode)
     }
 
     @Test

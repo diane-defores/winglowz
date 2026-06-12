@@ -1,118 +1,60 @@
 ---
-/* Pricing — pure Astro with vanilla JS billing toggle */
+/* Pricing — honest conversion framing for the flagship-first funnel */
 import { getLangFromUrl } from '@/utils/i18n'
 
 const lang = getLangFromUrl(Astro.url)
+const windowsMasteryUrl = lang === 'fr' ? '/fr/maitrise-windows' : '/windows-mastery'
 const productsUrl = lang === 'fr' ? '/fr/produits' : '/products'
-const contactUrl = lang === 'fr' ? '/fr/contact' : '/contact'
 
-const plans = lang === 'fr'
-  ? [
-      {
-        name: "Gratuit",
-        description: "Parfait pour decouvrir nos outils",
-        priceMonthly: 0,
-        priceYearly: 0,
-        features: [
-          "Acces aux extensions de base",
-          "Documentation complete",
-          "Support communautaire",
-          "Mises a jour regulieres",
+const copy = lang === 'fr'
+  ? {
+      title: 'Quelle est votre prochaine étape ?',
+      sub: 'Le parcours phare reste la formation Windows. Les produits restent disponibles ensuite, en soutien.',
+      flagship: {
+        name: 'Formation Windows Mastery',
+        description: 'Parcours de référence pour passer d’un environnement bruité à un système de travail clair.',
+        points: [
+          '8 modules organisés autour d’une méthode d’adoption pratique',
+          'Contenu en FR + EN',
+          'Objectif: réduire la friction pour travailler plus efficacement',
+          'Accès au chemin premium via votre compte',
         ],
-        cta: "Commencer gratuitement",
+        cta: 'Voir la page de vente',
+        href: windowsMasteryUrl,
+        highlight: true,
+      },
+      ecosystem: {
+        name: 'Écosystème WinFlowz',
+        description: 'Plugins et outils complémentaires pour compléter votre workflow.',
+        points: ['Obsidian', 'ReplayGlowz', 'Mise en relation avec la formation'],
+        cta: 'Explorer les outils',
         href: productsUrl,
-        highlighted: false,
       },
-      {
-        name: "Pro",
-        description: "Pour les utilisateurs avances",
-        priceMonthly: 9.99,
-        priceYearly: 7.99,
-        features: [
-          "Toutes les fonctionnalites gratuites",
-          "Extensions premium",
-          "Support prioritaire",
-          "Acces anticipe aux nouveautes",
-          "Formations exclusives",
-          "Guide Maitrise Windows",
+    }
+  : {
+      title: 'What should you do next?',
+      sub: 'The flagship path is the Windows Mastery training. Companion tools stay secondary.',
+      flagship: {
+        name: 'Windows Mastery',
+        description: 'The recommended first step to move from noisy, fragmented work to a clear system.',
+        points: [
+          '8 practical modules built around a structured workflow',
+          'FR + EN training content',
+          'Designed to reduce daily friction and regain focus',
+          'Premium path opens after sign-in and checkout flow',
         ],
-        cta: "Voir les produits",
+        cta: 'See the course',
+        href: windowsMasteryUrl,
+        highlight: true,
+      },
+      ecosystem: {
+        name: 'WinFlowz Ecosystem',
+        description: 'Complementary tools and plugins for Obsidian and YouTube workflows.',
+        points: ['ObsiFlowz', 'ReplayGlowz', 'Use together after the training plan'],
+        cta: 'Explore products',
         href: productsUrl,
-        highlighted: true,
       },
-      {
-        name: "Entreprise",
-        description: "Besoin d'une solution sur mesure ?",
-        priceMonthly: -1,
-        priceYearly: -1,
-        features: [
-          "Toutes les fonctionnalites Pro",
-          "Deploiement personnalise",
-          "Support dedie",
-          "Formation personnalisee",
-          "Integrations specifiques",
-          "Onboarding equipe",
-        ],
-        cta: "Nous contacter",
-        href: contactUrl,
-        highlighted: false,
-      },
-    ]
-  : [
-      {
-        name: "Free",
-        description: "Perfect to discover our tools",
-        priceMonthly: 0,
-        priceYearly: 0,
-        features: [
-          "Access to basic extensions",
-          "Complete documentation",
-          "Community support",
-          "Regular updates",
-        ],
-        cta: "Get Started for Free",
-        href: productsUrl,
-        highlighted: false,
-      },
-      {
-        name: "Pro",
-        description: "For advanced users",
-        priceMonthly: 9.99,
-        priceYearly: 7.99,
-        features: [
-          "All free features",
-          "Premium extensions",
-          "Priority support",
-          "Early access to new features",
-          "Exclusive training",
-          "Windows Mastery guide",
-        ],
-        cta: "View products",
-        href: productsUrl,
-        highlighted: true,
-      },
-      {
-        name: "Enterprise",
-        description: "Need a custom solution?",
-        priceMonthly: -1,
-        priceYearly: -1,
-        features: [
-          "All Pro features",
-          "Custom deployment",
-          "Dedicated support",
-          "Custom training",
-          "Specific integrations",
-          "Team onboarding",
-        ],
-        cta: "Contact Us",
-        href: contactUrl,
-        highlighted: false,
-      },
-    ]
-
-const pricingText = lang === 'fr'
-  ? { title: "Tarifs simples et transparents", sub: "Choisissez le plan adapte a vos besoins. Pas de frais caches, pas de surprises.", monthly: "Mensuel", yearly: "Annuel", perMonth: "/mois", popular: "Populaire", billedAnnually: "Facture annuellement" }
-  : { title: "Simple, transparent pricing", sub: "Choose the plan that fits your needs. No hidden fees, no surprises.", monthly: "Monthly", yearly: "Yearly", perMonth: "/month", popular: "Most Popular", billedAnnually: "Billed annually" }
+    }
 ---
 
 <section id="pricing" class="py-16 px-4">
@@ -122,164 +64,51 @@ const pricingText = lang === 'fr'
         class="mb-4 text-3xl font-bold text-neutral-950 dark:text-white sm:text-4xl"
         style="font-family: var(--font-instrument-sans);"
       >
-        {pricingText.title}
+        {copy.title}
       </h2>
       <p class="mx-auto mb-8 max-w-2xl text-neutral-600 dark:text-zinc-400">
-        {pricingText.sub}
+        {copy.sub}
       </p>
-
-      <!-- Billing Toggle -->
-      <div class="landing-surface inline-flex items-center rounded-full border p-1">
-        <button
-          data-billing-toggle
-          data-cycle="monthly"
-          class="billing-btn relative rounded-full px-4 py-2 text-sm font-medium text-neutral-950 transition-colors dark:text-white"
-        >
-          <span data-toggle-indicator class="absolute inset-0 rounded-full bg-neutral-200 transition-transform duration-300 dark:bg-zinc-800"></span>
-          <span class="relative z-10">{pricingText.monthly}</span>
-        </button>
-        <button
-          data-billing-toggle
-          data-cycle="yearly"
-          class="billing-btn relative rounded-full px-4 py-2 text-sm font-medium text-neutral-500 transition-colors dark:text-zinc-400"
-        >
-          <span class="relative z-10">{pricingText.yearly}</span>
-          <span class="relative z-10 ml-2 px-2 py-0.5 text-xs rounded-full" style="background-color: rgba(0, 255, 68, 0.15); color: var(--brand-green);">
-            -20%
-          </span>
-        </button>
-      </div>
     </div>
 
-    <div class="reveal delay-2 grid grid-cols-1 md:grid-cols-3 gap-6">
-      {plans.map((plan, index) => (
-        <div
-          class:list={[
-            "reveal relative p-6 rounded-2xl border transition-all duration-300 hover:scale-[1.02]",
-            `delay-${index + 3}`,
-            plan.highlighted
-              ? "landing-surface border-neutral-300 dark:border-zinc-700"
-              : "landing-surface border-transparent hover:border-neutral-300 dark:hover:border-zinc-600",
-          ]}
-        >
-          {plan.highlighted && (
-            <div class="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-              <div
-                class="border-beam absolute h-24 w-24 bg-neutral-950/10 blur-xl dark:bg-white/20"
-                style="offset-path: rect(0 100% 100% 0 round 16px);"
-              ></div>
-            </div>
-          )}
+    <div class="reveal grid grid-cols-1 md:grid-cols-2 gap-6">
+      <article
+        class="landing-surface relative p-6 rounded-2xl border border-neutral-300 dark:border-zinc-700"
+      >
+        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500 dark:text-zinc-400">{copy.flagship.name}</p>
+        <h3 class="text-2xl font-bold text-neutral-950 dark:text-white">{copy.flagship.description}</h3>
+        <ul class="mt-6 space-y-3 text-sm text-neutral-700 dark:text-zinc-300">
+          {copy.flagship.points.map((point) => (
+            <li class="flex gap-3">
+              <svg class="h-5 w-5 flex-shrink-0" style="color: var(--brand-green);" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7" /></svg>
+              {point}
+            </li>
+          ))}
+        </ul>
+        <a href={copy.flagship.href}>
+          <button class="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full bg-neutral-950 px-5 text-sm font-semibold text-white hover:bg-neutral-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200">
+            {copy.flagship.cta}
+          </button>
+        </a>
+      </article>
 
-          {plan.highlighted && (
-            <div class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-neutral-950 px-3 py-1 text-xs font-medium text-white dark:bg-white dark:text-zinc-950">
-              {pricingText.popular}
-            </div>
-          )}
-
-          <div class="mb-6">
-            <h3 class="mb-2 text-xl font-semibold text-neutral-950 dark:text-white">{plan.name}</h3>
-            <p class="text-sm text-neutral-600 dark:text-zinc-400">{plan.description}</p>
-          </div>
-
-          <div class="mb-6">
-            {plan.priceMonthly >= 0 ? (
-              <>
-                <div class="flex items-baseline gap-1">
-                  <span data-price-monthly class="text-4xl font-bold text-neutral-950 dark:text-white">${plan.priceMonthly}</span>
-                  <span data-price-yearly class="text-4xl font-bold text-neutral-950 dark:text-white" style="display:none;">${plan.priceYearly}</span>
-                  <span class="text-sm text-neutral-500 dark:text-zinc-400">{pricingText.perMonth}</span>
-                </div>
-                {plan.priceYearly > 0 && (
-                  <p data-price-yearly-note class="mt-1 text-xs text-neutral-500 dark:text-zinc-500" style="display:none;">
-                    {pricingText.billedAnnually} (${(plan.priceYearly * 12).toFixed(2)}/{lang === 'fr' ? 'an' : 'year'})
-                  </p>
-                )}
-              </>
-            ) : (
-              <div class="flex items-baseline gap-1">
-                <span class="text-4xl font-bold text-neutral-950 dark:text-white">Custom</span>
-              </div>
-            )}
-          </div>
-
-          <ul class="space-y-3 mb-8">
-            {plan.features.map((feature) => (
-              <li class="flex items-center gap-3 text-sm text-neutral-700 dark:text-zinc-300">
-                <svg class="w-4 h-4 shrink-0" style="color: var(--brand-green);" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                {feature}
-              </li>
-            ))}
-          </ul>
-
-          {plan.priceMonthly > 0 ? (
-            <a
-              href={plan.href}
-              data-track={`pricing-${plan.highlighted ? 'pro' : 'paid'}-cta`}
-            >
-              <button
-                class:list={[
-                  "w-full rounded-full px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors",
-                  plan.highlighted
-                    ? "shimmer-btn bg-neutral-950 text-white hover:bg-neutral-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
-                    : "border border-neutral-300 bg-white text-neutral-950 hover:bg-neutral-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700",
-                ]}
-              >
-                {plan.cta}
-              </button>
-            </a>
-          ) : (
-            <a href={plan.href} data-track={`pricing-${plan.name.toLowerCase()}-cta`}>
-              <button
-                class:list={[
-                  "w-full rounded-full px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors",
-                  "border border-neutral-300 bg-white text-neutral-950 hover:bg-neutral-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700",
-                ]}
-              >
-                {plan.cta}
-              </button>
-            </a>
-          )}
-        </div>
-      ))}
+      <article class="landing-surface p-6 rounded-2xl border border-neutral-200 dark:border-zinc-800">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500 dark:text-zinc-400">{copy.ecosystem.name}</p>
+        <h3 class="text-2xl font-bold text-neutral-950 dark:text-white">{copy.ecosystem.description}</h3>
+        <ul class="mt-6 space-y-3 text-sm text-neutral-700 dark:text-zinc-300">
+          {copy.ecosystem.points.map((point) => (
+            <li class="flex gap-3">
+              <svg class="h-5 w-5 flex-shrink-0" style="color: var(--brand-green);" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7" /></svg>
+              {point}
+            </li>
+          ))}
+        </ul>
+        <a href={copy.ecosystem.href}>
+          <button class="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full border border-neutral-300 px-5 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-800">
+            {copy.ecosystem.cta}
+          </button>
+        </a>
+      </article>
     </div>
   </div>
 </section>
-
-<script>
-  const monthlyBtn = document.querySelector('[data-cycle="monthly"]') as HTMLButtonElement | null;
-  const yearlyBtn = document.querySelector('[data-cycle="yearly"]') as HTMLButtonElement | null;
-  const indicator = document.querySelector('[data-toggle-indicator]') as HTMLElement | null;
-
-  function setCycle(cycle: 'monthly' | 'yearly') {
-    document.querySelectorAll('[data-price-monthly]').forEach(el => {
-      (el as HTMLElement).style.display = cycle === 'monthly' ? '' : 'none';
-    });
-    document.querySelectorAll('[data-price-yearly]').forEach(el => {
-      (el as HTMLElement).style.display = cycle === 'yearly' ? '' : 'none';
-    });
-    document.querySelectorAll('[data-price-yearly-note]').forEach(el => {
-      (el as HTMLElement).style.display = cycle === 'yearly' ? '' : 'none';
-    });
-
-    if (monthlyBtn && yearlyBtn) {
-      monthlyBtn.classList.toggle('text-neutral-950', cycle === 'monthly');
-      monthlyBtn.classList.toggle('dark:text-white', cycle === 'monthly');
-      monthlyBtn.classList.toggle('text-neutral-500', cycle !== 'monthly');
-      monthlyBtn.classList.toggle('dark:text-zinc-400', cycle !== 'monthly');
-
-      yearlyBtn.classList.toggle('text-neutral-950', cycle === 'yearly');
-      yearlyBtn.classList.toggle('dark:text-white', cycle === 'yearly');
-      yearlyBtn.classList.toggle('text-neutral-500', cycle !== 'yearly');
-      yearlyBtn.classList.toggle('dark:text-zinc-400', cycle !== 'yearly');
-    }
-
-    if (indicator) {
-      indicator.style.transform = cycle === 'yearly' ? 'translateX(100%)' : 'translateX(0)';
-    }
-  }
-
-  monthlyBtn?.addEventListener('click', () => setCycle('monthly'));
-  yearlyBtn?.addEventListener('click', () => setCycle('yearly'));
-  setCycle('monthly');
-</script>

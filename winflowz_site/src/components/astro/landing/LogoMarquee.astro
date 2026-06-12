@@ -13,12 +13,12 @@ const tools = [
   { name: "Windows Mastery" },
   { name: "Obsidian" },
   { name: "Chrome" },
-  { name: "AppSumo" },
+  { name: "WinFlowz" },
 ]
 
 const trustText = lang === 'fr'
-  ? { trust: "Approuve par les entrepreneurs, freelances et professionnels", reviews: "Des dizaines d'avis 5 etoiles sur", allFive: "" }
-  : { trust: "Trusted by entrepreneurs, freelancers & professionals", reviews: "Dozens of 5-star reviews on", allFive: "" }
+  ? { trust: "Conçu pour les utilisateurs Windows qui veulent un système simple", subtitle: "Retours communautaires, sans promesse de score public." }
+  : { trust: "Built for people who want a clearer Windows workflow", subtitle: "Community feedback only, no public score claim." }
 ---
 
 <section id="testimonials" class="py-16 overflow-hidden">
@@ -26,19 +26,9 @@ const trustText = lang === 'fr'
     <p class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-zinc-500">
       {trustText.trust}
     </p>
-    <div class="flex items-center justify-center gap-2 mt-3">
-      <!-- Star rating -->
-      <div class="flex gap-0.5">
-        {Array.from({ length: 5 }).map(() => (
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="var(--brand-yellow)" stroke="var(--brand-yellow)" stroke-width="1">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-        ))}
-      </div>
-      <span class="text-sm text-neutral-600 dark:text-zinc-400">
-        {trustText.reviews} <span class="font-medium text-neutral-800 dark:text-zinc-300">AppSumo</span> {trustText.allFive}
-      </span>
-    </div>
+    <p class="mx-auto mt-3 max-w-xl text-sm text-neutral-600 dark:text-zinc-400">
+      {trustText.subtitle}
+    </p>
   </div>
 
   <!-- Testimonials carousel (React island) -->

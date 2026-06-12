@@ -8,20 +8,21 @@
     "subTitle": "Outils Chrome pour la recherche YouTube, plugins Obsidian pour la curation de contenu, et une formation Windows axée sur des usages concrets.",
     "primaryBtn": "Témoignages",
     "primaryBtnURL": "/fr/produits#testimonials",
-    "secondaryBtn": "Acheter",
+    "secondaryBtn": "Voir la formation",
+    "secondaryBtnURL": "/fr/maitrise-windows",
     "review": {
-      "rating": "<span class=\"font-bold\">5</span> / 5",
-      "starCount": 5,
-      "text": "Des dizaines d'avis 5 etoiles AppSumo"
+      "rating": "",
+      "starCount": 0,
+      "text": "Retours de la communauté"
     }
   },
   "clients": {
     "title": "Pensé pour des workflows réels",
     "subTitle": "Pour celles et ceux qui veulent réunir leurs habitudes Windows, leurs notes et leurs outils de contenu au même endroit."
   },
-  "features": {
+      "features": {
     "title": "Des outils et une formation qui fonctionnent ensemble",
-    "subTitle": "WinFlowz associe contenu de formation, outils navigateur et workflows Obsidian pour enseigner le meme systeme qu'il aide a utiliser."
+    "subTitle": "WinFlowz associe le contenu de formation, les outils navigateur et les workflows Obsidian pour enseigner le même système qu'il aide à utiliser."
   },
   "workflow": {
     "title": "Une stack de workflow construite de bout en bout",
@@ -32,11 +33,11 @@
       },
       {
         "heading": "ReplayGlowz",
-        "content": "Une extension Chrome pour la recherche YouTube, la mise en favoris et l'annotation afin de transformer les videos utiles en connaissance reusable."
+        "content": "Une extension Chrome pour la recherche YouTube, la mise en favoris et l'annotation afin de transformer les vidéos utiles en connaissance réutilisable."
       },
       {
         "heading": "Maîtrise Windows",
-        "content": "Une formation Windows en 8 modules, 40 lecons francaises, avec des conseils pratiques sur le focus, le temps, les actions et les raccourcis."
+        "content": "Une formation Windows de 8 modules avec des conseils pratiques sur le focus, le temps, les actions et les raccourcis."
       }
     ]
   },
@@ -52,10 +53,6 @@
       {
         "count": "8",
         "description": "modules de formation dans le parcours Windows"
-      },
-      {
-        "count": "40",
-        "description": "lecons francaises actuellement publiees"
       },
       {
         "count": "3",

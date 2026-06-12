@@ -3,23 +3,23 @@
 import { getLangFromUrl } from '@/utils/i18n'
 
 const lang = getLangFromUrl(Astro.url)
-const contactUrl = lang === 'fr' ? '/fr/contact' : '/contact'
 const windowsMasteryUrl = lang === 'fr' ? '/fr/maitrise-windows' : '/windows-mastery'
+const productsUrl = lang === 'fr' ? '/fr/produits' : '/products'
 
 const ctaText = lang === 'fr'
   ? {
       title: "Commencez par la formation Windows",
-      sub: "Si votre vrai probleme est la friction numerique, commencez par la page dediee a la formation WinFlowz. Le reste de l'ecosysteme pourra venir ensuite.",
+      sub: "Si votre friction quotidienne est bien votre frein principal, commencez par la formation WinFlowz. Les outils pourront suivre ensuite.",
       cta: "Voir la page de vente",
-      consult: "Planifier une consultation",
-      note: "Formation complete a 49€ • bundle disponible plus loin dans le parcours.",
+      consult: "Parcourir l'écosystème",
+      note: "Formation Windows Mastery en premier, puis modules et outils complémentaires.",
     }
   : {
       title: "Start with the Windows course",
-      sub: "If your real problem is digital friction, start with the dedicated WinFlowz sales page. The rest of the ecosystem can come later.",
+      sub: "If daily friction is your main blocker, start with the WinFlowz training path first. The rest of the ecosystem can follow.",
       cta: "See the sales page",
-      consult: "Schedule a Consultation",
-      note: "Complete course at $49 • bundle available later in the path.",
+      consult: "Browse ecosystem",
+      note: "Windows Mastery first, then companion tools and bundles.",
     }
 ---
 
@@ -42,7 +42,7 @@ const ctaText = lang === 'fr'
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
       </a>
-      <a href={contactUrl} data-track="final-cta-consult">
+      <a href={productsUrl} data-track="final-cta-ecosystem">
         <button class="inline-flex h-14 items-center justify-center rounded-full border border-neutral-300 bg-transparent px-8 text-base font-medium text-neutral-700 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-950 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-white">
           {ctaText.consult}
         </button>

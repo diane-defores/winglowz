@@ -14,6 +14,7 @@ import android.speech.SpeechRecognizer
 import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
 import java.io.File
+import java.util.Locale
 import java.util.UUID
 import com.winflowz_app.winflowz_app.ime.KeyboardClipboardEventQueue
 import com.winflowz_app.winflowz_app.ime.KeyboardVoiceEventQueue
@@ -157,6 +158,34 @@ class MainActivity : FlutterActivity() {
                             )
                             return@setMethodCallHandler
                         }
+                        if (!isRecordAudioPermissionGranted()) {
+                            OverlayEventQueue.enqueue(
+                                "bridgeError",
+                                mapOf("code" to "OVERLAY_RECORD_AUDIO_PERMISSION_DENIED"),
+                            )
+                            result.error(
+                                "OVERLAY_RECORD_AUDIO_PERMISSION_DENIED",
+                                "Microphone permission is required to start overlay recording.",
+                                null,
+                            )
+                            return@setMethodCallHandler
+                        }
+                        if (!MicrophoneSessionCoordinator.requestOverlaySession(this)) {
+                            OverlayEventQueue.enqueue(
+                                "bridgeError",
+                                mapOf(
+                                    "code" to "OVERLAY_SESSION_BUSY",
+                                    "activeSurface" to
+                                        MicrophoneSessionCoordinator.activeSurface(this),
+                                ),
+                            )
+                            result.error(
+                                "OVERLAY_SESSION_BUSY",
+                                "Another microphone session is already active.",
+                                null,
+                            )
+                            return@setMethodCallHandler
+                        }
                         if (!isOverlayEnabled()) {
                             overlayPreferences()
                                 .edit()
@@ -174,6 +203,10 @@ class MainActivity : FlutterActivity() {
                             sendOverlayCommand(OverlayForegroundService.ACTION_START)
                             result.success(buildStatusMap())
                         } catch (error: Exception) {
+                            MicrophoneSessionCoordinator.clearSession(
+                                this,
+                                MicrophoneSessionCoordinator.SURFACE_OVERLAY,
+                            )
                             OverlayEventQueue.enqueue(
                                 "bridgeError",
                                 mapOf(
@@ -193,6 +226,10 @@ class MainActivity : FlutterActivity() {
                             "bridgeCall",
                             mapOf("method" to "stopOverlayRecording"),
                         )
+                        MicrophoneSessionCoordinator.clearSession(
+                            this,
+                            MicrophoneSessionCoordinator.SURFACE_OVERLAY,
+                        )
                         sendOverlayCommand(OverlayForegroundService.ACTION_STOP)
                         result.success(buildStatusMap())
                     }
@@ -200,6 +237,10 @@ class MainActivity : FlutterActivity() {
                         OverlayEventQueue.enqueue(
                             "bridgeCall",
                             mapOf("method" to "cancelOverlayRecording"),
+                        )
+                        MicrophoneSessionCoordinator.clearSession(
+                            this,
+                            MicrophoneSessionCoordinator.SURFACE_OVERLAY,
                         )
                         sendOverlayCommand(OverlayForegroundService.ACTION_CANCEL)
                         result.success(buildStatusMap())
@@ -258,11 +299,38 @@ class MainActivity : FlutterActivity() {
                                 mapOf(
                                     "injected" to false,
                                     "clipboardCopied" to false,
+                                    "deliveryPolicy" to OverlayTextInjectionHelper.DELIVERY_POLICY_CLIPBOARD_ONLY,
                                     "sensitiveField" to false,
+                                    "deliveryMode" to "empty",
+                                    "blockedReason" to "empty_text",
                                 ),
                             )
                         } else {
-                            result.success(OverlayTextInjectionHelper.deliverText(this, text))
+                            val deliveryPolicy =
+                                if (isAccessibilityPermissionGranted()) {
+                                    OverlayTextInjectionHelper.DELIVERY_POLICY_INJECTION_AND_CLIPBOARD
+                                } else {
+                                    OverlayTextInjectionHelper.DELIVERY_POLICY_CLIPBOARD_ONLY
+                                }
+                            val deliveryResult =
+                                OverlayTextInjectionHelper.deliverText(
+                                    context = this,
+                                    text = text,
+                                    deliveryPolicy = deliveryPolicy,
+                                    allowClipboardCopy = true,
+                                )
+                            OverlayEventQueue.enqueue(
+                                "overlayTextDelivery",
+                                mapOf(
+                                    "rawText" to text.trim(),
+                                    "cleanedText" to text.trim(),
+                                    "language" to Locale.getDefault().toLanguageTag(),
+                                    "source" to "overlay",
+                                    "durationMs" to 0,
+                                    "delivery" to deliveryResult,
+                                ),
+                            )
+                            result.success(deliveryResult)
                         }
                     }
                     else -> result.notImplemented()
@@ -420,20 +488,6 @@ class MainActivity : FlutterActivity() {
                             engine = engine,
                             modelArtifactPath = modelArtifactPath,
                         )
-                        val loading =
-                            com.winflowz_app.winflowz_app.ime.KeyboardVoiceRuntimeStatus.normalized(
-                                runtimeMode = "local",
-                                languageTag = languageTag,
-                                packId = packId,
-                                engine = engine,
-                                fallbackReason = "none",
-                                lastErrorCode = "none",
-                            )
-                        KeyboardVoiceRuntimeEventQueue.enqueue(
-                            status = loading,
-                            runtimeStateOverride = "local_loading",
-                            source = "flutter_probe",
-                        )
                         val validation =
                             com.winflowz_app.winflowz_app.ime.KeyboardLocalRuntimePath.validate(
                                 packId = packId,
@@ -441,36 +495,20 @@ class MainActivity : FlutterActivity() {
                                 modelArtifactPath = keyboardState.voiceModelArtifactPath,
                                 androidFallbackAvailable = SpeechRecognizer.isRecognitionAvailable(this),
                             )
-                        if (validation.canStartLocal) {
-                            keyboardState.updateVoiceRuntimeStatus(
-                                runtimeMode = "local",
-                                languageTag = languageTag,
-                                packId = packId,
-                                engine = engine,
-                                fallbackReason = "none",
-                                lastErrorCode = "none",
-                            )
-                            KeyboardVoiceRuntimeEventQueue.enqueue(
-                                status = loading,
-                                runtimeStateOverride = "local_active",
-                                source = "flutter_probe",
-                            )
-                        } else {
-                            val fallbackEngine =
-                                if (validation.fallbackRuntimeMode == "android_fallback") {
-                                    "android_speech_recognizer"
-                                } else {
-                                    "unavailable"
-                                }
-                            keyboardState.updateVoiceRuntimeStatus(
-                                runtimeMode = validation.fallbackRuntimeMode,
-                                languageTag = languageTag,
-                                packId = if (validation.fallbackRuntimeMode == "android_fallback") "none" else packId,
-                                engine = fallbackEngine,
-                                fallbackReason = validation.fallbackReason,
-                                lastErrorCode = validation.errorCode,
-                            )
-                        }
+                        val fallbackEngine =
+                            if (validation.fallbackRuntimeMode == "android_fallback") {
+                                "android_speech_recognizer"
+                            } else {
+                                "unavailable"
+                            }
+                        keyboardState.updateVoiceRuntimeStatus(
+                            runtimeMode = validation.fallbackRuntimeMode,
+                            languageTag = languageTag,
+                            packId = if (validation.fallbackRuntimeMode == "android_fallback") "none" else packId,
+                            engine = fallbackEngine,
+                            fallbackReason = validation.fallbackReason,
+                            lastErrorCode = validation.errorCode,
+                        )
                         result.success(keyboardState.buildStatusMap())
                     }
                     "openInputMethodSettings" -> {

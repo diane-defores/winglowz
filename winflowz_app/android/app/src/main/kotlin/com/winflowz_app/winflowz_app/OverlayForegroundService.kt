@@ -151,6 +151,7 @@ class OverlayForegroundService : Service() {
         OverlayEventQueue.enqueue("serviceLifecycle", mapOf("state" to "destroyed"))
         updateServiceState("destroyed")
         hideOverlay()
+        MicrophoneSessionCoordinator.clearSession(this, MicrophoneSessionCoordinator.SURFACE_OVERLAY)
         synchronized(this) {
             running = false
         }
@@ -196,6 +197,7 @@ class OverlayForegroundService : Service() {
                 return
             }
             updateServiceState("stopping")
+            MicrophoneSessionCoordinator.clearSession(this, MicrophoneSessionCoordinator.SURFACE_OVERLAY)
             hideOverlay()
             setOverlayStateInternal("collapsed")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -247,7 +249,59 @@ class OverlayForegroundService : Service() {
     }
 
     private fun handleDeliverText(text: String) {
-        OverlayTextInjectionHelper.deliverText(this, text)
+        val normalized = text.trim()
+        if (normalized.isEmpty()) {
+            return
+        }
+        val policy =
+            if (isAccessibilityPermissionGranted()) {
+                OverlayTextInjectionHelper.DELIVERY_POLICY_INJECTION_AND_CLIPBOARD
+            } else {
+                OverlayTextInjectionHelper.DELIVERY_POLICY_CLIPBOARD_ONLY
+            }
+        val delivery =
+            OverlayTextInjectionHelper.deliverText(
+                context = this,
+                text = normalized,
+                deliveryPolicy = policy,
+                allowClipboardCopy = true,
+            )
+        overlayView?.post {
+            overlayView?.showResult()
+        }
+        OverlayEventQueue.enqueue(
+            "overlayTextDelivery",
+            mapOf(
+                "rawText" to normalized,
+                "cleanedText" to normalized,
+                "language" to java.util.Locale.getDefault().toLanguageTag(),
+                "source" to "overlay",
+                "durationMs" to 0,
+                "delivery" to delivery,
+            ),
+        )
+    }
+
+    private fun isAccessibilityPermissionGranted(): Boolean {
+        val expectedComponent = android.content.ComponentName(
+            this,
+            OverlayAccessibilityService::class.java,
+        )
+        val expected = expectedComponent.flattenToString()
+        val enabledServices =
+            android.provider.Settings.Secure.getString(
+                contentResolver,
+                android.provider.Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES,
+            ) ?: return false
+        val splitter = android.text.TextUtils.SimpleStringSplitter(':')
+        splitter.setString(enabledServices)
+        while (splitter.hasNext()) {
+            val enabledService = splitter.next()
+            if (enabledService.equals(expected, ignoreCase = true)) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun ensureForegroundNotification(): Boolean {

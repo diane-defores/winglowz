@@ -1,5 +1,6 @@
 {
   "navBarLinks": [
+    { "name": "Windows Mastery", "url": "/windows-mastery" },
     { "name": "Apps", "url": "/products" },
     { "name": "Courses", "url": "/en/formations/" },
     { "name": "Roadmap", "url": "/roadmap" },
@@ -20,10 +21,10 @@
     {
       "section": "Products",
       "links": [
-        { "name": "ObsiFlowz", "url": "/products" },
-        { "name": "ReplayGlowz", "url": "/products" },
-        { "name": "Windows Mastery", "url": "/products" },
-        { "name": "Productivity Suite", "url": "/products" }
+        { "name": "ObsiFlowz", "url": "/products/obsidian-plugins" },
+        { "name": "ReplayGlowz", "url": "/products/chrome-extensions" },
+        { "name": "Windows Mastery", "url": "/windows-mastery" },
+        { "name": "Productivity Suite", "url": "/products/productivity-suite" }
       ]
     },
     {

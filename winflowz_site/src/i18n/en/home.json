@@ -8,11 +8,12 @@
     "subTitle": "Chrome tools for YouTube workflows, Obsidian plugins for content curation, and a Windows productivity course built around practical lessons.",
     "primaryBtn": "Testimonials",
     "primaryBtnURL": "/products#testimonials",
-    "secondaryBtn": "Buy Now",
+    "secondaryBtn": "See Windows Mastery",
+    "secondaryBtnURL": "/windows-mastery",
     "review": {
-      "rating": "<span class=\"font-bold\">5</span> / 5",
-      "starCount": 5,
-      "text": "Dozens of 5-star AppSumo reviews"
+      "rating": "",
+      "starCount": 0,
+      "text": "Community feedback"
     }
   },
   "clients": {
@@ -36,7 +37,7 @@
       },
       {
         "heading": "Windows Mastery",
-        "content": "A Windows productivity course with 8 modules, 40 French lessons, and practical guidance for focus, time, actions, and shortcuts."
+        "content": "A Windows productivity course with 8 modules and practical guidance on focus, time, actions, and shortcuts."
       }
     ]
   },
@@ -52,10 +53,6 @@
       {
         "count": "8",
         "description": "training modules in the Windows course"
-      },
-      {
-        "count": "40",
-        "description": "French lessons currently published"
       },
       {
         "count": "3",
