@@ -278,6 +278,7 @@ None
 | 2026-06-12 17:35:30 UTC | 101-sf-ready | GPT-5 Codex | Validated structure, behavior contract, auth/data/security scope, and implementation autonomy | ready | /102-sf-start roadmap-account-aware-feedback |
 | 2026-06-12 15:11:00 UTC | 001-sf-build | GPT-5 Codex | Implemented roadmap Convex/API/UI wiring and ran `pnpm build:check`; verification blocked by pre-existing syntax error in `src/pages/[...lang]/[testimonials].astro` | partial | /103-sf-verify roadmap-account-aware-feedback |
 | 2026-06-12 15:26:00 UTC | 300-sf-docs | GPT-5 Codex | Refreshed fallback roadmap card content to better match current product docs and active WinFlowz app chantiers | updated | /103-sf-verify roadmap-account-aware-feedback |
+| 2026-06-12 17:56:00 UTC | 001-sf-build | GPT-5 Codex | Improved roadmap mobile responsiveness by removing project-filter overflow and turning kanban mobile into a snap-scannable horizontal rail | partial | /103-sf-verify roadmap-account-aware-feedback |
 
 # Current Chantier Flow
 

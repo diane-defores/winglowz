@@ -74,10 +74,10 @@ const columns = [
 ];
 ---
 
-<div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
+<div class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-5 lg:gap-8 lg:overflow-visible lg:pb-0">
   {columns.map(column => (
-    <div class="flex flex-col rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-900">
-      <div class="mb-6 flex items-center justify-between">
+    <div class="flex w-[85vw] max-w-sm shrink-0 snap-start flex-col rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900 lg:w-auto lg:max-w-none lg:min-w-0 lg:shrink lg:p-6">
+      <div class="mb-4 flex items-center justify-between lg:mb-6">
         <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
           {column.title}
           <span class="ml-2 text-sm font-normal text-neutral-500">
@@ -86,7 +86,7 @@ const columns = [
         </h2>
       </div>
       
-      <div class="flex-1 space-y-4">
+      <div class="flex-1 space-y-3 lg:space-y-4">
         {column.features.length > 0 ? (
           column.features.map(feature => (
             <FeatureCard
