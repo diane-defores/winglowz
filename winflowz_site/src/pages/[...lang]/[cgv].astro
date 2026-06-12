@@ -5,7 +5,7 @@ import { getLangFromUrl, useTranslations, useUI } from '@/utils/i18n'
 
 export function getStaticPaths() {
 	return [
-		{ params: { lang: 'en', cgv: 'cgv' } },
+		{ params: { lang: undefined, cgv: 'cgv' } },
 		{ params: { lang: 'fr', cgv: 'cgv' } },
 	]
 }

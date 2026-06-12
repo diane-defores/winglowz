@@ -2,11 +2,7 @@ export const prerender = true;
 
 import type { APIRoute } from "astro";
 import sharp from "sharp";
-import { fileURLToPath } from 'url';
 import path from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export const getStaticPaths = () => {
   return [
@@ -17,7 +13,8 @@ export const getStaticPaths = () => {
 
 export const GET: APIRoute = async () => {
   try {
-    const faviconBuffer = await sharp(path.join(__dirname, '../../../public/images/WinFlowz.png'))
+    const sourcePath = path.resolve(process.cwd(), 'public/images/WinFlowz.png');
+    const faviconBuffer = await sharp(sourcePath)
       .resize(32, 32)
       .png()
       .toBuffer();

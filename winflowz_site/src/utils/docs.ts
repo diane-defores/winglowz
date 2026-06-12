@@ -47,7 +47,7 @@ export function getDocLang(slug: string) {
 }
 
 export function getEntrySlug(entry: Pick<DocEntry, 'id'>) {
-  return entry.id;
+  return entry.id.replace(/\.(md|mdx)$/, '').replace(/\/index$/, '');
 }
 
 export function getDocHref(slug: string) {

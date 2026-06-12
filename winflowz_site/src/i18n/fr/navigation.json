@@ -21,10 +21,10 @@
     {
       "section": "Produits",
       "links": [
-        { "name": "ObsiFlowz", "url": "/fr/produits/obsidian-plugins" },
-        { "name": "ReplayGlowz", "url": "/fr/produits/chrome-extensions" },
+        { "name": "ObsiFlowz", "url": "/fr/produits/flowzsuite-obsidian" },
+        { "name": "ReplayGlowz", "url": "/fr/produits/replayglowz-extension" },
         { "name": "Windows Mastery", "url": "/fr/maitrise-windows" },
-        { "name": "Suite Productivité", "url": "/fr/produits/productivity-suite" }
+        { "name": "Suite Productivité", "url": "/fr/produits/winflowz" }
       ]
     },
     {

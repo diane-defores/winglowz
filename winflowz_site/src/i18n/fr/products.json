@@ -27,7 +27,7 @@
         "Conçu pour un usage réel d'Obsidian"
       ],
       "price": "29,99",
-      "link": "/fr/produits/obsidian-plugins"
+      "link": "/fr/produits/flowzsuite-obsidian"
     },
     "chromeextensions": {
       "title": "Outils Chrome",
@@ -39,7 +39,7 @@
         "Notes et marque-pages exportables"
       ],
       "price": "19,99",
-      "link": "/fr/produits/chrome-extensions"
+      "link": "/fr/produits/replayglowz-extension"
     },
     "windowsoptimization": {
       "title": "Formation Windows",
@@ -63,7 +63,7 @@
         "Une logique de workflow commune"
       ],
       "price": "79,99",
-      "link": "/fr/produits/productivity-suite"
+      "link": "/fr/produits/winflowz"
     }
   }
 }

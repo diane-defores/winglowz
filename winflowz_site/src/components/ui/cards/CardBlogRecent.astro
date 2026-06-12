@@ -5,7 +5,7 @@ import AvatarBlogLarge from '@components/ui/avatars/AvatarBlogLarge.astro'
 import PrimaryCTA from '@components/ui/buttons/PrimaryCTA.astro'
 
 const { blogEntry, blogLocale = '' } = Astro.props
-const blogSlug = blogEntry.id
+const blogSlug = blogEntry.id.replace(/^fr\//, '').replace(/^en\//, '').replace(/\.md$/, '')
 
 interface Props {
 	blogEntry: CollectionEntry<'blog'>
@@ -36,8 +36,8 @@ interface Props {
 			<a
 				class="outline-none ring-zinc-500 transition duration-300 hover:text-magenta focus-visible:ring dark:text-neutral-300 dark:ring-zinc-200 dark:hover:text-neutral-50 dark:focus:outline-none"
 				href={blogLocale === 'fr'
-					? `/fr/blog/${blogSlug.replace(/^fr\//, '')}`
-					: `/blog/${blogSlug.replace(/^en\//, '')}`}
+					? `/fr/blog/${blogSlug}`
+					: `/blog/${blogSlug}`}
 				data-astro-prefetch
 			>
 				{blogEntry.data.description}
@@ -60,8 +60,8 @@ interface Props {
 		<div class="mt-5">
 			<PrimaryCTA
 				url={blogLocale && blogLocale !== 'en'
-					? `/${blogLocale}/blog/${blogSlug.replace(/^fr\//, '')}/`
-					: `/blog/${blogSlug.replace(/^en\//, '')}/`}
+					? `/${blogLocale}/blog/${blogSlug}/`
+					: `/blog/${blogSlug}/`}
 				title="Read More"
 				data-astro-prefetch
 			/>

@@ -27,7 +27,7 @@
         "Designed to fit a real Obsidian workflow"
       ],
       "price": "29.99",
-      "link": "/products/obsidian-plugins"
+      "link": "/products/flowzsuite-obsidian"
     },
     "chromeextensions": {
       "title": "Chrome Tools",
@@ -39,7 +39,7 @@
         "Exportable notes and bookmarks"
       ],
       "price": "19.99",
-      "link": "/products/chrome-extensions"
+      "link": "/products/replayglowz-extension"
     },
     "windowsoptimization": {
       "title": "Windows Training",
@@ -63,7 +63,7 @@
         "Built around the same workflow system"
       ],
       "price": "79.99",
-      "link": "/products/productivity-suite"
+      "link": "/products/winflowz"
     }
   }
 }
