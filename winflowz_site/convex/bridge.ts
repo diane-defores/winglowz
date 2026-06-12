@@ -6,11 +6,18 @@ import type { MutationCtx } from './_generated/server'
 const SUITE_PRODUCT_ALLOWLIST = new Set([
   'winflowz_app',
   'winflowz_formation',
+  'gocharbon',
   'replayglowz',
   'socialglowz',
   'temu_shopping_lists',
 ])
 const ACTIVE_ENTITLEMENT_STATUSES = new Set(['active', 'trialing'])
+const WINFLOWZ_FORMATION_PRODUCT_ID = 'winflowz_formation'
+const WINFLOWZ_FORMATION_DEFAULT_FREE_PLAN = 'free'
+const WINFLOWZ_FORMATION_DEFAULT_FREE_SOURCE = 'product_default'
+const GOCHARBON_PRODUCT_ID = 'gocharbon'
+const GOCHARBON_DEFAULT_FREE_PLAN = 'free'
+const GOCHARBON_DEFAULT_FREE_SOURCE = 'product_default'
 const WINFLOWZ_APP_PRODUCT_ID = 'winflowz_app'
 const WINFLOWZ_APP_DEFAULT_FREE_PLAN = 'free'
 const WINFLOWZ_APP_DEFAULT_FREE_SOURCE = 'product_default'
@@ -46,6 +53,16 @@ const DEFAULT_FREE_ENTITLEMENT_POLICIES = [
     productId: WINFLOWZ_APP_PRODUCT_ID,
     plan: WINFLOWZ_APP_DEFAULT_FREE_PLAN,
     source: WINFLOWZ_APP_DEFAULT_FREE_SOURCE,
+  },
+  {
+    productId: WINFLOWZ_FORMATION_PRODUCT_ID,
+    plan: WINFLOWZ_FORMATION_DEFAULT_FREE_PLAN,
+    source: WINFLOWZ_FORMATION_DEFAULT_FREE_SOURCE,
+  },
+  {
+    productId: GOCHARBON_PRODUCT_ID,
+    plan: GOCHARBON_DEFAULT_FREE_PLAN,
+    source: GOCHARBON_DEFAULT_FREE_SOURCE,
   },
   {
     productId: REPLAYGLOWZ_PRODUCT_ID,

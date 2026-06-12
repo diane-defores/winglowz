@@ -1,0 +1,176 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - banner [ref=e5]:
+      - generic [ref=e6]:
+        - button "Afficher les sessions" [ref=e7] [cursor=pointer]:
+          - generic [ref=e8]: 
+        - generic [ref=e9]:
+          - heading "Listes shopping Temu" [level=1] [ref=e10]
+          - paragraph [ref=e11]: Listes et sessions shopping
+      - generic [ref=e13]:
+        - generic [ref=e14]: 
+        - searchbox "Rechercher une liste ou une session" [ref=e15]
+      - generic [ref=e16]:
+        - link "Listes" [ref=e17] [cursor=pointer]:
+          - /url: "#/"
+        - link "Import" [ref=e18] [cursor=pointer]:
+          - /url: "#/import/manual"
+        - button "Paramètres" [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]: 
+        - button "Afficher l'activité" [ref=e21] [cursor=pointer]:
+          - generic [ref=e22]: 
+    - generic [ref=e23]:
+      - complementary [ref=e24]:
+        - generic [ref=e26]:
+          - button "Mode compact" [ref=e28] [cursor=pointer]:
+            - generic [ref=e29]: 
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - heading "Listes shopping" [level=3] [ref=e32]
+              - button "Créer une liste shopping" [ref=e33] [cursor=pointer]:
+                - generic [ref=e34]: 
+            - generic [ref=e36]:
+              - link " Cuisine 0" [ref=e37] [cursor=pointer]:
+                - /url: "#/list/list-15f38b59-2071-4f65-870e-8915a2968805"
+                - generic [ref=e38]: 
+                - generic [ref=e39]: Cuisine
+                - generic [ref=e40]: "0"
+              - button "Actions pour Cuisine" [ref=e42] [cursor=pointer]:
+                - generic [ref=e43]: 
+          - generic [ref=e44]:
+            - generic [ref=e45]:
+              - heading "Sessions" [level=3] [ref=e46]
+              - button "Créer une session shopping" [ref=e47] [cursor=pointer]:
+                - generic [ref=e48]: 
+            - button "Commencer" [ref=e50] [cursor=pointer]:
+              - generic [ref=e52]: Commencer
+          - generic [ref=e53]:
+            - heading "Outils" [level=3] [ref=e55]
+            - link " Import manuel" [ref=e56] [cursor=pointer]:
+              - /url: "#/import/manual"
+              - generic [ref=e57]: 
+              - generic [ref=e58]: Import manuel
+            - link " Synchronisation" [ref=e59] [cursor=pointer]:
+              - /url: "#/sync"
+              - generic [ref=e60]: 
+              - generic [ref=e61]: Synchronisation
+      - main [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e65]:
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - generic [ref=e69]: 
+                - generic [ref=e70]:
+                  - generic [ref=e71]: Listes shopping Temu
+                  - generic [ref=e72]: Sessions shopping et produits sauvegardés
+              - button "Paramètres" [ref=e73] [cursor=pointer]:
+                - generic [ref=e74]: 
+                - generic [ref=e75]: Paramètres
+            - generic [ref=e76]:
+              - region "Listes shopping" [ref=e77]:
+                - generic [ref=e78]:
+                  - generic [ref=e79]:
+                    - paragraph [ref=e80]: Listes shopping
+                    - paragraph [ref=e81]: Vos produits sauvegardés, par besoin ou par projet.
+                  - button "Créer une liste shopping" [ref=e82] [cursor=pointer]:
+                    - generic [ref=e83]: 
+                - article [ref=e85]:
+                  - link " Cuisine 0 produit(s) Aucun produit sauvegardé " [ref=e86] [cursor=pointer]:
+                    - /url: "#/list/list-15f38b59-2071-4f65-870e-8915a2968805"
+                    - generic [ref=e88]: 
+                    - generic [ref=e89]:
+                      - generic [ref=e90]: Cuisine
+                      - generic [ref=e91]: 0 produit(s)
+                      - generic [ref=e92]: Aucun produit sauvegardé
+                    - generic [ref=e93]: 
+                  - button "Actions pour Cuisine" [ref=e95] [cursor=pointer]:
+                    - generic [ref=e96]: 
+              - region "Sessions shopping" [ref=e97]:
+                - generic [ref=e98]:
+                  - generic [ref=e99]:
+                    - paragraph [ref=e100]: Sessions shopping
+                    - paragraph [ref=e101]: Chaque session ouvre Temu dans sa propre WebView native.
+                  - button "Créer une session shopping" [ref=e102] [cursor=pointer]:
+                    - generic [ref=e103]: 
+                - generic [ref=e104]:
+                  - generic [ref=e105]: 
+                  - paragraph [ref=e106]: Aucune session shopping pour l'instant.
+                  - button "Créer une session shopping" [ref=e107] [cursor=pointer]:
+                    - generic [ref=e108]: 
+              - generic [ref=e109]:
+                - link " Import manuel" [ref=e110] [cursor=pointer]:
+                  - /url: "#/import/manual"
+                  - generic [ref=e111]: 
+                  - generic [ref=e112]: Import manuel
+                - link " Synchronisation" [ref=e113] [cursor=pointer]:
+                  - /url: "#/sync"
+                  - generic [ref=e114]: 
+                  - generic [ref=e115]: Synchronisation
+              - paragraph [ref=e116]: Listes shopping Temu est indépendante de Temu. Les données de session et l'état de connexion restent dans cette application.
+          - complementary [ref=e117]:
+            - button "Mode compact" [ref=e119] [cursor=pointer]:
+              - generic [ref=e120]: 
+            - generic [ref=e121]:
+              - paragraph [ref=e122]: État shopping
+              - generic [ref=e123]:
+                - generic [ref=e124]: Sessions
+                - strong [ref=e125]: "0"
+              - generic [ref=e126]:
+                - generic [ref=e127]: Taille du texte
+                - strong [ref=e128]: 100%
+              - generic [ref=e129]:
+                - generic [ref=e130]: Thème
+                - strong [ref=e131]: Clair
+            - generic [ref=e132]:
+              - link " Valider l'import" [ref=e133] [cursor=pointer]:
+                - /url: "#/import/review"
+                - generic [ref=e134]: 
+                - generic [ref=e135]: Valider l'import
+              - link " Produits sauvegardés" [ref=e136] [cursor=pointer]:
+                - /url: "#/"
+                - generic [ref=e137]: 
+                - generic [ref=e138]: Produits sauvegardés
+              - link " Synchronisation" [ref=e139] [cursor=pointer]:
+                - /url: "#/sync"
+                - generic [ref=e140]: 
+                - generic [ref=e141]: Synchronisation
+  - region "Choisis les usages que tu veux activer" [ref=e143]:
+    - generic [ref=e144]:
+      - generic [ref=e145]:
+        - paragraph [ref=e146]: Configuration Temu
+        - heading "Choisis les usages que tu veux activer" [level=2] [ref=e147]
+      - button "Fermer et reprendre plus tard" [ref=e148] [cursor=pointer]:
+        - generic [ref=e149]: 
+    - navigation "Progression onboarding" [ref=e150]:
+      - button "Session Temu - À configurer" [ref=e151] [cursor=pointer]:
+        - generic [ref=e152]: 
+      - button "Capture produit - À configurer" [ref=e153] [cursor=pointer]:
+        - generic [ref=e154]: 
+      - button "Listes shopping - Activé" [active] [ref=e155] [cursor=pointer]:
+        - generic [ref=e156]: 
+      - button "Préférences WebView - Activé" [ref=e157] [cursor=pointer]:
+        - generic [ref=e158]: 
+      - button "Compte et synchronisation - À configurer" [ref=e159] [cursor=pointer]:
+        - generic [ref=e160]: 
+      - button "Diagnostic support - À configurer" [ref=e161] [cursor=pointer]:
+        - generic [ref=e162]: 
+    - article [ref=e163]:
+      - generic [ref=e165]: 
+      - generic [ref=e166]:
+        - paragraph [ref=e167]: Organisation
+        - heading "Listes shopping" [level=3] [ref=e184]
+        - paragraph [ref=e169]: Prépare au moins une liste pour ranger les produits par besoin ou par projet.
+    - generic [ref=e170]:
+      - paragraph [ref=e171]: Les listes évitent de mélanger cadeaux, maison, cuisine ou achats à vérifier plus tard.
+      - generic [ref=e172]:
+        - generic [ref=e173]: Activé
+        - button " Ouvrir les listes" [ref=e185] [cursor=pointer]:
+          - generic [ref=e175]: 
+          - generic [ref=e176]: Ouvrir les listes
+    - generic [ref=e177]:
+      - button " Plus tard" [ref=e178] [cursor=pointer]:
+        - generic [ref=e179]: 
+        - generic [ref=e180]: Plus tard
+      - button "Suivant " [ref=e181] [cursor=pointer]:
+        - generic [ref=e182]: Suivant
+        - generic [ref=e183]: 

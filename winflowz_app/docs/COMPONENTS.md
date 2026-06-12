@@ -110,6 +110,12 @@ This inventory separates:
 ### Snippets and dictionary
 
 - `SnippetsScreen` + editor sheet/dialog for CRUD and trigger uniqueness errors.
+- `SnippetsScreen` also hosts the `Boutons` library surface (`SurfaceSelector`) so users create, edit, delete and run custom action buttons from the same entry point.
+- `CustomActionButtonsPanel`:
+  - Preview the current action bar by rows.
+  - Create action buttons with icon, row index, order, and typed command.
+  - Execute a button from the panel or from its preview row surface.
+  - Return explicit unsupported/host-limited status for actions not supported on the current platform.
 - `DictionaryScreen` + editor sheet/dialog for CRUD and replacement validation.
 
 ### Overlay integration (Android)

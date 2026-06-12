@@ -1,16 +1,21 @@
 export const SUITE_PRODUCT_ALLOWLIST = [
   'winflowz_app',
   'winflowz_formation',
+  'gocharbon',
   'replayglowz',
   'socialglowz',
   'temu_shopping_lists',
 ] as const
 
+export const WINFLOWZ_FORMATION_PRODUCT_ID = 'winflowz_formation'
+export const GOCHARBON_PRODUCT_ID = 'gocharbon'
 export const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
 export const SOCIALGLOWZ_PRODUCT_ID = 'socialglowz'
 export const TEMU_SHOPPING_LISTS_PRODUCT_ID = 'temu_shopping_lists'
 export const DEFAULT_FREE_PRODUCT_IDS = [
   'winflowz_app',
+  WINFLOWZ_FORMATION_PRODUCT_ID,
+  GOCHARBON_PRODUCT_ID,
   REPLAYGLOWZ_PRODUCT_ID,
   SOCIALGLOWZ_PRODUCT_ID,
   TEMU_SHOPPING_LISTS_PRODUCT_ID,

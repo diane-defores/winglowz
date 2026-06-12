@@ -78,6 +78,14 @@ next_step: "/sf-start shipflow_data/workflow/specs/firebase-backend-agnostic-mig
 - Clipboard sync from the keyboard is opt-in and represented as intent/status. Real cloud sync and cross-account queue flushing require the backend-agnostic Firebase adapter before production claims.
 - Non-Android platforms must not show IME activation controls.
 
+## Custom Action Buttons
+
+- Custom action buttons are configured from `Snippets -> Boutons`, not from the keyboard corner editor.
+- A snippet is a piece of reusable text (`trigger` + `content`) that can be inserted through actions; it is not itself a toolbar control.
+- A custom button owns UI placement (`rowIndex`/`order`), icon, title, and one typed action (`insert text`, `desktop key sequence`, `keyboard expression`, `clipboard command`, `media command`, or `macro`).
+- The in-app action bar preview and execution are available in the `CustomActionButtonsPanel`; execution attempts are constrained to supported desktop host capabilities.
+- Custom action buttons are not automatically exposed inside corner shortcuts; reuse is by model intent only (typed action contract), and each surface owns its own runtime constraints.
+
 ## Android Overlay
 
 - The Android overlay is implemented as a native foreground service with a draggable `WindowManager` bubble.

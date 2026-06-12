@@ -35,6 +35,7 @@ next_step: "/sf-docs technical audit"
   - `lib/features/voice`
   - `lib/features/clipboard`
   - `lib/features/snippets`
+  - `lib/features/custom_action_buttons`
   - `lib/features/dictionary`
   - `lib/features/keyboard`
   - `lib/features/settings`

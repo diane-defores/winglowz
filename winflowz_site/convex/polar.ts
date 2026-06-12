@@ -4,6 +4,7 @@ import { v } from "convex/values";
 const FORMATION_PRODUCT_ID = "winflowz_formation";
 const LEGACY_COURSE_ENTITLEMENT = "winflowz-training";
 const COMPAT_ENTITLEMENTS = [LEGACY_COURSE_ENTITLEMENT, FORMATION_PRODUCT_ID];
+const FREE_PLAN_ID = "free";
 
 async function findUserByPolarCustomerId(ctx: { db: any }, polarCustomerId: string) {
   return await ctx.db
@@ -77,6 +78,20 @@ function isFormationProductId(productId: string | undefined) {
 
 function isFormationPurchase(productId: string | undefined, entitlement: string | undefined) {
   return isFormationProductId(productId) || isFormationProductId(entitlement);
+}
+
+function isProviderManagedPaidFormationEntitlement(entitlement: {
+  productId: string;
+  status: string;
+  plan: string;
+  source: string;
+}) {
+  return (
+    isFormationProductId(entitlement.productId) &&
+    entitlement.status === "active" &&
+    entitlement.plan !== FREE_PLAN_ID &&
+    entitlement.source === "polar"
+  );
 }
 
 function getResolvedClerkId(metadata: unknown, externalCustomerId: string | undefined) {
@@ -518,7 +533,7 @@ export const processFormationAccessChange = internalMutation({
       .collect();
 
     for (const entitlement of entitlements) {
-      if (isFormationProductId(entitlement.productId) && entitlement.status === "active") {
+      if (isProviderManagedPaidFormationEntitlement(entitlement)) {
         await ctx.db.patch(entitlement._id, withoutUndefined({
           status: args.status,
           sourceRef: args.sourceRef,

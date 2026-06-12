@@ -3,6 +3,33 @@ import { internalMutation, query } from "./_generated/server";
 
 const FORMATION_PRODUCT_ID = "winflowz_formation";
 const LEGACY_FORMATION_PRODUCT_ID = "winflowz-training";
+const FREE_PLAN_ID = "free";
+const PREMIUM_FORMATION_PLANS = new Set([
+  "formation",
+  "lifetime_deal",
+  "pro",
+  "premium",
+  "paid",
+]);
+
+function grantsPremiumFormationAccess(entitlement: {
+  productId: string;
+  status: string;
+  plan: string;
+}) {
+  if (
+    entitlement.productId !== FORMATION_PRODUCT_ID &&
+    entitlement.productId !== LEGACY_FORMATION_PRODUCT_ID
+  ) {
+    return false;
+  }
+
+  if (entitlement.status !== "active" && entitlement.status !== "trialing") {
+    return false;
+  }
+
+  return entitlement.plan !== FREE_PLAN_ID && PREMIUM_FORMATION_PLANS.has(entitlement.plan);
+}
 
 function createGlobalUserId() {
   return `gu_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
@@ -137,10 +164,8 @@ export const getFormationAccessByClerkId = query({
         .withIndex("by_globalUserId", (q) => q.eq("globalUserId", globalUserId))
         .collect();
 
-      const hasActiveFormationEntitlement = entitlements.some((entitlement) =>
-        (entitlement.productId === FORMATION_PRODUCT_ID ||
-          entitlement.productId === LEGACY_FORMATION_PRODUCT_ID) &&
-        entitlement.status === "active"
+      const hasActiveFormationEntitlement = entitlements.some(
+        grantsPremiumFormationAccess
       );
 
       if (hasActiveFormationEntitlement) {

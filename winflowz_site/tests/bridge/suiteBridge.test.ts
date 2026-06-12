@@ -105,6 +105,7 @@ describe('suiteBridge helpers', () => {
   test('filters allowed suite products only', () => {
     expect(isAllowedSuiteProduct('winflowz_app')).toBe(true)
     expect(isAllowedSuiteProduct('winflowz_formation')).toBe(true)
+    expect(isAllowedSuiteProduct('gocharbon')).toBe(true)
     expect(isAllowedSuiteProduct('replayglowz')).toBe(true)
     expect(isAllowedSuiteProduct('socialglowz')).toBe(true)
     expect(isAllowedSuiteProduct('temu_shopping_lists')).toBe(true)
@@ -115,11 +116,12 @@ describe('suiteBridge helpers', () => {
   test('keeps default free access scoped to free-tier products', () => {
     expect(DEFAULT_FREE_PRODUCT_IDS).toEqual([
       'winflowz_app',
+      'winflowz_formation',
+      'gocharbon',
       'replayglowz',
       'socialglowz',
       'temu_shopping_lists',
     ])
-    expect(DEFAULT_FREE_PRODUCT_IDS).not.toContain('winflowz_formation')
   })
 
   test('accepts only active and trialing status for access', () => {
