@@ -1581,6 +1581,33 @@ class _OnboardingOverviewContentState
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _syncPageIndexWithActiveStep();
+  }
+
+  @override
+  void didUpdateWidget(covariant _OnboardingOverviewContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.readiness.currentStep != widget.readiness.currentStep ||
+        oldWidget.readiness.steps != widget.readiness.steps) {
+      _syncPageIndexWithActiveStep();
+    }
+  }
+
+  void _syncPageIndexWithActiveStep() {
+    final activeStepId = widget.readiness.activeStep?.definition.id;
+    if (activeStepId == null) {
+      return;
+    }
+    final pageIndex = _pages.indexWhere((page) => page.stepId == activeStepId);
+    if (pageIndex < 0 || pageIndex == _pageIndex) {
+      return;
+    }
+    _pageIndex = pageIndex;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final page = _pages[_pageIndex];
     final showCompletionAction = widget.readiness.allStepsCompleted;

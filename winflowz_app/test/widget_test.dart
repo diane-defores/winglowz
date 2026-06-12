@@ -133,6 +133,16 @@ Widget _appShellTestWidget() {
   );
 }
 
+Widget _appShellTestWidgetWithInitialOnboardingStep(String onboardingStep) {
+  return ProviderScope(
+    child: MaterialApp(
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      home: AppShellScreen(initialOnboardingStep: onboardingStep),
+    ),
+  );
+}
+
 class _MemorySettingsStore implements SettingsStore {
   _MemorySettingsStore(this.snapshot);
 
@@ -1334,6 +1344,35 @@ void main() {
       expect(find.widgetWithText(TextButton, 'Plus tard'), findsNothing);
       expect(find.widgetWithText(FilledButton, 'Modifier'), findsOneWidget);
       expect(find.text('Activé'), findsWidgets);
+    } finally {
+      debugDefaultTargetPlatformOverride = previousPlatform;
+      _clearAndroidBridgeMocks();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    }
+  });
+
+  testWidgets('brightness onboarding deep link opens the brightness page', (
+    tester,
+  ) async {
+    final previousPlatform = debugDefaultTargetPlatformOverride;
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    _useLargeViewport(tester);
+    _installAndroidBridgeMocks();
+
+    try {
+      await tester.pumpWidget(
+        _appShellTestWidgetWithInitialOnboardingStep('brightness'),
+      );
+      await _pumpNavigationFrame(tester);
+
+      expect(find.text('Configuration WinFlowz'), findsOneWidget);
+      expect(find.text('Luminosité système'), findsOneWidget);
+      expect(find.text('Micro et voix'), findsNothing);
+      expect(
+        find.textContaining('Contrôle Bri- et Bri+ depuis le clavier.'),
+        findsOneWidget,
+      );
     } finally {
       debugDefaultTargetPlatformOverride = previousPlatform;
       _clearAndroidBridgeMocks();
