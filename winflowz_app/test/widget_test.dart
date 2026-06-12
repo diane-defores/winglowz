@@ -1264,7 +1264,7 @@ void main() {
     }
   });
 
-  testWidgets('validated onboarding steps show an active info state', (
+  testWidgets('validated onboarding steps stay green when selected', (
     tester,
   ) async {
     final previousPlatform = debugDefaultTargetPlatformOverride;
@@ -1286,11 +1286,11 @@ void main() {
       final activeKeyboardDot = tester.widget<IconButton>(keyboardProgressDot);
       expect(
         activeKeyboardDot.style?.backgroundColor?.resolve(<WidgetState>{}),
-        AppColors.warning,
+        AppColors.success,
       );
       expect(
         activeKeyboardDot.style?.side?.resolve(<WidgetState>{})?.color,
-        AppColors.warning,
+        AppColors.success,
       );
       expect(find.text('Clavier'), findsOneWidget);
       expect(find.text('Clavier WinFlowz keyboard'), findsNothing);

@@ -1686,11 +1686,11 @@ class _OnboardingProgressDots extends StatelessWidget {
     if (step?.skipped ?? false) {
       return AppColors.danger;
     }
-    if (isCurrent) {
-      return AppColors.warning;
-    }
     if (step?.satisfied ?? false) {
       return AppColors.success;
+    }
+    if (isCurrent) {
+      return AppColors.warning;
     }
     return colorScheme.outlineVariant;
   }
@@ -1721,6 +1721,9 @@ class _OnboardingProgressDots extends StatelessWidget {
     final step = _stepFor(stepId);
     if (step?.skipped ?? false) {
       return AppColors.danger;
+    }
+    if (step?.satisfied ?? false) {
+      return AppColors.success;
     }
     if (isCurrent) {
       return AppColors.warning;
