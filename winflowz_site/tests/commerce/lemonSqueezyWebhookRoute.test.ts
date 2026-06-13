@@ -56,9 +56,9 @@ describe('lemon squeezy webhook route', () => {
       event_name: 'order_created',
       meta: {
         custom_data: {
-          offer_id: 'winflowz_app/pro_founder',
+          offer_id: 'winflowz_app/power',
           product_id: 'winflowz_app',
-          plan: 'pro_founder',
+          plan: 'power',
           source: 'direct',
           source_ref: '/winflowz-founder',
         },
@@ -83,9 +83,9 @@ describe('lemon squeezy webhook route', () => {
       'bridge:processCommerceEvent',
       expect.objectContaining({
         provider: 'lemonsqueezy',
-        offerId: 'winflowz_app/pro_founder',
+        offerId: 'winflowz_app/power',
         productId: 'winflowz_app',
-        plan: 'pro_founder',
+        plan: 'power',
         eventType: 'paid',
         providerOrderId: 'ord_wfz',
         bridgeSecret: 'convex-secret',

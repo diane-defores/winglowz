@@ -75,268 +75,289 @@ interface CopyBlock {
 
 const copyByLang: Record<Language, CopyBlock> = {
 	en: {
-		metaTitle: 'WinFlowz Founder Access Window | Premium Sales Preview',
+		metaTitle: 'Winflow Founder Access | Early Bird Lifetime Deal',
 		metaDescription:
-			'Founder window design draft for WinFlowz: a premium product-focused page with activation architecture, workflow value, and transparent licensing model.',
-		heroTitle: 'WinFlowz Founder Access',
+			'Become a Winflow founder and get lifetime access to the productivity app that helps you capture, transform, and reuse your words faster.',
+		heroTitle: 'Become a Winflow founder',
 		heroSubtitle:
-			'A founder window for the voice-first workflow app that starts on Android today and expands across released platforms over time.',
-		badge: 'Founder Preview',
-		primaryAction: 'Choose Pro Founder',
-		secondaryAction: 'Review the structure',
-		availabilityTitle: 'Current availability',
+			'Get lifetime access to the productivity app that helps you capture, transform, and reuse your words faster. Android is available first, with future released platforms included as Winflow grows.',
+		badge: 'Early Bird Lifetime Deal',
+		primaryAction: 'Become a founder',
+		secondaryAction: 'Compare plans',
+		availabilityTitle: 'Start on Android. Keep your place for what comes next.',
 		availabilityText:
-			'The WinFlowz mobile app is currently available on Android. Licenses are usable across released platforms, and new platform releases are planned over time as feature parity lands.',
+			'Winflow starts where your words already happen: on your phone. Your founder license covers released platforms over time, without forcing you to buy again for every device you use.',
 		availabilityBullets: [
-			'Android app is active now.',
-			'Windows, iOS, Linux, and desktop releases are planned without a fixed date promise.',
-			'Your license coverage follows release scope and active-device activation limits.',
-			'Founder offers are in design and this page is a sales architecture draft.',
+			'Android is available first.',
+			'Windows, iOS, and Linux are planned with no promised release date.',
+			'Your plan is based on active devices, not separate platform purchases.',
+			'Founder pricing can increase as the product matures.',
 		],
-		productHeading: 'See the product logic, not just a price card',
+		productHeading: 'Turn scattered words into usable workflow',
 		productSubheading:
-			'This draft shows how WinFlowz organizes user work: fast capture, context layers, and action-ready exports.',
-		workflowHeading: 'Workflow blueprint',
+			'Winflow is built for the moments when typing is too slow, copying is messy, and your best ideas are trapped between apps.',
+		workflowHeading: 'A faster path from thought to action',
 		workflowText:
-			'The page architecture mirrors how you actually work with WinFlowz from first open to delivery.',
+			'Capture what matters, clean it up, and reuse it where the work actually happens.',
 		workflowSteps: [
 			{
 				step: '01',
-				title: 'Capture context fast',
+				title: 'Capture faster',
 				description:
-					'Collect ideas, tasks, and references in one structure so your projects can start with clear intent.',
+					'Use voice-first tools, keyboard workflows, and quick actions to get words out of your head before they disappear.',
 			},
 			{
 				step: '02',
-				title: 'Shape the outcome',
+				title: 'Clean and reuse',
 				description:
-					'Convert raw notes into milestones, deadlines, and execution blocks with lightweight progress views.',
+					'Turn rough text into something useful, then bring it back through snippets, clipboard workflows, and saved patterns.',
 			},
 			{
 				step: '03',
-				title: 'Ship and improve',
+				title: 'Move across your setup',
 				description:
-					'Close loops, track what is done, and keep the system ready for the next high-value sprint.',
+					'Start on Android today and keep room for future platforms as they become available.',
 			},
 		],
-		activationHeading: 'Activation model (draft)',
+		activationHeading: 'One license. Multiple active devices.',
 		activationText:
-			'No final checkout, no instant claim text. This is the architecture to finalize with legal and fulfillment.',
+			'Choose the amount of device flexibility you want. Your activations can be used across released platforms, so the plan follows your setup instead of locking you into one device type.',
 		activationBullets: [
-			'Licenses are platform-agnostic for every platform already released.',
-			'Each license grants a set of active device activations shared across current platforms.',
-			'Activation changes and transfer are controlled at account level for easy family/professional handoff.',
-			'Additional activation bundles are planned as product depth and demand change.',
+			'Use your activations on any released Winflow platform.',
+			'Switch devices within the activation rules of your plan.',
+			'Keep the founder deal while Winflow grows.',
+			'Avoid paying separately for every future platform release.',
 		],
-		tiersHeading: 'Tier architecture draft',
+		tiersHeading: 'Choose your founder tier',
 		tiersText:
-			'The sales page structure is built around three activation tiers. Pricing and final plan language can still be refined.',
+			'All founder tiers include lifetime access under the plan you choose. The difference is how many active devices you want available at the same time.',
 		tiers: [
 			{
-				title: 'Starter Founder',
+				title: 'Focus',
 				label: '1 activation',
-				focus: 'One active device across released platforms',
+				focus: 'For one personal device',
 				included:
-					'Founder access to released WinFlowz platforms, local-first workflows, and product updates within the founder policy.',
+					'Start with Winflow on one active device and keep access to future released platforms under your founder license.',
 				activation: '1 active device',
-				state: 'Founder price pending',
-				offerId: 'winflowz_app/starter_founder',
+				state: 'Founder price available in checkout',
+				offerId: 'winflowz_app/focus',
 			},
 			{
-				title: 'Pro Founder',
-				label: '3 activations',
-				focus: 'Three active devices across released platforms',
+				title: 'Power',
+				label: '2 activations',
+				focus: 'For daily multi-device use',
 				included:
-					'More activation room for people switching between phone, laptop, and workstation.',
-				activation: '3 active devices',
-				state: 'Founder price pending',
-				offerId: 'winflowz_app/pro_founder',
+					'Use Winflow across two active personal devices when your workflow moves between screens.',
+				activation: '2 active devices',
+				state: 'Founder price available in checkout',
+				offerId: 'winflowz_app/power',
 			},
 			{
-				title: 'Studio Founder',
+				title: 'Control',
 				label: '5 activations',
-				focus: 'Five active devices across released platforms',
+				focus: 'For a complete productivity setup',
 				included:
-					'The most flexible founder tier for people who want WinFlowz across every released surface they use.',
+					'Give your main devices room to work together as Winflow expands beyond Android.',
 				activation: '5 active devices',
-				state: 'Founder price pending',
-				offerId: 'winflowz_app/studio_founder',
+				state: 'Founder price available in checkout',
+				offerId: 'winflowz_app/control',
+			},
+			{
+				title: 'Command',
+				label: '10 activations',
+				focus: 'For maximum device flexibility',
+				included:
+					'The highest founder tier for people who want the broadest personal activation room across present and future released platforms.',
+				activation: '10 active devices',
+				state: 'Founder price available in checkout',
+				offerId: 'winflowz_app/command',
 			},
 		],
-		trustHeading: 'Trust and limits',
+		trustHeading: 'A clear founder deal',
 		trustText:
-			'This draft intentionally avoids overpromising. We call out what is true now and what is not promised yet.',
+			'The offer is intentionally simple: buy once, start with Android, and keep access as Winflow grows. The limits are clear so the product can stay sustainable.',
 		trustPoints: [
-			'Android is available now; release timing for other platforms is without fixed dates.',
-			'Cloud capacity is documented per platform release and fulfillment scope.',
-			'No fixed onboarding timeline is shared; onboarding follows verification and fulfillment cadence.',
-			'Founder pricing language, legal copy, and payment flow are still intentionally deferred.',
+			'Android is available now.',
+			'Future platforms are planned, but not promised by a fixed date.',
+			'Cloud and AI features will stay bounded so the product can keep improving.',
+			'Founder pricing may change as the app matures.',
 		],
 		faqHeading: 'FAQ',
-		faqText: 'Short answers for the current founder-window draft.',
+		faqText: 'Short answers before you become a founder.',
 		faqItems: [
 			{
-				question: 'Is this page a final sales page with checkout?',
+				question: 'What do I get today?',
 				answer:
-					'Not yet. This is a premium architectural version for structure, trust flow, and conversion layout.',
+					'You get founder access to Winflow with Android available first, under the activation limit of the plan you choose.',
 			},
 			{
-				question: 'What platforms are included in a founder license?',
+				question: 'Are future platforms included?',
 				answer:
-					'All platforms that have already been released. Additional platform availability is planned and announced without fixed release dates.',
+					'Future released platforms are included when they become available. Windows, iOS, and Linux are planned, but there is no release date commitment.',
 			},
 			{
-				question: 'Can I use the license on multiple devices?',
+				question: 'How do activations work?',
 				answer:
-					'Yes, by active-device activation rules. The exact number and transfer policy are part of the final fulfillment spec.',
+					'Each plan gives you a number of active personal devices. Those activations can be used across released platforms.',
 			},
 			{
-				question: 'What happens if I upgrade between tiers?',
+				question: 'Is this for teams?',
 				answer:
-					'You can be moved within the same entitlement family according to published activation policy at launch.',
+					'No. These founder tiers are personal licenses. Team and business licensing can come later as a separate offer.',
 			},
 			{
-				question: 'When can I pay?',
+				question: 'Will the price stay the same?',
 				answer:
-					'The payment journey and URL are intentionally not connected on this draft page.',
+					'No. Founder pricing is an early window and may increase as Winflow adds more depth and platform coverage.',
 			},
 		],
-		finalHeading: 'Want founder access first?',
+		finalHeading: 'Become a Winflow founder',
 		finalText:
-			'If you are interested in being in the first group to review updated terms and pricing, leave your intent now. No payment required.',
-		finalAction: 'Choose Pro Founder',
+			'Lock in your founder tier while Winflow is still early, start on Android, and keep your place as the product expands.',
+		finalAction: 'Become a founder',
 		finalActionUrl: '/contact',
 	},
 	fr: {
-		metaTitle: 'Accès WinFlowz Founder | Aperçu de page de vente premium',
+		metaTitle: 'Winflow Founder Access | Early Bird Lifetime Deal',
 		metaDescription:
-			'Brouillon de page premium WinFlowz pour l accès founder: architecture produit, logique d activations, et structure commerciale transparente.',
-		heroTitle: 'WinFlowz Founder Access',
+			'Devenez founder Winflow et obtenez un acces lifetime a l app de productivite qui aide a capturer, transformer et reutiliser vos mots plus vite.',
+		heroTitle: 'Become a Winflow founder',
 		heroSubtitle:
-			"Une fenêtre founder pour l'app workflow voice-first, disponible sur Android aujourd'hui et pensée pour s'étendre aux plateformes sorties avec le temps.",
-		badge: 'Aperçu founder',
-		primaryAction: 'Choisir Pro Founder',
-		secondaryAction: 'Voir la structure',
-		availabilityTitle: 'Disponibilité actuelle',
+			"Obtenez un acces lifetime a l'app de productivite qui aide a capturer, transformer et reutiliser vos mots plus vite. Android est disponible en premier, et les futures plateformes sorties seront incluses quand Winflow grandira.",
+		badge: 'Early Bird Lifetime Deal',
+		primaryAction: 'Become a founder',
+		secondaryAction: 'Comparer les plans',
+		availabilityTitle: 'Commencez sur Android. Gardez votre place pour la suite.',
 		availabilityText:
-			"L'app mobile WinFlowz est disponible sur Android maintenant. Les licences sont valables sur les plateformes déjà sorties, et les nouvelles versions seront lancées progressivement selon le calendrier produit.",
+			"Winflow commence la ou vos mots existent deja: sur votre telephone. Votre licence founder couvre les plateformes sorties dans le temps, sans racheter une licence pour chaque appareil.",
 		availabilityBullets: [
-			"Android est disponible aujourd'hui.",
-			'Windows, iOS, Linux et desktop sont prévus sans promesse de date ferme.',
-			"La licence suit les plateformes sorties et les limites d'activation actives.",
-			"Cette page pose l'architecture de vente; les termes exacts arrivent ensuite.",
+			'Android est disponible en premier.',
+			'Windows, iOS et Linux sont prevus sans promesse de date.',
+			'Votre plan depend du nombre d appareils actifs, pas d achats separes par plateforme.',
+			'Le prix founder peut augmenter avec la maturite du produit.',
 		],
-		productHeading: 'Voir la logique produit, pas seulement un bloc prix',
+		productHeading: 'Transformer des mots disperses en workflow utilisable',
 		productSubheading:
-			'Ce brouillon montre la manière dont WinFlowz organise le travail: capture rapide, couches de contexte, et sortie actionnable.',
-		workflowHeading: 'Blueprint workflow',
+			'Winflow est fait pour les moments ou taper est trop lent, copier-coller devient brouillon, et vos meilleures idees restent bloquees entre les apps.',
+		workflowHeading: "Un chemin plus rapide de l'idee a l'action",
 		workflowText:
-			"La page suit la même logique que votre usage quotidien, depuis le premier signal jusqu'à la livraison.",
+			'Capturez ce qui compte, nettoyez le texte, puis reutilisez-le la ou le travail se passe vraiment.',
 		workflowSteps: [
 			{
 				step: '01',
-				title: 'Capture rapide du contexte',
+				title: 'Capturer plus vite',
 				description:
-					'Rassembler idées, tâches et références dans une structure commune pour un début propre.',
+					'Utilisez les outils voice-first, les workflows clavier et les actions rapides pour sortir les mots de votre tete avant de les perdre.',
 			},
 			{
 				step: '02',
-				title: 'Former le résultat',
+				title: 'Nettoyer et reutiliser',
 				description:
-					"Transformer les notes en jalons, deadlines, et blocs d'exécution bien ordonnés.",
+					'Transformez un texte brut en quelque chose d utile, puis retrouvez-le avec snippets, clipboard et patterns sauvegardes.',
 			},
 			{
 				step: '03',
-				title: 'Livrer et optimiser',
+				title: 'Avancer sur votre setup',
 				description:
-					'Clore les cycles, suivre ce qui avance, et garder une base stable pour la prochaine itération.',
+					'Commencez sur Android maintenant et gardez de la marge pour les futures plateformes quand elles seront disponibles.',
 			},
 		],
-		activationHeading: 'Mode activation (brouillon)',
+		activationHeading: 'Une licence. Plusieurs appareils actifs.',
 		activationText:
-			"Pas de checkout final ici. Cette section pose l'architecture à finaliser avec le légal et la livraison d'accès.",
+			'Choisissez le niveau de flexibilite dont vous avez besoin. Vos activations peuvent etre utilisees sur les plateformes sorties, donc le plan suit votre setup au lieu de vous enfermer dans un type d appareil.',
 		activationBullets: [
-			'Les licences sont cross-platform pour les plateformes déjà sorties.',
-			"Chaque licence donne un nombre d'appareils actifs partagé entre les plateformes disponibles.",
-			"Le transfert d'activation se gère au niveau du compte pour rester simple.",
-			"D'autres bundles d'activation sont possibles selon la charge produit et la demande.",
+			'Utilisez vos activations sur toute plateforme Winflow sortie.',
+			'Changez d appareil dans les regles d activation de votre plan.',
+			'Gardez le deal founder pendant que Winflow grandit.',
+			'Evitez de repayer separement chaque future plateforme.',
 		],
-		tiersHeading: 'Architecture de tiers (brouillon)',
+		tiersHeading: 'Choisissez votre tier founder',
 		tiersText:
-			"L'architecture commerciale repose sur trois niveaux d'activations. Les prix et la formulation finale restent à définir.",
+			'Tous les tiers founder incluent un acces lifetime selon le plan choisi. La difference est le nombre d appareils actifs disponibles en meme temps.',
 		tiers: [
 			{
-				title: 'Starter Founder',
+				title: 'Focus',
 				label: '1 activation',
-				focus: 'Un appareil actif sur les plateformes sorties',
+				focus: 'Pour un appareil personnel',
 				included:
-					'Accès founder aux plateformes WinFlowz sorties, aux workflows local-first et aux mises à jour prévues par la politique founder.',
+					'Commencez avec Winflow sur un appareil actif et gardez acces aux futures plateformes sorties avec votre licence founder.',
 				activation: '1 appareil actif',
-				state: 'Prix founder à confirmer',
-				offerId: 'winflowz_app/starter_founder',
+				state: 'Prix founder disponible au checkout',
+				offerId: 'winflowz_app/focus',
 			},
 			{
-				title: 'Pro Founder',
-				label: '3 activations',
-				focus: 'Trois appareils actifs sur les plateformes sorties',
+				title: 'Power',
+				label: '2 activations',
+				focus: 'Pour un usage quotidien multi-device',
 				included:
-					'Plus de marge pour passer entre téléphone, laptop et machine de travail.',
-				activation: '3 appareils actifs',
-				state: 'Prix founder à confirmer',
-				offerId: 'winflowz_app/pro_founder',
+					'Utilisez Winflow sur deux appareils personnels actifs quand votre workflow passe d un ecran a l autre.',
+				activation: '2 appareils actifs',
+				state: 'Prix founder disponible au checkout',
+				offerId: 'winflowz_app/power',
 			},
 			{
-				title: 'Studio Founder',
+				title: 'Control',
 				label: '5 activations',
-				focus: 'Cinq appareils actifs sur les plateformes sorties',
+				focus: 'Pour un setup productivite complet',
 				included:
-					'Le tier le plus flexible pour utiliser WinFlowz sur toutes les surfaces sorties dont vous avez besoin.',
+					'Laissez vos appareils principaux travailler ensemble pendant que Winflow s etend au-dela d Android.',
 				activation: '5 appareils actifs',
-				state: 'Prix founder à confirmer',
-				offerId: 'winflowz_app/studio_founder',
+				state: 'Prix founder disponible au checkout',
+				offerId: 'winflowz_app/control',
+			},
+			{
+				title: 'Command',
+				label: '10 activations',
+				focus: 'Pour une flexibilite maximale',
+				included:
+					'Le tier founder le plus haut pour obtenir le plus de marge personnelle sur les plateformes presentes et futures sorties.',
+				activation: '10 appareils actifs',
+				state: 'Prix founder disponible au checkout',
+				offerId: 'winflowz_app/command',
 			},
 		],
-		trustHeading: 'Confiance et limites',
+		trustHeading: 'Un deal founder clair',
 		trustText:
-			"Ce brouillon préfère la transparence. On annonce ce qui est vrai aujourd'hui et ce qui est encore en cours.",
+			"L'offre reste simple: achetez une fois, commencez sur Android, et gardez l'acces pendant que Winflow grandit. Les limites sont claires pour que le produit reste soutenable.",
 		trustPoints: [
-			"Android est disponible aujourd'hui; l'horizon des autres plateformes est sans date ferme.",
-			'Pas de mention de cloud illimité.',
-			"Pas de promesse d'accès instantané.",
-			'Prix, légal et paiement sont encore à finaliser.',
+			'Android est disponible maintenant.',
+			'Les futures plateformes sont prevues, sans date promise.',
+			'Les fonctions cloud et IA resteront encadrees pour que le produit continue a progresser.',
+			'Le prix founder peut changer avec la maturite de l app.',
 		],
 		faqHeading: 'FAQ',
-		faqText: 'Réponses courtes pour cette version founder.',
+		faqText: 'Reponses courtes avant de devenir founder.',
 		faqItems: [
 			{
-				question: 'Cette page est-elle finalisée avec paiement?',
+				question: "Qu'est-ce que j'obtiens aujourd'hui?",
 				answer:
-					"Non. C'est une version d'architecture premium et de conversion, pas un parcours de vente branché.",
+					'Vous obtenez un acces founder a Winflow avec Android disponible en premier, selon la limite d activation du plan choisi.',
 			},
 			{
-				question: "L'accès vaut-il sur toutes les plateformes?",
+				question: 'Les futures plateformes sont-elles incluses?',
 				answer:
-					'Sur les plateformes déjà disponibles. Le support des nouvelles plateformes sera annoncé plus tard, sans date ferme.',
+					'Les futures plateformes sorties sont incluses quand elles deviennent disponibles. Windows, iOS et Linux sont prevus, mais sans engagement de date.',
 			},
 			{
-				question: "Puis-je activer sur plusieurs appareils?",
+				question: 'Comment fonctionnent les activations?',
 				answer:
-					"Oui, selon la politique d'activations. Le seuil exact et le transfert seront précisés dans les termes finaux.",
+					'Chaque plan donne un nombre d appareils personnels actifs. Ces activations peuvent etre utilisees sur les plateformes sorties.',
 			},
 			{
-				question: 'Puis-je changer de niveau?',
+				question: 'Est-ce une offre equipe?',
 				answer:
-					"Oui, au sein de la même famille d'autorisations selon la politique de mise à niveau.",
+					'Non. Ces tiers founder sont des licences personnelles. Les offres equipe ou business pourront arriver plus tard separement.',
 			},
 			{
-				question: 'Quand payer?',
-				answer: "Le tunnel de paiement n'est pas connecté dans ce brouillon.",
+				question: 'Le prix restera-t-il identique?',
+				answer:
+					'Non. Le prix founder correspond a une fenetre early bird et peut augmenter avec la profondeur produit et les nouvelles plateformes.',
 			},
 		],
-		finalHeading: "Vous voulez être prioritaire founder?",
+		finalHeading: 'Become a Winflow founder',
 		finalText:
-			"Si vous voulez faire partie du premier groupe pour valider contenu, bénéfices et tarification, laissez un message ici. Aucun paiement requis.",
-		finalAction: 'Choisir Pro Founder',
+			'Verrouillez votre tier founder pendant que Winflow est encore early, commencez sur Android, et gardez votre place pendant que le produit grandit.',
+		finalAction: 'Become a founder',
 		finalActionUrl: '/fr/contact',
 	},
 }
@@ -344,7 +365,7 @@ const copyByLang: Record<Language, CopyBlock> = {
 const { lang = 'en' as Language } = Astro.props
 const copy = copyByLang[lang]
 const pagePath = lang === 'fr' ? '/fr/winflowz-founder' : '/winflowz-founder'
-const defaultOfferId = 'winflowz_app/pro_founder'
+const defaultOfferId = 'winflowz_app/power'
 
 function checkoutUrl(offerId: string) {
 	const successUrl = `/purchase/success?offerId=${encodeURIComponent(offerId)}`
@@ -503,7 +524,7 @@ function checkoutUrl(offerId: string) {
 				<h2 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-white">{copy.tiersHeading}</h2>
 				<p class="mt-4 max-w-3xl text-neutral-600 dark:text-neutral-300">{copy.tiersText}</p>
 			</div>
-			<div class="grid gap-6 md:grid-cols-3">
+			<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 				{copy.tiers.map((tier) => (
 					<div class="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900">
 						<p class="mb-2 inline-flex rounded-full border border-neutral-200 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:border-neutral-600 dark:text-neutral-300">
@@ -518,7 +539,7 @@ function checkoutUrl(offerId: string) {
 							href={checkoutUrl(tier.offerId)}
 							class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
 						>
-							{lang === 'fr' ? 'Choisir ce niveau' : 'Choose this tier'}
+							{copy.primaryAction}
 						</a>
 					</div>
 				))}

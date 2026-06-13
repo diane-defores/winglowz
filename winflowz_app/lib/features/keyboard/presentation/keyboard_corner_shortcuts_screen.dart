@@ -561,7 +561,7 @@ class _KeyboardCornerShortcutsScreenState
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             SizedBox(
-                              width: 280,
+                              width: AppKeyboardStudioMetrics.presetDropdownWidth,
                               child: DropdownButtonFormField<String>(
                                 key: const Key('corner-preset-dropdown'),
                                 initialValue: _draft.draftConfig.presetId,

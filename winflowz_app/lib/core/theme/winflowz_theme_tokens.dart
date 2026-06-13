@@ -158,6 +158,8 @@ class WinFlowzThemeTokens {
   static const double customActionChipWidth = 210.0;
   static const double keyboardPreviewStatusHeight = 30.0;
   static const double authFormMaxWidth = 460.0;
+  static const double authGateLoadingCardWidth = 420.0;
+  static const double authGateErrorCardWidth = 480.0;
   static const double authWebSignInButtonHeight = 44.0;
   static const double authWebSignInButtonMinWidth = 240.0;
   static const double authWebSignInButtonMaxWidth = 400.0;
@@ -171,6 +173,9 @@ class WinFlowzThemeTokens {
   static const double keyboardKeyDebugBorderWidth = 1.3;
   static const double keyboardCornerLabelPadding = 4.0;
   static const double keyboardWeightScale = 100.0;
+  static const double keyboardSyncDialogWidth = 540.0;
+  static const double keyboardCornerPresetDropdownWidth = 280.0;
+  static const double keyboardPreviewPinnedBadgeInset = 3.0;
 
   // Motion / settings slider tokens.
   static const double appAnimationFast = 0.22;
@@ -195,6 +200,25 @@ class WinFlowzThemeTokens {
   static const double appBarElevation = 0.0;
   static const double dividerThickness = 1.0;
   static const double elevationOverlay = 18.0;
+  static const double themeRadiusXxl = 28.0;
+
+  // Screen-specific layout and visual tokens.
+  static const double appShellBottomNavIconBoxSize = 32.0;
+  static const double appShellBottomNavSparkBadgeTop = 3.0;
+  static const double appShellBottomNavSparkBadgeRight = 4.0;
+  static const double appShellBottomNavSparkBorderWidth = 1.2;
+  static const double appShellUtilityIconBoxSize = 24.0;
+  static const double appShellOnboardingDotSize = 28.0;
+  static const double appShellOnboardingDotIconSize = 14.0;
+  static const double settingsThemePreviewLabelFontSize = 11.0;
+  static const double settingsThemePreviewSwatchHeight = 22.0;
+  static const double settingsDiagnosticLogLineHeight = 1.35;
+  static const double voiceRecordingSurfaceWidth = 22.0;
+  static const double voiceRecordingSurfaceHeight = 18.0;
+  static const double voiceRecordingBarWidth = 3.0;
+  static const double voiceRecordingBarHeightBase = 6.0;
+  static const double voiceRecordingBarHeightRange = 10.0;
+  static const double voiceRecordingSurfaceRadius = 28.0;
 
   // Motion.
   static const Duration motionInstant = Duration(milliseconds: 120);

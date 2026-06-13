@@ -23,6 +23,7 @@ type CheckoutAttributes = {
   }
   checkout_data: {
     custom: CommerceCheckoutCustomData
+    discount_code?: string
     email?: string
     name?: string
   }
@@ -268,6 +269,7 @@ function buildCheckoutPayload(
         },
         checkout_data: {
           custom: checkoutData,
+          discount_code: request.discountCode,
           email: request.customerEmail,
           name: request.customerName,
         },
@@ -328,14 +330,17 @@ function resolveLemonSqueezyVariantId(
   if (offerId === "socialglowz/lifetime_deal") {
     return env.LEMONSQUEEZY_SOCIALGLOWZ_LIFETIME_DEAL_VARIANT_ID
   }
-  if (offerId === "winflowz_app/starter_founder") {
-    return env.LEMONSQUEEZY_WINFLOWZ_APP_STARTER_FOUNDER_VARIANT_ID
+  if (offerId === "winflowz_app/focus") {
+    return env.LEMONSQUEEZY_WINFLOWZ_APP_FOCUS_VARIANT_ID
   }
-  if (offerId === "winflowz_app/pro_founder") {
-    return env.LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID
+  if (offerId === "winflowz_app/power") {
+    return env.LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID
   }
-  if (offerId === "winflowz_app/studio_founder") {
-    return env.LEMONSQUEEZY_WINFLOWZ_APP_STUDIO_FOUNDER_VARIANT_ID
+  if (offerId === "winflowz_app/control") {
+    return env.LEMONSQUEEZY_WINFLOWZ_APP_CONTROL_VARIANT_ID
+  }
+  if (offerId === "winflowz_app/command") {
+    return env.LEMONSQUEEZY_WINFLOWZ_APP_COMMAND_VARIANT_ID
   }
   return undefined
 }

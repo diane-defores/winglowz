@@ -6,9 +6,10 @@ import {
   normalizeCommerceProviderOrder,
   SOCIALGLOWZ_LTD_OFFER_ID,
   SOCIALGLOWZ_LETTER,
-  WINFLOWZ_APP_PRO_FOUNDER_LTD_OFFER_ID,
-  WINFLOWZ_APP_STARTER_FOUNDER_LTD_OFFER_ID,
-  WINFLOWZ_APP_STUDIO_FOUNDER_LTD_OFFER_ID,
+  WINFLOWZ_APP_COMMAND_LTD_OFFER_ID,
+  WINFLOWZ_APP_CONTROL_LTD_OFFER_ID,
+  WINFLOWZ_APP_FOCUS_LTD_OFFER_ID,
+  WINFLOWZ_APP_POWER_LTD_OFFER_ID,
 } from '@/lib/commerce/offers'
 
 function withEnv(vars: Record<string, string | undefined>, test: () => void) {
@@ -48,19 +49,24 @@ describe('commerce offer configuration', () => {
   })
 
   test('returns WinFlowz founder offer configs', () => {
-    expect(getCommerceOffer(WINFLOWZ_APP_STARTER_FOUNDER_LTD_OFFER_ID)).toMatchObject({
+    expect(getCommerceOffer(WINFLOWZ_APP_FOCUS_LTD_OFFER_ID)).toMatchObject({
       productId: 'winflowz_app',
-      plan: 'starter_founder',
+      plan: 'focus',
       providers: ['lemonsqueezy'],
     })
-    expect(getCommerceOffer(WINFLOWZ_APP_PRO_FOUNDER_LTD_OFFER_ID)).toMatchObject({
+    expect(getCommerceOffer(WINFLOWZ_APP_POWER_LTD_OFFER_ID)).toMatchObject({
       productId: 'winflowz_app',
-      plan: 'pro_founder',
+      plan: 'power',
       providers: ['lemonsqueezy'],
     })
-    expect(getCommerceOffer(WINFLOWZ_APP_STUDIO_FOUNDER_LTD_OFFER_ID)).toMatchObject({
+    expect(getCommerceOffer(WINFLOWZ_APP_CONTROL_LTD_OFFER_ID)).toMatchObject({
       productId: 'winflowz_app',
-      plan: 'studio_founder',
+      plan: 'control',
+      providers: ['lemonsqueezy'],
+    })
+    expect(getCommerceOffer(WINFLOWZ_APP_COMMAND_LTD_OFFER_ID)).toMatchObject({
+      productId: 'winflowz_app',
+      plan: 'command',
       providers: ['lemonsqueezy'],
     })
   })
@@ -72,7 +78,7 @@ describe('commerce offer configuration', () => {
         LEMONSQUEEZY_STORE_ID: 'store-456',
         LEMONSQUEEZY_SOCIALGLOWZ_LIFETIME_DEAL_VARIANT_ID: 'variant-789',
         LEMONSQUEEZY_WINFLOWZ_APP_PRODUCT_ID: 'winflowz-product',
-        LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID: 'winflowz-pro-variant',
+        LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID: 'winflowz-power-variant',
         POLAR_WINFLOWZ_PRODUCT_ID: 'polar-winflowz',
       },
       () => {
@@ -97,13 +103,13 @@ describe('commerce offer configuration', () => {
         })
 
         const winflowzConfig = getOfferProviderConfig(
-          WINFLOWZ_APP_PRO_FOUNDER_LTD_OFFER_ID,
+          WINFLOWZ_APP_POWER_LTD_OFFER_ID,
           'lemonsqueezy'
         )
         expect(winflowzConfig).toEqual({
           provider: 'lemonsqueezy',
           productId: 'winflowz-product',
-          variantId: 'winflowz-pro-variant',
+          variantId: 'winflowz-power-variant',
           storeId: 'store-456',
         })
       }

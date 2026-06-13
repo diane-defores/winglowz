@@ -23,7 +23,7 @@ interface Props {
 ---
 <!-- Main div that wraps the testimonials section -->
 <section
-  class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full"
+  class="testimonials-section mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full"
   id="testimonials"
 >
   <!-- Title of the testimonials section -->
@@ -96,3 +96,10 @@ interface Props {
     }
   </div>
 </section>
+
+<style>
+  .testimonials-section {
+    --testimonials-section-max-width: 85rem;
+    max-width: var(--testimonials-section-max-width);
+  }
+</style>

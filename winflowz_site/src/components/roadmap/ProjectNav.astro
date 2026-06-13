@@ -19,7 +19,7 @@ const t = await useTranslations(lang, "roadmap");
 			<a
 				href={lang === "fr" ? `/fr/roadmap` : `/roadmap`}
 				class:list={[
-					"group relative flex min-h-10 w-full items-center justify-center rounded-lg border-2 px-3 py-2 text-center text-sm font-semibold sm:w-auto sm:min-w-[140px] sm:py-1.5",
+					"group relative flex min-h-10 w-full items-center justify-center rounded-lg border-2 px-3 py-2 text-center text-sm font-semibold sm:w-auto sm:min-w-36 sm:py-1.5",
 					currentProjectId === null
 						? "bg-neutral-100 border-magenta text-magenta ring-2 ring-magenta/20 dark:border-magenta dark:bg-magenta/10 dark:text-magenta dark:ring-magenta/10"
 						: "border-neutral-200 bg-white text-neutral-600 hover:border-magenta hover:text-magenta hover:ring-2 hover:ring-magenta/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-magenta dark:hover:bg-magenta/10 dark:hover:text-magenta dark:hover:ring-magenta/10",
@@ -37,7 +37,7 @@ const t = await useTranslations(lang, "roadmap");
 								: `/roadmap/${project.id}`
 						}
 						class:list={[
-							"group relative flex min-h-10 w-full items-center justify-center rounded-lg border-2 px-3 py-2 text-center text-sm font-semibold sm:w-auto sm:min-w-[140px] sm:py-1.5",
+							"group relative flex min-h-10 w-full items-center justify-center rounded-lg border-2 px-3 py-2 text-center text-sm font-semibold sm:w-auto sm:min-w-36 sm:py-1.5",
 							currentProjectId === project.id
 								? "bg-neutral-100 border-magenta text-magenta ring-2 ring-magenta/20 dark:border-magenta dark:bg-magenta/10 dark:text-magenta dark:ring-magenta/10"
 								: "border-neutral-200 bg-white text-neutral-600 hover:border-magenta hover:text-magenta hover:ring-2 hover:ring-magenta/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-magenta dark:hover:bg-magenta/10 dark:hover:text-magenta dark:hover:ring-magenta/10",

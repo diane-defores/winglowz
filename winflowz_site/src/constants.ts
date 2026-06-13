@@ -1,5 +1,12 @@
 import ogImageSrc from "@/assets/images/WinFlowz.png";
 
+const SITE_THEME_COLOR = '#facc15';
+const SITE_MANIFEST_THEME_COLOR = '#000000';
+const SITE_MANIFEST_BACKGROUND_COLOR = '#ffffff';
+const SITE_SOCIAL_IMAGE_WIDTH = 1200;
+const SITE_SOCIAL_IMAGE_HEIGHT = 600;
+const SITE_SOCIAL_IMAGE_TYPE = 'image/png';
+
 export const SITE = {
   name: 'WinFlowz',
   title: 'WinFlowz - Productivity Plugins & Windows Training',
@@ -64,16 +71,16 @@ export const OG = {
 
 export const SITE_VISUAL_TOKENS = {
   themeMeta: {
-    website: '#facc15',
-    manifestTheme: '#000000',
-    manifestBackground: '#ffffff',
+    website: SITE_THEME_COLOR,
+    manifestTheme: SITE_MANIFEST_THEME_COLOR,
+    manifestBackground: SITE_MANIFEST_BACKGROUND_COLOR,
     manifestDescription: OG.description,
     twitterCard: 'summary_large_image',
   },
   socialImage: {
-    width: 1200,
-    height: 600,
-    type: 'image/png',
+    width: SITE_SOCIAL_IMAGE_WIDTH,
+    height: SITE_SOCIAL_IMAGE_HEIGHT,
+    type: SITE_SOCIAL_IMAGE_TYPE,
   },
   manifestIcons: {
     sizes: [192, 512],

@@ -1,22 +1,24 @@
 ---
 import ThemePicker from '@/components/ui/ThemePicker.astro'
+import NavLink from '@components/ui/links/NavLink.astro'
+import TextLogo from '@components/ui/TextLogo.astro'
 import { getLangFromUrl, useTranslations } from '@/utils/i18n'
 
 interface NavItem {
-	label: string
-	href: string
+  label: string
+  href: string
 }
 
 interface Props {
-	navItems?: NavItem[]
-	forceDark?: boolean
-	showThemePicker?: boolean
+  navItems?: NavItem[]
+  forceDark?: boolean
+  showThemePicker?: boolean
 }
 
 const {
-	navItems: propNavItems,
-	forceDark = false,
-	showThemePicker = true,
+  navItems: propNavItems,
+  forceDark = false,
+  showThemePicker = true,
 } = Astro.props
 
 const lang = getLangFromUrl(Astro.url)
@@ -24,64 +26,64 @@ const t = await useTranslations(lang, 'navigation')
 const homeUrl = lang === 'fr' ? '/fr' : '/'
 
 const navItems: NavItem[] =
-	propNavItems ||
-	t.navBarLinks?.map((link: { name: string; url: string }) => ({
-		label: link.name,
-		href: link.url,
-	})) ||
-	[]
+  propNavItems ||
+  t.navBarLinks?.map((link: { name: string; url: string }) => ({
+    label: link.name,
+    href: link.url,
+  })) ||
+  []
 
 const altLang = lang === 'fr' ? 'en' : 'fr'
 const altLangLabel = lang === 'fr' ? 'EN' : 'FR'
 
 const routeMappings: Record<string, string> = {
-	about: 'a-propos',
-	'windows-mastery': 'maitrise-windows',
-	recommendations: 'recommandations',
-	testimonials: 'temoignages',
-	'en/formations': 'formations',
-	'products/obsidian-plugins': 'produits/obsidian-plugins',
-	'products/chrome-extensions': 'produits/chrome-extensions',
-	'products/productivity-suite': 'produits/productivity-suite',
-	terms: 'cgu',
-	disclaimer: 'non-responsabilite',
-	privacy: 'confidentialite',
-	copyright: 'droits',
-	legal: 'mentions-legales',
-	products: 'produits',
-	'products/obsidian': 'produits/obsidian',
-	'products/chrome': 'produits/chrome',
-	'products/windows': 'produits/windows',
-	services: 'services',
-	blog: 'blog',
-	contact: 'contact',
-	roadmap: 'roadmap',
-	signin: 'signin',
+  about: 'a-propos',
+  'windows-mastery': 'maitrise-windows',
+  recommendations: 'recommandations',
+  testimonials: 'temoignages',
+  'en/formations': 'formations',
+  'products/obsidian-plugins': 'produits/obsidian-plugins',
+  'products/chrome-extensions': 'produits/chrome-extensions',
+  'products/productivity-suite': 'produits/productivity-suite',
+  terms: 'cgu',
+  disclaimer: 'non-responsabilite',
+  privacy: 'confidentialite',
+  copyright: 'droits',
+  legal: 'mentions-legales',
+  products: 'produits',
+  'products/obsidian': 'produits/obsidian',
+  'products/chrome': 'produits/chrome',
+  'products/windows': 'produits/windows',
+  services: 'services',
+  blog: 'blog',
+  contact: 'contact',
+  roadmap: 'roadmap',
+  signin: 'signin',
 }
 
 function getTranslatedPath(path: string, targetLang: string): string {
-	if (path === '/' || path === '/fr' || path === '/fr/') {
-		return targetLang === 'fr' ? '/fr' : '/'
-	}
+  if (path === '/' || path === '/fr' || path === '/fr/') {
+    return targetLang === 'fr' ? '/fr' : '/'
+  }
 
-	const cleanPath = path.replace(/^\/fr\//, '/')
+  const cleanPath = path.replace(/^\/fr\//, '/')
 
-	if (targetLang === 'fr') {
-		for (const [en, fr] of Object.entries(routeMappings)) {
-			if (cleanPath === `/${en}` || cleanPath.startsWith(`/${en}/`)) {
-				return `/fr/${fr}${cleanPath.substring(en.length + 1)}`
-			}
-		}
-		return `/fr${cleanPath}`
-	}
+  if (targetLang === 'fr') {
+    for (const [en, fr] of Object.entries(routeMappings)) {
+      if (cleanPath === `/${en}` || cleanPath.startsWith(`/${en}/`)) {
+        return `/fr/${fr}${cleanPath.substring(en.length + 1)}`
+      }
+    }
+    return `/fr${cleanPath}`
+  }
 
-	for (const [en, fr] of Object.entries(routeMappings)) {
-		if (cleanPath === `/${fr}` || cleanPath.startsWith(`/${fr}/`)) {
-			return `/${en}${cleanPath.substring(fr.length + 1)}`
-		}
-	}
+  for (const [en, fr] of Object.entries(routeMappings)) {
+    if (cleanPath === `/${fr}` || cleanPath.startsWith(`/${fr}/`)) {
+      return `/${en}${cleanPath.substring(fr.length + 1)}`
+    }
+  }
 
-	return cleanPath
+  return cleanPath
 }
 
 const altLangUrl = getTranslatedPath(Astro.url.pathname, altLang)
@@ -90,195 +92,210 @@ const signInLabel = lang === 'fr' ? 'Connexion' : 'Sign In'
 const ctaLabel = lang === 'fr' ? 'Parcours Windows' : 'Start with WinFlowz'
 const signInUrl = lang === 'fr' ? '/fr/signin' : '/signin'
 const ctaUrl =
-	lang === 'fr'
-		? '/fr/signin?next=%2Fdashboard%2Fdocs%2Ffr%2Fformations%2Fmodule-2-windows%2F'
-		: '/signin?next=%2Fdashboard%2Fdocs%2Fen%2Fformations%2Fmodule-2-windows%2F'
+  lang === 'fr'
+    ? '/fr/signin?next=%2Fdashboard%2Fdocs%2Ffr%2Fformations%2Fmodule-2-windows%2F'
+    : '/signin?next=%2Fdashboard%2Fdocs%2Fen%2Fformations%2Fmodule-2-windows%2F'
 const menuLabel = lang === 'fr' ? 'Ouvrir le menu' : 'Open menu'
 const darkModeLabel = lang === 'fr' ? 'Mode sombre' : 'Dark mode'
 const lightModeLabel = lang === 'fr' ? 'Mode clair' : 'Light mode'
 const mobileTagline =
-	lang === 'fr' ? 'Plugins Productivité & Formation Windows' : 'Productivity Plugins & Windows Training'
+  lang === 'fr'
+    ? 'Plugins Productivité & Formation Windows'
+    : 'Productivity Plugins & Windows Training'
 
 const navShellClass = forceDark
-	? 'relative flex items-center justify-between rounded-full border border-zinc-800 bg-zinc-950/88 px-4 py-3 shadow-none backdrop-blur-md'
-	: 'relative flex items-center justify-between rounded-full border border-neutral-200/60 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80 dark:shadow-none'
+  ? 'relative flex items-center justify-between rounded-full border border-zinc-800 bg-zinc-950/88 px-4 py-3 shadow-none backdrop-blur-md'
+  : 'relative flex items-center justify-between rounded-full border border-neutral-200/60 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80 dark:shadow-none'
 
-const navLinkClass = forceDark
-	? 'nav-link no-hover-animation relative rounded-full px-3 py-2 text-sm text-zinc-400 transition-colors hover:text-white'
-	: 'nav-link no-hover-animation relative rounded-full px-3 py-2 text-sm font-medium text-neutral-800 transition-colors hover:text-neutral-950 dark:text-zinc-400 dark:hover:text-white'
+const navLinkClass =
+  'no-hover-animation relative rounded-full px-3 py-2 text-sm font-medium transition-colors'
+const navLinkActiveClass = forceDark
+  ? 'text-white'
+  : 'text-neutral-950 dark:text-white'
+const navLinkInactiveClass = forceDark
+  ? 'text-zinc-400 hover:text-white'
+  : 'text-neutral-600 hover:text-neutral-950 dark:text-zinc-400 dark:hover:text-white'
 
 const langLinkClass = forceDark
-	? 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white'
-	: 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white'
+  ? 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white'
+  : 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white'
 
 const signInButtonClass = forceDark
-	? 'rounded-full px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white'
-	: 'rounded-full px-3 py-1.5 text-sm font-medium text-neutral-800 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white'
+  ? 'rounded-full px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white'
+  : 'rounded-full px-3 py-1.5 text-sm font-medium text-neutral-800 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white'
 
 const ctaButtonClass = forceDark
-	? 'shimmer-btn rounded-full bg-white px-4 py-1.5 text-sm font-medium text-zinc-950 hover:bg-zinc-200'
-	: 'shimmer-btn rounded-full bg-neutral-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200'
+  ? 'shimmer-btn rounded-full bg-white px-4 py-1.5 text-sm font-medium text-zinc-950 hover:bg-zinc-200'
+  : 'shimmer-btn rounded-full bg-neutral-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200'
 ---
 
-<header class="navbar-header fixed left-0 right-0 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-4xl">
-	<nav class={navShellClass}>
-		<a href={homeUrl} class="flex items-center gap-2 no-hover-animation">
-			<div class="text-logo" style="font-size: 1.25rem;">
-				<span class="text">WinFlowz</span>
-				<div class="glow-effect"></div>
-			</div>
-		</a>
+<header
+  class="navbar-header fixed left-0 right-0 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-4xl"
+>
+  <nav class={navShellClass}>
+    <a href={homeUrl} class="no-hover-animation flex items-center gap-2">
+      <TextLogo class="w-[7rem]" style="font-size: 1.25rem;" />
+    </a>
 
-		<p class="mx-4 hidden flex-1 text-center text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-neutral-600 dark:text-zinc-400 sm:text-[0.7rem] max-md:block">
-			{mobileTagline}
-		</p>
+    <p
+      class="mx-4 hidden flex-1 text-center text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-neutral-600 dark:text-zinc-400 max-md:block sm:text-[0.7rem]"
+    >
+      {mobileTagline}
+    </p>
 
-		<div class="hidden items-center gap-1 md:flex">
-			{
-				navItems.map((item) => (
-					<a
-						href={item.href}
-						class={navLinkClass}
-					>
-						{item.label}
-					</a>
-				))
-			}
-		</div>
+    <div class="hidden items-center gap-1 md:flex">
+      {
+        navItems.map((item) => (
+          <NavLink
+            url={item.href}
+            name={item.label}
+            class={navLinkClass}
+            activeClass={navLinkActiveClass}
+            inactiveClass={navLinkInactiveClass}
+          />
+        ))
+      }
+    </div>
 
-		<div class="hidden items-center gap-1 md:flex">
-			<a
-				href={altLangUrl}
-				class={langLinkClass}
-			>
-				{altLangLabel}
-			</a>
-			{showThemePicker && !forceDark && <ThemePicker />}
-			<a href={signInUrl} class="no-hover-animation">
-				<button class={signInButtonClass}>
-					{signInLabel}
-				</button>
-			</a>
-			<a href={ctaUrl} class="no-hover-animation">
-				<button class={ctaButtonClass}>
-					{ctaLabel}
-				</button>
-			</a>
-		</div>
+    <div class="hidden items-center gap-1 md:flex">
+      <a href={altLangUrl} class={langLinkClass}>
+        {altLangLabel}
+      </a>
+      {showThemePicker && !forceDark && <ThemePicker />}
+      <a href={signInUrl} class="no-hover-animation">
+        <button class={signInButtonClass}>
+          {signInLabel}
+        </button>
+      </a>
+      <a href={ctaUrl} class="no-hover-animation">
+        <button class={ctaButtonClass}>
+          {ctaLabel}
+        </button>
+      </a>
+    </div>
 
-		<details class="mobile-menu relative md:hidden">
-			<summary
-				class="mobile-menu-toggle flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full text-neutral-800 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-				aria-label={menuLabel}
-			>
-				<span class="sr-only">{menuLabel}</span>
-				<span class="hamburger-lines" aria-hidden="true">
-					<span></span>
-					<span></span>
-					<span></span>
-				</span>
-			</summary>
+    <details class="mobile-menu relative md:hidden">
+      <summary
+        class="mobile-menu-toggle flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full text-neutral-800 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+        aria-label={menuLabel}
+      >
+        <span class="sr-only">{menuLabel}</span>
+        <span class="hamburger-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </summary>
 
-			<div class={forceDark
-				? 'absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950/96 p-4 shadow-2xl backdrop-blur-md'
-				: 'absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-neutral-200/60 bg-white/95 p-4 shadow-lg backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/95 dark:shadow-none'
-			}>
-				<div class="flex flex-col gap-2">
-						{navItems.map((item) => (
-							<a
-								href={item.href}
-								class="rounded-lg px-4 py-3.5 text-base font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:shadow-sm hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-							>
-								{item.label}
-							</a>
-						))}
-						<hr class="my-2 border-neutral-200 dark:border-zinc-800" />
-						<div class={`grid ${showThemePicker && !forceDark ? 'grid-cols-3' : 'grid-cols-2'} gap-2`}>
-							<a
-								href={altLangUrl}
-								class="rounded-lg px-2 py-3 text-center text-sm font-bold text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white"
-							>
-								{altLangLabel}
-							</a>
-							{showThemePicker && !forceDark && (
-								<div class="flex w-full">
-									<button
-										type="button"
-										data-hs-theme-click-value="dark"
-										class="flex-1 rounded-lg px-2 py-3 text-center text-sm font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:shadow-sm hover:text-neutral-950 hs-dark-mode-active:hidden dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-									>
-										{darkModeLabel}
-									</button>
-									<button
-										type="button"
-										data-hs-theme-click-value="light"
-										class="hidden flex-1 rounded-lg px-2 py-3 text-center text-sm font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:shadow-sm hover:text-neutral-950 hs-dark-mode-active:block dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-									>
-										{lightModeLabel}
-									</button>
-								</div>
-							)}
-							<a href={signInUrl} class="flex items-center">
-								<span class="block w-full rounded-lg px-2 py-3 text-center text-base font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:shadow-sm hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white">
-									{signInLabel}
-								</span>
-							</a>
-						</div>
-						<a href={ctaUrl}>
-							<span class="shimmer-btn inline-flex w-full items-center justify-center rounded-full bg-neutral-900 px-4 py-2.5 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200">
-								{ctaLabel}
-							</span>
-					</a>
-				</div>
-			</div>
-		</details>
-	</nav>
+      <div
+        class={forceDark
+          ? 'absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950/96 p-4 shadow-2xl backdrop-blur-md'
+          : 'absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-neutral-200/60 bg-white/95 p-4 shadow-lg backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/95 dark:shadow-none'}
+      >
+        <div class="flex flex-col gap-2">
+          {
+            navItems.map((item) => (
+              <NavLink
+                url={item.href}
+                name={item.label}
+                class="rounded-lg px-4 py-3.5 text-base font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                activeClass={
+                  forceDark ? 'text-white' : 'text-neutral-950 dark:text-white'
+                }
+                inactiveClass={
+                  forceDark
+                    ? 'text-zinc-400'
+                    : 'text-neutral-800 dark:text-zinc-400'
+                }
+              />
+            ))
+          }
+          <hr class="my-2 border-neutral-200 dark:border-zinc-800" />
+          <div
+            class={`grid ${showThemePicker && !forceDark ? 'grid-cols-3' : 'grid-cols-2'} gap-2`}
+          >
+            <a
+              href={altLangUrl}
+              class="rounded-lg px-2 py-3 text-center text-sm font-bold text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white"
+            >
+              {altLangLabel}
+            </a>
+            {
+              showThemePicker && !forceDark && (
+                <div class="flex w-full">
+                  <button
+                    type="button"
+                    data-hs-theme-click-value="dark"
+                    class="flex-1 rounded-lg px-2 py-3 text-center text-sm font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:hidden dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                  >
+                    {darkModeLabel}
+                  </button>
+                  <button
+                    type="button"
+                    data-hs-theme-click-value="light"
+                    class="hidden flex-1 rounded-lg px-2 py-3 text-center text-sm font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:block dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                  >
+                    {lightModeLabel}
+                  </button>
+                </div>
+              )
+            }
+            <a href={signInUrl} class="flex items-center">
+              <span
+                class="block w-full rounded-lg px-2 py-3 text-center text-base font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+              >
+                {signInLabel}
+              </span>
+            </a>
+          </div>
+          <a href={ctaUrl}>
+            <span
+              class="shimmer-btn inline-flex w-full items-center justify-center rounded-full bg-neutral-900 px-4 py-2.5 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
+            >
+              {ctaLabel}
+            </span>
+          </a>
+        </div>
+      </div>
+    </details>
+  </nav>
 </header>
 
 <style>
-	.navbar-header {
-		animation: navbar-slide-down 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-	}
+  .navbar-header {
+    animation: navbar-slide-down 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
 
-	.nav-link:hover {
-		background-color: rgb(229 229 229);
-	}
+  @keyframes navbar-slide-down {
+    0% {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-	:global(.dark) .nav-link:hover {
-		background-color: rgb(39 39 42);
-	}
+  .navbar-header :global(.text-logo) {
+    width: fit-content;
+  }
 
-	.nav-link {
-		transition: background-color 0.2s ease, color 0.2s ease;
-	}
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
 
-	.mobile-menu > summary::-webkit-details-marker {
-		display: none;
-	}
+  .hamburger-lines {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 3px;
+  }
 
-	.hamburger-lines {
-		display: grid;
-		gap: 4px;
-		width: 20px;
-	}
-
-	.hamburger-lines span {
-		display: block;
-		height: 2px;
-		border-radius: 999px;
-		background: currentColor;
-		transition: transform 0.18s ease;
-	}
-
-	.mobile-menu[open] .hamburger-lines span:nth-child(1) {
-		transform: translateY(6px) rotate(45deg);
-	}
-
-	.mobile-menu[open] .hamburger-lines span:nth-child(2) {
-		transform: scaleX(0);
-	}
-
-	.mobile-menu[open] .hamburger-lines span:nth-child(3) {
-		transform: translateY(-6px) rotate(-45deg);
-	}
+  .hamburger-lines span {
+    display: block;
+    width: 14px;
+    height: 1.5px;
+    border-radius: 9999px;
+    background: currentColor;
+  }
 </style>

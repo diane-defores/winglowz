@@ -1354,7 +1354,7 @@ class _RecordingMicActionState extends State<_RecordingMicAction>
         ? AppColors.danger
         : colorScheme.primary;
     final foreground = widget.isRecording
-        ? Colors.white
+        ? AppColors.white
         : colorScheme.onPrimary;
 
     return AnimatedBuilder(
@@ -1376,7 +1376,9 @@ class _RecordingMicActionState extends State<_RecordingMicAction>
                   scale: 1.06 + (pulse * 0.16),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(
+                        AppVoiceMetrics.recordingSurfaceRadius,
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: activeColor.withValues(alpha: glowOpacity),
@@ -1458,17 +1460,20 @@ class _RecordingBars extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 22,
-      height: 18,
+      width: AppVoiceMetrics.recordingSurfaceWidth,
+      height: AppVoiceMetrics.recordingSurfaceHeight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: List.generate(4, (index) {
           final wave = (progress + (index * 0.18)) % 1;
-          final height = 6 + (Curves.easeInOut.transform(wave) * 10);
+          final height =
+              AppVoiceMetrics.recordingBarHeightBase +
+              (Curves.easeInOut.transform(wave) *
+                  AppVoiceMetrics.recordingBarHeightRange);
           return AnimatedContainer(
             duration: const Duration(milliseconds: 90),
-            width: 3,
+            width: AppVoiceMetrics.recordingBarWidth,
             height: height,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.72),

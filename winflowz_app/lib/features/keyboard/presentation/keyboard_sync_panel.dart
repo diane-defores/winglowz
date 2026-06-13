@@ -117,7 +117,7 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
         builder: (context) => AlertDialog(
           title: const Text('Export profil clavier'),
           content: SizedBox(
-            width: 540,
+            width: AppLayoutMetrics.keyboardSyncDialogWidth,
             child: SelectableText(
               backup.toJson(pretty: true),
               key: const Key('keyboard-sync-export-json'),
@@ -153,7 +153,7 @@ class _KeyboardSyncPanelState extends ConsumerState<KeyboardSyncPanel> {
       builder: (context) => AlertDialog(
         title: const Text('Importer un profil clavier'),
         content: SizedBox(
-          width: 540,
+          width: AppLayoutMetrics.keyboardSyncDialogWidth,
           child: TextField(
             key: const Key('keyboard-sync-import-json-field'),
             controller: controller,

@@ -48,18 +48,18 @@ export function SmartOrgAnim() {
             }}
           >
             <div
-              className="p-2 rounded-lg border transition-all duration-300"
+              className="p-2 rounded-lg border transition-all duration-300 border-zinc-700 bg-zinc-800 text-zinc-400"
               style={{
-                borderColor: isActive ? item.color : "rgb(63 63 70)",
-                backgroundColor: isActive ? `${item.color}15` : "rgb(39 39 42)",
-                color: isActive ? item.color : "rgb(161 161 170)",
+                borderColor: isActive ? item.color : undefined,
+                backgroundColor: isActive ? `${item.color}15` : undefined,
+                color: isActive ? item.color : undefined,
               }}
             >
               {item.icon}
             </div>
             <span
-              className="text-[10px] font-medium transition-colors duration-300"
-              style={{ color: isActive ? item.color : "rgb(113 113 122)" }}
+              className="text-xs font-medium transition-colors duration-300 text-zinc-500"
+              style={{ color: isActive ? item.color : undefined }}
             >
               {item.label}
             </span>

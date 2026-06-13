@@ -380,7 +380,7 @@ class _KeyCap extends StatelessWidget {
         ? AppColors.white
         : AppColors.keyboardKeyForeground;
     return Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadii.sm),
         onTap: onPressed,
@@ -500,8 +500,8 @@ class _PinnedBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 3,
-      right: 3,
+      top: AppKeyboardPreview.pinnedBadgeInset,
+      right: AppKeyboardPreview.pinnedBadgeInset,
       child: CustomPaint(
         size: const Size(12, 12),
         painter: _PreviewPinnedBadgePainter(
@@ -852,7 +852,7 @@ class _SelectableCornerKeyCap extends StatelessWidget {
         label: 'Keyboard key ${keySpec.label}',
         hint: 'Selects this key for gesture shortcut editing',
         child: Material(
-          color: Colors.transparent,
+          color: AppColors.transparent,
           child: InkWell(
             key: Key('corner-preview-key-${keySpec.id}'),
             borderRadius: BorderRadius.circular(AppRadii.sm),

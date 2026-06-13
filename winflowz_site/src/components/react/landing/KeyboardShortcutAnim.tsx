@@ -28,13 +28,13 @@ export function KeyboardShortcutAnim() {
         {shortcuts[current].keys.map((key, i) => (
           <kbd
             key={`${current}-${i}`}
-            className="px-2 py-1 text-xs border rounded font-mono transition-all duration-100"
+            className="px-2 py-1 text-xs border rounded font-mono transition-all duration-100 border-zinc-700 bg-zinc-800 text-zinc-300"
             style={{
               transform: pressed ? "scale(0.92) translateY(2px)" : "scale(1) translateY(0)",
               transitionDelay: `${i * 50}ms`,
-              backgroundColor: pressed ? "var(--brand-cyan)" : "rgb(39 39 42)",
-              borderColor: pressed ? "var(--brand-cyan)" : "rgb(63 63 70)",
-              color: pressed ? "black" : "rgb(212 212 216)",
+              backgroundColor: pressed ? "var(--brand-cyan)" : undefined,
+              borderColor: pressed ? "var(--brand-cyan)" : undefined,
+              color: pressed ? "black" : undefined,
             }}
           >
             {key}

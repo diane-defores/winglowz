@@ -1,0 +1,398 @@
+- generic [ref=e5]:
+  - generic [ref=e8]:
+    - text: Test mode is currently enabled.
+    - link "Help↗" [ref=e9] [cursor=pointer]:
+      - /url: https://docs.lemonsqueezy.com/help/getting-started/test-mode/
+  - generic [ref=e11]:
+    - generic [ref=e12]:
+      - generic "WinFlowz by Diane Defores" [ref=e15]:
+        - img [ref=e16]:
+          - generic [ref=e18]: W
+      - paragraph [ref=e19]:
+        - link "WinFlowz by Diane Defores" [ref=e20] [cursor=pointer]:
+          - /url: https://winflowz.lemonsqueezy.com
+    - generic [ref=e23]:
+      - heading "WINFLOWZ APP" [level=1] [ref=e26]
+      - generic [ref=e27]:
+        - list [ref=e29]:
+          - listitem [ref=e30]
+          - listitem [ref=e32]
+          - listitem [ref=e34]
+          - listitem [ref=e36]
+          - listitem [ref=e38]
+          - listitem [ref=e40]
+          - listitem [ref=e42]
+          - listitem [ref=e44]
+        - generic [ref=e46]:
+          - button [ref=e47] [cursor=pointer]
+          - button [ref=e48] [cursor=pointer]
+          - button [ref=e49] [cursor=pointer]
+          - button [ref=e50] [cursor=pointer]
+      - paragraph [ref=e53]: WinFlowz is a productivity app for capturing, transforming, and reusing your words faster across your workflow. It starts on Android with voice-first tools, keyboard workflows, snippets, clipboard features, and local-first automation, with future platforms planned as the product grow, and sync across all of them.
+      - generic [ref=e54]:
+        - link "WINFLOWZ APP | FOCUS $99.00 WinFlowz is a productivity app for capturing, transforming, and reusing your words faster across your workflow. It starts on Android with voice-first tools, keyboard workflows, snippets, clipboard features, and local-first automation, with future platforms planned as the product grow, and sync across all of them." [ref=e55] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - generic [ref=e58]:
+                - radio [checked]
+              - heading "WINFLOWZ APP | FOCUS" [level=3] [ref=e59]
+            - generic [ref=e61]: $99.00
+          - paragraph [ref=e63]: WinFlowz is a productivity app for capturing, transforming, and reusing your words faster across your workflow. It starts on Android with voice-first tools, keyboard workflows, snippets, clipboard features, and local-first automation, with future platforms planned as the product grow, and sync across all of them.
+        - link "WINFLOWZ APP | POWER $179.00 2 devices activation" [ref=e64] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e65]:
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - radio
+              - heading "WINFLOWZ APP | POWER" [level=3] [ref=e68]
+            - generic [ref=e70]: $179.00
+          - paragraph [ref=e72]: 2 devices activation
+        - link "WINFLOWZ APP | CONTROL $349.00 5 devices activation" [ref=e73] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e74]:
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - radio
+              - heading "WINFLOWZ APP | CONTROL" [level=3] [ref=e77]
+            - generic [ref=e79]: $349.00
+          - paragraph [ref=e81]: 5 devices activation
+        - link "WINFLOWZ APP | COMMAND $799.00 10 devices activation" [ref=e82] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - generic [ref=e85]:
+                - radio
+              - heading "WINFLOWZ APP | COMMAND" [level=3] [ref=e86]
+            - generic [ref=e88]: $799.00
+          - paragraph [ref=e90]: 10 devices activation
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - generic [ref=e95]:
+          - generic [ref=e96] [cursor=pointer]: Pay by Card
+          - generic [ref=e97] [cursor=pointer]: Pay with PayPal
+        - generic [ref=e99]:
+          - group [ref=e100]
+          - generic [ref=e102]:
+            - group [ref=e103]:
+              - generic [ref=e104]:
+                - generic [ref=e105] [cursor=pointer]: Cardholder name
+                - textbox "Cardholder name" [ref=e106]:
+                  - /placeholder: John More Doe
+            - generic [ref=e107] [cursor=pointer]: Billing address
+            - generic [ref=e108]:
+              - combobox "Billing address" [ref=e109] [cursor=pointer]:
+                - option "Afghanistan"
+                - option "Åland Islands"
+                - option "Albania"
+                - option "Algeria"
+                - option "American Samoa"
+                - option "Andorra"
+                - option "Angola"
+                - option "Anguilla"
+                - option "Antarctica"
+                - option "Antigua and Barbuda"
+                - option "Argentina"
+                - option "Armenia"
+                - option "Aruba"
+                - option "Australia"
+                - option "Austria"
+                - option "Azerbaijan"
+                - option "Bahamas"
+                - option "Bahrain"
+                - option "Bangladesh"
+                - option "Barbados"
+                - option "Belarus"
+                - option "Belgium"
+                - option "Belize"
+                - option "Benin"
+                - option "Bermuda"
+                - option "Bhutan"
+                - option "Bolivia, Plurinational State of"
+                - option "Bonaire, Sint Eustatius and Saba"
+                - option "Bosnia and Herzegovina"
+                - option "Botswana"
+                - option "Bouvet Island"
+                - option "Brazil"
+                - option "British Indian Ocean Territory"
+                - option "Brunei Darussalam"
+                - option "Bulgaria"
+                - option "Burkina Faso"
+                - option "Burundi"
+                - option "Cambodia"
+                - option "Cameroon"
+                - option "Canada"
+                - option "Cape Verde"
+                - option "Cayman Islands"
+                - option "Central African Republic"
+                - option "Chad"
+                - option "Chile"
+                - option "China"
+                - option "Christmas Island"
+                - option "Cocos (Keeling) Islands"
+                - option "Colombia"
+                - option "Comoros"
+                - option "Congo"
+                - option "Congo, the Democratic Republic of the"
+                - option "Cook Islands"
+                - option "Costa Rica"
+                - option "Côte d'Ivoire"
+                - option "Croatia"
+                - option "Curaçao"
+                - option "Cyprus"
+                - option "Czech Republic"
+                - option "Denmark"
+                - option "Djibouti"
+                - option "Dominica"
+                - option "Dominican Republic"
+                - option "Ecuador"
+                - option "Egypt"
+                - option "El Salvador"
+                - option "Equatorial Guinea"
+                - option "Eritrea"
+                - option "Estonia"
+                - option "Ethiopia"
+                - option "Falkland Islands (Malvinas)"
+                - option "Faroe Islands"
+                - option "Fiji"
+                - option "Finland"
+                - option "France"
+                - option "French Guiana"
+                - option "French Polynesia"
+                - option "French Southern Territories"
+                - option "Gabon"
+                - option "Gambia"
+                - option "Georgia"
+                - option "Germany"
+                - option "Ghana"
+                - option "Gibraltar"
+                - option "Greece"
+                - option "Greenland"
+                - option "Grenada"
+                - option "Guadeloupe"
+                - option "Guam"
+                - option "Guatemala"
+                - option "Guernsey"
+                - option "Guinea"
+                - option "Guinea-Bissau"
+                - option "Guyana"
+                - option "Haiti"
+                - option "Heard Island and McDonald Islands"
+                - option "Holy See (Vatican City State)"
+                - option "Honduras"
+                - option "Hong Kong"
+                - option "Hungary"
+                - option "Iceland"
+                - option "India"
+                - option "Indonesia"
+                - option "Iraq"
+                - option "Ireland"
+                - option "Isle of Man"
+                - option "Israel"
+                - option "Italy"
+                - option "Jamaica"
+                - option "Japan"
+                - option "Jersey"
+                - option "Jordan"
+                - option "Kazakhstan"
+                - option "Kenya"
+                - option "Kiribati"
+                - option "Korea, Republic of"
+                - option "Kosovo"
+                - option "Kuwait"
+                - option "Kyrgyzstan"
+                - option "Lao People's Democratic Republic"
+                - option "Latvia"
+                - option "Lebanon"
+                - option "Lesotho"
+                - option "Liberia"
+                - option "Libya"
+                - option "Liechtenstein"
+                - option "Lithuania"
+                - option "Luxembourg"
+                - option "Macao"
+                - option "Macedonia, the Former Yugoslav Republic of"
+                - option "Madagascar"
+                - option "Malawi"
+                - option "Malaysia"
+                - option "Maldives"
+                - option "Mali"
+                - option "Malta"
+                - option "Marshall Islands"
+                - option "Martinique"
+                - option "Mauritania"
+                - option "Mauritius"
+                - option "Mayotte"
+                - option "Mexico"
+                - option "Micronesia, Federated States of"
+                - option "Moldova, Republic of"
+                - option "Monaco"
+                - option "Mongolia"
+                - option "Montenegro"
+                - option "Montserrat"
+                - option "Morocco"
+                - option "Mozambique"
+                - option "Myanmar"
+                - option "Namibia"
+                - option "Nauru"
+                - option "Nepal"
+                - option "Netherlands"
+                - option "New Caledonia"
+                - option "New Zealand"
+                - option "Nicaragua"
+                - option "Niger"
+                - option "Nigeria"
+                - option "Niue"
+                - option "Norfolk Island"
+                - option "Northern Mariana Islands"
+                - option "Norway"
+                - option "Oman"
+                - option "Pakistan"
+                - option "Palau"
+                - option "Palestine, State of"
+                - option "Panama"
+                - option "Papua New Guinea"
+                - option "Paraguay"
+                - option "Peru"
+                - option "Philippines"
+                - option "Pitcairn"
+                - option "Poland"
+                - option "Portugal"
+                - option "Puerto Rico"
+                - option "Qatar"
+                - option "Réunion"
+                - option "Romania"
+                - option "Rwanda"
+                - option "Saint Barthélemy"
+                - option "Saint Helena, Ascension and Tristan da Cunha"
+                - option "Saint Kitts and Nevis"
+                - option "Saint Lucia"
+                - option "Saint Martin (French part)"
+                - option "Saint Pierre and Miquelon"
+                - option "Saint Vincent and the Grenadines"
+                - option "Samoa"
+                - option "San Marino"
+                - option "Sao Tome and Principe"
+                - option "Saudi Arabia"
+                - option "Senegal"
+                - option "Serbia"
+                - option "Seychelles"
+                - option "Sierra Leone"
+                - option "Singapore"
+                - option "Sint Maarten (Dutch part)"
+                - option "Slovakia"
+                - option "Slovenia"
+                - option "Solomon Islands"
+                - option "Somalia"
+                - option "South Africa"
+                - option "South Georgia and the South Sandwich Islands"
+                - option "South Sudan"
+                - option "Spain"
+                - option "Sri Lanka"
+                - option "Sudan"
+                - option "Suriname"
+                - option "Svalbard and Jan Mayen"
+                - option "Swaziland"
+                - option "Sweden"
+                - option "Switzerland"
+                - option "Taiwan"
+                - option "Tajikistan"
+                - option "Tanzania, United Republic of"
+                - option "Thailand"
+                - option "Timor-Leste"
+                - option "Togo"
+                - option "Tokelau"
+                - option "Tonga"
+                - option "Trinidad and Tobago"
+                - option "Tunisia"
+                - option "Turkey"
+                - option "Turkmenistan"
+                - option "Turks and Caicos Islands"
+                - option "Tuvalu"
+                - option "Uganda"
+                - option "Ukraine"
+                - option "United Arab Emirates"
+                - option "United Kingdom"
+                - option "United States" [selected]
+                - option "United States Minor Outlying Islands"
+                - option "Uruguay"
+                - option "Uzbekistan"
+                - option "Vanuatu"
+                - option "Venezuela, Bolivarian Republic of"
+                - option "Viet Nam"
+                - option "Virgin Islands, British"
+                - option "Virgin Islands, U.S."
+                - option "Wallis and Futuna"
+                - option "Western Sahara"
+                - option "Yemen"
+                - option "Zambia"
+                - option "Zimbabwe"
+              - textbox "Address line 1" [ref=e110]
+              - combobox "Search for option" [ref=e112]:
+                - searchbox [ref=e114]
+              - generic [ref=e116]:
+                - textbox "City" [ref=e117]
+                - textbox "ZIP" [ref=e118]
+          - group [ref=e119]:
+            - generic [ref=e120]:
+              - generic [ref=e122] [cursor=pointer]: Tax ID number (optional)
+              - textbox "Tax ID number (optional)" [ref=e124]
+            - generic [ref=e125]:
+              - generic [ref=e127] [cursor=pointer]: Discount code
+              - textbox "Discount code" [ref=e129]
+            - button "Pay" [disabled] [ref=e130]:
+              - generic [ref=e131]: Pay
+      - generic [ref=e133]:
+        - img [ref=e134]
+        - text: Payments are secure and encrypted
+      - contentinfo [ref=e136]:
+        - generic [ref=e138]:
+          - link "Powered by Lemon Squeezy" [ref=e139] [cursor=pointer]:
+            - /url: https://www.lemonsqueezy.com
+            - img [ref=e140]
+            - generic [ref=e145]: Powered by Lemon Squeezy
+          - generic [ref=e146]:
+            - link "Terms" [ref=e147] [cursor=pointer]:
+              - /url: https://www.lemonsqueezy.com/buyer-terms
+            - generic [ref=e148]: ·
+            - link "Privacy" [ref=e149] [cursor=pointer]:
+              - /url: https://www.lemonsqueezy.com/privacy
+            - generic [ref=e150]: ·
+            - link "Help" [ref=e151] [cursor=pointer]:
+              - /url: https://www.lemonsqueezy.com/help
+            - generic [ref=e152]: ·
+            - combobox [ref=e153] [cursor=pointer]:
+              - option "Български"
+              - option "Hrvatski"
+              - option "Čeština"
+              - option "Dansk"
+              - option "Nederlands"
+              - option "English" [selected]
+              - option "Eesti"
+              - option "Suomi"
+              - option "Filipino"
+              - option "Français"
+              - option "Deutsch"
+              - option "Ελληνικά"
+              - option "Magyar"
+              - option "Bahasa Indonesia"
+              - option "Italiano"
+              - option "日本語"
+              - option "한국어"
+              - option "Latviešu"
+              - option "Lietuvių"
+              - option "Bahasa Melayu"
+              - option "Malti"
+              - option "Norsk Bokmål"
+              - option "Polski"
+              - option "Português"
+              - option "Română"
+              - option "Русский"
+              - option "简体中文"
+              - option "Slovenčina"
+              - option "Slovenščina"
+              - option "Español"
+              - option "Svenska"
+              - option "ไทย"
+              - option "Türkçe"
+              - option "Tiếng Việt"

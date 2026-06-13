@@ -48,10 +48,7 @@ const bentoText = lang === 'fr'
 <section id="features" class="py-16 px-4">
   <div class="max-w-6xl mx-auto">
     <div class="reveal text-center mb-16">
-      <h2
-        class="mb-4 text-3xl font-bold text-neutral-950 dark:text-white sm:text-4xl"
-        style="font-family: var(--font-instrument-sans);"
-      >
+      <h2 class="mb-4 font-display text-3xl font-bold text-neutral-950 dark:text-white sm:text-4xl">
         {bentoText.sectionTitle}
       </h2>
       <p class="mx-auto max-w-2xl text-neutral-600 dark:text-zinc-400">
@@ -62,23 +59,23 @@ const bentoText = lang === 'fr'
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <!-- Large card - ObsiFlowz -->
       <div class="landing-surface reveal group relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:border-neutral-300 dark:hover:border-zinc-600 md:col-span-2">
-        <div class="bento-card-header">
+        <div class="flex items-start justify-between gap-4">
           <div class="bento-copy">
             <h3 class="mb-2 text-xl font-semibold text-neutral-950 dark:text-white">{bentoText.obsiTitle}</h3>
           </div>
-          <div class="bento-icon-wrap rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
+          <div class="inline-flex shrink-0 rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-neutral-500 dark:text-zinc-400"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           </div>
         </div>
-        <div class="bento-media-row mt-4">
-          <p class="text-sm text-neutral-600 dark:text-zinc-400">
+        <div class="mt-4 flex flex-row items-start gap-4 md:block">
+          <p class="min-w-0 text-sm text-neutral-600 dark:text-zinc-400">
             {bentoText.obsiDesc}
           </p>
-          <div class="bento-side-anim">
+          <div class="bento-side-anim min-w-0 w-1/2 max-w-48 shrink-0 md:w-full md:max-w-none">
             <PluginActivityTicker client:only="react" />
           </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {["RSSFlowz", "PluginFlowz", "ContentFlowz", "NoteFlowz"].map((plugin) => (
             <div class="text-center">
               <div class="mb-1 text-sm font-medium text-neutral-900 dark:text-white">{plugin}</div>
@@ -90,44 +87,44 @@ const bentoText = lang === 'fr'
 
       <!-- Chrome Extension -->
       <div class="landing-surface reveal delay-1 group relative rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:border-neutral-300 dark:hover:border-zinc-600">
-        <div class="bento-card-header">
+        <div class="flex items-start justify-between gap-4">
           <div class="bento-copy">
             <h3 class="mb-2 text-lg font-semibold text-neutral-950 dark:text-white">{bentoText.tubeTitle}</h3>
           </div>
-          <div class="bento-icon-wrap rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
+          <div class="inline-flex shrink-0 rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-neutral-500 dark:text-zinc-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" x2="12" y1="8" y2="8"/><line x1="3.95" x2="8.54" y1="6.06" y2="14"/><line x1="10.88" x2="15.46" y1="21.94" y2="14"/></svg>
           </div>
         </div>
-        <div class="bento-media-row mt-4">
-          <p class="text-sm text-neutral-600 dark:text-zinc-400">
+        <div class="mt-4 flex flex-row items-start gap-4 md:block">
+          <p class="min-w-0 text-sm text-neutral-600 dark:text-zinc-400">
             {bentoText.tubeDesc}
           </p>
-          <div class="bento-side-anim"><KeyboardShortcutAnim client:only="react" /></div>
+          <div class="bento-side-anim min-w-0 w-1/2 max-w-48 shrink-0 md:w-full md:max-w-none"><KeyboardShortcutAnim client:only="react" /></div>
         </div>
       </div>
 
       <!-- Windows Tools -->
       <div class="landing-surface reveal delay-2 group relative rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:border-neutral-300 dark:hover:border-zinc-600">
-        <div class="bento-card-header">
+        <div class="flex items-start justify-between gap-4">
           <div class="bento-copy">
             <h3 class="mb-2 text-lg font-semibold text-neutral-950 dark:text-white">{bentoText.winTitle}</h3>
           </div>
-          <div class="bento-icon-wrap rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
+          <div class="inline-flex shrink-0 rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-neutral-500 dark:text-zinc-400"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
           </div>
         </div>
-        <div class="bento-media-row mt-4">
-          <p class="text-sm text-neutral-600 dark:text-zinc-400">
+        <div class="mt-4 flex flex-row items-start gap-4 md:block">
+          <p class="min-w-0 text-sm text-neutral-600 dark:text-zinc-400">
             {bentoText.winDesc}
           </p>
-          <svg viewBox="0 0 100 70" class="w-full sm:max-w-[18rem] bento-chart">
+          <svg viewBox="0 0 100 70" class="w-full sm:max-w-72">
             <defs>
               <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="rgb(17,24,39)" stop-opacity="0.2" />
-                <stop offset="100%" stop-color="rgb(17,24,39)" stop-opacity="0" />
+                <stop offset="0%" stop-color="currentColor" stop-opacity="0.2" />
+                <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
               </linearGradient>
             </defs>
-            <path d="M 0 60 L 20 45 L 40 55 L 60 30 L 80 40 L 100 15 L 100 70 L 0 70 Z" fill="url(#chartGradient)" class="opacity-50" />
+            <path d="M 0 60 L 20 45 L 40 55 L 60 30 L 80 40 L 100 15 L 100 70 L 0 70 Z" fill="url(#chartGradient)" class="text-neutral-900 opacity-50 dark:text-white" />
             <path d="M 0 60 L 20 45 L 40 55 L 60 30 L 80 40 L 100 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="draw-line text-neutral-900 dark:text-white" />
           </svg>
         </div>
@@ -135,29 +132,29 @@ const bentoText = lang === 'fr'
 
       <!-- Productivity Boost -->
       <div class="landing-surface reveal delay-3 group relative rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:border-neutral-300 dark:hover:border-zinc-600">
-        <div class="bento-card-header">
+        <div class="flex items-start justify-between gap-4">
           <div class="bento-copy">
             <h3 class="mb-2 text-lg font-semibold text-neutral-950 dark:text-white">{bentoText.blazingTitle}</h3>
           </div>
-          <div class="bento-icon-wrap rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
+          <div class="inline-flex shrink-0 rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-neutral-500 dark:text-zinc-400"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
           </div>
         </div>
-        <div class="bento-media-row mt-4">
-          <p class="text-sm text-neutral-600 dark:text-zinc-400">
+        <div class="mt-4 flex flex-row items-start gap-4 md:block">
+          <p class="min-w-0 text-sm text-neutral-600 dark:text-zinc-400">
             {bentoText.blazingDesc}
           </p>
-          <div class="bento-side-anim">
-            <div class="blazing-metrics-grid text-sm" style="color: var(--brand-green);">
-              <div class="blazing-metric">
+          <div class="bento-side-anim min-w-0 w-1/2 max-w-48 shrink-0 md:w-full md:max-w-none">
+            <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm text-green">
+              <div class="text-center">
                 <span class="block font-mono">8</span>
                 <span class="text-neutral-500 dark:text-zinc-500">modules</span>
               </div>
-              <div class="blazing-metric">
+              <div class="text-center">
                 <span class="block font-mono">2</span>
                 <span class="text-neutral-500 dark:text-zinc-500">languages</span>
               </div>
-              <div class="blazing-metric">
+              <div class="text-center">
                 <span class="block font-mono">3</span>
                 <span class="text-neutral-500 dark:text-zinc-500">core tracks</span>
               </div>
@@ -168,19 +165,19 @@ const bentoText = lang === 'fr'
 
       <!-- Smart Organization -->
       <div class="landing-surface reveal delay-4 group relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:border-neutral-300 dark:hover:border-zinc-600">
-        <div class="bento-card-header">
+        <div class="flex items-start justify-between gap-4">
           <div class="bento-copy">
             <h3 class="mb-2 text-lg font-semibold text-neutral-950 dark:text-white">{bentoText.smartTitle}</h3>
           </div>
-          <div class="bento-icon-wrap rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
+          <div class="inline-flex shrink-0 rounded-lg bg-neutral-100 p-2 dark:bg-zinc-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-neutral-500 dark:text-zinc-400"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16c0 1 2.5 3 6 3s6-2 6-3v-3.5"/></svg>
           </div>
         </div>
-        <div class="bento-media-row mt-4">
-          <p class="text-sm text-neutral-600 dark:text-zinc-400">
+        <div class="mt-4 flex flex-row items-start gap-4 md:block">
+          <p class="min-w-0 text-sm text-neutral-600 dark:text-zinc-400">
             {bentoText.smartDesc}
           </p>
-          <div class="bento-side-anim">
+          <div class="bento-side-anim min-w-0 w-1/2 max-w-48 shrink-0 md:w-full md:max-w-none">
             <SmartOrgAnim client:only="react" />
           </div>
         </div>
@@ -188,51 +185,3 @@ const bentoText = lang === 'fr'
     </div>
   </div>
 </section>
-
-<style>
-	.bento-card-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: 1rem;
-	}
-
-	.bento-icon-wrap {
-		flex-shrink: 0;
-		display: inline-flex;
-	}
-
-	.bento-media-row {
-		display: block;
-	}
-
-	.bento-side-anim {
-		width: 100%;
-	}
-
-	@media (max-width: 48rem) {
-		.bento-media-row {
-			display: flex;
-			flex-direction: row;
-			align-items: flex-start;
-			gap: 1rem;
-		}
-		.bento-media-row :global(*) {
-			min-width: 0;
-		}
-		.bento-side-anim {
-			width: min(40vw, 12rem);
-			flex-shrink: 0;
-		}
-	}
-
-	.blazing-metrics-grid {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.5rem 0.75rem;
-	}
-
-	.blazing-metric {
-		text-align: center;
-	}
-</style>

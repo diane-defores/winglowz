@@ -569,8 +569,8 @@ class _DiagnosticLogPanelState extends State<_DiagnosticLogPanel> {
             widget.diagnosticText,
             key: const Key('backend-diagnostic-log-text'),
             style: theme.textTheme.bodySmall?.copyWith(
-              fontFamily: 'monospace',
-              height: 1.35,
+              fontFamily: AppTypography.monospace,
+              height: AppTypography.leadingCompact,
             ),
           ),
         ),
@@ -1482,7 +1482,7 @@ class _KeyboardThemePresetChip extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: labelColor,
-              fontSize: 11,
+              fontSize: AppKeyboardStudioMetrics.previewLabelFontSize,
               fontWeight: selected
                   ? AppFontWeights.bold
                   : AppFontWeights.semiBold,
@@ -1504,7 +1504,7 @@ class _KeyboardThemeSwatch extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppSpacing.x1),
       child: SizedBox(
-        height: 22,
+        height: AppKeyboardStudioMetrics.previewSwatchHeight,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -1972,7 +1972,7 @@ String _normalizedPresetId(String presetId) {
 
 Color _themePreviewTextColor(int backgroundColor) {
   final color = Color(backgroundColor);
-  return color.computeLuminance() > .45 ? Colors.black : Colors.white;
+  return color.computeLuminance() > .45 ? AppColors.black : AppColors.white;
 }
 
 class _OverlaySettingsSection extends StatelessWidget {

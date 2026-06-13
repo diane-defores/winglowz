@@ -1,103 +1,41 @@
 ---
-import { getLangFromUrl, useTranslations } from "@/utils/i18n";
+import { getLangFromUrl, useTranslations } from '@/utils/i18n'
+import AccordionItem from '@components/ui/blocks/AccordionItem.astro'
 
-const lang = getLangFromUrl(Astro.url);
-const t = await useTranslations(lang, "faq");
+const lang = getLangFromUrl(Astro.url)
+const t = await useTranslations(lang, 'faq')
 
 interface Props {
-  title?: string;
+  title?: string
 }
 
 interface FAQItem {
-  question: string;
-  answer: string;
+  question: string
+  answer: string
 }
 
-const { title = t.title } = Astro.props;
-const items = (t.items ?? []) as FAQItem[];
+const { title = t.title } = Astro.props
+const items = (t.items ?? []) as FAQItem[]
 ---
 
 <div class="mx-auto max-w-[85rem] px-3 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
-  <!-- Title -->
   <div class="mx-auto mb-8 max-w-2xl text-center sm:mb-10 lg:mb-14">
-    <h2
-      class="text-neutral-800 dark:text-neutral-200"
-      set:html={title}
-    />
+    <h2 class="text-neutral-800 dark:text-neutral-200" set:html={title} />
   </div>
-  <!-- End Title -->
 
   <div class="mx-auto max-w-2xl">
-    <!-- Accordion -->
     <div class="hs-accordion-group">
       {
         items.map((item: FAQItem, index: number) => (
-          <div
-            class:list={[
-              "hs-accordion",
-              index === 0 && "active",
-              "hs-accordion-active:bg-neutral-100 rounded-xl p-4 sm:p-6 dark:hs-accordion-active:bg-neutral-800",
-            ]}
+          <AccordionItem
             id={`hs-basic-with-title-and-arrow-stretched-heading-${index + 1}`}
-          >
-            <button
-              class="hs-accordion-toggle group pb-2 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start text-neutral-800 rounded-lg transition hover:text-neutral-500 dark:text-neutral-200 dark:hover:text-neutral-400 sm:pb-3"
-              aria-controls={`hs-basic-with-title-and-arrow-stretched-collapse-${
-                index + 1
-              }`}
-            >
-              {item.question}
-              <svg
-                class="hs-accordion-active:hidden block flex-shrink-0 w-5 h-5 text-neutral-600 group-hover:text-neutral-500 dark:text-neutral-400"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-              <svg
-                class="hs-accordion-active:block hidden flex-shrink-0 w-5 h-5 text-neutral-600 group-hover:text-neutral-500 dark:text-neutral-400"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="m18 15-6-6-6 6" />
-              </svg>
-            </button>
-            <div
-              id={`hs-basic-with-title-and-arrow-stretched-collapse-${index + 1}`}
-              class:list={[
-                "hs-accordion-content",
-                "w-full",
-                "overflow-hidden",
-                "transition-[height]",
-                "duration-300",
-                index === 0 ? "block" : "hidden",
-              ]}
-              aria-labelledby={`hs-basic-with-title-and-arrow-stretched-heading-${
-                index + 1
-              }`}
-            >
-              <p class="text-neutral-600 dark:text-neutral-400">
-                {item.answer}
-              </p>
-            </div>
-          </div>
+            collapseId={`hs-basic-with-title-and-arrow-stretched-collapse-${index + 1}`}
+            question={item.question}
+            answer={item.answer}
+            first={index === 0}
+          />
         ))
       }
     </div>
-    <!-- End Accordion -->
   </div>
 </div>

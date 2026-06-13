@@ -1,0 +1,171 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - main [ref=e3]:
+    - navigation [ref=e5]:
+      - link [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=e8]
+      - button "Toggle menu" [ref=e11]:
+        - img [ref=e12]
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - paragraph [ref=e17]: Founder Lifetime Deal
+        - heading "Own the social workspace before the price climbs." [level=1] [ref=e18]
+        - paragraph [ref=e19]: SocialGlowz brings your social accounts, profiles, focus controls, and lightweight execution workflow into one app so you can operate without tab sprawl.
+        - generic [ref=e20]:
+          - link "Get Lifetime Access" [ref=e21] [cursor=pointer]:
+            - /url: https://winflowz.com/api/commerce/checkout?offerId=socialglowz%2Flifetime_deal&source=direct&sourceRef=socialglowz-site-lifetime-deal&successUrl=https%3A%2F%2Fsocialglowz.com%2Fpurchase%2Fsuccess%3FofferId%3Dsocialglowz%252Flifetime_deal&cancelUrl=https%3A%2F%2Fsocialglowz.com%2Fpurchase%2Fcancel%3FofferId%3Dsocialglowz%252Flifetime_deal
+          - link "Review the offer" [ref=e22] [cursor=pointer]:
+            - /url: "#offer"
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - paragraph [ref=e27]: SocialGlowz
+            - paragraph [ref=e28]: Founder workspace
+          - generic [ref=e29]: Direct LTD
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - paragraph [ref=e32]: Profiles
+            - paragraph [ref=e33]: ∞
+          - generic [ref=e34]:
+            - paragraph [ref=e35]: Networks
+            - paragraph [ref=e36]: 18+
+          - generic [ref=e37]:
+            - paragraph [ref=e38]: Plan
+            - paragraph [ref=e39]: Pro
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - paragraph [ref=e42]: Next action
+            - paragraph [ref=e43]: Warm reply queue and launch notes
+          - generic [ref=e44]:
+            - paragraph [ref=e45]: Access route
+            - paragraph [ref=e46]: socialglowz/lifetime_deal
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - paragraph [ref=e50]: Why this exists
+        - heading "A direct founder window for the product you can sell first." [level=2] [ref=e51]
+      - paragraph [ref=e52]: "The Lifetime Deal gives early buyers a clear path into SocialGlowz while the product is still priced for founder adoption. It keeps the commercial story simple: one product, one direct offer, one checkout, and server-side access fulfillment."
+    - generic [ref=e54]:
+      - generic [ref=e55]:
+        - paragraph [ref=e56]: Workflow
+        - heading "From social noise to an operating rhythm." [level=2] [ref=e57]
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - paragraph [ref=e60]: Step 01
+          - heading "Open every account without tab chaos" [level=3] [ref=e61]
+          - paragraph [ref=e62]: Keep your main social networks and profiles in one focused workspace instead of juggling browser windows.
+        - generic [ref=e63]:
+          - paragraph [ref=e64]: Step 02
+          - heading "Protect context by profile" [level=3] [ref=e65]
+          - paragraph [ref=e66]: Use profile-aware sessions and local workspace state so personal, client, and brand workflows stay easier to separate.
+        - generic [ref=e67]:
+          - paragraph [ref=e68]: Step 03
+          - heading "Turn attention into follow-up" [level=3] [ref=e69]
+          - paragraph [ref=e70]: Move from browsing to content ideas, replies, campaign notes, and lightweight execution without leaving the system.
+    - generic [ref=e71]:
+      - generic [ref=e72]:
+        - paragraph [ref=e73]: The offer
+        - heading "SocialGlowz Lifetime Deal" [level=2] [ref=e74]
+        - paragraph [ref=e75]: The exact public price can still be refined, but the page architecture and checkout path are ready for direct early-bird sales.
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - paragraph [ref=e79]: Founder early-bird
+            - heading "Lifetime access" [level=3] [ref=e80]
+            - paragraph [ref=e81]: Pay once through the central checkout. Access is fulfilled from signed provider events into the suite entitlement layer.
+          - generic [ref=e82]: socialglowz/lifetime_deal
+        - generic [ref=e83]:
+          - generic [ref=e84]: SocialGlowz Pro access under the published Lifetime Deal terms
+          - generic [ref=e85]: Multi-profile social workspace for creators and operators
+          - generic [ref=e86]: Anti-distraction controls, custom links, Kanban workflow, backup and restore
+          - generic [ref=e87]: Desktop and mobile-oriented product direction as released builds mature
+          - generic [ref=e88]: Access fulfilled through the WinFlowz suite commerce and entitlement bridge
+          - generic [ref=e89]: Support path for account verification, checkout issues, refunds, and replayed events
+        - link "Continue to checkout" [ref=e90] [cursor=pointer]:
+          - /url: https://winflowz.com/api/commerce/checkout?offerId=socialglowz%2Flifetime_deal&source=direct&sourceRef=socialglowz-site-lifetime-deal&successUrl=https%3A%2F%2Fsocialglowz.com%2Fpurchase%2Fsuccess%3FofferId%3Dsocialglowz%252Flifetime_deal&cancelUrl=https%3A%2F%2Fsocialglowz.com%2Fpurchase%2Fcancel%3FofferId%3Dsocialglowz%252Flifetime_deal
+    - generic [ref=e92]:
+      - heading "Clear launch boundaries" [level=2] [ref=e93]
+      - generic [ref=e94]:
+        - generic [ref=e95]: Social networks can change their web interfaces and policies; compatibility work is ongoing.
+        - generic [ref=e96]: Future platform availability follows released builds and public product notes.
+        - generic [ref=e97]: Cloud-heavy features may receive fair-use or plan limits if operating costs require them.
+        - generic [ref=e98]: Checkout requires Lemon Squeezy configuration through the central WinFlowz commerce route.
+    - generic [ref=e100]:
+      - heading "Founder FAQ" [level=2] [ref=e101]
+      - generic [ref=e102]:
+        - heading "Is this the real SocialGlowz checkout?" [level=3] [ref=e103]
+        - paragraph [ref=e104]: Yes. The CTA uses the existing suite checkout route with the internal offer id socialglowz/lifetime_deal.
+      - generic [ref=e105]:
+        - heading "Why does checkout go through WinFlowz?" [level=3] [ref=e106]
+        - paragraph [ref=e107]: SocialGlowz access is fulfilled through the WinFlowz suite commerce bridge so payment events and entitlements stay centralized.
+      - generic [ref=e108]:
+        - heading "Is this AppSumo pricing?" [level=3] [ref=e109]
+        - paragraph [ref=e110]: No. This is the direct founder window. AppSumo terms can be negotiated separately later and should stay consistent with public pricing rules.
+      - generic [ref=e111]:
+        - heading "Can the offer change?" [level=3] [ref=e112]
+        - paragraph [ref=e113]: Yes. This page is ready as a direct sales surface, while final public price, limits, and legal copy can still be refined.
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - heading "Open the SocialGlowz founder window." [level=2] [ref=e118]
+        - paragraph [ref=e119]: Use this page as the direct sales surface while final price, legal details, and Lemon Squeezy product setup are finalized.
+      - link "Get Lifetime Access" [ref=e120] [cursor=pointer]:
+        - /url: https://winflowz.com/api/commerce/checkout?offerId=socialglowz%2Flifetime_deal&source=direct&sourceRef=socialglowz-site-lifetime-deal&successUrl=https%3A%2F%2Fsocialglowz.com%2Fpurchase%2Fsuccess%3FofferId%3Dsocialglowz%252Flifetime_deal&cancelUrl=https%3A%2F%2Fsocialglowz.com%2Fpurchase%2Fcancel%3FofferId%3Dsocialglowz%252Flifetime_deal
+    - generic [ref=e122]:
+      - generic [ref=e123]:
+        - generic [ref=e124]:
+          - link "SocialGlowz" [ref=e125] [cursor=pointer]:
+            - /url: /
+            - img [ref=e127]
+            - generic [ref=e130]: SocialGlowz
+          - paragraph [ref=e131]: Unified social operations without the tab sprawl.
+          - generic [ref=e134]: Active product development
+        - generic [ref=e135]:
+          - heading "Product" [level=4] [ref=e136]
+          - list [ref=e137]:
+            - listitem [ref=e138]:
+              - link "Features" [ref=e139] [cursor=pointer]:
+                - /url: /features
+            - listitem [ref=e140]:
+              - link "Pricing" [ref=e141] [cursor=pointer]:
+                - /url: /pricing
+            - listitem [ref=e142]:
+              - link "Compare" [ref=e143] [cursor=pointer]:
+                - /url: /compare
+        - generic [ref=e144]:
+          - heading "Resources" [level=4] [ref=e145]
+          - list [ref=e146]:
+            - listitem [ref=e147]:
+              - link "Blog" [ref=e148] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e149]:
+              - link "Downloads" [ref=e150] [cursor=pointer]:
+                - /url: https://github.com/dianedef/SocialGlowz/releases/latest
+            - listitem [ref=e151]:
+              - link "GitHub" [ref=e152] [cursor=pointer]:
+                - /url: https://github.com/dianedef/SocialGlowz
+        - generic [ref=e153]:
+          - heading "Company" [level=4] [ref=e154]
+          - list [ref=e155]:
+            - listitem [ref=e156]:
+              - link "About" [ref=e157] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e158]:
+              - link "Contact" [ref=e159] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e160]:
+          - heading "Legal" [level=4] [ref=e161]
+          - list [ref=e162]:
+            - listitem [ref=e163]:
+              - link "Privacy" [ref=e164] [cursor=pointer]:
+                - /url: /privacy
+            - listitem [ref=e165]:
+              - link "Terms" [ref=e166] [cursor=pointer]:
+                - /url: /terms
+      - generic [ref=e167]:
+        - paragraph [ref=e168]: © 2026 SocialGlowz. All rights reserved.
+        - generic [ref=e169]:
+          - link "Français" [ref=e170] [cursor=pointer]:
+            - /url: /fr
+          - link "GitHub" [ref=e171] [cursor=pointer]:
+            - /url: https://github.com/dianedef/SocialGlowz

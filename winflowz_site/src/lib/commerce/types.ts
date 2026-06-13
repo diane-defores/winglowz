@@ -53,6 +53,7 @@ export type CommerceCheckoutRequest = {
   provider?: CommerceProviderId
   successUrl?: string
   cancelUrl?: string
+  discountCode?: string
   metadata?: CommerceCheckoutCustomData
   customerEmail?: string
   customerName?: string

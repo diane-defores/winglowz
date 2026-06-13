@@ -868,10 +868,12 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
             appBar: AppBar(
               toolbarHeight: 0,
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(1),
+                preferredSize: Size.fromHeight(
+                  AppNavigationMetrics.dividerThickness,
+                ),
                 child: Divider(
-                  height: 1,
-                  thickness: 1,
+                  height: AppNavigationMetrics.dividerThickness,
+                  thickness: AppNavigationMetrics.dividerThickness,
                   color: colorScheme.outlineVariant,
                 ),
               ),
@@ -1083,7 +1085,7 @@ class _AnimatedBottomNavIcon extends StatelessWidget {
   final int pulse;
   final _BottomNavIconMotion motion;
 
-  static const _size = 32.0;
+  static const _size = AppNavigationMetrics.bottomNavIconBoxSize;
 
   @override
   Widget build(BuildContext context) {
@@ -1127,8 +1129,8 @@ class _AnimatedBottomNavIcon extends StatelessWidget {
                 ),
               if (selected && motion == _BottomNavIconMotion.spark)
                 Positioned(
-                  top: 3 - burst * 2,
-                  right: 4,
+                  top: AppNavigationMetrics.bottomNavSparkBadgeTop - burst * 2,
+                  right: AppNavigationMetrics.bottomNavSparkBadgeRight,
                   child: Opacity(
                     opacity: 0.40 + burst * 0.45,
                     child: Icon(
@@ -1146,7 +1148,10 @@ class _AnimatedBottomNavIcon extends StatelessWidget {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: iconColor, width: 1.2),
+                        border: Border.all(
+                          color: iconColor,
+                          width: AppNavigationMetrics.bottomNavSparkBorderWidth,
+                        ),
                       ),
                       child: const SizedBox.square(dimension: _size),
                     ),
@@ -1674,9 +1679,9 @@ class _OnboardingOverviewContentState
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               if (widget.isBusy)
-                const SizedBox(
-                  width: 24,
-                  height: 24,
+                SizedBox(
+                  width: AppNavigationMetrics.utilityIconBoxSize,
+                  height: AppNavigationMetrics.utilityIconBoxSize,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               else
@@ -1752,10 +1757,17 @@ class _OnboardingProgressDots extends StatelessWidget {
               tooltip: _dotTooltip(pages[i]),
               onPressed: isBusy ? null : () => onSelect(i),
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+              constraints: const BoxConstraints.tightFor(
+                width: AppNavigationMetrics.onboardingDotSize,
+                height: AppNavigationMetrics.onboardingDotSize,
+              ),
               style: IconButton.styleFrom(
-                fixedSize: const Size.square(28),
-                minimumSize: const Size.square(28),
+                fixedSize: const Size.square(
+                  AppNavigationMetrics.onboardingDotSize,
+                ),
+                minimumSize: const Size.square(
+                  AppNavigationMetrics.onboardingDotSize,
+                ),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 backgroundColor: _dotColor(
                   colorScheme: colorScheme,
@@ -1786,7 +1798,10 @@ class _OnboardingProgressDots extends StatelessWidget {
                 ),
                 shape: const CircleBorder(),
               ),
-              icon: Icon(pages[i].icon, size: 14),
+              icon: Icon(
+                pages[i].icon,
+                size: AppNavigationMetrics.onboardingDotIconSize,
+              ),
             ),
           ),
           if (i != pages.length - 1) const SizedBox(width: AppSpacing.x1),
@@ -1838,13 +1853,13 @@ class _OnboardingProgressDots extends StatelessWidget {
   }) {
     final step = _stepFor(stepId);
     if (step?.skipped ?? false) {
-      return Colors.white;
+      return AppColors.white;
     }
     if (isCurrent) {
-      return Colors.white;
+      return AppColors.white;
     }
     if (step?.satisfied ?? false) {
-      return Colors.white;
+      return AppColors.white;
     }
     return colorScheme.onSurfaceVariant;
   }
@@ -2142,9 +2157,9 @@ class _OnboardingCompletionContent extends StatelessWidget {
           runSpacing: AppSpacing.x2,
           children: [
             if (isBusy)
-              const SizedBox(
-                width: 24,
-                height: 24,
+              SizedBox(
+                width: AppNavigationMetrics.utilityIconBoxSize,
+                height: AppNavigationMetrics.utilityIconBoxSize,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             else

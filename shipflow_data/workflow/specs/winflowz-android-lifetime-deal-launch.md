@@ -72,12 +72,12 @@ evidence:
   - "winflowz_site/src/lib/commerce/offers.ts currently contains only socialglowz/lifetime_deal as a generic commerce offer."
   - "winflowz_site/src/pages/api/commerce/checkout.ts defaults to socialglowz/lifetime_deal when offerId is omitted."
   - "winflowz_site/src/pages/api/polar/checkout.ts is tied to gated course lessons, not a general app LTD checkout."
-  - "shipflow_data/business/winflowz-android-ltd-pricing-audit.md recommends an activation-based LTD ladder: $79 Starter Founder with 1 active device, $149 Pro Founder with 3 active devices, $249 Studio Founder with 5 active devices, and $599+ or waitlist for all-platform cloud."
+  - "shipflow_data/business/winflowz-android-ltd-pricing-audit.md recommended an activation-based LTD ladder; Diane later selected the public plan names Focus, Power, Control, and Command with 1/2/5/10 active-device positioning."
   - "User decision context 2026-06-12: AppSumo is likely later, and direct-site pricing must preserve room for AppSumo to negotiate the lowest available public deal."
   - "User decision 2026-06-12: the direct-site launch is a pre-AppSumo founder pricing window."
   - "User decision 2026-06-12: LTD licenses should grant access to all present and future released platforms, with the tier differentiated by the number of active device activations rather than by platform family."
   - "Design implementation 2026-06-12: `winflowz_site/src/pages/[...lang]/winflowz-founder.astro` creates a bilingual Founder Access sales-page draft focused on page architecture, visual hierarchy, activation tiers, and honest availability."
-  - "Commerce implementation 2026-06-12: WinFlowz App founder offers are registered as `winflowz_app/starter_founder`, `winflowz_app/pro_founder`, and `winflowz_app/studio_founder`, with Lemon Squeezy variant env keys, checkout CTAs, signed webhook parsing, and generic suite entitlement fulfillment via `bridge:processCommerceEvent`."
+  - "Commerce implementation 2026-06-12: WinFlowz App founder offers are registered as `winflowz_app/focus`, `winflowz_app/power`, `winflowz_app/control`, and `winflowz_app/command`, with Lemon Squeezy variant env keys, checkout CTAs, signed webhook parsing, and generic suite entitlement fulfillment via `bridge:processCommerceEvent`."
 next_step: "/103-sf-verify WinFlowz Founder checkout after Lemon Squeezy test-mode variants are configured"
 ---
 
@@ -280,7 +280,7 @@ Créer un chantier de lancement en trois blocs: une page de vente Android LTD Ea
   - User story link: prevents underpricing an offer with cloud-dependent costs.
   - Depends on: competitor seed list and Diane's target market assumptions.
   - Validate with: cited sources, dated pricing evidence, and a recommended no-bankruptcy floor.
-  - Notes: Completed in `shipflow_data/business/winflowz-android-ltd-pricing-audit.md`. Recommendation: avoid a cheap all-in LTD; use an activation-based ladder: $79 Starter Founder with 1 active device, $149 Pro Founder with 3 active devices, $249 Studio Founder with 5 active devices, and keep all-platform cloud at $599+ or waitlist until usage is measured.
+  - Notes: Completed in `shipflow_data/business/winflowz-android-ltd-pricing-audit.md`. Recommendation: avoid a cheap all-in LTD; use an activation-based ladder. Diane later selected the public plan names Focus, Power, Control, and Command, with 1, 2, 5, and 10 active devices respectively.
 
 - [ ] Task 2: Decide and encode the WinFlowz Android offer contract.
   - File: `winflowz_site/src/lib/commerce/offers.ts`

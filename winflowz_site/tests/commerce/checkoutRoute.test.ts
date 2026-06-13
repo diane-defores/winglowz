@@ -8,7 +8,7 @@ function resetCommerceEnv() {
   delete process.env.LEMONSQUEEZY_API_KEY
   delete process.env.LEMONSQUEEZY_STORE_ID
   delete process.env.LEMONSQUEEZY_SOCIALGLOWZ_LIFETIME_DEAL_VARIANT_ID
-  delete process.env.LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID
+  delete process.env.LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID
   delete process.env.LEMONSQUEEZY_API_URL
   delete process.env.POLAR_WINFLOWZ_PRODUCT_ID
   delete process.env.POLAR_PRODUCT_ID
@@ -114,7 +114,7 @@ describe('commerce checkout route', () => {
     resetCommerceEnv()
     process.env.LEMONSQUEEZY_API_KEY = 'api-key'
     process.env.LEMONSQUEEZY_STORE_ID = 'store-id'
-    process.env.LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID = 'winflowz-pro-variant'
+    process.env.LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID = 'winflowz-power-variant'
 
     const fetchSpy = vi.fn().mockResolvedValue(
       new Response(
@@ -131,7 +131,7 @@ describe('commerce checkout route', () => {
 
     const response = await GET({
       request: checkoutRequest(
-        'https://winflowz.test/api/commerce/checkout?offerId=winflowz_app/pro_founder&provider=lemonsqueezy&source=direct&sourceRef=/winflowz-founder&successUrl=https://winflowz.test/purchase/success?offerId=winflowz_app%2Fpro_founder&cancelUrl=https://winflowz.test/purchase/cancel?offerId=winflowz_app%2Fpro_founder'
+        'https://winflowz.test/api/commerce/checkout?offerId=winflowz_app/power&provider=lemonsqueezy&source=direct&sourceRef=/winflowz-founder&successUrl=https://winflowz.test/purchase/success?offerId=winflowz_app%2Fpower&cancelUrl=https://winflowz.test/purchase/cancel?offerId=winflowz_app%2Fpower'
       ),
     })
 
@@ -141,10 +141,10 @@ describe('commerce checkout route', () => {
     )
 
     const body = String(fetchSpy.mock.calls[0]?.[1]?.body)
-    expect(body).toContain('"offer_id":"winflowz_app/pro_founder"')
+    expect(body).toContain('"offer_id":"winflowz_app/power"')
     expect(body).toContain('"product_id":"winflowz_app"')
-    expect(body).toContain('"plan":"pro_founder"')
-    expect(body).toContain('"id":"winflowz-pro-variant"')
+    expect(body).toContain('"plan":"power"')
+    expect(body).toContain('"id":"winflowz-power-variant"')
     expect(body).not.toContain('api-key')
   })
 })

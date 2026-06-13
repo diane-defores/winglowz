@@ -17,12 +17,12 @@ const validationMessages = {
 
 <div
 	id="addFeatureModal"
-	class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"
+	class="hs-overlay fixed start-0 top-0 z-50 hidden size-full overflow-x-hidden overflow-y-auto pointer-events-none"
 >
 	<div
-		class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-3.5rem)]"
+		class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 m-3 mt-0 min-h-screen opacity-0 ease-out transition-all sm:w-full sm:max-w-lg sm:mx-auto"
 	>
-		<div class="relative flex flex-col bg-white border shadow-sm rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700">
+		<div class="relative flex flex-col rounded-xl border border-neutral-200 bg-white shadow-sm pointer-events-auto dark:border-neutral-700 dark:bg-neutral-800">
 			<div class="flex justify-between items-center py-3 px-4 border-b dark:border-neutral-700">
 				<h3 class="font-bold text-neutral-800 dark:text-white">
 					{t?.addFeature?.title ?? "Add Feature"}
@@ -71,7 +71,7 @@ const validationMessages = {
 							<select
 								id="project"
 								name="project"
-								class="py-3 px-4 block w-full border-neutral-200 rounded-lg text-sm focus:border-magenta focus:ring-magenta disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600"
+								class="block w-full rounded-lg border border-neutral-200 px-4 py-3 text-sm focus:border-magenta focus:ring-magenta disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:focus:ring-neutral-600"
 								required
 							>
 								<option value="" disabled selected>
@@ -99,9 +99,9 @@ const validationMessages = {
 								type="text"
 								id="title"
 								name="title"
-								class="py-3 px-4 block w-full border-neutral-200 rounded-lg text-sm focus:border-magenta focus:ring-magenta disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600"
+								class="block w-full rounded-lg border border-neutral-200 px-4 py-3 text-sm focus:border-magenta focus:ring-magenta disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:focus:ring-neutral-600"
 								required
-                minlength="3"
+								minlength="3"
 							/>
 						</div>
 
@@ -117,10 +117,10 @@ const validationMessages = {
 								id="description"
 								name="description"
 								rows="4"
-								class="py-3 px-4 block w-full border-neutral-200 rounded-lg text-sm focus:border-magenta focus:ring-magenta disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600"
+								class="block w-full rounded-lg border border-neutral-200 px-4 py-3 text-sm focus:border-magenta focus:ring-magenta disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:focus:ring-neutral-600"
 								required
-                minlength="10"
-              ></textarea>
+								minlength="10"
+							></textarea>
 						</div>
 						<p
 							id="featureFormStatus"
@@ -132,14 +132,14 @@ const validationMessages = {
 				<div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-neutral-700">
 					<button
 						type="button"
-						class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm hover:bg-neutral-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-neutral-600"
+						class="inline-flex items-center gap-x-2 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-sm hover:bg-neutral-50 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-neutral-600"
 						data-hs-overlay="#addFeatureModal"
 					>
 						{t?.addFeature?.cancel ?? "Cancel"}
 					</button>
 					<button
 						type="submit"
-						class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-magenta text-white hover:bg-magenta disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-neutral-600"
+						class="inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-magenta px-3 py-2 text-sm font-semibold text-white hover:bg-magenta disabled:pointer-events-none disabled:opacity-50 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-neutral-600"
 					>
 						{t?.addFeature?.submit ?? "Submit"}
 					</button>

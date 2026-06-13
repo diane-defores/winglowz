@@ -2,10 +2,7 @@
 import MainLayout from '@/layouts/MainLayout.astro'
 import HeroSection from '@components/sections/landing/HeroSection.astro'
 import HeroSectionAlt from '@components/sections/landing/HeroSectionAlt.astro'
-import ClientsSection from '@components/sections/landing/ClientsSection.astro'
 import FeaturesGeneral from '@components/sections/features/FeaturesGeneral.astro'
-import FeaturesNavs from '@components/sections/features/FeaturesNavs.astro'
-import TestimonialsSection from '@components/sections/testimonials/TestimonialsSection.astro'
 import Pricing from '@components/astro/landing/Pricing.astro'
 import FAQ from '@components/sections/misc/FAQ.astro'
 import { useTranslations } from '@/utils/i18n'
@@ -34,35 +31,55 @@ interface Props {
 
 const { lang } = Astro.props
 const t = await useTranslations(lang, 'home')
-const featuresData = await useTranslations(lang, 'features')
 const metaDescription = t.meta?.description ?? ''
 const windowsMasteryUrl = lang === 'fr' ? '/fr/maitrise-windows' : '/windows-mastery'
+const recommendationsUrl = getLocalizedPath(lang, 'recommendations')
 
-const features = Object.entries(featuresData).map(([key, value]) => ({
-	heading: value.title,
-	content: value.description,
-	svg: key,
-}))
-
-const avatarSrcs: Array<string> = [
-	'https://dynapictures.com/images/team/AlexDesktop.png',
-	'https://i.pinimg.com/280x280_RS/cc/50/8a/cc508a8695c6264be42cdcd698181397.jpg',
-	'https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80',
-	'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80',
+const appScreenshots = [
+	{
+		src: 'https://winflowz.b-cdn.net/winflowz_app_1.jpg',
+		alt: lang === 'fr' ? 'Capture de l’application WinFlowz' : 'WinFlowz app screenshot',
+	},
+	{
+		src: 'https://winflowz.b-cdn.net/winflowz_app_2.jpg',
+		alt: lang === 'fr' ? 'Deuxième capture de l’application WinFlowz' : 'Second WinFlowz app screenshot',
+	},
+	{
+		src: 'https://winflowz.b-cdn.net/winflowz_app_3.jpg',
+		alt: lang === 'fr' ? 'Troisième capture de l’application WinFlowz' : 'Third WinFlowz app screenshot',
+	},
+	{
+		src: 'https://winflowz.b-cdn.net/winflowz_app_dark_mode.jpg',
+		alt: lang === 'fr' ? 'Capture WinFlowz en mode sombre' : 'WinFlowz dark mode screenshot',
+	},
 ]
 
-const defaultTestimonial = {
-	content:
-		"Congratulations, Diane! I just spent 20 minutes in it and l'm already wondering what I've been doing with my life until now :)) Lots of goodies to improve my work. I love it!",
-	author: 'Florin Muresan',
-	role: 'CEO and Co-Founder | Squirrly',
-	avatarSrc:
-		'https://www.squirrly.co/media/2018/09/1516612623-7888933-109x109x119x109x5x0-Screenshot-2016-09-1.png',
-}
-
-const statistics = t.testimonials?.statistics || []
-const hasValidStats = Array.isArray(statistics) && statistics.length > 0
-const testimonialsUrl = getLocalizedPath(lang, 'recommendations')
+const proofCards = [
+	{
+		heading: lang === 'fr' ? 'L’app WinFlowz' : 'The WinFlowz app',
+		content:
+			lang === 'fr'
+				? 'Les captures Android montrent l’interface réelle que les visiteurs verront bientôt plus souvent que des mockups.'
+				: 'The Android captures show the real interface visitors will see, not placeholder mockups.',
+		svg: 'dashboard',
+	},
+	{
+		heading: lang === 'fr' ? 'La formation' : 'The training',
+		content:
+			lang === 'fr'
+				? 'La page reste centrée sur la formation Windows, qui est le cœur du parcours public.'
+				: 'The page stays centered on the Windows training, which remains the core public path.',
+		svg: 'tools',
+	},
+	{
+		heading: lang === 'fr' ? 'Les preuves sociales' : 'The proof',
+		content:
+			lang === 'fr'
+				? 'La page Recommandations garde les captures AppSumo et les retours existants, sans dépendre de visuels introuvables.'
+				: 'The Recommendations page keeps the AppSumo captures and existing feedback, without relying on missing visuals.',
+		svg: 'house',
+	},
+]
 ---
 
 <MainLayout
@@ -87,61 +104,43 @@ const testimonialsUrl = getLocalizedPath(lang, 'recommendations')
 		primaryBtn={t.hero.primaryBtn}
 		primaryBtnURL={t.hero.primaryBtnURL}
 		secondaryBtn={t.hero.secondaryBtn}
-		secondaryBtnURL={testimonialsUrl}
-		withReview={true}
-		avatars={avatarSrcs}
-		rating={t.hero.rating}
-		starCount={t.hero.starCount}
-		reviews={t.hero.reviews}
-		src="/images/WinFlowz.png"
-		alt="Stack of WinFlowz product boxes containing assorted productivity tools"
+		secondaryBtnURL={recommendationsUrl}
+		src={appScreenshots[0].src}
+		alt={appScreenshots[0].alt}
 	/>
-
-	<ClientsSection title={t.clients.title} subTitle={t.clients.subTitle} />
 
 	<FeaturesGeneral
-		title={t.features.title}
-		subTitle={t.features.subTitle}
-		src="/images/WinFlowz.png"
-		alt="WinFlowz products in floating boxes"
-		features={features}
+		title={lang === 'fr' ? 'Ce que le site met en avant maintenant' : 'What the site highlights now'}
+		subTitle={lang === 'fr'
+			? 'On garde ce qui peut être montré tout de suite: l’app, la formation, et les captures de preuve.'
+			: 'We keep only what can be shown right now: the app, the training, and proof screenshots.'}
+		src={appScreenshots[1].src}
+		alt={appScreenshots[1].alt}
+		features={proofCards}
 	/>
 
-	<FeaturesNavs
-		title={t.workflow.title}
-		tabs={[
-			{
-				heading: t.workflow.tabs[0].heading,
-				content: t.workflow.tabs[0].content,
-				svg: 'tools',
-				src: '/images/WinFlowz.png',
-				alt: 'Productivity tools illustration',
-				first: true,
-			},
-			{
-				heading: t.workflow.tabs[1].heading,
-				content: t.workflow.tabs[1].content,
-				svg: 'dashboard',
-				src: '/images/WinFlowz.png',
-				alt: 'Dashboard interface screenshot',
-				second: true,
-			},
-			{
-				heading: t.workflow.tabs[2].heading,
-				content: t.workflow.tabs[2].content,
-				svg: 'house',
-				src: '/images/WinFlowz.png',
-				alt: 'Windows tools illustration',
-			},
-		]}
-	/>
-
-	<TestimonialsSection
-		title={t.testimonials.title}
-		subTitle={t.testimonials.subTitle}
-		testimonials={[defaultTestimonial]}
-		statistics={hasValidStats ? statistics : []}
-	/>
+	<section class="mx-auto max-w-[85rem] px-3 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14 2xl:max-w-full">
+		<div class="mx-auto max-w-3xl text-center">
+			<p class="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-zinc-500">
+				{lang === 'fr' ? 'Captures disponibles' : 'Available screenshots'}
+			</p>
+			<h2 class="mt-3 text-balance text-2xl font-bold text-neutral-800 dark:text-neutral-200 sm:text-3xl lg:text-4xl">
+				{lang === 'fr' ? 'Les seules images qu’on garde pour le moment' : 'The only images we keep for now'}
+			</h2>
+			<p class="mt-3 text-pretty text-neutral-600 dark:text-neutral-400">
+				{lang === 'fr'
+					? 'Le site est prêt à avancer sans dépendre de visuels manquants. Dès que tu as d’autres captures, on les replace au bon endroit.'
+					: 'The site can move forward without depending on missing visuals. As soon as you have more screenshots, we can slot them in.'}
+			</p>
+		</div>
+		<div class="mt-8 grid gap-4 sm:grid-cols-2">
+			{appScreenshots.map((image) => (
+				<figure class="landing-surface overflow-hidden rounded-2xl border border-neutral-200 shadow-sm dark:border-zinc-800">
+					<img src={image.src} alt={image.alt} class="h-full w-full object-cover" loading="lazy" />
+				</figure>
+			))}
+		</div>
+	</section>
 
 	<Pricing />
 

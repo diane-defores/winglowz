@@ -106,7 +106,7 @@ export function TestimonialCarousel() {
 
   return (
     <div>
-      <div className="relative min-h-[200px]">
+      <div className="relative min-h-52">
         <div
           className="text-center transition-all duration-300"
           style={{
@@ -145,7 +145,7 @@ export function TestimonialCarousel() {
               <p className="text-xs text-neutral-500 dark:text-zinc-500">
                 {t.role}
                 {t.verified && (
-                  <span className="ml-1" style={{ color: "var(--brand-green)" }}>Verified Purchaser</span>
+                  <span className="ml-1 text-green">Verified Purchaser</span>
                 )}
               </p>
             </div>
@@ -161,10 +161,9 @@ export function TestimonialCarousel() {
             onClick={() => goTo(index)}
             className={`h-2 rounded-full transition-all duration-300 ${
               index === current
-                ? "w-6"
+                ? "w-6 bg-cyan"
                 : "w-2 bg-neutral-300 hover:bg-neutral-400 dark:bg-zinc-700 dark:hover:bg-zinc-500"
             }`}
-            style={index === current ? { background: "var(--brand-cyan)" } : undefined}
             aria-label={`Go to testimonial ${index + 1}`}
           />
         ))}

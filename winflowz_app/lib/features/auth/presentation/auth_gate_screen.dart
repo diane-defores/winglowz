@@ -27,7 +27,7 @@ class AuthGateScreen extends ConsumerWidget {
           child: Padding(
             padding: AppInsets.screen,
             child: SizedBox(
-              width: 420,
+              width: AppLayoutMetrics.authGateLoadingCardWidth,
               child: AppSectionCard(
                 title: 'Session',
                 subtitle: 'Vérification de la session en cours.',
@@ -45,7 +45,7 @@ class AuthGateScreen extends ConsumerWidget {
             child: Padding(
               padding: AppInsets.screen,
               child: SizedBox(
-                width: 480,
+                width: AppLayoutMetrics.authGateErrorCardWidth,
                 child: AppBannerCard(
                   icon: Icons.error_outline,
                   title: 'Session indisponible',

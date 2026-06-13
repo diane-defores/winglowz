@@ -59,15 +59,15 @@ describe('lemonsqueezy adapter', () => {
         {
           LEMONSQUEEZY_API_KEY: 'api-key',
           LEMONSQUEEZY_STORE_ID: 'store-id',
-          LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID: 'winflowz-pro-variant',
+          LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID: 'winflowz-power-variant',
         },
-        'winflowz_app/pro_founder'
+        'winflowz_app/power'
       )
     ).toEqual({
       apiUrl: 'https://api.lemonsqueezy.com',
       apiKey: 'api-key',
       storeId: 'store-id',
-      variantId: 'winflowz-pro-variant',
+      variantId: 'winflowz-power-variant',
     })
   })
 
@@ -158,17 +158,18 @@ describe('lemonsqueezy adapter', () => {
       ) as typeof fetch
 
     const result = await createLemonSqueezyCheckout(
-      {
-        offerId: 'winflowz_app/pro_founder',
-        successUrl: 'https://winflowz.com/purchase/success?offerId=winflowz_app%2Fpro_founder',
-        cancelUrl: 'https://winflowz.com/purchase/cancel?offerId=winflowz_app%2Fpro_founder',
-        metadata: { offer_id: 'winflowz_app/pro_founder' },
-      },
-      'winflowz_app/pro_founder',
+          {
+            offerId: 'winflowz_app/power',
+            successUrl: 'https://winflowz.com/purchase/success?offerId=winflowz_app%2Fpower',
+            cancelUrl: 'https://winflowz.com/purchase/cancel?offerId=winflowz_app%2Fpower',
+            discountCode: 'FOUNDER',
+            metadata: { offer_id: 'winflowz_app/power' },
+          },
+      'winflowz_app/power',
       {
         LEMONSQUEEZY_API_KEY: 'api-key',
         LEMONSQUEEZY_STORE_ID: 'store-id',
-        LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID: 'winflowz-pro-variant',
+        LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID: 'winflowz-power-variant',
       }
     )
 
@@ -179,10 +180,11 @@ describe('lemonsqueezy adapter', () => {
     })
 
     const body = String((globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0]?.[1]?.body)
-    expect(body).toContain('"id":"winflowz-pro-variant"')
-    expect(body).toContain('"offer_id":"winflowz_app/pro_founder"')
+    expect(body).toContain('"id":"winflowz-power-variant"')
+    expect(body).toContain('"offer_id":"winflowz_app/power"')
     expect(body).toContain('"product_id":"winflowz_app"')
-    expect(body).toContain('"plan":"pro_founder"')
+    expect(body).toContain('"plan":"power"')
+    expect(body).toContain('"discount_code":"FOUNDER"')
   })
 
   test('validates order_created webhook signature and normalizes paid event', async () => {
@@ -351,9 +353,9 @@ describe('lemonsqueezy adapter', () => {
       event_name: 'order_created',
       meta: {
         custom_data: {
-          offer_id: 'winflowz_app/pro_founder',
+          offer_id: 'winflowz_app/power',
           product_id: 'winflowz_app',
-          plan: 'pro_founder',
+          plan: 'power',
           source: 'direct',
           source_ref: '/winflowz-founder',
         },
@@ -376,9 +378,9 @@ describe('lemonsqueezy adapter', () => {
     expect(parsed.normalizedEvent).toMatchObject({
       eventType: 'paid',
       status: 'applied',
-      offerId: 'winflowz_app/pro_founder',
+      offerId: 'winflowz_app/power',
       productId: 'winflowz_app',
-      plan: 'pro_founder',
+      plan: 'power',
       providerOrderId: 'ord_wfz',
     })
   })

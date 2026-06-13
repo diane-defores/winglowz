@@ -4,12 +4,11 @@ import { getLangFromUrl } from '@/utils/i18n'
 
 const lang = getLangFromUrl(Astro.url)
 const windowsMasteryUrl = lang === 'fr' ? '/fr/maitrise-windows' : '/windows-mastery'
-const productsUrl = lang === 'fr' ? '/fr/produits' : '/products'
 
 const copy = lang === 'fr'
   ? {
       title: 'Quelle est votre prochaine étape ?',
-      sub: 'Le parcours phare reste la formation Windows. Les produits restent disponibles ensuite, en soutien.',
+      sub: 'Le parcours phare reste la formation Windows, avec l’app WinFlowz et les preuves sociales en support.',
       flagship: {
         name: 'Formation Windows Mastery',
         description: 'Parcours de référence pour passer d’un environnement bruité à un système de travail clair.',
@@ -24,16 +23,16 @@ const copy = lang === 'fr'
         highlight: true,
       },
       ecosystem: {
-        name: 'Écosystème WinFlowz',
-        description: 'Plugins et outils complémentaires pour compléter votre workflow.',
-        points: ['Obsidian', 'ReplayGlowz', 'À utiliser après la formation'],
-        cta: 'Explorer les outils',
-        href: productsUrl,
+        name: 'App WinFlowz',
+        description: 'Les captures actuelles montrent la surface Android à côté du parcours de formation.',
+        points: ['Captures réelles', 'Version app', 'Focus sur l’usage concret'],
+        cta: 'Voir les recommandations',
+        href: lang === 'fr' ? '/fr/recommandations' : '/recommendations',
       },
     }
   : {
       title: 'What should you do next?',
-      sub: 'The flagship path is the Windows Mastery training. Companion tools stay secondary.',
+      sub: 'The flagship path is the Windows Mastery training, with the WinFlowz app and social proof supporting it.',
       flagship: {
         name: 'Windows Mastery',
         description: 'The recommended first step to move from noisy, fragmented work to a clear system.',
@@ -48,11 +47,11 @@ const copy = lang === 'fr'
         highlight: true,
       },
       ecosystem: {
-        name: 'WinFlowz Ecosystem',
-        description: 'Complementary tools and plugins for Obsidian and YouTube workflows.',
-        points: ['ObsiFlowz', 'ReplayGlowz', 'Use together after the training plan'],
-        cta: 'Explore products',
-        href: productsUrl,
+        name: 'WinFlowz app',
+        description: 'Current Android screenshots show the product surface alongside the course.',
+        points: ['Real screenshots', 'App version', 'Focus on practical use'],
+        cta: 'See recommendations',
+        href: lang === 'fr' ? '/fr/recommandations' : '/recommendations',
       },
     }
 ---

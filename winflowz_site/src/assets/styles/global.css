@@ -24,6 +24,58 @@
     --font-heading: 'DM Sans', sans-serif;
     --font-body: 'Manrope', sans-serif;
 
+    /* Landing page semantic tokens */
+    --landing-page-body-font-size: 1rem;
+    --landing-page-body-line-height: 1.5;
+    --landing-background: 0 0% 98%;
+    --landing-foreground: 240 10% 12%;
+    --landing-primary: 240 10% 12%;
+    --landing-primary-foreground: 0 0% 100%;
+    --landing-secondary: 0 0% 94%;
+    --landing-secondary-foreground: 240 10% 12%;
+    --landing-muted: 0 0% 92%;
+    --landing-muted-foreground: 240 6% 38%;
+    --landing-accent: 0 0% 96%;
+    --landing-accent-foreground: 240 10% 12%;
+    --landing-destructive: 0 84% 60%;
+    --landing-destructive-foreground: 0 0% 100%;
+    --landing-border: 0 0% 86%;
+    --landing-input: 0 0% 86%;
+    --landing-ring: 240 8% 55%;
+    --landing-card: 0 0% 100%;
+    --landing-card-foreground: 240 10% 12%;
+    --landing-popover: 0 0% 100%;
+    --landing-popover-foreground: 240 10% 12%;
+    --landing-surface: 0 0% 100%;
+    --landing-surface-foreground: 240 10% 12%;
+    --landing-surface-muted: 240 10% 14%;
+    --landing-surface-strong: 240 10% 12%;
+    --landing-surface-strong-foreground: 0 0% 100%;
+    --landing-surface-edge: 0 0% 84%;
+    --landing-soft: 0 0% 100%;
+    --landing-soft-foreground: 240 10% 14%;
+    --landing-soft-muted: 240 6% 42%;
+    --landing-strong: 240 10% 12%;
+    --landing-strong-foreground: 0 0% 100%;
+    --landing-edge: 0 0% 84%;
+    --landing-glow: 255 0 200;
+    --landing-shadow: 15 23 42;
+    --landing-marquee-fade: 248 250 252;
+    --landing-noise-z-index: 9999;
+    --landing-border-beam-duration: 8s;
+    --landing-shimmer-duration: 3s;
+    --landing-pulse-duration: 2s;
+    --landing-marquee-duration: 30s;
+    --landing-draw-line-duration: 2s;
+    --landing-reveal-transition-duration: 0.6s;
+    --landing-reveal-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --landing-reveal-delay-1: 0.1s;
+    --landing-reveal-delay-2: 0.2s;
+    --landing-reveal-delay-3: 0.3s;
+    --landing-reveal-delay-4: 0.4s;
+    --landing-reveal-delay-5: 0.5s;
+    --landing-reveal-delay-6: 0.6s;
+
     /* Radius */
     --radius: 1rem;
 
@@ -90,6 +142,68 @@
     --bio-footer-size: 0.8rem;
     --bio-footer-opacity: 0.5;
     --bio-footer-margin-top: 1rem;
+  }
+
+  .landing-page {
+    --font-cal-sans: var(--font-display);
+    --font-instrument-sans: var(--font-heading);
+    --background: var(--landing-background);
+    --foreground: var(--landing-foreground);
+    --primary: var(--landing-primary);
+    --primary-foreground: var(--landing-primary-foreground);
+    --secondary: var(--landing-secondary);
+    --secondary-foreground: var(--landing-secondary-foreground);
+    --muted: var(--landing-muted);
+    --muted-foreground: var(--landing-muted-foreground);
+    --accent: var(--landing-accent);
+    --accent-foreground: var(--landing-accent-foreground);
+    --destructive: var(--landing-destructive);
+    --destructive-foreground: var(--landing-destructive-foreground);
+    --border: var(--landing-border);
+    --input: var(--landing-input);
+    --ring: var(--landing-ring);
+    --card: var(--landing-card);
+    --card-foreground: var(--landing-card-foreground);
+    --popover: var(--landing-popover);
+    --popover-foreground: var(--landing-popover-foreground);
+  }
+
+  .dark .landing-page,
+  [data-theme="dark"] .landing-page {
+    --landing-background: 0 0% 9%;
+    --landing-foreground: 0 0% 100%;
+    --landing-primary: 0 0% 100%;
+    --landing-primary-foreground: 0 0% 9%;
+    --landing-secondary: 0 0% 18%;
+    --landing-secondary-foreground: 0 0% 100%;
+    --landing-muted: 0 0% 18%;
+    --landing-muted-foreground: 0 0% 55%;
+    --landing-accent: 0 0% 18%;
+    --landing-accent-foreground: 0 0% 100%;
+    --landing-destructive: 0 62% 30%;
+    --landing-destructive-foreground: 0 0% 100%;
+    --landing-border: 0 0% 22%;
+    --landing-input: 0 0% 22%;
+    --landing-ring: 0 0% 40%;
+    --landing-card: 0 0% 13%;
+    --landing-card-foreground: 0 0% 100%;
+    --landing-popover: 0 0% 13%;
+    --landing-popover-foreground: 0 0% 100%;
+    --landing-surface: 0 0% 13%;
+    --landing-surface-foreground: 0 0% 100%;
+    --landing-surface-muted: 0 0% 64%;
+    --landing-surface-strong: 0 0% 9%;
+    --landing-surface-strong-foreground: 0 0% 100%;
+    --landing-surface-edge: 0 0% 22%;
+    --landing-soft: 0 0% 13%;
+    --landing-soft-foreground: 0 0% 100%;
+    --landing-soft-muted: 0 0% 64%;
+    --landing-strong: 0 0% 9%;
+    --landing-strong-foreground: 0 0% 100%;
+    --landing-edge: 0 0% 22%;
+    --landing-glow: 255 255 255;
+    --landing-shadow: 255 255 255;
+    --landing-marquee-fade: 0 0 0;
   }
 
   /* Base font size */

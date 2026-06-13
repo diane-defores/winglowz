@@ -1,32 +1,42 @@
 ---
 // Destructure the properties from Astro.props
-const { url, name } = Astro.props;
+const { url, name, class: className, activeClass, inactiveClass } = Astro.props
 
 // Define TypeScript interface for the properties
 interface Props {
-  url: string;
-  name: string;
+  url: string
+  name: string
+  class?: string
+  activeClass?: string
+  inactiveClass?: string
 }
 
 // Détermine si le lien est actif
-const pathname = Astro.url.pathname;
-const isHome = pathname === "/" || pathname === "/fr";
-const isActive = 
-  (url === "/" && isHome) || 
-  (url !== "/" && pathname.includes(url.replace("/", "")));
+const pathname = Astro.url.pathname
+const isHome = pathname === '/' || pathname === '/fr'
+const isActive =
+  (url === '/' && isHome) ||
+  (url !== '/' && pathname.includes(url.replace('/', '')))
 
 // Classes de base et classes actives
-const baseClasses = "rounded-lg font-medium outline-none ring-zinc-500 focus-visible:ring dark:ring-zinc-200 dark:focus:outline-none md:py-3";
-const activeClasses = "text-magenta dark:text-magenta";
-const inactiveClasses = "text-neutral-600 dark:text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-500";
+const baseClasses =
+  'rounded-lg font-medium outline-none ring-zinc-500 focus-visible:ring dark:ring-zinc-200 dark:focus:outline-none md:py-3'
+const activeClasses = activeClass ?? 'text-magenta dark:text-magenta'
+const inactiveClasses =
+  inactiveClass ??
+  'text-neutral-600 dark:text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-500'
 ---
 
 <a
-  id={url === "/" ? "home" : url.replace("/", "")}
+  id={url === '/' ? 'home' : url.replace('/', '')}
   href={url}
   data-astro-prefetch
-  class:list={[baseClasses, isActive ? activeClasses : inactiveClasses]}
-  aria-current={isActive ? "page" : undefined}
+  class:list={[
+    baseClasses,
+    className,
+    isActive ? activeClasses : inactiveClasses,
+  ]}
+  aria-current={isActive ? 'page' : undefined}
 >
   {name}
 </a>

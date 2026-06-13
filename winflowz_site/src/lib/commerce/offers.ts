@@ -13,9 +13,10 @@ const SOCIALGLOWZ_OFFER_ID = "socialglowz/lifetime_deal"
 const SOCIALGLOWZ_PRODUCT_ID = "socialglowz"
 const SOCIALGLOWZ_PLAN = "lifetime_deal"
 const WINFLOWZ_APP_PRODUCT_ID = "winflowz_app"
-const WINFLOWZ_APP_STARTER_FOUNDER_OFFER_ID = "winflowz_app/starter_founder"
-const WINFLOWZ_APP_PRO_FOUNDER_OFFER_ID = "winflowz_app/pro_founder"
-const WINFLOWZ_APP_STUDIO_FOUNDER_OFFER_ID = "winflowz_app/studio_founder"
+const WINFLOWZ_APP_FOCUS_OFFER_ID = "winflowz_app/focus"
+const WINFLOWZ_APP_POWER_OFFER_ID = "winflowz_app/power"
+const WINFLOWZ_APP_CONTROL_OFFER_ID = "winflowz_app/control"
+const WINFLOWZ_APP_COMMAND_OFFER_ID = "winflowz_app/command"
 const SOCIALGLOWZ_SOURCES = [
   "direct",
   "partner",
@@ -42,46 +43,54 @@ const OFFER_BY_ID: Record<CommerceOfferId, CommerceOffer> = {
     cancelPath: "/purchase/cancel",
     description: "SocialGlowz Lifetime Deal, direct checkout",
   },
-  [WINFLOWZ_APP_STARTER_FOUNDER_OFFER_ID]: {
-    id: WINFLOWZ_APP_STARTER_FOUNDER_OFFER_ID,
+  [WINFLOWZ_APP_FOCUS_OFFER_ID]: {
+    id: WINFLOWZ_APP_FOCUS_OFFER_ID,
     productId: WINFLOWZ_APP_PRODUCT_ID,
-    plan: "starter_founder",
+    plan: "focus",
     sources: WINFLOWZ_APP_SOURCES,
     providers: ["lemonsqueezy"],
-    successPath: "/purchase/success?offerId=winflowz_app/starter_founder",
-    cancelPath: "/purchase/cancel?offerId=winflowz_app/starter_founder",
-    description: "WinFlowz Starter Founder access, 1 active device",
+    successPath: "/purchase/success?offerId=winflowz_app/focus",
+    cancelPath: "/purchase/cancel?offerId=winflowz_app/focus",
+    description: "WinFlowz Focus founder access, 1 active device",
   },
-  [WINFLOWZ_APP_PRO_FOUNDER_OFFER_ID]: {
-    id: WINFLOWZ_APP_PRO_FOUNDER_OFFER_ID,
+  [WINFLOWZ_APP_POWER_OFFER_ID]: {
+    id: WINFLOWZ_APP_POWER_OFFER_ID,
     productId: WINFLOWZ_APP_PRODUCT_ID,
-    plan: "pro_founder",
+    plan: "power",
     sources: WINFLOWZ_APP_SOURCES,
     providers: ["lemonsqueezy"],
-    successPath: "/purchase/success?offerId=winflowz_app/pro_founder",
-    cancelPath: "/purchase/cancel?offerId=winflowz_app/pro_founder",
-    description: "WinFlowz Pro Founder access, 3 active devices",
+    successPath: "/purchase/success?offerId=winflowz_app/power",
+    cancelPath: "/purchase/cancel?offerId=winflowz_app/power",
+    description: "WinFlowz Power founder access, 2 active devices",
   },
-  [WINFLOWZ_APP_STUDIO_FOUNDER_OFFER_ID]: {
-    id: WINFLOWZ_APP_STUDIO_FOUNDER_OFFER_ID,
+  [WINFLOWZ_APP_CONTROL_OFFER_ID]: {
+    id: WINFLOWZ_APP_CONTROL_OFFER_ID,
     productId: WINFLOWZ_APP_PRODUCT_ID,
-    plan: "studio_founder",
+    plan: "control",
     sources: WINFLOWZ_APP_SOURCES,
     providers: ["lemonsqueezy"],
-    successPath: "/purchase/success?offerId=winflowz_app/studio_founder",
-    cancelPath: "/purchase/cancel?offerId=winflowz_app/studio_founder",
-    description: "WinFlowz Studio Founder access, 5 active devices",
+    successPath: "/purchase/success?offerId=winflowz_app/control",
+    cancelPath: "/purchase/cancel?offerId=winflowz_app/control",
+    description: "WinFlowz Control founder access, 5 active devices",
+  },
+  [WINFLOWZ_APP_COMMAND_OFFER_ID]: {
+    id: WINFLOWZ_APP_COMMAND_OFFER_ID,
+    productId: WINFLOWZ_APP_PRODUCT_ID,
+    plan: "command",
+    sources: WINFLOWZ_APP_SOURCES,
+    providers: ["lemonsqueezy"],
+    successPath: "/purchase/success?offerId=winflowz_app/command",
+    cancelPath: "/purchase/cancel?offerId=winflowz_app/command",
+    description: "WinFlowz Command founder access, 10 active devices",
   },
 } as const
 
 export const SOCIALGLOWZ_LETTER = SOCIALGLOWZ_OFFER_ID
 export const SOCIALGLOWZ_LTD_OFFER_ID = SOCIALGLOWZ_OFFER_ID
-export const WINFLOWZ_APP_STARTER_FOUNDER_LTD_OFFER_ID =
-  WINFLOWZ_APP_STARTER_FOUNDER_OFFER_ID
-export const WINFLOWZ_APP_PRO_FOUNDER_LTD_OFFER_ID =
-  WINFLOWZ_APP_PRO_FOUNDER_OFFER_ID
-export const WINFLOWZ_APP_STUDIO_FOUNDER_LTD_OFFER_ID =
-  WINFLOWZ_APP_STUDIO_FOUNDER_OFFER_ID
+export const WINFLOWZ_APP_FOCUS_LTD_OFFER_ID = WINFLOWZ_APP_FOCUS_OFFER_ID
+export const WINFLOWZ_APP_POWER_LTD_OFFER_ID = WINFLOWZ_APP_POWER_OFFER_ID
+export const WINFLOWZ_APP_CONTROL_LTD_OFFER_ID = WINFLOWZ_APP_CONTROL_OFFER_ID
+export const WINFLOWZ_APP_COMMAND_LTD_OFFER_ID = WINFLOWZ_APP_COMMAND_OFFER_ID
 
 export function getCommerceOffers(): Record<string, CommerceOffer> {
   return { ...OFFER_BY_ID }
@@ -107,14 +116,17 @@ function getLemonSqueezyVariantEnvKey(offerId: string): string | null {
   if (offerId === SOCIALGLOWZ_OFFER_ID) {
     return "LEMONSQUEEZY_SOCIALGLOWZ_LIFETIME_DEAL_VARIANT_ID"
   }
-  if (offerId === WINFLOWZ_APP_STARTER_FOUNDER_OFFER_ID) {
-    return "LEMONSQUEEZY_WINFLOWZ_APP_STARTER_FOUNDER_VARIANT_ID"
+  if (offerId === WINFLOWZ_APP_FOCUS_OFFER_ID) {
+    return "LEMONSQUEEZY_WINFLOWZ_APP_FOCUS_VARIANT_ID"
   }
-  if (offerId === WINFLOWZ_APP_PRO_FOUNDER_OFFER_ID) {
-    return "LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID"
+  if (offerId === WINFLOWZ_APP_POWER_OFFER_ID) {
+    return "LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID"
   }
-  if (offerId === WINFLOWZ_APP_STUDIO_FOUNDER_OFFER_ID) {
-    return "LEMONSQUEEZY_WINFLOWZ_APP_STUDIO_FOUNDER_VARIANT_ID"
+  if (offerId === WINFLOWZ_APP_CONTROL_OFFER_ID) {
+    return "LEMONSQUEEZY_WINFLOWZ_APP_CONTROL_VARIANT_ID"
+  }
+  if (offerId === WINFLOWZ_APP_COMMAND_OFFER_ID) {
+    return "LEMONSQUEEZY_WINFLOWZ_APP_COMMAND_VARIANT_ID"
   }
   return null
 }
@@ -124,9 +136,10 @@ function getLemonSqueezyProductEnvKey(offerId: string): string | null {
     return "LEMONSQUEEZY_SOCIALGLOWZ_PRODUCT_ID"
   }
   if (
-    offerId === WINFLOWZ_APP_STARTER_FOUNDER_OFFER_ID ||
-    offerId === WINFLOWZ_APP_PRO_FOUNDER_OFFER_ID ||
-    offerId === WINFLOWZ_APP_STUDIO_FOUNDER_OFFER_ID
+    offerId === WINFLOWZ_APP_FOCUS_OFFER_ID ||
+    offerId === WINFLOWZ_APP_POWER_OFFER_ID ||
+    offerId === WINFLOWZ_APP_CONTROL_OFFER_ID ||
+    offerId === WINFLOWZ_APP_COMMAND_OFFER_ID
   ) {
     return "LEMONSQUEEZY_WINFLOWZ_APP_PRODUCT_ID"
   }

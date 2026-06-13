@@ -8,13 +8,17 @@ const offerId = Astro.url.searchParams.get('offerId')
 const safeNextUrl = isSafePrivateCoursePath(nextUrl) ? nextUrl : null
 const lang = safeNextUrl?.includes('/dashboard/docs/fr/') ? 'fr' : 'en'
 const isWinFlowzAppOffer = offerId?.startsWith('winflowz_app/') ?? false
+const isSocialGlowzOffer = offerId === 'socialglowz/lifetime_deal'
 const labels =
 	lang === 'fr'
 		? {
 				title: 'Achat confirme',
-				body: isWinFlowzAppOffer
-					? "Paiement reçu. L'accès WinFlowz est confirmé par webhook signé et peut nécessiter une vérification de compte avant activation dans l'app."
-					: 'Votre acces a la formation a ete debloque. Vous pouvez ouvrir la lecon privee maintenant.',
+				body:
+					isWinFlowzAppOffer || isSocialGlowzOffer
+						? isWinFlowzAppOffer
+							? "Paiement reçu. L'accès WinFlowz est confirmé par webhook signé et peut nécessiter une vérification de compte avant activation dans l'app."
+							: "Paiement reçu. L'accès SocialGlowz est confirmé par webhook signé et peut nécessiter une vérification de compte avant activation."
+						: 'Votre acces a la formation a ete debloque. Vous pouvez ouvrir la lecon privee maintenant.',
 				openLesson: 'Ouvrir la lecon',
 				goToDashboard: 'Aller au dashboard',
 				signIn: 'Se connecter pour acceder',
@@ -23,9 +27,12 @@ const labels =
 			}
 		: {
 				title: 'Purchase Confirmed',
-				body: isWinFlowzAppOffer
-					? 'Payment received. WinFlowz access is confirmed by signed webhook and may require account verification before activation in the app.'
-					: 'Your training access has been unlocked. You can open the private lesson now.',
+				body:
+					isWinFlowzAppOffer || isSocialGlowzOffer
+						? isWinFlowzAppOffer
+							? 'Payment received. WinFlowz access is confirmed by signed webhook and may require account verification before activation in the app.'
+							: 'Payment received. SocialGlowz access is confirmed by signed webhook and may require account verification before activation.'
+						: 'Your training access has been unlocked. You can open the private lesson now.',
 				openLesson: 'Open Lesson',
 				goToDashboard: 'Go to Dashboard',
 				signIn: 'Sign In to Access',
@@ -51,7 +58,7 @@ const contactUrl = lang === 'fr' ? '/fr/contact' : '/contact'
 			</p>
 
 			<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-				{isWinFlowzAppOffer ? (
+				{isWinFlowzAppOffer || isSocialGlowzOffer ? (
 					<a href={contactUrl} class="inline-flex items-center justify-center rounded-lg bg-magenta px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity">
 						{labels.contact}
 					</a>

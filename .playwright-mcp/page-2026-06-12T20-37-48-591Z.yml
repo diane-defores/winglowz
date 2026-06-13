@@ -1,0 +1,231 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - link "WinFlowz WinFlowz WinFlowz" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: WinFlowz WinFlowz WinFlowz
+      - paragraph [ref=e8]: Productivity Plugins & Windows Training
+      - group [ref=e9]:
+        - generic "Open menu" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: Open menu
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - paragraph [ref=e24]: Founder Lifetime Deal
+          - heading "Turn social momentum into a reusable content system." [level=1] [ref=e25]
+          - paragraph [ref=e26]: SocialGlowz helps creators and solo operators organize social publishing, relationship follow-up, and repeatable launch work without rebuilding the same plan every week.
+          - generic [ref=e27]:
+            - link "Get Founder Access" [ref=e28] [cursor=pointer]:
+              - /url: /api/commerce/checkout?offerId=socialglowz%2Flifetime_deal&provider=lemonsqueezy&source=direct&sourceRef=%2Fsocialglowz-founder&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dsocialglowz%252Flifetime_deal&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dsocialglowz%252Flifetime_deal
+            - link "See the offer" [ref=e29] [cursor=pointer]:
+              - /url: "#offer"
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - paragraph [ref=e35]: SocialGlowz
+              - paragraph [ref=e36]: Launch board
+            - img "WinFlowz suite mark" [ref=e37]
+          - generic [ref=e38]:
+            - generic [ref=e39]:
+              - generic [ref=e40]:
+                - paragraph [ref=e41]: Founder campaign
+                - generic [ref=e42]: Live
+              - generic [ref=e43]:
+                - generic [ref=e44]:
+                  - paragraph [ref=e45]: Hooks
+                  - paragraph [ref=e46]: "18"
+                - generic [ref=e47]:
+                  - paragraph [ref=e48]: Assets
+                  - paragraph [ref=e49]: "07"
+                - generic [ref=e50]:
+                  - paragraph [ref=e51]: Replies
+                  - paragraph [ref=e52]: "12"
+            - generic [ref=e53]:
+              - generic [ref=e54]:
+                - paragraph [ref=e55]: Next post
+                - paragraph [ref=e56]: Founder offer angle
+              - generic [ref=e57]:
+                - paragraph [ref=e58]: Follow-up
+                - paragraph [ref=e59]: Warm replies queue
+            - generic [ref=e60]:
+              - paragraph [ref=e61]: Checkout route
+              - paragraph [ref=e62]: socialglowz/lifetime_deal
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - paragraph [ref=e65]: Product system
+          - heading "A social workflow surface built for repeated execution" [level=2] [ref=e66]
+          - paragraph [ref=e67]: "The offer page is structured around the real product promise: capture content ideas, shape them into campaigns, and keep the next action visible."
+        - generic [ref=e68]:
+          - generic [ref=e69]: Campaign-ready content planning instead of scattered notes.
+          - generic [ref=e70]: Relationship and follow-up context for creator-led growth.
+          - generic [ref=e71]: Reusable launch structure for posts, assets, and outreach.
+          - generic [ref=e72]: Account-backed access handled through the WinFlowz suite entitlement layer.
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - heading "From idea to visible follow-up" [level=2] [ref=e75]
+          - paragraph [ref=e76]: SocialGlowz is positioned as a working desk for social growth, not a passive content library.
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - paragraph [ref=e79]: Step 01
+            - heading "Collect the signal" [level=3] [ref=e80]
+            - paragraph [ref=e81]: Keep hooks, angles, replies, assets, and outreach notes in one operating view.
+          - generic [ref=e82]:
+            - paragraph [ref=e83]: Step 02
+            - heading "Shape the campaign" [level=3] [ref=e84]
+            - paragraph [ref=e85]: Turn raw ideas into sequences with status, owner context, and next actions.
+          - generic [ref=e86]:
+            - paragraph [ref=e87]: Step 03
+            - heading "Follow through" [level=3] [ref=e88]
+            - paragraph [ref=e89]: Track what was published, what needs reply, and what should be reused next.
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - paragraph [ref=e92]: Direct checkout
+          - heading "Founder access for the first SocialGlowz buyers" [level=2] [ref=e93]
+          - paragraph [ref=e94]: "This direct Lifetime Deal uses the same commerce bridge as the suite: Lemon Squeezy checkout, signed provider events, and server-side entitlement fulfillment."
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - paragraph [ref=e100]: SocialGlowz Lifetime Deal
+              - heading "Early-bird founder price" [level=3] [ref=e101]
+              - paragraph [ref=e102]: Final price and public terms can still be adjusted before the full launch. The checkout is wired to the existing internal offer.
+            - generic [ref=e103]: socialglowz/lifetime_deal
+          - generic [ref=e104]:
+            - generic [ref=e105]: Lifetime Deal access for SocialGlowz under the published founder terms.
+            - generic [ref=e106]: Direct payment through the configured Lemon Squeezy provider.
+            - generic [ref=e107]: Webhook-based fulfillment into the suite entitlement ledger.
+            - generic [ref=e108]: Support path for account verification, access issues, refunds, and replays.
+          - link "Continue to checkout" [ref=e109] [cursor=pointer]:
+            - /url: /api/commerce/checkout?offerId=socialglowz%2Flifetime_deal&provider=lemonsqueezy&source=direct&sourceRef=%2Fsocialglowz-founder&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dsocialglowz%252Flifetime_deal&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dsocialglowz%252Flifetime_deal
+      - generic [ref=e110]:
+        - generic [ref=e111]:
+          - heading "Built around the access model already in the repo" [level=2] [ref=e112]
+          - paragraph [ref=e113]: The page does not invent a parallel sales system. It points at the existing SocialGlowz offer and the existing provider bridge.
+        - generic [ref=e114]:
+          - generic [ref=e115]:
+            - paragraph [ref=e116]: Offer ID
+            - paragraph [ref=e117]: socialglowz/lifetime_deal
+          - generic [ref=e118]:
+            - paragraph [ref=e119]: Product ID
+            - paragraph [ref=e120]: socialglowz
+          - generic [ref=e121]:
+            - paragraph [ref=e122]: Plan
+            - paragraph [ref=e123]: lifetime_deal
+          - generic [ref=e124]:
+            - paragraph [ref=e125]: Provider
+            - paragraph [ref=e126]: Lemon Squeezy first
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - heading "Clear launch boundaries" [level=2] [ref=e129]
+          - paragraph [ref=e130]: The launch copy stays honest while the exact public pricing and legal language are being finalized.
+        - generic [ref=e131]:
+          - generic [ref=e132]: No fake scarcity, revenue numbers, or customer proof.
+          - generic [ref=e133]: No promise of unsupported marketplace pricing parity beyond the terms you publish.
+          - generic [ref=e134]: No client-side entitlement shortcut; access is confirmed by provider events and suite state.
+          - generic [ref=e135]: Checkout requires live Lemon Squeezy configuration before it can complete in production.
+      - generic [ref=e136]:
+        - heading "Founder FAQ" [level=2] [ref=e137]
+        - paragraph [ref=e138]: Short answers for the direct SocialGlowz founder offer.
+        - generic [ref=e139]:
+          - generic [ref=e140]:
+            - paragraph [ref=e141]: Is the checkout connected?
+            - paragraph [ref=e142]: Yes. The button calls the commerce checkout route with the SocialGlowz Lifetime Deal offer and Lemon Squeezy as the requested provider.
+          - generic [ref=e143]:
+            - paragraph [ref=e144]: Do I need to create the Lemon Squeezy product first?
+            - paragraph [ref=e145]: Yes. The site can create hosted checkouts once the store, API key, webhook secret, and SocialGlowz variant id are configured.
+          - generic [ref=e146]:
+            - paragraph [ref=e147]: How is access fulfilled?
+            - paragraph [ref=e148]: Lemon Squeezy sends signed commerce events. The suite bridge turns supported paid events into product entitlements and handles refund/revoke states.
+          - generic [ref=e149]:
+            - paragraph [ref=e150]: Can this offer change before launch?
+            - paragraph [ref=e151]: Yes. The page is ready for structure and checkout, while final price, limits, and public terms can still be edited.
+      - generic [ref=e153]:
+        - generic [ref=e154]:
+          - heading "Open the founder window for SocialGlowz" [level=2] [ref=e155]
+          - paragraph [ref=e156]: Use this page as the direct sales surface while you finalize price, legal terms, and Lemon Squeezy product configuration.
+        - link "Get SocialGlowz Founder Access" [ref=e157] [cursor=pointer]:
+          - /url: /api/commerce/checkout?offerId=socialglowz%2Flifetime_deal&provider=lemonsqueezy&source=direct&sourceRef=%2Fsocialglowz-founder&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dsocialglowz%252Flifetime_deal&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dsocialglowz%252Flifetime_deal
+  - contentinfo [ref=e158]:
+    - generic [ref=e159]:
+      - generic [ref=e160]:
+        - generic [ref=e161]:
+          - link "WinFlowz WinFlowz WinFlowz" [ref=e162] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e164]: WinFlowz WinFlowz WinFlowz
+          - paragraph [ref=e166]: Productivity plugins & Windows training by Diane Defores.
+          - generic [ref=e167]:
+            - paragraph [ref=e168]: This Week In Windows Productivity
+            - paragraph [ref=e169]: Weekly newsletter about Windows tooling and the productivity ecosystem.
+          - generic [ref=e172]: Site and catalog are maintained continuously
+        - generic [ref=e173]:
+          - heading "Ecosystem" [level=4] [ref=e174]
+          - list [ref=e175]:
+            - listitem [ref=e176]:
+              - link "Courses" [ref=e177] [cursor=pointer]:
+                - /url: /en/formations/
+            - listitem [ref=e178]:
+              - link "Apps & Plugins" [ref=e179] [cursor=pointer]:
+                - /url: /products
+            - listitem [ref=e180]:
+              - link "Services" [ref=e181] [cursor=pointer]:
+                - /url: /services
+            - listitem [ref=e182]:
+              - link "Roadmap" [ref=e183] [cursor=pointer]:
+                - /url: /roadmap
+        - generic [ref=e184]:
+          - heading "Products" [level=4] [ref=e185]
+          - list [ref=e186]:
+            - listitem [ref=e187]:
+              - link "ObsiFlowz" [ref=e188] [cursor=pointer]:
+                - /url: /products
+            - listitem [ref=e189]:
+              - link "ReplayGlowz" [ref=e190] [cursor=pointer]:
+                - /url: /products
+            - listitem [ref=e191]:
+              - link "Windows Mastery" [ref=e192] [cursor=pointer]:
+                - /url: /products
+            - listitem [ref=e193]:
+              - link "Productivity Suite" [ref=e194] [cursor=pointer]:
+                - /url: /products
+        - generic [ref=e195]:
+          - heading "Company" [level=4] [ref=e196]
+          - list [ref=e197]:
+            - listitem [ref=e198]:
+              - link "About Us" [ref=e199] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e200]:
+              - link "Blog" [ref=e201] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e202]:
+              - link "Contact" [ref=e203] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=e204]:
+          - heading "Legal" [level=4] [ref=e205]
+          - list [ref=e206]:
+            - listitem [ref=e207]:
+              - link "Privacy Policy" [ref=e208] [cursor=pointer]:
+                - /url: /privacy
+            - listitem [ref=e209]:
+              - link "Terms of Service" [ref=e210] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=e211]:
+              - link "Legal Notice" [ref=e212] [cursor=pointer]:
+                - /url: /legal
+            - listitem [ref=e213]:
+              - link "Copyright" [ref=e214] [cursor=pointer]:
+                - /url: /copyright
+            - listitem [ref=e215]:
+              - link "Disclaimer" [ref=e216] [cursor=pointer]:
+                - /url: /disclaimer
+            - listitem [ref=e217]:
+              - link "Terms of Sale" [ref=e218] [cursor=pointer]:
+                - /url: /cgv
+      - generic [ref=e219]:
+        - paragraph [ref=e220]: © 2026 WinFlowz. Crafted by Diane Defores.
+        - generic [ref=e221]:
+          - link "GitHub" [ref=e222] [cursor=pointer]:
+            - /url: https://github.com/diane-defores/winflowz
+          - link "Contact" [ref=e223] [cursor=pointer]:
+            - /url: mailto:hello@winflowz.com
+          - link "↑ Back to top" [ref=e224] [cursor=pointer]:
+            - /url: "#top"

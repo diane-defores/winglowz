@@ -32,7 +32,7 @@ type StatProps = {
 ---
 
 <section
-  class="mx-auto max-w-[85rem] px-3 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14 2xl:max-w-full"
+  class="testimonials-section mx-auto px-3 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14 2xl:max-w-full"
 >
   <!-- Container for the testimonials -->
   <div
@@ -78,3 +78,10 @@ type StatProps = {
   }
   </div>
 </section>
+
+<style>
+  .testimonials-section {
+    --testimonials-section-max-width: 85rem;
+    max-width: var(--testimonials-section-max-width);
+  }
+</style>

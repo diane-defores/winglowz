@@ -69,9 +69,10 @@ This file is the local usage contract for architecture, validation, and automati
 | SocialGlowz product id | `LEMONSQUEEZY_SOCIALGLOWZ_PRODUCT_ID` | sensitive-ish | Provider reference only; never replaces internal `productId=socialglowz`. |
 | SocialGlowz LTD variant id | `LEMONSQUEEZY_SOCIALGLOWZ_LIFETIME_DEAL_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `socialglowz/lifetime_deal`. |
 | WinFlowz App product id | `LEMONSQUEEZY_WINFLOWZ_APP_PRODUCT_ID` | sensitive-ish | Provider reference only; internal product remains `winflowz_app`. |
-| WinFlowz Starter Founder variant id | `LEMONSQUEEZY_WINFLOWZ_APP_STARTER_FOUNDER_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winflowz_app/starter_founder`. |
-| WinFlowz Pro Founder variant id | `LEMONSQUEEZY_WINFLOWZ_APP_PRO_FOUNDER_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winflowz_app/pro_founder`. |
-| WinFlowz Studio Founder variant id | `LEMONSQUEEZY_WINFLOWZ_APP_STUDIO_FOUNDER_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winflowz_app/studio_founder`. |
+| WinFlowz Focus variant id | `LEMONSQUEEZY_WINFLOWZ_APP_FOCUS_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winflowz_app/focus`. |
+| WinFlowz Power variant id | `LEMONSQUEEZY_WINFLOWZ_APP_POWER_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winflowz_app/power`. |
+| WinFlowz Control variant id | `LEMONSQUEEZY_WINFLOWZ_APP_CONTROL_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winflowz_app/control`. |
+| WinFlowz Command variant id | `LEMONSQUEEZY_WINFLOWZ_APP_COMMAND_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winflowz_app/command`. |
 | Webhook secret | `LEMONSQUEEZY_WEBHOOK_SECRET` | yes | Server-only; used to verify `X-Signature`. |
 | Provider order preference | `COMMERCE_PROVIDER_ORDER` | no | Current default: `lemonsqueezy,polar`. |
 | Checkout route | `/api/commerce/checkout` | no | Creates hosted checkout server-side. |
@@ -114,8 +115,8 @@ Requires a new spec or explicit approval:
 
 ## Invariants
 
-- Internal offer ids remain product-owned, for example `socialglowz/lifetime_deal`, `winflowz_app/starter_founder`, `winflowz_app/pro_founder`, and `winflowz_app/studio_founder`.
-- Internal product and plan values remain canonical suite values, for example `productId=socialglowz`, `productId=winflowz_app`, `plan=lifetime_deal`, `plan=starter_founder`, `plan=pro_founder`, or `plan=studio_founder`.
+- Internal offer ids remain product-owned, for example `socialglowz/lifetime_deal`, `winflowz_app/focus`, `winflowz_app/power`, `winflowz_app/control`, and `winflowz_app/command`.
+- Internal product and plan values remain canonical suite values, for example `productId=socialglowz`, `productId=winflowz_app`, `plan=lifetime_deal`, `plan=focus`, `plan=power`, `plan=control`, or `plan=command`.
 - Provider product, variant, order, customer, invoice, and webhook ids are references only.
 - Lemon Squeezy never becomes the runtime authorization store.
 - No email-only auto-grant or account merge.

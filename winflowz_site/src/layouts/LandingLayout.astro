@@ -1,7 +1,7 @@
 ---
 import '../assets/styles/global.css';
 import CookieConsent from '@components/ui/banners/CookieConsent.astro';
-import { SITE, getLocalizedSiteUrl, getSiteUrl } from '@/constants';
+import { SITE, SITE_VISUAL_TOKENS, getLocalizedSiteUrl, getSiteUrl } from '@/constants';
 
 interface Props {
 	lang?: string;
@@ -52,7 +52,7 @@ const siteUrl = getLocalizedSiteUrl(lang === 'fr' ? 'fr' : 'en');
 		<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Manrope:wght@200..800&family=DM+Sans:opsz,wght@9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
 		<link rel="icon" type="image/png" href="/images/WinFlowz.png" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
-		<meta name="theme-color" content="#ff00c8" />
+		<meta name="theme-color" content={SITE_VISUAL_TOKENS.themeMeta.website} />
 		<script is:inline>
 			(() => {
 				const storedTheme = localStorage.getItem('hs_theme')
@@ -68,7 +68,7 @@ const siteUrl = getLocalizedSiteUrl(lang === 'fr' ? 'fr' : 'en');
 			})()
 		</script>
 	</head>
-	<body id="top" class="landing-page bg-background text-foreground font-sans antialiased transition-colors duration-300">
+<body id="top" class="landing-page bg-background text-foreground font-body antialiased transition-colors duration-300">
 		<div class="noise-overlay" aria-hidden="true"></div>
 		<slot />
 		<CookieConsent />

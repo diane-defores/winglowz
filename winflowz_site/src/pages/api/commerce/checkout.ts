@@ -31,6 +31,7 @@ type CheckoutRequestData = {
   provider?: string
   source?: string
   sourceRef?: string
+  discountCode?: string
   successUrl: string
   cancelUrl: string
   metadata: NonNullable<CommerceCheckoutRequest['metadata']>
@@ -88,6 +89,7 @@ function parseCheckoutRequestFromQuery(request: Request): CheckoutRequestData {
     provider: getFirstNonEmpty(search.get('provider')?.toLowerCase()),
     source: getFirstNonEmpty(search.get('source')),
     sourceRef: getFirstNonEmpty(search.get('sourceRef')),
+    discountCode: getFirstNonEmpty(search.get('discountCode')),
     successUrl: normalizeSuccessCancelUrl(
       search.get('successUrl'),
       request,
@@ -121,6 +123,7 @@ function parseCheckoutBody(body: unknown, request: Request): CheckoutRequestData
     provider: getFirstNonEmpty(payload.provider?.toString())?.toLowerCase(),
     source: getFirstNonEmpty(payload.source?.toString()),
     sourceRef: getFirstNonEmpty(payload.sourceRef?.toString()),
+    discountCode: getFirstNonEmpty(payload.discountCode?.toString()),
     successUrl: normalizeSuccessCancelUrl(
       getFirstNonEmpty(payload.successUrl?.toString()) ?? null,
       request,
@@ -148,6 +151,7 @@ function buildCheckoutRequest(
     provider: isCommerceProviderId(raw.provider) ? raw.provider : undefined,
     successUrl: raw.successUrl,
     cancelUrl: raw.cancelUrl,
+    discountCode: raw.discountCode,
     customerEmail: undefined,
     customerName: undefined,
     metadata: {

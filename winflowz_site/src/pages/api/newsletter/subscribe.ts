@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { SITE, getLocalizedSiteUrl } from '@/constants';
+import { newsletterStyle } from '@/theme/newsletter-email-theme';
 
 type SignupSource = 'footer' | 'lead-magnet' | 'windows-mastery' | 'unknown';
 type SignupLang = 'fr' | 'en';
@@ -63,20 +64,20 @@ function buildWelcomeEmail(lang: SignupLang, source: SignupSource, email: string
   return {
     subject: content.subject,
     html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #171717;">
-        <h1 style="color: #171717; font-size: 28px; line-height: 1.2; margin-bottom: 16px;">${content.heading}</h1>
-        <p style="font-size: 16px; line-height: 1.6; margin: 0 0 16px;">${content.intro}</p>
-        <p style="font-size: 16px; line-height: 1.6; margin: 0 0 24px;">${content.body}</p>
-        <p style="margin: 0 0 24px;">
+      <div style="${newsletterStyle('shell')}">
+        <h1 style="${newsletterStyle('heading')}">${content.heading}</h1>
+        <p style="${newsletterStyle('paragraph')}">${content.intro}</p>
+        <p style="${newsletterStyle('body')}">${content.body}</p>
+        <p style="${newsletterStyle('ctaRow')}">
           <a
             href="${salesPageUrl}"
-            style="display: inline-block; background: #171717; color: #ffffff; text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600;"
+            style="${newsletterStyle('button')}"
           >${content.cta}</a>
         </p>
-        <p style="font-size: 14px; line-height: 1.6; color: #525252; margin: 0 0 24px;">${content.footer}</p>
-        <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 20px 0;" />
-        <p style="font-size: 12px; color: #737373;">
-          <a href="${unsubscribeUrl}" style="color: #737373;">${content.unsubscribe}</a>
+        <p style="${newsletterStyle('footer')}">${content.footer}</p>
+        <hr style="${newsletterStyle('divider')}" />
+        <p style="${newsletterStyle('smallNote')}">
+          <a href="${unsubscribeUrl}" style="${newsletterStyle('link')}">${content.unsubscribe}</a>
         </p>
       </div>
     `,

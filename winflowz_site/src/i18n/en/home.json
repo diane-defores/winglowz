@@ -1,14 +1,14 @@
 {
-  "title": "WinFlowz - Tools and Training for Productivity",
+  "title": "WinFlowz - Windows Training and App",
   "meta": {
-    "description": "WinFlowz combines Windows productivity training, Obsidian plugins, and Chrome tools for YouTube and workflow research."
+    "description": "WinFlowz focuses on practical Windows training, the WinFlowz app, and proof-driven recommendations from the AppSumo launch."
   },
   "hero": {
-    "title": "<span class=\"relative inline-flex sm:inline\"><span class=\"relative text-magenta\">Productivity</span><span class=\"absolute inset-0 h-full w-full bg-gradient-rainbow opacity-30 blur-lg filter\"></span></span> Plugins & <span class=\"text-yellow\">Windows</span> Training",
-    "subTitle": "Chrome tools for YouTube workflows, Obsidian plugins for content curation, and a Windows productivity course built around practical lessons.",
+    "title": "<span class=\"relative inline-flex sm:inline\"><span class=\"relative text-magenta\">Windows</span><span class=\"absolute inset-0 h-full w-full bg-gradient-rainbow opacity-30 blur-lg filter\"></span></span> Training & <span class=\"text-yellow\">WinFlowz</span> App",
+    "subTitle": "A practical Windows course, the WinFlowz Android app, and real recommendations from the July 2024 AppSumo launch.",
     "primaryBtn": "See Windows Mastery",
     "primaryBtnURL": "/windows-mastery",
-    "secondaryBtn": "Testimonials",
+    "secondaryBtn": "Recommendations",
     "secondaryBtnURL": "/recommendations",
     "review": {
       "rating": "",
@@ -17,33 +17,33 @@
     }
   },
   "clients": {
-    "title": "Built for real workflows",
-    "subTitle": "For people who want one place for Windows habits, note-taking tools, and content workflows they actually use."
+    "title": "Built for what can ship now",
+    "subTitle": "The homepage only shows the app, the training, and the proof that is already available."
   },
   "features": {
-    "title": "Tools and training that fit together",
-    "subTitle": "WinFlowz combines course content, browser tools, and Obsidian workflows so the site teaches the same system it helps you use."
+    "title": "What stays on the homepage",
+    "subTitle": "We keep the page honest: current app screenshots, the training path, and the recommendations page."
   },
   "workflow": {
     "title": "A workflow stack built from the ground up",
     "tabs": [
       {
-        "heading": "ObsiFlowz",
-        "content": "Obsidian plugins for content curation, plugin search, and note-taking workflows that stay close to markdown and local files."
-      },
-      {
-        "heading": "ReplayGlowz",
-        "content": "A Chrome extension for YouTube research, bookmarking, and annotation so useful videos turn into reusable knowledge."
+        "heading": "WinFlowz app",
+        "content": "Android screenshots and a working app surface that show the product as it exists today."
       },
       {
         "heading": "Windows Mastery",
-        "content": "A Windows productivity course with 8 modules and practical guidance on focus, time, actions, and shortcuts."
+        "content": "A Windows productivity course with practical lessons, focused on useful habits and time savings."
+      },
+      {
+        "heading": "Recommendations",
+        "content": "A proof page for AppSumo feedback, structured around the captures you already have."
       }
     ]
   },
   "testimonials": {
     "title": "What the offer includes",
-    "subTitle": "Three product lines, one training path, and a site that keeps the tools and the course connected.",
+    "subTitle": "A training path, the WinFlowz app, and a proof page that keeps the screenshots in order.",
     "main": {
       "content": "Congratulations, Diane! I just spent 20 minutes in it and I'm already wondering what I've been doing with my life until now :)) Lots of goodies to improve my work. I love it!",
       "author": "Florin Muresan",
@@ -55,8 +55,8 @@
         "description": "training modules in the Windows course"
       },
       {
-        "count": "3",
-        "description": "core product lines: Windows, Obsidian, and YouTube workflows"
+        "count": "1",
+        "description": "WinFlowz app surface showcased on the homepage"
       },
       {
         "count": "2",
@@ -66,6 +66,6 @@
   },
   "cta": {
     "title": "Build a system you can actually use",
-    "subTitle": "Start with the training path, then add tools as your workflow evolves."
+    "subTitle": "Start with the training path, then add the app and supporting tools as the workflow evolves."
   }
 }

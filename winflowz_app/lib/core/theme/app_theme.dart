@@ -88,6 +88,7 @@ class AppColors {
 class AppTypography {
   static const fontFamily = WinFlowzThemeTokens.fontSans;
   static const fontFallback = WinFlowzThemeTokens.fontFallback;
+  static const monospace = WinFlowzThemeTokens.fontMonospace;
 
   // WinFlowz scale (cohérente avec le thème site, bornée à un set court).
   static const xs = WinFlowzThemeTokens.typographyXs;
@@ -101,6 +102,7 @@ class AppTypography {
   static const leadingTight = WinFlowzThemeTokens.lineHeightTight;
   static const leadingSnug = WinFlowzThemeTokens.lineHeightSnug;
   static const leadingNormal = WinFlowzThemeTokens.lineHeightNormal;
+  static const leadingCompact = WinFlowzThemeTokens.settingsDiagnosticLogLineHeight;
   static const leadingRelaxed = 1.8;
 
   static const trackingWide = WinFlowzThemeTokens.trackingWide;
@@ -237,12 +239,31 @@ class AppNavigationMetrics {
   static const bottomIndicatorDarkAlpha = 0.18;
   static const bottomIconSize = 23.0;
   static const bottomSelectedIconSize = 24.0;
+  static const bottomNavIconBoxSize =
+      WinFlowzThemeTokens.appShellBottomNavIconBoxSize;
+  static const bottomNavSparkBadgeTop =
+      WinFlowzThemeTokens.appShellBottomNavSparkBadgeTop;
+  static const bottomNavSparkBadgeRight =
+      WinFlowzThemeTokens.appShellBottomNavSparkBadgeRight;
+  static const bottomNavSparkBorderWidth =
+      WinFlowzThemeTokens.appShellBottomNavSparkBorderWidth;
+  static const utilityIconBoxSize =
+      WinFlowzThemeTokens.appShellUtilityIconBoxSize;
+  static const onboardingDotSize =
+      WinFlowzThemeTokens.appShellOnboardingDotSize;
+  static const onboardingDotIconSize =
+      WinFlowzThemeTokens.appShellOnboardingDotIconSize;
+  static const dividerThickness = WinFlowzThemeTokens.dividerThickness;
 }
 
 class AppLayoutMetrics {
   static const onboardingOverlayMaxWidth = 520.0;
   static const settingsTwoColumnBreakpoint = 1180.0;
   static const authFormMaxWidth = WinFlowzThemeTokens.authFormMaxWidth;
+  static const authGateLoadingCardWidth =
+      WinFlowzThemeTokens.authGateLoadingCardWidth;
+  static const authGateErrorCardWidth =
+      WinFlowzThemeTokens.authGateErrorCardWidth;
   static const authWebSignInButtonHeight =
       WinFlowzThemeTokens.authWebSignInButtonHeight;
   static const authWebSignInButtonMinWidth =
@@ -253,6 +274,8 @@ class AppLayoutMetrics {
       WinFlowzThemeTokens.authWebSignInButtonDisabledAlpha;
   static const customActionChipWidth =
       WinFlowzThemeTokens.customActionChipWidth;
+  static const keyboardSyncDialogWidth =
+      WinFlowzThemeTokens.keyboardSyncDialogWidth;
 }
 
 class AppBreakpoints {
@@ -265,6 +288,8 @@ class AppKeyboardPreview {
   static const double maxWidth =
       WinFlowzThemeTokens.keyboardPreviewFrameMaxWidth;
   static const double dropdownWidth = 188.0;
+  static const double pinnedBadgeInset =
+      WinFlowzThemeTokens.keyboardPreviewPinnedBadgeInset;
   static const double statusHeight =
       WinFlowzThemeTokens.keyboardPreviewStatusHeight;
   static const double rowHeightTiny =
@@ -302,6 +327,40 @@ class AppSliders {
       WinFlowzThemeTokens.overlayBubbleDefaultSize;
   static const double overlayDefaultOpacity =
       WinFlowzThemeTokens.overlayBubbleDefaultOpacity;
+}
+
+class AppKeyboardStudioMetrics {
+  static const double sliderLabelWidth = 82.0;
+  static const double sliderValueWidth = 62.0;
+  static const double importExportDialogWidth = 420.0;
+  static const double colorFieldPicker = 52.0;
+  static const double colorFieldPickerIcon = 24.0;
+  static const double previewPanelHeight = 74.0;
+  static const double colorChannelWidth = 24.0;
+  static const double colorValueWidth = 42.0;
+  static const double fieldCornerRadius = 5.0;
+  static const double presetDropdownWidth =
+      WinFlowzThemeTokens.keyboardCornerPresetDropdownWidth;
+  static const double previewLabelFontSize =
+      WinFlowzThemeTokens.settingsThemePreviewLabelFontSize;
+  static const double previewSwatchHeight =
+      WinFlowzThemeTokens.settingsThemePreviewSwatchHeight;
+  static const double previewSwatchRadius = 4.0;
+}
+
+class AppVoiceMetrics {
+  static const double recordingSurfaceWidth =
+      WinFlowzThemeTokens.voiceRecordingSurfaceWidth;
+  static const double recordingSurfaceHeight =
+      WinFlowzThemeTokens.voiceRecordingSurfaceHeight;
+  static const double recordingBarWidth =
+      WinFlowzThemeTokens.voiceRecordingBarWidth;
+  static const double recordingBarHeightBase =
+      WinFlowzThemeTokens.voiceRecordingBarHeightBase;
+  static const double recordingBarHeightRange =
+      WinFlowzThemeTokens.voiceRecordingBarHeightRange;
+  static const double recordingSurfaceRadius =
+      WinFlowzThemeTokens.voiceRecordingSurfaceRadius;
 }
 
 class AppElevation {
@@ -344,19 +403,8 @@ class AppRadii {
   static const lg = WinFlowzThemeTokens.siteRadiusLg;
   static const xl = WinFlowzThemeTokens.siteRadiusXl;
   static const x2l = WinFlowzThemeTokens.siteRadius2xl;
+  static const xxl = WinFlowzThemeTokens.themeRadiusXxl;
   static const pill = WinFlowzThemeTokens.themeRadiusPill;
-}
-
-class AppKeyboardStudioMetrics {
-  static const double sliderLabelWidth = 82.0;
-  static const double sliderValueWidth = 62.0;
-  static const double importExportDialogWidth = 420.0;
-  static const double colorFieldPicker = 52.0;
-  static const double colorFieldPickerIcon = 24.0;
-  static const double previewPanelHeight = 74.0;
-  static const double colorChannelWidth = 24.0;
-  static const double colorValueWidth = 42.0;
-  static const double fieldCornerRadius = 5.0;
 }
 
 class AppShadows {

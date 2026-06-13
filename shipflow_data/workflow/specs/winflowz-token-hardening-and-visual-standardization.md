@@ -284,6 +284,7 @@ None.
 | 2026-06-11 15:47:26 UTC | 102-sf-start | GPT-5 Codex | implementation | partial | /103-sf-verify WinFlowz token hardening and visual standardization |
 | 2026-06-11 19:46:43 UTC | 006-sf-design | GPT-5 Codex | app-input-token-standardization | partial | Continue field-token sweep or /103-sf-verify after full token scope |
 | 2026-06-11 19:51:04 UTC | 006-sf-design | GPT-5 Codex | app-field-row-standardization | partial | Continue full token scope or /103-sf-verify after remaining surfaces |
+| 2026-06-12 20:46:04 UTC | 001-sf-build | Codex | implementation | partial | Continue WinFlowz site token migration before /103-sf-verify |
 
 ## Current Chantier Flow
 
@@ -291,6 +292,7 @@ None.
 - 101-sf-ready: done
 - 102-sf-start: partial
 - 006-sf-design: partial
+- 001-sf-build: partial
 - 103-sf-verify: not launched
 - 104-sf-end: not launched
 - 005-sf-ship: not launched

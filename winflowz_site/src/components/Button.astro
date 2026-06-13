@@ -5,12 +5,14 @@ type IconName = 'arrow-right';
 interface Props {
 	variant: 'primary' | 'secondary' | 'minimal';
 	link: string;
+	track?: string;
 	icon?: undefined | { type: 'icon'; name: IconName } | { type: 'raw'; html: string };
 }
 
 const propsSchema = z.object({
 	variant: z.enum(['primary', 'secondary', 'minimal']).default('primary'),
 	link: z.string(),
+	track: z.string().optional(),
 	icon: z
 		.union([
 			z.object({ type: z.literal('icon'), name: z.custom<IconName>(z.string().parse) }),
@@ -19,10 +21,10 @@ const propsSchema = z.object({
 		.optional(),
 });
 
-const { link, variant, icon } = propsSchema.parse(Astro.props);
+const { link, variant, icon, track } = propsSchema.parse(Astro.props);
 ---
 
-<a class="action" data-variant={variant} href={link}>
+<a class="action" data-track={track} data-variant={variant} href={link}>
 	<slot />
 	{icon?.type === 'icon' && icon.name === 'arrow-right' && (
 		<svg viewBox="0 0 24 24" aria-hidden="true" class="icon">
@@ -34,6 +36,9 @@ const { link, variant, icon } = propsSchema.parse(Astro.props);
 
 <style>
 	.action {
+		--ui-button-transition-fast: 0.2s;
+		--ui-button-transition-slow: 0.3s;
+		--ui-button-transition-ease: ease;
 		display: inline-flex;
 		gap: var(--ui-button-gap);
 		align-items: center;
@@ -76,11 +81,13 @@ const { link, variant, icon } = propsSchema.parse(Astro.props);
 
 	.action[data-variant='primary'],
 	.action[data-variant='primary']:hover {
-		transition: background-color 0.2s ease;
+		transition: background-color var(--ui-button-transition-fast) var(--ui-button-transition-ease);
 	}
 
 	.action[data-variant='secondary'] {
-		transition: border-color 0.2s ease, color 0.2s ease;
+		transition:
+			border-color var(--ui-button-transition-slow) var(--ui-button-transition-ease),
+			color var(--ui-button-transition-slow) var(--ui-button-transition-ease);
 	}
 
 	.icon {

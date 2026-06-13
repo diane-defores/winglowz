@@ -75,7 +75,7 @@ const visibleTabs = product.data.tabs.filter((_, index) => {
 
 <MainLayout title={pageTitle}>
 	<section
-		class="mx-auto flex max-w-[85rem] flex-col px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full"
+		class="mx-auto flex max-w-screen-2xl flex-col px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
 	>
 		<div>
 			<p
@@ -89,7 +89,7 @@ const visibleTabs = product.data.tabs.filter((_, index) => {
 		>
 			<div class="w-full sm:w-1/2">
 				<div class="mb-4">
-					<span class={`inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] ${statusClasses}`}>
+					<span class={`inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${statusClasses}`}>
 						{statusLabel}
 					</span>
 				</div>
@@ -105,7 +105,7 @@ const visibleTabs = product.data.tabs.filter((_, index) => {
 			<div class="w-full sm:w-1/2">
 				<img
 					src={product.data.main.imgMain.toString()}
-					class="w-[600px]"
+					class="w-full max-w-xl"
 					alt={product.data.main.imgAlt}
 					draggable="false"
 					loading="eager"
@@ -114,7 +114,7 @@ const visibleTabs = product.data.tabs.filter((_, index) => {
 		</div>
 	</section>
 
-	<div class="mx-auto max-w-[85rem] px-4 pt-10 sm:px-6 lg:px-8 lg:pt-14">
+	<div class="mx-auto max-w-screen-2xl px-4 pt-10 sm:px-6 lg:px-8 lg:pt-14">
 		<nav
 			class="mx-auto grid max-w-6xl gap-y-px sm:flex sm:gap-x-4 sm:gap-y-0"
 			aria-label="Tabs"
@@ -136,7 +136,7 @@ const visibleTabs = product.data.tabs.filter((_, index) => {
 			{hasOverview && (
 				<div id="tabs-with-card-1" role="tabpanel">
 					<div
-						class="mx-auto max-w-[85rem] px-4 pb-10 sm:px-6 lg:px-8 lg:pb-14"
+						class="mx-auto max-w-screen-2xl px-4 pb-10 sm:px-6 lg:px-8 lg:pb-14"
 					>
 						<div class="grid gap-12 md:grid-cols-2">
 							<div class="lg:w-3/4">
@@ -195,7 +195,7 @@ const visibleTabs = product.data.tabs.filter((_, index) => {
 			{hasSpecifications && (
 				<div id="tabs-with-card-2" class={hasOverview ? 'hidden' : undefined} role="tabpanel">
 					<div
-						class="mx-auto max-w-[85rem] px-4 pb-10 sm:px-6 lg:px-8 lg:pb-14"
+						class="mx-auto max-w-screen-2xl px-4 pb-10 sm:px-6 lg:px-8 lg:pb-14"
 					>
 						<div class="grid w-full grid-cols-1 gap-x-16 md:grid-cols-2">
 							<div class="max-w-md space-y-6">

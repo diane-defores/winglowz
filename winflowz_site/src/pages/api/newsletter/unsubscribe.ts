@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
+import { newsletterStyle } from '@/theme/newsletter-email-theme';
 
 export const GET: APIRoute = async ({ url }) => {
   const email = url.searchParams.get('email');
@@ -30,11 +31,11 @@ export const GET: APIRoute = async ({ url }) => {
 
     return new Response(`
       <html>
-        <body style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #111;">
-          <div style="text-align: center; color: #fff;">
-            <h1>Unsubscribed</h1>
-            <p style="color: #999;">You've been unsubscribed from WinFlowz newsletter.</p>
-            <a href="/" style="color: #ff00c8;">Back to WinFlowz</a>
+        <body style="${newsletterStyle('page')}">
+          <div style="${newsletterStyle('pageShell')}">
+            <h1 style="${newsletterStyle('pageHeading')}">Unsubscribed</h1>
+            <p style="${newsletterStyle('pageBody')}">You've been unsubscribed from WinFlowz newsletter.</p>
+            <a href="/" style="${newsletterStyle('pageLink')}">Back to WinFlowz</a>
           </div>
         </body>
       </html>

@@ -1,13 +1,10 @@
 .docs-shell {
-  display: grid;
-  gap: 2rem;
-  align-items: start;
-  padding: 1rem 0 4rem;
+  @apply grid items-start gap-8 pb-16 pt-4;
 }
 
 .docs-sidebar,
 .docs-toc {
-  display: none;
+  @apply hidden;
 }
 
 .docs-sidebar__inner,
@@ -15,10 +12,7 @@
 .docs-article,
 .docs-main__header,
 .docs-pager {
-  border: 1px solid rgb(229 229 229 / 0.8);
-  background: rgb(255 255 255 / 0.92);
-  backdrop-filter: blur(16px);
-  border-radius: 1.5rem;
+  @apply rounded-3xl border border-neutral-200/80 bg-white/90 backdrop-blur-lg;
 }
 
 .dark .docs-sidebar__inner,
@@ -26,74 +20,48 @@
 .dark .docs-article,
 .dark .docs-main__header,
 .dark .docs-pager {
-  border-color: rgb(38 38 38 / 0.9);
-  background: rgb(23 23 23 / 0.88);
+  @apply border-neutral-800/90 bg-neutral-900/90;
 }
 
 .docs-main__header {
-  margin-bottom: 1rem;
-  padding: 1.75rem;
+  @apply mb-4 p-7;
 }
 
 .docs-main__eyebrow,
 .docs-sidebar__eyebrow,
 .docs-toc__title,
 .docs-pager__label {
-  margin: 0 0 0.75rem;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--brand-magenta);
+  @apply mb-3 text-xs font-extrabold uppercase tracking-widest text-magenta;
 }
 
 .docs-main__header h1 {
-  margin: 0;
-  font-size: clamp(2rem, 3vw, 3.5rem);
-  line-height: 1;
+  @apply m-0 text-4xl leading-none sm:text-5xl lg:text-6xl;
 }
 
 .docs-main__description {
-  margin: 1rem 0 0;
-  max-width: 60ch;
-  color: rgb(82 82 82);
-}
-
-.dark .docs-main__description,
-.dark .docs-toc__empty {
-  color: rgb(163 163 163);
+  @apply mt-4 max-w-2xl text-neutral-600 dark:text-neutral-400;
 }
 
 .docs-article {
-  padding: 1.75rem;
+  @apply p-7;
 }
 
 .docs-sidebar__inner,
 .docs-toc__inner {
-  position: sticky;
-  top: 6rem;
-  padding: 1.25rem;
+  @apply sticky top-24 p-5;
 }
 
 .docs-nav__list,
 .docs-toc__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  @apply m-0 list-none p-0;
 }
 
 .docs-nav__list--nested {
-  margin-top: 0.35rem;
-  padding-left: 0.85rem;
-  border-left: 1px solid rgb(229 229 229);
-}
-
-.dark .docs-nav__list--nested {
-  border-left-color: rgb(64 64 64);
+  @apply mt-1 border-l border-neutral-200 pl-3.5 dark:border-neutral-700;
 }
 
 .docs-nav__summary {
-  list-style: none;
+  @apply list-none;
 }
 
 .docs-nav__summary::-webkit-details-marker {
@@ -101,53 +69,38 @@
 }
 
 .docs-nav__summary.is-current .docs-nav__link {
-  color: var(--brand-magenta);
+  @apply text-magenta;
 }
 
 .docs-nav__link,
 .docs-nav__label,
 .docs-toc__list a {
-  display: block;
-  padding: 0.35rem 0;
-  color: inherit;
-  text-decoration: none;
+  @apply block py-1.5 text-inherit no-underline;
 }
 
 .docs-nav__link:hover,
 .docs-toc__list a:hover {
-  color: var(--brand-magenta);
+  @apply text-magenta;
 }
 
 .docs-toc__item.is-nested a {
-  padding-left: 0.85rem;
+  @apply pl-3.5;
 }
 
 .docs-pager {
-  margin-top: 1rem;
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
+  @apply mt-4 grid gap-4 p-4;
 }
 
 .docs-pager__link {
-  display: block;
-  border-radius: 1rem;
-  padding: 1rem;
-  text-decoration: none;
-  color: inherit;
-  background: rgb(245 245 245 / 0.8);
-}
-
-.dark .docs-pager__link {
-  background: rgb(10 10 10 / 0.45);
+  @apply block rounded-2xl bg-neutral-100/80 p-4 text-inherit no-underline dark:bg-neutral-950/50;
 }
 
 .docs-pager__link--next {
-  text-align: right;
+  @apply text-right;
 }
 
 .docs-pager__link strong {
-  display: block;
+  @apply block;
 }
 
 .sl-markdown-content {
@@ -161,93 +114,73 @@
 .sl-markdown-content h2,
 .sl-markdown-content h3,
 .sl-markdown-content h4 {
-  scroll-margin-top: 7rem;
+  @apply scroll-mt-28;
 }
 
 .sl-markdown-content ul {
-  list-style: none;
-  padding-left: 0;
+  @apply list-none pl-0;
 }
 
 .sl-markdown-content ul > li {
-  position: relative;
-  padding-left: 1.4rem;
+  @apply relative pl-6;
 }
 
 .sl-markdown-content ul > li::before {
   content: "";
-  position: absolute;
-  left: 0.1rem;
-  top: 0.82rem;
-  width: 0.75rem;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--brand-magenta);
+  @apply absolute left-0.5 top-3.5 h-0.5 w-3 rounded-full bg-magenta;
 }
 
 .sl-markdown-content li + li,
 .sl-markdown-content li > ul,
 .sl-markdown-content li > ol {
-  margin-top: 0.65rem;
+  @apply mt-3;
 }
 
 .sl-markdown-content a {
-  color: var(--brand-magenta);
+  @apply text-magenta;
 }
 
 .sl-markdown-content blockquote,
 .docs-aside {
-  margin: 1.5rem 0;
-  border-radius: 1rem;
-  padding: 1rem 1.1rem;
+  @apply my-6 rounded-2xl px-4 py-4;
 }
 
 .sl-markdown-content blockquote {
-  border-left: 4px solid var(--brand-cyan);
-  background: rgb(245 245 245);
-}
-
-.dark .sl-markdown-content blockquote {
-  background: rgb(24 24 27);
+  @apply border-l-4 border-cyan-400 bg-neutral-100 dark:bg-neutral-800;
 }
 
 .docs-aside {
-  border: 1px solid transparent;
+  @apply border border-transparent;
 }
 
 .docs-aside__title {
-  margin: 0 0 0.65rem;
-  font-weight: 800;
+  @apply mb-2 font-extrabold;
 }
 
 .docs-aside--tip {
-  background: linear-gradient(135deg, rgb(250 204 21 / 0.18), rgb(16 185 129 / 0.12));
-  border-color: rgb(250 204 21 / 0.35);
+  @apply border-yellow/30 bg-gradient-to-br from-yellow/20 via-emerald/10 to-transparent;
 }
 
 .docs-aside--note {
-  background: linear-gradient(135deg, rgb(34 211 238 / 0.15), rgb(16 185 129 / 0.08));
-  border-color: rgb(34 211 238 / 0.25);
+  @apply border-cyan/25 bg-gradient-to-br from-cyan/20 via-emerald/10 to-transparent;
 }
 
 .docs-aside--caution,
 .docs-aside--danger {
-  background: linear-gradient(135deg, rgb(244 63 94 / 0.16), rgb(249 115 22 / 0.12));
-  border-color: rgb(244 63 94 / 0.28);
+  @apply border-red/30 bg-gradient-to-br from-red/20 via-orange/10 to-transparent;
 }
 
 .docs-aside--success {
-  background: linear-gradient(135deg, rgb(16 185 129 / 0.15), rgb(34 197 94 / 0.1));
-  border-color: rgb(16 185 129 / 0.25);
+  @apply border-emerald/25 bg-gradient-to-br from-emerald/20 via-green/10 to-transparent;
 }
 
-@media (min-width: 1100px) {
+@screen xl {
   .docs-shell {
-    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) minmax(200px, 240px);
+    @apply grid-cols-3;
   }
 
   .docs-sidebar,
   .docs-toc {
-    display: block;
+    @apply block;
   }
 }

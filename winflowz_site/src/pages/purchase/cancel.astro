@@ -3,7 +3,12 @@ import MainLayout from '@/layouts/MainLayout.astro'
 
 const offerId = Astro.url.searchParams.get('offerId')
 const isWinFlowzAppOffer = offerId?.startsWith('winflowz_app/') ?? false
-const returnUrl = isWinFlowzAppOffer ? '/winflowz-founder' : '/products'
+const isSocialGlowzOffer = offerId === 'socialglowz/lifetime_deal'
+const returnUrl = isWinFlowzAppOffer
+	? '/winflowz-founder'
+	: isSocialGlowzOffer
+		? '/socialglowz-founder'
+		: '/products'
 ---
 
 <MainLayout title="Checkout Cancelled">
