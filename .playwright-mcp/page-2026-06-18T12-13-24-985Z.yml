@@ -1,0 +1,308 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - link "WinFlowz WinFlowz WinFlowz" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: WinFlowz WinFlowz WinFlowz
+      - generic [ref=e8]:
+        - link "Windows Mastery" [ref=e9] [cursor=pointer]:
+          - /url: /windows-mastery
+        - link "Apps" [ref=e10] [cursor=pointer]:
+          - /url: /products
+        - link "Courses" [ref=e11] [cursor=pointer]:
+          - /url: /en/formations/
+        - link "Roadmap" [ref=e12] [cursor=pointer]:
+          - /url: /roadmap
+        - link "Services" [ref=e13] [cursor=pointer]:
+          - /url: /services
+        - link "Blog" [ref=e14] [cursor=pointer]:
+          - /url: /blog
+        - link "Contact" [ref=e15] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=e16]:
+        - link "FR" [ref=e17] [cursor=pointer]:
+          - /url: /fr/winflowz-founder/
+        - button "Basculer vers le thème sombre" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+        - link "Sign In" [ref=e21] [cursor=pointer]:
+          - /url: /signin
+          - button "Sign In" [ref=e22]
+        - link "Start with WinFlowz" [ref=e23] [cursor=pointer]:
+          - /url: /signin?next=%2Fdashboard%2Fdocs%2Fen%2Fformations%2Fmodule-2-windows%2F
+          - button "Start with WinFlowz" [ref=e24]
+  - main [ref=e26]:
+    - generic [ref=e27]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - paragraph [ref=e33]: Early Bird Lifetime Deal
+          - heading "Become a Winflow founder" [level=1] [ref=e34]
+          - paragraph [ref=e35]: Get lifetime access to the productivity app that helps you capture, transform, and reuse your words faster. Android is available first, with future released platforms included as Winflow grows.
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - generic [ref=e38]: FOUNDER
+              - paragraph [ref=e39]: 50% off for the first 50 founders
+            - paragraph [ref=e40]: Use code FOUNDER at checkout. Early founders get the lowest direct price, first access to new releases, and the strongest voice in what Winflow becomes next.
+          - generic [ref=e41]:
+            - link "Become a founder" [ref=e42] [cursor=pointer]:
+              - /url: /api/commerce/checkout?offerId=winflowz_app%2Fpower&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Fpower&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Fpower
+            - link "Compare plans" [ref=e43] [cursor=pointer]:
+              - /url: "#architecture"
+        - generic [ref=e46]:
+          - generic [ref=e50]:
+            - generic [ref=e55]: Winflow is built for the moments when typing is too slow, copying is messy, and your best ideas are trapped between apps.
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - paragraph [ref=e60]: Flow
+                - paragraph [ref=e61]: Capture & prioritize
+              - generic [ref=e62]:
+                - paragraph [ref=e63]: Execution
+                - paragraph [ref=e64]: Plan & ship
+          - generic [ref=e65]: "Active device: 1 / 3"
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - heading "Start on Android. Keep your place for what comes next." [level=2] [ref=e70]
+          - generic [ref=e71]: Availability
+        - paragraph [ref=e72]: "Winflow starts where your words already happen: on your phone. Your founder license covers released platforms over time, without forcing you to buy again for every device you use."
+        - list [ref=e73]:
+          - listitem [ref=e74]: Android is available first.
+          - listitem [ref=e75]: Windows, iOS, and Linux are planned with no promised release date.
+          - listitem [ref=e76]: Your plan is based on active devices, not separate platform purchases.
+          - listitem [ref=e77]: Founder pricing can increase as the product matures.
+      - generic [ref=e78]:
+        - generic [ref=e79]:
+          - paragraph [ref=e80]: Product architecture
+          - heading "Turn scattered words into usable workflow" [level=2] [ref=e81]
+          - paragraph [ref=e82]: Winflow is built for the moments when typing is too slow, copying is messy, and your best ideas are trapped between apps.
+        - generic [ref=e83]:
+          - heading "A faster path from thought to action" [level=3] [ref=e84]
+          - paragraph [ref=e85]: Capture what matters, clean it up, and reuse it where the work actually happens.
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - paragraph [ref=e88]: Step 01
+              - heading "Capture faster" [level=4] [ref=e89]
+              - paragraph [ref=e90]: Use voice-first tools, keyboard workflows, and quick actions to get words out of your head before they disappear.
+            - generic [ref=e91]:
+              - paragraph [ref=e92]: Step 02
+              - heading "Clean and reuse" [level=4] [ref=e93]
+              - paragraph [ref=e94]: Turn rough text into something useful, then bring it back through snippets, clipboard workflows, and saved patterns.
+            - generic [ref=e95]:
+              - paragraph [ref=e96]: Step 03
+              - heading "Move across your setup" [level=4] [ref=e97]
+              - paragraph [ref=e98]: Start on Android today and keep room for future platforms as they become available.
+      - generic [ref=e99]:
+        - generic [ref=e100]:
+          - heading "One license. Multiple active devices." [level=2] [ref=e101]
+          - paragraph [ref=e102]: Choose the amount of device flexibility you want. Your activations can be used across released platforms, so the plan follows your setup instead of locking you into one device type.
+        - generic [ref=e103]:
+          - paragraph [ref=e105]: Use your activations on any released Winflow platform.
+          - paragraph [ref=e107]: Switch devices within the activation rules of your plan.
+          - paragraph [ref=e109]: Keep the founder deal while Winflow grows.
+          - paragraph [ref=e111]: Avoid paying separately for every future platform release.
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - paragraph [ref=e114]: Commercial structure
+          - heading "Choose your founder tier" [level=2] [ref=e115]
+          - paragraph [ref=e116]: All founder tiers include lifetime access under the plan you choose. The difference is how many active devices you want available at the same time.
+        - generic [ref=e118]:
+          - generic [ref=e119]:
+            - paragraph [ref=e120]: FOUNDER
+            - paragraph [ref=e121]: 50% off for the first 50 founders
+          - link "Become a founder" [ref=e122] [cursor=pointer]:
+            - /url: /api/commerce/checkout?offerId=winflowz_app%2Fpower&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Fpower&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Fpower
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - paragraph [ref=e126]: 1 activation
+            - heading "Focus" [level=3] [ref=e127]
+            - paragraph [ref=e128]: For one personal device
+            - generic [ref=e129]:
+              - generic [ref=e130]:
+                - generic [ref=e131]: $49.50
+                - generic [ref=e132]: $99
+              - generic [ref=e133]:
+                - generic [ref=e134]: With FOUNDER
+                - generic [ref=e135]: Public price
+            - paragraph [ref=e136]: Start with Winflow on one active device and keep access to future released platforms under your founder license.
+            - generic [ref=e137]: "Activation: 1 active device"
+            - generic [ref=e138]: 50% off with FOUNDER
+            - link "Become a founder" [ref=e139] [cursor=pointer]:
+              - /url: /api/commerce/checkout?offerId=winflowz_app%2Ffocus&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Ffocus&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Ffocus
+          - generic [ref=e140]:
+            - paragraph [ref=e142]: 2 activations
+            - heading "Power" [level=3] [ref=e143]
+            - paragraph [ref=e144]: For daily multi-device use
+            - generic [ref=e145]:
+              - generic [ref=e146]:
+                - generic [ref=e147]: $89.50
+                - generic [ref=e148]: $179
+              - generic [ref=e149]:
+                - generic [ref=e150]: With FOUNDER
+                - generic [ref=e151]: Public price
+            - paragraph [ref=e152]: Use Winflow across two active personal devices when your workflow moves between screens.
+            - generic [ref=e153]: "Activation: 2 active devices"
+            - generic [ref=e154]: 50% off with FOUNDER
+            - link "Become a founder" [ref=e155] [cursor=pointer]:
+              - /url: /api/commerce/checkout?offerId=winflowz_app%2Fpower&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Fpower&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Fpower
+          - generic [ref=e156]:
+            - paragraph [ref=e158]: 5 activations
+            - heading "Control" [level=3] [ref=e159]
+            - paragraph [ref=e160]: For a complete productivity setup
+            - generic [ref=e161]:
+              - generic [ref=e162]:
+                - generic [ref=e163]: $174.50
+                - generic [ref=e164]: $349
+              - generic [ref=e165]:
+                - generic [ref=e166]: With FOUNDER
+                - generic [ref=e167]: Public price
+            - paragraph [ref=e168]: Give your main devices room to work together as Winflow expands beyond Android.
+            - generic [ref=e169]: "Activation: 5 active devices"
+            - generic [ref=e170]: 50% off with FOUNDER
+            - link "Become a founder" [ref=e171] [cursor=pointer]:
+              - /url: /api/commerce/checkout?offerId=winflowz_app%2Fcontrol&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Fcontrol&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Fcontrol
+          - generic [ref=e172]:
+            - paragraph [ref=e174]: 10 activations
+            - heading "Command" [level=3] [ref=e175]
+            - paragraph [ref=e176]: For maximum device flexibility
+            - generic [ref=e177]:
+              - generic [ref=e178]:
+                - generic [ref=e179]: $399.50
+                - generic [ref=e180]: $799
+              - generic [ref=e181]:
+                - generic [ref=e182]: With FOUNDER
+                - generic [ref=e183]: Public price
+            - paragraph [ref=e184]: The highest founder tier for people who want the broadest personal activation room across present and future released platforms.
+            - generic [ref=e185]: "Activation: 10 active devices"
+            - generic [ref=e186]: 50% off with FOUNDER
+            - link "Become a founder" [ref=e187] [cursor=pointer]:
+              - /url: /api/commerce/checkout?offerId=winflowz_app%2Fcommand&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Fcommand&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Fcommand
+      - generic [ref=e188]:
+        - heading "A clear founder deal" [level=2] [ref=e189]
+        - paragraph [ref=e190]: "The offer is intentionally simple: buy once, start with Android, and keep access as Winflow grows. The limits are clear so the product can stay sustainable."
+        - generic [ref=e191]:
+          - generic [ref=e192]: Android is available now.
+          - generic [ref=e193]: Future platforms are planned, but not promised by a fixed date.
+          - generic [ref=e194]: Cloud and AI features will stay bounded so the product can keep improving.
+          - generic [ref=e195]: The FOUNDER coupon is limited to the first 50 purchases.
+      - generic [ref=e196]:
+        - heading "FAQ" [level=2] [ref=e197]
+        - paragraph [ref=e198]: Short answers before you become a founder.
+        - generic [ref=e199]:
+          - generic [ref=e200]:
+            - paragraph [ref=e201]: What do I get today?
+            - paragraph [ref=e202]: You get founder access to Winflow with Android available first, under the activation limit of the plan you choose.
+          - generic [ref=e203]:
+            - paragraph [ref=e204]: Are future platforms included?
+            - paragraph [ref=e205]: Future released platforms are included when they become available. Windows, iOS, and Linux are planned, but there is no release date commitment.
+          - generic [ref=e206]:
+            - paragraph [ref=e207]: How do activations work?
+            - paragraph [ref=e208]: Each plan gives you a number of active personal devices. Those activations can be used across released platforms.
+          - generic [ref=e209]:
+            - paragraph [ref=e210]: Is this for teams?
+            - paragraph [ref=e211]: No. These founder tiers are personal licenses. Team and business licensing can come later as a separate offer.
+          - generic [ref=e212]:
+            - paragraph [ref=e213]: Will the price stay the same?
+            - paragraph [ref=e214]: No. Founder pricing is an early window and may increase as Winflow adds more depth and platform coverage.
+      - generic [ref=e216]:
+        - generic [ref=e217]:
+          - heading "Become a Winflow founder" [level=2] [ref=e218]
+          - paragraph [ref=e219]: Lock in your founder tier while Winflow is still early, start on Android, and keep your place as the product expands.
+        - link "Become a founder" [ref=e220] [cursor=pointer]:
+          - /url: /api/commerce/checkout?offerId=winflowz_app%2Fpower&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Fpower&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Fpower
+    - generic [ref=e223]:
+      - generic [ref=e224]:
+        - paragraph [ref=e225]: FOUNDER
+        - paragraph [ref=e226]: "FOUNDER code active: 50% off for the first 50 purchases."
+      - link "Become a founder" [ref=e227] [cursor=pointer]:
+        - /url: /api/commerce/checkout?offerId=winflowz_app%2Fpower&provider=lemonsqueezy&source=direct&sourceRef=%2Fwinflowz-founder&discountCode=FOUNDER&successUrl=%2Fpurchase%2Fsuccess%3FofferId%3Dwinflowz_app%252Fpower&cancelUrl=%2Fpurchase%2Fcancel%3FofferId%3Dwinflowz_app%252Fpower
+  - contentinfo [ref=e228]:
+    - generic [ref=e229]:
+      - generic [ref=e230]:
+        - generic [ref=e231]:
+          - link "WinFlowz WinFlowz WinFlowz" [ref=e232] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e234]: WinFlowz WinFlowz WinFlowz
+          - paragraph [ref=e236]: Productivity plugins & Windows training by Diane Defores.
+          - generic [ref=e237]:
+            - paragraph [ref=e238]: This Week In Windows Productivity
+            - paragraph [ref=e239]: Weekly newsletter about Windows tooling and the productivity ecosystem.
+          - generic [ref=e242]: Site and catalog are maintained continuously
+        - generic [ref=e243]:
+          - heading "Ecosystem" [level=4] [ref=e244]
+          - list [ref=e245]:
+            - listitem [ref=e246]:
+              - link "Courses" [ref=e247] [cursor=pointer]:
+                - /url: /en/formations/
+            - listitem [ref=e248]:
+              - link "Apps & Plugins" [ref=e249] [cursor=pointer]:
+                - /url: /products
+            - listitem [ref=e250]:
+              - link "Services" [ref=e251] [cursor=pointer]:
+                - /url: /services
+            - listitem [ref=e252]:
+              - link "Roadmap" [ref=e253] [cursor=pointer]:
+                - /url: /roadmap
+        - generic [ref=e254]:
+          - heading "Products" [level=4] [ref=e255]
+          - list [ref=e256]:
+            - listitem [ref=e257]:
+              - link "ObsiFlowz" [ref=e258] [cursor=pointer]:
+                - /url: /products/flowzsuite-obsidian
+            - listitem [ref=e259]:
+              - link "ReplayGlowz" [ref=e260] [cursor=pointer]:
+                - /url: /products/replayglowz-extension
+            - listitem [ref=e261]:
+              - link "Windows Mastery" [ref=e262] [cursor=pointer]:
+                - /url: /windows-mastery
+            - listitem [ref=e263]:
+              - link "Productivity Suite" [ref=e264] [cursor=pointer]:
+                - /url: /products/winflowz
+        - generic [ref=e265]:
+          - heading "Company" [level=4] [ref=e266]
+          - list [ref=e267]:
+            - listitem [ref=e268]:
+              - link "About Us" [ref=e269] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e270]:
+              - link "Blog" [ref=e271] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e272]:
+              - link "Contact" [ref=e273] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=e274]:
+          - heading "Legal" [level=4] [ref=e275]
+          - list [ref=e276]:
+            - listitem [ref=e277]:
+              - link "Privacy Policy" [ref=e278] [cursor=pointer]:
+                - /url: /privacy
+            - listitem [ref=e279]:
+              - link "Terms of Service" [ref=e280] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=e281]:
+              - link "Legal Notice" [ref=e282] [cursor=pointer]:
+                - /url: /legal
+            - listitem [ref=e283]:
+              - link "Copyright" [ref=e284] [cursor=pointer]:
+                - /url: /copyright
+            - listitem [ref=e285]:
+              - link "Disclaimer" [ref=e286] [cursor=pointer]:
+                - /url: /disclaimer
+            - listitem [ref=e287]:
+              - link "Terms of Sale" [ref=e288] [cursor=pointer]:
+                - /url: /cgv
+      - generic [ref=e289]:
+        - paragraph [ref=e290]: © 2026 WinFlowz. Crafted by Diane Defores.
+        - generic [ref=e291]:
+          - link "GitHub" [ref=e292] [cursor=pointer]:
+            - /url: https://github.com/diane-defores/winflowz
+          - link "Contact" [ref=e293] [cursor=pointer]:
+            - /url: mailto:hello@winflowz.com
+          - link "↑ Back to top" [ref=e294] [cursor=pointer]:
+            - /url: "#top"
+  - dialog "Cookie consent" [ref=e295]:
+    - generic [ref=e298]:
+      - paragraph [ref=e300]:
+        - text: This site uses essential cookies to support your account, sign-in flow, and display preferences.
+        - link "Privacy Policy" [ref=e301] [cursor=pointer]:
+          - /url: /privacy
+      - generic [ref=e302]:
+        - button "Close" [ref=e303] [cursor=pointer]
+        - button "Understood" [ref=e304] [cursor=pointer]

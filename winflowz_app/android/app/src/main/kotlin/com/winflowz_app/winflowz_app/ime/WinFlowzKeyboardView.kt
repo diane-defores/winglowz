@@ -1967,7 +1967,7 @@ class WinFlowzKeyboardView(
         acquireProtectedInteraction(pointerId, KeyboardProtectedInteraction.LongPressAction)
         pointerTracker.markLongPressTriggered(pointerId)
         ctrlHoldPointerIds.add(pointerId)
-        activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
+        clearCtrlFamilyModifiers()
         lastCtrlTapAtMs = 0L
         if (lockSurface) {
             ctrlActionSurfaceLocked = true
@@ -5421,6 +5421,7 @@ class WinFlowzKeyboardView(
                 }
             }
         if (result && clearModifiersAfter && effectiveValue.kind != KeyboardKeyValueKind.Modifier) {
+            ctrlActionSurfaceLocked = false
             clearTransientModifiers()
         }
         return result
@@ -5431,36 +5432,68 @@ class WinFlowzKeyboardView(
         when (
             KeyboardCtrlSurfaceModePolicy.actionForPrimaryTap(
                 locked = ctrlActionSurfaceLocked,
+                activeModifier = activeCtrlCycleModifier(),
                 lastTapAtMs = lastCtrlTapAtMs,
                 nowAtMs = nowAtMs,
                 doubleTapTimeoutMs = ctrlSurfaceDoubleTapTimeoutMs,
             )
         ) {
-            KeyboardCtrlSurfaceTapAction.ToggleModifier -> {
+            KeyboardCtrlSurfaceTapAction.ActivateCtrl -> {
                 lastCtrlTapAtMs = nowAtMs
-                toggleSystemModifier(KeyboardSystemModifier.Ctrl)
+                activateCtrlCycleModifier(KeyboardSystemModifier.Ctrl)
             }
-            KeyboardCtrlSurfaceTapAction.LockSurface -> {
+            KeyboardCtrlSurfaceTapAction.LockCtrl -> {
+                lastCtrlTapAtMs = nowAtMs
                 lockCtrlActionSurface()
+            }
+            KeyboardCtrlSurfaceTapAction.ActivateAlt -> {
+                lastCtrlTapAtMs = nowAtMs
+                activateCtrlCycleModifier(KeyboardSystemModifier.Alt)
+            }
+            KeyboardCtrlSurfaceTapAction.ActivateFn -> {
+                lastCtrlTapAtMs = nowAtMs
+                activateCtrlCycleModifier(KeyboardSystemModifier.Fn)
             }
             KeyboardCtrlSurfaceTapAction.UnlockSurface -> {
                 unlockCtrlActionSurface()
             }
         }
+        refreshLayout()
     }
 
     private fun lockCtrlActionSurface() {
         ctrlActionSurfaceLocked = true
-        activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
-        lastCtrlTapAtMs = 0L
+        clearCtrlFamilyModifiers()
         setStatus("Ctrl actions locked")
     }
 
     private fun unlockCtrlActionSurface() {
         ctrlActionSurfaceLocked = false
-        activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
+        clearCtrlFamilyModifiers()
         lastCtrlTapAtMs = 0L
         setStatus("Ctrl actions unlocked")
+    }
+
+    private fun activeCtrlCycleModifier(): KeyboardSystemModifier? {
+        return when {
+            KeyboardSystemModifier.Ctrl in activeSystemModifiers -> KeyboardSystemModifier.Ctrl
+            KeyboardSystemModifier.Alt in activeSystemModifiers -> KeyboardSystemModifier.Alt
+            KeyboardSystemModifier.Fn in activeSystemModifiers -> KeyboardSystemModifier.Fn
+            else -> null
+        }
+    }
+
+    private fun activateCtrlCycleModifier(modifier: KeyboardSystemModifier) {
+        ctrlActionSurfaceLocked = false
+        clearCtrlFamilyModifiers()
+        activeSystemModifiers.add(modifier)
+        setStatus("${modifier.name} on")
+    }
+
+    private fun clearCtrlFamilyModifiers() {
+        activeSystemModifiers.remove(KeyboardSystemModifier.Ctrl)
+        activeSystemModifiers.remove(KeyboardSystemModifier.Alt)
+        activeSystemModifiers.remove(KeyboardSystemModifier.Fn)
     }
 
     private fun toggleSystemModifier(modifier: KeyboardSystemModifier) {
@@ -5497,6 +5530,7 @@ class WinFlowzKeyboardView(
 
     private fun clearTransientModifiers() {
         activeSystemModifiers.clear()
+        lastCtrlTapAtMs = 0L
         if (!shiftLocked && shifted && layoutSnapshot.mode == KeyboardLayoutMode.Letters) {
             shifted = false
         }
@@ -5527,6 +5561,9 @@ class WinFlowzKeyboardView(
 
     private fun isActiveModifierKey(key: KeyboardKeySpec): Boolean {
         val modifier = key.keyValue?.modifier ?: return false
+        if (modifier == KeyboardSystemModifier.Ctrl) {
+            return ctrlActionSurfaceLocked || activeCtrlCycleModifier() != null
+        }
         return (modifier == KeyboardSystemModifier.Shift && shifted) ||
             activeSystemModifiers.contains(modifier)
     }
@@ -5629,6 +5666,9 @@ class WinFlowzKeyboardView(
         if (voicePermissionRequired && key.action == KeyboardKeyAction.Voice) {
             return "⛔"
         }
+        if (isCtrlModifierKey(key)) {
+            return ctrlModifierDisplayLabel()
+        }
         if (key.id == "media-now-playing-label" && key.label.length > 52) {
             return key.label.take(49) + "..."
         }
@@ -5721,6 +5761,15 @@ class WinFlowzKeyboardView(
     private fun isCtrlModifierKey(key: KeyboardKeySpec): Boolean {
         return key.keyValue?.kind == KeyboardKeyValueKind.Modifier &&
             key.keyValue.modifier == KeyboardSystemModifier.Ctrl
+    }
+
+    private fun ctrlModifierDisplayLabel(): String {
+        return when {
+            ctrlActionSurfaceLocked -> "Ctrl Lock"
+            KeyboardSystemModifier.Alt in activeSystemModifiers -> "Alt"
+            KeyboardSystemModifier.Fn in activeSystemModifiers -> "Fn"
+            else -> "Ctrl"
+        }
     }
 
     private fun keyTextSize(key: KeyboardKeySpec): Float {

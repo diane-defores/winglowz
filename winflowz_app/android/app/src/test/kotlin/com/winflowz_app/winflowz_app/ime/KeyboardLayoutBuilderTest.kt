@@ -257,7 +257,7 @@ class KeyboardLayoutBuilderTest {
     }
 
     @Test
-    fun `number mode uses a centered three by three keypad with side special keys`() {
+    fun `number mode uses a centered keypad with zero on a dedicated bottom row`() {
         val snapshot =
             KeyboardLayoutBuilder.build(
                 KeyboardLayoutRequest(
@@ -280,15 +280,20 @@ class KeyboardLayoutBuilderTest {
                 ),
             )
 
-        val numericRows = snapshot.rows.drop(1).take(3).map { row -> row.keys.map { it.label } }
+        val numericRows = snapshot.rows.drop(1).take(4).map { row -> row.keys.map { it.label } }
 
         assertEquals(listOf("@", "+", "1", "2", "3", "-", "#"), numericRows[0])
         assertEquals(listOf("?", "*", "4", "5", "6", "/", "!"), numericRows[1])
-        assertEquals(listOf("Fn", ".", "7", "8", "9", "0", ";"), numericRows[2])
+        assertEquals(listOf("7", "8", "9", ";"), numericRows[2])
+        assertEquals(listOf(",", ".", "0"), numericRows[3])
         assertEquals(1, snapshot.rows[1].leadingSpan)
         assertEquals(1, snapshot.rows[1].trailingSpan)
-        val digitLabels = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-        val numberKeys = snapshot.rows.drop(1).take(3).flatMap { it.keys }
+        assertEquals(1, snapshot.rows[3].leadingSpan)
+        assertEquals(1, snapshot.rows[3].trailingSpan)
+        assertEquals(3, snapshot.rows[4].leadingSpan)
+        assertEquals(3, snapshot.rows[4].trailingSpan)
+        val digitLabels = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+        val numberKeys = snapshot.rows.drop(1).take(4).flatMap { it.keys }
         assertTrue(numberKeys.filter { it.label in digitLabels }.all { it.weight == 1f })
         assertTrue(numberKeys.filter { it.label !in digitLabels }.all { it.weight == 1f })
     }
@@ -322,8 +327,44 @@ class KeyboardLayoutBuilderTest {
         assertEquals("ABC", controlRow.keys.first().label)
         assertEquals(KeyboardKeyAction.ModeLetters, controlRow.keys.first().action)
         assertTrue(controlRow.keys.any { it.label == "Tab" && it.action == KeyboardKeyAction.InsertTab })
-        assertTrue(controlRow.keys.none { it.label == "Fn" })
+        assertTrue(controlRow.keys.none { it.label == "Fn" || it.label == "Alt" })
         assertTrue(controlRow.keys.indexOfFirst { it.label == "Del" } < controlRow.keys.indexOfFirst { it.action == KeyboardKeyAction.Enter })
+        assertEquals(2.2f, controlRow.keys.first { it.label == "Espace" }.weight)
+    }
+
+    @Test
+    fun `compact number mode keeps zero below eight with punctuation on the left`() {
+        val snapshot =
+            KeyboardLayoutBuilder.build(
+                KeyboardLayoutRequest(
+                    mode = KeyboardLayoutMode.Numbers,
+                    panel = KeyboardPanelMode.None,
+                    shifted = false,
+                    fieldContext = KeyboardFieldContextMode.Text,
+                    layoutProfile = KeyboardLayoutProfile.QWERTY,
+                    cornerModeEnabled = false,
+                    debugTouchOverlayEnabled = false,
+                    doubleSpacePeriodEnabled = true,
+                    punctuationAutoSpacingEnabled = true,
+                    compactModeEnabled = true,
+                    emojiCategory = KeyboardEmojiCategory.Recents,
+                    recentEmojis = emptyList(),
+                    enterLabel = "Enter",
+                    clipboardAllowed = true,
+                    voiceAllowed = true,
+                    snippetsAllowed = true,
+                    suggestions = emptyList(),
+                ),
+            )
+
+        val compactRows = snapshot.rows.drop(1).take(4).map { row -> row.keys.map { it.label } }
+
+        assertEquals(listOf("@", "+", "1", "2", "3", "-", "#", "Del"), compactRows[0])
+        assertEquals(listOf("?", "*", "4", "5", "6", "/", "!", "Enter"), compactRows[1])
+        assertEquals(listOf("ABC", "Tab", "7", "8", "9", "Espace"), compactRows[2])
+        assertEquals(listOf(",", ".", "0"), compactRows[3])
+        assertEquals(2, snapshot.rows[4].leadingSpan)
+        assertEquals(3, snapshot.rows[4].trailingSpan)
     }
 
     @Test

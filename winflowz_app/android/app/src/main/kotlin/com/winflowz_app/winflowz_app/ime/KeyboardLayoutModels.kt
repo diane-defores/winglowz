@@ -1293,10 +1293,17 @@ object KeyboardLayoutBuilder {
                     textKey("7"),
                     textKey("8"),
                     textKey("9"),
-                    modifierKey("Fn", KeyboardSystemModifier.Fn),
-                    textKey("0"),
-                    textKey("Espace", " "),
+                    textKey("Espace", " ", weight = 1.4f),
                 ),
+            ),
+            KeyboardRowSpec(
+                listOf(
+                    textKey(","),
+                    textKey("."),
+                    textKey("0"),
+                ),
+                leadingSpan = 2,
+                trailingSpan = 3,
             ),
         )
     }
@@ -1320,7 +1327,6 @@ object KeyboardLayoutBuilder {
                     shiftKey("Shift", active = false),
                     KeyboardKeySpec("esc-symbols", "Esc", KeyboardKeyAction.Escape),
                     modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                    modifierKey("Fn", KeyboardSystemModifier.Fn),
                     textKey(page[2][0]),
                     textKey(page[2][1]),
                     textKey(page[2][2]),
@@ -1396,14 +1402,22 @@ object KeyboardLayoutBuilder {
             ),
             KeyboardRowSpec(
                 listOf(
-                    numberSideModifierKey("Fn", KeyboardSystemModifier.Fn),
-                    numberSideKey("."),
                     numberDigitKey("7"),
                     numberDigitKey("8"),
                     numberDigitKey("9"),
-                    numberSideKey("0"),
                     numberSideKey(";"),
                 ),
+                leadingSpan = 1,
+                trailingSpan = 1,
+            ),
+            KeyboardRowSpec(
+                listOf(
+                    numberSideKey(","),
+                    numberSideKey("."),
+                    numberDigitKey("0"),
+                ),
+                leadingSpan = 3,
+                trailingSpan = 3,
             ),
         )
     }
@@ -1536,10 +1550,9 @@ object KeyboardLayoutBuilder {
                     listOf(
                         modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                        modifierKey("Alt", KeyboardSystemModifier.Alt),
                         KeyboardKeySpec("tab-number-control", "Tab", KeyboardKeyAction.InsertTab),
                         textKey(leftSymbol),
-                        textKey("Espace", " ", weight = 2f, span = 2),
+                        textKey("Espace", " ", weight = 2.2f, span = 2),
                         textKey(rightSymbol),
                         KeyboardKeySpec("del", "Del", KeyboardKeyAction.Backspace),
                         KeyboardKeySpec("enter", request.enterLabel, KeyboardKeyAction.Enter),
@@ -1552,7 +1565,6 @@ object KeyboardLayoutBuilder {
                     listOf(
                         modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                        modifierKey("Fn", KeyboardSystemModifier.Fn),
                         textKey(leftSymbol),
                         textKey("Espace", " ", weight = 3f, span = 3),
                         textKey(rightSymbol),
@@ -1566,8 +1578,6 @@ object KeyboardLayoutBuilder {
                     listOf(
                         modeKey("ABC", KeyboardKeyAction.ModeLetters, false),
                         modifierKey("Ctrl", KeyboardSystemModifier.Ctrl),
-                        modifierKey("Alt", KeyboardSystemModifier.Alt),
-                        modifierKey("Fn", KeyboardSystemModifier.Fn),
                         KeyboardKeySpec("tab-navigation-control", "Tab", KeyboardKeyAction.InsertTab),
                         KeyboardKeySpec("esc-navigation-control", "Échap", KeyboardKeyAction.Escape),
                         textKey(leftSymbol),
@@ -1584,11 +1594,6 @@ object KeyboardLayoutBuilder {
                     "Ctrl",
                     KeyboardSystemModifier.Ctrl,
                 ),
-                modifierKey(
-                    "Alt",
-                    KeyboardSystemModifier.Alt,
-                ).takeUnless { mode == KeyboardLayoutMode.Symbols },
-                modifierKey("Fn", KeyboardSystemModifier.Fn),
             )
         return KeyboardRowSpec(
             keys =

@@ -57,6 +57,28 @@ const appMiddleware = async (context: APIContext, next: MiddlewareNext): Promise
   return i18nMiddleware(context, next) as Promise<Response>;
 };
 
+const CLERK_PROTECTED_PATH_PREFIXES = [
+  '/account',
+  '/dashboard',
+  '/purchase/success',
+  '/signin',
+  '/fr/signin',
+  '/api/bridge',
+  '/api/clerk',
+  '/api/features',
+  '/api/polar',
+];
+
+function shouldUseClerkMiddleware(pathname: string): boolean {
+  const normalizedPathname = pathname.length > 1 && pathname.endsWith('/')
+    ? pathname.slice(0, -1)
+    : pathname;
+
+  return CLERK_PROTECTED_PATH_PREFIXES.some((basePath) =>
+    normalizedPathname === basePath || normalizedPathname.startsWith(`${basePath}/`)
+  );
+}
+
 let clerkAwareMiddleware: MiddlewareHandler | null = null;
 
 function getClerkAwareMiddleware(): MiddlewareHandler {
@@ -72,6 +94,10 @@ export const onRequest: MiddlewareHandler = (context, next) => {
   const url = new URL(context.request.url);
 
   if (shouldBypassClerkMiddleware(url.pathname)) {
+    return appMiddleware(context, next);
+  }
+
+  if (!shouldUseClerkMiddleware(url.pathname)) {
     return appMiddleware(context, next);
   }
 

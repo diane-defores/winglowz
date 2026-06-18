@@ -371,14 +371,24 @@ class _KeyCap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isModeSwitch = keySpec.action == KeyboardPreviewKeyAction.modeSwitch;
     final background = keySpec.active
-        ? AppColors.keyboardKeyActive
+        ? isModeSwitch
+              ? AppColors.keyboardKeySpecial
+              : AppColors.keyboardKeyActive
         : keySpec.special
         ? AppColors.keyboardKeySpecial
         : AppColors.white;
     final foreground = keySpec.active
-        ? AppColors.white
+        ? isModeSwitch
+              ? AppColors.keyboardKeyActive
+              : AppColors.white
         : AppColors.keyboardKeyForeground;
+    final borderColor = debug
+        ? AppColors.danger
+        : keySpec.active && isModeSwitch
+        ? AppColors.keyboardKeyActive
+        : AppColors.borderLight;
     return Material(
       color: AppColors.transparent,
       child: InkWell(
@@ -390,7 +400,7 @@ class _KeyCap extends StatelessWidget {
             color: keySpec.enabled ? background : AppColors.keyboardKeyDisabled,
             borderRadius: BorderRadius.circular(AppRadii.sm),
             border: Border.all(
-              color: debug ? AppColors.danger : AppColors.borderLight,
+              color: borderColor,
               width: debug
                   ? AppKeyboardPreview.keyDebugBorderWidth
                   : AppKeyboardPreview.keyBorderWidth,
@@ -1741,15 +1751,23 @@ class KeyboardPreviewSnapshot {
             height: AppKeyboardPreview.rowHeightRegular,
             keys: [
               KeyboardPreviewKey(label: 'Fn', special: true, weight: .7),
-              KeyboardPreviewKey(label: '.', special: true, weight: .7),
               KeyboardPreviewKey(label: '7'),
               KeyboardPreviewKey(label: '8'),
               KeyboardPreviewKey(label: '9'),
-              KeyboardPreviewKey(label: '0', weight: .7),
               KeyboardPreviewKey(label: ';', special: true, weight: .7),
             ],
             leadingWeight: .6,
             trailingWeight: .6,
+          ),
+          KeyboardPreviewRow(
+            height: AppKeyboardPreview.rowHeightRegular,
+            keys: [
+              KeyboardPreviewKey(label: ',', special: true, weight: .7),
+              KeyboardPreviewKey(label: '.', special: true, weight: .7),
+              KeyboardPreviewKey(label: '0'),
+            ],
+            leadingWeight: 1.9,
+            trailingWeight: 1.9,
           ),
         ];
       case KeyboardPreviewMode.symbols:
@@ -2034,6 +2052,7 @@ class KeyboardPreviewSnapshot {
             special: true,
             action: KeyboardPreviewKeyAction.text,
             output: left,
+            weight: 1.1,
           ),
           _withCorners(
             keyId: 'space',
@@ -2041,7 +2060,7 @@ class KeyboardPreviewSnapshot {
             key: const KeyboardPreviewKey(
               label: 'Space',
               special: true,
-              weight: 3,
+              weight: 3.2,
               action: KeyboardPreviewKeyAction.space,
               output: ' ',
             ),
@@ -2051,6 +2070,7 @@ class KeyboardPreviewSnapshot {
             special: true,
             action: KeyboardPreviewKeyAction.text,
             output: right,
+            weight: .9,
           ),
           const KeyboardPreviewKey(
             label: 'Del',

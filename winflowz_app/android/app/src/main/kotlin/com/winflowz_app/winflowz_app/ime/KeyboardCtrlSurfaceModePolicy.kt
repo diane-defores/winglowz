@@ -1,30 +1,42 @@
 package com.winflowz_app.winflowz_app.ime
 
 internal enum class KeyboardCtrlSurfaceTapAction {
-    ToggleModifier,
-    LockSurface,
+    ActivateCtrl,
+    LockCtrl,
+    ActivateAlt,
+    ActivateFn,
     UnlockSurface,
 }
 
 internal object KeyboardCtrlSurfaceModePolicy {
     fun actionForPrimaryTap(
         locked: Boolean,
+        activeModifier: KeyboardSystemModifier?,
         lastTapAtMs: Long,
         nowAtMs: Long,
         doubleTapTimeoutMs: Long,
     ): KeyboardCtrlSurfaceTapAction {
+        if (activeModifier == KeyboardSystemModifier.Ctrl) {
+            return KeyboardCtrlSurfaceTapAction.LockCtrl
+        }
+        if (activeModifier == KeyboardSystemModifier.Alt) {
+            return KeyboardCtrlSurfaceTapAction.ActivateFn
+        }
+        if (activeModifier == KeyboardSystemModifier.Fn) {
+            return KeyboardCtrlSurfaceTapAction.ActivateCtrl
+        }
         if (locked) {
-            return KeyboardCtrlSurfaceTapAction.UnlockSurface
+            val stillCycling =
+                lastTapAtMs > 0L &&
+                    nowAtMs >= lastTapAtMs &&
+                    nowAtMs - lastTapAtMs <= doubleTapTimeoutMs
+            return if (stillCycling) {
+                KeyboardCtrlSurfaceTapAction.ActivateAlt
+            } else {
+                KeyboardCtrlSurfaceTapAction.UnlockSurface
+            }
         }
-        return if (
-            lastTapAtMs > 0L &&
-            nowAtMs >= lastTapAtMs &&
-            nowAtMs - lastTapAtMs <= doubleTapTimeoutMs
-        ) {
-            KeyboardCtrlSurfaceTapAction.LockSurface
-        } else {
-            KeyboardCtrlSurfaceTapAction.ToggleModifier
-        }
+        return KeyboardCtrlSurfaceTapAction.ActivateCtrl
     }
 
     fun shouldUnlockOnLongPress(locked: Boolean): Boolean = locked
