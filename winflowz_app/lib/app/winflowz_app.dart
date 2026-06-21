@@ -246,7 +246,7 @@ class _WinFlowzState extends ConsumerState<WinFlowz> {
         }
         final mediaQuery = MediaQuery.of(context);
         return MediaQuery(
-          data: mediaQuery.copyWith(textScaler: const TextScaler.linear(2)),
+          data: mediaQuery.copyWith(textScaler: const TextScaler.linear(1.5)),
           child: child ?? const SizedBox.shrink(),
         );
       },

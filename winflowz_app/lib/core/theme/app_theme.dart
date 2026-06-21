@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:winflowz_app/core/theme/winflowz_theme_tokens.dart';
 
@@ -102,7 +103,8 @@ class AppTypography {
   static const leadingTight = WinFlowzThemeTokens.lineHeightTight;
   static const leadingSnug = WinFlowzThemeTokens.lineHeightSnug;
   static const leadingNormal = WinFlowzThemeTokens.lineHeightNormal;
-  static const leadingCompact = WinFlowzThemeTokens.settingsDiagnosticLogLineHeight;
+  static const leadingCompact =
+      WinFlowzThemeTokens.settingsDiagnosticLogLineHeight;
   static const leadingRelaxed = 1.8;
 
   static const trackingWide = WinFlowzThemeTokens.trackingWide;
@@ -520,6 +522,10 @@ class AppTheme {
 
   static ThemeData _build(ColorScheme colorScheme) {
     final textTheme = _textTheme(colorScheme);
+    final iconTheme = IconThemeData(
+      size: kIsWeb ? AppIconMetrics.sm * 1.3 : AppIconMetrics.sm,
+      color: colorScheme.onSurfaceVariant,
+    );
     final isDark = colorScheme.brightness == Brightness.dark;
 
     return ThemeData(
@@ -530,6 +536,7 @@ class AppTheme {
       fontFamily: AppTypography.fontFamily,
       fontFamilyFallback: AppTypography.fontFallback,
       textTheme: textTheme,
+      iconTheme: iconTheme,
       canvasColor: colorScheme.surface,
       appBarTheme: AppBarTheme(
         centerTitle: true,
@@ -655,9 +662,13 @@ class AppTheme {
             color: selected
                 ? colorScheme.primary
                 : colorScheme.onSurfaceVariant,
-            size: selected
-                ? AppNavigationMetrics.bottomSelectedIconSize
-                : AppNavigationMetrics.bottomIconSize,
+            size: kIsWeb
+                ? (selected
+                      ? AppNavigationMetrics.bottomSelectedIconSize * 1.3
+                      : AppNavigationMetrics.bottomIconSize * 1.3)
+                : (selected
+                      ? AppNavigationMetrics.bottomSelectedIconSize
+                      : AppNavigationMetrics.bottomIconSize),
           );
         }),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {

@@ -830,7 +830,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
         final useRail = constraints.maxWidth >= AppBreakpoints.navigationRail;
         final colorScheme = Theme.of(context).colorScheme;
         return PopScope(
-        canPop: !_onboardingVisible && _tabHistory.length <= 1,
+          canPop: !_onboardingVisible && _tabHistory.length <= 1,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) {
               return;
@@ -953,10 +953,16 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
             ),
             bottomNavigationBar: useRail || _onboardingVisible
                 ? null
-                : NavigationBar(
-                    selectedIndex: _index,
-                    onDestinationSelected: _selectTab,
-                    destinations: _bottomNavigationDestinations(),
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      top: AppSpacing.x2,
+                      bottom: AppSpacing.x2,
+                    ),
+                    child: NavigationBar(
+                      selectedIndex: _index,
+                      onDestinationSelected: _selectTab,
+                      destinations: _bottomNavigationDestinations(),
+                    ),
                   ),
           ),
         );

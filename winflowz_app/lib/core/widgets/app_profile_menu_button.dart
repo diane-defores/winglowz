@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +20,7 @@ enum AppProfileMenuAction {
 
 class AppProfileMenuButton extends ConsumerWidget {
   const AppProfileMenuButton({super.key});
+  static const double _webScale = 1.5;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -103,12 +105,15 @@ class AppProfileMenuButton extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
-            radius: 22,
+            radius: kIsWeb ? 22 * _webScale : 22,
             backgroundColor: Theme.of(
               context,
             ).colorScheme.primary.withValues(alpha: 0.12),
             foregroundColor: Theme.of(context).colorScheme.primary,
-            child: const Icon(Icons.people_alt_outlined, size: 22),
+            child: Icon(
+              Icons.people_alt_outlined,
+              size: kIsWeb ? 22 * _webScale : 22,
+            ),
           ),
         ],
       ),
