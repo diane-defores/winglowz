@@ -1,0 +1,1 @@
+../../../winflowz_site/src/pages/api/temu/image.ts

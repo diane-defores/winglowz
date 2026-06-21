@@ -12,6 +12,7 @@ const defaultProps = {
 const {
 	meta = defaultProps.meta,
 	structuredData = defaultProps.structuredData,
+	noindex = false,
 } = Astro.props
 
 const metaObject =
@@ -79,6 +80,7 @@ const favicon = await getImage({
 <!-- Meta tags -->
 <meta charset="utf-8" />
 <meta content={metaDescription} name="description" />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
 <meta name="web_author" content={author} />
 <meta
 	name="viewport"

@@ -15,6 +15,7 @@ describe("auth routing middleware", () => {
 
   test("keeps Clerk for account pages and Clerk-backed checkout", () => {
     expect(shouldBypassClerkMiddleware("/api/polar/checkout")).toBe(false);
+    expect(shouldBypassClerkMiddleware("/api/temu/extract")).toBe(false);
     expect(shouldBypassClerkMiddleware("/account")).toBe(false);
     expect(shouldBypassClerkMiddleware("/dashboard")).toBe(false);
     expect(shouldBypassClerkMiddleware("/signin")).toBe(false);

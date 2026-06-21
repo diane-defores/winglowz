@@ -1,0 +1,1 @@
+../specs/temu-vinted-listing-assistant.md

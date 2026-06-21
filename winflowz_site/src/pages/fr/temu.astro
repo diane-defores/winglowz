@@ -1,17 +1,3 @@
 ---
-import MainLayout from '@layouts/MainLayout.astro'
-import TemuWorkspace from '@/components/temu/TemuWorkspace.astro'
+return Astro.redirect('/dashboard/temu')
 ---
-
-<MainLayout
-  lang="fr"
-  title="Assistant Temu | WinFlowz"
-  meta={{
-    title: 'Assistant Temu | WinFlowz',
-    description:
-      "Extrais une description et télécharge toutes les photos d'une fiche produit depuis une URL.",
-    canonicalURL: 'https://winflowz.com/fr/temu',
-  }}
->
-  <TemuWorkspace lang="fr" />
-</MainLayout>
