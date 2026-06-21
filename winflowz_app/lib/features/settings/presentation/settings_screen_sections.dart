@@ -89,15 +89,16 @@ class _AccountCloudSection extends StatelessWidget {
     );
 
     return AppSectionCard(
-      subtitle: remoteAuthConfigured
-          ? 'Compte, accès et données synchronisables.'
-          : 'L’authentification distante n’est pas configurée sur cette version.',
       leading: const Icon(Icons.cloud_sync_outlined),
       stretch: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _AccountAccessCard(
+            title: 'Mon compte',
+            subtitle: remoteAuthConfigured
+                ? 'Compte, accès et synchronisation cloud.'
+                : 'L’authentification distante n’est pas configurée sur cette version.',
             accountStatus: accountStatus,
             suiteStatus: suiteStatus,
             authAsync: authAsync,
@@ -257,6 +258,8 @@ String _compactSyncCategoryLabel(CloudSyncCategory category) =>
 
 class _AccountAccessCard extends StatelessWidget {
   const _AccountAccessCard({
+    required this.title,
+    required this.subtitle,
     required this.accountStatus,
     required this.suiteStatus,
     required this.authAsync,
@@ -266,6 +269,8 @@ class _AccountAccessCard extends StatelessWidget {
     required this.onSignOut,
   });
 
+  final String title;
+  final String subtitle;
   final CloudSyncCategoryStatus accountStatus;
   final CloudSyncCategoryStatus suiteStatus;
   final AsyncValue<AuthSessionSnapshot> authAsync;
@@ -317,10 +322,9 @@ class _AccountAccessCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Compte & synchronisation',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                  Text(title, style: Theme.of(context).textTheme.titleSmall),
+                  AppGaps.x1,
+                  Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
                   AppGaps.x1,
                   Text(
                     '$stateLabel · $detail',

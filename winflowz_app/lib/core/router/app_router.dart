@@ -8,6 +8,7 @@ import '../../features/auth/presentation/auth_gate_screen.dart';
 import '../../features/keyboard/presentation/keyboard_navigation_diagnostics_screen.dart';
 import '../../features/keyboard/presentation/keyboard_theme_studio_screen.dart';
 import '../../features/shell/presentation/app_shell_screen.dart';
+import '../../features/settings/presentation/settings_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authStateNotifier = ValueNotifier(ref.read(authSessionProvider));
@@ -59,10 +60,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings',
         name: 'settings',
-        builder: (context, state) => AppShellScreen(
-          initialIndex: 6,
-          initialOnboardingStep: state.uri.queryParameters['onboarding'],
-          initialSettingsSection: state.uri.queryParameters['section'],
+        builder: (context, state) => SettingsScreen(
+          initialSectionId: state.uri.queryParameters['section'],
         ),
       ),
       GoRoute(

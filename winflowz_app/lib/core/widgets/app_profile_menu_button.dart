@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/winflowz_app.dart';
-import '../../features/auth/application/auth_session_provider.dart';
 import '../theme/app_theme.dart';
 
 enum AppProfileMenuAction {
@@ -23,10 +22,6 @@ class AppProfileMenuButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(authSessionProvider).asData?.value;
-    final label = _profileLabel(session?.user?.email);
-    final initials = _profileInitials(label);
-
     final activeTheme = ref.watch(appThemeModeProvider);
 
     return PopupMenuButton<AppProfileMenuAction>(
@@ -105,7 +100,7 @@ class AppProfileMenuButton extends ConsumerWidget {
         ),
       ],
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
             radius: 22,
@@ -113,23 +108,7 @@ class AppProfileMenuButton extends ConsumerWidget {
               context,
             ).colorScheme.primary.withValues(alpha: 0.12),
             foregroundColor: Theme.of(context).colorScheme.primary,
-            child: Text(
-              initials,
-              style: Theme.of(
-                context,
-              ).textTheme.labelLarge?.copyWith(fontWeight: AppFontWeights.bold),
-            ),
-          ),
-          AppGaps.x1,
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 112),
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.end,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
+            child: const Icon(Icons.people_alt_outlined, size: 22),
           ),
         ],
       ),
@@ -143,17 +122,17 @@ class AppProfileMenuButton extends ConsumerWidget {
   ) {
     switch (action) {
       case AppProfileMenuAction.account:
-        context.go('/settings?section=account_cloud');
+        context.push('/settings?section=account_cloud');
       case AppProfileMenuAction.voice:
-        context.go('/settings?section=voice_packs');
+        context.push('/settings?section=voice_packs');
       case AppProfileMenuAction.keyboard:
-        context.go('/settings?section=keyboard');
+        context.push('/settings?section=keyboard');
       case AppProfileMenuAction.overlay:
-        context.go('/settings?section=overlay');
+        context.push('/settings?section=overlay');
       case AppProfileMenuAction.localKeys:
-        context.go('/settings?section=keys');
+        context.push('/settings?section=keys');
       case AppProfileMenuAction.maintenance:
-        context.go('/settings?section=maintenance');
+        context.push('/settings?section=maintenance');
       case AppProfileMenuAction.themeSystem:
         ref.read(appThemeModeProvider.notifier).setMode(AppThemeMode.system);
       case AppProfileMenuAction.themeLight:
@@ -161,37 +140,5 @@ class AppProfileMenuButton extends ConsumerWidget {
       case AppProfileMenuAction.themeDark:
         ref.read(appThemeModeProvider.notifier).setMode(AppThemeMode.dark);
     }
-  }
-
-  static String _profileLabel(String? email) {
-    final value = email?.trim();
-    if (value == null || value.isEmpty) {
-      return 'Local';
-    }
-    return value;
-  }
-
-  static String _profileInitials(String label) {
-    if (label.contains('@')) {
-      final localPart = label.split('@').first.trim();
-      final letters = localPart.replaceAll(RegExp(r'[^A-Za-z0-9]'), '');
-      if (letters.isEmpty) {
-        return 'WF';
-      }
-      return letters.substring(0, letters.length >= 2 ? 2 : 1).toUpperCase();
-    }
-
-    final parts = label
-        .split(RegExp(r'\s+'))
-        .where((part) => part.trim().isNotEmpty)
-        .toList(growable: false);
-    if (parts.isEmpty) {
-      return 'WF';
-    }
-    if (parts.length == 1) {
-      final part = parts.first;
-      return part.substring(0, part.length >= 2 ? 2 : 1).toUpperCase();
-    }
-    return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
   }
 }

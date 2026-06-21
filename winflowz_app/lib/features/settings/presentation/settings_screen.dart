@@ -1606,41 +1606,56 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         final useTwoColumns =
             constraints.maxWidth >=
             AppLayoutMetrics.settingsTwoColumnBreakpoint;
-        if (!useTwoColumns) {
-          return Scrollbar(
-            controller: _scrollController,
-            thumbVisibility: true,
-            child: ListView.separated(
-              controller: _scrollController,
-              padding: AppInsets.screen,
-              itemCount: sections.length,
-              separatorBuilder: (_, _) => _sectionGap,
-              itemBuilder: (context, index) => sections[index],
-            ),
-          );
-        }
-
-        final totalHorizontalPadding = AppSpacing.x4 * 2;
-        final columnSpacing = AppSectionMetrics.sectionColumnGap;
-        final itemWidth =
-            (constraints.maxWidth - totalHorizontalPadding - columnSpacing) / 2;
-        return Scrollbar(
-          controller: _scrollController,
-          thumbVisibility: true,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            padding: AppInsets.screen,
-            child: Wrap(
-              spacing: columnSpacing,
-              runSpacing: AppSectionMetrics.sectionRunSpacing,
-              children: [
-                for (final section in sections)
-                  SizedBox(width: itemWidth, child: section),
-              ],
-            ),
+        final content = useTwoColumns
+            ? _settingsTwoColumnList(constraints, sections)
+            : _settingsSingleColumnList(sections);
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: AppGradients.shell(Theme.of(context).brightness),
           ),
+          child: content,
         );
       },
+    );
+  }
+
+  Widget _settingsSingleColumnList(List<Widget> sections) {
+    return Scrollbar(
+      controller: _scrollController,
+      thumbVisibility: true,
+      child: ListView.separated(
+        controller: _scrollController,
+        padding: AppInsets.screen,
+        itemCount: sections.length,
+        separatorBuilder: (_, _) => _sectionGap,
+        itemBuilder: (context, index) => sections[index],
+      ),
+    );
+  }
+
+  Widget _settingsTwoColumnList(
+    BoxConstraints constraints,
+    List<Widget> sections,
+  ) {
+    final totalHorizontalPadding = AppSpacing.x4 * 2;
+    final columnSpacing = AppSectionMetrics.sectionColumnGap;
+    final itemWidth =
+        (constraints.maxWidth - totalHorizontalPadding - columnSpacing) / 2;
+    return Scrollbar(
+      controller: _scrollController,
+      thumbVisibility: true,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        padding: AppInsets.screen,
+        child: Wrap(
+          spacing: columnSpacing,
+          runSpacing: AppSectionMetrics.sectionRunSpacing,
+          children: [
+            for (final section in sections)
+              SizedBox(width: itemWidth, child: section),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1800,8 +1815,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (pageMode != _SettingsPageMode.hub) {
       final (title, subtitle, icon, section) = switch (pageMode) {
         _SettingsPageMode.account => (
-          'Mon compte',
-          'Compte, accès et synchronisation cloud.',
+          '',
+          '',
           Icons.cloud_sync_outlined,
           accountSection,
         ),
@@ -1845,16 +1860,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return _settingsList(
         sections: [
           ?notificationStack,
-          AppPageHeroCard(
-            title: title,
-            subtitle: subtitle,
-            leadingIcon: icon,
-            syncAction: OutlinedButton.icon(
-              onPressed: () => context.go('/settings'),
-              icon: const Icon(Icons.arrow_back_outlined),
-              label: const Text('Retour'),
+          if (title.isNotEmpty)
+            AppPageHeroCard(
+              title: title,
+              subtitle: subtitle,
+              leadingIcon: icon,
+              syncAction: OutlinedButton.icon(
+                onPressed: context.canPop() ? () => context.pop() : null,
+                icon: const Icon(Icons.arrow_back_outlined),
+                label: const Text('Retour'),
+              ),
             ),
-          ),
           section,
           ?bottomOnboardingTile,
         ],
@@ -1882,39 +1898,39 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               icon: Icons.cloud_sync_outlined,
               title: 'Mon compte',
               subtitle: 'Compte, accès et synchronisation',
-              onTap: () => context.go('/settings?section=account_cloud'),
+              onTap: () => context.push('/settings?section=account_cloud'),
             ),
             _SettingsHubTile(
               icon: Icons.graphic_eq_outlined,
               title: 'Voix',
               subtitle: 'Dictée locale et packs',
-              onTap: () => context.go('/settings?section=voice_packs'),
+              onTap: () => context.push('/settings?section=voice_packs'),
             ),
             if (PlatformCapabilities.keyboardImeSupported)
               _SettingsHubTile(
                 icon: Icons.keyboard_outlined,
                 title: 'Clavier',
                 subtitle: 'IME, thème et préférences',
-                onTap: () => context.go('/settings?section=keyboard'),
+                onTap: () => context.push('/settings?section=keyboard'),
               ),
             if (PlatformCapabilities.overlaySupported)
               _SettingsHubTile(
                 icon: Icons.bubble_chart_outlined,
                 title: 'Overlay',
                 subtitle: 'Bulle et permissions',
-                onTap: () => context.go('/settings?section=overlay'),
+                onTap: () => context.push('/settings?section=overlay'),
               ),
             _SettingsHubTile(
               icon: Icons.key_outlined,
               title: 'Clés IA locales',
               subtitle: 'Secrets stockés sur l’appareil',
-              onTap: () => context.go('/settings?section=keys'),
+              onTap: () => context.push('/settings?section=keys'),
             ),
             _SettingsHubTile(
               icon: Icons.admin_panel_settings_outlined,
               title: 'Maintenance',
               subtitle: 'Backend et diagnostics',
-              onTap: () => context.go('/settings?section=maintenance'),
+              onTap: () => context.push('/settings?section=maintenance'),
             ),
           ],
         ),

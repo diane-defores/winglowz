@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -191,8 +192,9 @@ class _WinFlowzState extends ConsumerState<WinFlowz> {
     super.initState();
     ref.listenManual(localCloudSyncAuthContextProvider, (_, _) {
       Future<void>.microtask(
-        () =>
-            ref.read(localCloudSyncStateProvider.notifier).synchronizeIfNeeded(),
+        () => ref
+            .read(localCloudSyncStateProvider.notifier)
+            .synchronizeIfNeeded(),
       );
     });
     ref.listenManual(keyboardSyncAuthContextProvider, (_, _) {
@@ -210,7 +212,8 @@ class _WinFlowzState extends ConsumerState<WinFlowz> {
       );
     });
     Future<void>.microtask(
-      () => ref.read(localCloudSyncStateProvider.notifier).synchronizeIfNeeded(),
+      () =>
+          ref.read(localCloudSyncStateProvider.notifier).synchronizeIfNeeded(),
     );
     Future<void>.microtask(
       () => ref
@@ -237,6 +240,16 @@ class _WinFlowzState extends ConsumerState<WinFlowz> {
           ? Duration.zero
           : AppMotion.base,
       routerConfig: router,
+      builder: (context, child) {
+        if (!kIsWeb) {
+          return child ?? const SizedBox.shrink();
+        }
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(textScaler: const TextScaler.linear(2)),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

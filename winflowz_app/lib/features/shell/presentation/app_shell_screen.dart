@@ -21,7 +21,6 @@ import '../../home/application/home_feed_provider.dart';
 import '../../settings/application/settings_store_provider.dart';
 import '../../settings/domain/onboarding_permission_contract.dart';
 import '../../settings/domain/settings_store.dart';
-import '../../settings/presentation/settings_screen.dart';
 import '../../home/presentation/home_screen.dart';
 import '../../snippets/presentation/snippets_screen.dart';
 import '../../voice/application/transcription_store_provider.dart';
@@ -34,12 +33,10 @@ class AppShellScreen extends ConsumerStatefulWidget {
     super.key,
     this.initialIndex = 0,
     this.initialOnboardingStep,
-    this.initialSettingsSection,
   });
 
   final int initialIndex;
   final String? initialOnboardingStep;
-  final String? initialSettingsSection;
 
   @override
   ConsumerState<AppShellScreen> createState() => _AppShellScreenState();
@@ -53,7 +50,6 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   static const int _snippetTabIndex = 3;
   static const int _actionsTabIndex = 4;
   static const int _dictionaryTabIndex = 5;
-  static const int _settingsTabIndex = 6;
 
   static const _unsupportedOverlayStatus = AndroidOverlayStatus(
     enabled: false,
@@ -77,7 +73,6 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   bool _onboardingBusy = false;
   bool _onboardingDeferPromptVisible = false;
   bool _welcomeGuideVisible = false;
-  bool _showOnboardingResumeHint = false;
   bool _clipboardImportBusy = false;
   bool _notifyClipboardAfterImport = false;
   bool _voiceImportBusy = false;
@@ -110,7 +105,6 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       'Snippets',
       'Actions',
       'Dico',
-      'Réglages',
     ];
     AppDiagnostics.record(
       'tab_select',
@@ -144,7 +138,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
   @override
   void initState() {
     super.initState();
-    _index = widget.initialIndex.clamp(_homeTabIndex, _settingsTabIndex);
+    _index = widget.initialIndex.clamp(_homeTabIndex, _dictionaryTabIndex);
     _tabHistory
       ..clear()
       ..add(_index);
@@ -778,7 +772,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
     if (!mounted) {
       return;
     }
-    _selectTab(_settingsTabIndex);
+    _selectTab(_homeTabIndex);
   }
 
   void _startWelcomeGuide() {
@@ -786,14 +780,13 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       _welcomeGuideVisible = false;
       _onboardingDismissed = false;
       _onboardingOpenedManually = true;
-      _showOnboardingResumeHint = false;
     });
     if (PlatformCapabilities.isAndroid &&
         PlatformCapabilities.overlaySupported) {
       setState(() => _onboardingVisible = true);
       _refreshOnboardingState();
     } else {
-      _selectTab(_settingsTabIndex);
+      _selectTab(_homeTabIndex);
     }
   }
 
@@ -807,15 +800,9 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       return;
     }
     setState(() {
-      _showOnboardingResumeHint = true;
       _onboardingDeferPromptVisible = false;
     });
-    _selectTab(_settingsTabIndex);
-    Future<void>.delayed(const Duration(milliseconds: 2200), () {
-      if (mounted) {
-        setState(() => _showOnboardingResumeHint = false);
-      }
-    });
+    _selectTab(_homeTabIndex);
   }
 
   void _openHomeSource(HomeFeedSourceType sourceType) {
@@ -837,26 +824,13 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
       const SnippetsScreen(),
       const CustomActionsScreen(),
       DictionaryScreen(),
-      SettingsScreen(
-        initialSectionId: widget.initialSettingsSection,
-        highlightOnboardingResume: _showOnboardingResumeHint,
-        onResumeOnboarding: () {
-          setState(() {
-            _onboardingDismissed = false;
-            _onboardingVisible = true;
-            _onboardingOpenedManually = true;
-            _showOnboardingResumeHint = false;
-          });
-          _refreshOnboardingState();
-        },
-      ),
     ];
     return LayoutBuilder(
       builder: (context, constraints) {
         final useRail = constraints.maxWidth >= AppBreakpoints.navigationRail;
         final colorScheme = Theme.of(context).colorScheme;
         return PopScope(
-          canPop: !_onboardingVisible && _tabHistory.length <= 1,
+        canPop: !_onboardingVisible && _tabHistory.length <= 1,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) {
               return;
@@ -925,10 +899,6 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                             icon: Icon(Icons.auto_fix_high_outlined),
                             label: Text('Dico'),
                           ),
-                          NavigationRailDestination(
-                            icon: Icon(Icons.settings_outlined),
-                            label: Text('Réglages'),
-                          ),
                         ],
                       ),
                     ),
@@ -981,8 +951,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen>
                 ],
               ),
             ),
-            bottomNavigationBar:
-                useRail || _onboardingVisible || _index == _settingsTabIndex
+            bottomNavigationBar: useRail || _onboardingVisible
                 ? null
                 : NavigationBar(
                     selectedIndex: _index,
