@@ -527,8 +527,8 @@
   .text-logo .text::after {
     content: 'WinFlowz';
     position: absolute;
-    left: var(--text-logo-after-left);
-    top: var(--text-logo-after-top);
+    left: 0;
+    top: 0;
     color: white;
     z-index: var(--text-logo-after-z);
     transform: translateZ(4px);

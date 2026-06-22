@@ -100,8 +100,8 @@ const darkModeLabel = lang === 'fr' ? 'Mode sombre' : 'Dark mode'
 const lightModeLabel = lang === 'fr' ? 'Mode clair' : 'Light mode'
 const mobileTagline =
   lang === 'fr'
-    ? 'Plugins Productivité & Formation Windows'
-    : 'Productivity Plugins & Windows Training'
+    ? 'Apps & Formation pour la Productivité'
+    : 'Productivity Apps & Training'
 
 const navShellClass = forceDark
   ? 'relative flex items-center justify-between rounded-full border border-zinc-800 bg-zinc-950/88 px-4 py-3 shadow-none backdrop-blur-md'
@@ -189,8 +189,8 @@ const ctaButtonClass = forceDark
 
       <div
         class={forceDark
-          ? 'absolute right-0 top-full mt-3 w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950/96 p-4 shadow-2xl backdrop-blur-md'
-          : 'absolute right-0 top-full mt-3 w-full max-w-sm rounded-2xl border border-neutral-200/60 bg-white/95 p-4 shadow-lg backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/95 dark:shadow-none'}
+          ? 'absolute right-0 top-full mt-3 min-w-[280px] max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950/96 p-4 shadow-2xl backdrop-blur-md'
+          : 'absolute right-0 top-full mt-3 min-w-[280px] max-w-sm rounded-2xl border border-neutral-200/60 bg-white/95 p-4 shadow-lg backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/95 dark:shadow-none'}
       >
         <div class="flex flex-col gap-2">
           {
@@ -222,20 +222,35 @@ const ctaButtonClass = forceDark
             </a>
             {
               showThemePicker && !forceDark && (
-                <div class="flex w-full">
+                <div class="flex items-center justify-center">
                   <button
                     type="button"
                     data-hs-theme-click-value="dark"
-                    class="flex-1 rounded-lg px-2 py-3 text-center text-sm font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:hidden dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                    aria-label={darkModeLabel}
+                    class="flex h-10 w-10 items-center justify-center rounded-lg text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:hidden dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                   >
-                    {darkModeLabel}
+                    <svg class="h-5 w-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                    </svg>
                   </button>
                   <button
                     type="button"
                     data-hs-theme-click-value="light"
-                    class="hidden flex-1 rounded-lg px-2 py-3 text-center text-sm font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:block dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                    aria-label={lightModeLabel}
+                    class="hidden h-10 w-10 items-center justify-center rounded-lg text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:flex dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                   >
-                    {lightModeLabel}
+                    <svg class="h-5 w-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="4"></circle>
+                      <path d="M12 8a2 2 0 1 0 4 4"></path>
+                      <path d="M12 2v2"></path>
+                      <path d="M12 20v2"></path>
+                      <path d="m4.93 4.93 1.41 1.41"></path>
+                      <path d="m17.66 17.66 1.41 1.41"></path>
+                      <path d="M2 12h2"></path>
+                      <path d="M20 12h2"></path>
+                      <path d="m6.34 17.66-1.41 1.41"></path>
+                      <path d="m19.07 4.93-1.41 1.41"></path>
+                    </svg>
                   </button>
                 </div>
               )
