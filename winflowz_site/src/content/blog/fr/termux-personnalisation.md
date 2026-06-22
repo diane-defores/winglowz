@@ -258,3 +258,19 @@ fullscreen = true
 use-fullscreen-workaround = true
 use-black-ui = true
 terminal-cursor-style = underline
+```
+
+---
+
+## 🎯 Formation : Coder sur mobile
+
+Tu veux aller plus loin ? [Module IX de la formation WinFlowz](/fr/formations/module-9-mobile-coder/) t'apprend à :
+
+- Configurer Termux pour un accès serveur optimisé
+- Comprendre pourquoi SSH ≠ Mosh pour coder avec les outils IA
+- Utiliser OpenCode/KiloCode depuis ton téléphone
+- Structurer ton workflow pour la mobilité
+
+:::note[Le truc en plus]
+Le premier module de la formation est offert — avec des templates de configuration prêts à l'emploi.
+:::

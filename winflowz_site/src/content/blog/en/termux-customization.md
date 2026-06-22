@@ -285,4 +285,15 @@ If you develop on a server (VPS, Codespace), ShipFlow automates everything: isol
 
 ---
 
-Want to go further with your mobile productivity? Check out our complete training on optimizing your development environment.
+## 🎯 Training: Code on Mobile
+
+Want to go further? [Module IX of the WinFlowz Training](/en/formations/module-9-mobile-coder/) teaches you how to:
+
+- Configure Termux for optimized server access
+- Understand why SSH ≠ Mosh for AI coding tools
+- Use OpenCode/KiloCode from your phone
+- Structure your workflow for mobility
+
+:::note[The bonus]
+The first module is free — includes ready-to-use config templates.
+:::
