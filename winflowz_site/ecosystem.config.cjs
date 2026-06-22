@@ -1,11 +1,11 @@
 module.exports = {
   apps: [{
-    name: "winflowz",
-    cwd: "/home/claude/winflowz",
+    name: "winflowz_site",
+    cwd: "/home/claude/winflowz/winflowz_site",
     script: "bash",
-    args: ["-lc", "export PORT=3013 && flox activate -- bash -lc 'pnpm dev -- --port 3013'"],
+    args: ["-lc", "export PORT=3005 && flox activate -- bash -lc 'pnpm dev -- --port 3005'"],
     env: {
-      PORT: 3013
+      PORT: 3005
     },
     autorestart: true,
     max_restarts: 3,

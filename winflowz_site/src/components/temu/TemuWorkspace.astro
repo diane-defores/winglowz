@@ -39,9 +39,7 @@ const placeholder = 'https://www.temu.com/...'
             <h1 class="font-[var(--font-display)] text-4xl font-bold tracking-tight text-neutral-950 dark:text-white sm:text-5xl">
               {title}
             </h1>
-            <p class="mt-3 max-w-2xl text-base leading-7 text-neutral-600 dark:text-zinc-400">
-              {intro}
-            </p>
+
           </div>
           <div class="grid gap-2 text-sm text-neutral-600 dark:text-zinc-400">
             <span>{lang === 'fr' ? 'Description copiable' : 'Copy-ready description'}</span>
@@ -92,7 +90,25 @@ const placeholder = 'https://www.temu.com/...'
               {translateImagesLabel}
             </button>
           </div>
-          <p id="temu-status" class="min-h-6 text-sm text-neutral-600 dark:text-zinc-400"></p>
+          <div id="temu-status-bar" class="flex flex-col gap-2 min-h-14">
+            <div class="flex items-center gap-3 text-xs font-semibold">
+              <span class="temu-step" data-step="extract">
+                <span class="step-indicator"></span>
+                {lang === 'fr' ? 'Extraction' : 'Extract'}
+              </span>
+              <span class="step-connector"></span>
+              <span class="temu-step" data-step="rewrite">
+                <span class="step-indicator"></span>
+                {lang === 'fr' ? 'Réécriture' : 'Rewrite'}
+              </span>
+              <span class="step-connector"></span>
+              <span class="temu-step" data-step="translate">
+                <span class="step-indicator"></span>
+                {lang === 'fr' ? 'Traduction' : 'Translate'}
+              </span>
+            </div>
+            <p id="temu-status" class="min-h-5 text-sm text-neutral-600 dark:text-zinc-400"></p>
+          </div>
         </form>
 
         <div class="rounded-[1.5rem] border border-neutral-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950/80">
@@ -241,6 +257,94 @@ const placeholder = 'https://www.temu.com/...'
   </div>
 </section>
 
+<style>
+  .temu-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #a3a3a3;
+    transition: color 0.35s ease;
+  }
+  .temu-step.active {
+    color: #171717;
+  }
+  .dark .temu-step.active {
+    color: #e4e4e7;
+  }
+  .temu-step.done {
+    color: #16a34a;
+  }
+
+  .step-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d4d4d4;
+    transition: background 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+    flex-shrink: 0;
+  }
+  .temu-step.active .step-indicator {
+    background: #171717;
+    animation: step-pulse 1.2s ease-in-out infinite;
+  }
+  .dark .temu-step.active .step-indicator {
+    background: #e4e4e7;
+  }
+  .temu-step.done .step-indicator {
+    background: #16a34a;
+    animation: none;
+  }
+  .temu-step.done .step-indicator::after {
+    content: '✓';
+    display: block;
+    font-size: 7px;
+    line-height: 10px;
+    text-align: center;
+    color: #fff;
+  }
+
+  @keyframes step-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(23,23,23,0.3); transform: scale(1); }
+    50% { box-shadow: 0 0 0 6px rgba(23,23,23,0); transform: scale(1.25); }
+  }
+
+  .step-connector {
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    border-radius: 1px;
+    background: #d4d4d4;
+    transition: background 0.35s ease;
+    flex-shrink: 0;
+  }
+  .step-connector.done {
+    background: #16a34a;
+  }
+
+  .status-dots::after {
+    content: '';
+    animation: status-ellipsis 1.5s steps(4, end) infinite;
+  }
+
+  @keyframes status-ellipsis {
+    0% { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+    100% { content: ''; }
+  }
+
+  .status-fade-in {
+    animation: status-fade 0.3s ease-out;
+  }
+
+  @keyframes status-fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
 <script is:inline define:vars={{ lang }}>
   const messages = {
     extracting: lang === 'fr' ? 'Extraction en cours...' : 'Extracting...',
@@ -314,11 +418,50 @@ const placeholder = 'https://www.temu.com/...'
   let currentResult = null
   let currentTranslatedImages = []
 
+  function updateSteps(activeStep) {
+    const steps = ['extract', 'rewrite', 'translate']
+    const idx = steps.indexOf(activeStep)
+    document.querySelectorAll('.temu-step').forEach((el) => {
+      const step = el.dataset.step
+      const stepIdx = steps.indexOf(step)
+      el.classList.toggle('active', step === activeStep)
+      el.classList.toggle('done', stepIdx !== -1 && stepIdx < idx)
+    })
+    document.querySelectorAll('.step-connector').forEach((el, i) => {
+      el.classList.toggle('done', i < idx)
+    })
+  }
+
+  function completeStep(step) {
+    const el = document.querySelector(`.temu-step[data-step="${step}"]`)
+    if (el) {
+      el.classList.remove('active')
+      el.classList.add('done')
+    }
+  }
+
+  function resetSteps() {
+    document.querySelectorAll('.temu-step').forEach((el) => {
+      el.classList.remove('active', 'done')
+    })
+    document.querySelectorAll('.step-connector').forEach((el) => {
+      el.classList.remove('done')
+    })
+  }
+
   function setStatus(message, isError = false) {
     statusEl.textContent = message
-    statusEl.className = isError
-      ? 'min-h-6 text-sm text-red-600 dark:text-red-400'
-      : 'min-h-6 text-sm text-neutral-600 dark:text-zinc-400'
+    statusEl.className = 'min-h-5 text-sm status-fade-in'
+      + (isError
+        ? ' text-red-600 dark:text-red-400'
+        : ' text-neutral-600 dark:text-zinc-400')
+    void statusEl.offsetWidth
+  }
+
+  function setLoadingStatus(message) {
+    statusEl.textContent = message
+    statusEl.className = 'min-h-5 text-sm status-fade-in text-neutral-600 dark:text-zinc-400 status-dots'
+    void statusEl.offsetWidth
   }
 
   function escapeHtml(value) {
@@ -358,6 +501,7 @@ const placeholder = 'https://www.temu.com/...'
     translateImagesButton.disabled = true
     resetRewrite()
     resetTranslatedImages()
+    resetSteps()
   }
 
   function renderImages(images) {
@@ -466,7 +610,12 @@ const placeholder = 'https://www.temu.com/...'
       return
     }
 
-    setStatus(messages.extracting)
+    updateSteps('extract')
+    setLoadingStatus(
+      lang === 'fr'
+        ? 'Connexion à Temu...'
+        : 'Connecting to Temu...'
+    )
 
     try {
       const response = await fetch('/api/temu/extract', {
@@ -477,6 +626,7 @@ const placeholder = 'https://www.temu.com/...'
       const payload = await response.json()
 
       if (!response.ok || !payload?.data) {
+        completeStep('extract')
         setStatus(messages.extractFailed, true)
         return
       }
@@ -495,10 +645,12 @@ const placeholder = 'https://www.temu.com/...'
       translateImagesButton.disabled = !(payload.data.images && payload.data.images.length)
 
       if (!payload.data.description && !(payload.data.images && payload.data.images.length)) {
+        completeStep('extract')
         setStatus(messages.emptyResult, true)
         return
       }
 
+      completeStep('extract')
       setStatus(
         lang === 'fr'
           ? `Extraction prête: ${payload.data.images.length} photo(s) détectée(s).`
@@ -506,6 +658,7 @@ const placeholder = 'https://www.temu.com/...'
       )
     } catch (error) {
       console.error(error)
+      completeStep('extract')
       setStatus(messages.extractFailed, true)
     }
   })
@@ -513,7 +666,12 @@ const placeholder = 'https://www.temu.com/...'
   rewriteButton?.addEventListener('click', async () => {
     if (!currentResult) return
     resetRewrite()
-    setStatus(messages.rewriting)
+    updateSteps('rewrite')
+    setLoadingStatus(
+      lang === 'fr'
+        ? 'Envoi à Gemini...'
+        : 'Sending to Gemini...'
+    )
 
     try {
       const response = await fetch('/api/temu/rewrite', {
@@ -531,16 +689,19 @@ const placeholder = 'https://www.temu.com/...'
       const payload = await response.json()
 
       if (payload?.error === 'gemini_not_configured') {
+        completeStep('rewrite')
         setStatus(messages.geminiMissing, true)
         return
       }
 
       if (!response.ok || !payload?.data) {
+        completeStep('rewrite')
         setStatus(messages.rewriteFailed, true)
         return
       }
 
       renderRewrite(payload.data)
+      completeStep('rewrite')
       setStatus(
         lang === 'fr'
           ? 'Annonce de revente générée.'
@@ -548,6 +709,7 @@ const placeholder = 'https://www.temu.com/...'
       )
     } catch (error) {
       console.error(error)
+      completeStep('rewrite')
       setStatus(messages.rewriteFailed, true)
     }
   })
@@ -555,7 +717,13 @@ const placeholder = 'https://www.temu.com/...'
   translateImagesButton?.addEventListener('click', async () => {
     if (!currentResult?.images?.length) return
     resetTranslatedImages()
-    setStatus(messages.translatingImages)
+    updateSteps('translate')
+    const total = currentResult.images.length
+    setLoadingStatus(
+      lang === 'fr'
+        ? `Traduction des images (0/${total})...`
+        : `Translating images (0/${total})...`
+    )
 
     try {
       const response = await fetch('/api/temu/translate-images', {
@@ -568,24 +736,28 @@ const placeholder = 'https://www.temu.com/...'
 
       const payload = await response.json()
       if (payload?.error === 'gemini_not_configured') {
+        completeStep('translate')
         setStatus(messages.geminiMissing, true)
         return
       }
 
       if (!response.ok || !payload?.data?.images) {
+        completeStep('translate')
         setStatus(messages.translateImagesFailed, true)
         return
       }
 
       currentTranslatedImages = payload.data.images
       renderTranslatedImages(currentTranslatedImages)
+      completeStep('translate')
       setStatus(
         lang === 'fr'
-          ? 'Images traduites générées.'
-          : 'Translated images generated.'
+          ? `Images traduites générées (${currentTranslatedImages.length}/${total}).`
+          : `Translated images generated (${currentTranslatedImages.length}/${total}).`
       )
     } catch (error) {
       console.error(error)
+      completeStep('translate')
       setStatus(messages.translateImagesFailed, true)
     }
   })
