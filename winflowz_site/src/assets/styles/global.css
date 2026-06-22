@@ -227,9 +227,9 @@
     --landing-shadow: 255 255 255;
     --landing-marquee-fade: 0 0 0;
     --root-font-size: 16px;
-    --text-logo-size-base: 2.5rem;
-    --text-logo-size-sm: 2rem;
-    --text-logo-size-xs: 1.5rem;
+    --text-logo-size-base: 3rem;
+    --text-logo-size-sm: 2.25rem;
+    --text-logo-size-xs: 1.75rem;
     --text-logo-transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     --text-logo-transition-fast: all 0.3s ease;
     --text-logo-filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
