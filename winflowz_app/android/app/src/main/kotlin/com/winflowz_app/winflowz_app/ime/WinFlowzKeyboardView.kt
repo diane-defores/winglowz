@@ -4582,31 +4582,52 @@ class WinFlowzKeyboardView(
         val previousAlign = secondaryTextPaint.textAlign
         secondaryTextPaint.textAlign = Paint.Align.CENTER
         assignments.up?.let {
-            canvas.drawText(it.label, rect.centerX(), rect.top + dp(9f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.centerX(), rect.top + dp(9f))
         }
         assignments.down?.let {
-            canvas.drawText(it.label, rect.centerX(), rect.bottom - dp(5f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.centerX(), rect.bottom - dp(5f))
         }
         secondaryTextPaint.textAlign = Paint.Align.CENTER
         assignments.left?.let {
-            canvas.drawText(it.label, rect.left + dp(7f), rect.centerY() + dp(3f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.left + dp(7f), rect.centerY() + dp(3f))
         }
         assignments.right?.let {
-            canvas.drawText(it.label, rect.right - dp(7f), rect.centerY() + dp(3f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.right - dp(7f), rect.centerY() + dp(3f))
         }
         assignments.topLeft?.let {
-            canvas.drawText(it.label, rect.left + dp(8f), rect.top + dp(10f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.left + dp(8f), rect.top + dp(10f))
         }
         assignments.bottomLeft?.let {
-            canvas.drawText(it.label, rect.left + dp(8f), rect.bottom - dp(6f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.left + dp(8f), rect.bottom - dp(6f))
         }
         assignments.topRight?.let {
-            canvas.drawText(it.label, rect.right - dp(8f), rect.top + dp(10f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.right - dp(8f), rect.top + dp(10f))
         }
         assignments.bottomRight?.let {
-            canvas.drawText(it.label, rect.right - dp(8f), rect.bottom - dp(6f), secondaryTextPaint)
+            drawCornerLabel(canvas, it.label, rect.right - dp(8f), rect.bottom - dp(6f))
         }
         secondaryTextPaint.textAlign = previousAlign
+    }
+
+    private fun drawCornerLabel(
+        canvas: Canvas,
+        label: String,
+        cx: Float,
+        cy: Float,
+    ) {
+        val lines = label.split('\n').filter { it.isNotEmpty() }
+        if (lines.size <= 1) {
+            canvas.drawText(label, cx, cy, secondaryTextPaint)
+            return
+        }
+        val lineHeight = -secondaryTextPaint.ascent() + secondaryTextPaint.descent()
+        val totalHeight = lineHeight * lines.size
+        var top = cy - (totalHeight / 2f)
+        lines.forEach { line ->
+            val baseline = top - secondaryTextPaint.ascent()
+            canvas.drawText(line, cx, baseline, secondaryTextPaint)
+            top += lineHeight
+        }
     }
 
     private fun effectiveGestureSelection(
