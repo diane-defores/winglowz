@@ -84,6 +84,7 @@
 |-----|------|--------|
 | ✅ | Use GitHub Secrets, not Doppler, for Android build configuration on Blacksmith | ✅ done |
 | 🟢 | Review product/runtime scope after the verification gate before adding billing or release-surface work | 💤 deferred |
+| 🟡 | Benchmark Amical against WinFlowz App on global hotkey, context-aware dictation formatting, local-first/offline mode, custom vocabulary, cancel-or-retake capture UX, and floating window stability; use both the official site and AppSumo feedback/Q&A as inputs | 📋 todo |
 
 ---
 

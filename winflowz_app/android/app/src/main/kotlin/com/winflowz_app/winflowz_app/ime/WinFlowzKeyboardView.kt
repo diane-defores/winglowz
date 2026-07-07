@@ -1683,6 +1683,8 @@ class WinFlowzKeyboardView(
     }
 
     private fun updateLongPressSwipeHoveredTarget(state: KeyboardPointerState<KeyFrame>) {
+        // Contract: only dispatch-owned pointers may project hover state onto a
+        // target key. This keeps the visual beam and release target aligned.
         if (!longPressSwipeDispatchPointerIds.contains(state.pointerId)) {
             clearLongPressSwipeHoveredKey(state.pointerId)
             return
@@ -1887,6 +1889,9 @@ class WinFlowzKeyboardView(
     }
 
     private fun tryActivateLongPressSwipeFromExit(state: KeyboardPointerState<KeyFrame>): Boolean {
+        // Contract: long-press swipe is an exit transition from the origin key.
+        // Protected gestures and already-triggered long-press branches keep
+        // ownership instead of allowing a second dispatch mode to launch.
         val key = state.payload.key
         val pointerInsideStartKey = state.payload.touchRect.contains(state.latestX, state.latestY)
         if (
@@ -2591,6 +2596,10 @@ class WinFlowzKeyboardView(
         x: Float,
         y: Float,
     ): Boolean {
+        // Contract: releasing after long-press swipe dispatches against the
+        // hovered target key, preferring target-side directional assignments
+        // when the key exposes them, and falls back to primary tap only when
+        // the target is not a directional gesture surface.
         if (!longPressSwipeDispatchPointerIds.contains(pointerId)) {
             return false
         }

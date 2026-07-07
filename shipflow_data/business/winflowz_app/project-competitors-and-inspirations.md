@@ -1,10 +1,10 @@
 ---
 artifact: competitive_intelligence
 metadata_schema_version: "1.0"
-artifact_version: "0.3.1"
+artifact_version: "0.3.2"
 project: "WinFlowz"
 created: "2026-03-18"
-updated: "2026-06-16"
+updated: "2026-07-07"
 status: "draft"
 source_skill: "sf-docs"
 scope: "project-competitors-and-inspirations"
@@ -31,6 +31,7 @@ evidence:
   - "shipflow_data/business/business.md"
   - "shipflow_data/business/product.md"
   - "shipflow_data/workflow/research/2026-05-11-concurrents-inspirations.md"
+  - "Public-source review 2026-07-07: https://amical.ai/ + https://appsumo.com/products/amical/ + AppSumo founder Q&A/reviews."
 next_review: "2026-06-11"
 next_step: "$sf-docs update"
 ---
@@ -61,6 +62,9 @@ Benchmark de dictée native iOS pour l'intégration système et la fluidité d'u
 
 ### Blip AI
 Concurrent/inspiration pour la dictée IA cross-platform: raccourci global, parole vers texte propre, insertion dans n'importe quelle app, limites d'usage mensuelles et acquisition via AppSumo. À benchmarker contre WinFlowz App sur déclenchement clavier/overlay, nettoyage IA, historique, confidentialité et mode local-first.
+
+### [Amical](https://amical.ai/) + [page AppSumo](https://appsumo.com/products/amical/)
+Concurrent direct/inspiration forte pour la dictée IA cross-platform: hotkey global, texte injecté dans n'importe quelle app, formatage selon le contexte de l'app, vocabulaire personnalisé, mode local ou cloud, et angle open-source/local-first. La page AppSumo ajoute un signal précieux sur les attentes réelles des utilisateurs finaux: annulation d'une dictée en cours, transcription de réunion en temps réel, stabilité de la fenêtre flottante, et arbitrage confidentialité/vitesse. À benchmarker contre WinFlowz App sur overlay/hotkey, dictée context-aware, mode offline/local-first, commandes vocales, et UX de capture/annulation sans casser le flux.
 
 ### Typing Hero
 Concurrent/inspiration pour le text expansion Android: snippets, templates, insertion de date/heure, calculs simples, transformation de texte, historique presse-papiers et automatisation via accessibilité. À benchmarker contre WinFlowz App sur les snippets, les variantes de template, les actions texte et le positionnement freemium/premium.
@@ -100,5 +104,3 @@ Concurrent indirect/inspiration pour les workflows Windows sans scripting: hotke
 
 - Quels produits doivent rester en benchmark prioritaire pour Q2 2026 (max 3) ?
 - Faut-il séparer explicitement les inspirations "mobile", "desktop" et "workflow éducatif" ?
-
-https://appsumo.com/products/amical

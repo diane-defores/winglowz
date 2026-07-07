@@ -11,6 +11,11 @@ internal object KeyboardLongPressSwipePolicy {
             GestureSelection.Left,
         )
 
+    /**
+     * Contract: exit-based long-press swipe dispatch may start only when the
+     * pointer actually left the origin key and no protected interaction or
+     * prior long-press branch already owns the gesture.
+     */
     fun canActivateFromKeyExit(
         consumedByProtectedInteraction: Boolean,
         longPressTriggered: Boolean,
@@ -23,6 +28,10 @@ internal object KeyboardLongPressSwipePolicy {
             !pointerInsideStartKey
     }
 
+    /**
+     * Contract: Ctrl-row swipe launch is allowed only from the designated
+     * launch row and only while row/panel scrolling is not owning the pointer.
+     */
     fun canLaunchCtrlSwipeFromRow(
         startRowIndex: Int?,
         ctrlRowIndex: Int?,
@@ -36,6 +45,10 @@ internal object KeyboardLongPressSwipePolicy {
             !panelScrollable
     }
 
+    /**
+     * Contract: space-origin horizontal gestures keep cursor-slider semantics
+     * and must not be reclassified as swipe-dispatch launch.
+     */
     fun shouldPreserveSpaceSliderGesture(
         startKeyIsSpace: Boolean,
         dx: Float,
@@ -47,6 +60,11 @@ internal object KeyboardLongPressSwipePolicy {
             abs(dx) >= abs(dy) * 1.25f
     }
 
+    /**
+     * Contract: the target key decides which directional assignment wins once
+     * it is hovered during long-press swipe dispatch. Candidate order is the
+     * canonical behavior map for the IME gesture model.
+     */
     fun chooseTargetSelection(
         candidates: Collection<GestureSelection>,
         targetX: Float,
