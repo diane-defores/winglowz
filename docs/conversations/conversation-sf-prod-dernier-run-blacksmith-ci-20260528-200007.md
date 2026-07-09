@@ -13,7 +13,7 @@
 │ >_ OpenAI Codex (v0.134.0)                            │
 │                                                       │
 │ model:     gpt-5.3-codex-spark low   /model to change │
-│ directory: ~/winflowz/winflowz_app                    │
+│ directory: ~/winglowz/winglowz_app                    │
 ╰───────────────────────────────────────────────────────╯
 
   Tip: Use /permissions to control when Codex asks for confirmation.
@@ -23,7 +23,7 @@
 
 
 • Je vérifie le dernier run Blacksmith depuis les scripts/références
-  ShipFlow puis je te retourne l’état (succès/échec + pointeur
+  ShipGlowz puis je te retourne l’état (succès/échec + pointeur
   d’exécution).
 
 • Explored
@@ -41,11 +41,11 @@
 • Ran pwd; git branch --show-current 2>/dev/null || echo no-branch;
   │ git rev-parse HEAD 2>/dev/null || echo no-sha; git remote -v 2>/
   │ dev/null | head -n 5
-  └ /home/claude/winflowz/winflowz_app
+  └ /home/claude/winglowz/winglowz_app
     main
     ba2328f3abfedae92d8410eedd58438686cd75e1
-    origin    git@github.com:diane-defores/winflowz.git (fetch)
-    origin    git@github.com:diane-defores/winflowz.git (push)
+    origin    git@github.com:diane-defores/winglowz.git (fetch)
+    origin    git@github.com:diane-defores/winglowz.git (push)
 
 • Explored
   └ List ls -la
@@ -54,36 +54,36 @@
   │ '.github/workflows/*' 2>/dev/null | sed -n '1,120p'
   └ (no output)
 
-• Ran ls -la /home/claude/winflowz | sed -n '1,80p'; echo '---'; rg -n
-  │ "ShipFlow Development Mode|development_mode|deployment_provider|
-  │ validation_surface|blacksmith|blacksmith" /home/claude/winflowz/
+• Ran ls -la /home/claude/winglowz | sed -n '1,80p'; echo '---'; rg -n
+  │ "ShipGlowz Development Mode|development_mode|deployment_provider|
+  │ validation_surface|blacksmith|blacksmith" /home/claude/winglowz/
   │ … +2 lines
   └ total 44
     drwxrwxr-x  7 claude claude 4096 May 24 21:33 .
     … +14 lines (ctrl + t to view transcript)
-    /home/claude/winflowz/CLAUDE.md:14:- validation_surface: mixed
-    /home/claude/winflowz/CLAUDE.md:17:- deployment_provider: vercel
+    /home/claude/winglowz/CLAUDE.md:14:- validation_surface: mixed
+    /home/claude/winglowz/CLAUDE.md:17:- deployment_provider: vercel
 
 ──────────────────────────────────────────────────────────────────────
 
-• Contexte rapide: on est bien dans un sous-projet winflowz_app
+• Contexte rapide: on est bien dans un sous-projet winglowz_app
   (commit ba2328f…), et le git remote pointe vers le mono-repo diane-
-  defores/winflowz. Je vais maintenant interroger GitHub Actions et
+  defores/winglowz. Je vais maintenant interroger GitHub Actions et
   vérifier s’il existe un run Blacksmith.
 
-• Ran rg -n "blacksmith|Blacksmith|ci" /home/claude/winflowz/.github/
+• Ran rg -n "blacksmith|Blacksmith|ci" /home/claude/winglowz/.github/
   │ workflows -g '*.yml' -g '*.yaml' 2>/dev/null | sed -n '1,200p'
-  └ /home/claude/winflowz/.github/workflows/android-build.yml:39:
+  └ /home/claude/winglowz/.github/workflows/android-build.yml:39:
     group: flutter-android-ci-${{ github.workflow }}-${{ github.ref }}
     … +4 lines (ctrl + t to view transcript)
-    /home/claude/winflowz/.github/workflows/android-build.yml:113:
+    /home/claude/winglowz/.github/workflows/android-build.yml:113:
     - name: Resolve dependencies
 
-• Ran gh run list --repo diane-defores/winflowz --limit 10
+• Ran gh run list --repo diane-defores/winglowz --limit 10
   └ completed    failure    up    Flutter Android CI    main    push
     26594727857    3m41s    2026-05-28T18:39:08Z
     … +21 lines (ctrl + t to view transcript)
-    winflowz_site/site-npm-93a326ad66    pull_request    26376265859
+    winglowz_site/site-npm-93a326ad66    pull_request    26376265859
     1m0s    2026-05-24T23:52:22Z
 
 ──────────────────────────────────────────────────────────────────────
@@ -92,17 +92,17 @@
   conclusion, job runner, liens) pour te répondre sans ambiguïté sur
   “le run Blacksmith CI”.
 
-• Ran gh run view 26594727857 --repo diane-defores/winflowz --json
+• Ran gh run view 26594727857 --repo diane-defores/winglowz --json
   │ name,status,conclusion,createdAt,updatedAt,headBranch,headSha,ev
   │ ent,url,displayTitle,workflowName,jobs --jq
   │ … +5 lines
   └ {"conclusion":"failure","createdAt":"2026-05-28T18:39:08Z","displa
     yTitle":"up","event":"push","headBranch":"main","headSha":"ba2328f
     … +132 lines (ctrl + t to view transcript)
-    "https://github.com/diane-defores/winflowz/actions/
+    "https://github.com/diane-defores/winglowz/actions/
     runs/26594727857","workflowName":"Flutter Android CI"}
 
-• Ran gh run view 26594727857 --repo diane-defores/winflowz
+• Ran gh run view 26594727857 --repo diane-defores/winglowz
   │ --log-failed | sed -n '1,200p'
   └ Analyze, Test, Build Debug APK    Build debug
     APK    ﻿2026-05-28T18:41:55.0068524Z ##[group]Run
@@ -124,16 +124,16 @@
   Android CI sur main, push) est en échec.
 
   - ✅ CI trouvée:
-    https://github.com/diane-defores/winflowz/actions/runs/26594727857
+    https://github.com/diane-defores/winglowz/actions/runs/26594727857
   - 📌 Statut: failed (created 2026-05-28T18:39:08Z, terminé 2026-05-
     28T18:42:49Z, SHA ba2328f3abfedae92d8410eedd58438686cd75e1)
   - 🧩 Cause observée: échec sur le job Analyze, Test, Build Debug APK
     → :app:compileDebugKotlin
   - 🧷 Erreurs clés:
-      - WinFlowzKeyboardView.kt:1456:71 type Double là où Float
+      - WinGlowzKeyboardView.kt:1456:71 type Double là où Float
         attendu
-      - WinFlowzKeyboardView.kt:1457:27, 1457:36
-      - WinFlowzKeyboardView.kt:4619:13 Paint vs TextPaint!
+      - WinGlowzKeyboardView.kt:1457:27, 1457:36
+      - WinGlowzKeyboardView.kt:4619:13 Paint vs TextPaint!
 
   Contexte: le workflow android-build.yml cible bien un runner
   Blacksmith (runs-on: blacksmith-2vcpu-ubuntu-2404).
@@ -142,10 +142,10 @@
 
   Chantier potentiel: non
   Raison: incident isolé au scope Android local; fix attend un patch
-  Kotlin ciblé sur WinFlowzKeyboardView.kt.
+  Kotlin ciblé sur WinGlowzKeyboardView.kt.
   Severite: P2
-  Scope: winflowz_app/android/app/src/main/kotlin/.../
-  WinFlowzKeyboardView.kt (1 fichier)
+  Scope: winglowz_app/android/app/src/main/kotlin/.../
+  WinGlowzKeyboardView.kt (1 fichier)
   Evidence: logs Build debug APK du run 26594727857
   Spec recommandee: non
   Prochaine etape: corriger les types Kotlin (casts toFloat() /
@@ -166,7 +166,7 @@
 
 • Non, pas résolu pour l’instant : le dernier run Blacksmith est
   encore en échec à cause d’erreurs Kotlin dans
-  WinFlowzKeyboardView.kt (mismatch Double/Float et Paint/TextPaint).
+  WinGlowzKeyboardView.kt (mismatch Double/Float et Paint/TextPaint).
 
   Si tu veux, je peux te proposer le patch exact de correction à
   appliquer.
@@ -182,7 +182,7 @@
   - 🚫 Status: Bloqué par CI
   - ✅ Evidence: github actions run #26594727857 échoué
   - ⚠️  Scope: Android Kotlin compilation
-  - ➡️  Prochaine étape: corriger WinFlowzKeyboardView.kt puis relancer
+  - ➡️  Prochaine étape: corriger WinGlowzKeyboardView.kt puis relancer
     Flutter Android CI avant toute autre avancée.
 
   Horodatage du verdict: 2026-05-28 20:50 Paris time
@@ -206,7 +206,7 @@
   avance pas tant que pas résolu”.
 
   Si tu veux, je corrige maintenant le compile Kotlin
-  (WinFlowzKeyboardView.kt) directement et je te confirme le diff
+  (WinGlowzKeyboardView.kt) directement et je te confirme le diff
   attendu.
 
 
@@ -266,10 +266,10 @@
   Les prochaines fois, je dois fixer automatiquement dès détection
   d’échec bloquant, puis seulement après enchaîner le reporting — je
   vais le faire maintenant et corriger les types Kotlin ciblés dans
-  WinFlowzKeyboardView.kt.
+  WinGlowzKeyboardView.kt.
 
 • Explored
-  └ Read WinFlowzKeyboardView.kt
+  └ Read WinGlowzKeyboardView.kt
 
 ──────────────────────────────────────────────────────────────────────
 
@@ -279,11 +279,11 @@
 
 • Explored
   └ Search compileDebugKotlin|toDouble\(|Paint\)|sin\(|draw.*Line|
-           Paint\( in WinFlowzKeyboardView.kt
-    Read WinFlowzKeyboardView.kt
+           Paint\( in WinGlowzKeyboardView.kt
+    Read WinGlowzKeyboardView.kt
     Search textPaint\s*=|TextPaint\b|private val statusPaint|private
     val
-           debugTextPaint|var textPaint in WinFlowzKeyboardView.kt
+           debugTextPaint|var textPaint in WinGlowzKeyboardView.kt
 
 ──────────────────────────────────────────────────────────────────────
 
@@ -292,7 +292,7 @@
   bon type sans casser le rendu.
 
 • Explored
-  └ Read WinFlowzKeyboardView.kt
+  └ Read WinGlowzKeyboardView.kt
 
 ──────────────────────────────────────────────────────────────────────
 
@@ -302,10 +302,10 @@
 
 • Explored
   └ Search val markerY|val pulse|TextUtils\.ellipsize\( in
-           WinFlowzKeyboardView.kt
+           WinGlowzKeyboardView.kt
 
-• Edited android/app/src/main/kotlin/com/winflowz_app/winflowz_app/
-ime/WinFlowzKeyboardView.kt (+2 -2)
+• Edited android/app/src/main/kotlin/com/winglowz_app/winglowz_app/
+ime/WinGlowzKeyboardView.kt (+2 -2)
     1453          canvas.drawLine(startX, startY, endX, endY, longPres
           sSwipeStrokePaint)
     1454 -        val pulse = ((sin((phase * 0.95f).toDouble()) * 0.5f
@@ -325,8 +325,8 @@ ime/WinFlowzKeyboardView.kt (+2 -2)
 • Tu as raison, tu avais raison sur le timing.
 
   - J’ai corrigé l’erreur immédiatement dans le fichier visé :
-      - android/app/src/main/kotlin/com/winflowz_app/winflowz_app/ime/
-        WinFlowzKeyboardView.kt
+      - android/app/src/main/kotlin/com/winglowz_app/winglowz_app/ime/
+        WinGlowzKeyboardView.kt
 
   Correctifs faits :
 
@@ -353,11 +353,11 @@ ime/WinFlowzKeyboardView.kt (+2 -2)
   chemin de destination sous la racine de l’utilisateur, puis je te
   demande validation avant d’écrire.
 
-• Ran SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
-  │ "$SHIPFLOW_ROOT/skills/tmux-capture-conversation/scripts/
+• Ran SHIPGLOWZ_ROOT="${SHIPGLOWZ_ROOT:-$HOME/shipglowz}"
+  │ "$SHIPGLOWZ_ROOT/skills/tmux-capture-conversation/scripts/
   │ capture_tmux_conversation.sh" --dry-run
   └ Title: Conversation sf-prod - dernier run blacksmith ci ?
-    Destination: /home/claude/winflowz/docs/conversations/
+    Destination: /home/claude/winglowz/docs/conversations/
     … +5 lines (ctrl + t to view transcript)
     nvim
     conversation-sf-prod-dernier-run-blacksmith-ci-20260528-200007.md
@@ -367,10 +367,10 @@ ime/WinFlowzKeyboardView.kt (+2 -2)
 • Pré-aperçu prêt:
 
   - title: Conversation sf-prod - dernier run blacksmith ci ?
-  - destination: /home/claude/winflowz/docs/conversations/
+  - destination: /home/claude/winglowz/docs/conversations/
     conversation-sf-prod-dernier-run-blacksmith-ci-20260528-200007.md
   - tmux target: pane courant 0:15.1 (window index :15, pane .1)
-  - commande de fin: cd /home/claude/winflowz/docs/conversations &&
+  - commande de fin: cd /home/claude/winglowz/docs/conversations &&
     nvim conversation-sf-prod-dernier-run-blacksmith-ci-20260528-
     200007.md
 
@@ -392,6 +392,6 @@ ime/WinFlowzKeyboardView.kt (+2 -2)
 
 › Run /review on my current changes
 
-  gpt-5.3-codex-spark low · main · Context 67% left · ~/winflowz/winf…
+  gpt-5.3-codex-spark low · main · Context 67% left · ~/winglowz/winf…
 
 /home/claude/home/claude/home/claude

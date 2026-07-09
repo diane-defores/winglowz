@@ -1,0 +1,62 @@
+{
+  "title": "À propos de moi",
+  "meta": {
+    "description": "Découvrez Diane Defores, mon parcours, mes outils et mes formations de productivité Windows."
+  },
+  "hero": {
+    "tagline": "Des Lifetime Deals aux Outils de Productivité",
+    "headline": "Bonjour, je suis Diane Defores",
+    "subheadline": "Solopreneur, Passionnée de Productivité & Experte Windows"
+  },
+  "story": {
+    "title": "Mon Histoire",
+    "paragraphs": [
+      "Mon parcours a débuté dans la communauté dynamique des lifetime deals (LTD). J'y suis active depuis des années, découvrant et testant d'innombrables outils de productivité qui promettent de faciliter ma vie professionnelle. Grâce à cette expérience, j'ai développé une compréhension approfondie de ce qui rend vraiment un outil précieux au quotidien.",
+      "Cette passion m'a conduite à créer un cours de productivité sur AppSumo, axé spécifiquement sur la productivité Windows. Ce cours est né de mes propres difficultés à trouver des ressources complètes pour optimiser le potentiel de Windows pour la productivité. J'ai réalisé que s'il existe de nombreux guides de productivité pour Mac, les utilisateurs Windows sont souvent négligés.",
+      "WinGlowz est né de ce constat. Ce qui a commencé comme du contenu éducatif s'est transformé en une suite d'outils et de ressources conçus spécifiquement pour les utilisateurs avancés de Windows qui veulent travailler plus intelligemment, pas plus durement."
+    ]
+  },
+  "mission": {
+    "title": "Ma Mission",
+    "content": "J'aide les utilisateurs Windows à retrouver une méthode de travail claire, en donnant les connaissances et les outils dont ils ont besoin pour transformer leur flux de travail. Je suis convaincue que tout le monde mérite des solutions de productivité qui fonctionnent vraiment, pas des effets de forme.",
+    "values": [
+      {
+        "title": "Le Pratique d'Abord",
+        "description": "Chaque outil et conseil que je partage a été testé dans des scénarios réels. S'il ne vous fait pas gagner du temps, il ne passe pas la sélection."
+      },
+      {
+        "title": "Focus Windows",
+        "description": "Je ne cherche pas à couvrir tous les sujets. Mon expertise se concentre sur la productivité Windows, là où je peux vraiment faire la différence."
+      },
+      {
+        "title": "Communauté au Centre",
+        "description": "Mes meilleures idées viennent de la communauté. La communauté LTD m'a appris la valeur de la sagesse collective, et je perpétue cet esprit."
+      }
+    ]
+  },
+  "offerings": {
+    "title": "Ce que j'offre",
+    "items": [
+      {
+        "title": "Outils de Productivité",
+        "description": "Des applications Windows conçues pour rationaliser votre flux de travail et augmenter l'efficacité."
+      },
+      {
+        "title": "Formations",
+    "description": "Des cours approfondis couvrant les techniques de productivité Windows, y compris mon cours sur AppSumo."
+      },
+      {
+        "title": "Ressources & Guides",
+        "description": "Des articles gratuits, des astuces et des guides pour vous aider à tirer le meilleur parti de votre configuration Windows."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Prêt à Booster Votre Productivité ?",
+    "description": "Rejoignez des milliers d'utilisateurs Windows qui ont transformé leur flux de travail avec WinGlowz.",
+    "button": "Découvrir mes outils"
+  },
+  "footer": {
+    "contact": "Des questions ? N'hésitez pas à me contacter à hello@winglowz.com"
+  }
+}

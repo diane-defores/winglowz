@@ -1,0 +1,60 @@
+---
+/* LogoMarquee — Astro wrapper with TestimonialCarousel React island */
+import { TestimonialCarousel } from '@components/react/landing/TestimonialCarousel'
+import { getLangFromUrl } from '@/utils/i18n'
+
+const lang = getLangFromUrl(Astro.url)
+
+const tools = [
+  { name: "ObsiFlowz" },
+  { name: "ReplayGlowz" },
+  { name: "RSSFlowz" },
+  { name: "PluginFlowz" },
+  { name: "Windows Mastery" },
+  { name: "Obsidian" },
+  { name: "Chrome" },
+  { name: "WinGlowz" },
+]
+
+const trustText = lang === 'fr'
+  ? { trust: "Conçu pour les utilisateurs Windows qui veulent un système simple", subtitle: "Retours communautaires, sans promesse de score public." }
+  : { trust: "Built for people who want a clearer Windows workflow", subtitle: "Community feedback only, no public score claim." }
+---
+
+<section id="testimonials" class="bg-neutral-50 dark:bg-black py-16 overflow-hidden">
+  <div class="reveal text-center mb-6">
+    <p class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-zinc-500">
+      {trustText.trust}
+    </p>
+    <p class="mx-auto mt-3 max-w-xl text-sm text-neutral-600 dark:text-zinc-400">
+      {trustText.subtitle}
+    </p>
+  </div>
+
+  <!-- Testimonials carousel (React island) -->
+  <div class="reveal delay-2 max-w-3xl mx-auto px-4 mb-8">
+    <TestimonialCarousel client:only="react" />
+  </div>
+
+  <!-- Marquee -->
+  <div class="relative mt-12">
+    <div class="landing-marquee-fade-left pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-32"></div>
+    <div class="landing-marquee-fade-right pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-32"></div>
+
+    <div class="flex animate-marquee">
+      {[...tools, ...tools].map((tool) => (
+        <div
+          class="mx-8 flex h-16 items-center justify-center grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
+          style="min-width: var(--logo-marquee-item-min-width);"
+        >
+          <div class="flex items-center gap-2 text-neutral-600 dark:text-zinc-400">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-200 dark:bg-zinc-800">
+              <span class="text-xs font-bold">{tool.name[0]}</span>
+            </div>
+            <span class="font-medium">{tool.name}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

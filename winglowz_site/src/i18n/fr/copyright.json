@@ -1,0 +1,53 @@
+{
+  "title": "Droits d'Auteur",
+  "lastUpdated": "Dernière mise à jour : 15 Décembre 2024",
+  "sections": {
+    "protection": {
+      "title": "1. Protection des Droits d'Auteur",
+      "content": "Tout le contenu, les logiciels et les matériaux disponibles sur ce site web et les produits associés (collectivement, le \"Contenu\") sont protégés par les lois sur la propriété intellectuelle et sont la propriété de WinGlowz. Cela inclut, sans s'y limiter :",
+      "items": [
+        "Tous les plugins Obsidian (CreatorFlowz, RSSFlowz, PluginFlowz, MediaFlowz, EditorFlowz, MailingFlowz, LinkFlowz)",
+        "Extensions Chrome (ReplayGlowz)",
+        "Matériels de formation et documentation",
+        "Code source et algorithmes",
+        "Designs d'interface utilisateur et graphiques",
+        "Contenu et structure du site web",
+        "Noms de marque, logos et marques déposées"
+      ]
+    },
+    "license": {
+      "title": "2. Restrictions de Licence",
+      "content": "L'achat de nos produits vous accorde une licence limitée, non exclusive et non transférable pour un usage personnel uniquement. Cette licence interdit explicitement :",
+      "items": [
+        "La copie, la modification ou la création d'œuvres dérivées",
+        "L'ingénierie inverse ou la décompilation de nos logiciels",
+        "La redistribution ou la revente de nos produits",
+        "La suppression des mentions de droits d'auteur ou des identifications de produits",
+        "L'utilisation de notre code dans d'autres produits ou services",
+        "Le partage des identifiants d'accès ou des clés de licence"
+      ]
+    },
+    "commercial": {
+      "title": "3. Utilisation Commerciale",
+      "content": "Toute utilisation commerciale, y compris mais sans s'y limiter la revente, la modification ou l'incorporation dans d'autres produits, nécessite une autorisation écrite explicite de WinGlowz."
+    },
+    "enforcement": {
+      "title": "4. Application",
+      "content": "Nous surveillons activement les violations des droits d'auteur et prendrons les mesures légales appropriées pour protéger nos droits de propriété intellectuelle, notamment :",
+      "items": [
+        "L'émission de mises en demeure",
+        "La poursuite en dommages et intérêts pour violation des droits d'auteur",
+        "Le signalement des violations aux plateformes et autorités concernées",
+        "La demande de mesures conservatoires"
+      ]
+    },
+    "fairUse": {
+      "title": "5. Usage Équitable",
+      "content": "Une utilisation limitée de notre Contenu peut être autorisée pour des critiques, commentaires ou à des fins éducatives, sous réserve d'une attribution appropriée et du respect de nos droits de propriété intellectuelle."
+    }
+  },
+  "footer": {
+    "notice": "En utilisant nos produits et services, vous reconnaissez et acceptez de respecter nos droits de propriété intellectuelle tels que décrits dans cette notice. WinGlowz se réserve tous les droits non expressément accordés et peut mettre à jour cette notice à tout moment sans notification préalable.",
+    "contact": "Pour toute question concernant les droits d'auteur ou les autorisations, veuillez contacter copyright@winglowz.com"
+  }
+} 

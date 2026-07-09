@@ -1,0 +1,73 @@
+{
+  "title": "Politique de Confidentialité",
+  "lastUpdated": "Dernière mise à jour : 15 Décembre 2024",
+  "intro": "Chez WinGlowz, nous prenons votre vie privée au sérieux. Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos informations personnelles lorsque vous utilisez nos produits et services.",
+  "sections": {
+    "collection": {
+      "title": "1. Collecte d'Informations",
+      "intro": "Nous collectons un minimum d'informations personnelles, limitées à :",
+      "items": [
+        "Adresse email (pour la gestion du compte)",
+        "Informations de paiement (traitées de manière sécurisée par des prestataires tiers)",
+        "Donnees d'authentification et de session necessaires pour acceder a ton compte"
+      ]
+    },
+    "usage": {
+      "title": "2. Utilisation des Données",
+      "intro": "Vos informations sont utilisées pour :",
+      "items": [
+        "Gestion du compte",
+        "Livraison des produits",
+        "Support client",
+        "Amélioration des services"
+      ]
+    },
+    "protection": {
+      "title": "3. Protection des Données",
+      "intro": "Nous mettons en œuvre des mesures de sécurité incluant :",
+      "items": [
+        "Chiffrement des données sensibles",
+        "Traitement sécurisé des paiements",
+        "Audits de sécurité réguliers",
+        "Contrôles d'accès"
+      ]
+    },
+    "thirdParty": {
+      "title": "4. Services Tiers",
+      "intro": "Nous utilisons des services tiers de confiance pour :",
+      "items": [
+        "Traitement des paiements",
+        "Authentification",
+        "Communication par email",
+        "Hébergement"
+      ]
+    },
+    "rights": {
+      "title": "5. Vos Droits",
+      "intro": "Vous avez le droit de :",
+      "items": [
+        "Accéder à vos données",
+        "Demander la suppression des données",
+        "Vous désinscrire des communications",
+        "Demander des corrections de données"
+      ]
+    },
+    "cookies": {
+      "title": "6. Cookies",
+      "intro": "Nous utilisons des cookies essentiels pour :",
+      "items": [
+        "Gestion des sessions",
+        "Authentification",
+        "Préférences utilisateur"
+      ]
+    },
+    "updates": {
+      "title": "7. Mises à Jour",
+      "content": "Cette politique peut être mise à jour périodiquement. Les utilisateurs seront informés des changements significatifs."
+    },
+    "contact": {
+      "title": "8. Contact",
+      "content": "Pour toute question concernant la confidentialité, contactez : privacy@winglowz.com"
+    }
+  }
+} 

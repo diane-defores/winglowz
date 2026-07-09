@@ -1,0 +1,73 @@
+{
+  "title": "Privacy Policy",
+  "lastUpdated": "Last updated: December 15, 2024",
+  "intro": "At WinGlowz, we take your privacy seriously. This Privacy Policy explains how we collect, use, and protect your personal information when you use our products and services.",
+  "sections": {
+    "collection": {
+      "title": "1. Information Collection",
+      "intro": "We collect minimal personal information, limited to:",
+      "items": [
+        "Email address (for account management)",
+        "Payment information (processed securely by third-party providers)",
+        "Authentication and session data required to access your account"
+      ]
+    },
+    "usage": {
+      "title": "2. Data Usage",
+      "intro": "Your information is used for:",
+      "items": [
+        "Account management",
+        "Product delivery",
+        "Customer support",
+        "Service improvements"
+      ]
+    },
+    "protection": {
+      "title": "3. Data Protection",
+      "intro": "We implement security measures including:",
+      "items": [
+        "Encryption of sensitive data",
+        "Secure payment processing",
+        "Regular security audits",
+        "Access controls"
+      ]
+    },
+    "thirdParty": {
+      "title": "4. Third-Party Services",
+      "intro": "We use trusted third-party services for:",
+      "items": [
+        "Payment processing",
+        "Authentication",
+        "Email communication",
+        "Hosting"
+      ]
+    },
+    "rights": {
+      "title": "5. Your Rights",
+      "intro": "You have the right to:",
+      "items": [
+        "Access your data",
+        "Request data deletion",
+        "Opt-out of communications",
+        "Request data corrections"
+      ]
+    },
+    "cookies": {
+      "title": "6. Cookies",
+      "intro": "We use essential cookies for:",
+      "items": [
+        "Session management",
+        "Authentication",
+        "User preferences"
+      ]
+    },
+    "updates": {
+      "title": "7. Updates",
+      "content": "This policy may be updated periodically. Users will be notified of significant changes."
+    },
+    "contact": {
+      "title": "8. Contact",
+      "content": "For privacy concerns, contact: privacy@winglowz.com"
+    }
+  }
+} 

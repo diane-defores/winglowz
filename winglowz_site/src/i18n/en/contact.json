@@ -1,0 +1,66 @@
+{
+  "title": "Contact | WinGlowz",
+  "meta": {
+    "description": "Have questions or want to discuss a project? Contact us and let's build the perfect solution together with our tools and services."
+  },
+  "hero": {
+    "title": "Get in Touch",
+    "subtitle": "Have a question or need assistance? We're here to help!"
+  },
+  "form": {
+    "name": {
+      "label": "Your Name",
+      "placeholder": "John Doe"
+    },
+    "email": {
+      "label": "Email Address",
+      "placeholder": "john@example.com"
+    },
+    "subject": {
+      "label": "Subject",
+      "placeholder": "How can we help you?"
+    },
+    "message": {
+      "label": "Message",
+      "placeholder": "Tell us more about your needs..."
+    },
+    "submit": "Send Message",
+    "success": "Message sent successfully!",
+    "error": "An error occurred. Please try again."
+  },
+  "contact": {
+    "title": "Other Ways to Reach Us",
+    "email": {
+      "label": "Email",
+      "value": "hello@winglowz.com"
+    },
+    "location": {
+      "label": "Location",
+      "value": "Loire Aution, France"
+    },
+    "hours": {
+      "label": "Business Hours",
+      "value": "Monday - Friday: 9:00 AM - 6:00 PM (CET)"
+    }
+  },
+  "support": {
+    "title": "Support Options",
+    "items": [
+      {
+        "title": "Documentation",
+        "description": "Check our comprehensive documentation for quick answers",
+        "link": "/en/formations/"
+      },
+      {
+        "title": "Blog",
+        "description": "Browse our articles for tips and insights",
+        "link": "/blog"
+      },
+      {
+        "title": "GitHub",
+        "description": "Report issues or contribute to our open-source projects",
+        "link": "https://github.com/diane-defores/winglowz"
+      }
+    ]
+  }
+}

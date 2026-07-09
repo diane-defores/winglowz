@@ -1,0 +1,65 @@
+{
+  "navBarLinks": [
+    { "name": "Windows Mastery", "url": "/windows-mastery" },
+    { "name": "Apps", "url": "/products" },
+    { "name": "Courses", "url": "/en/formations/" },
+    { "name": "Roadmap", "url": "/roadmap" },
+    { "name": "Services", "url": "/services" },
+    { "name": "Blog", "url": "/blog" },
+    { "name": "Contact", "url": "/contact" }
+  ],
+  "footerLinks": [
+    {
+      "section": "Ecosystem",
+      "links": [
+        { "name": "Courses", "url": "/en/formations/" },
+        { "name": "Apps & Plugins", "url": "/products" },
+        { "name": "Services", "url": "/services" },
+        { "name": "Roadmap", "url": "/roadmap" }
+      ]
+    },
+    {
+      "section": "Products",
+      "links": [
+        { "name": "ObsiFlowz", "url": "/products/flowzsuite-obsidian" },
+        { "name": "ReplayGlowz", "url": "/products/replayglowz-extension" },
+        { "name": "Windows Mastery", "url": "/windows-mastery" },
+        { "name": "Productivity Suite", "url": "/products/winglowz" }
+      ]
+    },
+    {
+      "section": "Company",
+      "links": [
+        { "name": "About Us", "url": "/about" },
+        { "name": "Blog", "url": "/blog" },
+        { "name": "Contact", "url": "/contact" }
+      ]
+    },
+    {
+      "section": "Legal",
+      "links": [
+        { "name": "Privacy Policy", "url": "/privacy" },
+        { "name": "Terms of Service", "url": "/terms" },
+        { "name": "Legal Notice", "url": "/legal" },
+        { "name": "Copyright", "url": "/copyright" },
+        { "name": "Disclaimer", "url": "/disclaimer" },
+        { "name": "Terms of Sale", "url": "/cgv" }
+      ]
+    }
+  ],
+  "socialLinks": {
+    "github": "https://github.com/diane-defores/winglowz"
+  },
+  "newsletterSection": {
+    "title": "This Week In Windows Productivity",
+    "description": "Weekly newsletter about Windows tooling and the productivity ecosystem.",
+    "privacy": "No spam, unsubscribe anytime. We respect your privacy."
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Stay up to date",
+      "content": "Stay updated with the latest tools and exclusive deals."
+    },
+    "crafted": "Crafted by"
+  }
+}

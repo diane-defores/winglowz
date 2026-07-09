@@ -1,0 +1,680 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro'
+import type { Language } from '@/types'
+import { getLocalizedSiteUrl } from '@/constants'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+	return [
+		{
+			params: { lang: undefined },
+			props: { lang: 'en' as Language },
+		},
+		{
+			params: { lang: 'fr' },
+			props: { lang: 'fr' as Language },
+		},
+	]
+}
+
+interface Tier {
+	title: string
+	label: string
+	focus: string
+	included: string
+	activation: string
+	price: string
+	founderPrice: string
+	state: string
+	offerId: string
+}
+
+interface WorkflowStep {
+	step: string
+	title: string
+	description: string
+}
+
+interface FaqItem {
+	question: string
+	answer: string
+}
+
+interface CopyBlock {
+	metaTitle: string
+	metaDescription: string
+	heroTitle: string
+	heroSubtitle: string
+	badge: string
+	founderCodeLabel: string
+	founderCodeText: string
+	founderCodeMicrocopy: string
+	founderPriceLabel: string
+	regularPriceLabel: string
+	stickyText: string
+	primaryAction: string
+	secondaryAction: string
+	availabilityTitle: string
+	availabilityText: string
+	availabilityBullets: string[]
+	productHeading: string
+	productSubheading: string
+	workflowHeading: string
+	workflowText: string
+	workflowSteps: WorkflowStep[]
+	activationHeading: string
+	activationText: string
+	activationBullets: string[]
+	tiersHeading: string
+	tiersText: string
+	tiers: Tier[]
+	trustHeading: string
+	trustText: string
+	trustPoints: string[]
+	faqHeading: string
+	faqText: string
+	faqItems: FaqItem[]
+	finalHeading: string
+	finalText: string
+	finalAction: string
+	finalActionUrl: string
+}
+
+const copyByLang: Record<Language, CopyBlock> = {
+	en: {
+		metaTitle: 'Winflow Founder Access | Early Bird Lifetime Deal',
+		metaDescription:
+			'Become a Winflow founder and get lifetime access to the productivity app that helps you capture, transform, and reuse your words faster.',
+		heroTitle: 'Become a Winflow founder',
+		heroSubtitle:
+			'Get lifetime access to the productivity app that helps you capture, transform, and reuse your words faster. Android is available first, with future released platforms included as Winflow grows.',
+		badge: 'Early Bird Lifetime Deal',
+		founderCodeLabel: 'FOUNDER',
+		founderCodeText: '50% off for the first 50 founders',
+		founderCodeMicrocopy:
+			'Use code FOUNDER at checkout. Early founders get the lowest direct price, first access to new releases, and the strongest voice in what Winflow becomes next.',
+		founderPriceLabel: 'With FOUNDER',
+		regularPriceLabel: 'Public price',
+		stickyText: 'FOUNDER code active: 50% off for the first 50 purchases.',
+		primaryAction: 'Become a founder',
+		secondaryAction: 'Compare plans',
+		availabilityTitle: 'Start on Android. Keep your place for what comes next.',
+		availabilityText:
+			'Winflow starts where your words already happen: on your phone. Your founder license covers released platforms over time, without forcing you to buy again for every device you use.',
+		availabilityBullets: [
+			'Android is available first.',
+			'Windows, iOS, and Linux are planned with no promised release date.',
+			'Your plan is based on active devices, not separate platform purchases.',
+			'Founder pricing can increase as the product matures.',
+		],
+		productHeading: 'Turn scattered words into usable workflow',
+		productSubheading:
+			'Winflow is built for the moments when typing is too slow, copying is messy, and your best ideas are trapped between apps.',
+		workflowHeading: 'A faster path from thought to action',
+		workflowText:
+			'Capture what matters, clean it up, and reuse it where the work actually happens.',
+		workflowSteps: [
+			{
+				step: '01',
+				title: 'Capture faster',
+				description:
+					'Use voice-first tools, keyboard workflows, and quick actions to get words out of your head before they disappear.',
+			},
+			{
+				step: '02',
+				title: 'Clean and reuse',
+				description:
+					'Turn rough text into something useful, then bring it back through snippets, clipboard workflows, and saved patterns.',
+			},
+			{
+				step: '03',
+				title: 'Move across your setup',
+				description:
+					'Start on Android today and keep room for future platforms as they become available.',
+			},
+		],
+		activationHeading: 'One license. Multiple active devices.',
+		activationText:
+			'Choose the amount of device flexibility you want. Your activations can be used across released platforms, so the plan follows your setup instead of locking you into one device type.',
+		activationBullets: [
+			'Use your activations on any released Winflow platform.',
+			'Switch devices within the activation rules of your plan.',
+			'Keep the founder deal while Winflow grows.',
+			'Avoid paying separately for every future platform release.',
+		],
+		tiersHeading: 'Choose your founder tier',
+		tiersText:
+			'All founder tiers include lifetime access under the plan you choose. The difference is how many active devices you want available at the same time.',
+		tiers: [
+			{
+				title: 'Focus',
+				label: '1 activation',
+				focus: 'For one personal device',
+				included:
+					'Start with Winflow on one active device and keep access to future released platforms under your founder license.',
+				activation: '1 active device',
+				price: '$99',
+				founderPrice: '$49.50',
+				state: '50% off with FOUNDER',
+				offerId: 'winglowz_app/focus',
+			},
+			{
+				title: 'Power',
+				label: '2 activations',
+				focus: 'For daily multi-device use',
+				included:
+					'Use Winflow across two active personal devices when your workflow moves between screens.',
+				activation: '2 active devices',
+				price: '$179',
+				founderPrice: '$89.50',
+				state: '50% off with FOUNDER',
+				offerId: 'winglowz_app/power',
+			},
+			{
+				title: 'Control',
+				label: '5 activations',
+				focus: 'For a complete productivity setup',
+				included:
+					'Give your main devices room to work together as Winflow expands beyond Android.',
+				activation: '5 active devices',
+				price: '$349',
+				founderPrice: '$174.50',
+				state: '50% off with FOUNDER',
+				offerId: 'winglowz_app/control',
+			},
+			{
+				title: 'Command',
+				label: '10 activations',
+				focus: 'For maximum device flexibility',
+				included:
+					'The highest founder tier for people who want the broadest personal activation room across present and future released platforms.',
+				activation: '10 active devices',
+				price: '$799',
+				founderPrice: '$399.50',
+				state: '50% off with FOUNDER',
+				offerId: 'winglowz_app/command',
+			},
+		],
+		trustHeading: 'A clear founder deal',
+		trustText:
+			'The offer is intentionally simple: buy once, start with Android, and keep access as Winflow grows. The limits are clear so the product can stay sustainable.',
+		trustPoints: [
+			'Android is available now.',
+			'Future platforms are planned, but not promised by a fixed date.',
+			'Cloud and AI features will stay bounded so the product can keep improving.',
+			'The FOUNDER coupon is limited to the first 50 purchases.',
+		],
+		faqHeading: 'FAQ',
+		faqText: 'Short answers before you become a founder.',
+		faqItems: [
+			{
+				question: 'What do I get today?',
+				answer:
+					'You get founder access to Winflow with Android available first, under the activation limit of the plan you choose.',
+			},
+			{
+				question: 'Are future platforms included?',
+				answer:
+					'Future released platforms are included when they become available. Windows, iOS, and Linux are planned, but there is no release date commitment.',
+			},
+			{
+				question: 'How do activations work?',
+				answer:
+					'Each plan gives you a number of active personal devices. Those activations can be used across released platforms.',
+			},
+			{
+				question: 'Is this for teams?',
+				answer:
+					'No. These founder tiers are personal licenses. Team and business licensing can come later as a separate offer.',
+			},
+			{
+				question: 'Will the price stay the same?',
+				answer:
+					'No. Founder pricing is an early window and may increase as Winflow adds more depth and platform coverage.',
+			},
+		],
+		finalHeading: 'Become a Winflow founder',
+		finalText:
+			'Lock in your founder tier while Winflow is still early, start on Android, and keep your place as the product expands.',
+		finalAction: 'Become a founder',
+		finalActionUrl: '/contact',
+	},
+	fr: {
+		metaTitle: 'Winflow Founder Access | Early Bird Lifetime Deal',
+		metaDescription:
+			'Devenez founder Winflow et obtenez un acces lifetime a l app de productivite qui aide a capturer, transformer et reutiliser vos mots plus vite.',
+		heroTitle: 'Become a Winflow founder',
+		heroSubtitle:
+			"Obtenez un acces lifetime a l'app de productivite qui aide a capturer, transformer et reutiliser vos mots plus vite. Android est disponible en premier, et les futures plateformes sorties seront incluses quand Winflow grandira.",
+		badge: 'Early Bird Lifetime Deal',
+		founderCodeLabel: 'FOUNDER',
+		founderCodeText: '-50 % pour les 50 premiers founders',
+		founderCodeMicrocopy:
+			'Utilisez le code FOUNDER au checkout. Les premiers founders obtiennent le meilleur prix direct, les nouveautes en avant-premiere, et la voix la plus forte dans les priorites de Winflow.',
+		founderPriceLabel: 'Avec FOUNDER',
+		regularPriceLabel: 'Prix public',
+		stickyText: 'Code FOUNDER actif: -50 % pour les 50 premiers achats.',
+		primaryAction: 'Become a founder',
+		secondaryAction: 'Comparer les plans',
+		availabilityTitle: 'Commencez sur Android. Gardez votre place pour la suite.',
+		availabilityText:
+			"Winflow commence la ou vos mots existent deja: sur votre telephone. Votre licence founder couvre les plateformes sorties dans le temps, sans racheter une licence pour chaque appareil.",
+		availabilityBullets: [
+			'Android est disponible en premier.',
+			'Windows, iOS et Linux sont prevus sans promesse de date.',
+			'Votre plan depend du nombre d appareils actifs, pas d achats separes par plateforme.',
+			'Le prix founder peut augmenter avec la maturite du produit.',
+		],
+		productHeading: 'Transformer des mots disperses en workflow utilisable',
+		productSubheading:
+			'Winflow est fait pour les moments ou taper est trop lent, copier-coller devient brouillon, et vos meilleures idees restent bloquees entre les apps.',
+		workflowHeading: "Un chemin plus rapide de l'idee a l'action",
+		workflowText:
+			'Capturez ce qui compte, nettoyez le texte, puis reutilisez-le la ou le travail se passe vraiment.',
+		workflowSteps: [
+			{
+				step: '01',
+				title: 'Capturer plus vite',
+				description:
+					'Utilisez les outils voice-first, les workflows clavier et les actions rapides pour sortir les mots de votre tete avant de les perdre.',
+			},
+			{
+				step: '02',
+				title: 'Nettoyer et reutiliser',
+				description:
+					'Transformez un texte brut en quelque chose d utile, puis retrouvez-le avec snippets, clipboard et patterns sauvegardes.',
+			},
+			{
+				step: '03',
+				title: 'Avancer sur votre setup',
+				description:
+					'Commencez sur Android maintenant et gardez de la marge pour les futures plateformes quand elles seront disponibles.',
+			},
+		],
+		activationHeading: 'Une licence. Plusieurs appareils actifs.',
+		activationText:
+			'Choisissez le niveau de flexibilite dont vous avez besoin. Vos activations peuvent etre utilisees sur les plateformes sorties, donc le plan suit votre setup au lieu de vous enfermer dans un type d appareil.',
+		activationBullets: [
+			'Utilisez vos activations sur toute plateforme Winflow sortie.',
+			'Changez d appareil dans les regles d activation de votre plan.',
+			'Gardez le deal founder pendant que Winflow grandit.',
+			'Evitez de repayer separement chaque future plateforme.',
+		],
+		tiersHeading: 'Choisissez votre tier founder',
+		tiersText:
+			'Tous les tiers founder incluent un acces lifetime selon le plan choisi. La difference est le nombre d appareils actifs disponibles en meme temps.',
+		tiers: [
+			{
+				title: 'Focus',
+				label: '1 activation',
+				focus: 'Pour un appareil personnel',
+				included:
+					'Commencez avec Winflow sur un appareil actif et gardez acces aux futures plateformes sorties avec votre licence founder.',
+				activation: '1 appareil actif',
+				price: '$99',
+				founderPrice: '$49.50',
+				state: '-50 % avec FOUNDER',
+				offerId: 'winglowz_app/focus',
+			},
+			{
+				title: 'Power',
+				label: '2 activations',
+				focus: 'Pour un usage quotidien multi-device',
+				included:
+					'Utilisez Winflow sur deux appareils personnels actifs quand votre workflow passe d un ecran a l autre.',
+				activation: '2 appareils actifs',
+				price: '$179',
+				founderPrice: '$89.50',
+				state: '-50 % avec FOUNDER',
+				offerId: 'winglowz_app/power',
+			},
+			{
+				title: 'Control',
+				label: '5 activations',
+				focus: 'Pour un setup productivite complet',
+				included:
+					'Laissez vos appareils principaux travailler ensemble pendant que Winflow s etend au-dela d Android.',
+				activation: '5 appareils actifs',
+				price: '$349',
+				founderPrice: '$174.50',
+				state: '-50 % avec FOUNDER',
+				offerId: 'winglowz_app/control',
+			},
+			{
+				title: 'Command',
+				label: '10 activations',
+				focus: 'Pour une flexibilite maximale',
+				included:
+					'Le tier founder le plus haut pour obtenir le plus de marge personnelle sur les plateformes presentes et futures sorties.',
+				activation: '10 appareils actifs',
+				price: '$799',
+				founderPrice: '$399.50',
+				state: '-50 % avec FOUNDER',
+				offerId: 'winglowz_app/command',
+			},
+		],
+		trustHeading: 'Un deal founder clair',
+		trustText:
+			"L'offre reste simple: achetez une fois, commencez sur Android, et gardez l'acces pendant que Winflow grandit. Les limites sont claires pour que le produit reste soutenable.",
+		trustPoints: [
+			'Android est disponible maintenant.',
+			'Les futures plateformes sont prevues, sans date promise.',
+			'Les fonctions cloud et IA resteront encadrees pour que le produit continue a progresser.',
+			'Le coupon FOUNDER est limite aux 50 premiers achats.',
+		],
+		faqHeading: 'FAQ',
+		faqText: 'Reponses courtes avant de devenir founder.',
+		faqItems: [
+			{
+				question: "Qu'est-ce que j'obtiens aujourd'hui?",
+				answer:
+					'Vous obtenez un acces founder a Winflow avec Android disponible en premier, selon la limite d activation du plan choisi.',
+			},
+			{
+				question: 'Les futures plateformes sont-elles incluses?',
+				answer:
+					'Les futures plateformes sorties sont incluses quand elles deviennent disponibles. Windows, iOS et Linux sont prevus, mais sans engagement de date.',
+			},
+			{
+				question: 'Comment fonctionnent les activations?',
+				answer:
+					'Chaque plan donne un nombre d appareils personnels actifs. Ces activations peuvent etre utilisees sur les plateformes sorties.',
+			},
+			{
+				question: 'Est-ce une offre equipe?',
+				answer:
+					'Non. Ces tiers founder sont des licences personnelles. Les offres equipe ou business pourront arriver plus tard separement.',
+			},
+			{
+				question: 'Le prix restera-t-il identique?',
+				answer:
+					'Non. Le prix founder correspond a une fenetre early bird et peut augmenter avec la profondeur produit et les nouvelles plateformes.',
+			},
+		],
+		finalHeading: 'Become a Winflow founder',
+		finalText:
+			'Verrouillez votre tier founder pendant que Winflow est encore early, commencez sur Android, et gardez votre place pendant que le produit grandit.',
+		finalAction: 'Become a founder',
+		finalActionUrl: '/fr/contact',
+	},
+}
+
+const { lang = 'en' as Language } = Astro.props
+const copy = copyByLang[lang]
+const pagePath = lang === 'fr' ? '/fr/winglowz-founder' : '/winglowz-founder'
+const defaultOfferId = 'winglowz_app/power'
+const founderCode = 'FOUNDER'
+
+function checkoutUrl(offerId: string) {
+	const successUrl = `/purchase/success?offerId=${encodeURIComponent(offerId)}`
+	const cancelUrl = `/purchase/cancel?offerId=${encodeURIComponent(offerId)}`
+	return `/api/commerce/checkout?offerId=${encodeURIComponent(offerId)}&provider=lemonsqueezy&source=direct&sourceRef=${encodeURIComponent(pagePath)}&discountCode=${encodeURIComponent(founderCode)}&successUrl=${encodeURIComponent(successUrl)}&cancelUrl=${encodeURIComponent(cancelUrl)}`
+}
+---
+
+<MainLayout
+	title={copy.metaTitle}
+	meta={{
+		title: copy.metaTitle,
+		description: copy.metaDescription,
+	}}
+	lang={lang}
+	structuredData={{
+		'@context': 'https://schema.org',
+		'@type': 'WebPage',
+		'@id': getLocalizedSiteUrl(lang, '/winglowz-founder'),
+		url: getLocalizedSiteUrl(lang, '/winglowz-founder'),
+		name: copy.metaTitle,
+		description: copy.metaDescription,
+		inLanguage: lang,
+	}}
+>
+	<div class="space-y-16 pb-16">
+		<section class="relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white to-neutral-50 p-8 md:p-12 dark:border-neutral-700 dark:from-neutral-900 dark:to-neutral-950">
+			<div class="absolute inset-x-0 top-0 h-2 bg-gradient-rainbow-horizontal opacity-80" />
+			<div class="absolute inset-0 bg-gradient-to-br from-magenta/10 via-transparent to-cyan/10" />
+			<div class="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
+				<div class="max-w-2xl">
+					<p class="mb-4 inline-flex rounded-full border border-magenta/40 bg-magenta/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-magenta">
+						{copy.badge}
+					</p>
+					<h1 class="mb-6 text-4xl font-bold text-neutral-900 dark:text-white sm:text-5xl">
+						{copy.heroTitle}
+					</h1>
+					<p class="mb-8 text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
+						{copy.heroSubtitle}
+					</p>
+					<div class="mb-8 rounded-2xl border border-amber-300 bg-amber-50 p-4 shadow-lg shadow-amber-900/5 dark:border-amber-400/40 dark:bg-amber-950/30">
+						<div class="flex flex-wrap items-center gap-3">
+							<span class="inline-flex animate-pulse rounded-full bg-neutral-950 px-3 py-1 text-xs font-bold uppercase tracking-widest text-white dark:bg-white dark:text-neutral-950">
+								{copy.founderCodeLabel}
+							</span>
+							<p class="text-sm font-bold text-amber-950 dark:text-amber-100">{copy.founderCodeText}</p>
+						</div>
+						<p class="mt-3 text-sm leading-relaxed text-amber-900 dark:text-amber-100/80">
+							{copy.founderCodeMicrocopy}
+						</p>
+					</div>
+					<div class="flex flex-wrap gap-4">
+						<a
+							href={checkoutUrl(defaultOfferId)}
+							class="inline-flex items-center rounded-xl bg-magenta px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-magenta/90"
+						>
+							{copy.primaryAction}
+						</a>
+						<a
+							href="#architecture"
+							class="inline-flex items-center rounded-xl border border-neutral-300 bg-white/80 px-6 py-3 text-sm font-semibold text-neutral-900 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+						>
+							{copy.secondaryAction}
+						</a>
+					</div>
+				</div>
+				<div class="relative">
+					<div class="mx-auto w-full max-w-sm rounded-3xl border border-neutral-200 bg-white p-4 shadow-2xl shadow-black/10 ring-1 ring-black/5 dark:border-neutral-700 dark:bg-neutral-900 dark:ring-white/5">
+						<div class="rounded-2xl bg-gradient-to-b from-neutral-100 to-white p-3 dark:from-neutral-800 dark:to-neutral-900">
+							<div class="h-5 w-36 rounded-full bg-neutral-200 dark:bg-neutral-700" />
+							<div class="mt-3 h-8 rounded-xl bg-magenta/10 p-2">
+								<div class="h-3 w-24 rounded-full bg-magenta/30 dark:bg-magenta/40" />
+							</div>
+							<div class="mt-4 space-y-3">
+								<div class="space-y-2 rounded-xl border border-neutral-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-800">
+									<div class="h-2 w-3/4 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+									<div class="h-2 w-1/2 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+								</div>
+								<div class="rounded-xl border border-neutral-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-800">
+									<div class="mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400">
+										{copy.productSubheading}
+									</div>
+									<div class="h-2 w-full rounded-full bg-neutral-300 dark:bg-neutral-600" />
+									<div class="mt-2 h-2 w-5/6 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+								</div>
+								<div class="grid grid-cols-2 gap-2">
+									<div class="rounded-lg bg-blue-50 p-3 text-sm dark:bg-blue-950/40">
+										<p class="mb-1 text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-300">Flow</p>
+										<p class="text-xs text-blue-700 dark:text-blue-200">Capture &amp; prioritize</p>
+									</div>
+									<div class="rounded-lg bg-emerald-50 p-3 text-sm dark:bg-emerald-950/40">
+										<p class="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Execution</p>
+										<p class="text-xs text-emerald-700 dark:text-emerald-200">Plan &amp; ship</p>
+									</div>
+								</div>
+							</div>
+							<div class="mt-4 rounded-lg bg-neutral-100 p-3 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+								Active device: 1 / 3
+							</div>
+						</div>
+						<div class="mt-3 h-2 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+						<div class="mt-2 h-2 w-20 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-6xl rounded-2xl border border-neutral-200 bg-white px-6 py-10 dark:border-neutral-700 dark:bg-neutral-900">
+			<div class="mb-4 flex items-start justify-between gap-3">
+				<h2 class="text-2xl font-semibold text-neutral-900 dark:text-white">{copy.availabilityTitle}</h2>
+				<span class="rounded-full border border-neutral-300 px-3 py-1 text-xs font-medium text-neutral-600 dark:border-neutral-600 dark:text-neutral-400">
+					{lang === 'fr' ? 'Disponibilite' : 'Availability'}
+				</span>
+			</div>
+			<p class="mb-4 max-w-3xl text-neutral-600 dark:text-neutral-300">{copy.availabilityText}</p>
+			<ul class="grid gap-3 md:grid-cols-2">
+				{copy.availabilityBullets.map((item) => (
+					<li class="rounded-lg border border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800 dark:text-neutral-300">
+						{item}
+					</li>
+				))}
+			</ul>
+		</section>
+
+		<section id="architecture" class="mx-auto max-w-6xl">
+			<div class="mb-6">
+				<p class="text-sm font-semibold uppercase tracking-widest text-magenta">
+					{lang === 'fr' ? 'Conception produit' : 'Product architecture'}
+				</p>
+				<h2 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-white">{copy.productHeading}</h2>
+				<p class="mt-4 max-w-3xl text-neutral-600 dark:text-neutral-300">{copy.productSubheading}</p>
+			</div>
+			<div class="grid gap-6 rounded-2xl border border-neutral-200 bg-white p-8 dark:border-neutral-700 dark:bg-neutral-900">
+				<h3 class="text-xl font-semibold text-neutral-900 dark:text-white">{copy.workflowHeading}</h3>
+				<p class="text-sm text-neutral-600 dark:text-neutral-300">{copy.workflowText}</p>
+				<div class="grid gap-4 md:grid-cols-3">
+					{copy.workflowSteps.map((item) => (
+						<div class="rounded-xl border border-neutral-200 bg-neutral-50 p-5 dark:border-neutral-700 dark:bg-neutral-800">
+							<p class="mb-2 text-xs font-bold uppercase tracking-widest text-magenta">Step {item.step}</p>
+							<h4 class="mb-2 text-lg font-semibold text-neutral-900 dark:text-white">{item.title}</h4>
+							<p class="text-sm text-neutral-600 dark:text-neutral-300">{item.description}</p>
+						</div>
+					))}
+				</div>
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-6xl rounded-2xl border border-neutral-200 bg-gradient-to-r from-violet-50 to-cyan-50 p-8 dark:border-neutral-700 dark:from-neutral-900 dark:to-neutral-900">
+			<div class="mb-6">
+				<h2 class="text-3xl font-bold text-neutral-900 dark:text-white">{copy.activationHeading}</h2>
+				<p class="mt-4 max-w-3xl text-neutral-700 dark:text-neutral-300">{copy.activationText}</p>
+			</div>
+			<div class="grid gap-4 md:grid-cols-2">
+				{copy.activationBullets.map((item) => (
+					<div class="rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
+						<p class="text-sm text-neutral-700 dark:text-neutral-200">{item}</p>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-6xl">
+			<div class="mb-6">
+				<p class="text-sm font-semibold uppercase tracking-widest text-magenta">
+					{lang === 'fr' ? 'Architecture commerciale' : 'Commercial structure'}
+				</p>
+				<h2 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-white">{copy.tiersHeading}</h2>
+				<p class="mt-4 max-w-3xl text-neutral-600 dark:text-neutral-300">{copy.tiersText}</p>
+			</div>
+			<div class="mb-6 overflow-hidden rounded-2xl border border-amber-300 bg-neutral-950 text-white shadow-xl shadow-black/10 dark:border-amber-400/40">
+				<div class="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+					<div>
+						<p class="text-xs font-bold uppercase tracking-widest text-amber-300">{copy.founderCodeLabel}</p>
+						<p class="mt-1 text-lg font-semibold">{copy.founderCodeText}</p>
+					</div>
+					<a
+						href={checkoutUrl(defaultOfferId)}
+						class="inline-flex items-center justify-center rounded-xl bg-amber-300 px-5 py-3 text-sm font-bold text-neutral-950 transition-colors hover:bg-amber-200"
+					>
+						{copy.primaryAction}
+					</a>
+				</div>
+			</div>
+			<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+				{copy.tiers.map((tier) => (
+					<div class="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white p-6 shadow-lg shadow-black/5 transition-transform hover:-translate-y-1 dark:border-neutral-700 dark:bg-neutral-900">
+						<div class="absolute inset-x-0 top-0 h-1 bg-gradient-rainbow-horizontal" />
+						<p class="mb-2 inline-flex rounded-full border border-neutral-200 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:border-neutral-600 dark:text-neutral-300">
+							{tier.label}
+						</p>
+						<h3 class="mb-1 text-xl font-semibold text-neutral-900 dark:text-white">{tier.title}</h3>
+						<p class="mb-4 text-sm text-neutral-500 dark:text-neutral-400">{tier.focus}</p>
+						<div class="mb-5 rounded-xl bg-neutral-50 p-4 dark:bg-neutral-800">
+							<div class="flex items-end gap-2">
+								<span class="text-3xl font-black text-neutral-950 dark:text-white">{tier.founderPrice}</span>
+								<span class="pb-1 text-sm font-semibold text-neutral-500 line-through dark:text-neutral-400">{tier.price}</span>
+							</div>
+							<div class="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
+								<span class="rounded-full bg-amber-200 px-2 py-1 text-amber-950">{copy.founderPriceLabel}</span>
+								<span class="rounded-full bg-white px-2 py-1 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">{copy.regularPriceLabel}</span>
+							</div>
+						</div>
+						<p class="mb-4 text-sm text-neutral-700 dark:text-neutral-200">{tier.included}</p>
+						<div class="mb-4 text-xs text-neutral-500 dark:text-neutral-400">Activation: {tier.activation}</div>
+						<div class="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-950 dark:border-amber-400/30 dark:bg-amber-950/30 dark:text-amber-100">{tier.state}</div>
+						<a
+							href={checkoutUrl(tier.offerId)}
+							class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+						>
+							{copy.primaryAction}
+						</a>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-6xl rounded-2xl border border-neutral-200 bg-white px-6 py-10 dark:border-neutral-700 dark:bg-neutral-900">
+			<h2 class="mb-4 text-3xl font-bold text-neutral-900 dark:text-white">{copy.trustHeading}</h2>
+			<p class="mb-6 max-w-3xl text-neutral-600 dark:text-neutral-300">{copy.trustText}</p>
+			<div class="grid gap-3 md:grid-cols-2">
+				{copy.trustPoints.map((point) => (
+					<div class="rounded-lg bg-neutral-50 p-4 text-sm text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+						{point}
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-6xl rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900">
+			<h2 class="mb-2 text-3xl font-bold text-neutral-900 dark:text-white">{copy.faqHeading}</h2>
+			<p class="mb-6 text-neutral-600 dark:text-neutral-300">{copy.faqText}</p>
+			<div class="space-y-3">
+				{copy.faqItems.map((item) => (
+					<div class="rounded-xl border border-neutral-200 bg-neutral-50 p-5 dark:border-neutral-700 dark:bg-neutral-800">
+						<p class="mb-2 text-sm font-semibold text-neutral-900 dark:text-white">{item.question}</p>
+						<p class="text-sm text-neutral-600 dark:text-neutral-300">{item.answer}</p>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-6xl rounded-2xl border border-magenta/40 bg-gradient-to-r from-magenta/90 to-purple-700 p-10 text-white">
+			<div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+				<div class="max-w-2xl">
+					<h2 class="text-3xl font-bold">{copy.finalHeading}</h2>
+					<p class="mt-4 text-white/90">{copy.finalText}</p>
+				</div>
+				<a
+					href={checkoutUrl(defaultOfferId)}
+					class="inline-flex items-center rounded-xl bg-white px-6 py-3 font-semibold text-neutral-900 transition-colors hover:bg-neutral-100"
+				>
+					{copy.finalAction}
+				</a>
+			</div>
+		</section>
+	</div>
+	<div class="sticky bottom-4 z-20 mx-auto max-w-3xl px-4">
+		<div class="rounded-2xl border border-amber-300 bg-neutral-950/95 p-3 text-white shadow-2xl shadow-black/20 backdrop-blur">
+			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<p class="text-xs font-bold uppercase tracking-widest text-amber-300">{copy.founderCodeLabel}</p>
+					<p class="text-sm font-semibold">{copy.stickyText}</p>
+				</div>
+				<a
+					href={checkoutUrl(defaultOfferId)}
+					class="inline-flex items-center justify-center rounded-xl bg-amber-300 px-4 py-2 text-sm font-bold text-neutral-950 transition-colors hover:bg-amber-200"
+				>
+					{copy.primaryAction}
+				</a>
+			</div>
+		</div>
+	</div>
+</MainLayout>

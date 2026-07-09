@@ -1,0 +1,229 @@
+import type { Id } from './_generated/dataModel'
+import type { MutationCtx } from './_generated/server'
+
+export const WINGLOWZ_APP_PRODUCT_ID = 'winglowz_app'
+export const WINGLOWZ_FORMATION_PRODUCT_ID = 'winglowz_formation'
+export const GOCHARBON_PRODUCT_ID = 'gocharbon'
+export const CONTENTGLOWZ_PRODUCT_ID = 'contentglowz'
+export const SHIPGLOWZ_PRODUCT_ID = 'shipglowz'
+export const REPLAYGLOWZ_PRODUCT_ID = 'replayglowz'
+export const SOCIALGLOWZ_PRODUCT_ID = 'socialglowz'
+export const TEMU_SHOPPING_LISTS_PRODUCT_ID = 'temu_shopping_lists'
+
+export const SUITE_PRODUCT_IDS = [
+  WINGLOWZ_APP_PRODUCT_ID,
+  WINGLOWZ_FORMATION_PRODUCT_ID,
+  GOCHARBON_PRODUCT_ID,
+  CONTENTGLOWZ_PRODUCT_ID,
+  SHIPGLOWZ_PRODUCT_ID,
+  REPLAYGLOWZ_PRODUCT_ID,
+  SOCIALGLOWZ_PRODUCT_ID,
+  TEMU_SHOPPING_LISTS_PRODUCT_ID,
+] as const
+
+export const DEFAULT_FREE_ENTITLEMENT_POLICIES = [
+  {
+    productId: WINGLOWZ_APP_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+  {
+    productId: WINGLOWZ_FORMATION_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+  {
+    productId: GOCHARBON_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+  {
+    productId: CONTENTGLOWZ_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+  {
+    productId: SHIPGLOWZ_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+  {
+    productId: REPLAYGLOWZ_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+  {
+    productId: SOCIALGLOWZ_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+  {
+    productId: TEMU_SHOPPING_LISTS_PRODUCT_ID,
+    plan: 'free',
+    source: 'product_default',
+  },
+] as const
+
+export const DEFAULT_FREE_PRODUCT_IDS = DEFAULT_FREE_ENTITLEMENT_POLICIES.map(
+  (policy) => policy.productId
+)
+
+const SUITE_PRODUCT_ALLOWLIST = new Set<string>(SUITE_PRODUCT_IDS)
+const ACTIVE_ENTITLEMENT_STATUSES = new Set(['active', 'trialing'])
+
+type RawEntitlement = {
+  productId: string
+  status: string
+  plan?: string
+}
+
+export function isAllowedSuiteProduct(productId: string): boolean {
+  return SUITE_PRODUCT_ALLOWLIST.has(productId)
+}
+
+export function isActiveAccessStatus(status: string): boolean {
+  return ACTIVE_ENTITLEMENT_STATUSES.has(status)
+}
+
+export function selectPreferredActiveProductEntitlement<T extends RawEntitlement>(
+  entitlements: T[],
+  productId: string
+): T | undefined {
+  const activeEntitlements = entitlements.filter(
+    (entry) =>
+      entry.productId === productId && isActiveAccessStatus(entry.status)
+  )
+  return (
+    activeEntitlements.find((entry) => entry.plan !== 'free') ??
+    activeEntitlements[0]
+  )
+}
+
+function getDefaultFreeEntitlementPolicy(productId: string) {
+  return (
+    DEFAULT_FREE_ENTITLEMENT_POLICIES.find(
+      (policy) => policy.productId === productId
+    ) ?? null
+  )
+}
+
+function defaultFreeIdempotencyKey(productId: string, globalUserId: string) {
+  const policy = getDefaultFreeEntitlementPolicy(productId)
+  if (!policy) {
+    throw new Error('default_free_product_not_supported')
+  }
+  return `${policy.source}:${productId}:${globalUserId}`
+}
+
+export async function ensureDefaultFreeEntitlement(
+  ctx: MutationCtx,
+  args: {
+    productId: string
+    globalUserDocId: Id<'globalUsers'>
+    globalUserPublicId: string
+    sourceRef: string
+    environment: string
+    now: number
+  }
+) {
+  const policy = getDefaultFreeEntitlementPolicy(args.productId)
+  if (!policy) {
+    throw new Error('default_free_product_not_supported')
+  }
+
+  const idempotencyKey = defaultFreeIdempotencyKey(
+    policy.productId,
+    args.globalUserPublicId
+  )
+  const existingDefaultEntitlement = await ctx.db
+    .query('productEntitlements')
+    .withIndex('by_idempotencyKey', (q) =>
+      q.eq('idempotencyKey', idempotencyKey)
+    )
+    .first()
+
+  if (existingDefaultEntitlement) {
+    if (
+      existingDefaultEntitlement.productId !== policy.productId ||
+      existingDefaultEntitlement.status !== 'active' ||
+      existingDefaultEntitlement.plan !== policy.plan ||
+      existingDefaultEntitlement.source !== policy.source
+    ) {
+      await ctx.db.patch(existingDefaultEntitlement._id, {
+        productId: policy.productId,
+        plan: policy.plan,
+        status: 'active',
+        source: policy.source,
+        sourceRef: args.sourceRef,
+        environment: args.environment,
+        grantedAt: existingDefaultEntitlement.grantedAt ?? args.now,
+        updatedAt: args.now,
+      })
+    }
+  } else {
+    await ctx.db.insert('productEntitlements', {
+      globalUserId: args.globalUserDocId,
+      productId: policy.productId,
+      plan: policy.plan,
+      status: 'active',
+      source: policy.source,
+      sourceRef: args.sourceRef,
+      environment: args.environment,
+      idempotencyKey,
+      grantedAt: args.now,
+      createdAt: args.now,
+      updatedAt: args.now,
+    })
+  }
+
+  const existingGrantEvent = await ctx.db
+    .query('productAccessEvents')
+    .withIndex('by_idempotencyKey', (q) =>
+      q.eq('idempotencyKey', idempotencyKey)
+    )
+    .first()
+  if (!existingGrantEvent) {
+    await ctx.db.insert('productAccessEvents', {
+      source: policy.source,
+      eventType: 'default_free.granted',
+      sourceRef: args.sourceRef,
+      idempotencyKey,
+      environment: args.environment,
+      productId: policy.productId,
+      globalUserId: args.globalUserDocId,
+      status: 'granted',
+      createdAt: args.now,
+    })
+  }
+}
+
+export async function ensureMissingDefaultFreeEntitlements(
+  ctx: MutationCtx,
+  args: {
+    rawEntitlements: RawEntitlement[]
+    productIds: readonly string[]
+    globalUserDocId: Id<'globalUsers'>
+    globalUserPublicId: string
+    sourceRef: string
+    environment: string
+    now: number
+  }
+) {
+  let didWrite = false
+  for (const productId of args.productIds) {
+    if (selectPreferredActiveProductEntitlement(args.rawEntitlements, productId)) {
+      continue
+    }
+
+    await ensureDefaultFreeEntitlement(ctx, {
+      productId,
+      globalUserDocId: args.globalUserDocId,
+      globalUserPublicId: args.globalUserPublicId,
+      sourceRef: args.sourceRef,
+      environment: args.environment,
+      now: args.now,
+    })
+    didWrite = true
+  }
+  return didWrite
+}

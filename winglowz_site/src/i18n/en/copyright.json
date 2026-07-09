@@ -1,0 +1,53 @@
+{
+  "title": "Copyright Notice",
+  "lastUpdated": "Last updated: December 15, 2024",
+  "sections": {
+    "protection": {
+      "title": "1. Copyright Protection",
+      "content": "All content, software, and materials available on this website and associated products (collectively, the \"Content\") are protected by intellectual property laws and are the property of WinGlowz. This includes, but is not limited to:",
+      "items": [
+        "All Obsidian plugins (CreatorFlowz, RSSFlowz, PluginFlowz, MediaFlowz, EditorFlowz, MailingFlowz, LinkFlowz)",
+        "Chrome extensions (ReplayGlowz)",
+        "Training materials and documentation",
+        "Source code and algorithms",
+        "User interface designs and graphics",
+        "Website content and structure",
+        "Brand names, logos, and trademarks"
+      ]
+    },
+    "license": {
+      "title": "2. License Restrictions",
+      "content": "Purchase of our products grants you a limited, non-exclusive, non-transferable license for personal use only. This license explicitly prohibits:",
+      "items": [
+        "Copying, modifying, or creating derivative works",
+        "Reverse engineering or decompiling our software",
+        "Redistributing or reselling our products",
+        "Removing copyright notices or product identifications",
+        "Using our code in other products or services",
+        "Sharing access credentials or license keys"
+      ]
+    },
+    "commercial": {
+      "title": "3. Commercial Use",
+      "content": "Any commercial use, including but not limited to resale, modification, or incorporation into other products, requires explicit written permission from WinGlowz."
+    },
+    "enforcement": {
+      "title": "4. Enforcement",
+      "content": "We actively monitor for copyright infringement and will take appropriate legal action to protect our intellectual property rights, including:",
+      "items": [
+        "Issuing cease and desist notices",
+        "Pursuing damages for copyright infringement",
+        "Reporting violations to relevant platforms and authorities",
+        "Seeking injunctive relief"
+      ]
+    },
+    "fairUse": {
+      "title": "5. Fair Use",
+      "content": "Limited use of our Content may be permitted for review, commentary, or educational purposes, subject to proper attribution and respect for our intellectual property rights."
+    }
+  },
+  "footer": {
+    "notice": "By using our products and services, you acknowledge and agree to respect our intellectual property rights as outlined in this notice. WinGlowz reserves all rights not expressly granted and may update this notice at any time without prior notification.",
+    "contact": "For copyright inquiries or permissions, please contact copyright@winglowz.com"
+  }
+} 

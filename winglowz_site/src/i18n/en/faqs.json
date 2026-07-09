@@ -1,0 +1,29 @@
+{
+  "subTitle": "Ask us anything about our brand and products, and get factual responses.",
+  "faqs": [
+    {
+      "question": "What's included in the ObsiFlowz plugin suite?",
+      "answer": "ObsiFlowz includes a collection of Obsidian plugins designed to streamline your note-taking and knowledge management workflow. It features smart organization tools, enhanced search, template systems, and productivity automations. The suite is curated for both beginners and power users."
+    },
+    {
+      "question": "Can I upgrade from ObsiFlowz to the full Productivity Suite?",
+      "answer": "Absolutely! You can upgrade to the full Productivity Suite at any time to access all our plugins, Windows Mastery courses, and ReplayGlowz tools. Contact our support team for a seamless transition and prorated pricing."
+    },
+    {
+      "question": "What discounts are available for team or bulk licenses?",
+      "answer": "Team licenses come with exclusive discounts that scale with the number of seats. Get in touch with us to discuss your team's needs, and we'll provide a tailored pricing structure."
+    },
+    {
+      "question": "What kind of customer support can I expect?",
+      "answer": "All our customers receive dedicated email support. With individual plans, you get our standard support, while the Productivity Suite upgrades you to priority support with faster response times and specialized assistance."
+    },
+    {
+      "question": "How current are the courses and training materials?",
+      "answer": "We regularly update our courses and training materials to reflect the latest features in Obsidian, Windows, and our plugin ecosystem. Our content aims to be comprehensive and accessible for all skill levels."
+    },
+    {
+      "question": "Does WinGlowz offer services for teams and organizations?",
+      "answer": "Yes, our Enterprise Solutions are designed for teams and organizations requiring comprehensive productivity tooling. We provide consultation, custom workflow setup, team training, and dedicated support. Contact us for a customized quote."
+    }
+  ]
+}

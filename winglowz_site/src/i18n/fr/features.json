@@ -1,0 +1,18 @@
+{
+  "tools": {
+    "title": "Extensions Obsidian",
+    "description": "Des plugins pour structurer vos notes, retrouver vos ressources et garder un workflow de connaissance plus propre."
+  },
+  "dashboard": {
+    "title": "Workflow YouTube",
+    "description": "Des outils navigateur pour rechercher, annoter et réutiliser des vidéos utiles sans casser votre flux."
+  },
+  "house": {
+    "title": "Clavier et workflow Windows",
+    "description": "WinGlowz couvre les raccourcis, les gestes clavier et les actions rapides qui réduisent la friction dans les tâches quotidiennes."
+  },
+  "support": {
+    "title": "Formation et support",
+    "description": "Le site, la formation et la documentation avancent ensemble pour expliquer les fonctions disponibles et la bonne manière de les utiliser."
+  }
+}

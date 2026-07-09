@@ -1,0 +1,114 @@
+---
+/* Pricing — honest conversion framing for the flagship-first funnel */
+import { getLangFromUrl } from '@/utils/i18n'
+
+const lang = getLangFromUrl(Astro.url)
+const windowsMasteryUrl = lang === 'fr' ? '/fr/maitrise-windows' : '/windows-mastery'
+const recommendationsUrl = lang === 'fr' ? '/fr/recommandations' : '/recommendations'
+
+const copy = lang === 'fr'
+  ? {
+      title: 'Quelle est votre prochaine étape ?',
+      sub: 'Le parcours phare reste la formation Windows, avec l’app WinGlowz et les preuves sociales en support.',
+      flagship: {
+        name: 'Formation Windows Mastery',
+        description: 'Parcours de référence pour passer d’un environnement bruité à un système de travail clair.',
+        points: [
+          '8 modules organisés autour d’une méthode d’adoption pratique',
+          'Contenu en FR + EN',
+          'Objectif: réduire la friction pour travailler plus efficacement',
+          'Accès au chemin premium via votre compte',
+        ],
+        cta: 'Voir la page de vente',
+        href: windowsMasteryUrl,
+        highlight: true,
+      },
+      ecosystem: {
+        name: 'App WinGlowz',
+        description: 'Les captures actuelles montrent la surface Android à côté du parcours de formation.',
+        points: ['Captures réelles', 'Version app', 'Focus sur l’usage concret'],
+        cta: 'Voir les recommandations',
+        href: recommendationsUrl,
+      },
+    }
+  : {
+      title: 'What should you do next?',
+      sub: 'The flagship path is the Windows Mastery training, with the WinGlowz app and social proof supporting it.',
+      flagship: {
+        name: 'Windows Mastery',
+        description: 'The recommended first step to move from noisy, fragmented work to a clear system.',
+        points: [
+          '8 practical modules built around a structured workflow',
+          'FR + EN training content',
+          'Designed to reduce daily friction and regain focus',
+          'Premium path opens after sign-in and checkout flow',
+        ],
+        cta: 'See the course',
+        href: windowsMasteryUrl,
+        highlight: true,
+      },
+      ecosystem: {
+        name: 'WinGlowz app',
+        description: 'Current Android screenshots show the product surface alongside the course.',
+        points: ['Real screenshots', 'App version', 'Focus on practical use'],
+        cta: 'See recommendations',
+        href: recommendationsUrl,
+      },
+    }
+---
+
+<section id="pricing" class="bg-neutral-50 dark:bg-black py-16 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal text-center mb-12">
+      <h2
+        class="mb-4 text-3xl font-bold text-neutral-950 dark:text-white sm:text-4xl"
+        style="font-family: var(--font-instrument-sans);"
+      >
+        {copy.title}
+      </h2>
+      <p class="mx-auto mb-8 max-w-2xl text-neutral-600 dark:text-zinc-400">
+        {copy.sub}
+      </p>
+    </div>
+
+    <div class="reveal grid grid-cols-1 md:grid-cols-2 gap-6">
+      <article
+        class="landing-surface relative p-6 rounded-2xl border border-neutral-300 dark:border-zinc-700"
+      >
+        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500 dark:text-zinc-400">{copy.flagship.name}</p>
+        <h3 class="text-2xl font-bold text-neutral-950 dark:text-white">{copy.flagship.description}</h3>
+        <ul class="mt-6 space-y-3 text-sm text-neutral-700 dark:text-zinc-300">
+          {copy.flagship.points.map((point) => (
+            <li class="flex gap-3">
+              <svg class="h-5 w-5 flex-shrink-0" style="color: var(--brand-green);" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7" /></svg>
+              {point}
+            </li>
+          ))}
+        </ul>
+        <a href={copy.flagship.href}>
+          <button class="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full bg-neutral-950 px-5 text-sm font-semibold text-white hover:bg-neutral-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200">
+            {copy.flagship.cta}
+          </button>
+        </a>
+      </article>
+
+      <article class="landing-surface p-6 rounded-2xl border border-neutral-200 dark:border-zinc-800">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500 dark:text-zinc-400">{copy.ecosystem.name}</p>
+        <h3 class="text-2xl font-bold text-neutral-950 dark:text-white">{copy.ecosystem.description}</h3>
+        <ul class="mt-6 space-y-3 text-sm text-neutral-700 dark:text-zinc-300">
+          {copy.ecosystem.points.map((point) => (
+            <li class="flex gap-3">
+              <svg class="h-5 w-5 flex-shrink-0" style="color: var(--brand-green);" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7" /></svg>
+              {point}
+            </li>
+          ))}
+        </ul>
+        <a href={copy.ecosystem.href}>
+          <button class="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full border border-neutral-300 px-5 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-800">
+            {copy.ecosystem.cta}
+          </button>
+        </a>
+      </article>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,69 @@
+{
+  "title": "Products | WinGlowz",
+  "description": "Explore WinGlowz's core offer first: Windows Mastery, then companion tools for the workflows you already use.",
+  "siteDescription": "WinGlowz focuses on practical Windows training, Obsidian plugins, and browser tools for note-taking, media, and YouTube workflows.",
+  "subtitle": "Browse the WinGlowz ecosystem, with Windows Mastery as the flagship path and companion tools built around the same workflow logic.",
+  "customerStories": "Customer Stories",
+  "features": {
+    "title": "Why WinGlowz?",
+    "subtitle": "The offer is built around the problems the site already teaches: focus, Windows setup, information capture, and knowledge reuse.",
+    "benefits": [
+      "Windows-focused training with practical workflows instead of generic productivity advice",
+      "Obsidian plugins for RSS, plugin management, media handling, and knowledge workflows",
+      "Chrome tools for YouTube bookmarking and goal tracking, plus a course-first learning path"
+    ]
+  },
+  "testimonials": {
+    "title": "What Our Customers Say"
+  },
+  "products": {
+    "obsidianplugins": {
+      "title": "Obsidian Plugins",
+      "description": "Obsidian plugins for RSS, plugin management, media, and knowledge workflows",
+      "features": [
+        "RSS and feed workflows inside Obsidian",
+        "Plugin and media management tools",
+        "Knowledge capture built for Markdown",
+        "Designed to fit a real Obsidian workflow"
+      ],
+      "price": "29.99",
+      "link": "/products/flowzsuite-obsidian"
+    },
+    "chromeextensions": {
+      "title": "Chrome Tools",
+      "description": "Chrome extensions for YouTube bookmarking and goal tracking",
+      "features": [
+        "Timestamped YouTube bookmarks and notes",
+        "Goal tracking for personal workflows",
+        "Keyboard-first interaction",
+        "Exportable notes and bookmarks"
+      ],
+      "price": "19.99",
+      "link": "/products/replayglowz-extension"
+    },
+    "windowsoptimization": {
+      "title": "Windows Training",
+      "description": "A practical Windows productivity guide for faster daily workflows",
+      "features": [
+        "Workflow setup and configuration",
+        "Shortcuts, window management, and automation",
+        "Focus and time-saving habits",
+        "Built from the course content"
+      ],
+      "price": "49",
+      "link": "/windows-mastery"
+    },
+    "productivitysuite": {
+      "title": "WinGlowz Bundle",
+      "description": "The full WinGlowz ecosystem: training plus the core tools",
+      "features": [
+        "Windows training and course content",
+        "Obsidian plugins and browser tools in one offer",
+        "Best value if you want the full stack",
+        "Built around the same workflow system"
+      ],
+      "price": "79.99",
+      "link": "/products/winglowz"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "global": {
+    "siteName": "WinGlowz",
+    "siteDescription": "Digital productivity tools and training for ambitious builders and focused professionals"
+  },
+  "home": {
+    "title": "WinGlowz - Digital Productivity Tools & Training",
+    "description": "Transform your digital workflow with powerful tools and training built for ambitious entrepreneurs, creators, and focused professionals."
+  },
+  "products": {
+    "title": "Digital Productivity Tools | WinGlowz",
+    "description": "Discover our suite of productivity tools including Obsidian plugins and Chrome extensions designed to enhance your digital workflow."
+  },
+  "services": {
+    "title": "Digital Productivity Training & Services | WinGlowz",
+    "description": "Expert development and training services for digital productivity enhancement. Custom plugins, extensions, and personalized coaching."
+  }
+} 
