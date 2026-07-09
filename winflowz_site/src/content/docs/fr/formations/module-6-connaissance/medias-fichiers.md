@@ -124,6 +124,27 @@ Il devient utile si tu veux :
 
 Ce n'est pas un outil grand public. Mais pour quelqu'un qui manipule des exports, des datasets ou des tableaux opérationnels, le gain est réel.
 
+## Texte brut et petites transformations
+
+Toutes les opérations sur texte ne méritent pas Word, Google Docs ou un éditeur plus lourd.
+
+### Outil léger à connaître
+
+[Text Edit Plus](https://vovsoft.com/blog/text-edit-plus-full-feature-list/) peut être intéressant si ton besoin réel est de manipuler du texte brut rapidement sur Windows :
+- nettoyer ou reformater des lignes
+- faire du rechercher/remplacer avancé
+- comparer deux versions
+- convertir des encodages
+- préparer un export simple
+
+Je ne le placerais pas au centre du cours, parce que ce n'est ni un vrai traitement de texte, ni un standard de collaboration. En revanche, c'est une option cohérente si ton problème est :
+- ouvrir vite
+- corriger vite
+- transformer vite
+- puis repartir
+
+Autrement dit : un bon petit atelier de texte utilitaire, pas une suite d'ecriture complete.
+
 ## Images, captures et petits traitements visuels
 
 Toutes les tâches image ne méritent pas Photoshop.

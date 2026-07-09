@@ -32,6 +32,7 @@ evidence:
   - "shipflow_data/business/product.md"
   - "shipflow_data/workflow/research/2026-05-11-concurrents-inspirations.md"
   - "Public-source review 2026-07-07: https://amical.ai/ + https://appsumo.com/products/amical/ + AppSumo founder Q&A/reviews."
+  - "Public-source review 2026-07-07: https://insertkit.com/ + https://insertkit.com/lifetime-deal + https://www.trustpilot.com/review/insertkit.com"
 next_review: "2026-06-11"
 next_step: "$sf-docs update"
 ---
@@ -68,6 +69,9 @@ Concurrent direct/inspiration forte pour la dictée IA cross-platform: hotkey gl
 
 ### Typing Hero
 Concurrent/inspiration pour le text expansion Android: snippets, templates, insertion de date/heure, calculs simples, transformation de texte, historique presse-papiers et automatisation via accessibilité. À benchmarker contre WinFlowz App sur les snippets, les variantes de template, les actions texte et le positionnement freemium/premium.
+
+### [InsertKit](https://insertkit.com/) + [lifetime deal](https://insertkit.com/lifetime-deal)
+Concurrent/inspiration pour une surface de productivite multi-plateforme orientee saisie repetitive: text expansion, snippets dynamiques, variations, historique presse-papiers, voice typing IA, commandes vocales et application Android en plus du desktop et de l'extension Chrome. Le site officiel le positionne aussi explicitement contre TextExpander, TypeDesk et Wispr Flow, avec un angle valeur/free plan qui peut parler a notre audience. Le faible volume actuel de reviews publiques visibles invite a rester prudent sur la traction reelle, mais le packaging produit est tres pertinent a benchmarker contre WinFlowz App sur la combinaison snippets + clipboard + voix, la clarte du positionnement cross-platform, la promesse "type less, insert more", et l'articulation entre plan gratuit, offre lifetime et cas d'usage business.
 
 ## Audio et voix
 
