@@ -221,7 +221,8 @@ dotfiles/
 ├── termux/
 │   ├── termux.properties    # Configuration du terminal
 │   └── colors.properties    # Thème de couleurs
-├── termux.sh                # Script d'installation
+├── dotfiles/
+│   └── termux.sh             # Script d'installation
 └── ...
 ```
 

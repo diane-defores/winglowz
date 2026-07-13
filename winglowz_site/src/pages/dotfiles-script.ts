@@ -9,7 +9,7 @@ tmp_dir="\${TMPDIR:-/tmp}"
 tmp_file="$tmp_dir/dotfiles-install.sh"
 
 mkdir -p "$tmp_dir"
-curl -fsSL https://raw.githubusercontent.com/dianedef/dotfiles/master/install-dotfiles.sh -o "$tmp_file"
+curl -fsSL https://raw.githubusercontent.com/dianedef/dotfiles/main/dotfiles/install-dotfiles.sh -o "$tmp_file"
 exec sh "$tmp_file"
 `;
 

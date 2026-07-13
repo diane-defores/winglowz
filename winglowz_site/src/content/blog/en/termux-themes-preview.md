@@ -98,7 +98,7 @@ For the complete customization guide (properties, fonts, dotfiles), check our [c
 
 Want a ready-to-go setup? Our dotfiles include optimized Termux config, Neovim, Starship, Nerd Fonts and AI coding agents \u2014 all installed with one command.
 
-**[github.com/dianedef/dotfiles](https://github.com/dianedef/dotfiles)** \u2014 `bash termux.sh` and you're set.
+**[github.com/dianedef/dotfiles](https://github.com/dianedef/dotfiles)** \u2014 `bash dotfiles/termux.sh` and you're set.
 
 For deploying projects on a server, check out **[ShipGlowz](https://github.com/dianedef/ShipGlowz)** \u2014 dev environment management with PM2, Caddy and automatic HTTPS.
 

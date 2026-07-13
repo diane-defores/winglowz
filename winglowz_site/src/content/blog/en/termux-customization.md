@@ -221,7 +221,8 @@ dotfiles/
 \u251c\u2500\u2500 termux/
 \u2502   \u251c\u2500\u2500 termux.properties
 \u2502   \u2514\u2500\u2500 colors.properties
-\u251c\u2500\u2500 termux.sh
+\u251c\u2500\u2500 dotfiles/
+\u2502   \u2514\u2500\u2500 termux.sh
 \u2514\u2500\u2500 ...
 ```
 
@@ -273,7 +274,7 @@ We use this exact configuration daily. Our dotfiles repo includes:
 - Neovim, Starship, Zoxide, Nerd Fonts \u2014 all preconfigured
 - AI coding agents setup (LLM CLI, Shell-GPT)
 
-**[github.com/dianedef/dotfiles](https://github.com/dianedef/dotfiles)** \u2014 clone, run `bash termux.sh`, done.
+**[github.com/dianedef/dotfiles](https://github.com/dianedef/dotfiles)** \u2014 clone, run `bash dotfiles/termux.sh`, done.
 
 ---
 

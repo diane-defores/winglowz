@@ -136,7 +136,7 @@ const pages: Record<ScriptPageKey, Record<Language, ScriptInstallPageContent>> =
 			copyLabel: 'Copy command',
 			copiedLabel: 'Copied',
 			rawScriptLabel: 'Open raw script',
-			installNote: 'The bootstrap clones or updates ~/dotfiles, stashes local dirty changes before updating, then runs install.sh.',
+			installNote: 'The bootstrap clones or updates ~/dotfiles, stashes local dirty changes before updating, then runs dotfiles/install.sh.',
 		},
 		fr: {
 			slug: 'dotfiles',
@@ -171,7 +171,7 @@ const pages: Record<ScriptPageKey, Record<Language, ScriptInstallPageContent>> =
 			copyLabel: 'Copier la commande',
 			copiedLabel: 'Copié',
 			rawScriptLabel: 'Ouvrir le script brut',
-			installNote: 'Le bootstrap clone ou met à jour ~/dotfiles, stash les changements locaux avant update, puis lance install.sh.',
+			installNote: 'Le bootstrap clone ou met à jour ~/dotfiles, stash les changements locaux avant update, puis lance dotfiles/install.sh.',
 		},
 	},
 	shipglowz: {
