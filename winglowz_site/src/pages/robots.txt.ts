@@ -11,6 +11,7 @@ Disallow: /dashboard/
 Disallow: /admin/
 Disallow: /purchase/
 Disallow: /signin
+Disallow: /fr/signin
 
 User-agent: GPTBot
 Allow: /
@@ -33,6 +34,11 @@ Disallow: /api/
 Disallow: /dashboard/
 
 User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: CCBot
 Allow: /
 Disallow: /api/
 Disallow: /dashboard/
