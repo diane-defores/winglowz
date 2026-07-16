@@ -237,7 +237,7 @@
   );
 }
 
-@screen xl {
+@media (min-width: 1280px) {
 @import "tailwindcss";
 
 .docs-shell {
