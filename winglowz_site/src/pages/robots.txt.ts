@@ -3,23 +3,39 @@ export const prerender = true
 import type { APIRoute } from 'astro';
 
 const robotsTxt = `
-User-agent: Googlebot
-Disallow:
-Allow: /
-Crawl-delay: 10
-
-User-agent: Yandex
-Disallow:
-Allow: /
-Crawl-delay: 2
-
-User-agent: archive.org_bot
-Disallow:
-Allow: /
-Crawl-delay: 2
-
 User-agent: *
-Disallow: /
+Disallow:
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /purchase/
+Disallow: /signin
+
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
 
 Sitemap: ${new URL('sitemap-index.xml', import.meta.env.SITE).href}
 `.trim();

@@ -73,7 +73,11 @@ const visibleTabs = product.data.tabs.filter((_, index) => {
 })
 ---
 
-<MainLayout title={pageTitle}>
+<MainLayout
+	title={pageTitle}
+	lang={pageLang}
+	meta={{ title: pageTitle, description: product.data.description }}
+>
 	<section
 		class="mx-auto flex max-w-screen-2xl flex-col px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
 	>

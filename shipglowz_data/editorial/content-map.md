@@ -63,6 +63,7 @@ Map public and semi-public content surfaces so publishing stays aligned with the
 | Script utility pages | `/termux`, `/dotfiles`, `/shipglowz` and French equivalents | explain safe one-command installers and route to raw scripts | Astro pages | implemented bootstrap scripts and repositories | installer command, scope, or installed-tool boundary changes |
 | Changelog | `CHANGELOG.md` | user-facing release and documentation updates | Markdown | release history | relevant user-visible change ships |
 | Newsletter | `src/pages/api/newsletter/` plus external copy assets | capture and nurture | API plus external copy | lifecycle messaging | signup or nurture flow changes |
+| AI-readable site summary | `public/llms.txt` | provide a concise, source-aligned site summary for AI retrieval | Markdown | business, branding, and public-surface contracts | flagship offer, key routes, or claim boundaries change |
 
 ## Semantic Architecture
 

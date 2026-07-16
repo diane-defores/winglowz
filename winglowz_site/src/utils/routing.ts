@@ -41,6 +41,10 @@ export const ROUTES: Record<string, RouteDefinition> = {
     en: 'products',
     fr: 'produits'
   },
+  windowsMastery: {
+    en: 'windows-mastery',
+    fr: 'maitrise-windows'
+  },
   testimonials: {
     en: 'testimonials',
     fr: 'temoignages'

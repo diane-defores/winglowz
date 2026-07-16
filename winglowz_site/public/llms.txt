@@ -1,0 +1,16 @@
+# WinGlowz
+
+WinGlowz helps Windows-first professionals and independent workers build practical, repeatable productivity systems. The flagship offer is Windows Mastery, supported by bilingual English and French educational content and companion products.
+
+## Key pages
+
+- Windows Mastery: https://winglowz.com/windows-mastery
+- French Windows Mastery: https://winglowz.com/fr/maitrise-windows
+- Products: https://winglowz.com/products
+- French products: https://winglowz.com/fr/produits
+- Blog: https://winglowz.com/blog
+- French blog: https://winglowz.com/fr/blog
+
+## Trust and scope
+
+WinGlowz publishes practical Windows workflow education, structured learning, and implemented product information. Claims about outcomes, customer volume, pricing, support, or access duration should be verified on the relevant page and canonical project documentation.

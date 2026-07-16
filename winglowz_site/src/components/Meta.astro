@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets'
 import { OG, SEO, SITE, SITE_VISUAL_TOKENS } from '@/constants'
 import faviconSrc from '@/assets/images/WinGlowz.png'
+import { getLocalizedPath } from '@/utils/i18n'
 
 // Default properties for the Meta component
 const defaultProps = {
@@ -11,6 +12,8 @@ const defaultProps = {
 
 const {
 	meta = defaultProps.meta,
+	title,
+	lang = 'en',
 	structuredData = defaultProps.structuredData,
 	noindex = false,
 } = Astro.props
@@ -21,12 +24,12 @@ const metaObject =
 		: undefined
 const metaDescription =
 	typeof meta === 'string' ? meta : metaObject?.description ?? defaultProps.meta
-const metaTitle = metaObject?.title ?? OG.title
+const metaTitle = metaObject?.title ?? title ?? OG.title
 
 // Define the metadata for your website and individual pages
 const URL = `${Astro.site}`
 const author = SITE.author
-const canonical = metaObject?.canonicalURL ?? Astro.url.href
+const canonical = metaObject?.canonicalURL ?? `${Astro.url.origin}${Astro.url.pathname}`
 const ogTitle = metaTitle
 const ogDescription = metaDescription
 const socialImageRes = await getImage({
@@ -36,27 +39,18 @@ const socialImageRes = await getImage({
 })
 const socialImage = Astro.url.origin + socialImageRes.src
 
-const languages: { [key: string]: string } = {
-	en: '',
-	fr: 'fr',
-}
-
-function createHref(prefix: string, path: string): string {
-	const hasPrefix = path.startsWith(`/${prefix}/`)
-	const basePath = hasPrefix ? path : `/${prefix}${path}`
-	const normalizedBasePath = basePath.replace(/\/\/+/g, '/')
-	return `${URL.slice(0, -1)}${normalizedBasePath}`
-}
-
-const fullPath: string = Astro.url.pathname
-
-const alternateLanguageLinks: string = Object.entries(languages)
-	.map(([lang, prefix]: [string, string]) => {
-		const basePath: string =
-			lang === 'en' ? fullPath.replace(/^\/fr\//, '/') : fullPath
-		const href: string = createHref(prefix, basePath)
-		return `<link rel="alternate" hreflang="${lang}" href="${href}" />`
-	})
+const sourcePath = Astro.url.pathname.replace(/^\/fr(?=\/|$)/, '') || '/'
+const alternatePaths = await Promise.all(
+	(['en', 'fr'] as const).map(async (targetLang) => ({
+		lang: targetLang,
+		href: `${URL.slice(0, -1)}${await getLocalizedPath(targetLang, sourcePath)}`,
+	})),
+)
+const alternateLanguageLinks = [
+	...alternatePaths,
+	{ lang: 'x-default', href: alternatePaths.find((item) => item.lang === 'en')?.href ?? canonical },
+]
+	.map(({ lang: alternateLang, href }) => `<link rel="alternate" hreflang="${alternateLang}" href="${href}" />`)
 	.join('\n')
 
 const favicon = await getImage({
@@ -91,8 +85,8 @@ const favicon = await getImage({
 <Fragment set:html={alternateLanguageLinks} />
 
 <!-- Facebook Meta Tags -->
-<meta property="og:locale" content="en_US" />
-<meta property="og:url" content={URL} />
+<meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_US'} />
+<meta property="og:url" content={canonical} />
 <meta property="og:type" content="website" />
 <meta property="og:title" content={ogTitle} />
 <meta property="og:site_name" content={SITE.title} />

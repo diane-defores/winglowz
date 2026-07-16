@@ -103,7 +103,7 @@ const postUrl = new URL(Astro.url.pathname, Astro.site).toString()
 			name: SITE.name,
 			logo: {
 				'@type': 'ImageObject',
-				url: '/images/logo.png',
+				url: `${SITE.url}/favicon.ico`,
 			},
 		},
 	}}
