@@ -100,6 +100,7 @@
 
     /* Radius */
     --radius: 1rem;
+    --navbar-dropdown-min-width: 280px;
 
     --ui-button-radius: 999rem;
     --ui-button-gap: 0.5rem;
@@ -339,7 +340,6 @@
     --btn-secondary-dark-bg: #3f3f46;
     --btn-secondary-dark-text: #d4d4d8;
 
-    --navbar-dropdown-min-width: 280px;
     --btn-full-width: 100%;
     --breakpoint-sm: 640px;
   }
