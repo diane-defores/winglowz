@@ -14,8 +14,8 @@ export const SITE = {
     'Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a practical workflow.',
   author: 'Diane Defores',
   authorName: 'Diane Defores',
-  url: 'https://winglowz.com',
-  domain: 'winglowz.com',
+  url: 'https://www.winflowz.com',
+  domain: 'www.winflowz.com',
   githubUrl: 'https://github.com/diane-defores/winglowz',
   ogImage: '/images/WinGlowz.png',
   emails: {

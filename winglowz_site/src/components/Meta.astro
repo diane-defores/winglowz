@@ -2,7 +2,7 @@
 import { getImage } from 'astro:assets'
 import { OG, SEO, SITE, SITE_VISUAL_TOKENS } from '@/constants'
 import faviconSrc from '@/assets/images/WinGlowz.png'
-import { getLocalizedPath } from '@/utils/i18n'
+import { getDefaultLocalePath, getLocalizedPath } from '@/utils/i18n'
 
 // Default properties for the Meta component
 const defaultProps = {
@@ -39,7 +39,8 @@ const socialImageRes = await getImage({
 })
 const socialImage = Astro.url.origin + socialImageRes.src
 
-const sourcePath = Astro.url.pathname.replace(/^\/fr(?=\/|$)/, '') || '/'
+const localizedPath = Astro.url.pathname.replace(/^\/fr(?=\/|$)/, '') || '/'
+const sourcePath = await getDefaultLocalePath(lang, localizedPath)
 const alternatePaths = await Promise.all(
 	(['en', 'fr'] as const).map(async (targetLang) => ({
 		lang: targetLang,

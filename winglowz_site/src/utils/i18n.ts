@@ -111,6 +111,26 @@ export async function getLocalizedPath(lang: Language, path: string): Promise<st
 }
 
 /**
+ * Converts a localized path back to the default English route segments.
+ *
+ * Route maps are authored from English to each localized variant. Hreflang
+ * generation needs the inverse when it starts on a French URL.
+ */
+export async function getDefaultLocalePath(lang: Language, path: string): Promise<string> {
+  if (lang === 'en') return path || '/';
+
+  const routes = await useRoutes(lang);
+  const defaultRoutes = Object.fromEntries(
+    Object.entries(routes).map(([defaultSegment, localizedSegment]) => [localizedSegment, defaultSegment]),
+  );
+  const segments = path.split('/').filter(Boolean);
+
+  return segments.length === 0
+    ? '/'
+    : `/${segments.map((segment) => defaultRoutes[segment] || segment).join('/')}`;
+}
+
+/**
  * Generates alternate link tags for SEO (hreflang).
  * 
  * These links tell search engines about translated versions of the page,

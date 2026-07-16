@@ -13,7 +13,7 @@ import { remarkDocAsides } from './src/utils/remark-doc-asides.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  site: "https://winglowz.com",
+  site: "https://www.winflowz.com",
   output: "server",
   adapter: vercel({
     webAnalytics: {

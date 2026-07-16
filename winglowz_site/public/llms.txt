@@ -4,12 +4,12 @@ WinGlowz helps Windows-first professionals and independent workers build practic
 
 ## Key pages
 
-- Windows Mastery: https://winglowz.com/windows-mastery
-- French Windows Mastery: https://winglowz.com/fr/maitrise-windows
-- Products: https://winglowz.com/products
-- French products: https://winglowz.com/fr/produits
-- Blog: https://winglowz.com/blog
-- French blog: https://winglowz.com/fr/blog
+- Windows Mastery: https://www.winflowz.com/windows-mastery
+- French Windows Mastery: https://www.winflowz.com/fr/maitrise-windows
+- Products: https://www.winflowz.com/products
+- French products: https://www.winflowz.com/fr/produits
+- Blog: https://www.winflowz.com/blog
+- French blog: https://www.winflowz.com/fr/blog
 
 ## Trust and scope
 
