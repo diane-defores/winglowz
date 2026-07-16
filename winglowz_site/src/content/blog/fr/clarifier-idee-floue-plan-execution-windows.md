@@ -1,4 +1,5 @@
 ---
+translationKey: "vague-idea-clear-plan-windows"
 title: "Comment transformer une idée floue en plan clair sur Windows"
 description: "Un guide WinGlowz pratique pour passer de l'intention à l'exécution."
 author: "Diane"

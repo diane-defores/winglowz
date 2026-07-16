@@ -95,6 +95,7 @@ Optional fields:
 - `role`
 - `draft`
 - `tags`
+- `translationKey` for an explicit cross-language article pair
 
 ### `services`
 
@@ -119,4 +120,3 @@ Optional fields:
 ## Maintenance Rule
 
 Update this policy whenever `src/content/config.ts` changes.
-

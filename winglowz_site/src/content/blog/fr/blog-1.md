@@ -1,4 +1,5 @@
 ---
+translationKey: "tty-basics"
 title: "Mon premier article de blog"
 description: "Description de mon premier article de blog"
 contents: ["Introduction", "Contenu principal", "Conclusion"]
@@ -34,4 +35,3 @@ Résumé des différences
 | Terminal | L'environnement (physique autrefois, logiciel aujourd'hui) qui affiche le texte. |
 | Shell | Le programme (comme Bash ou Zsh) qui interprète vos commandes à l'intérieur du TTY. |
 Voulez-vous savoir comment vérifier le nom du TTY que vous utilisez actuellement dans Termux ? (Il suffit de taper la commande tty).
-

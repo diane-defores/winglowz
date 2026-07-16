@@ -1,4 +1,5 @@
 ---
+translationKey: "winglowz-android-keyboard"
 title: "Le clavier WinGlowz sur Android : ce qu'il permet déjà"
 description: "Un point clair sur les fonctions déjà disponibles dans le clavier WinGlowz sur Android : saisie par swipe, panneaux utiles, mode d'actions Ctrl et garde-fous de confidentialité."
 contents: [

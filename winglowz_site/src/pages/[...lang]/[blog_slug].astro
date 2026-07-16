@@ -75,6 +75,24 @@ const relatedPosts = allPosts
 
 // Get the post URL for sharing
 const postUrl = new URL(Astro.url.pathname, Astro.site).toString()
+const translatedPost = post.data.translationKey
+	? allPosts.find(
+		(candidate) =>
+			candidate.data.translationKey === post.data.translationKey &&
+			candidate.id !== post.id,
+	)
+	: undefined
+const getBlogUrl = (entry: CollectionEntry<'blog'>) => {
+	const isEnglish = entry.id.startsWith('en/')
+	const slug = entry.id.replace(isEnglish ? /^en\// : /^fr\//, '').replace(/\.md$/, '')
+	return new URL(isEnglish ? `/blog/${slug}` : `/fr/blog/${slug}`, Astro.site).toString()
+}
+const alternateUrls = translatedPost
+	? {
+		[lang]: postUrl,
+		[lang === 'en' ? 'fr' : 'en']: getBlogUrl(translatedPost),
+	}
+	: undefined
 ---
 
 <MainLayout
@@ -86,6 +104,7 @@ const postUrl = new URL(Astro.url.pathname, Astro.site).toString()
 		canonicalURL: postUrl,
 	}}
 	lang={lang}
+	alternateUrls={alternateUrls}
 	structuredData={{
 		'@context': 'https://schema.org',
 		'@type': 'BlogPosting',

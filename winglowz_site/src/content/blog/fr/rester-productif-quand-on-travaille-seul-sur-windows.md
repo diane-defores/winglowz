@@ -1,4 +1,5 @@
 ---
+translationKey: "solo-productivity-windows"
 title: "Comment rester productif quand on travaille seul sur Windows"
 description: "Une perspective WinGlowz sur le travail solo, le contexte et la continuité d'exécution."
 author: "Diane"

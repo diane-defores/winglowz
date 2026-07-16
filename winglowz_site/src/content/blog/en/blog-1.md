@@ -1,4 +1,5 @@
 ---
+translationKey: "tty-basics"
 title: "Understanding TTY: From Teletypewriter to Modern Terminal"
 description: "What is a TTY, where does the term come from, and why does it still matter in 2026?"
 contents: ["Historical Origins", "The Modern TTY", "Why It Matters"]

@@ -16,6 +16,7 @@ const {
 	lang = 'en',
 	structuredData = defaultProps.structuredData,
 	noindex = false,
+	alternateUrls,
 } = Astro.props
 
 const metaObject =
@@ -47,9 +48,14 @@ const alternatePaths = await Promise.all(
 		href: `${URL.slice(0, -1)}${await getLocalizedPath(targetLang, sourcePath)}`,
 	})),
 )
+const resolvedAlternatePaths = alternateUrls
+	? (['en', 'fr'] as const)
+			.filter((targetLang) => alternateUrls[targetLang])
+			.map((targetLang) => ({ lang: targetLang, href: alternateUrls[targetLang]! }))
+	: alternatePaths
 const alternateLanguageLinks = [
-	...alternatePaths,
-	{ lang: 'x-default', href: alternatePaths.find((item) => item.lang === 'en')?.href ?? canonical },
+	...resolvedAlternatePaths,
+	{ lang: 'x-default', href: resolvedAlternatePaths.find((item) => item.lang === 'en')?.href ?? canonical },
 ]
 	.map(({ lang: alternateLang, href }) => `<link rel="alternate" hreflang="${alternateLang}" href="${href}" />`)
 	.join('\n')

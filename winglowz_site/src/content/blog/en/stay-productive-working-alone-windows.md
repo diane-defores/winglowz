@@ -1,4 +1,5 @@
 ---
+translationKey: "solo-productivity-windows"
 title: "How to stay productive when you work alone on Windows"
 description: "A WinGlowz perspective on solo work, context, and keeping execution moving."
 author: "Diane"

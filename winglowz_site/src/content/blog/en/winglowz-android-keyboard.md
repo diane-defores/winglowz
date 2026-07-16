@@ -1,4 +1,5 @@
 ---
+translationKey: "winglowz-android-keyboard"
 title: "The WinGlowz Android keyboard: what it already does"
 description: "A clear status update on the WinGlowz keyboard for Android: swipe input, useful panels, Ctrl action mode, and privacy guardrails."
 contents: [

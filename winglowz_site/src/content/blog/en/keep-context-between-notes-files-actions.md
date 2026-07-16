@@ -1,4 +1,5 @@
 ---
+translationKey: "context-notes-files-actions"
 title: "How to keep context between notes, files, and actions"
 description: "WinGlowz helps reduce the gap between what you think, what you save, and what you do next."
 author: "Diane"

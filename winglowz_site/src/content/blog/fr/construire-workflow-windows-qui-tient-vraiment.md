@@ -1,4 +1,5 @@
 ---
+translationKey: "windows-workflow-durable"
 title: "Comment construire un workflow Windows qui tient vraiment"
 description: "WinGlowz aide les utilisateurs Windows à transformer des tâches dispersées en système plus clair et plus répétable."
 author: "Diane"

@@ -144,6 +144,7 @@ const blogCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
+    translationKey: z.string().optional(),
     description: z.string(),
     contents: z.array(z.string()),
     author: z.string(),

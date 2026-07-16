@@ -1,4 +1,5 @@
 ---
+translationKey: "termux-themes"
 title: "114 Termux themes with live preview: find yours in one click"
 description: "Browse and preview all 114 color themes available for Termux. Interactive terminal preview, full palette display and one-click copy."
 contents: [

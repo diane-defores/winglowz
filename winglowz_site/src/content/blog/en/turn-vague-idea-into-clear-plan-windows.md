@@ -1,4 +1,5 @@
 ---
+translationKey: "vague-idea-clear-plan-windows"
 title: "How to turn a vague idea into a clear plan on Windows"
 description: "A practical WinGlowz guide for moving from intention to execution."
 author: "Diane"

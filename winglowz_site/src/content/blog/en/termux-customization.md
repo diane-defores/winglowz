@@ -1,4 +1,5 @@
 ---
+translationKey: "termux-customization"
 title: "Customize Termux: the complete guide to transforming your Android terminal"
 description: "Learn how to fully customize Termux: colors, themes, extra keys, fullscreen, cursor, fonts and dotfiles management. The reference guide for mobile developers."
 contents: [

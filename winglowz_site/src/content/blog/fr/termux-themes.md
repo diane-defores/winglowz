@@ -1,4 +1,5 @@
 ---
+translationKey: "termux-themes"
 title: "114 th\u00e8mes Termux avec pr\u00e9visualisation : trouvez le v\u00f4tre en un clic"
 description: "Parcourez et pr\u00e9visualisez les 114 th\u00e8mes de couleurs disponibles pour Termux. Faux terminal interactif, palette compl\u00e8te et copie en un clic."
 contents: [
