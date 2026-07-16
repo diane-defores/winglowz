@@ -64,6 +64,10 @@ export default defineConfig({
       }
     }),
     sitemap({
+      filter: (page) => {
+        const pathname = new URL(page).pathname
+        return !/^(?:\/(?:account|admin|dashboard|purchase|signin))(?:\/|$)/.test(pathname)
+      },
       i18n: {
         defaultLocale: "en",
         locales: {
