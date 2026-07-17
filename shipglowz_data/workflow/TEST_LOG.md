@@ -300,3 +300,16 @@ Environment: Android APK on real phone.
 - Bug pointer: BUG-2026-05-24-002 -> shipglowz_data/workflow/bugs/BUG-2026-05-24-002.md
 - Evidence pointer: operator report in chat, 2026-05-24 17:57:08 UTC.
 - Follow-up: closed
+
+## 2026-07-17 - Layered logo return-to-home transition
+
+- Scope: BUG-2026-07-17-001
+- Environment: hosted site report; local structural proof
+- Tester: Diane / Codex
+- Source: 107-sg-test
+- Status: not run
+- Confidence: high
+- Result summary: Operator reported color/white logo-layer separation on `/fr/produits` -> `/fr`; the bounded fix passes `build:check` (0 erreur, 2 hints) and 71 unit tests, awaiting visual retest.
+- Bug pointer: BUG-2026-07-17-001 -> shipglowz_data/workflow/bugs/BUG-2026-07-17-001.md
+- Evidence pointer: winglowz_site/tests/deployment/logoNavigation.test.ts
+- Follow-up: /107-sg-test --retest BUG-2026-07-17-001

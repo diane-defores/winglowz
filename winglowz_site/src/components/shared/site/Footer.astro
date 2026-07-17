@@ -82,8 +82,10 @@ const dividerClass = forceDark
   <div class="mx-auto max-w-6xl px-4 py-16">
     <div class="reveal grid grid-cols-2 gap-8 md:grid-cols-5">
       <div class="col-span-2 md:col-span-1">
+        <!-- The landing layout has no ClientRouter; keep this layered logo out of a cross-layout transition. -->
         <a
           href={homeUrl}
+          data-astro-reload
           class="no-hover-animation mb-4 flex items-center gap-2"
         >
           <TextLogo class="w-28" />
