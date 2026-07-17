@@ -12,16 +12,16 @@ const isSocialGlowzOffer = offerId === 'socialglowz/lifetime_deal'
 const labels =
 	lang === 'fr'
 		? {
-				title: 'Achat confirme',
+				title: 'Achat confirmé',
 				body:
 					isWinGlowzAppOffer || isSocialGlowzOffer
 						? isWinGlowzAppOffer
 							? "Paiement reçu. L'accès WinGlows est confirmé par webhook signé et peut nécessiter une vérification de compte avant activation dans l'app."
 							: "Paiement reçu. L'accès SocialGlowz est confirmé par webhook signé et peut nécessiter une vérification de compte avant activation."
-						: 'Votre acces a la formation a ete debloque. Vous pouvez ouvrir la lecon privee maintenant.',
-				openLesson: 'Ouvrir la lecon',
+						: 'Votre accès à la formation a été débloqué. Vous pouvez ouvrir la leçon privée maintenant.',
+				openLesson: 'Ouvrir la leçon',
 				goToDashboard: 'Aller au dashboard',
-				signIn: 'Se connecter pour acceder',
+				signIn: 'Se connecter pour accéder',
 				viewProducts: 'Voir les produits',
 				contact: 'Contacter le support',
 			}

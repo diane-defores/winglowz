@@ -1,6 +1,6 @@
 Subject: La productivite comme architecture, pas comme punition
 Preview: Travailler mieux sans te battre contre toi-meme toute la journee.
-CTA: https://winglowz.com/fr/maitrise-windows
+CTA: https://www.winflowz.com/fr/maitrise-windows
 
 Il y a une autre maniere d'aborder la productivite.
 
@@ -35,6 +35,6 @@ Un environnement dans lequel il devient plus facile :
 
 Si tu veux voir concretement comment la formation est structuree, la page est ici :
 
-https://winglowz.com/fr/maitrise-windows
+https://www.winflowz.com/fr/maitrise-windows
 
 Diane

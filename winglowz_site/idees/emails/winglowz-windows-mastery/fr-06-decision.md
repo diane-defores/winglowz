@@ -1,6 +1,6 @@
 Subject: Tu n'as pas besoin de tout refaire. Tu dois arreter de subir.
 Preview: Le bon prochain pas n'est pas plus de volonte. C'est moins de friction.
-CTA: https://winglowz.com/fr/maitrise-windows
+CTA: https://www.winflowz.com/fr/maitrise-windows
 
 Si tu lis encore cette sequence, c'est probablement que tu sens deja une chose :
 
@@ -34,7 +34,7 @@ Mais si tu preferes partir d'un systeme deja pense pour :
 
 alors la page de vente est ici :
 
-https://winglowz.com/fr/maitrise-windows
+https://www.winflowz.com/fr/maitrise-windows
 
 Et si tu veux aller encore plus loin ensuite, le bundle restera disponible plus tard.
 

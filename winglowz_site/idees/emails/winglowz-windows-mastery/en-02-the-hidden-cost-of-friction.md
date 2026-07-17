@@ -1,6 +1,6 @@
 Subject: The big problem is rarely the big disaster
 Preview: The highest cost usually comes from repeated small frictions.
-CTA: https://winglowz.com/windows-mastery
+CTA: https://www.winflowz.com/windows-mastery
 
 Most people imagine they lose time because of a few big visible problems.
 
@@ -33,6 +33,6 @@ instead of layering more motivation on top, reduce the hidden cost of computer w
 
 If you want to see what that looks like, the dedicated page is here:
 
-https://winglowz.com/windows-mastery
+https://www.winflowz.com/windows-mastery
 
 Diane

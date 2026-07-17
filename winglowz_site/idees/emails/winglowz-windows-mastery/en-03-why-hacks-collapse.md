@@ -1,6 +1,6 @@
 Subject: Why productivity hacks collapse so quickly
 Preview: An isolated trick does not reconfigure an environment.
-CTA: https://winglowz.com/windows-mastery
+CTA: https://www.winflowz.com/windows-mastery
 
 You may already have tried:
 
@@ -43,6 +43,6 @@ The logic is much simpler:
 
 If you want to see that logic on the sales page, it is here:
 
-https://winglowz.com/windows-mastery
+https://www.winflowz.com/windows-mastery
 
 Diane

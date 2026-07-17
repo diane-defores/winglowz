@@ -1,6 +1,6 @@
 Subject: Ce ne sont pas les grandes catastrophes qui te ralentissent
 Preview: Le plus gros cout vient souvent des petites frictions repetees.
-CTA: https://winglowz.com/fr/maitrise-windows
+CTA: https://www.winflowz.com/fr/maitrise-windows
 
 La plupart des gens imaginent qu'ils perdent du temps a cause de gros problemes visibles.
 
@@ -33,6 +33,6 @@ au lieu d'ajouter une couche de motivation artificielle, on reduit le cout cache
 
 Si tu veux voir a quoi ressemble cette approche, la page dediee est ici :
 
-https://winglowz.com/fr/maitrise-windows
+https://www.winflowz.com/fr/maitrise-windows
 
 Diane

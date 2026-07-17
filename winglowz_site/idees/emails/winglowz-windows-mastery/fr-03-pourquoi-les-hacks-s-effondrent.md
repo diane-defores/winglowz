@@ -1,6 +1,6 @@
 Subject: Pourquoi les methodes de productivite s'effondrent si vite
 Preview: Une astuce isolee ne reconfigure pas un environnement.
-CTA: https://winglowz.com/fr/maitrise-windows
+CTA: https://www.winflowz.com/fr/maitrise-windows
 
 Tu as peut-etre deja teste :
 
@@ -43,6 +43,6 @@ La logique est beaucoup plus simple :
 
 Si tu veux voir cette logique en page de vente, c'est ici :
 
-https://winglowz.com/fr/maitrise-windows
+https://www.winflowz.com/fr/maitrise-windows
 
 Diane

@@ -20,7 +20,7 @@ interface Props {
 		image?: string
 		canonicalURL?: string
 	}
-	structuredData?: object
+	structuredData?: object | null
 	lang?: string
 	noindex?: boolean
 	alternateUrls?: Partial<Record<'en' | 'fr', string>>

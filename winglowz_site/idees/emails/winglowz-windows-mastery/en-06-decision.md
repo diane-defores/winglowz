@@ -1,6 +1,6 @@
 Subject: You do not need to rebuild everything. You need to stop working against your environment.
 Preview: The right next step is not more willpower. It is less friction.
-CTA: https://winglowz.com/windows-mastery
+CTA: https://www.winflowz.com/windows-mastery
 
 If you are still reading this sequence, you probably already feel one thing:
 
@@ -34,7 +34,7 @@ But if you would rather start from a system already designed to:
 
 then the sales page is here:
 
-https://winglowz.com/windows-mastery
+https://www.winflowz.com/windows-mastery
 
 And if you want to go further afterward, the bundle will still be there later.
 

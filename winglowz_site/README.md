@@ -26,7 +26,7 @@ next_step: /sf-docs update
 
 WinGlows is a Windows-first productivity project centered on `Windows Mastery`, with bilingual content, gated learning surfaces, and companion product pages.
 
-Production: https://winglowz.com
+Production: https://www.winflowz.com
 
 ## What This Subproject Contains
 

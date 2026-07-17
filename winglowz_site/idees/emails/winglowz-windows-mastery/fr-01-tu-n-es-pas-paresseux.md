@@ -1,6 +1,6 @@
 Subject: Tu n'es probablement pas paresseux. Tu subis un mauvais systeme.
 Preview: Le vrai probleme n'est souvent pas le manque de volonte.
-CTA: https://winglowz.com/fr/maitrise-windows
+CTA: https://www.winflowz.com/fr/maitrise-windows
 
 Tu t'es peut-etre deja dit des choses comme :
 
@@ -30,6 +30,6 @@ Et c'est precisement sur ce point que WinGlows intervient : reduire la friction,
 
 Si ce sujet te parle, la page de vente de la formation est ici :
 
-https://winglowz.com/fr/maitrise-windows
+https://www.winflowz.com/fr/maitrise-windows
 
 Diane

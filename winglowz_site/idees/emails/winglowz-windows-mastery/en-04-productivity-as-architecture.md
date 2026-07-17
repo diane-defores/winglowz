@@ -1,6 +1,6 @@
 Subject: Productivity as architecture, not punishment
 Preview: Work better without fighting yourself all day.
-CTA: https://winglowz.com/windows-mastery
+CTA: https://www.winflowz.com/windows-mastery
 
 There is another way to think about productivity.
 
@@ -35,6 +35,6 @@ An environment where it becomes easier:
 
 If you want to see how the course is structured, the page is here:
 
-https://winglowz.com/windows-mastery
+https://www.winflowz.com/windows-mastery
 
 Diane

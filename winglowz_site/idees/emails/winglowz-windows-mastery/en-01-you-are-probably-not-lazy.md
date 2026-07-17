@@ -1,6 +1,6 @@
 Subject: You are probably not lazy. You are working inside a bad system.
 Preview: The real problem is often not lack of willpower.
-CTA: https://winglowz.com/windows-mastery
+CTA: https://www.winflowz.com/windows-mastery
 
 You may have already told yourself things like:
 
@@ -30,6 +30,6 @@ And that is exactly where WinGlows starts: reduce friction, make Windows more su
 
 If that speaks to you, the sales page is here:
 
-https://winglowz.com/windows-mastery
+https://www.winflowz.com/windows-mastery
 
 Diane

@@ -28,6 +28,7 @@ export const DEFAULT_FREE_PRODUCT_IDS = [
 ] as const
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_KEY_ID =
   'replayglowz-suite-2026-06-02'
+// Protocol identifier kept for verifier compatibility; this is not an SEO origin.
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_ISSUER = 'https://winglowz.com'
 export const REPLAYGLOWZ_PRODUCT_JWT_DEFAULT_AUDIENCE =
   'replayglowz-convex'

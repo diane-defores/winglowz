@@ -11,13 +11,14 @@ interface Props {
 
 const { lang } = Astro.props
 const target = getLocalizedPath(lang, 'recommendations')
+const canonical = new URL(target, Astro.site).toString()
 ---
 
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="refresh" content={`0; url=${target}`} />
-    <link rel="canonical" href={target} />
+    <link rel="canonical" href={canonical} />
     <script is:inline>
       {`window.location.replace(${JSON.stringify(target)});`}
     </script>

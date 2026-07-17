@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.2.1"
 project: "WinGlows"
 created: "2026-06-18"
-updated: "2026-06-19"
+updated: "2026-07-17"
 status: draft
 source_skill: "001-sf-build"
 scope: "payment-activation-entitlements"
@@ -83,13 +83,13 @@ Product marketing authority and checkout infrastructure are separate concerns.
 
 - Each product should keep its own canonical sales page on its own public domain when that domain exists.
 - A shared suite checkout route is allowed and preferred when it reduces duplicated provider code and keeps product metadata explicit.
-- Shared checkout infrastructure does not make `winglowz.com` the canonical marketing home for every suite product.
+- Shared checkout infrastructure does not make `www.winflowz.com` the canonical marketing home for every suite product.
 - The user should start the purchase flow from the product page for the product they are buying, then open the Lemon Squeezy hosted checkout or overlay for that exact offer.
 
 Current application of this rule:
 
 - `socialglowz.com/lifetime-deal` is the canonical SocialGlowz sales page.
-- `winglowz.com/winglowz-founder` is the canonical WinGlows App sales page.
+- `www.winflowz.com/winglowz-founder` is the canonical WinGlows App sales page.
 - Both sales pages may call the same suite checkout route as long as the route receives an explicit `offerId` and preserves product-specific success, cancel, and entitlement metadata.
 
 ## Checkout Flow

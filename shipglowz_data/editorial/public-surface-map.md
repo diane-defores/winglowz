@@ -1,10 +1,10 @@
 ---
 artifact: editorial_governance
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.1.1"
 project: winglowz
 created: "2026-05-17"
-updated: "2026-06-19"
+updated: "2026-07-17"
 status: reviewed
 source_skill: sf-docs
 scope: public-surface-map
@@ -50,14 +50,14 @@ Use this as the minimum canonical map for product sales copy and checkout author
 | Product | Canonical marketing site | Canonical sales page | Checkout authority | Post-purchase authority | Notes |
 | --- | --- | --- | --- | --- | --- |
 | SocialGlowz | `socialglowz.com` | `socialglowz.com/lifetime-deal` | shared suite commerce route in `winglowz_site` using `offerId=socialglowz/lifetime_deal` | shared suite success and cancel routes plus suite entitlements | Keep SocialGlowz sales copy on the SocialGlowz domain even if checkout infra is shared |
-| WinGlows App | `winglowz.com` | `winglowz.com/winglowz-founder` | shared suite commerce route in `winglowz_site` using `offerId=winglowz_app/*` | shared suite success and cancel routes plus suite entitlements | WinGlows is both product site and commerce host for the current shared checkout layer |
+| WinGlows App | `www.winflowz.com` | `www.winflowz.com/winglowz-founder` | shared suite commerce route in `winglowz_site` using `offerId=winglowz_app/*` | shared suite success and cancel routes plus suite entitlements | WinGlows is both product site and commerce host for the current shared checkout layer |
 
 ## Canonical Sales Rules
 
 - Each product keeps its own canonical sales page on its own public domain when that domain exists.
-- Shared commerce infrastructure does not make `winglowz.com` the canonical marketing home for every product.
+- Shared commerce infrastructure does not make `www.winflowz.com` the canonical marketing home for every product.
 - `offerId`, `productId`, success route, cancel route, and entitlement target must stay explicit in product copy and checkout wiring.
-- If a product page exists on both the product site and `winglowz.com`, the product site is the marketing authority and the `winglowz.com` page is supporting or transitional unless governance says otherwise.
+- If a product page exists on both the product site and `www.winflowz.com`, the product site is the marketing authority and the `www.winflowz.com` page is supporting or transitional unless governance says otherwise.
 
 ## Surface Inventory
 

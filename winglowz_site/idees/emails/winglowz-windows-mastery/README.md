@@ -2,8 +2,8 @@
 
 These are ready-to-send markdown campaign drafts for the dedicated sales pages:
 
-- FR: `https://winglowz.com/fr/maitrise-windows`
-- EN: `https://winglowz.com/windows-mastery`
+- FR: `https://www.winflowz.com/fr/maitrise-windows`
+- EN: `https://www.winflowz.com/windows-mastery`
 
 They are intentionally plain and reusable.
 

@@ -1,6 +1,6 @@
 Subject: Ce qui change quand l'environnement arrete de te freiner
 Preview: Moins de fatigue. Plus de continuite. Plus de controle.
-CTA: https://winglowz.com/fr/maitrise-windows
+CTA: https://www.winflowz.com/fr/maitrise-windows
 
 La promesse de WinGlows n'est pas :
 
@@ -37,6 +37,6 @@ Un des retours qui resume bien cet effet :
 
 Si tu veux voir si cette approche correspond a ta situation, la page de vente est ici :
 
-https://winglowz.com/fr/maitrise-windows
+https://www.winflowz.com/fr/maitrise-windows
 
 Diane

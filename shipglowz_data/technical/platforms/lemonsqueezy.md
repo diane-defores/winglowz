@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.2.1"
 project: winglowz
 created: "2026-05-30"
-updated: "2026-06-19"
+updated: "2026-07-17"
 status: draft
 source_skill: sf-docs
 scope: platform-usage-lemonsqueezy
@@ -69,9 +69,9 @@ This file is the local usage contract for architecture, validation, and automati
 ## Sales Surface Rule
 
 - `socialglowz.com/lifetime-deal` is the canonical SocialGlowz sales page.
-- `winglowz.com/winglowz-founder` is the canonical WinGlows App sales page.
+- `www.winflowz.com/winglowz-founder` is the canonical WinGlows App sales page.
 - Both products may call the same `/api/commerce/checkout` route.
-- Shared checkout infrastructure must not imply that `winglowz.com` becomes the canonical marketing home for SocialGlowz.
+- Shared checkout infrastructure must not imply that `www.winflowz.com` becomes the canonical marketing home for SocialGlowz.
 - Product source attribution must stay explicit through `offerId`, `productId`, `source`, and `source_ref`.
 
 ## Local Configuration
