@@ -50,7 +50,7 @@ Use this as the minimum canonical map for product sales copy and checkout author
 | Product | Canonical marketing site | Canonical sales page | Checkout authority | Post-purchase authority | Notes |
 | --- | --- | --- | --- | --- | --- |
 | SocialGlowz | `socialglowz.com` | `socialglowz.com/lifetime-deal` | shared suite commerce route in `winglowz_site` using `offerId=socialglowz/lifetime_deal` | shared suite success and cancel routes plus suite entitlements | Keep SocialGlowz sales copy on the SocialGlowz domain even if checkout infra is shared |
-| WinGlowz App | `winglowz.com` | `winglowz.com/winglowz-founder` | shared suite commerce route in `winglowz_site` using `offerId=winglowz_app/*` | shared suite success and cancel routes plus suite entitlements | WinGlowz is both product site and commerce host for the current shared checkout layer |
+| WinGlows App | `winglowz.com` | `winglowz.com/winglowz-founder` | shared suite commerce route in `winglowz_site` using `offerId=winglowz_app/*` | shared suite success and cancel routes plus suite entitlements | WinGlows is both product site and commerce host for the current shared checkout layer |
 
 ## Canonical Sales Rules
 
@@ -67,7 +67,7 @@ Use this as the minimum canonical map for product sales copy and checkout author
 | Landing page | `/landing`, `/fr/landing` | paid and qualified traffic | high | CTA and proof framing must stay aligned |
 | Flagship offer page | `/windows-mastery`, `/fr/maitrise-windows` | high-intent buyers | high | pricing, support, curriculum, and promise claims |
 | Product catalog and detail pages | `/products`, `/fr/produits`, localized product routes | buyers comparing offers | high | status, CTA destination, availability |
-| WinGlowz founder offer | `/winglowz-founder`, `/fr/winglowz-founder` | high-intent app buyers | high | canonical direct-sale page for WinGlowz App founder tiers |
+| WinGlows founder offer | `/winglowz-founder`, `/fr/winglowz-founder` | high-intent app buyers | high | canonical direct-sale page for WinGlows App founder tiers |
 | Shared-commerce SocialGlowz founder mirror | `/socialglowz-founder`, `/fr/socialglowz-founder` | buyers entering via suite commerce paths | high | supporting commerce surface only; do not treat as the canonical SocialGlowz marketing home when `socialglowz.com` has the live offer page |
 | Script utility pages | `/termux`, `/fr/termux`, `/dotfiles`, `/fr/dotfiles`, `/shipglowz`, `/fr/shipglowz` | operators who want one-command installers | medium | must match real bootstrap scope and raw script endpoints |
 | Blog index and articles | localized blog routes | top-of-funnel discovery | medium | claim discipline and internal linking |

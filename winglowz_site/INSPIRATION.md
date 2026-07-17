@@ -1,4 +1,4 @@
-# Inspiration — WinGlowz
+# Inspiration — WinGlows
 
 
 

@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-11"
 created_at: "2026-06-11 07:13:45 UTC"
 updated: "2026-06-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "keyboard-material-key-gradients"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant qu'utilisatrice du clavier Android WinGlowz, je veux que les touches puissent utiliser des gradients de matière qui suivent aussi l'effet d'appui choisi, afin que le clavier 2D ou 3D paraisse plus physique, plus premium et plus cohérent."
+user_story: "En tant qu'utilisatrice du clavier Android WinGlows, je veux que les touches puissent utiliser des gradients de matière qui suivent aussi l'effet d'appui choisi, afin que le clavier 2D ou 3D paraisse plus physique, plus premium et plus cohérent."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -65,7 +65,7 @@ Draft spec created on 2026-06-11 from Diane's request to add material gradients 
 
 ## User Story
 
-En tant qu'utilisatrice du clavier Android WinGlowz, je veux que les touches puissent utiliser des gradients de matière qui suivent aussi l'effet d'appui choisi, afin que le clavier 2D ou 3D paraisse plus physique, plus premium et plus cohérent.
+En tant qu'utilisatrice du clavier Android WinGlows, je veux que les touches puissent utiliser des gradients de matière qui suivent aussi l'effet d'appui choisi, afin que le clavier 2D ou 3D paraisse plus physique, plus premium et plus cohérent.
 
 ## Minimal Behavior Contract
 

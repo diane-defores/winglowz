@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-26"
 created_at: "2026-05-26 19:12:08 UTC"
 updated: "2026-05-26"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "android-ime-keyboard-performance"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice Android qui tape tres vite avec le clavier WinGlowz, je veux que les touches restent prises en compte meme quand deux doigts se chevauchent, afin que le clavier soit aussi reactif et fiable que Samsung Keyboard ou Unexpected Keyboard."
+user_story: "En tant qu'utilisatrice Android qui tape tres vite avec le clavier WinGlows, je veux que les touches restent prises en compte meme quand deux doigts se chevauchent, afin que le clavier soit aussi reactif et fiable que Samsung Keyboard ou Unexpected Keyboard."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -42,7 +42,7 @@ depends_on:
     required_status: "unknown"
 supersedes: []
 evidence:
-  - "User report 2026-05-26: Samsung Keyboard and Unexpected Keyboard remain stable during very fast typing, while WinGlowz freezes or behaves strangely when many keys/fingers overlap."
+  - "User report 2026-05-26: Samsung Keyboard and Unexpected Keyboard remain stable during very fast typing, while WinGlows freezes or behaves strangely when many keys/fingers overlap."
   - "sf-perf audit 2026-05-26: WinGlowzKeyboardView currently stores one activePointerId and explicitly ignores ACTION_POINTER_DOWN while a pointer is active."
   - "Local code: winglowz_app/android/app/src/main/kotlin/com/winglowz_app/winglowz_app/ime/WinGlowzKeyboardView.kt handles ACTION_POINTER_DOWN by setting debugGestureText='multi-touch ignored active=...'."
   - "Local comparison: /home/claude/keyboard/srcs/juloo.keyboard2/Keyboard2View.java accepts ACTION_POINTER_DOWN and sends ACTION_MOVE for every active pointer to Pointers."
@@ -54,7 +54,7 @@ next_step: "/sf-verify android-ime-multi-pointer-rapid-typing-rollover.md"
 
 # Spec: Android IME Multi-Pointer Rapid Typing Rollover
 
-🟡 [WinGlowzApp] spec: Android IME Multi-Pointer Rapid Typing Rollover | status: implemented_pending_verify | path: shipglowz_data/workflow/specs/android-ime-multi-pointer-rapid-typing-rollover.md | next: /sf-verify android-ime-multi-pointer-rapid-typing-rollover.md | id: wfz-ime-multipointer-rollover
+🟡 [WinGlowsApp] spec: Android IME Multi-Pointer Rapid Typing Rollover | status: implemented_pending_verify | path: shipglowz_data/workflow/specs/android-ime-multi-pointer-rapid-typing-rollover.md | next: /sf-verify android-ime-multi-pointer-rapid-typing-rollover.md | id: wfz-ime-multipointer-rollover
 
 ## Title
 
@@ -66,15 +66,15 @@ Implemented pending verification. This chantier formalizes the remaining issue f
 
 ## User Story
 
-En tant qu'utilisatrice Android qui tape tres vite avec le clavier WinGlowz, je veux que les touches restent prises en compte meme quand deux doigts se chevauchent, afin que le clavier soit aussi reactif et fiable que Samsung Keyboard ou Unexpected Keyboard.
+En tant qu'utilisatrice Android qui tape tres vite avec le clavier WinGlows, je veux que les touches restent prises en compte meme quand deux doigts se chevauchent, afin que le clavier soit aussi reactif et fiable que Samsung Keyboard ou Unexpected Keyboard.
 
 ## Minimal Behavior Contract
 
-Quand l'utilisateur tape rapidement sur le clavier Android WinGlowz avec plusieurs doigts, chaque pression texte normale doit etre suivie par son propre etat tactile jusqu'au relachement, puis produire au plus une insertion correspondant a la touche visee, meme si un autre doigt est encore pose. Les gestes qui ne peuvent pas etre partages sans ambiguite, comme spacebar slider, scroll horizontal de row, scroll vertical de panel, long-press repeat ou action systeme destructive, doivent prendre un verrou d'interaction clair et annuler ou ignorer seulement les pointeurs incompatibles sans bloquer les prochains taps. En cas de pointeur perdu, cancel Android, champ indisponible ou exception IME, le clavier doit nettoyer tous les etats actifs, arreter les callbacks retardes, afficher ou journaliser un etat recuperable sans texte sensible, et rester utilisable. L'edge case facile a rater est le relachement dans un ordre different de l'appui: deux touches texte posees quasi simultanement doivent etre traitees par `pointerId`, pas par l'index courant ni par une variable globale.
+Quand l'utilisateur tape rapidement sur le clavier Android WinGlows avec plusieurs doigts, chaque pression texte normale doit etre suivie par son propre etat tactile jusqu'au relachement, puis produire au plus une insertion correspondant a la touche visee, meme si un autre doigt est encore pose. Les gestes qui ne peuvent pas etre partages sans ambiguite, comme spacebar slider, scroll horizontal de row, scroll vertical de panel, long-press repeat ou action systeme destructive, doivent prendre un verrou d'interaction clair et annuler ou ignorer seulement les pointeurs incompatibles sans bloquer les prochains taps. En cas de pointeur perdu, cancel Android, champ indisponible ou exception IME, le clavier doit nettoyer tous les etats actifs, arreter les callbacks retardes, afficher ou journaliser un etat recuperable sans texte sensible, et rester utilisable. L'edge case facile a rater est le relachement dans un ordre different de l'appui: deux touches texte posees quasi simultanement doivent etre traitees par `pointerId`, pas par l'index courant ni par une variable globale.
 
 ## Success Behavior
 
-- Precondition: WinGlowz keyboard is active in a normal text field with ABC layout and no protected gesture in progress.
+- Precondition: WinGlows keyboard is active in a normal text field with ABC layout and no protected gesture in progress.
 - Action: Diane taps two or more letter keys with overlapping fingers and releases them in any order.
 - Visible result: the keyboard does not freeze, the pressed highlights remain tied to the correct keys, and each completed tap inserts exactly one expected character.
 - System effect: each active pointer owns its start key, latest coordinates, gesture distance, long-press token and optional protected mode; no secondary text tap overwrites another pointer's gesture state.
@@ -96,7 +96,7 @@ Quand l'utilisateur tape rapidement sur le clavier Android WinGlowz avec plusieu
 
 ## Problem
 
-WinGlowz currently behaves like a single-finger keyboard at the touch-state level. `WinGlowzKeyboardView` stores one `activePointerId`, one `gestureStartFrame`, one `gestureStartX/Y`, one `longPressTriggered`, one `slidingSpace`, and one repeat action. When Android sends `ACTION_POINTER_DOWN` while a first finger is active, the code sets a debug message and returns without tracking the second pointer. During very fast typing, real users naturally overlap fingers; dropping secondary pointers can feel like lag, missed keys, freezes, or strange behavior.
+WinGlows currently behaves like a single-finger keyboard at the touch-state level. `WinGlowzKeyboardView` stores one `activePointerId`, one `gestureStartFrame`, one `gestureStartX/Y`, one `longPressTriggered`, one `slidingSpace`, and one repeat action. When Android sends `ACTION_POINTER_DOWN` while a first finger is active, the code sets a debug message and returns without tracking the second pointer. During very fast typing, real users naturally overlap fingers; dropping secondary pointers can feel like lag, missed keys, freezes, or strange behavior.
 
 Unexpected Keyboard demonstrates the professional model to emulate: `Keyboard2View` accepts `ACTION_POINTER_DOWN`, stores each pointer in `Pointers`, handles movement for every active pointer on `ACTION_MOVE`, and resolves final behavior by pointer id. Android's own `MotionEvent` contract also requires pointer ids to be tracked across events because pointer indexes may change.
 
@@ -104,7 +104,7 @@ The 2026-05-26 performance patch reduced unnecessary layout rebuilds after simpl
 
 ## Solution
 
-Introduce a multi-pointer touch controller for the native WinGlowz keyboard. Normal text taps become independent per-pointer gestures that can overlap safely. Protected interactions remain exclusive through an explicit interaction lock so complex gestures do not mix with rollover typing. The implementation should keep the existing layout, dispatch, privacy, InputConnection, gesture classifier and recovery contracts, while replacing the global active-pointer variables with pointer-owned state.
+Introduce a multi-pointer touch controller for the native WinGlows keyboard. Normal text taps become independent per-pointer gestures that can overlap safely. Protected interactions remain exclusive through an explicit interaction lock so complex gestures do not mix with rollover typing. The implementation should keep the existing layout, dispatch, privacy, InputConnection, gesture classifier and recovery contracts, while replacing the global active-pointer variables with pointer-owned state.
 
 ## Scope In
 
@@ -140,7 +140,7 @@ Introduce a multi-pointer touch controller for the native WinGlowz keyboard. Nor
 
 - Android `MotionEvent` API. Fresh docs checked 2026-05-26: multi-touch events can include multiple active pointers; pointer ids remain stable for the life of the pointer while pointer indexes can change, so implementations should use `getPointerId()` and `findPointerIndex()` rather than assuming index stability. Source: https://developer.android.com/reference/android/view/MotionEvent
 - Android `InputMethodService` / IME API. Fresh docs checked 2026-05-26: IMEs are services that provide UI, handle user input, and communicate text/key events to focused fields through `InputConnection`. Source: https://developer.android.com/develop/ui/views/touch-and-input/creating-input-method
-- Existing WinGlowz native IME files: `WinGlowzKeyboardView.kt`, `WinGlowzInputMethodService.kt`, `KeyboardGestureClassifier.kt`, `KeyboardLayoutModels.kt`, `KeyboardPressEffects.kt`, `KeyboardCrashReporter.kt`.
+- Existing WinGlows native IME files: `WinGlowzKeyboardView.kt`, `WinGlowzInputMethodService.kt`, `KeyboardGestureClassifier.kt`, `KeyboardLayoutModels.kt`, `KeyboardPressEffects.kt`, `KeyboardCrashReporter.kt`.
 - Reference keyboard comparison: `/home/claude/keyboard/srcs/juloo.keyboard2/Keyboard2View.java` and `/home/claude/keyboard/srcs/juloo.keyboard2/Pointers.java`.
 - Existing docs: `winglowz_app/docs/technical/android-native.md` and `winglowz_app/docs/VERIFICATION.md`.
 
@@ -267,7 +267,7 @@ Introduce a multi-pointer touch controller for the native WinGlowz keyboard. Nor
 
 - [ ] CA 1: Given the ABC keyboard in a normal text field, when two letter keys are pressed with overlapping fingers and released in press order, then both expected characters are inserted once and the keyboard remains responsive.
 - [ ] CA 2: Given the ABC keyboard in a normal text field, when two letter keys are pressed with overlapping fingers and released in reverse order, then both expected characters are inserted once according to completed pointer releases, with no pointer-state corruption.
-- [ ] CA 3: Given one active normal text pointer, when `ACTION_POINTER_DOWN` occurs on another normal text key, then WinGlowz tracks the new pointer instead of logging/suppressing it as ignored multi-touch.
+- [ ] CA 3: Given one active normal text pointer, when `ACTION_POINTER_DOWN` occurs on another normal text key, then WinGlows tracks the new pointer instead of logging/suppressing it as ignored multi-touch.
 - [ ] CA 4: Given multiple active pointers, when Android sends `ACTION_MOVE`, then each tracked pointer is resolved by `pointerId` from the current event index and updates only its own gesture state.
 - [ ] CA 5: Given a pointer id is missing from a move event, when the event is handled, then only that pointer is canceled and unrelated pointers remain valid.
 - [ ] CA 6: Given Android sends `ACTION_CANCEL`, when any number of pointers are active, then all pointer states and delayed callbacks are cleared and no key is dispatched.
@@ -285,7 +285,7 @@ Introduce a multi-pointer touch controller for the native WinGlowz keyboard. Nor
 - Existing Kotlin tests: follow patterns in `KeyboardGestureClassifierTest.kt`, `KeyboardLayoutBuilderTest.kt`, `KeyboardKeyValueEngineTest.kt` and adjacent native tests.
 - Static/local checks: run `flutter analyze` after native/Kotlin changes because it is allowed locally and catches project-level Dart/Kotlin integration issues exposed to Flutter tooling.
 - Hosted Android checks: run Blacksmith/GitHub Actions for Kotlin compile, Android unit tests and APK/build proof. Local Gradle and Android build commands are forbidden.
-- Manual QA: Diane validates on a physical Android device with the real WinGlowz IME in at least a normal text field, a private/password field, a search field and one app known to stress InputConnection behavior.
+- Manual QA: Diane validates on a physical Android device with the real WinGlows IME in at least a normal text field, a private/password field, a search field and one app known to stress InputConnection behavior.
 - Regression QA: verify space slider, long-press Backspace, action row scroll, vertical panel scroll, corner shortcuts, emoji insertion, suggestions, private-mode gating and keyboard recovery still work.
 
 ## Risks

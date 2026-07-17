@@ -2,7 +2,7 @@
 artifact: test_checklist
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-11"
 updated: "2026-06-11"
 status: draft
@@ -48,7 +48,7 @@ Validate that IME key press effects behave as part of the physical key surface i
 
 ## Android Device Checks
 
-- KMP-009: On a physical Android device, enable WinGlowz IME, select a custom theme, enable relief, and repeat KMP-005 through KMP-008 in at least one normal text field.
+- KMP-009: On a physical Android device, enable WinGlows IME, select a custom theme, enable relief, and repeat KMP-005 through KMP-008 in at least one normal text field.
 - KMP-010: In a password or other private field, verify custom image/gradient/effect surfaces are suppressed and typing still works.
 - KMP-011: Press keys quickly across multiple rows and verify effects remain attached to their own keys, with no delayed floating particles crossing unrelated keys.
 - KMP-012: Verify the top relief face is hidden or minimized when pressed, and the complete key body sinks as one object.

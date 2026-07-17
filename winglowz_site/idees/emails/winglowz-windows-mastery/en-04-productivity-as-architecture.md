@@ -20,7 +20,7 @@ In other words:
 - shortcuts serve work instead of becoming a hobby
 - the environment removes noise before it demands more effort
 
-That is the logic I tried to make explicit inside WinGlowz.
+That is the logic I tried to make explicit inside WinGlows.
 
 The course does not ask you to become a machine.
 

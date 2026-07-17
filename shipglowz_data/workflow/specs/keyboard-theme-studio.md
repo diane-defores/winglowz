@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisateur Android power user, je veux personnaliser entièrement le thème visuel et les effets du clavier WinGlowz, afin d'avoir un clavier utile, expressif et adapté à mon style sans sacrifier la lisibilité ni la performance."
+user_story: "En tant qu'utilisateur Android power user, je veux personnaliser entièrement le thème visuel et les effets du clavier WinGlows, afin d'avoir un clavier utile, expressif et adapté à mon style sans sacrifier la lisibilité ni la performance."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -57,7 +57,7 @@ Keyboard Theme Studio
 Ready for implementation after `sf-ready` on 2026-05-15. This is intentionally a full spec because the feature spans Flutter UI, native Android rendering, persistent config, image handling, accessibility, performance, and documentation.
 
 ## User Story
-En tant qu'utilisateur Android power user, je veux personnaliser entièrement le thème visuel et les effets du clavier WinGlowz, afin d'avoir un clavier utile, expressif et adapté à mon style sans sacrifier la lisibilité ni la performance.
+En tant qu'utilisateur Android power user, je veux personnaliser entièrement le thème visuel et les effets du clavier WinGlows, afin d'avoir un clavier utile, expressif et adapté à mon style sans sacrifier la lisibilité ni la performance.
 
 ## Minimal Behavior Contract
 L'utilisateur ouvre une page dédiée au thème du clavier, choisit un preset ou modifie un thème en brouillon, voit immédiatement une preview fidèle, puis sauvegarde pour appliquer le rendu au clavier Android natif. La feature accepte des couleurs, dégradés, tailles de bordures, ombres, rayon des touches, styles de texte, transparence, effets d'appui et une image de fond locale importée explicitement par l'utilisateur; elle produit une configuration versionnée persistée localement et appliquée au prochain rendu du clavier. Si une valeur est invalide, trop lourde, illisible, inaccessible ou non supportée par l'appareil, la sauvegarde est refusée avec une explication et le thème précédemment actif reste intact. L'edge case facile à oublier est qu'un thème spectaculaire peut rendre le clavier inutilisable dans un champ sensible ou sur un téléphone lent: le système doit donc garder un fallback lisible, limiter les effets coûteux, et ne jamais dépendre d'une image dont l'accès URI peut expirer.
@@ -79,16 +79,16 @@ L'utilisateur ouvre une page dédiée au thème du clavier, choisit un preset ou
 - Le système ne doit jamais logger le contenu tapé, le texte du presse-papier, le chemin complet d'une image privée, les données binaires d'image, ni une config contenant des payloads excessifs.
 
 ## Problem
-Le clavier WinGlowz commence à devenir un vrai outil de productivité, mais son apparence est encore traitée comme un paramètre global basique. Même après la synchronisation light/dark, l'utilisateur ne peut pas créer une identité visuelle forte, régler les détails de lisibilité, ni choisir des effets d'appui expressifs. Le risque est de continuer à empiler des toggles dans Settings alors que ce besoin mérite un studio dédié avec preview, presets, import/export, garde-fous de performance et un contrat natif stable.
+Le clavier WinGlows commence à devenir un vrai outil de productivité, mais son apparence est encore traitée comme un paramètre global basique. Même après la synchronisation light/dark, l'utilisateur ne peut pas créer une identité visuelle forte, régler les détails de lisibilité, ni choisir des effets d'appui expressifs. Le risque est de continuer à empiler des toggles dans Settings alors que ce besoin mérite un studio dédié avec preview, presets, import/export, garde-fous de performance et un contrat natif stable.
 
 ## Solution
 Créer une page dédiée `Keyboard Theme Studio` qui reprend le modèle de l'éditeur corner shortcuts: brouillon local, preview interactive, presets, validation, import/export JSON, puis sauvegarde native via `winglowz_app/keyboard`. Côté Android, remplacer `NativeKeyboardColors` par une configuration `KeyboardThemeConfig` versionnée capable de dessiner fonds solides, dégradés, image locale privée, touches, bordures, ombres et animations d'appui bornées.
 
 ## Scope In
-- Page Flutter dédiée au thème du clavier, accessible depuis `Settings > Appearance`, `Settings > WinGlowz Keyboard`, la page `/keyboard`, et le bouton natif `Theme` du panel settings clavier.
+- Page Flutter dédiée au thème du clavier, accessible depuis `Settings > Appearance`, `Settings > WinGlows Keyboard`, la page `/keyboard`, et le bouton natif `Theme` du panel settings clavier.
 - Modèle Dart `KeyboardThemeConfig` versionné avec presets, validation, import/export JSON, copy/reset/discard/save.
 - Modèle Kotlin équivalent `KeyboardThemeConfig` avec parsing JSON robuste, fallback safe et limites de taille.
-- Presets livrés en v1: `System`, `WinGlowz Light`, `WinGlowz Dark`, `Neon Terminal`, `Glass Mint`, `Sunset Gradient`, `Midnight Aurora`, `Paper Ink`, `Pixel Candy`, `Minimal Contrast`.
+- Presets livrés en v1: `System`, `WinGlows Light`, `WinGlows Dark`, `Neon Terminal`, `Glass Mint`, `Sunset Gradient`, `Midnight Aurora`, `Paper Ink`, `Pixel Candy`, `Minimal Contrast`.
 - Personnalisation v1: fond solide, dégradé linéaire, dégradé radial simple, image locale privée, couleur/alpha des touches, couleur/alpha des touches spéciales, active/pressed/disabled, texte, label corner, status, bordure, rayon, shadow, gaps visuels si supportés sans casser le layout, effet d'appui, durée, intensité, easing.
 - Effets d'appui v1: `none`, `scale`, `pulse`, `shake`, `ripple`, `glow`, `confetti-lite`, `fireworks-lite`.
 - Prévisualisation Flutter fidèle pour couleurs, dégradés, bordures, ombres et une simulation des effets.
@@ -265,7 +265,7 @@ Créer une page dédiée `Keyboard Theme Studio` qui reprend le modèle de l'éd
 
 - [ ] Tâche 12 : Ajouter les CTA dans Settings et panel clavier
   - Fichier : `lib/features/settings/presentation/settings_screen_sections.dart`
-  - Action : Ajouter bouton `Keyboard Theme Studio` dans Appearance et WinGlowz Keyboard.
+  - Action : Ajouter bouton `Keyboard Theme Studio` dans Appearance et WinGlows Keyboard.
   - User story link : L'utilisateur trouve le studio là où il cherche les thèmes.
   - Depends on : Tâche 11.
   - Validate with : Widget test Settings.
@@ -322,7 +322,7 @@ Créer une page dédiée `Keyboard Theme Studio` qui reprend le modèle de l'éd
 ## Acceptance Criteria
 - [ ] CA 1 : Given l'utilisateur ouvre Settings sur Android, when il appuie sur `Keyboard Theme Studio`, then une page dédiée s'ouvre avec presets, preview et actions Save/Discard/Reset.
 - [ ] CA 2 : Given un thème actif, when l'utilisateur modifie une couleur en brouillon, then la preview change et le clavier natif ne change pas avant Save.
-- [ ] CA 3 : Given un thème valide sauvegardé, when le clavier WinGlowz est ouvert ou réouvert, then le fond, les touches, le texte, les bordures et ombres correspondent au thème.
+- [ ] CA 3 : Given un thème valide sauvegardé, when le clavier WinGlows est ouvert ou réouvert, then le fond, les touches, le texte, les bordures et ombres correspondent au thème.
 - [ ] CA 4 : Given un dégradé linéaire ou radial valide, when le thème est sauvegardé, then Android le dessine sans fallback solide.
 - [ ] CA 5 : Given une image sélectionnée via le picker système, when l'image respecte les limites, then elle est copiée en stockage privé et utilisée comme fond du clavier.
 - [ ] CA 6 : Given une image corrompue ou trop lourde, when l'utilisateur tente de l'importer, then l'import est refusé avec message et le thème actif reste inchangé.

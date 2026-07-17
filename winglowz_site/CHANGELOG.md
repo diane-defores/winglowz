@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [2026-05-03]
 
 ### Changed
-- Reframed homepage and SEO copy around verifiable WinGlowz training metrics: 8 modules, 40 lessons, 2 languages, and 200+ tested tips/tools.
+- Reframed homepage and SEO copy around verifiable WinGlows training metrics: 8 modules, 40 lessons, 2 languages, and 200+ tested tips/tools.
 - Updated AppSumo social proof wording to reflect dozens of 5-star reviews while keeping the existing testimonial block intact.
 - Aligned public FAQ, lead magnet, and pricing copy to avoid unsupported free-trial, user-volume, performance, and 24/7 support claims.
 
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Redirect homepage hero, final CTA, and paid pricing CTA into the new Windows sales page while keeping the free plan linked to the course preview hub
-- Point the WinGlowz product entry and product listing links to the dedicated Windows sales page
+- Point the WinGlows product entry and product listing links to the dedicated Windows sales page
 - Continue consolidating `CONTENU/` source notes into compact future-source briefs and align additional FR/EN premium lesson files with the published course
 - Refresh `README.md` so routes, scripts, environment variables, and project structure match the live codebase
 - Route newsletter welcome emails toward the Windows sales page and tighten the copy around the current offer
@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Server checkout route for training unlocks at `/api/polar/checkout`
 - Signed Polar webhook route at `/api/polar/webhook`
 - Persistent course entitlements on Convex users via `courseEntitlements`
-- Full English translation set for the 8 WinGlowz training modules
+- Full English translation set for the 8 WinGlows training modules
 - Convex HTTP endpoint for Clerk webhooks with svix signature verification (`/clerk/events`)
 - HMAC signature verification on Polar webhook handler in Convex HTTP
 
@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Remove global anti-copy / anti-select behavior from public layouts and `/bio`
 - Add a real index page for the French Module V training section
 - Improve public lesson previews with clearer titles, value framing, and unlock CTAs
-- Rewrite homepage and core product copy to match the real WinGlowz offer more closely
+- Rewrite homepage and core product copy to match the real WinGlows offer more closely
 - Make the English training hub honest about the current EN content state
 - Update public-facing contact email references to `hello@winglowz.com`
 - Restore the English training hub as a full course index now that all EN lessons exist
@@ -227,10 +227,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Blog system with working post pages
 - Language picker component
 - Prerendering configuration
-- ScrewFast branding replaced with WinGlowz branding
+- ScrewFast branding replaced with WinGlows branding
 
 ### Changed
-- Replace ScrewFast template references with WinGlowz
+- Replace ScrewFast template references with WinGlows
 
 ## [0.0.2] — 2024-12-20
 

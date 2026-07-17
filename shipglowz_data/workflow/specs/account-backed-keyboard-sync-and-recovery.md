@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-25"
 created_at: "2026-05-25 15:14:26 UTC"
 updated: "2026-05-25"
@@ -13,14 +13,14 @@ source_model: "GPT-5 Codex"
 scope: "account-backed-keyboard-sync-and-recovery"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice connectée de WinGlowz, je veux retrouver mes réglages clavier et mes données de travail après connexion, changement d'appareil ou réinstallation, afin de ne plus perdre mon clavier personnalisé ni recommencer ma configuration."
+user_story: "En tant qu'utilisatrice connectée de WinGlows, je veux retrouver mes réglages clavier et mes données de travail après connexion, changement d'appareil ou réinstallation, afin de ne plus perdre mon clavier personnalisé ni recommencer ma configuration."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
-  - "WinGlowz Android IME"
-  - "WinGlowz suite authentication"
+  - "WinGlows Flutter app"
+  - "WinGlows Android IME"
+  - "WinGlows suite authentication"
   - "Firebase Auth"
   - "Cloud Firestore"
   - "Firestore Security Rules"
@@ -54,7 +54,7 @@ depends_on:
 supersedes: []
 evidence:
   - "User request 2026-05-25: start user accounts and data synchronization because reconfiguring the keyboard each time and losing work is unacceptable."
-  - "User instruction 2026-05-25: use the WinGlowz suite authentication specs already present in the repo."
+  - "User instruction 2026-05-25: use the WinGlows suite authentication specs already present in the repo."
   - "User suggested SocialGlowz as a strong reference for authentication, synchronization, export, and reimport."
   - "Local code 2026-05-25: `suiteIdentityProvider` resolves Firebase sessions through the suite bridge and stays fail-closed when the bridge is unavailable."
   - "Local code 2026-05-25: `settingsStoreProvider` only selects `FirebaseSettingsStore` when Firebase is configured, a non-local session exists, and suite identity grants `winglowz_app`."
@@ -76,39 +76,39 @@ Account-Backed Keyboard Sync and Recovery
 
 # Status
 
-Ready. This spec defines the first practical account-backed sync slice for the WinGlowz app: keep the suite-auth contract, protect local-first behavior, and make the Android keyboard configuration recoverable after sign-in, reinstall, or a second device.
+Ready. This spec defines the first practical account-backed sync slice for the WinGlows app: keep the suite-auth contract, protect local-first behavior, and make the Android keyboard configuration recoverable after sign-in, reinstall, or a second device.
 
 This spec intentionally does not replace the broader `local-first-user-owned-sync-strategy.md`. It creates a near-term implementation contract for the data Diane is most likely to lose today: native IME preferences, theme JSON, corner shortcuts, status bar config, and safe keyboard profile metadata.
 
 # User Story
 
-En tant qu'utilisatrice connectée de WinGlowz, je veux retrouver mes réglages clavier et mes données de travail après connexion, changement d'appareil ou réinstallation, afin de ne plus perdre mon clavier personnalisé ni recommencer ma configuration.
+En tant qu'utilisatrice connectée de WinGlows, je veux retrouver mes réglages clavier et mes données de travail après connexion, changement d'appareil ou réinstallation, afin de ne plus perdre mon clavier personnalisé ni recommencer ma configuration.
 
-Acteur principal: utilisatrice WinGlowz qui personnalise le clavier Android et se connecte avec son compte WinGlowz.
+Acteur principal: utilisatrice WinGlows qui personnalise le clavier Android et se connecte avec son compte WinGlows.
 
 Acteurs secondaires: app Flutter, IME Android natif, Firebase Auth, suite identity bridge, Firestore, opérateur support, futur appareil du même compte.
 
 Déclencheurs:
 
 - L'utilisatrice se connecte après avoir configuré le clavier en local.
-- L'utilisatrice réinstalle l'app, change de téléphone ou ouvre WinGlowz sur un deuxième appareil.
+- L'utilisatrice réinstalle l'app, change de téléphone ou ouvre WinGlows sur un deuxième appareil.
 - L'utilisatrice modifie un thème, un preset de coins, des préférences IME ou une option clavier.
 - L'app passe offline puis revient online.
 - L'utilisatrice change de compte sur le même appareil.
 - L'utilisatrice veut exporter ou réimporter un profil clavier avant une manipulation risquée.
 
-Résultat observable attendu: WinGlowz reconnaît le compte, hydrate un profil clavier sûr, synchronise les changements éligibles, protège les données locales en cas de conflit, et fournit un export/import manuel pour récupérer le travail sans dépendre d'une réussite immédiate du cloud.
+Résultat observable attendu: WinGlows reconnaît le compte, hydrate un profil clavier sûr, synchronise les changements éligibles, protège les données locales en cas de conflit, et fournit un export/import manuel pour récupérer le travail sans dépendre d'une réussite immédiate du cloud.
 
 # Minimal Behavior Contract
 
-WinGlowz accepte une session Firebase reconnue par la suite et un entitlement `winglowz_app` actif, lit la configuration clavier native locale, puis la compare au profil clavier cloud du même compte. Si le cloud est vide et que le profil local peut être assaini selon la policy V1, l'app sauvegarde automatiquement les champs éligibles comme première version du compte et signale les champs restés local-only; si le profil local ne peut pas être assaini sans ambiguïté, l'app bloque le seed et propose l'export manuel. Si le cloud contient déjà un profil du même compte, l'app l'applique seulement après une décision sûre de conflit, une preuve de même appareil/même compte, ou une transaction qui confirme que la révision cloud attendue n'a pas changé; si la sync échoue, le clavier local continue de fonctionner et une file locale retente l'envoi sans perdre le brouillon. L'edge case facile à rater est le changement de compte: WinGlowz ne doit jamais écraser silencieusement le clavier local d'un compte A avec le profil du compte B, ni rejouer une file locale ancienne dans le mauvais compte.
+WinGlows accepte une session Firebase reconnue par la suite et un entitlement `winglowz_app` actif, lit la configuration clavier native locale, puis la compare au profil clavier cloud du même compte. Si le cloud est vide et que le profil local peut être assaini selon la policy V1, l'app sauvegarde automatiquement les champs éligibles comme première version du compte et signale les champs restés local-only; si le profil local ne peut pas être assaini sans ambiguïté, l'app bloque le seed et propose l'export manuel. Si le cloud contient déjà un profil du même compte, l'app l'applique seulement après une décision sûre de conflit, une preuve de même appareil/même compte, ou une transaction qui confirme que la révision cloud attendue n'a pas changé; si la sync échoue, le clavier local continue de fonctionner et une file locale retente l'envoi sans perdre le brouillon. L'edge case facile à rater est le changement de compte: WinGlows ne doit jamais écraser silencieusement le clavier local d'un compte A avec le profil du compte B, ni rejouer une file locale ancienne dans le mauvais compte.
 
 # Success Behavior
 
-- Given l'utilisatrice est en mode local et a personnalisé thème, coins et préférences clavier, when elle se connecte à un compte WinGlowz avec accès `winglowz_app`, then l'app détecte que le cloud clavier est vide, assainit le profil local, sauvegarde automatiquement les champs éligibles, et affiche les champs exclus comme local-only.
+- Given l'utilisatrice est en mode local et a personnalisé thème, coins et préférences clavier, when elle se connecte à un compte WinGlows avec accès `winglowz_app`, then l'app détecte que le cloud clavier est vide, assainit le profil local, sauvegarde automatiquement les champs éligibles, et affiche les champs exclus comme local-only.
 - Given le même compte a déjà un profil clavier cloud, when l'utilisatrice se connecte sur un nouvel appareil propre, then l'app applique ce profil au clavier natif et affiche un état "clavier synchronisé".
 - Given l'appareil a déjà été utilisé par le même compte et possède une file locale pending, when la connexion revient, then l'app relit la révision cloud courante, flush la file seulement si `baseCloudRevision` correspond encore, et bascule en conflit récupérable si le cloud a changé entre-temps.
-- Given l'appareil local contient un profil différent et le compte cloud contient déjà un profil, when l'utilisateur se connecte, then WinGlowz bloque l'écrasement silencieux et propose `Garder ce téléphone`, `Utiliser le cloud`, ou `Exporter avant remplacement`.
+- Given l'appareil local contient un profil différent et le compte cloud contient déjà un profil, when l'utilisateur se connecte, then WinGlows bloque l'écrasement silencieux et propose `Garder ce téléphone`, `Utiliser le cloud`, ou `Exporter avant remplacement`.
 - Given l'utilisatrice sauvegarde un thème ou une config de coins depuis l'UI, when la sauvegarde native réussit, then un snapshot clavier versionné est exporté, validé, mis en file locale puis synchronisé sous `users/{uid}/keyboardConfigs/default`.
 - Given Firestore est temporairement indisponible, when une modification clavier est sauvegardée, then le clavier natif reste modifié, la file locale marque l'opération `pending`, et l'UI indique que la sync retentera.
 - Given l'utilisatrice réinstalle l'app et se reconnecte avec le même compte, when le bridge d'entitlement confirme `winglowz_app`, then l'app restaure les réglages éligibles sans demander de recréer le clavier.
@@ -132,11 +132,11 @@ WinGlowz accepte une session Firebase reconnue par la suite et un entitlement `w
 
 # Problem
 
-WinGlowz a déjà une base d'auth et de données distante, mais les personnalisations les plus chères à recréer vivent aujourd'hui dans l'IME natif Android. `KeyboardStateStore` stocke beaucoup de travail utilisateur en SharedPreferences: thèmes, coins, préférences, status bar, action row, langues, comportement clipboard, voice runtime, recents et règles locales. Ces données peuvent disparaître lors d'une réinstallation ou rester coincées sur un appareil.
+WinGlows a déjà une base d'auth et de données distante, mais les personnalisations les plus chères à recréer vivent aujourd'hui dans l'IME natif Android. `KeyboardStateStore` stocke beaucoup de travail utilisateur en SharedPreferences: thèmes, coins, préférences, status bar, action row, langues, comportement clipboard, voice runtime, recents et règles locales. Ces données peuvent disparaître lors d'une réinstallation ou rester coincées sur un appareil.
 
-Le risque produit est immédiat: plus le clavier devient puissant, plus une perte de configuration donne l'impression que WinGlowz n'est pas fiable. Le risque sécurité est aussi réel: un clavier peut contenir des raccourcis texte, snippets, actions clipboard, préférences de confidentialité et traces locales. La sync doit donc sauver le travail sans transformer Firestore en dépotoir de données sensibles.
+Le risque produit est immédiat: plus le clavier devient puissant, plus une perte de configuration donne l'impression que WinGlows n'est pas fiable. Le risque sécurité est aussi réel: un clavier peut contenir des raccourcis texte, snippets, actions clipboard, préférences de confidentialité et traces locales. La sync doit donc sauver le travail sans transformer Firestore en dépotoir de données sensibles.
 
-SocialGlowz fournit un bon modèle comportemental: hydrater après auth, distinguer cloud vide et cloud existant, ne pas rejouer une file locale dans le mauvais compte, montrer un feedback post-auth, et fournir export/import. WinGlowz doit reprendre ces patterns, pas copier la stack Convex/Tauri.
+SocialGlowz fournit un bon modèle comportemental: hydrater après auth, distinguer cloud vide et cloud existant, ne pas rejouer une file locale dans le mauvais compte, montrer un feedback post-auth, et fournir export/import. WinGlows doit reprendre ces patterns, pas copier la stack Convex/Tauri.
 
 # Solution
 
@@ -169,7 +169,7 @@ Le design reprend quatre briques SocialGlowz adaptées à Flutter:
 
 # Scope Out
 
-- Pas de migration directe de l'app WinGlowz vers Clerk Flutter/native.
+- Pas de migration directe de l'app WinGlows vers Clerk Flutter/native.
 - Pas de stockage cloud des clés OpenAI/Anthropic, tokens OAuth, JWT, provider payloads ou secrets locaux.
 - Pas de synchronisation des images de fond clavier en V1.
 - Pas de synchronisation des recents emoji/symboles, historique clipboard natif, événements vocaux, diagnostics, crash reports ou queues drainables natives.
@@ -222,7 +222,7 @@ Le design reprend quatre briques SocialGlowz adaptées à Flutter:
 
 ## Fresh External Docs Checked
 
-- Firebase Firestore offline data, checked 2026-05-25: https://firebase.google.com/docs/firestore/manage-data/enable-offline. Verdict `fresh-docs checked`: Android persistence is enabled by default, local writes sync when online, and same-document conflicts are last-write-wins, so WinGlowz must add its own revision/conflict gate for full keyboard profiles.
+- Firebase Firestore offline data, checked 2026-05-25: https://firebase.google.com/docs/firestore/manage-data/enable-offline. Verdict `fresh-docs checked`: Android persistence is enabled by default, local writes sync when online, and same-document conflicts are last-write-wins, so WinGlows must add its own revision/conflict gate for full keyboard profiles.
 - Firebase Firestore Security Rules conditions, checked 2026-05-25: https://firebase.google.com/docs/firestore/security/rules-conditions. Verdict `fresh-docs checked`: rules can use `request.auth`, validate `request.resource`, and use `get()` / `exists()` for access mirror documents, with access-call limits.
 - Firebase Firestore rules/query interaction, checked 2026-05-25: https://firebase.google.com/docs/firestore/security/rules-query. Verdict `fresh-docs checked`: rules are not filters, so any query added for keyboard profiles must match the rules constraints rather than relying on rules to filter unsafe results.
 - Firebase Auth ID token verification, checked 2026-05-25: https://firebase.google.com/docs/auth/admin/verify-id-tokens. Verdict `fresh-docs checked`: the suite bridge must keep receiving ID tokens over HTTPS and verifying them server-side; revocation checks must stay explicit.
@@ -506,7 +506,7 @@ Deferred decisions for later specs:
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-25 15:14:26 UTC | sf-spec | GPT-5 Codex | Created full spec for account-backed keyboard sync and recovery from user request, local WinGlowz auth/sync code, existing specs, SocialGlowz reference patterns, and current Firebase docs. | Draft spec saved. | `/sf-ready shipglowz_data/workflow/specs/account-backed-keyboard-sync-and-recovery.md` |
+| 2026-05-25 15:14:26 UTC | sf-spec | GPT-5 Codex | Created full spec for account-backed keyboard sync and recovery from user request, local WinGlows auth/sync code, existing specs, SocialGlowz reference patterns, and current Firebase docs. | Draft spec saved. | `/sf-ready shipglowz_data/workflow/specs/account-backed-keyboard-sync-and-recovery.md` |
 | 2026-05-25 15:37:56 UTC | sf-ready | GPT-5 Codex | Ran readiness, adversarial, security, documentation, language, and freshness gates; resolved blocking ambiguity around first seed, queue revision checks, destructive cloud reset scope, and sequential execution. | Ready. | `/sf-start Account-Backed Keyboard Sync and Recovery` |
 | 2026-05-25 19:30:13 UTC | sf-start | GPT-5.5 coordination + sequential Codex workers | Implemented V1 keyboard sync models, safe policy, native Android export/apply bridge, Firestore store/rules, durable queue, controller conflict decisions, Settings sync panel, export/import fallback, save notifications, docs, and targeted/full Flutter verification. | Implemented locally; Android build/device proof still required through CI/device QA. | `/sf-verify Account-Backed Keyboard Sync and Recovery` |
 | 2026-05-25 19:51:50 UTC | sf-verify | GPT-5.5 | Verified spec contract, code coherence, Firestore/Auth docs freshness, rules/data safety, queue/conflict paths, bug gate, docs, language, and local validation. Fixed a destructive delete gap in `keyboardConfigs` rules during verification. | Partial: local proof passed; Android native compile/package, Firestore deploy, Flutter Web smoke, and physical-device IME restore/apply proof still missing. | `/sf-ship Account-Backed Keyboard Sync and Recovery` |

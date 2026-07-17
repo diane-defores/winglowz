@@ -28,7 +28,7 @@ next_step: "/sf-docs update"
 
 ## Brand Core
 
-- Name: `WinGlowz`
+- Name: `WinGlows`
 - Core promise: improve real Windows workflows through structured education and practical systems
 - Commercial center: `Windows Mastery`
 - Language posture: bilingual (`en` and `fr`) with parity on core commercial surfaces
@@ -86,4 +86,3 @@ Forbidden without explicit in-repo source:
 - offer naming changes
 - brand voice or audience strategy shifts
 - major copy updates on flagship or homepage surfaces
-

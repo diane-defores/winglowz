@@ -32,7 +32,7 @@ evidence:
 next_review: "2026-06-17"
 next_step: "pnpm build:check"
 ---
-# WinGlowz Engineering Guidelines
+# WinGlows Engineering Guidelines
 
 ## Purpose
 
@@ -118,4 +118,3 @@ python3 /home/claude/shipglowz/tools/shipglowz_metadata_lint.py shipglowz_data/t
 ## Maintenance Rule
 
 Update this doc when stack versions, product rules, or documentation rules change materially.
-

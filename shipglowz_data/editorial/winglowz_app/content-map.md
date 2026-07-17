@@ -2,7 +2,7 @@
 artifact: content_map
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-04"
 updated: "2026-05-04"
 status: draft
@@ -35,9 +35,9 @@ next_review: "2026-06-04"
 next_step: "/sf-docs editorial"
 ---
 
-# Content Map — WinGlowz
+# Content Map — WinGlows
 
-WinGlowz currently has repository documentation, not a public marketing site
+WinGlows currently has repository documentation, not a public marketing site
 content tree. Public/user-facing claims live mainly in README and project docs.
 
 ## Surfaces

@@ -1,11 +1,11 @@
 {
-  "title": "Products | WinGlowz",
-  "description": "Explore WinGlowz's core offer first: Windows Mastery, then companion tools for the workflows you already use.",
-  "siteDescription": "WinGlowz focuses on practical Windows training, Obsidian plugins, and browser tools for note-taking, media, and YouTube workflows.",
-  "subtitle": "Browse the WinGlowz ecosystem, with Windows Mastery as the flagship path and companion tools built around the same workflow logic.",
+  "title": "Products | WinGlows",
+  "description": "Explore WinGlows's core offer first: Windows Mastery, then companion tools for the workflows you already use.",
+  "siteDescription": "WinGlows focuses on practical Windows training, Obsidian plugins, and browser tools for note-taking, media, and YouTube workflows.",
+  "subtitle": "Browse the WinGlows ecosystem, with Windows Mastery as the flagship path and companion tools built around the same workflow logic.",
   "customerStories": "Customer Stories",
   "features": {
-    "title": "Why WinGlowz?",
+    "title": "Why WinGlows?",
     "subtitle": "The offer is built around the problems the site already teaches: focus, Windows setup, information capture, and knowledge reuse.",
     "benefits": [
       "Windows-focused training with practical workflows instead of generic productivity advice",
@@ -54,8 +54,8 @@
       "link": "/windows-mastery"
     },
     "productivitysuite": {
-      "title": "WinGlowz Bundle",
-      "description": "The full WinGlowz ecosystem: training plus the core tools",
+      "title": "WinGlows Bundle",
+      "description": "The full WinGlows ecosystem: training plus the core tools",
       "features": [
         "Windows training and course content",
         "Obsidian plugins and browser tools in one offer",

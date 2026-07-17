@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5.5 Codex"
 scope: "android-ime-keyboard-gestures"
 owner: "Diane"
-user_story: "En tant qu'utilisatrice du clavier WinGlowz sur Android, je veux pouvoir assigner des actions aux swipes haut, bas, gauche et droite en plus des corners diagonaux, afin que les actions directionnelles comme les fleches se declenchent par un geste qui correspond naturellement au symbole affiche."
+user_story: "En tant qu'utilisatrice du clavier WinGlows sur Android, je veux pouvoir assigner des actions aux swipes haut, bas, gauche et droite en plus des corners diagonaux, afin que les actions directionnelles comme les fleches se declenchent par un geste qui correspond naturellement au symbole affiche."
 risk_level: "high"
 confidence: "high"
 security_impact: "yes"
@@ -71,16 +71,16 @@ Spec clarification 2026-05-25: this reopened chantier is now scoped as a repair-
 Verification gate 2026-05-25: local verification is partial. The repair code and allowed local checks pass, but Android-native proof is still required through GitHub Actions/Blacksmith and Diane physical-device QA before the chantier can be marked fully verified.
 
 ## User Story
-En tant qu'utilisatrice du clavier WinGlowz sur Android, je veux pouvoir assigner des actions aux swipes haut, bas, gauche et droite en plus des corners diagonaux, afin que les actions directionnelles comme les fleches se declenchent par un geste qui correspond naturellement au symbole affiche.
+En tant qu'utilisatrice du clavier WinGlows sur Android, je veux pouvoir assigner des actions aux swipes haut, bas, gauche et droite en plus des corners diagonaux, afin que les actions directionnelles comme les fleches se declenchent par un geste qui correspond naturellement au symbole affiche.
 
-Acteur principal: utilisateur Android de WinGlowz qui utilise WinGlowz keyboard comme methode de saisie systeme.
+Acteur principal: utilisateur Android de WinGlows qui utilise WinGlows keyboard comme methode de saisie systeme.
 
 Declencheur: l'utilisateur active les gestures clavier, pose le doigt sur une touche compatible, glisse vers une direction configuree, puis relache.
 
 Resultat observable: un swipe vers `↑`, `↓`, `←` ou `→` declenche l'action correspondante sans demander une diagonale; les anciens swipes de coin continuent a fonctionner pour les accents, ponctuations et raccourcis deja configures.
 
 ## Minimal Behavior Contract
-Quand le mode gestures clavier est actif, WinGlowz accepte des raccourcis par touche sur huit directions possibles: haut, bas, gauche, droite, haut-gauche, haut-droite, bas-gauche et bas-droite. Une touche peut techniquement avoir un melange de directions cardinales et diagonales, mais les presets et l'UI doivent favoriser une intention lisible: directions cardinales pour navigation/fleches, diagonales pour accents et raccourcis secondaires. Au relachement, le clavier classe le geste dans une seule direction, execute au plus une action via le moteur `KeyboardKeyValue`, ou annule proprement si le geste est trop court, ambigu, revenu au centre, indisponible ou interdit par la politique de champ. L'edge case facile a rater est la coexistence avec les gestes deja proteges: la barre espace garde son slider de curseur, les rows scrollables gardent leur scroll horizontal, les panels gardent leur scroll vertical, les longs press gardent leur priorite, et les anciennes configs de corners restent importables et executables.
+Quand le mode gestures clavier est actif, WinGlows accepte des raccourcis par touche sur huit directions possibles: haut, bas, gauche, droite, haut-gauche, haut-droite, bas-gauche et bas-droite. Une touche peut techniquement avoir un melange de directions cardinales et diagonales, mais les presets et l'UI doivent favoriser une intention lisible: directions cardinales pour navigation/fleches, diagonales pour accents et raccourcis secondaires. Au relachement, le clavier classe le geste dans une seule direction, execute au plus une action via le moteur `KeyboardKeyValue`, ou annule proprement si le geste est trop court, ambigu, revenu au centre, indisponible ou interdit par la politique de champ. L'edge case facile a rater est la coexistence avec les gestes deja proteges: la barre espace garde son slider de curseur, les rows scrollables gardent leur scroll horizontal, les panels gardent leur scroll vertical, les longs press gardent leur priorite, et les anciennes configs de corners restent importables et executables.
 
 ## Success Behavior
 - Given une touche `W` en QWERTY ou `Z` en AZERTY configuree avec `↑`/`↓`, when l'utilisateur swipe vers le haut ou le bas, then l'action `NavigateLineUp`/`NavigateLineDown` est executee sans devoir viser une diagonale.
@@ -103,7 +103,7 @@ Quand le mode gestures clavier est actif, WinGlowz accepte des raccourcis par to
 - Ce qui ne doit jamais arriver: double emission tap+gesture pour le meme toucher, crash IME sur config migree, perte silencieuse des anciens corners, contournement du mode prive, ou logs contenant texte tape, snippets ou clipboard.
 
 ## Problem
-Les raccourcis de gestes WinGlowz sont actuellement modeles comme des corners. C'est adapte pour des accents ou symboles secondaires, mais pas pour des actions directionnelles. Quand une fleche `↑` est placee dans un corner, l'utilisateur doit faire une diagonale pour declencher une action qui annonce une direction droite. Cette contradiction rend la navigation difficile a apprendre et donne une impression que le clavier ne respecte pas son propre langage visuel.
+Les raccourcis de gestes WinGlows sont actuellement modeles comme des corners. C'est adapte pour des accents ou symboles secondaires, mais pas pour des actions directionnelles. Quand une fleche `↑` est placee dans un corner, l'utilisateur doit faire une diagonale pour declencher une action qui annonce une direction droite. Cette contradiction rend la navigation difficile a apprendre et donne une impression que le clavier ne respecte pas son propre langage visuel.
 
 Audit repair 2026-05-25: le modele a ete partiellement generalise, mais l'implementation actuelle garde une dependance de resolution a `cornerModeEnabled` dans `KeyboardCornerShortcutResolver.resolve()`. Comme `WinGlowzKeyboardView.effectiveGestureSelection()` commence par `key.cornerAssignments.isEmpty()`, un swipe cardinal valide peut redevenir un tap primaire avant que la classification directionnelle soit utile. Le code contient aussi des logs de diagnostic temporaires sur `letter-s`/`letter-z` et une anomalie d'accolade dans `retainPressedHighlight()` qui doit etre corrigee avant toute validation.
 

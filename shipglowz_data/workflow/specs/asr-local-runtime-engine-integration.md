@@ -49,14 +49,14 @@ Draft. This is the implementation spec to replace the current placeholder local-
 
 # User Story
 
-En tant qu'utilisatrice WinGlowz, je veux que la dictée clavier utilise vraiment un moteur ASR local quand un pack est installé et valide, pour pouvoir dicter sans appel serveur implicite et sans interruption silencieuse.
+En tant qu'utilisatrice WinGlows, je veux que la dictée clavier utilise vraiment un moteur ASR local quand un pack est installé et valide, pour pouvoir dicter sans appel serveur implicite et sans interruption silencieuse.
 
-Acteur principal: utilisatrice Android WinGlowz utilisant le clavier.
+Acteur principal: utilisatrice Android WinGlows utilisant le clavier.
 Acteurs secondaires: produit, support, infrastructure QA.
 
 # Minimal Behavior Contract
 
-Le runtime doit charger et exécuter un moteur local réel à partir d’un chemin de modèle déjà installé dans le store WinGlowz, produire la transcription en local, puis revenir de manière explicite au fallback système si le chargement, l’initialisation ou la reconnaissance locale échouent.
+Le runtime doit charger et exécuter un moteur local réel à partir d’un chemin de modèle déjà installé dans le store WinGlows, produire la transcription en local, puis revenir de manière explicite au fallback système si le chargement, l’initialisation ou la reconnaissance locale échouent.
 
 Quand un pack est absent, invalide, invalide côté licence/ABI/RAM/disque, ou si le runtime local ne peut pas démarrer, le clavier doit exposer un fallback explicite (Android SpeechRecognizer ou cloud selon paramètre utilisateur).
 

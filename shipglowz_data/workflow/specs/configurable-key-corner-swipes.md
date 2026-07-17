@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-14"
 created_at: "2026-05-14 09:54:42 UTC"
 updated: "2026-05-14"
@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisateur Android de WinGlowz qui personnalise son clavier, je veux configurer touche par touche les actions declenchees par les swipes vers les quatre coins, afin d'adapter accents, ponctuation, snippets, raccourcis systeme et macros a ma facon d'ecrire sans changer de mode."
+user_story: "En tant qu'utilisateur Android de WinGlows qui personnalise son clavier, je veux configurer touche par touche les actions declenchees par les swipes vers les quatre coins, afin d'adapter accents, ponctuation, snippets, raccourcis systeme et macros a ma facon d'ecrire sans changer de mode."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -57,9 +57,9 @@ Ready for implementation. This is a focused follow-up to the proprietary swipe-c
 
 # User Story
 
-En tant qu'utilisateur Android de WinGlowz qui personnalise son clavier, je veux configurer touche par touche les actions declenchees par les swipes vers les quatre coins, afin d'adapter accents, ponctuation, snippets, raccourcis systeme et macros a ma facon d'ecrire sans changer de mode.
+En tant qu'utilisateur Android de WinGlows qui personnalise son clavier, je veux configurer touche par touche les actions declenchees par les swipes vers les quatre coins, afin d'adapter accents, ponctuation, snippets, raccourcis systeme et macros a ma facon d'ecrire sans changer de mode.
 
-Acteur principal: utilisateur Android de WinGlowz qui utilise le clavier natif WinGlowz comme IME.
+Acteur principal: utilisateur Android de WinGlows qui utilise le clavier natif WinGlows comme IME.
 
 Declencheur: l'utilisateur active le mode coins, ouvre l'editeur de raccourcis des coins depuis Settings ou le panneau Preferences du clavier, choisit une touche et un coin, puis assigne une action autorisee.
 
@@ -67,7 +67,7 @@ Resultat observable: le clavier natif et la preview Flutter affichent les labels
 
 # Minimal Behavior Contract
 
-Quand le mode coins est active, WinGlowz accepte une configuration persistante qui associe une touche stable, un coin parmi `topLeft`, `topRight`, `bottomLeft` et `bottomRight`, et une action valide du catalogue clavier. L'action peut etre du texte, un accent, une ponctuation, un snippet, une action clavier/navigation, un key event, un modifier ou une macro exprimee par le moteur `KeyboardKeyValue`. Le clavier affiche le label resolu dans le coin concerne et declenche cette action sur swipe; si aucun raccourci utilisateur n'existe, il conserve le preset ou le comportement par defaut actuel. En cas de configuration invalide, corrompue, interdite dans le contexte courant ou impossible a parser, le clavier ignore uniquement ce raccourci, affiche un etat recuperable dans les settings ou le debug, et retombe sur le default sans crash ni emission inattendue. L'edge case facile a rater est la collision avec les gestes proteges: la barre espace garde son slider de curseur, les lignes scrollables gardent leur scroll horizontal, les snippets/clipboard restent bloques dans les champs prives, et les touches speciales ne recoivent des coins que si `specialKeyCornersEnabled` l'autorise.
+Quand le mode coins est active, WinGlows accepte une configuration persistante qui associe une touche stable, un coin parmi `topLeft`, `topRight`, `bottomLeft` et `bottomRight`, et une action valide du catalogue clavier. L'action peut etre du texte, un accent, une ponctuation, un snippet, une action clavier/navigation, un key event, un modifier ou une macro exprimee par le moteur `KeyboardKeyValue`. Le clavier affiche le label resolu dans le coin concerne et declenche cette action sur swipe; si aucun raccourci utilisateur n'existe, il conserve le preset ou le comportement par defaut actuel. En cas de configuration invalide, corrompue, interdite dans le contexte courant ou impossible a parser, le clavier ignore uniquement ce raccourci, affiche un etat recuperable dans les settings ou le debug, et retombe sur le default sans crash ni emission inattendue. L'edge case facile a rater est la collision avec les gestes proteges: la barre espace garde son slider de curseur, les lignes scrollables gardent leur scroll horizontal, les snippets/clipboard restent bloques dans les champs prives, et les touches speciales ne recoivent des coins que si `specialKeyCornersEnabled` l'autorise.
 
 # Success Behavior
 
@@ -99,7 +99,7 @@ Quand le mode coins est active, WinGlowz accepte une configuration persistante q
 
 # Problem
 
-Le clavier WinGlowz a maintenant une base native mature: layout modulaire, panneaux, scroll horizontal de snippets/clipboard, gestures, navigation, modifiers, snippets, suggestions et settings. Mais les swipes de coin restent un mecanisme semi-statique: les coins sont des strings dans `KeyboardKeyGlyph`, les accents sont hardcodes dans `glyphFor()`, la preview Flutter duplique une petite table `_cornerFor()`, et le dispatch transforme les coins en texte brut. Cela bloque exactement le comportement souhaite par l'utilisateur: choisir touche par touche si les coins servent aux accents, a la ponctuation, aux snippets, aux raccourcis de navigation, aux modifiers ou aux macros.
+Le clavier WinGlows a maintenant une base native mature: layout modulaire, panneaux, scroll horizontal de snippets/clipboard, gestures, navigation, modifiers, snippets, suggestions et settings. Mais les swipes de coin restent un mecanisme semi-statique: les coins sont des strings dans `KeyboardKeyGlyph`, les accents sont hardcodes dans `glyphFor()`, la preview Flutter duplique une petite table `_cornerFor()`, et le dispatch transforme les coins en texte brut. Cela bloque exactement le comportement souhaite par l'utilisateur: choisir touche par touche si les coins servent aux accents, a la ponctuation, aux snippets, aux raccourcis de navigation, aux modifiers ou aux macros.
 
 # Solution
 

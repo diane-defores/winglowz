@@ -31,7 +31,7 @@ next_step: "/sf-docs update"
 
 ## Mission
 
-WinGlowz exists to help Windows users build practical, repeatable productivity systems, with `Windows Mastery` as the commercial anchor.
+WinGlows exists to help Windows users build practical, repeatable productivity systems, with `Windows Mastery` as the commercial anchor.
 
 ## Business Anchor
 
@@ -64,7 +64,7 @@ Secondary audience:
 
 ## Positioning Guardrails
 
-- Keep WinGlowz anchored to Windows workflow mastery, not generic productivity claims.
+- Keep WinGlows anchored to Windows workflow mastery, not generic productivity claims.
 - Keep the commercial story centered on `Windows Mastery`.
 - Avoid traction, market-size, or quantified outcome claims unless they are backed by in-repo evidence.
 - Keep sister products as ecosystem context, not as the replacement narrative.
@@ -75,4 +75,3 @@ Secondary audience:
 - conversion to `Windows Mastery` offer pages
 - account creation and gated-content activation
 - repeat consumption of premium learning surfaces
-

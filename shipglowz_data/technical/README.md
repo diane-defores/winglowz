@@ -32,7 +32,7 @@ next_step: "/sf-docs technical audit"
 
 ## Purpose
 
-This directory is the canonical internal technical governance layer for WinGlowz. It maps code areas to subsystem docs, records stable invariants, and defines the documentation update surface for future code changes.
+This directory is the canonical internal technical governance layer for WinGlows. It maps code areas to subsystem docs, records stable invariants, and defines the documentation update surface for future code changes.
 
 ## Owned Files
 

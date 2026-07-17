@@ -1,4 +1,4 @@
-# WinGlowz Windows Mastery Funnel Emails
+# WinGlows Windows Mastery Funnel Emails
 
 These are ready-to-send markdown campaign drafts for the dedicated sales pages:
 

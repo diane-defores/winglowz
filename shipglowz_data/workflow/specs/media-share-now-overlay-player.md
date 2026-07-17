@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-16"
 created_at: "2026-05-16 17:24:54 UTC"
 updated: "2026-05-16"
@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu’utilisatrice du clavier WinGlowz, je veux partager une vidéo depuis YouTube ou une autre app vers WinGlowz, puis la retrouver dans la barre Media avec vignette et overlay lecteur, afin de regarder une vidéo compacte pendant que je travaille."
+user_story: "En tant qu’utilisatrice du clavier WinGlows, je veux partager une vidéo depuis YouTube ou une autre app vers WinGlows, puis la retrouver dans la barre Media avec vignette et overlay lecteur, afin de regarder une vidéo compacte pendant que je travaille."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -36,7 +36,7 @@ depends_on:
     required_status: "unknown"
 supersedes: []
 evidence:
-  - "User request 2026-05-16: share YouTube videos into WinGlowz, show them in Media/Now, and open a small overlay player instead of embedding WebView in the IME."
+  - "User request 2026-05-16: share YouTube videos into WinGlows, show them in Media/Now, and open a small overlay player instead of embedding WebView in the IME."
   - "Android docs: PiP is owned by the app Activity that enters PiP; PiP controls are provided by that app/media session."
   - "YouTube Help: YouTube PiP depends on YouTube settings, account/content eligibility, and leaving YouTube while video is playing."
   - "YouTube IFrame API docs: embeds can be controlled via JavaScript but require a real web/player surface and minimum viewport constraints."
@@ -53,19 +53,19 @@ Draft. Spec is ready for product review, then `/sf-ready media share now overlay
 
 # User Story
 
-En tant qu’utilisatrice du clavier WinGlowz, je veux partager une vidéo depuis YouTube ou une autre app vers WinGlowz, puis la retrouver dans la barre Media avec vignette et overlay lecteur, afin de regarder une vidéo compacte pendant que je travaille.
+En tant qu’utilisatrice du clavier WinGlows, je veux partager une vidéo depuis YouTube ou une autre app vers WinGlows, puis la retrouver dans la barre Media avec vignette et overlay lecteur, afin de regarder une vidéo compacte pendant que je travaille.
 
 # Minimal Behavior Contract
 
-WinGlowz accepts shared media links through Android `ACTION_SEND`, stores the latest supported shared media item locally, displays it in the keyboard Media `Now` surface with title/thumbnail/link metadata, and opens a separate WinGlowz overlay player when the user taps the media preview. If an embeddable player cannot load, the overlay falls back to thumbnail + title + `Open` action. If a native PiP launch path is available for the source app, `Open` should prefer the path most likely to preserve/trigger PiP; otherwise it opens the source URL/app normally. The IME must never host a WebView/video player directly.
+WinGlows accepts shared media links through Android `ACTION_SEND`, stores the latest supported shared media item locally, displays it in the keyboard Media `Now` surface with title/thumbnail/link metadata, and opens a separate WinGlows overlay player when the user taps the media preview. If an embeddable player cannot load, the overlay falls back to thumbnail + title + `Open` action. If a native PiP launch path is available for the source app, `Open` should prefer the path most likely to preserve/trigger PiP; otherwise it opens the source URL/app normally. The IME must never host a WebView/video player directly.
 
 # Success Behavior
 
-- Sharing a YouTube video URL to WinGlowz adds or updates a single “shared media” item.
+- Sharing a YouTube video URL to WinGlows adds or updates a single “shared media” item.
 - Sharing a generic video URL from another app, including IceDrive when it exposes a shareable URL, adds the link as a generic shared media item.
 - The Media panel `Now` row can show either active media session metadata or the latest shared media item.
 - For YouTube shared media, `Now` shows a title when available and a thumbnail generated from the video ID.
-- Tapping the thumbnail/preview opens a WinGlowz overlay player, not an IME-embedded player.
+- Tapping the thumbnail/preview opens a WinGlows overlay player, not an IME-embedded player.
 - The overlay player is positioned near the keyboard/overlay working area, remains movable/resizable enough to avoid covering critical input, and has an obvious close/minimize path.
 - If the YouTube embed loads, playback happens inside the overlay WebView/player container.
 - If the embed fails, is too small, blocks autoplay, blocks playback, or violates constraints, the overlay displays thumbnail + title + `Open` fallback.
@@ -83,7 +83,7 @@ WinGlowz accepts shared media links through Android `ACTION_SEND`, stores the la
 
 # Problem
 
-WinGlowz already has a powerful Media panel, but watching long-running videos while working requires leaving the current app or relying on YouTube PiP behavior controlled by YouTube. The user wants a keyboard-adjacent workflow: share a video into WinGlowz, keep the title visible in Media/Now, and optionally open a compact player overlay near the keyboard. Directly embedding a player inside the IME is high-risk for stability, focus, privacy, and rendering. A separate overlay player reuses the app’s existing overlay architecture while keeping the IME lightweight.
+WinGlows already has a powerful Media panel, but watching long-running videos while working requires leaving the current app or relying on YouTube PiP behavior controlled by YouTube. The user wants a keyboard-adjacent workflow: share a video into WinGlows, keep the title visible in Media/Now, and optionally open a compact player overlay near the keyboard. Directly embedding a player inside the IME is high-risk for stability, focus, privacy, and rendering. A separate overlay player reuses the app’s existing overlay architecture while keeping the IME lightweight.
 
 # Solution
 
@@ -115,7 +115,7 @@ Implement a share-target and shared-media pipeline. Android share intents store 
 
 # Constraints
 
-- Android PiP belongs to the activity that enters PiP; WinGlowz cannot resize or embed another app’s PiP window.
+- Android PiP belongs to the activity that enters PiP; WinGlows cannot resize or embed another app’s PiP window.
 - Existing project mode is hybrid; web can be checked on Vercel, but Android overlay/IME must be validated manually on a real phone.
 - Overlay requires `SYSTEM_ALERT_WINDOW` and existing overlay permission flow.
 - YouTube IFrame API is a web embed API and must respect viewport/player requirements and YouTube terms.
@@ -189,9 +189,9 @@ Implement a share-target and shared-media pipeline. Android share intents store 
 - [ ] Task 2: Register Android share target.
   - Fichier : `android/app/src/main/AndroidManifest.xml`
   - Action : Add `ACTION_SEND` and optional `ACTION_SEND_MULTIPLE` intent filters for `text/plain` and `text/uri-list` to `MainActivity` or a dedicated transparent receiver Activity.
-  - User story link : Makes WinGlowz appear in Android share sheet.
+  - User story link : Makes WinGlows appear in Android share sheet.
   - Depends on : Task 1.
-  - Validate with : Share from YouTube and browser to WinGlowz on Android APK.
+  - Validate with : Share from YouTube and browser to WinGlows on Android APK.
   - Notes : If `MainActivity` handles share, preserve existing `openRoute` behavior.
 
 - [ ] Task 3: Handle share intents and persist shared media.
@@ -252,7 +252,7 @@ Implement a share-target and shared-media pipeline. Android share intents store 
 
 - [ ] Task 10: Add Open/PiP-friendly fallback.
   - Fichier : `OverlayForegroundService.kt` or `SharedMediaOpenController.kt`
-  - Action : Implement `Open` to use source app package or URL intent; for YouTube, prefer YouTube deep link when installed. Document that WinGlowz cannot force YouTube PiP, but opening YouTube with PiP settings enabled can let the user trigger PiP by leaving YouTube.
+  - Action : Implement `Open` to use source app package or URL intent; for YouTube, prefer YouTube deep link when installed. Document that WinGlows cannot force YouTube PiP, but opening YouTube with PiP settings enabled can let the user trigger PiP by leaving YouTube.
   - User story link : Provides a useful fallback distinct from the existing active media app button.
   - Depends on : Task 8.
   - Validate with : Open from YouTube shared card opens YouTube video; generic URL opens chooser/browser/source app.
@@ -276,7 +276,7 @@ Implement a share-target and shared-media pipeline. Android share intents store 
 
 # Acceptance Criteria
 
-- [ ] WinGlowz appears in Android share sheet for text links from YouTube.
+- [ ] WinGlows appears in Android share sheet for text links from YouTube.
 - [ ] Sharing a YouTube long-form video stores a shared media item with provider `youtube`, video ID, normalized URL, and thumbnail URL.
 - [ ] Sharing a YouTube Shorts URL stores the item and either embeds if supported or falls back without error.
 - [ ] Sharing a generic HTTP(S) video/link, including IceDrive when it provides a URL, stores a generic item and displays fallback card.
@@ -303,7 +303,7 @@ Implement a share-target and shared-media pipeline. Android share intents store 
   - Generic HTTP URL.
   - Malformed text.
 - Manual Android QA:
-  - Share YouTube long video to WinGlowz; open keyboard Media; see card.
+  - Share YouTube long video to WinGlows; open keyboard Media; see card.
   - Tap card; overlay opens.
   - If experimental player enabled, verify embed or fallback.
   - Tap `Open`; YouTube video opens.
@@ -325,10 +325,10 @@ Implement a share-target and shared-media pipeline. Android share intents store 
 # Execution Notes
 
 - Fresh-docs verdict: `fresh-docs checked`.
-- Android PiP docs confirm PiP is an app Activity feature and the system shows controls from that app/media session; WinGlowz should not try to control another app’s PiP window.
+- Android PiP docs confirm PiP is an app Activity feature and the system shows controls from that app/media session; WinGlows should not try to control another app’s PiP window.
 - Android PiP docs note small PiP UI has limited interaction and recommends minimal UI, supporting the overlay/fallback-card approach rather than dense controls in the video surface.
 - YouTube IFrame docs allow embedding/control via JavaScript but define web/player requirements, including viewport constraints. Treat overlay embed as experimental.
-- YouTube Help confirms PiP behavior depends on YouTube settings/account/content categories and is triggered by leaving YouTube while video is playing; WinGlowz can provide `Open`, not force PiP.
+- YouTube Help confirms PiP behavior depends on YouTube settings/account/content categories and is triggered by leaving YouTube while video is playing; WinGlows can provide `Open`, not force PiP.
 - Avoid “force PiP” hacks such as simulating Home or accessibility gestures.
 - Prefer a dedicated media overlay mode over adding media concerns to the voice recording state machine.
 
@@ -347,7 +347,7 @@ Implement a share-target and shared-media pipeline. Android share intents store 
 
 | Step | Status | Notes |
 |------|--------|-------|
-| sf-spec | done | Draft spec created and grounded in Android/YouTube docs plus current WinGlowz overlay/IME code. |
+| sf-spec | done | Draft spec created and grounded in Android/YouTube docs plus current WinGlows overlay/IME code. |
 | sf-ready | not ready | Blocks: Media Now precedence is not fully specified, experimental player default is left as a product choice before implementation, and several high-risk WebView/share-intent security controls need more concrete implementation constraints. |
 | sf-start | pending | Implement after readiness. |
 | sf-verify | pending | Verify against acceptance criteria. |

@@ -13,7 +13,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisateur Android de WinGlowz keyboard, je veux pouvoir afficher, masquer et personnaliser la barre d'information au-dessus du clavier, afin de recevoir des informations utiles et des conseils contextuels sans rendre le clavier intrusif."
+user_story: "En tant qu'utilisateur Android de WinGlows keyboard, je veux pouvoir afficher, masquer et personnaliser la barre d'information au-dessus du clavier, afin de recevoir des informations utiles et des conseils contextuels sans rendre le clavier intrusif."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -69,9 +69,9 @@ Ready spec. This is intentionally a full spec because the feature spans native I
 
 ## User Story
 
-En tant qu'utilisateur Android de WinGlowz keyboard, je veux pouvoir afficher, masquer et personnaliser la barre d'information au-dessus du clavier, afin de recevoir des informations utiles et des conseils contextuels sans rendre le clavier intrusif.
+En tant qu'utilisateur Android de WinGlows keyboard, je veux pouvoir afficher, masquer et personnaliser la barre d'information au-dessus du clavier, afin de recevoir des informations utiles et des conseils contextuels sans rendre le clavier intrusif.
 
-Acteur principal: utilisateur Android qui a active ou essaye d'activer WinGlowz keyboard.
+Acteur principal: utilisateur Android qui a active ou essaye d'activer WinGlows keyboard.
 
 Declencheurs principaux:
 
@@ -84,11 +84,11 @@ Resultat observable attendu: la barre peut etre absente, utilitaire ou educative
 
 ## Minimal Behavior Contract
 
-L'utilisateur configure la barre superieure du clavier depuis Settings: off, compacte ou intelligente, avec des modules tels que label WinGlowz, date, heure, compte/email masque et conseils contextuels. Quand le clavier s'ouvre, la barre rend les modules autorises et peut temporairement les remplacer par un message d'etat ou un nudge local lie a une action recente ou a une fonctionnalite non encore essayee. Si la barre est desactivee, le clavier recupere la hauteur et seuls les feedbacks critiques passent par les mecanismes existants comme Toast ou diagnostics. L'edge case facile a rater est la confidentialite: la barre ne doit jamais afficher ni persister de texte tape, clipboard, transcription, app hote sensible, email complet en champ prive, ou message educatif qui revele l'activite de l'utilisateur dans un contexte password/OTP/noPersonalizedLearning.
+L'utilisateur configure la barre superieure du clavier depuis Settings: off, compacte ou intelligente, avec des modules tels que label WinGlows, date, heure, compte/email masque et conseils contextuels. Quand le clavier s'ouvre, la barre rend les modules autorises et peut temporairement les remplacer par un message d'etat ou un nudge local lie a une action recente ou a une fonctionnalite non encore essayee. Si la barre est desactivee, le clavier recupere la hauteur et seuls les feedbacks critiques passent par les mecanismes existants comme Toast ou diagnostics. L'edge case facile a rater est la confidentialite: la barre ne doit jamais afficher ni persister de texte tape, clipboard, transcription, app hote sensible, email complet en champ prive, ou message educatif qui revele l'activite de l'utilisateur dans un contexte password/OTP/noPersonalizedLearning.
 
 ## Success Behavior
 
-- Given la barre est activee en mode standard, when le clavier s'ouvre dans un champ texte normal, then la zone actuelle `statusText` affiche une ligne composee selon les modules choisis, par exemple `WinGlowz | 17 May | 10:12 | diane@example.com` ou un email masque selon le niveau privacy.
+- Given la barre est activee en mode standard, when le clavier s'ouvre dans un champ texte normal, then la zone actuelle `statusText` affiche une ligne composee selon les modules choisis, par exemple `WinGlows | 17 May | 10:12 | diane@example.com` ou un email masque selon le niveau privacy.
 - Given la barre est desactivee, when le clavier s'ouvre, then `WinGlowzKeyboardView` ne reserve plus la hauteur de status persistante et les touches remontent sans chevauchement.
 - Given le module heure est actif, when la minute change pendant que le clavier est visible, then l'heure se met a jour sans boucle de redraw continue ni fuite de callbacks apres destruction de l'IME.
 - Given le module date est actif, when le jour change ou le clavier se recree, then la date affichee suit la locale Android et reste courte.
@@ -115,7 +115,7 @@ L'utilisateur configure la barre superieure du clavier depuis Settings: off, com
 
 ## Problem
 
-Le clavier WinGlowz devient une surface riche: dictation, clipboard, snippets, media, themes, actions pinnees, gestures, corrections, onboarding permissions. La barre superieure existe deja et sert aux messages de statut, mais elle n'a pas de contrat produit: elle peut afficher `WinGlowz`, `Ctrl on`, `Action pinned` ou des erreurs, sans preference utilisateur ni strategie d'onboarding. En meme temps, l'application grossit et risque de devenir difficile a approcher pour un nouvel utilisateur. Il faut donc transformer cette zone en surface optionnelle, utile et respectueuse: information personnelle choisie, feedback de systeme, et progressive disclosure locale pour favoriser l'adoption sans bruit ni collecte invasive.
+Le clavier WinGlows devient une surface riche: dictation, clipboard, snippets, media, themes, actions pinnees, gestures, corrections, onboarding permissions. La barre superieure existe deja et sert aux messages de statut, mais elle n'a pas de contrat produit: elle peut afficher `WinGlows`, `Ctrl on`, `Action pinned` ou des erreurs, sans preference utilisateur ni strategie d'onboarding. En meme temps, l'application grossit et risque de devenir difficile a approcher pour un nouvel utilisateur. Il faut donc transformer cette zone en surface optionnelle, utile et respectueuse: information personnelle choisie, feedback de systeme, et progressive disclosure locale pour favoriser l'adoption sans bruit ni collecte invasive.
 
 ## Solution
 
@@ -201,7 +201,7 @@ Le nom produit de cette logique peut etre "conseils contextuels" dans l'UI. Le v
 - `lib/features/keyboard/domain/keyboard_models.dart`: add Dart status bar config and validation models.
 - `lib/core/platform/android_keyboard_bridge.dart`: add get/set/reset status bar config and set keyboard user context.
 - `lib/features/settings/domain/settings_store.dart`: add app-side status bar settings only if they need Flutter/local/Firebase storage; otherwise keep as native keyboard preference.
-- `lib/features/settings/presentation/settings_screen_sections.dart`: add controls to `WinGlowz keyboard` section.
+- `lib/features/settings/presentation/settings_screen_sections.dart`: add controls to `WinGlows keyboard` section.
 - `lib/features/shell/presentation/app_shell_screen.dart`: push redacted account context to native keyboard after auth/session changes if needed.
 - `lib/features/keyboard/presentation/keyboard_preview_screen.dart` and widgets: simulate status bar modes/modules.
 - `test/settings_platform_controllers_test.dart`, `test/widget_test.dart`, `test/onboarding_permission_contract_test.dart`: expand coverage for bridge/settings/preview behaviors.
@@ -318,7 +318,7 @@ No pricing, SEO or public GTM doc change is required for v1 unless the bar becom
 
 - [ ] Tache 10 : Ajouter les controls Settings
   - Fichier : `lib/features/settings/presentation/settings_screen_sections.dart`
-  - Action : Ajouter UI dans `WinGlowz keyboard`: mode barre, modules, tips off/minimal/standard, account label privacy, reset tips.
+  - Action : Ajouter UI dans `WinGlows keyboard`: mode barre, modules, tips off/minimal/standard, account label privacy, reset tips.
   - User story link : Rendre la personnalisation accessible sans surcharger l'app.
   - Depends on : Taches 1 et 2.
   - Validate with : widget tests settings, text fitting mobile/desktop, unsupported platform.

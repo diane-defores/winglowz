@@ -31,7 +31,7 @@ Ce n'est pas que les hacks sont toujours inutiles.
 
 C'est qu'ils ne suffisent pas quand il manque une architecture globale.
 
-WinGlowz n'essaie pas de t'impressionner avec une pile d'outils.
+WinGlows n'essaie pas de t'impressionner avec une pile d'outils.
 
 La logique est beaucoup plus simple :
 

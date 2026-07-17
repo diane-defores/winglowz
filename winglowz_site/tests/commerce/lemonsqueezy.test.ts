@@ -53,7 +53,7 @@ describe('lemonsqueezy adapter', () => {
     })
   })
 
-  test('returns WinGlowz founder config for the requested offer', () => {
+  test('returns WinGlows founder config for the requested offer', () => {
     expect(
       getLemonSqueezyCheckoutConfig(
         {
@@ -145,7 +145,7 @@ describe('lemonsqueezy adapter', () => {
     expect((globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0]?.[1]?.body).not.toContain('cancel_url')
   })
 
-  test('creates WinGlowz checkout with WinGlowz variant metadata', async () => {
+  test('creates WinGlows checkout with WinGlows variant metadata', async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValue(
@@ -339,7 +339,7 @@ describe('lemonsqueezy adapter', () => {
     )
   })
 
-  test('validates WinGlowz order_created webhook as paid event', async () => {
+  test('validates WinGlows order_created webhook as paid event', async () => {
     const rawBody = JSON.stringify({
       data: {
         id: 'ord_wfz',

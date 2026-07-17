@@ -2,7 +2,7 @@
 artifact: technical_runbook
 metadata_schema_version: "1.0"
 artifact_version: "1.0.1"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-21"
 updated: "2026-05-23"
 status: reviewed
@@ -14,8 +14,8 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - "winflows.com / WinGlowz Formation"
-  - "WinGlowz Android app"
+  - "winflows.com / WinGlows Formation"
+  - "WinGlows Android app"
   - "ReplayGlowz"
   - "Clerk"
   - "Firebase Auth"

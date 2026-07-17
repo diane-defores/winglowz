@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-11"
 created_at: "2026-06-11 10:58:00 UTC"
 updated: "2026-06-12"
@@ -13,12 +13,12 @@ source_model: "GPT-5 Codex"
 scope: "custom-action-buttons-and-command-macros"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz, je veux personnaliser une barre d'action composée d'une ou plusieurs rangées de boutons, afin de lancer rapidement des actions intégrées, des snippets texte, des séquences clavier, des commandes presse-papiers, des commandes média ou des macros sans confondre bouton et snippet."
+user_story: "En tant qu'utilisatrice WinGlows, je veux personnaliser une barre d'action composée d'une ou plusieurs rangées de boutons, afin de lancer rapidement des actions intégrées, des snippets texte, des séquences clavier, des commandes presse-papiers, des commandes média ou des macros sans confondre bouton et snippet."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
+  - "WinGlows Flutter app"
   - "Snippets screen"
   - "Desktop overlay hosts"
   - "Android keyboard action expression model"
@@ -44,14 +44,14 @@ Custom Action Bar Buttons And Command Macros
 
 ## Status
 
-Ready for a bounded V1 implementation. Product direction is clear: WinGlowz
+Ready for a bounded V1 implementation. Product direction is clear: WinGlows
 needs a customizable action bar, not only text snippets or gesture shortcuts.
 This slice introduces persistent custom buttons with typed actions, row
 placement, and a safe execution contract.
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz, je veux personnaliser une barre d'action
+En tant qu'utilisatrice WinGlows, je veux personnaliser une barre d'action
 composée d'une ou plusieurs rangées de boutons, afin de lancer rapidement des
 actions intégrées, des snippets texte, des séquences clavier, des commandes
 presse-papiers, des commandes média ou des macros sans confondre bouton et
@@ -62,7 +62,7 @@ snippet.
 L'écran Snippets doit aussi exposer une barre d'action personnalisable. Chaque
 bouton possède un titre, une icône, une rangée, un ordre, et une action typée.
 La V1 accepte ces familles d'action: insertion texte/snippet, expression clavier
-WinGlowz, séquence clavier desktop, commande presse-papiers, commande média, et
+WinGlows, séquence clavier desktop, commande presse-papiers, commande média, et
 macro stockée. Le modèle doit rester explicite: un snippet reste du contenu
 texte utilisable par une action `insertText`, un bouton reste un conteneur
 visuel exécutable. Les actions ne doivent jamais accepter une commande système
@@ -76,19 +76,19 @@ courante, l'UI doit le dire clairement au lieu de simuler un succès.
   then elle voit une prévisualisation de barre d'action organisée en rangées, la
   liste des boutons existants et un formulaire de création.
 - Given elle crée un bouton texte, when elle l'exécute sur un host overlay
-  desktop compatible, then WinGlowz livre le texte vers l'app cible via le pont
+  desktop compatible, then WinGlows livre le texte vers l'app cible via le pont
   natif existant.
 - Given elle crée un bouton macro clavier desktop avec une séquence du type
   `Ctrl+W` puis `N`, when elle l'exécute sur un host desktop compatible, then la
   séquence est envoyée proprement à l'application ciblée.
-- Given elle crée un bouton action clavier WinGlowz, when elle le consulte dans
+- Given elle crée un bouton action clavier WinGlows, when elle le consulte dans
   l'UI, then le contrat stocké reste compatible avec le langage d'expression
   Android existant et peut être réutilisé ailleurs sans ambiguïté.
 - Given elle crée un bouton presse-papiers, when elle choisit copier/couper/coller
-  sur desktop compatible, then WinGlowz traduit cette action en séquence clavier
+  sur desktop compatible, then WinGlows traduit cette action en séquence clavier
   bornée plutôt qu'en commande système libre.
 - Given elle crée un bouton média ou macro, when l'hôte d'exécution direct n'est
-  pas encore disponible, then WinGlowz conserve l'action typée et affiche une
+  pas encore disponible, then WinGlows conserve l'action typée et affiche une
   limite d'exécution claire.
 - Given un bouton n'est pas exécutable sur la plateforme courante, when elle
   appuie dessus, then l'app affiche un message clair sur la limite plutôt qu'un
@@ -117,7 +117,7 @@ courante, l'UI doit le dire clairement au lieu de simuler un succès.
   - texte
   - séquences clavier typées
   - commandes presse-papiers via raccourcis système bornés
-- Réutilisation du langage d'expression clavier WinGlowz côté modèle/UI.
+- Réutilisation du langage d'expression clavier WinGlows côté modèle/UI.
 - Tests Dart/widget et tests de parsing/bridge ciblés.
 - Documentation technique Flutter mise à jour.
 
@@ -164,7 +164,7 @@ courante, l'UI doit le dire clairement au lieu de simuler un succès.
   une action typée.
 - [x] AC 3: Les boutons texte et séquence clavier desktop peuvent être exécutés
   depuis l'UI sur host desktop supporté.
-- [x] AC 4: Les boutons action clavier WinGlowz sont stockés comme actions
+- [x] AC 4: Les boutons action clavier WinGlows sont stockés comme actions
   typées et validées.
 - [x] AC 5: Les actions presse-papiers intégrées sont stockées comme actions
   typées et exécutées par séquence clavier bornée sur desktop compatible.

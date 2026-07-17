@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-30"
 created_at: "2026-05-30 07:06:27 UTC"
 updated: "2026-05-30"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "flutter-app-home-feed-global-actions-search-sync-status"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz, je veux une page d'accueil avec mes dernières entrées, une recherche globale, un composant partagé de recherche, et un composant séparé de rafraîchissement/synchronisation/sauvegarde, afin de retrouver mes contenus et savoir clairement si mes changements sont bien enregistrés."
+user_story: "En tant qu'utilisatrice WinGlows, je veux une page d'accueil avec mes dernières entrées, une recherche globale, un composant partagé de recherche, et un composant séparé de rafraîchissement/synchronisation/sauvegarde, afin de retrouver mes contenus et savoir clairement si mes changements sont bien enregistrés."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
@@ -60,7 +60,7 @@ next_step: "None"
 
 # Title
 
-WinGlowz App Home Feed, Global Search, and Shared Page Actions
+WinGlows App Home Feed, Global Search, and Shared Page Actions
 
 ## Status
 
@@ -68,11 +68,11 @@ Implementation complete, shipped, deployed and smoke-verified after `sf-start`. 
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz, je veux une page d'accueil avec mes dernières entrées, une recherche globale, un composant partagé de recherche, et un composant séparé de rafraîchissement/synchronisation/sauvegarde, afin de retrouver mes contenus et savoir clairement si mes changements sont bien enregistrés.
+En tant qu'utilisatrice WinGlows, je veux une page d'accueil avec mes dernières entrées, une recherche globale, un composant partagé de recherche, et un composant séparé de rafraîchissement/synchronisation/sauvegarde, afin de retrouver mes contenus et savoir clairement si mes changements sont bien enregistrés.
 
 ## Minimal Behavior Contract
 
-Quand l'utilisatrice ouvre WinGlowz après connexion ou mode local, l'app affiche une page d'accueil qui agrège les dernières transcriptions vocales, éléments de presse-papiers, snippets et termes du dictionnaire à partir des stores existants. La recherche globale est portée par un composant partagé dédié à la saisie, au clear et aux états de recherche. Le rafraîchissement, la synchronisation, la sauvegarde et leurs états sont portés par un deuxième composant partagé séparé, dédié aux actions récupérables et au feedback de statut. Un conteneur de toolbar peut composer ces deux composants sur une même ligne, mais ils doivent rester indépendants, testables et réutilisables séparément. Depuis l'accueil, l'utilisatrice peut filtrer par texte ou type, ouvrir l'entrée dans sa page source, copier ou réutiliser les entrées compatibles sans modifier les règles de confidentialité existantes. Sur chaque page métier, la recherche reste limitée au type de contenu de la page; le composant sync/save expose l'état courant utile: chargement, modification en attente, sauvegardé/synchronisé, local uniquement, conflit ou erreur. Au clic, il relance l'action récupérable la plus pertinente pour la page ou le contexte Settings. Si un store, une sauvegarde ou une sync échoue, la page affiche un état partiel récupérable et ne duplique pas, ne supprime pas, ni n'expose de contenu sensible hors des politiques existantes. L'edge case facile à rater est le champ sensible ou l'historique clipboard: la recherche globale et la relance sync ne doivent pas contourner les règles de filtrage, confirmation et private mode déjà appliquées par les stores et importers.
+Quand l'utilisatrice ouvre WinGlows après connexion ou mode local, l'app affiche une page d'accueil qui agrège les dernières transcriptions vocales, éléments de presse-papiers, snippets et termes du dictionnaire à partir des stores existants. La recherche globale est portée par un composant partagé dédié à la saisie, au clear et aux états de recherche. Le rafraîchissement, la synchronisation, la sauvegarde et leurs états sont portés par un deuxième composant partagé séparé, dédié aux actions récupérables et au feedback de statut. Un conteneur de toolbar peut composer ces deux composants sur une même ligne, mais ils doivent rester indépendants, testables et réutilisables séparément. Depuis l'accueil, l'utilisatrice peut filtrer par texte ou type, ouvrir l'entrée dans sa page source, copier ou réutiliser les entrées compatibles sans modifier les règles de confidentialité existantes. Sur chaque page métier, la recherche reste limitée au type de contenu de la page; le composant sync/save expose l'état courant utile: chargement, modification en attente, sauvegardé/synchronisé, local uniquement, conflit ou erreur. Au clic, il relance l'action récupérable la plus pertinente pour la page ou le contexte Settings. Si un store, une sauvegarde ou une sync échoue, la page affiche un état partiel récupérable et ne duplique pas, ne supprime pas, ni n'expose de contenu sensible hors des politiques existantes. L'edge case facile à rater est le champ sensible ou l'historique clipboard: la recherche globale et la relance sync ne doivent pas contourner les règles de filtrage, confirmation et private mode déjà appliquées par les stores et importers.
 
 ## Success Behavior
 
@@ -104,7 +104,7 @@ Quand l'utilisatrice ouvre WinGlowz après connexion ou mode local, l'app affich
 
 ## Problem
 
-WinGlowz a plusieurs pages métier qui exposent chacune des listes, parfois une recherche, et souvent un bouton de rafraîchissement. Ces contrôles ne forment pas encore un contrat partagé: le placement, le libellé, les états et la portée varient selon la page. L'utilisateur doit aussi savoir d'avance si une information est dans Voix, Presse-papiers, Snippets ou Dictionnaire, alors que le besoin réel est souvent "retrouver le dernier texte utile". Enfin, les changements de settings et de synchronisation produisent aujourd'hui des messages dispersés plutôt qu'un feedback central, immédiat et actionnable. Cette fragmentation ralentit les workflows cœur du produit: capturer, retrouver, copier, configurer, sauvegarder et réutiliser.
+WinGlows a plusieurs pages métier qui exposent chacune des listes, parfois une recherche, et souvent un bouton de rafraîchissement. Ces contrôles ne forment pas encore un contrat partagé: le placement, le libellé, les états et la portée varient selon la page. L'utilisateur doit aussi savoir d'avance si une information est dans Voix, Presse-papiers, Snippets ou Dictionnaire, alors que le besoin réel est souvent "retrouver le dernier texte utile". Enfin, les changements de settings et de synchronisation produisent aujourd'hui des messages dispersés plutôt qu'un feedback central, immédiat et actionnable. Cette fragmentation ralentit les workflows cœur du produit: capturer, retrouver, copier, configurer, sauvegarder et réutiliser.
 
 ## Solution
 
@@ -494,7 +494,7 @@ None blocking for the initial spec. Additional ideas are welcome before `/sf-rea
 | 2026-05-30 15:34:00 UTC | sf-verify | GPT-5 Codex | Verified current implementation slice and checks; full spec is not ship-ready because scoped page search migration and Settings sync/save integration remain incomplete | not verified | `/sf-start shipglowz_data/workflow/specs/app-home-feed-global-actions-search.md` |
 | 2026-05-30 16:34:31 UTC | sf-start | GPT-5 Codex + GPT-5.3 Codex Spark worker | Completed page-scoped search migration, shared refresh/status controls, Settings save/sync status, docs alignment, and local checks | implemented | `/sf-verify shipglowz_data/workflow/specs/app-home-feed-global-actions-search.md` |
 | 2026-05-30 16:34:31 UTC | sf-verify | GPT-5 Codex | Verified local implementation with `flutter analyze`, `flutter test`, focused page/settings tests, and metadata lint; Flutter web smoke remains required before clean ship readiness | partial | `/sf-ship shipglowz_data/workflow/specs/app-home-feed-global-actions-search.md` |
-| 2026-05-30 16:40:37 UTC | sf-ship | GPT-5 Codex | Prepared targeted ship for the WinGlowz app home feed and shared action/status chantier, excluding unrelated site changes | shipped | `/sf-prod winglowz-app` |
+| 2026-05-30 16:40:37 UTC | sf-ship | GPT-5 Codex | Prepared targeted ship for the WinGlows app home feed and shared action/status chantier, excluding unrelated site changes | shipped | `/sf-prod winglowz-app` |
 | 2026-05-30 17:07:36 UTC | sf-prod | GPT-5 Codex | Verified Vercel production deployment `dpl_AsApHLHxFidUgmi7wRt8aDb5oLS5`, `https://app.winglowz.com` health 200, and Flutter web smoke for local mode, Accueil feed, refresh, global search, and Clipboard scoped search | verified | `/sf-end shipglowz_data/workflow/specs/app-home-feed-global-actions-search.md` |
 | 2026-05-30 17:07:36 UTC | sf-verify | GPT-5 Codex + GPT-5.3 Codex Spark explorer | Closed the remaining deployed web smoke gate and reviewed spec-to-implementation coherence; no blocking issue remains | verified | `/sf-end shipglowz_data/workflow/specs/app-home-feed-global-actions-search.md` |
 | 2026-05-30 17:07:36 UTC | sf-end | GPT-5 Codex | Closed the app home feed, global/page search, and shared sync/save status chantier after ship, production deploy and smoke verification | closed | `None` |

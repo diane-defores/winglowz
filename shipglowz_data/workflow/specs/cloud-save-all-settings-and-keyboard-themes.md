@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-11"
 created_at: "2026-06-11 07:15:42 UTC"
 updated: "2026-06-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "cloud-save-all-settings-and-keyboard-themes"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz connectée, je veux que tous mes réglages, y compris les personnalisations complètes de thèmes clavier, soient sauvegardés dans mon compte cloud, afin de retrouver mon environnement après connexion, changement d'appareil ou réinstallation."
+user_story: "En tant qu'utilisatrice WinGlows connectée, je veux que tous mes réglages, y compris les personnalisations complètes de thèmes clavier, soient sauvegardés dans mon compte cloud, afin de retrouver mon environnement après connexion, changement d'appareil ou réinstallation."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -69,15 +69,15 @@ Cloud Save for All Settings and Keyboard Theme Customizations
 
 # Status
 
-Ready. This spec formalizes Diane's 2026-06-11 product requirement: WinGlowz account cloud backup must preserve all user settings and complete keyboard theme customizations, including custom theme images, without weakening the existing local-first, tenant-boundary, and sensitive-data protections.
+Ready. This spec formalizes Diane's 2026-06-11 product requirement: WinGlows account cloud backup must preserve all user settings and complete keyboard theme customizations, including custom theme images, without weakening the existing local-first, tenant-boundary, and sensitive-data protections.
 
 The current implementation has strong building blocks, but it does not yet satisfy the promise. General settings are modelled in local-cloud sync but the controller is not visibly invoked as an app flow before remote store switching. Keyboard profile sync exists, but theme images are deliberately excluded from the cloud payload. This spec turns those gaps into an implementation contract.
 
 # User Story
 
-En tant qu'utilisatrice WinGlowz connectée, je veux que tous mes réglages, y compris les personnalisations complètes de thèmes clavier, soient sauvegardés dans mon compte cloud, afin de retrouver mon environnement après connexion, changement d'appareil ou réinstallation.
+En tant qu'utilisatrice WinGlows connectée, je veux que tous mes réglages, y compris les personnalisations complètes de thèmes clavier, soient sauvegardés dans mon compte cloud, afin de retrouver mon environnement après connexion, changement d'appareil ou réinstallation.
 
-Acteur principal: utilisatrice WinGlowz qui configure l'app et personnalise le clavier Android avant ou après connexion.
+Acteur principal: utilisatrice WinGlows qui configure l'app et personnalise le clavier Android avant ou après connexion.
 
 Acteurs secondaires:
 
@@ -102,19 +102,19 @@ Déclencheurs:
 - refresh manuel depuis Compte & cloud;
 - réinstallation puis reconnexion au même compte.
 
-Résultat observable attendu: WinGlowz sauvegarde les réglages et le thème clavier complet dans le compte autorisé, affiche un statut honnête par domaine, exclut explicitement les secrets et contenus sensibles, puis restaure les réglages et assets de thème sur un appareil propre après authentification et entitlement valides.
+Résultat observable attendu: WinGlows sauvegarde les réglages et le thème clavier complet dans le compte autorisé, affiche un statut honnête par domaine, exclut explicitement les secrets et contenus sensibles, puis restaure les réglages et assets de thème sur un appareil propre après authentification et entitlement valides.
 
 # Minimal Behavior Contract
 
-Quand une utilisatrice connectée et autorisée modifie un réglage WinGlowz ou sauvegarde un thème clavier, l'app doit persister d'abord l'état local durable, puis synchroniser vers le compte cloud avec une décision par domaine. Les réglages généraux et le profil clavier JSON sont écrits dans Firestore; les assets lourds et non textuels de thème, notamment l'image de fond clavier importée, sont stockés comme objets privés user-scoped dans Cloud Storage, référencés par un manifest Firestore validé. En cas d'échec réseau, conflit de compte, entitlement absent, payload invalide, asset trop gros ou règle provider refusée, WinGlowz garde le local comme source utilisable, marque la sync `pending`, `blocked`, `conflict` ou `failed`, et ne prétend jamais que la récupération cloud est prête. L'edge case facile à rater est l'image de thème: elle ne doit plus être perdue à la réinstallation, mais elle ne doit pas non plus être envoyée en Firestore sous forme de bytes, chemin local privé, URI externe ou payload non borné.
+Quand une utilisatrice connectée et autorisée modifie un réglage WinGlows ou sauvegarde un thème clavier, l'app doit persister d'abord l'état local durable, puis synchroniser vers le compte cloud avec une décision par domaine. Les réglages généraux et le profil clavier JSON sont écrits dans Firestore; les assets lourds et non textuels de thème, notamment l'image de fond clavier importée, sont stockés comme objets privés user-scoped dans Cloud Storage, référencés par un manifest Firestore validé. En cas d'échec réseau, conflit de compte, entitlement absent, payload invalide, asset trop gros ou règle provider refusée, WinGlows garde le local comme source utilisable, marque la sync `pending`, `blocked`, `conflict` ou `failed`, et ne prétend jamais que la récupération cloud est prête. L'edge case facile à rater est l'image de thème: elle ne doit plus être perdue à la réinstallation, mais elle ne doit pas non plus être envoyée en Firestore sous forme de bytes, chemin local privé, URI externe ou payload non borné.
 
 # Success Behavior
 
-- Given des réglages locaux existent avant création de compte, when l'utilisatrice crée un compte avec entitlement `winglowz_app`, then WinGlowz lance la promotion locale-cloud avant de basculer durablement vers les stores distants et affiche le statut réel par domaine.
+- Given des réglages locaux existent avant création de compte, when l'utilisatrice crée un compte avec entitlement `winglowz_app`, then WinGlows lance la promotion locale-cloud avant de basculer durablement vers les stores distants et affiche le statut réel par domaine.
 - Given l'utilisatrice modifie `themeMode`, retention, toggles de sync, onboarding notices ou préférences non sensibles, when la session cloud est active, then les changements sont sauvegardés localement puis synchronisés vers `users/{uid}/settings/profile`.
 - Given le profil clavier contient couleurs, gradients, effets, relief, status bar, corners, gaps et autres paramètres non sensibles, when la sync clavier s'exécute, then le profil JSON validé est sauvegardé dans `users/{uid}/keyboardConfigs/default`.
 - Given le thème clavier utilise une image locale importée, when la sauvegarde cloud est active, then l'app copie/downsample déjà l'image en stockage privé local, calcule un checksum, téléverse un asset borné vers un chemin Cloud Storage user-scoped, écrit un manifest Firestore contenant seulement metadata sûre et référence cloud, puis marque le thème comme récupérable.
-- Given l'utilisatrice se reconnecte sur un appareil propre, when l'entitlement est valide, then WinGlowz hydrate les réglages, télécharge les assets de thème autorisés, les copie dans le stockage privé app attendu par l'IME, applique le profil clavier, et affiche `Clavier synchronisé`.
+- Given l'utilisatrice se reconnecte sur un appareil propre, when l'entitlement est valide, then WinGlows hydrate les réglages, télécharge les assets de thème autorisés, les copie dans le stockage privé app attendu par l'IME, applique le profil clavier, et affiche `Clavier synchronisé`.
 - Given Cloud Storage upload réussit mais Firestore manifest échoue, when la transaction de finalisation ne confirme pas, then l'app garde l'opération pending ou nettoie l'objet orphelin selon la stratégie documentée; elle ne marque pas la sync comme complète.
 - Given Firestore manifest existe mais l'asset Storage manque ou échoue au téléchargement, when la restauration s'exécute, then le thème applique les couleurs/effets et signale que l'image est à récupérer ou tombée en fallback, sans crash ni perte du profil JSON.
 - Given deux appareils modifient le profil clavier, when les revisions divergent, then le controller bloque l'écrasement silencieux et propose les décisions existantes `Garder ce téléphone` / `Utiliser le cloud`, en incluant l'état des assets.
@@ -134,7 +134,7 @@ Quand une utilisatrice connectée et autorisée modifie un réglage WinGlowz ou 
 
 # Problem
 
-WinGlowz a déjà une stratégie local-first et une première sync clavier. Mais la promesse utilisateur demandée maintenant est plus forte: tous les réglages doivent survivre au compte, au changement d'appareil et à la réinstallation. Le code actuel ne tient pas encore cette promesse pour deux raisons.
+WinGlows a déjà une stratégie local-first et une première sync clavier. Mais la promesse utilisateur demandée maintenant est plus forte: tous les réglages doivent survivre au compte, au changement d'appareil et à la réinstallation. Le code actuel ne tient pas encore cette promesse pour deux raisons.
 
 Premièrement, les réglages app sont représentés dans `LocalCloudSyncDomain.settings`, mais le controller transverse de promotion locale-cloud n'est pas exposé comme flow d'app visible. Un provider peut sélectionner `FirebaseSettingsStore` quand le compte devient actif alors que le local n'a pas encore été promu.
 

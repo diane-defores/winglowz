@@ -2,7 +2,7 @@
 artifact: technical_module_context
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-04"
 updated: "2026-05-09"
 status: draft
@@ -28,7 +28,7 @@ next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
 
-# Technical Docs — WinGlowz
+# Technical Docs — WinGlows
 
 This internal layer maps code areas to the technical context an agent must read
 before editing. It is not public product documentation.

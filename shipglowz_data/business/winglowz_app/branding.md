@@ -2,7 +2,7 @@
 artifact: brand_context
 metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-03-18"
 updated: "2026-06-10"
 status: "reviewed"
@@ -27,7 +27,7 @@ next_review: "2026-05-26"
 next_step: "$sf-docs update"
 ---
 
-# Branding — WinGlowz
+# Branding — WinGlows
 
 ## Cadre
 
@@ -35,7 +35,7 @@ Ce document cadre la marque pour la cible `target-reviewed` Flutter + backend-ag
 
 ## Nom et identité
 
-- **Nom** : WinGlowz — contraction de Voice + Flow + z, cohérente avec l'écosystème WinGlowz.
+- **Nom** : WinGlows — contraction de Voice + Flow + z, cohérente avec l'écosystème WinGlows.
 - **Promesse courte** : parler, nettoyer, copier.
 - **Tagline actuelle dans l'app** : "Speak. Transcribe. Ship."
 - **Tagline française utilisable** : "Parle. C'est écrit."
@@ -44,7 +44,7 @@ Ce document cadre la marque pour la cible `target-reviewed` Flutter + backend-ag
 
 ### Cohérence écosystème
 
-WinGlowz peut rester visuellement relié à WinGlowz, avec une identité orientée produit utilitaire: rapide, lisible, orientée action. La documentation ne doit pas promettre un design system partagé complet tant que les tokens communs ne sont pas versionnés.
+WinGlows peut rester visuellement relié à WinGlows, avec une identité orientée produit utilitaire: rapide, lisible, orientée action. La documentation ne doit pas promettre un design system partagé complet tant que les tokens communs ne sont pas versionnés.
 
 ### Couleurs
 
@@ -71,7 +71,7 @@ WinGlowz peut rester visuellement relié à WinGlowz, avec une identité orient�
 - Direct, productif, sans jargon.
 - Orienté action : enregistrer, transcrire, copier, synchroniser.
 - Les messages de configuration doivent rester honnêtes sur les prérequis : compte via l'adaptateur actif, clé OpenAI BYO locale, clé Anthropic locale optionnelle, activation clavier Android, permissions Android overlay/accessibilité, hôte desktop natif ou adaptation iOS/web quand la plateforme le nécessite.
-- Les plateformes non Android ne doivent pas recevoir de promesse de clavier système WinGlowz. Elles peuvent recevoir une promesse d'overlay/quick action uniquement quand le host natif, l'adaptation ou la limitation dégradée est implémenté, testé et documenté.
+- Les plateformes non Android ne doivent pas recevoir de promesse de clavier système WinGlows. Elles peuvent recevoir une promesse d'overlay/quick action uniquement quand le host natif, l'adaptation ou la limitation dégradée est implémenté, testé et documenté.
 
 ## Valeurs de marque
 
@@ -90,7 +90,7 @@ WinGlowz peut rester visuellement relié à WinGlowz, avec une identité orient�
 - "Connexion et synchronisation de données via l'adaptateur actif."
 - "Clés OpenAI/Anthropic BYO conservées localement."
 - "Overlay ou quick action disponible selon plateforme, avec hôte natif ou adaptation documentée."
-- "Clavier WinGlowz disponible uniquement sur Android."
+- "Clavier WinGlows disponible uniquement sur Android."
 - "Snippets et dictionnaire personnel synchronisés par compte."
 
 ### Claims interdits tant que non implémentés

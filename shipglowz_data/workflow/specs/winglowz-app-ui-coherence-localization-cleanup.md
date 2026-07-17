@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-28"
 created_at: "2026-05-28 19:36:12 UTC"
 updated: "2026-06-09"
@@ -13,12 +13,12 @@ source_model: "GPT-5 Codex"
 scope: "ui-coherence-localization-audit-fix"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz Android et web, je veux une interface cohérente, lisible, tactilement fiable et naturellement localisée, afin de configurer mon clavier, mes snippets, mon clipboard et mes réglages sans friction ni impression de prototype."
+user_story: "En tant qu'utilisatrice WinGlows Android et web, je veux une interface cohérente, lisible, tactilement fiable et naturellement localisée, afin de configurer mon clavier, mes snippets, mon clipboard et mes réglages sans friction ni impression de prototype."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
+  - "WinGlows Flutter app"
   - "Flutter Material theme"
   - "Shared AppTheme/AppComponents"
   - "Clipboard screen"
@@ -48,7 +48,7 @@ supersedes: []
 evidence:
   - "sf-audit-design 2026-05-28 found touch targets below mobile accessibility norms in lib/core/theme/app_theme.dart:215 and lib/core/theme/app_theme.dart:220."
   - "sf-audit-design 2026-05-28 found mixed French and English UI labels in lib/features/clipboard/presentation/clipboard_screen.dart:345, lib/features/snippets/presentation/snippets_screen.dart:259, and lib/features/dictionary/presentation/dictionary_screen.dart:266."
-  - "sf-audit-design 2026-05-28 found token provenance drift from legacy video-app references in lib/core/theme/winglowz_theme_tokens.dart:3 and Settings copy claiming WinGlowz/Flowz tokens in lib/features/settings/presentation/settings_screen_sections.dart:127."
+  - "sf-audit-design 2026-05-28 found token provenance drift from legacy video-app references in lib/core/theme/winglowz_theme_tokens.dart:3 and Settings copy claiming WinGlows/Flowz tokens in lib/features/settings/presentation/settings_screen_sections.dart:127."
   - "sf-audit-design 2026-05-28 found Settings IA overload across account, appearance, backend diagnostics, local AI keys, platform status, keyboard, overlay, and voice packs."
   - "sf-audit-design 2026-05-28 found bare empty states in shared AppEmptyStateCard and CRUD screens."
 next_step: "/sf-end shipglowz_data/workflow/specs/winglowz-app-ui-coherence-localization-cleanup.md"
@@ -56,7 +56,7 @@ next_step: "/sf-end shipglowz_data/workflow/specs/winglowz-app-ui-coherence-loca
 
 # Title
 
-WinGlowz App UI Coherence and Localization Cleanup
+WinGlows App UI Coherence and Localization Cleanup
 
 ## Status
 
@@ -64,18 +64,18 @@ Ready. Created from the `sf-audit-design` P2 chantier potential on 2026-05-28 an
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz Android et web, je veux une interface cohérente, lisible, tactilement fiable et naturellement localisée, afin de configurer mon clavier, mes snippets, mon clipboard et mes réglages sans friction ni impression de prototype.
+En tant qu'utilisatrice WinGlows Android et web, je veux une interface cohérente, lisible, tactilement fiable et naturellement localisée, afin de configurer mon clavier, mes snippets, mon clipboard et mes réglages sans friction ni impression de prototype.
 
 ## Minimal Behavior Contract
 
-The Flutter app must present the main shared UI surfaces with a coherent WinGlowz-owned design system, minimum safe touch geometry, consistent French-facing copy where the surrounding flow is French, clearer Settings progressive disclosure, and useful first-run empty states. When a control is disabled, unavailable on the current platform, or delegated to Android-native behavior, the UI must explain the state without exposing raw debug wording to regular users. The easy edge case to miss is preserving advanced diagnostics and Android-native controls for power users while keeping the default Settings experience understandable for non-technical users.
+The Flutter app must present the main shared UI surfaces with a coherent WinGlows-owned design system, minimum safe touch geometry, consistent French-facing copy where the surrounding flow is French, clearer Settings progressive disclosure, and useful first-run empty states. When a control is disabled, unavailable on the current platform, or delegated to Android-native behavior, the UI must explain the state without exposing raw debug wording to regular users. The easy edge case to miss is preserving advanced diagnostics and Android-native controls for power users while keeping the default Settings experience understandable for non-technical users.
 
 ## Success Behavior
 
 - Primary touch controls in shared app UI meet a safe mobile target baseline, with compact exceptions documented and visually intentional.
 - Clipboard, Snippets, Dictionary, Settings, auth-adjacent messages, destructive dialogs, and empty states use natural French on French-facing surfaces.
 - English labels remain only where they are product names, technical identifiers, provider names, or intentionally developer-facing diagnostics.
-- Design token naming and comments clearly identify WinGlowz/Flowz ownership while preserving any imported lineage needed for traceability.
+- Design token naming and comments clearly identify WinGlows/Flowz ownership while preserving any imported lineage needed for traceability.
 - Settings separates normal user controls from advanced/backend/debug areas through progressive disclosure, section naming, and explanatory copy.
 - Empty states teach the next useful action, include concrete examples where helpful, and avoid dead-end placeholder copy.
 - Shared Flutter web smoke and targeted widget tests cover the changed shared UI paths before any APK handoff.
@@ -89,7 +89,7 @@ The Flutter app must present the main shared UI surfaces with a coherent WinGlow
 
 ## Problem
 
-The app has a functional component vocabulary and token layer, but the product experience still reads as uneven: some frequent controls are below mobile touch-target norms, several CRUD flows mix English labels inside French UI, Settings exposes too much backend/debug vocabulary at the same level as normal user preferences, token comments still reference legacy video app while the UI claims WinGlowz/Flowz coherence, and first-run empty states are too bare to guide users. This creates a prototype impression on flows that are central to the Android keyboard and productivity promise.
+The app has a functional component vocabulary and token layer, but the product experience still reads as uneven: some frequent controls are below mobile touch-target norms, several CRUD flows mix English labels inside French UI, Settings exposes too much backend/debug vocabulary at the same level as normal user preferences, token comments still reference legacy video app while the UI claims WinGlows/Flowz coherence, and first-run empty states are too bare to guide users. This creates a prototype impression on flows that are central to the Android keyboard and productivity promise.
 
 ## Solution
 
@@ -114,7 +114,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
 
 ## Scope Out
 
-- Full visual redesign of WinGlowz.
+- Full visual redesign of WinGlows.
 - Native Android IME Canvas rendering changes unless a Flutter setting/copy change requires a bridge label update.
 - New settings persistence schema unless unavoidable for section disclosure state.
 - Replacing Flutter Material components.
@@ -155,7 +155,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
 
 - Accessibility: raising touch targets can affect list density, Settings layout, and small screens; update shared components rather than reverting to undersized controls.
 - Localization: copy changes affect tests that assert labels, button text, and validation messages.
-- Product coherence: token provenance cleanup should align app docs and comments with WinGlowz/Flowz, without hiding historical imported token lineage.
+- Product coherence: token provenance cleanup should align app docs and comments with WinGlows/Flowz, without hiding historical imported token lineage.
 - Security/privacy: Settings and local AI key copy must remain clear about secure storage limitations and local-only storage.
 - QA: shared Flutter UI changes need widget tests and web smoke before Android physical-device QA is requested.
 - Documentation: if token naming or Settings structure changes materially, update the relevant app docs or verification notes.
@@ -191,7 +191,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
 
 - [ ] Task 2: Rename or clarify token provenance
   - File: `lib/core/theme/winglowz_theme_tokens.dart`
-  - Action: Update comments/class naming strategy or introduce WinGlowz-facing wrappers so the active design-system language clearly belongs to WinGlowz/Flowz while preserving source lineage where useful.
+  - Action: Update comments/class naming strategy or introduce WinGlows-facing wrappers so the active design-system language clearly belongs to WinGlows/Flowz while preserving source lineage where useful.
   - User story link: coherent product identity and maintainable design decisions.
   - Depends on: Task 1 if shared metrics move.
   - Validate with: `flutter analyze`.
@@ -307,7 +307,7 @@ Implement a bounded design cleanup across shared Flutter UI foundations and the 
 
 ## Execution Notes
 
-- This chantier came from `sf-audit-design` with `Chantier potentiel: oui`, severity `P2`, and recommended spec `/sf-spec WinGlowz app UI coherence and localization cleanup`.
+- This chantier came from `sf-audit-design` with `Chantier potentiel: oui`, severity `P2`, and recommended spec `/sf-spec WinGlows app UI coherence and localization cleanup`.
 - Keep the implementation bounded: fix coherence and usability debt, not the entire product visual language.
 - Use existing app patterns first: `AppTheme`, `AppComponents`, `AppSectionCard`, Riverpod providers, and existing screen structure.
 - Prefer small, reviewable changes per surface, but do not accept undersized touch targets or mixed-language UI for convenience.
@@ -325,9 +325,9 @@ None.
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-06-09 14:54:38 UTC | sf-build | GPT-5 Codex | Removed old-brand naming from active WinGlowz app surfaces: renamed the active theme token file/class to `WinGlowzThemeTokens`, updated `AppTheme` imports/usages, deleted obsolete theme-reference assets, removed the legacy product id from the client allowlist, and cleaned active component/spec/exploration docs. Local proof: active app/spec `rg` scan found no old-brand matches; `dart format`, `flutter analyze`, targeted suite/theme tests, full `flutter test` (268 tests), `git diff --check`, and ShipGlowz metadata lint passed. | implemented | `/sf-end shipglowz_data/workflow/specs/winglowz-app-ui-coherence-localization-cleanup.md` after review. |
-| 2026-06-01 22:59:07 UTC | sf-browser | GPT-5.5 Codex + Chromium/CDP fallback | Rechecked deployed Flutter web after user push. `https://winglowz-app.vercel.app/` still returned Vercel `404 DEPLOYMENT_NOT_FOUND`. `https://app.winglowz.com/` returned 200 and rendered the WinGlowz sign-in screen in Chromium/CDP, but served `index/main.dart.js` from 2026-05-30 (`x-vercel-cache: HIT`) and Vercel CLI showed the new 2026-06-01 production deployment belongs to project `winglowz`, not `winglowz_app`. | partial | Redeploy or alias the Flutter app deployment, then rerun `sf-browser` on the confirmed app URL. |
-| 2026-06-01 20:54:06 UTC | sf-build | gpt-5.3-codex subagent + Codex integration | Closed the remaining UI-coherence implementation slice for token provenance and density on Voice, Clipboard, Snippets, and Dictionary: clarified legacy video app seed naming as historical while mapping semantics to WinGlowz, reduced excess vertical/card spacing, added responsive two-column form grouping where width allows, and reused `AppActionRail` for compact action groups. Local proof: `flutter analyze`, targeted UI/domain tests, full `flutter test`, and `git diff --check` passed. | implemented | /sf-end shipglowz_data/workflow/specs/winglowz-app-ui-coherence-localization-cleanup.md |
+| 2026-06-09 14:54:38 UTC | sf-build | GPT-5 Codex | Removed old-brand naming from active WinGlows app surfaces: renamed the active theme token file/class to `WinGlowzThemeTokens`, updated `AppTheme` imports/usages, deleted obsolete theme-reference assets, removed the legacy product id from the client allowlist, and cleaned active component/spec/exploration docs. Local proof: active app/spec `rg` scan found no old-brand matches; `dart format`, `flutter analyze`, targeted suite/theme tests, full `flutter test` (268 tests), `git diff --check`, and ShipGlowz metadata lint passed. | implemented | `/sf-end shipglowz_data/workflow/specs/winglowz-app-ui-coherence-localization-cleanup.md` after review. |
+| 2026-06-01 22:59:07 UTC | sf-browser | GPT-5.5 Codex + Chromium/CDP fallback | Rechecked deployed Flutter web after user push. `https://winglowz-app.vercel.app/` still returned Vercel `404 DEPLOYMENT_NOT_FOUND`. `https://app.winglowz.com/` returned 200 and rendered the WinGlows sign-in screen in Chromium/CDP, but served `index/main.dart.js` from 2026-05-30 (`x-vercel-cache: HIT`) and Vercel CLI showed the new 2026-06-01 production deployment belongs to project `winglowz`, not `winglowz_app`. | partial | Redeploy or alias the Flutter app deployment, then rerun `sf-browser` on the confirmed app URL. |
+| 2026-06-01 20:54:06 UTC | sf-build | gpt-5.3-codex subagent + Codex integration | Closed the remaining UI-coherence implementation slice for token provenance and density on Voice, Clipboard, Snippets, and Dictionary: clarified legacy video app seed naming as historical while mapping semantics to WinGlows, reduced excess vertical/card spacing, added responsive two-column form grouping where width allows, and reused `AppActionRail` for compact action groups. Local proof: `flutter analyze`, targeted UI/domain tests, full `flutter test`, and `git diff --check` passed. | implemented | /sf-end shipglowz_data/workflow/specs/winglowz-app-ui-coherence-localization-cleanup.md |
 | 2026-06-01 20:43:47 UTC | sf-verify | GPT-5 Codex | Verified the density slice against the spec contract: reviewed shared UI diff, added missing component documentation for `AppActionRail`/48dp baseline, reran `flutter analyze`, targeted toolbar/search widget tests, full `flutter test`, diff whitespace check, and metadata lint. Hosted Vercel smoke remains deferred until ship/prod because the current patch is unshipped and no APK handoff is requested. | verified | /sf-end shipglowz_data/workflow/specs/winglowz-app-ui-coherence-localization-cleanup.md |
 | 2026-06-01 09:34:33 UTC | sf-start | gpt-5.3-codex-spark subagent + Codex integration | Implemented a density slice: tightened shared screen/card/button spacing, raised common button targets to 48dp, added responsive `AppActionRail`, reduced Home card nesting, and compacted Settings action groups. Local proof: `flutter analyze`, `flutter test test/app_page_action_bar_test.dart test/page_scoped_search_test.dart`, and full `flutter test` passed. | implemented | /sf-verify shipglowz_data/workflow/specs/winglowz-app-ui-coherence-localization-cleanup.md |
 | 2026-05-29 23:58:11 UTC | sf-build | gpt-5-codex | Harmonized French-facing copy in shell navigation, voice screen, and keyboard theme studio; updated affected widget/router tests. Local proof: `flutter analyze`, `flutter test test/keyboard_theme_studio_screen_test.dart test/app_router_auth_guard_test.dart`, and targeted `test/widget_test.dart` onboarding/navigation cases passed. | implemented | Review bounded diff; ship only with an explicit clean scope because another governance spec is already dirty. |

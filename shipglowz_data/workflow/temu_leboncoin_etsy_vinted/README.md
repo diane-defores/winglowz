@@ -2,7 +2,7 @@
 artifact: workflow_index
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-21"
 updated: "2026-06-21"
 status: active

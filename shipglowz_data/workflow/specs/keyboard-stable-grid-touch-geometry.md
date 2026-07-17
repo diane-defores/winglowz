@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "android-ime-keyboard-layout"
 owner: "Diane"
-user_story: "En tant qu'utilisatrice rapide du clavier WinGlowz sur Android, je veux que les modes principaux reposent sur une grille stable avec des exceptions en multiples de cellule, afin que le clavier reste beau, cohérent, prévisible et plus fiable au toucher."
+user_story: "En tant qu'utilisatrice rapide du clavier WinGlows sur Android, je veux que les modes principaux reposent sur une grille stable avec des exceptions en multiples de cellule, afin que le clavier reste beau, cohérent, prévisible et plus fiable au toucher."
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
@@ -34,7 +34,7 @@ depends_on:
     required_status: "draft"
 supersedes: []
 evidence:
-  - "User request 2026-05-19: keep the WinGlowz keyboard visual design while eliminating dead tactile gaps."
+  - "User request 2026-05-19: keep the WinGlows keyboard visual design while eliminating dead tactile gaps."
   - "User request 2026-05-19: layouts across ABC, symbols/signs, numbers, and navigation feel inconsistent and should share a clearer grid."
   - "User decision 2026-05-19: exceptions are allowed only when they remain mathematically aligned as multiples of original key widths/heights."
   - "Local code: KeyboardLayoutModels.kt uses arbitrary Float weights such as 0.9, 1.1, 1.15, 1.2, 1.3 and leading/trailing weights across modes."
@@ -51,13 +51,13 @@ Keyboard Stable Grid Touch Geometry
 Implemented locally. `flutter analyze` and `git diff --check` passed on 2026-05-19. Android native compile/package proof and tactile UX proof still require Blacksmith/GitHub Actions and Diane physical-device QA because local Android builds, Gradle tasks, installs and APK validation are forbidden on this VM.
 
 ## User Story
-En tant qu'utilisatrice rapide du clavier WinGlowz sur Android, je veux que les modes principaux reposent sur une grille stable avec des exceptions en multiples de cellule, afin que le clavier reste beau, cohérent, prévisible et plus fiable au toucher.
+En tant qu'utilisatrice rapide du clavier WinGlows sur Android, je veux que les modes principaux reposent sur une grille stable avec des exceptions en multiples de cellule, afin que le clavier reste beau, cohérent, prévisible et plus fiable au toucher.
 
 ## Minimal Behavior Contract
-Quand WinGlowz construit ou dessine un mode clavier principal sur Android, les touches doivent être placées sur une grille logique stable et réutilisable. Une touche standard occupe une cellule; une exception comme espace, entrée, suppression ou shift peut occuper plusieurs cellules entières, mais ne doit plus utiliser de largeur arbitraire qui casse l'alignement. Le rendu visuel peut garder les gaps, arrondis, ombres et thèmes WinGlowz, tandis que la cellule logique reste disponible pour une interaction tactile sans zone morte. Si une ligne ne rentre pas dans la grille choisie, elle doit être réorganisée ou explicitement classée hors scope, jamais rendue par un poids flottant opportuniste. L'edge case facile à rater est la troisième ligne: ABC, symboles, chiffres et navigation doivent garder une impression de même système même quand leur contenu diffère.
+Quand WinGlows construit ou dessine un mode clavier principal sur Android, les touches doivent être placées sur une grille logique stable et réutilisable. Une touche standard occupe une cellule; une exception comme espace, entrée, suppression ou shift peut occuper plusieurs cellules entières, mais ne doit plus utiliser de largeur arbitraire qui casse l'alignement. Le rendu visuel peut garder les gaps, arrondis, ombres et thèmes WinGlows, tandis que la cellule logique reste disponible pour une interaction tactile sans zone morte. Si une ligne ne rentre pas dans la grille choisie, elle doit être réorganisée ou explicitement classée hors scope, jamais rendue par un poids flottant opportuniste. L'edge case facile à rater est la troisième ligne: ABC, symboles, chiffres et navigation doivent garder une impression de même système même quand leur contenu diffère.
 
 ## Success Behavior
-- Précondition: le clavier Android WinGlowz affiche un mode principal non compact, par exemple ABC, Numbers, Symbols, Accents ou Navigation.
+- Précondition: le clavier Android WinGlows affiche un mode principal non compact, par exemple ABC, Numbers, Symbols, Accents ou Navigation.
 - Action: l'utilisateur change de mode ou regarde/tape rapidement sur les lignes principales.
 - Résultat visible: les largeurs des touches standard restent cohérentes d'un mode à l'autre; les exceptions visibles occupent des multiples clairs de cellule.
 - Résultat tactile: les futures hitboxes peuvent utiliser les cellules complètes, sans dépendre des gaps visuels ni des rects arrondis dessinés.

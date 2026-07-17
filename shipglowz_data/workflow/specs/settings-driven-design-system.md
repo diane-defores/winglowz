@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-09"
 created_at: "2026-05-09 15:19:23 UTC"
 updated: "2026-06-09"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "design-system-settings"
 owner: "Diane"
 confidence: medium
-user_story: "En tant qu'utilisateur WinGlowz, je veux que mes préférences d'apparence et les réglages visuels restent cohérents sur mes appareils, afin de travailler dans une interface lisible, stable et alignée avec la famille Flowz."
+user_story: "En tant qu'utilisateur WinGlows, je veux que mes préférences d'apparence et les réglages visuels restent cohérents sur mes appareils, afin de travailler dans une interface lisible, stable et alignée avec la famille Flowz."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
@@ -63,11 +63,11 @@ Implementation active. The Settings architecture decision is implemented for App
 
 # User Story
 
-En tant qu'utilisateur WinGlowz, je veux que mes préférences d'apparence et les réglages visuels restent cohérents sur mes appareils, afin de travailler dans une interface lisible, stable et alignée avec la famille Flowz.
+En tant qu'utilisateur WinGlows, je veux que mes préférences d'apparence et les réglages visuels restent cohérents sur mes appareils, afin de travailler dans une interface lisible, stable et alignée avec la famille Flowz.
 
-Acteur principal: utilisateur WinGlowz connecté ou en mode local.
+Acteur principal: utilisateur WinGlows connecté ou en mode local.
 
-Acteurs secondaires: builder WinGlowz, futur backend/settings provider, surfaces Android IME/overlay.
+Acteurs secondaires: builder WinGlows, futur backend/settings provider, surfaces Android IME/overlay.
 
 Déclencheurs:
 
@@ -75,13 +75,13 @@ Déclencheurs:
 - L'application redémarre.
 - L'utilisateur se connecte, se déconnecte ou change d'appareil.
 - La session auth bascule entre local fallback et compte Firebase.
-- Les écrans WinGlowz migrent vers les tokens partagés.
+- Les écrans WinGlows migrent vers les tokens partagés.
 
 Résultat observable attendu: le mode d'apparence choisi s'applique sans flash incohérent, persiste localement, se synchronise par compte si un settings backend est disponible, et tous les écrans utilisent le même système de tokens plutôt que des valeurs visuelles dispersées.
 
 # Minimal Behavior Contract
 
-WinGlowz expose un contrat de settings d'apparence qui accepte uniquement `system`, `light` et `dark`, normalise toute valeur inconnue vers `system`, applique le mode avant ou au plus tôt dans le bootstrap Flutter, persiste le choix localement, et synchronise le choix vers les settings utilisateur authentifiés via un `SettingsStore` backend-agnostique. Si le store local, le backend ou la session auth est indisponible, l'app continue en `system` ou avec la dernière valeur locale valide, affiche un état récupérable dans Settings, et ne bloque jamais l'utilisation du produit. L'edge case facile à rater est le changement de compte: la préférence visuelle locale ne doit pas exposer ni écraser silencieusement les settings serveur d'un autre utilisateur.
+WinGlows expose un contrat de settings d'apparence qui accepte uniquement `system`, `light` et `dark`, normalise toute valeur inconnue vers `system`, applique le mode avant ou au plus tôt dans le bootstrap Flutter, persiste le choix localement, et synchronise le choix vers les settings utilisateur authentifiés via un `SettingsStore` backend-agnostique. Si le store local, le backend ou la session auth est indisponible, l'app continue en `system` ou avec la dernière valeur locale valide, affiche un état récupérable dans Settings, et ne bloque jamais l'utilisation du produit. L'edge case facile à rater est le changement de compte: la préférence visuelle locale ne doit pas exposer ni écraser silencieusement les settings serveur d'un autre utilisateur.
 
 # Success Behavior
 
@@ -108,7 +108,7 @@ Le design audit du 2026-05-09 a ajouté une première base visuelle partagée av
 
 # Solution
 
-Transformer l'Appearance selector en préférence produit complète: module Settings centralisé, persistence locale, sync authentifiée via `SettingsStore`, résolution des conflits local/distant, tests, et migration progressive des écrans vers les tokens `AppTheme`. La base ContentFlow reste la référence familiale, mais WinGlowz conserve son identité produit orientée dictée, contrôle et état système.
+Transformer l'Appearance selector en préférence produit complète: module Settings centralisé, persistence locale, sync authentifiée via `SettingsStore`, résolution des conflits local/distant, tests, et migration progressive des écrans vers les tokens `AppTheme`. La base ContentFlow reste la référence familiale, mais WinGlows conserve son identité produit orientée dictée, contrôle et état système.
 
 # Scope In
 
@@ -127,7 +127,7 @@ Transformer l'Appearance selector en préférence produit complète: module Sett
 - Coupler les écrans directement à Firebase ou Supabase.
 - Migrer tout le backend dans cette spec.
 - Ajouter billing, entitlements, quotas ou segmentation premium.
-- Refaire entièrement l'UI WinGlowz.
+- Refaire entièrement l'UI WinGlows.
 - Créer un design system multi-produit versionné publiquement.
 - Implémenter des thèmes personnalisés utilisateur, palettes marketplace ou thème par organisation.
 - Changer les flows Android IME/overlay hors impact visuel/settings.
@@ -141,7 +141,7 @@ Transformer l'Appearance selector en préférence produit complète: module Sett
 - Le choix utilisateur ne doit pas bloquer auth, dictée, clipboard, clavier ou overlay.
 - Les settings compte sont user-scoped; aucune mutation ne doit contourner les règles de sécurité du backend actif.
 - Les clés OpenAI/Anthropic restent dans secure local storage et ne doivent pas être mélangées avec les préférences syncables.
-- Les tokens ContentFlow sont une base familiale, pas une copie aveugle: WinGlowz peut garder des ajustements de contraste, état audio et surfaces utilitaires.
+- Les tokens ContentFlow sont une base familiale, pas une copie aveugle: WinGlows peut garder des ajustements de contraste, état audio et surfaces utilitaires.
 - Les changements visuels doivent rester testables sans appareil Android réel, sauf statut IME/overlay qui demande QA manuelle.
 
 # Dependencies
@@ -295,7 +295,7 @@ Transformer l'Appearance selector en préférence produit complète: module Sett
   - serialization stable.
   - conflict resolution local/distant selon décision Settings.
 - Widget tests:
-  - `WinGlowz` applique le mode choisi.
+  - `WinGlows` applique le mode choisi.
   - Settings selector change le controller.
   - Settings affiche le diagnostic local/remote du store actif.
 - Adapter tests:
@@ -335,7 +335,7 @@ Transformer l'Appearance selector en préférence produit complète: module Sett
 - Quelle règle gagne au premier login sur un appareil qui a déjà une préférence locale différente du compte?
 - Les préférences Android IME/overlay doivent-elles utiliser le même store Settings que Appearance?
 - Le design playground doit-il être une route debug cachée, une section Settings visible, ou un outil dev-only?
-- Doit-on versionner formellement les tokens Flowz partagés entre ContentFlow et WinGlowz?
+- Doit-on versionner formellement les tokens Flowz partagés entre ContentFlow et WinGlows?
 
 # Skill Run History
 

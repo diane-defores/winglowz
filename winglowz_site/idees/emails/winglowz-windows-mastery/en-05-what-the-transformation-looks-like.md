@@ -2,7 +2,7 @@ Subject: What changes when your environment stops slowing you down
 Preview: Less fatigue. More continuity. More control.
 CTA: https://winglowz.com/windows-mastery
 
-The promise of WinGlowz is not:
+The promise of WinGlows is not:
 
 - becoming superhuman
 - doing 10 times more

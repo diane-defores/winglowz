@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-30"
 created_at: "2026-05-30 20:24:44 UTC"
 updated: "2026-05-30"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "flutter-app-local-to-cloud-data-promotion-merge"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz qui a commence en mode local, je veux que mes donnees locales utiles soient fusionnees ou promues dans mon compte cloud quand je cree ou connecte un compte, afin de ne pas perdre mon travail et de le retrouver apres reinstallation."
+user_story: "En tant qu'utilisatrice WinGlows qui a commence en mode local, je veux que mes donnees locales utiles soient fusionnees ou promues dans mon compte cloud quand je cree ou connecte un compte, afin de ne pas perdre mon travail et de le retrouver apres reinstallation."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -58,7 +58,7 @@ depends_on:
 supersedes:
   - "Open question from firebase-backend-agnostic-migration.md about whether anonymous/local data must be preserved when enabling account-backed sync."
 evidence:
-  - "User correction 2026-05-30: SocialGlowz has a clear doctrine for merging local data with distinct cloud data; WinGlowz must not frustrate users by deleting local data when they create an account."
+  - "User correction 2026-05-30: SocialGlowz has a clear doctrine for merging local data with distinct cloud data; WinGlows must not frustrate users by deleting local data when they create an account."
   - "Local code 2026-05-30: clipboard_store_provider.dart, transcription_store_provider.dart, snippet_store_provider.dart, dictionary_store_provider.dart and settings_store_provider.dart choose Firebase only when Firebase is configured, the session is not local fallback, entitlement grants winglowz_app and Firebase UID exists."
   - "Local code 2026-05-30: PersistentClipboardHistoryStore persists local clipboard in FlutterSecureStorage under clipboard_history_v1; voice, snippets and dictionary local stores are currently in-memory and therefore need durable local-mode storage before reliable promotion."
   - "Local code 2026-05-30: FirebaseClipboardHistoryStore, FirebaseTranscriptionStore, FirebaseSnippetStore, FirebaseDictionaryStore and FirebaseSettingsStore already write user-scoped data under users/{uid}/..."
@@ -69,7 +69,7 @@ evidence:
   - "SocialGlowz reference 2026-05-30: src/lib/cloudSync.ts hydrates cloud after auth, seeds cloud from local only when safe, flushes pending queues for reusable local state and clears stale queues on user change."
   - "SocialGlowz reference 2026-05-30: src/lib/cloudSyncQueue.ts persists a durable local mutation queue with dedupe keys and retry semantics."
   - "SocialGlowz reference 2026-05-30: src/lib/postAuthSyncFeedback.ts exposes blocking post-auth stages before the app claims that data is ready."
-  - "WinGlowz reference 2026-05-30: keyboard_sync_controller.dart already implements a local/cloud conflict doctrine for keyboard profiles: seed empty cloud, restore clean local from cloud, detect divergent conflict, partition queues by account and prevent silent overwrites."
+  - "WinGlows reference 2026-05-30: keyboard_sync_controller.dart already implements a local/cloud conflict doctrine for keyboard profiles: seed empty cloud, restore clean local from cloud, detect divergent conflict, partition queues by account and prevent silent overwrites."
   - "Official Firebase docs checked 2026-05-30: Cloud Firestore set writes can merge into existing documents to avoid full overwrites."
   - "Official Firebase docs checked 2026-05-30: Cloud Firestore supports transactions and batched writes; transactions retry on concurrent edits and fail offline, while batched writes are atomic."
   - "Official Firebase docs checked 2026-05-30: Firebase Security Rules can use Firebase Authentication request.auth.uid to restrict reads and writes to the owning user."
@@ -80,19 +80,19 @@ next_step: "/sf-verify shipglowz_data/workflow/specs/app-local-to-cloud-data-pro
 
 # Title
 
-WinGlowz Local-to-Cloud Data Promotion and Merge
+WinGlows Local-to-Cloud Data Promotion and Merge
 
 # Status
 
-Draft. This spec creates the trust-critical account creation and account connection contract for WinGlowz product data. It does not implement the feature yet.
+Draft. This spec creates the trust-critical account creation and account connection contract for WinGlows product data. It does not implement the feature yet.
 
-The current app can route stores to Firebase after a valid authenticated and entitled session exists, but it does not yet define how existing local data is preserved, promoted, merged, queued, or deliberately isolated when the user creates or connects a cloud account. That gap must be closed before WinGlowz can honestly promise that local-first usage can later become account-backed usage without data loss.
+The current app can route stores to Firebase after a valid authenticated and entitled session exists, but it does not yet define how existing local data is preserved, promoted, merged, queued, or deliberately isolated when the user creates or connects a cloud account. That gap must be closed before WinGlows can honestly promise that local-first usage can later become account-backed usage without data loss.
 
 # User Story
 
-En tant qu'utilisatrice WinGlowz qui a commence en mode local, je veux que mes donnees locales utiles soient fusionnees ou promues dans mon compte cloud quand je cree ou connecte un compte, afin de ne pas perdre mon travail et de le retrouver apres reinstallation.
+En tant qu'utilisatrice WinGlows qui a commence en mode local, je veux que mes donnees locales utiles soient fusionnees ou promues dans mon compte cloud quand je cree ou connecte un compte, afin de ne pas perdre mon travail et de le retrouver apres reinstallation.
 
-Acteur principal: utilisatrice WinGlowz qui a capture du texte, cree des snippets, enrichi son dictionnaire, configure ses settings ou utilise la voix en mode local avant de creer ou connecter un compte.
+Acteur principal: utilisatrice WinGlows qui a capture du texte, cree des snippets, enrichi son dictionnaire, configure ses settings ou utilise la voix en mode local avant de creer ou connecter un compte.
 
 Acteurs secondaires:
 
@@ -112,30 +112,30 @@ Declencheurs:
 - changement de compte ou de session;
 - reinstallation puis reconnexion au meme compte.
 
-Resultat observable attendu: WinGlowz explique qu'il prepare les donnees locales, lit le cloud du compte, fusionne ou demande une decision en cas de conflit, puis affiche un statut vrai. Apres reinstallation et reconnexion au meme compte, les donnees eligibles qui ont ete promues reapparaissent depuis Firebase.
+Resultat observable attendu: WinGlows explique qu'il prepare les donnees locales, lit le cloud du compte, fusionne ou demande une decision en cas de conflit, puis affiche un statut vrai. Apres reinstallation et reconnexion au meme compte, les donnees eligibles qui ont ete promues reapparaissent depuis Firebase.
 
 # Minimal Behavior Contract
 
-Quand une utilisatrice cree ou connecte un compte WinGlowz depuis un etat local, l'app doit comparer les donnees locales eligibles avec le snapshot cloud du compte avant de remplacer les stores actifs. Si le cloud est vide et que les donnees locales appartiennent au meme contexte utilisateur ou a une creation de compte explicite, WinGlowz promeut automatiquement les donnees locales eligibles vers le cloud avec des operations idempotentes. Si le cloud contient deja des donnees et que le local est propre, WinGlowz hydrate le local depuis le cloud. Si le cloud et le local contiennent des donnees distinctes, WinGlowz fusionne seulement les cas non ambigus, conserve les conflits sans ecrasement silencieux, et demande une decision explicite pour les collisions. Si le compte change, aucune file locale ni donnee locale liee a un autre compte ne doit etre envoyee sans confirmation. Les donnees locales ne sont jamais supprimees avant une preuve de persistance cloud ou une decision utilisateur explicite. L'edge case facile a rater est la creation de compte apres usage local: ce chemin doit etre traite comme un seed local vers cloud par defaut quand le cloud est vide, pas comme un basculement brutal vers des stores distants vides.
+Quand une utilisatrice cree ou connecte un compte WinGlows depuis un etat local, l'app doit comparer les donnees locales eligibles avec le snapshot cloud du compte avant de remplacer les stores actifs. Si le cloud est vide et que les donnees locales appartiennent au meme contexte utilisateur ou a une creation de compte explicite, WinGlows promeut automatiquement les donnees locales eligibles vers le cloud avec des operations idempotentes. Si le cloud contient deja des donnees et que le local est propre, WinGlows hydrate le local depuis le cloud. Si le cloud et le local contiennent des donnees distinctes, WinGlows fusionne seulement les cas non ambigus, conserve les conflits sans ecrasement silencieux, et demande une decision explicite pour les collisions. Si le compte change, aucune file locale ni donnee locale liee a un autre compte ne doit etre envoyee sans confirmation. Les donnees locales ne sont jamais supprimees avant une preuve de persistance cloud ou une decision utilisateur explicite. L'edge case facile a rater est la creation de compte apres usage local: ce chemin doit etre traite comme un seed local vers cloud par defaut quand le cloud est vide, pas comme un basculement brutal vers des stores distants vides.
 
 # Success Behavior
 
-- Given l'utilisatrice est en mode local avec clipboard, snippets, dictionnaire, settings ou transcriptions eligibles, when elle cree un compte WinGlowz avec entitlement actif, then l'app lit le cloud, detecte qu'il est vide, promeut les donnees locales eligibles, affiche les etapes de synchronisation, puis bascule en etat synchronise ou en attente de retry selon le resultat reel.
-- Given l'utilisatrice se reconnecte au meme compte sur un appareil propre apres reinstallation, when Firebase Auth et l'entitlement sont valides, then WinGlowz hydrate les stores depuis `users/{uid}` et les donnees precedemment promues reapparaissent.
-- Given l'appareil local a une file pending pour le meme compte remembered, when le reseau revient ou l'utilisateur clique sur le composant sync/save, then WinGlowz relit les revisions cloud utiles, flush la file idempotente, et marque chaque domaine comme synchronise, pending, erreur ou conflit.
-- Given le cloud contient deja des snippets et le local contient des snippets avec triggers differents, when l'utilisatrice connecte le compte, then WinGlowz fusionne les deux ensembles sans doublons.
-- Given le cloud et le local contiennent le meme trigger snippet avec contenu different, when la sync post-auth s'execute, then WinGlowz n'ecrase pas l'un par l'autre et expose un conflit resoluble.
-- Given le cloud contient deja un dictionnaire personnel et le local contient des termes differents, when la sync post-auth s'execute, then WinGlowz fusionne les termes non conflictuels et signale seulement les collisions de remplacement.
+- Given l'utilisatrice est en mode local avec clipboard, snippets, dictionnaire, settings ou transcriptions eligibles, when elle cree un compte WinGlows avec entitlement actif, then l'app lit le cloud, detecte qu'il est vide, promeut les donnees locales eligibles, affiche les etapes de synchronisation, puis bascule en etat synchronise ou en attente de retry selon le resultat reel.
+- Given l'utilisatrice se reconnecte au meme compte sur un appareil propre apres reinstallation, when Firebase Auth et l'entitlement sont valides, then WinGlows hydrate les stores depuis `users/{uid}` et les donnees precedemment promues reapparaissent.
+- Given l'appareil local a une file pending pour le meme compte remembered, when le reseau revient ou l'utilisateur clique sur le composant sync/save, then WinGlows relit les revisions cloud utiles, flush la file idempotente, et marque chaque domaine comme synchronise, pending, erreur ou conflit.
+- Given le cloud contient deja des snippets et le local contient des snippets avec triggers differents, when l'utilisatrice connecte le compte, then WinGlows fusionne les deux ensembles sans doublons.
+- Given le cloud et le local contiennent le meme trigger snippet avec contenu different, when la sync post-auth s'execute, then WinGlows n'ecrase pas l'un par l'autre et expose un conflit resoluble.
+- Given le cloud contient deja un dictionnaire personnel et le local contient des termes differents, when la sync post-auth s'execute, then WinGlows fusionne les termes non conflictuels et signale seulement les collisions de remplacement.
 - Given le clipboard local contient des items rejetes comme sensibles, prives ou non eligibles, when la promotion cloud s'execute, then ces items restent local-only et ne sont pas envoyes.
 - Given les transcriptions locales ont ete creees avant connexion, when elles sont durables et eligibles, then elles sont promues avec un identifiant stable ou une cle de dedupe deterministe.
-- Given des settings locaux existent et le cloud contient deja un profil, when les deux profils divergent, then WinGlowz applique une fusion par champ pour les preferences non sensibles et demande une decision pour les champs ambigus.
-- Given Firebase est indisponible ou offline au moment de la creation du compte, when des donnees locales existent, then WinGlowz conserve les donnees locales, cree des operations pending partitionnees par compte, et affiche `en attente de synchronisation` plutot qu'un faux succes.
+- Given des settings locaux existent et le cloud contient deja un profil, when les deux profils divergent, then WinGlows applique une fusion par champ pour les preferences non sensibles et demande une decision pour les champs ambigus.
+- Given Firebase est indisponible ou offline au moment de la creation du compte, when des donnees locales existent, then WinGlows conserve les donnees locales, cree des operations pending partitionnees par compte, et affiche `en attente de synchronisation` plutot qu'un faux succes.
 - Given l'utilisatrice change de compte sur le meme appareil, when une file locale appartient a l'ancien compte, then l'app ne la rejoue pas vers le nouveau compte et demande confirmation avant toute promotion de donnees locales non liees a ce nouveau compte.
 - Given le composant partage sync/save est clique, when une sync locale-cloud est possible, then il relance la lecture cloud, le flush de queue et la resolution de statut sans dupliquer les donnees.
 
 # Error Behavior
 
-- Session Firebase absente, local fallback actif ou entitlement manquant: ne pas ecrire dans Firebase; conserver l'etat local et afficher que la sync cloud WinGlowz est inactive.
+- Session Firebase absente, local fallback actif ou entitlement manquant: ne pas ecrire dans Firebase; conserver l'etat local et afficher que la sync cloud WinGlows est inactive.
 - Cloud inaccessible: ne pas remplacer le local par un snapshot vide; garder les donnees locales et marquer les operations comme pending/retry.
 - Transaction Firestore conflictuelle: ne pas supposer que la derniere ecriture gagne; recalculer le snapshot et basculer en conflit ou retry selon le domaine.
 - Donnee locale invalide ou trop grande: l'exclure de la promotion, enregistrer une erreur redigee et afficher un resume user-safe sans contenu brut.
@@ -147,7 +147,7 @@ Quand une utilisatrice cree ou connecte un compte WinGlowz depuis un etat local,
 
 # Problem
 
-WinGlowz propose un mode local qui permet de commencer sans compte, ce qui est bon pour l'adoption. Mais le produit devient dangereux si la creation d'un compte fait disparaitre les donnees locales parce que les providers basculent directement vers des stores Firebase vides. L'utilisatrice percevrait alors le compte cloud comme une perte de travail, exactement l'inverse de la promesse de synchronisation.
+WinGlows propose un mode local qui permet de commencer sans compte, ce qui est bon pour l'adoption. Mais le produit devient dangereux si la creation d'un compte fait disparaitre les donnees locales parce que les providers basculent directement vers des stores Firebase vides. L'utilisatrice percevrait alors le compte cloud comme une perte de travail, exactement l'inverse de la promesse de synchronisation.
 
 Le projet a deja les briques:
 
@@ -156,9 +156,9 @@ Le projet a deja les briques:
 - authentification suite et entitlement;
 - composant UX de statut sync/save en cours de specification;
 - doctrine SocialGlowz de seed local, queue durable et feedback post-auth;
-- doctrine WinGlowz clavier qui evite deja les overwrites silencieux.
+- doctrine WinGlows clavier qui evite deja les overwrites silencieux.
 
-Le manque est un contrat transverse: quand, comment, avec quelles preuves et quelles limites WinGlowz transforme du local en cloud.
+Le manque est un contrat transverse: quand, comment, avec quelles preuves et quelles limites WinGlows transforme du local en cloud.
 
 # Solution
 
@@ -184,7 +184,7 @@ Le chemin principal est:
 # Scope In
 
 - Nouvelle couche applicative `sync` pour la promotion et la fusion locale-cloud.
-- Doctrine de decision locale-cloud equivalente a SocialGlowz, adaptee aux types WinGlowz.
+- Doctrine de decision locale-cloud equivalente a SocialGlowz, adaptee aux types WinGlows.
 - Reutilisation des patterns du `KeyboardSyncController` pour auth context, queue partitionnee, revision/checksum, conflit et actions utilisateur.
 - Promotion des donnees eligibles:
   - clipboard history;
@@ -230,7 +230,7 @@ Le chemin principal est:
 
 # Test Contract
 
-Surface: application Flutter WinGlowz, stores locaux/Firebase des domaines clipboard, voice, snippets, dictionary, settings, flux post-auth, écran Settings > Compte & cloud, Accueil/feed et composant partagé sync/save.
+Surface: application Flutter WinGlows, stores locaux/Firebase des domaines clipboard, voice, snippets, dictionary, settings, flux post-auth, écran Settings > Compte & cloud, Accueil/feed et composant partagé sync/save.
 
 Proof profile: automated-first plus QA manuelle. Les preuves automatisées doivent couvrir les décisions, adapters, queue, statut UI et règles de sécurité; Diane fait la QA physique finale sur appareil.
 
@@ -470,7 +470,7 @@ Resolved decisions:
 - 2026-05-30 20:50 UTC - `sf-spec` - Integrated Diane's decisions for account seeding, voice durability, clipboard tombstones, clipboard retention, conflict surface, account association explanation and physical-device QA; kept secret-value sync as a security blocker requiring either V1 exclusion or separate encrypted vault spec.
 - 2026-05-30 20:55 UTC - `sf-ready` - Marked ready after Diane confirmed secrets are excluded from V1 and future secret sync requires a separate encrypted vault / secret backup spec.
 - 2026-05-30 21:10 UTC - `sf-build` - Implemented the local-cloud sync foundation: domain models, metadata and queue stores, controller decisions, concrete adapter bridge/provider, clipboard snapshot support, and controller tests for seed, confirmation, hydrate, merge, conflict, latest-wins guard, account replay blocking, local-only voice, and metadata persistence. `flutter analyze` and `flutter test` passed. Physical-device QA remains required before closure.
-- 2026-05-31 01:48 UTC - `sf-docs` - Added reusable local-cloud sync playbook and Flutter-specific implementation guide, then mapped `lib/features/sync/**` and sync specs/checklists in the WinGlowz app code-docs map.
+- 2026-05-31 01:48 UTC - `sf-docs` - Added reusable local-cloud sync playbook and Flutter-specific implementation guide, then mapped `lib/features/sync/**` and sync specs/checklists in the WinGlows app code-docs map.
 
 # Current Chantier Flow
 

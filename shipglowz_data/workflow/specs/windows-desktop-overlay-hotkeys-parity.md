@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-30"
 created_at: "2026-05-30 16:38:20 UTC"
 updated: "2026-05-30"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "windows-desktop-overlay-hotkeys-parity"
 owner: "Diane"
 confidence: medium
-user_story: "En tant qu'utilisateur Windows de WinGlowz, je veux retrouver le concept d'overlay flottant, de raccourcis globaux et d'actions rapides de l'app Android, afin de corriger, dicter, transformer, coller et reutiliser mes textes dans n'importe quelle application desktop sans perdre la base commune Flutter."
+user_story: "En tant qu'utilisateur Windows de WinGlows, je veux retrouver le concept d'overlay flottant, de raccourcis globaux et d'actions rapides de l'app Android, afin de corriger, dicter, transformer, coller et reutiliser mes textes dans n'importe quelle application desktop sans perdre la base commune Flutter."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -44,7 +44,7 @@ supersedes: []
 evidence:
   - "User decision 2026-05-30: IME is Android-only, but the overlay concept and user interface should be brought to Windows."
   - "User decision 2026-05-30: the goal is functional parity through a shared Flutter product surface plus OS-specific native hosts, not a code port of the Android overlay implementation."
-  - "User decision 2026-05-30: most WinGlowz concepts should not be Android-only; users will expect near-complete platform parity."
+  - "User decision 2026-05-30: most WinGlows concepts should not be Android-only; users will expect near-complete platform parity."
   - "User decision 2026-05-30: platform priority order is Windows, macOS, Linux, iOS, then web."
   - "User decision 2026-05-30: adapted platform experiences are acceptable only when they produce a better result; when the result is equivalent, avoid perturbing the user."
   - "User decision 2026-05-30: first Windows implementation should try to cover hotkey, overlay, clipboard and automatic best-effort delivery together."
@@ -64,7 +64,7 @@ Windows Desktop Overlay And Hotkeys Parity
 
 Reviewed and partially implemented chantier opened from Diane's 2026-05-30
 platform decision. This spec is the first concrete slice of a broader parity
-doctrine: WinGlowz concepts should be cross-platform by default, with
+doctrine: WinGlows concepts should be cross-platform by default, with
 Android-only, desktop-only, or web-limited status reserved for capabilities that
 are genuinely constrained by an OS. The Windows work proves the pattern for
 desktop: shared Flutter product/UI plus a native platform host. Android keeps
@@ -80,31 +80,31 @@ model and interaction pattern stable.
 
 # User Story
 
-En tant qu'utilisateur Windows de WinGlowz, je veux retrouver le concept d'overlay flottant, de raccourcis globaux et d'actions rapides de l'app Android, afin de corriger, dicter, transformer, coller et reutiliser mes textes dans n'importe quelle application desktop sans perdre la base commune Flutter.
+En tant qu'utilisateur Windows de WinGlows, je veux retrouver le concept d'overlay flottant, de raccourcis globaux et d'actions rapides de l'app Android, afin de corriger, dicter, transformer, coller et reutiliser mes textes dans n'importe quelle application desktop sans perdre la base commune Flutter.
 
-Acteur principal: utilisateur Windows de WinGlowz.
+Acteur principal: utilisateur Windows de WinGlows.
 
 Acteurs secondaires: utilisateur Android existant, futurs utilisateurs iOS, macOS, Linux et web, utilisateur local-only, utilisateur connecte avec sync optionnelle.
 
 Declencheurs principaux:
 
 - L'utilisateur appuie sur un raccourci clavier global.
-- L'utilisateur selectionne du texte dans une application Windows et appelle WinGlowz.
+- L'utilisateur selectionne du texte dans une application Windows et appelle WinGlows.
 - L'utilisateur veut dicter, reformuler, corriger, coller un snippet ou envoyer le resultat vers l'application active.
 - L'application cible bloque l'injection ou ne fournit pas de selection lisible.
 
-Resultat observable attendu: une surface WinGlowz desktop apparait rapidement au-dessus du contexte de travail Windows, propose les memes actions produit que les surfaces Flutter communes, et livre le resultat par collage ou fallback clipboard sans promettre d'IME Windows.
+Resultat observable attendu: une surface WinGlows desktop apparait rapidement au-dessus du contexte de travail Windows, propose les memes actions produit que les surfaces Flutter communes, et livre le resultat par collage ou fallback clipboard sans promettre d'IME Windows.
 
 # Minimal Behavior Contract
 
-WinGlowz doit viser une parite quasi complete entre plateformes: les workflows
+WinGlows doit viser une parite quasi complete entre plateformes: les workflows
 produit, l'UI, les actions, les donnees locales/sync, l'historique, les
 snippets, le dictionnaire, la dictee/enregistrement et les overlays/quick
 actions doivent etre partages par defaut. Les exceptions doivent etre explicites
 et justifiees par l'OS, pas par habitude Android-first. Sur Windows, l'overlay
 n'est pas un port du service Android: c'est une fenetre desktop always-on-top,
 declenchee par hotkey global, capable d'utiliser le clipboard, de recevoir une
-selection quand c'est disponible, de lancer les actions WinGlowz, puis de livrer
+selection quand c'est disponible, de lancer les actions WinGlows, puis de livrer
 le texte final dans l'application active par collage/injection best-effort ou
 clipboard fallback. L'edge case facile a rater est de confondre "base de code
 commune Flutter" avec "meme mecanisme OS": Flutter partage l'UI et la logique,
@@ -113,17 +113,17 @@ natifs par plateforme.
 
 L'excellence produit prime sur une parite cosmetique: une experience adaptee
 par plateforme est acceptable si elle donne un meilleur resultat utilisateur.
-Si deux approches donnent un resultat equivalent, WinGlowz doit eviter de
+Si deux approches donnent un resultat equivalent, WinGlows doit eviter de
 perturber l'utilisateur et conserver le modele mental commun.
 
 # Success Behavior
 
-- Given WinGlowz est lance sur Windows, when l'utilisateur appuie sur le hotkey global configure, then l'overlay WinGlowz apparait sans ouvrir une page marketing ni perdre le focus de travail plus que necessaire.
-- Given du texte est selectionne dans l'application active, when l'overlay s'ouvre, then WinGlowz peut recevoir ce texte par le meilleur chemin disponible ou proposer un fallback clipboard explicite.
+- Given WinGlows est lance sur Windows, when l'utilisateur appuie sur le hotkey global configure, then l'overlay WinGlows apparait sans ouvrir une page marketing ni perdre le focus de travail plus que necessaire.
+- Given du texte est selectionne dans l'application active, when l'overlay s'ouvre, then WinGlows peut recevoir ce texte par le meilleur chemin disponible ou proposer un fallback clipboard explicite.
 - Given aucun texte selectionne n'est lisible, when l'overlay s'ouvre, then l'utilisateur peut dicter, coller ou saisir un texte source manuellement.
 - Given l'utilisateur lance correction, reformulation, snippet, dictionnaire ou transformation, when l'action reussit, then le resultat peut etre copie au clipboard et livre a l'application active si le delivery est disponible.
-- Given le delivery automatique est autorise par Windows et l'application cible, when un resultat est pret, then WinGlowz tente de le livrer dans l'application active des la premiere version Windows au lieu de se limiter au copier manuel.
-- Given l'application active bloque le collage/injection, when le resultat est pret, then WinGlowz garde le texte visible et copie au clipboard avec un message recuperable.
+- Given le delivery automatique est autorise par Windows et l'application cible, when un resultat est pret, then WinGlows tente de le livrer dans l'application active des la premiere version Windows au lieu de se limiter au copier manuel.
+- Given l'application active bloque le collage/injection, when le resultat est pret, then WinGlows garde le texte visible et copie au clipboard avec un message recuperable.
 - Given une adaptation Windows ameliorerait le resultat, when elle est comparee a l'UX commune, then elle peut etre retenue seulement si le benefice utilisateur est concret et documente.
 - Given l'utilisateur change de raccourci, taille, opacite ou position, when il relance l'overlay, then les preferences locales sont conservees.
 - Given l'utilisateur est local-only, when il utilise l'overlay Windows, then les actions locales et BYOK restent utilisables sans backend distant.
@@ -132,19 +132,19 @@ perturber l'utilisateur et conserver le modele mental commun.
 # Error Behavior
 
 - Si l'enregistrement du hotkey global echoue parce qu'il est deja reserve par Windows ou une autre app, Settings doit proposer un autre raccourci.
-- Si l'overlay window ne peut pas etre creee en always-on-top, WinGlowz doit revenir a une fenetre normale explicite et marquer l'overlay Windows comme degrade.
-- Si le presse-papiers est indisponible, verrouille ou modifie par une autre app, WinGlowz doit refuser proprement sans perdre le texte produit.
-- Si l'application active ne reprend pas le focus apres delivery, WinGlowz doit laisser le resultat copiable et ne pas boucler sur des tentatives invisibles.
+- Si l'overlay window ne peut pas etre creee en always-on-top, WinGlows doit revenir a une fenetre normale explicite et marquer l'overlay Windows comme degrade.
+- Si le presse-papiers est indisponible, verrouille ou modifie par une autre app, WinGlows doit refuser proprement sans perdre le texte produit.
+- Si l'application active ne reprend pas le focus apres delivery, WinGlows doit laisser le resultat copiable et ne pas boucler sur des tentatives invisibles.
 - Si la session utilisateur change pendant une action overlay, les donnees compte doivent rester separees et la livraison finale doit rester locale.
 - Aucun log Windows ne doit contenir texte selectionne, clipboard, transcription, audio ou secret BYOK.
 
 # Problem
 
-Les docs actuelles de WinGlowz decrivent correctement l'IME comme Android-only,
+Les docs actuelles de WinGlows decrivent correctement l'IME comme Android-only,
 mais elles classent encore trop de concepts comme Android-first ou hors scope
 desktop. Cette formulation est trop restrictive pour la direction produit: les
 utilisateurs attendront une parite quasi complete entre plateformes. L'overlay
-est un concept WinGlowz portable, tandis que l'implementation Android actuelle
+est un concept WinGlows portable, tandis que l'implementation Android actuelle
 n'est qu'un hote natif parmi d'autres. Windows doit etre le premier chantier
 desktop pour prouver cette architecture: UI et logique communes en Flutter,
 hotkeys/fenetre/focus/clipboard/delivery derriere un adaptateur Windows, puis
@@ -166,7 +166,7 @@ doivent appliquer le meme principe aux autres plateformes, pas redemarrer le
 debat conceptuel.
 
 La premiere tranche Windows doit essayer de livrer le flux complet: hotkey
-global, fenetre overlay, input via selection/clipboard/manual, action WinGlowz,
+global, fenetre overlay, input via selection/clipboard/manual, action WinGlows,
 clipboard fallback et delivery automatique best-effort. Si une partie native est
 bloquee par Windows ou l'application cible, l'implementation doit degrader
 proprement et garder le texte recuperable, pas reduire l'objectif produit a un
@@ -175,7 +175,7 @@ MVP clipboard-only.
 # Scope In
 
 - Windows desktop comme premiere plateforme hors Android pour l'overlay produit.
-- Parite quasi complete comme principe produit: les concepts WinGlowz sont
+- Parite quasi complete comme principe produit: les concepts WinGlows sont
   cross-platform par defaut, sauf exception OS documentee.
 - Ordre de parite apres Windows: macOS, Linux, iOS, puis web.
 - UI Flutter partagee pour panneau overlay, etats, actions, erreurs et preferences.
@@ -189,7 +189,7 @@ MVP clipboard-only.
 
 # Scope Out
 
-- IME Windows. Le clavier systeme WinGlowz reste Android-only.
+- IME Windows. Le clavier systeme WinGlows reste Android-only.
 - Port direct du code Kotlin Android vers Windows.
 - Promesse d'injection universelle dans toutes les apps Windows.
 - Capture silencieuse du clipboard ou surveillance globale de frappe.
@@ -290,7 +290,7 @@ Mettre a jour avant implementation:
   - Action : lire l'entree via selection/clipboard quand possible, copier le resultat, tenter delivery par paste/injection best-effort.
   - Validate with : Notepad, navigateur, Office/Google Docs si disponible, app cible qui bloque le paste.
 
-- [ ] Tache 6 : Brancher actions WinGlowz communes
+- [ ] Tache 6 : Brancher actions WinGlows communes
   - Fichiers : `lib/features/voice/`, `lib/features/snippets/`, `lib/features/dictionary/`, `lib/features/clipboard/`
   - Action : correction, reformulation, snippet, dictionnaire, historique et transcription source `windows_overlay`.
   - Validate with : tests Flutter des stores et QA Windows action -> resultat -> delivery.
@@ -325,7 +325,7 @@ Mettre a jour avant implementation:
 
 1. Documenter le contrat, les limites Windows et les decisions de parite.
 2. Implementer le flux Windows complet en premiere vague: hotkey global,
-   overlay window, input selection/clipboard/manual, actions WinGlowz, clipboard
+   overlay window, input selection/clipboard/manual, actions WinGlows, clipboard
    fallback et delivery automatique best-effort.
 3. Degrader proprement par capability flag si Windows ou l'application cible
    bloque une partie native, sans changer l'objectif produit.

@@ -31,7 +31,7 @@ It is not that hacks are always useless.
 
 It is that they are not enough when there is no underlying architecture.
 
-WinGlowz is not trying to impress you with a giant stack of tools.
+WinGlows is not trying to impress you with a giant stack of tools.
 
 The logic is much simpler:
 

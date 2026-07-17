@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-09"
 created_at: "2026-05-09 21:45:00 UTC"
 updated: "2026-05-09"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "firebase-backend-agnostic-migration"
 owner: "Diane"
 confidence: high
-user_story: "En tant que builder de WinGlowz, je veux remplacer la cible Supabase par des contrats backend-agnostiques avec Firebase comme premier adaptateur Android, afin de garder l'app gratuite au départ, pilotable en CLI et remplaçable plus tard."
+user_story: "En tant que builder de WinGlows, je veux remplacer la cible Supabase par des contrats backend-agnostiques avec Firebase comme premier adaptateur Android, afin de garder l'app gratuite au départ, pilotable en CLI et remplaçable plus tard."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -67,9 +67,9 @@ Ready for staged implementation. This spec replaces the old Supabase-target migr
 
 # User Story
 
-En tant que builder de WinGlowz, je veux remplacer la cible Supabase par des contrats backend-agnostiques avec Firebase comme premier adaptateur Android, afin de garder l'app gratuite au départ, pilotable en CLI et remplaçable plus tard.
+En tant que builder de WinGlows, je veux remplacer la cible Supabase par des contrats backend-agnostiques avec Firebase comme premier adaptateur Android, afin de garder l'app gratuite au départ, pilotable en CLI et remplaçable plus tard.
 
-Acteur principal: builder WinGlowz.
+Acteur principal: builder WinGlows.
 
 Acteurs secondaires: utilisateur Android, futur utilisateur connecté, GitHub Actions/Blacksmith, futur backend provider.
 
@@ -84,7 +84,7 @@ Résultat observable attendu: l'app garde ses workflows Android actuels, mais le
 
 # Minimal Behavior Contract
 
-WinGlowz expose des contrats backend-agnostiques pour les données utilisateur et les settings. Les widgets et services Android ne connaissent pas Firebase, Supabase, Firestore, SQL ou règles provider; ils consomment des stores/domain APIs. Firebase Auth fournit l'identité distante du premier MVP Android, Cloud Firestore porte les documents utilisateur, et Firestore Security Rules imposent que chaque utilisateur ne lise/écrive que ses propres documents. Si Firebase n'est pas configuré, l'app reste utilisable en mode local ou affiche un état de sync indisponible sans crash ni fausse promesse. L'edge case facile à rater est la migration progressive: Supabase legacy peut rester présent pour compiler, mais ne doit pas redevenir le contrat produit ni apparaître comme cible active dans l'UI ou les docs.
+WinGlows expose des contrats backend-agnostiques pour les données utilisateur et les settings. Les widgets et services Android ne connaissent pas Firebase, Supabase, Firestore, SQL ou règles provider; ils consomment des stores/domain APIs. Firebase Auth fournit l'identité distante du premier MVP Android, Cloud Firestore porte les documents utilisateur, et Firestore Security Rules imposent que chaque utilisateur ne lise/écrive que ses propres documents. Si Firebase n'est pas configuré, l'app reste utilisable en mode local ou affiche un état de sync indisponible sans crash ni fausse promesse. L'edge case facile à rater est la migration progressive: Supabase legacy peut rester présent pour compiler, mais ne doit pas redevenir le contrat produit ni apparaître comme cible active dans l'UI ou les docs.
 
 # Scope In
 
@@ -134,7 +134,7 @@ Les noms exacts peuvent changer si l'implémentation prouve une meilleure conven
 # Confirmed Technical Decisions
 
 - Firebase project is configured through CLI.
-- Dev-only Firebase project ID: `winglowz-dev`. Display name may be `WinGlowz Dev`; Google Cloud project IDs cannot contain underscores.
+- Dev-only Firebase project ID: `winglowz-dev`. Display name may be `WinGlows Dev`; Google Cloud project IDs cannot contain underscores.
 - Auth providers for MVP: anonymous, email/password, Google Sign-In.
 - App must keep a local fallback when Firebase is missing or unavailable.
 - First remote sync scope targets settings, clipboard, and transcriptions when unblocked.

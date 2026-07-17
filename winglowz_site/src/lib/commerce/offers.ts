@@ -51,7 +51,7 @@ const OFFER_BY_ID: Record<CommerceOfferId, CommerceOffer> = {
     providers: ["lemonsqueezy"],
     successPath: "/purchase/success?offerId=winglowz_app/focus",
     cancelPath: "/purchase/cancel?offerId=winglowz_app/focus",
-    description: "WinGlowz Focus founder access, 1 active device",
+    description: "WinGlows Focus founder access, 1 active device",
   },
   [WINGLOWZ_APP_POWER_OFFER_ID]: {
     id: WINGLOWZ_APP_POWER_OFFER_ID,
@@ -61,7 +61,7 @@ const OFFER_BY_ID: Record<CommerceOfferId, CommerceOffer> = {
     providers: ["lemonsqueezy"],
     successPath: "/purchase/success?offerId=winglowz_app/power",
     cancelPath: "/purchase/cancel?offerId=winglowz_app/power",
-    description: "WinGlowz Power founder access, 2 active devices",
+    description: "WinGlows Power founder access, 2 active devices",
   },
   [WINGLOWZ_APP_CONTROL_OFFER_ID]: {
     id: WINGLOWZ_APP_CONTROL_OFFER_ID,
@@ -71,7 +71,7 @@ const OFFER_BY_ID: Record<CommerceOfferId, CommerceOffer> = {
     providers: ["lemonsqueezy"],
     successPath: "/purchase/success?offerId=winglowz_app/control",
     cancelPath: "/purchase/cancel?offerId=winglowz_app/control",
-    description: "WinGlowz Control founder access, 5 active devices",
+    description: "WinGlows Control founder access, 5 active devices",
   },
   [WINGLOWZ_APP_COMMAND_OFFER_ID]: {
     id: WINGLOWZ_APP_COMMAND_OFFER_ID,
@@ -81,7 +81,7 @@ const OFFER_BY_ID: Record<CommerceOfferId, CommerceOffer> = {
     providers: ["lemonsqueezy"],
     successPath: "/purchase/success?offerId=winglowz_app/command",
     cancelPath: "/purchase/cancel?offerId=winglowz_app/command",
-    description: "WinGlowz Command founder access, 10 active devices",
+    description: "WinGlows Command founder access, 10 active devices",
   },
 } as const
 

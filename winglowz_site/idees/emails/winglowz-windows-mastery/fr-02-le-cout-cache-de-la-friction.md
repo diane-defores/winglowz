@@ -27,7 +27,7 @@ On s'habitue a travailler contre son environnement.
 
 On ne se rend plus compte a quel point il coute cher.
 
-WinGlowz part exactement de ce constat :
+WinGlows part exactement de ce constat :
 
 au lieu d'ajouter une couche de motivation artificielle, on reduit le cout cache du travail sur ordinateur.
 

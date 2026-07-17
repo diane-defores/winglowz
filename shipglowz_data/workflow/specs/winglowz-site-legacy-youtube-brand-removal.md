@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-09"
 created_at: "2026-06-09 21:05:11 UTC"
 updated: "2026-06-09"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "site-legacy-youtube-brand-removal"
 owner: "Diane"
 confidence: high
-user_story: "En tant que propriétaire de WinGlowz, je veux que l'ancien nom du produit YouTube disparaisse des surfaces publiques, docs actives et contrats runtime, afin que le monorepo expose uniquement les noms produits actuels et n'entretienne plus de confusion de marque."
+user_story: "En tant que propriétaire de WinGlows, je veux que l'ancien nom du produit YouTube disparaisse des surfaces publiques, docs actives et contrats runtime, afin que le monorepo expose uniquement les noms produits actuels et n'entretienne plus de confusion de marque."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -41,7 +41,7 @@ evidence:
 next_step: "/sf-end shipglowz_data/workflow/specs/winglowz-site-legacy-youtube-brand-removal.md"
 ---
 
-# WinGlowz Site Legacy YouTube Brand Removal
+# WinGlows Site Legacy YouTube Brand Removal
 
 ## Status
 
@@ -49,7 +49,7 @@ Ready for implementation on 2026-06-09. The user decision is explicit: the old Y
 
 ## Minimal Behavior Contract
 
-WinGlowz public pages, active docs, scripts, tests, runtime allowlists, and governance docs must stop exposing the old YouTube-product name. The current canonical product identity is `ReplayGlowz` with `product_id=replayglowz`. If a runtime bridge previously accepted the old product id as an alias, this chantier removes that alias and updates tests/docs to make the break intentional. Historical rows may be rewritten only when they are active governance notes that would otherwise keep reintroducing old naming; do not fabricate history or introduce unsupported product claims.
+WinGlows public pages, active docs, scripts, tests, runtime allowlists, and governance docs must stop exposing the old YouTube-product name. The current canonical product identity is `ReplayGlowz` with `product_id=replayglowz`. If a runtime bridge previously accepted the old product id as an alias, this chantier removes that alias and updates tests/docs to make the break intentional. Historical rows may be rewritten only when they are active governance notes that would otherwise keep reintroducing old naming; do not fabricate history or introduce unsupported product claims.
 
 ## Scope In
 

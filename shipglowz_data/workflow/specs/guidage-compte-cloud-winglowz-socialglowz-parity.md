@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-29"
 created_at: "2026-05-29 12:58:30 UTC"
 updated: "2026-05-29"
@@ -12,14 +12,14 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature / audit-fix"
 owner: "Diane"
-user_story: "En tant qu'utilisateur WinGlowz, je veux être guidé après connexion cloud et voir l'état réel de synchronisation de chaque type de donnée, afin de savoir ce qui est local, en attente, synchronisé ou en erreur sans confondre compte connecté et données synchronisées."
+user_story: "En tant qu'utilisateur WinGlows, je veux être guidé après connexion cloud et voir l'état réel de synchronisation de chaque type de donnée, afin de savoir ce qui est local, en attente, synchronisé ou en erreur sans confondre compte connecté et données synchronisées."
 confidence: high
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
   - "winglowz_app"
-  - "WinGlowz Flutter settings"
+  - "WinGlows Flutter settings"
   - "Firebase Auth"
   - "Firestore"
   - "Suite identity / entitlements"
@@ -47,7 +47,7 @@ depends_on:
 supersedes: []
 evidence:
   - "User request 2026-05-29: s'inspirer de SocialGlowz pour l'UX de sync compte cloud et guider l'utilisateur de la meme maniere."
-  - "Audit 2026-05-29: WinGlowz expose Compte & cloud, mais le vrai panneau de sync clavier est dans Maintenance et diagnostics."
+  - "Audit 2026-05-29: WinGlows expose Compte & cloud, mais le vrai panneau de sync clavier est dans Maintenance et diagnostics."
   - "winglowz_app/lib/features/settings/presentation/settings_screen_sections.dart:53: copy vague sur les donnees compatibles cloud."
   - "winglowz_app/lib/features/settings/presentation/settings_screen.dart:1342: KeyboardSyncPanel place dans Maintenance et diagnostics."
   - "winglowz_app/lib/features/keyboard/presentation/keyboard_sync_panel.dart:253: etats clavier synced/pending/failed/conflict deja disponibles."
@@ -61,7 +61,7 @@ next_step: "/sf-start shipglowz_data/workflow/specs/guidage-compte-cloud-winglow
 
 # Title
 
-Guidage compte cloud WinGlowz et parité UX SocialGlowz
+Guidage compte cloud WinGlows et parité UX SocialGlowz
 
 # Status
 
@@ -69,14 +69,14 @@ Ready for `/sf-start`. Le périmètre est limité à l'app Flutter et à l'UX de
 
 # User Story
 
-En tant qu'utilisateur WinGlowz, je veux être guidé après connexion cloud et voir l'état réel de synchronisation de chaque type de donnée, afin de savoir ce qui est local, en attente, synchronisé ou en erreur sans confondre compte connecté et données synchronisées.
+En tant qu'utilisateur WinGlows, je veux être guidé après connexion cloud et voir l'état réel de synchronisation de chaque type de donnée, afin de savoir ce qui est local, en attente, synchronisé ou en erreur sans confondre compte connecté et données synchronisées.
 
-Acteur principal: utilisateur WinGlowz Android/Flutter qui utilise le mode local puis connecte un compte cloud.
+Acteur principal: utilisateur WinGlows Android/Flutter qui utilise le mode local puis connecte un compte cloud.
 
 Acteurs secondaires:
 
 - utilisateur déjà connecté qui revient dans les réglages;
-- utilisateur sans entitlement WinGlowz App;
+- utilisateur sans entitlement WinGlows App;
 - utilisateur hors ligne ou avec Firebase indisponible;
 - opérateur support qui lit un diagnostic redigé;
 - Diane qui valide l'expérience sur web/Vercel et APK physique quand nécessaire.
@@ -93,22 +93,22 @@ Résultat observable attendu: l'écran Compte & cloud devient l'autoroute princi
 
 # Minimal Behavior Contract
 
-WinGlowz accepte une session locale ou cloud, puis affiche séparément l'état du compte, l'accès suite et la synchronisation des données. Une connexion cloud réussie ne suffit jamais à afficher "données synchronisées"; l'app doit calculer et présenter l'état par catégorie. Quand la synchronisation est disponible, l'utilisateur voit les étapes post-auth et les données concernées avant que l'app affirme que le cloud est prêt. Quand une catégorie reste locale, en attente, non disponible, en erreur ou en conflit, l'UI le dit explicitement et propose l'action récupérable appropriée. L'edge case facile à rater est le profil clavier: il a déjà sa logique de conflit, mais il ne doit pas être traité comme le statut global de toutes les données cloud.
+WinGlows accepte une session locale ou cloud, puis affiche séparément l'état du compte, l'accès suite et la synchronisation des données. Une connexion cloud réussie ne suffit jamais à afficher "données synchronisées"; l'app doit calculer et présenter l'état par catégorie. Quand la synchronisation est disponible, l'utilisateur voit les étapes post-auth et les données concernées avant que l'app affirme que le cloud est prêt. Quand une catégorie reste locale, en attente, non disponible, en erreur ou en conflit, l'UI le dit explicitement et propose l'action récupérable appropriée. L'edge case facile à rater est le profil clavier: il a déjà sa logique de conflit, mais il ne doit pas être traité comme le statut global de toutes les données cloud.
 
 # Success Behavior
 
 - Given un utilisateur est en mode local, when il ouvre Compte & cloud, then il voit "Mode local" avec une explication des données qui restent locales et le CTA de connexion cloud.
-- Given un utilisateur se connecte au cloud, when l'auth réussit, then WinGlowz affiche un feedback post-auth inspiré de SocialGlowz: vérification du compte, récupération cloud, application/queue des données, prêt ou action requise.
+- Given un utilisateur se connecte au cloud, when l'auth réussit, then WinGlows affiche un feedback post-auth inspiré de SocialGlowz: vérification du compte, récupération cloud, application/queue des données, prêt ou action requise.
 - Given Firebase, entitlement et suite identity sont valides, when les stores distants sont actifs, then la carte de rendement affiche chaque catégorie compatible cloud comme synchronisée, en attente ou en erreur selon l'état réel disponible.
 - Given une catégorie n'a pas encore de statut instrumenté, when elle apparaît dans le rendement, then elle ne peut pas être marquée "synchronisée"; elle doit être "statut non encore mesuré" ou rester hors scope de la première tranche.
 - Given le profil clavier diverge entre téléphone et cloud, when l'utilisateur consulte Compte & cloud, then le conflit est visible dans l'autoroute principale et les actions "Garder ce téléphone", "Utiliser le cloud" et "Exporter avant remplacement" restent disponibles.
-- Given un utilisateur n'a pas l'entitlement WinGlowz App, when il est authentifié, then l'écran indique compte reconnu mais sync WinGlowz inactive, sans promettre de sauvegarde cloud.
+- Given un utilisateur n'a pas l'entitlement WinGlows App, when il est authentifié, then l'écran indique compte reconnu mais sync WinGlows inactive, sans promettre de sauvegarde cloud.
 - Given Firestore est indisponible ou hors ligne, when une mutation locale est enregistrée, then l'UI indique en attente/retry ou local uniquement sans perte de texte ni faux succès.
 
 # Error Behavior
 
 - Auth distante non configurée: afficher une section cloud indisponible, désactiver le CTA de connexion, garder le mode local explicite.
-- Session Firebase présente mais suite identity absente ou sans entitlement: afficher compte connecté, accès WinGlowz non actif, sync distante inactive.
+- Session Firebase présente mais suite identity absente ou sans entitlement: afficher compte connecté, accès WinGlows non actif, sync distante inactive.
 - Firestore ou store distant indisponible: afficher "Synchronisation indisponible" avec retry et diagnostic redigé; ne pas remplacer des données locales par un état vide.
 - Queue locale non vide: afficher "En attente d'envoi" avec le type de donnée concerné; ne pas afficher "Tout est synchronisé".
 - Conflit clavier: bloquer l'écrasement silencieux et conserver les actions existantes.
@@ -117,11 +117,11 @@ WinGlowz accepte une session locale ou cloud, puis affiche séparément l'état 
 
 # Problem
 
-WinGlowz a déjà des briques techniques de synchronisation, mais elles sont dispersées. `Compte & cloud` expose surtout l'état de connexion, tandis que le panneau de sync clavier est relégué dans `Maintenance et diagnostics`. Les stores basculent entre local et Firebase selon session + entitlement, mais il n'existe pas de synthèse utilisateur qui transforme ce routage en vérité produit.
+WinGlows a déjà des briques techniques de synchronisation, mais elles sont dispersées. `Compte & cloud` expose surtout l'état de connexion, tandis que le panneau de sync clavier est relégué dans `Maintenance et diagnostics`. Les stores basculent entre local et Firebase selon session + entitlement, mais il n'existe pas de synthèse utilisateur qui transforme ce routage en vérité produit.
 
 SocialGlowz donne un meilleur modèle UX: compte, statut, explication des données synchronisées, limites, formulaire d'auth et backup sont dans un même flux. Il possède aussi un feedback post-auth en étapes (`waitingServer`, `dataReceived`, `dataApplied`, `ready`) qui évite de rendre la main avant que l'utilisateur comprenne l'état de ses données.
 
-Le risque produit est élevé: si WinGlowz dit "compte connecté" sans montrer le rendement réel, l'utilisateur peut croire que son clipboard, ses snippets, son dictionnaire, ses transcriptions, ses réglages et son profil clavier sont synchronisés alors que certains restent locaux, en attente, non instrumentés ou en erreur.
+Le risque produit est élevé: si WinGlows dit "compte connecté" sans montrer le rendement réel, l'utilisateur peut croire que son clipboard, ses snippets, son dictionnaire, ses transcriptions, ses réglages et son profil clavier sont synchronisés alors que certains restent locaux, en attente, non instrumentés ou en erreur.
 
 # Solution
 
@@ -327,7 +327,7 @@ Preuve non automatisée requise:
 
 - [ ] Given mode local, when Compte & synchronisation s'ouvre, then l'utilisateur voit clairement que les données restent locales et comment connecter le cloud.
 - [ ] Given auth remote réussie, when l'utilisateur revient aux settings, then un feedback indique au moins vérification compte, vérification accès, inspection sync et résultat final.
-- [ ] Given compte connecté sans entitlement, then l'écran ne promet aucune sauvegarde WinGlowz cloud et affiche l'accès inactif.
+- [ ] Given compte connecté sans entitlement, then l'écran ne promet aucune sauvegarde WinGlows cloud et affiche l'accès inactif.
 - [ ] Given stores distants actifs, then les catégories réellement supportées peuvent afficher synchronisé.
 - [ ] Given catégorie non instrumentée, then elle n'affiche jamais synchronisé.
 - [ ] Given queue ou erreur de sync, then l'écran affiche en attente/erreur avec action de retry ou diagnostic redigé.
@@ -365,7 +365,7 @@ Preuve non automatisée requise:
   - bouton "plus d'infos" ou équivalent pour expliquer les données concernées;
   - limites explicites;
   - feedback post-auth avant état prêt.
-- Différence WinGlowz:
+- Différence WinGlows:
   - Flutter/Riverpod au lieu de Vue/Convex;
   - Firebase + suite identity + entitlement;
   - profil clavier Android natif avec conflits.

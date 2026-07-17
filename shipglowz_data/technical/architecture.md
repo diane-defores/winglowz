@@ -58,7 +58,7 @@ next_step: 'pnpm build:check'
 
 ## Purpose
 
-Describe the stable system boundaries for WinGlowz so technical and docs changes stay aligned with the current runtime.
+Describe the stable system boundaries for WinGlows so technical and docs changes stay aligned with the current runtime.
 
 ## Owned Files
 
@@ -80,7 +80,7 @@ Describe the stable system boundaries for WinGlowz so technical and docs changes
 
 ## System Overview
 
-WinGlowz is a server-rendered Astro application deployed to Vercel. It combines public content, gated training routes, and backend integrations for authentication, billing, newsletter operations, and user entitlements.
+WinGlows is a server-rendered Astro application deployed to Vercel. It combines public content, gated training routes, and backend integrations for authentication, billing, newsletter operations, and user entitlements.
 
 ## Core Architectural Layers
 

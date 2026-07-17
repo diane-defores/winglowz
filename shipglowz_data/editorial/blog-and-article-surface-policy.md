@@ -31,7 +31,7 @@ next_step: "/sf-docs editorial audit"
 
 ## Purpose
 
-Keep blog and article recommendations aligned with the current WinGlowz public-content model.
+Keep blog and article recommendations aligned with the current WinGlows public-content model.
 
 ## Surface Rules
 
@@ -53,4 +53,3 @@ Keep blog and article recommendations aligned with the current WinGlowz public-c
 ## Maintenance Rule
 
 Update this policy when article publishing paths or roles change.
-

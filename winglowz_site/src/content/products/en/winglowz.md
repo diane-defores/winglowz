@@ -1,16 +1,16 @@
 ---
-title: "WinGlowz"
-description: "Practical Windows productivity training at the center of the WinGlowz ecosystem"
+title: "WinGlows"
+description: "Practical Windows productivity training at the center of the WinGlows ecosystem"
 status: "available"
 main:
   id: 1
-  content: "WinGlowz is a practical Windows productivity training path built around real daily workflows, shortcuts, and setup decisions."
+  content: "WinGlows is a practical Windows productivity training path built around real daily workflows, shortcuts, and setup decisions."
   imgCard: "/images/WinGlowz.png"
   imgMain: "/images/WinGlowz.png"
-  imgAlt: "WinGlowz product illustration"
+  imgAlt: "WinGlows product illustration"
 longDescription:
   title: "Learn Windows workflows that actually save time"
-  subTitle: "WinGlowz is the flagship training path, with companion Obsidian and Chrome tools to support it."
+  subTitle: "WinGlows is the flagship training path, with companion Obsidian and Chrome tools to support it."
   btnTitle: "See the sales page"
   btnURL: "/windows-mastery"
 descriptionList:

@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-14"
 created_at: "2026-05-14 16:09:20 UTC"
 updated: "2026-05-14"
@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisateur Android de WinGlowz qui personnalise son clavier, je veux configurer les swipes de coins depuis une interface visuelle, guidee et reversible, afin de choisir rapidement accents, ponctuation, snippets, actions ou macros sans ecrire des expressions techniques."
+user_story: "En tant qu'utilisateur Android de WinGlows qui personnalise son clavier, je veux configurer les swipes de coins depuis une interface visuelle, guidee et reversible, afin de choisir rapidement accents, ponctuation, snippets, actions ou macros sans ecrire des expressions techniques."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -58,9 +58,9 @@ Ready for implementation. This is a follow-up product-UX chantier on top of the 
 
 # User Story
 
-En tant qu'utilisateur Android de WinGlowz qui personnalise son clavier, je veux configurer les swipes de coins depuis une interface visuelle, guidee et reversible, afin de choisir rapidement accents, ponctuation, snippets, actions ou macros sans ecrire des expressions techniques.
+En tant qu'utilisateur Android de WinGlows qui personnalise son clavier, je veux configurer les swipes de coins depuis une interface visuelle, guidee et reversible, afin de choisir rapidement accents, ponctuation, snippets, actions ou macros sans ecrire des expressions techniques.
 
-Acteur principal: utilisateur Android de WinGlowz qui utilise WinGlowz keyboard comme IME et veut personnaliser son clavier.
+Acteur principal: utilisateur Android de WinGlows qui utilise WinGlows keyboard comme IME et veut personnaliser son clavier.
 
 Declencheur: l'utilisateur ouvre Settings > Keyboard > Corner shortcuts, selectionne une touche directement sur une preview, choisit un coin, choisit une action dans un catalogue guide, previsualise le resultat puis sauvegarde.
 

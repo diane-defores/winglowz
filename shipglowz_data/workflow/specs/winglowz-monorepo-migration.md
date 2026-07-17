@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-24"
 created_at: "2026-05-24 21:02:33 UTC"
 updated: "2026-05-24"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "repository-migration"
 owner: "Diane"
 confidence: medium
-user_story: "En tant que mainteneuse de WinGlowz, je veux regrouper le site et l'app dans un monorepo canonique afin que le produit, la gouvernance, la documentation, le CI et les deploiements soient coordonnes depuis une seule source de verite."
+user_story: "En tant que mainteneuse de WinGlows, je veux regrouper le site et l'app dans un monorepo canonique afin que le produit, la gouvernance, la documentation, le CI et les deploiements soient coordonnes depuis une seule source de verite."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -49,17 +49,17 @@ next_step: "/sf-end shipglowz_data/workflow/specs/winglowz-monorepo-migration.md
 
 # Title
 
-WinGlowz Monorepo Migration
+WinGlows Monorepo Migration
 
 # Status
 
-Ready for staged implementation. The spec has explicit success/error behavior, invariants, stop conditions, documentation impacts, and validation steps for migrating WinGlowz from two sibling repositories into one canonical monorepo.
+Ready for staged implementation. The spec has explicit success/error behavior, invariants, stop conditions, documentation impacts, and validation steps for migrating WinGlows from two sibling repositories into one canonical monorepo.
 
 # User Story
 
-En tant que mainteneuse de WinGlowz, je veux regrouper le site et l'app dans un monorepo canonique afin que le produit, la gouvernance, la documentation, le CI et les deploiements soient coordonnes depuis une seule source de verite.
+En tant que mainteneuse de WinGlows, je veux regrouper le site et l'app dans un monorepo canonique afin que le produit, la gouvernance, la documentation, le CI et les deploiements soient coordonnes depuis une seule source de verite.
 
-Acteur principal: mainteneuse WinGlowz.
+Acteur principal: mainteneuse WinGlows.
 
 Acteurs secondaires: agents ShipGlowz, GitHub Actions, Vercel, Firebase CLI, collaborateurs futurs.
 
@@ -73,7 +73,7 @@ La migration transforme l'organisation du depot sans changer le comportement fon
 
 # Problem
 
-WinGlowz est actuellement fragmente entre deux depots sibling: `winglowz` pour le site Astro et `winglowz_app` pour l'app Flutter. Cette separation fragmente les specs, bugs, docs techniques, workflows CI/deploiement et decisions produit. Le modele est aussi incoherent avec ReplayGlowz et ContentGlowz, qui utilisent deja un depot canonique par produit avec des sous-projets.
+WinGlows est actuellement fragmente entre deux depots sibling: `winglowz` pour le site Astro et `winglowz_app` pour l'app Flutter. Cette separation fragmente les specs, bugs, docs techniques, workflows CI/deploiement et decisions produit. Le modele est aussi incoherent avec ReplayGlowz et ContentGlowz, qui utilisent deja un depot canonique par produit avec des sous-projets.
 
 # Solution
 
@@ -250,7 +250,7 @@ winglowz/
 
 # Acceptance Criteria
 
-- `/home/claude/winglowz` est le seul depot Git actif pour les surfaces WinGlowz.
+- `/home/claude/winglowz` est le seul depot Git actif pour les surfaces WinGlows.
 - `winglowz_site/package.json` existe et conserve les scripts site.
 - `winglowz_app/pubspec.yaml` existe et conserve les scripts/configs app.
 - Aucun `.git` n'existe sous `winglowz/winglowz_app`.

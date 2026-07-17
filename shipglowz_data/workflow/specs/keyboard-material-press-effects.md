@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-11"
 created_at: "2026-06-11 02:31:09 UTC"
 updated: "2026-06-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "native-ime-material-press-effects"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant qu'utilisatrice du clavier Android WinGlowz, je veux que les effets déclenchés par l'appui d'une touche soient fusionnés avec la matière et les surfaces de la touche, afin que le clavier 2D ou 3D paraisse physique, premium et cohérent plutôt qu'un effet décoratif posé par-dessus."
+user_story: "En tant qu'utilisatrice du clavier Android WinGlows, je veux que les effets déclenchés par l'appui d'une touche soient fusionnés avec la matière et les surfaces de la touche, afin que le clavier 2D ou 3D paraisse physique, premium et cohérent plutôt qu'un effet décoratif posé par-dessus."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -71,7 +71,7 @@ Implemented locally, pending native verification. `/101-sf-ready` validated the 
 
 ## User Story
 
-En tant qu'utilisatrice du clavier Android WinGlowz, je veux que les effets déclenchés par l'appui d'une touche soient fusionnés avec la matière et les surfaces de la touche, afin que le clavier 2D ou 3D paraisse physique, premium et cohérent plutôt qu'un effet décoratif posé par-dessus.
+En tant qu'utilisatrice du clavier Android WinGlows, je veux que les effets déclenchés par l'appui d'une touche soient fusionnés avec la matière et les surfaces de la touche, afin que le clavier 2D ou 3D paraisse physique, premium et cohérent plutôt qu'un effet décoratif posé par-dessus.
 
 ## Minimal Behavior Contract
 
@@ -388,7 +388,7 @@ Introduce a material-aware key press effect pipeline. The native renderer first 
 - Keep effect drawing allocation-light: reuse `Path`, `RectF`, `Paint` where possible.
 - Preserve `KeyboardPressEffectPolicy.resolve` compatibility for existing saved themes.
 - Do not introduce a new package or Android rendering API without running the documentation freshness gate against official docs.
-- Runtime observability: WinGlowz is a Flutter runtime app. Preserve Sentry initialization and safe diagnostics expectations. If copied logs are used as proof, they must begin with commit/build identity plus Paris and UTC build timestamps, and they must be redacted.
+- Runtime observability: WinGlows is a Flutter runtime app. Preserve Sentry initialization and safe diagnostics expectations. If copied logs are used as proof, they must begin with commit/build identity plus Paris and UTC build timestamps, and they must be redacted.
 - Current local branch already contains unrelated in-progress changes. Implementation agents must not revert user or prior-agent changes.
 
 ## Open Questions

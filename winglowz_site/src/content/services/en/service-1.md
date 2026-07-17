@@ -11,7 +11,7 @@ features:
   - "Real-time resource monitoring"
 ---
 
-WinGlowz provides powerful tools to optimize your Windows system performance. Our solution deeply analyzes your configuration and applies necessary optimizations for a smooth and efficient user experience. 
+WinGlows provides powerful tools to optimize your Windows system performance. Our solution deeply analyzes your configuration and applies necessary optimizations for a smooth and efficient user experience.
 
 
 I build fast, functional and beautiful websites and applications. I care deeply for the end-user experience and strive for my sites to be inclusive and useable by everyone, regardless of ability.
@@ -59,7 +59,6 @@ Core Values
 Our working relationship should be one of trust. You’ve (hopefully!) entrusted me to help you make key decisions, and I will honor that trust by ensuring that we are on the same page regarding scope and pricing. I will let you know if I’m not the right fit your project, and can refer you to my extensive network of freelance contacts.
 
 I love working with mission-driven organizations and offer special rates for organizations with a commitment to social justice.
-
 
 
 

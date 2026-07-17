@@ -33,10 +33,10 @@ const polar = new Polar({ accessToken: token ?? "dry-run", server: SERVER });
 // ──────────────────────────────────────────────────────────────
 
 const PRODUCTS = [
-  // ── WinGlowz ──────────────────────────────────────────────
+  // ── WinGlows ──────────────────────────────────────────────
   {
-    group: "WinGlowz",
-    name: "WinGlowz — Full Training",
+    group: "WinGlows",
+    name: "WinGlows — Full Training",
     description: "All 8 Windows productivity training modules. Lifetime access, FR + EN content, progress dashboard, priority support.",
     prices: [
       { type: "one_time", amountType: "fixed", priceAmount: 4900, priceCurrency: "usd" },
@@ -44,8 +44,8 @@ const PRODUCTS = [
     metadata: { entitlement: "winglowz_training", launch_price: "true" },
   },
   {
-    group: "WinGlowz",
-    name: "WinGlowz — Bundle",
+    group: "WinGlows",
+    name: "WinGlows — Bundle",
     description: "Full Training + SocialFlow Lifetime + 1 year ReplayGlowz Pro. Best value for the complete Flowz ecosystem.",
     prices: [
       { type: "one_time", amountType: "fixed", priceAmount: 14900, priceCurrency: "usd" },

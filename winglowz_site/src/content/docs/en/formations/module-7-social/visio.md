@@ -41,7 +41,7 @@ Before scheduling, ask four questions:
 3. **Who is truly required?**
 4. **Can it be shorter?** 15 or 25 minutes instead of 30 or 60
 
-The **[Should It Be a Meeting](https://shoulditbeameeting.com/)** tool gives you an interactive questionnaire to make the call. The WinGlowz rule: if the goal can be achieved with a 2-minute Loom video, it is not a meeting.
+The **[Should It Be a Meeting](https://shoulditbeameeting.com/)** tool gives you an interactive questionnaire to make the call. The WinGlows rule: if the goal can be achieved with a 2-minute Loom video, it is not a meeting.
 
 ## The real goal
 

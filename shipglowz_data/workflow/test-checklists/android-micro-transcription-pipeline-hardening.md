@@ -2,7 +2,7 @@
 artifact: test_checklist
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-12"
 updated: "2026-06-12"
 status: draft
@@ -46,16 +46,16 @@ Manual Android verification for the microphone/transcription hardening chantier.
 - `AMP-002` Overlay hors app avec transcription persistée
   - Preconditions: overlay + micro accordés, accessibilité activée si nécessaire
   - Steps:
-    - démarrer une dictée overlay hors de WinGlowz
+    - démarrer une dictée overlay hors de WinGlows
     - prononcer une phrase simple
     - terminer proprement
-    - rouvrir WinGlowz
+    - rouvrir WinGlows
   - Expected results:
     - une transcription `source=overlay` apparaît une seule fois
     - aucun doublon après refresh
 
 - `AMP-003` Dictée IME avec transcription persistée
-  - Preconditions: IME WinGlowz actif, micro accordé
+  - Preconditions: IME WinGlows actif, micro accordé
   - Steps:
     - démarrer une dictée depuis le clavier
     - prononcer une phrase simple

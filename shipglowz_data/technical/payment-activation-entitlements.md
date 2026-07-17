@@ -2,7 +2,7 @@
 artifact: technical_module_context
 metadata_schema_version: "1.0"
 artifact_version: "0.2.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-18"
 updated: "2026-06-19"
 status: draft
@@ -27,7 +27,7 @@ depends_on:
     required_status: "draft"
 supersedes: []
 evidence:
-  - "WinGlowz App founder offers use internal offer ids winglowz_app/focus, winglowz_app/power, winglowz_app/control, and winglowz_app/command."
+  - "WinGlows App founder offers use internal offer ids winglowz_app/focus, winglowz_app/power, winglowz_app/control, and winglowz_app/command."
   - "Lemon Squeezy checkout creation sends checkout_data.custom with offer_id, product_id, plan, source, source_ref, and provider metadata."
   - "Lemon Squeezy signed webhooks are normalized and forwarded to Convex bridge:processCommerceEvent."
   - "Convex owns durable productEntitlements and productAccessEvents."
@@ -39,7 +39,7 @@ next_step: "/103-sf-verify payment activation after hosted Lemon Squeezy test-mo
 
 ## Purpose
 
-This document is the reusable contract for paid access activation in the WinGlowz suite. It explains how a payment becomes product access, what Lemon Squeezy owns, what Convex owns, and what still needs a separate device-activation ledger.
+This document is the reusable contract for paid access activation in the WinGlows suite. It explains how a payment becomes product access, what Lemon Squeezy owns, what Convex owns, and what still needs a separate device-activation ledger.
 
 ## Vocabulary
 
@@ -62,7 +62,7 @@ Payment activation and device activation are related but not the same system.
 | Control | `winglowz_app/control` | `winglowz_app` | `control` | 5 active devices |
 | Command | `winglowz_app/command` | `winglowz_app` | `command` | 10 active devices |
 
-The Lifetime Deal grants access to present and future released WinGlowz platforms under the selected plan. The plan limit is the active-device count, not a per-platform SKU.
+The Lifetime Deal grants access to present and future released WinGlows platforms under the selected plan. The plan limit is the active-device count, not a per-platform SKU.
 
 ## Source Of Truth
 
@@ -89,7 +89,7 @@ Product marketing authority and checkout infrastructure are separate concerns.
 Current application of this rule:
 
 - `socialglowz.com/lifetime-deal` is the canonical SocialGlowz sales page.
-- `winglowz.com/winglowz-founder` is the canonical WinGlowz App sales page.
+- `winglowz.com/winglowz-founder` is the canonical WinGlows App sales page.
 - Both sales pages may call the same suite checkout route as long as the route receives an explicit `offerId` and preserves product-specific success, cancel, and entitlement metadata.
 
 ## Checkout Flow
@@ -181,11 +181,11 @@ Local proof:
 - Commerce offer registry tests cover all founder offers.
 - Checkout route tests reject missing/unknown offers and create Lemon Squeezy checkouts with correct metadata.
 - Lemon Squeezy adapter tests verify `checkout_data.custom`, `discount_code`, signed webhook parsing, paid/refund normalization, and idempotency key shape.
-- Webhook route tests verify all four WinGlowz plans are forwarded to `bridge:processCommerceEvent`.
+- Webhook route tests verify all four WinGlows plans are forwarded to `bridge:processCommerceEvent`.
 
 Hosted provider proof:
 
-- Create a Lemon Squeezy test-mode checkout for a WinGlowz founder plan.
+- Create a Lemon Squeezy test-mode checkout for a WinGlows founder plan.
 - Complete a test order.
 - Confirm the signed webhook reaches production/preview.
 - Confirm Convex writes a `productAccessEvents` entry and active `productEntitlements` row.

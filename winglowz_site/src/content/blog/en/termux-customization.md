@@ -289,7 +289,7 @@ If you develop on a server (VPS, Codespace), ShipGlowz automates everything: iso
 
 ## 🎯 Training: Code on Mobile
 
-Want to go further? [Module IX of the WinGlowz Training](/en/formations/module-9-mobile-coder/) teaches you how to:
+Want to go further? [Module IX of the WinGlows Training](/en/formations/module-9-mobile-coder/) teaches you how to:
 
 - Configure Termux for optimized server access
 - Understand why SSH ≠ Mosh for AI coding tools

@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-31"
 created_at: "2026-05-31 00:00:00 UTC"
 updated: "2026-06-10"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "macos-linux-desktop-overlay-hotkeys-parity"
 owner: "Diane"
 confidence: medium
-user_story: "En tant qu'utilisateur macOS ou Linux de WinGlowz, je veux retrouver le concept d'overlay flottant, de raccourcis/quick actions et de livraison clipboard de l'app Android et de la premiere version Windows, afin d'utiliser les actions WinGlowz dans mes apps desktop sans promesse d'IME."
+user_story: "En tant qu'utilisateur macOS ou Linux de WinGlows, je veux retrouver le concept d'overlay flottant, de raccourcis/quick actions et de livraison clipboard de l'app Android et de la premiere version Windows, afin d'utiliser les actions WinGlows dans mes apps desktop sans promesse d'IME."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -51,14 +51,14 @@ parity claim.
 
 # User Story
 
-En tant qu'utilisateur macOS ou Linux de WinGlowz, je veux retrouver le concept
+En tant qu'utilisateur macOS ou Linux de WinGlows, je veux retrouver le concept
 d'overlay flottant, de raccourcis/quick actions et de livraison clipboard de
-l'app Android et de la premiere version Windows, afin d'utiliser les actions WinGlowz dans mes
+l'app Android et de la premiere version Windows, afin d'utiliser les actions WinGlows dans mes
 apps desktop sans promesse d'IME.
 
 # Minimal Behavior Contract
 
-WinGlowz doit conserver le meme modele mental desktop que Windows: une surface
+WinGlows doit conserver le meme modele mental desktop que Windows: une surface
 Flutter partagee, appelee par une action clavier native quand la plateforme le
 permet, affichée au-dessus du travail courant, capable de copier le resultat au
 clipboard et de tenter une livraison automatique quand l'OS l'autorise. macOS
@@ -69,14 +69,14 @@ pas choisie.
 
 # Success Behavior
 
-- Given WinGlowz est lance sur macOS, when l'utilisateur utilise
+- Given WinGlows est lance sur macOS, when l'utilisateur utilise
   Control+Option+Space, then l'overlay peut s'afficher en fenetre flottante et
   exposer les actions produit communes.
-- Given WinGlowz est lance sur Linux, when l'utilisateur appelle l'action
+- Given WinGlows est lance sur Linux, when l'utilisateur appelle l'action
   desktop disponible, then l'overlay peut s'afficher en keep-above et exposer
   les actions produit communes.
 - Given un texte final est pret, when la livraison automatique est possible,
-  then WinGlowz tente de le coller dans l'app active et garde toujours une copie
+  then WinGlows tente de le coller dans l'app active et garde toujours une copie
   clipboard.
 - Given le systeme bloque le hotkey global ou le paste synthetique, when
   l'utilisateur finit une action, then le resultat reste recuperable et l'etat

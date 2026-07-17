@@ -22,9 +22,9 @@ evidence:
 next_step: /sf-docs update
 ---
 
-# WinGlowz
+# WinGlows
 
-WinGlowz is a Windows-first productivity project centered on `Windows Mastery`, with bilingual content, gated learning surfaces, and companion product pages.
+WinGlows is a Windows-first productivity project centered on `Windows Mastery`, with bilingual content, gated learning surfaces, and companion product pages.
 
 Production: https://winglowz.com
 
@@ -112,7 +112,7 @@ Copy `.env.example` to `.env` and fill the values required by your environment.
 - `SITE`
 - `PUBLIC_SITE_URL`
 - `PUBLIC_CONVEX_URL`
-- `SUITE_API_ALLOWED_ORIGINS` (comma-separated browser origins allowed to call API routes, including the WinGlowz app web origin)
+- `SUITE_API_ALLOWED_ORIGINS` (comma-separated browser origins allowed to call API routes, including the WinGlows app web origin)
 - `PORT`
 
 ### Firebase Admin bridge
@@ -133,9 +133,9 @@ For `POST /api/bridge/firebase`, the backend verifies Firebase ID tokens with Fi
 
 It recomputes entitlements from Convex (`productEntitlements` source of truth), discovers linked Firebase identity accounts, and writes server-owned Firestore `suiteAccess/{firebaseUid}` documents.
 
-The bridge also writes a server-owned Firestore mirror at `suiteAccess/{firebaseUid}` after Convex entitlement lookup. WinGlowz app Firestore rules use that mirror to allow or deny `winglowz_app` data under `users/{uid}`.
+The bridge also writes a server-owned Firestore mirror at `suiteAccess/{firebaseUid}` after Convex entitlement lookup. WinGlows app Firestore rules use that mirror to allow or deny `winglowz_app` data under `users/{uid}`.
 
-`POST /api/bridge/entitlement` verifies ReplayGlowz Clerk sessions server-side. A recognized Clerk account without active ReplayGlowz access receives a persisted `replayglowz/free` default entitlement for that product only; this does not unlock other WinGlowz suite products.
+`POST /api/bridge/entitlement` verifies ReplayGlowz Clerk sessions server-side. A recognized Clerk account without active ReplayGlowz access receives a persisted `replayglowz/free` default entitlement for that product only; this does not unlock other WinGlows suite products.
 
 `POST /api/bridge/socialglowz` accepts:
 

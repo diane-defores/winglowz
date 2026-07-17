@@ -2,7 +2,7 @@
 artifact: exploration_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-24"
 updated: "2026-05-24"
 status: draft
@@ -22,13 +22,13 @@ evidence:
   - "winglowz and winglowz_app are separate Git repositories with separate remotes."
   - "winglowz is an Astro/Vercel site with pnpm; winglowz_app is a Flutter/Firebase/Vercel app."
   - "ReplayGlowz and ContentGlowz use one canonical root with app/site/lab subdirectories."
-  - "Both WinGlowz repositories currently contain separate shipglowz_data governance trees."
+  - "Both WinGlows repositories currently contain separate shipglowz_data governance trees."
 depends_on: []
 supersedes: []
-next_step: "/sf-spec WinGlowz monorepo migration"
+next_step: "/sf-spec WinGlows monorepo migration"
 ---
 
-# Exploration Report: WinGlowz Monorepo
+# Exploration Report: WinGlows Monorepo
 
 ## Starting Question
 
@@ -48,7 +48,7 @@ Should `winglowz` and `winglowz_app` be reorganized into one monorepo, like the 
 
 ## Problem Framing
 
-WinGlowz is currently split across two sibling repositories:
+WinGlows is currently split across two sibling repositories:
 
 - `/home/claude/winglowz` - public/content/site surface.
 - `/home/claude/winglowz_app` - Flutter application surface.
@@ -83,7 +83,7 @@ The strongest argument against doing it immediately is active worktree risk. Bot
 
 ## Emerging Recommendation
 
-Yes, WinGlowz should probably become a monorepo, but not as an opportunistic file move while both repositories are dirty. The better path is a small migration project:
+Yes, WinGlows should probably become a monorepo, but not as an opportunistic file move while both repositories are dirty. The better path is a small migration project:
 
 1. Finish or checkpoint the current app/site changes.
 2. Choose the canonical repository and target layout.
@@ -131,7 +131,7 @@ winglowz/
 
 ## Decision Inputs For Spec
 
-- User story seed: As the maintainer, I want WinGlowz app and site surfaces in one canonical repository so product, technical, and release work happens from one source of truth.
+- User story seed: As the maintainer, I want WinGlows app and site surfaces in one canonical repository so product, technical, and release work happens from one source of truth.
 - Scope in seed: repository layout, docs/governance consolidation, deployment path updates, CI/dependabot updates, README rules.
 - Scope out seed: feature work, dependency upgrades, app refactors, site redesign.
 - Invariants/constraints seed: preserve active work, keep app and site deployable independently, keep one root `shipglowz_data`.
@@ -139,11 +139,11 @@ winglowz/
 
 ## Handoff
 
-- Recommended next command: `/sf-spec WinGlowz monorepo migration`
+- Recommended next command: `/sf-spec WinGlows monorepo migration`
 - Why this next step: The migration has enough cross-cutting risk to deserve an explicit spec before file moves.
 
 ## Exploration Run History
 
 | Date UTC | Prompt/Focus | Action | Result | Next step |
 |----------|--------------|--------|--------|-----------|
-| 2026-05-24 19:32:58 UTC | Consider merging `winglowz` and `winglowz_app` into a monorepo | Compared current WinGlowz layout with ReplayGlowz and ContentGlowz precedents | Monorepo looks directionally right, but should be staged after protecting current uncommitted work | `/sf-spec WinGlowz monorepo migration` |
+| 2026-05-24 19:32:58 UTC | Consider merging `winglowz` and `winglowz_app` into a monorepo | Compared current WinGlows layout with ReplayGlowz and ContentGlowz precedents | Monorepo looks directionally right, but should be staged after protecting current uncommitted work | `/sf-spec WinGlows monorepo migration` |

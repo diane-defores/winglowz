@@ -2,12 +2,12 @@
 artifact: research_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-11"
 updated: "2026-05-11"
 status: reviewed
 source_skill: sf-veille
-scope: "inspirations formation, productivité et workflows IA pour WinGlowz"
+scope: "inspirations formation, productivité et workflows IA pour WinGlows"
 owner: "Diane"
 confidence: medium
 risk_level: low
@@ -32,11 +32,11 @@ evidence:
 next_step: "$sf-docs update"
 ---
 
-# Concurrents et inspirations — WinGlowz
+# Concurrents et inspirations — WinGlows
 
 ## Lecture projet
 
-WinGlowz est orienté formation/productivité/workflows. Les liens utiles sont surtout des inspirations de contenu, modules de formation et promesses de productivité assistée.
+WinGlows est orienté formation/productivité/workflows. Les liens utiles sont surtout des inspirations de contenu, modules de formation et promesses de productivité assistée.
 
 ## Liens retenus
 

@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisatrice WinGlowz qui veut dicter dans sa langue depuis le clavier Android, je veux installer seulement les packs vocaux locaux dont j'ai besoin et comprendre clairement le fallback disponible, afin d'utiliser la dictée sans coût serveur implicite ni promesse trompeuse."
+user_story: "En tant qu'utilisatrice WinGlows qui veut dicter dans sa langue depuis le clavier Android, je veux installer seulement les packs vocaux locaux dont j'ai besoin et comprendre clairement le fallback disponible, afin d'utiliser la dictée sans coût serveur implicite ni promesse trompeuse."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -45,7 +45,7 @@ depends_on:
 supersedes: []
 evidence:
   - "User decision 2026-05-14: keyboard becomes primary voice UI; overlay stays optional."
-  - "User decision 2026-05-14: local device resources should be used instead of WinGlowz workers whenever possible."
+  - "User decision 2026-05-14: local device resources should be used instead of WinGlows workers whenever possible."
   - "User decision 2026-05-14: global LTD buyers require install-on-demand language packs rather than French/English-only assumptions."
   - "User decision 2026-05-14: do not bundle all models in the APK; downloading after install is preferred."
   - "Current code already includes Android IME voice capture through KeyboardVoiceController using Android SpeechRecognizer, proving a fallback path exists but not a local-model catalog."
@@ -59,15 +59,15 @@ ASR Language Pack Catalog
 
 # Status
 
-Ready. This spec defines the product and implementation contract for downloadable on-device ASR language packs used by the WinGlowz Android keyboard. It exists to turn the current high-level local-first direction into a concrete catalog, installation, fallback, diagnostics, and benchmarking plan that an implementation agent can execute without inventing policy later.
+Ready. This spec defines the product and implementation contract for downloadable on-device ASR language packs used by the WinGlows Android keyboard. It exists to turn the current high-level local-first direction into a concrete catalog, installation, fallback, diagnostics, and benchmarking plan that an implementation agent can execute without inventing policy later.
 
 # User Story
 
-En tant qu'utilisatrice WinGlowz qui veut dicter dans sa langue depuis le clavier Android, je veux installer seulement les packs vocaux locaux dont j'ai besoin et comprendre clairement le fallback disponible, afin d'utiliser la dictée sans coût serveur implicite ni promesse trompeuse.
+En tant qu'utilisatrice WinGlows qui veut dicter dans sa langue depuis le clavier Android, je veux installer seulement les packs vocaux locaux dont j'ai besoin et comprendre clairement le fallback disponible, afin d'utiliser la dictée sans coût serveur implicite ni promesse trompeuse.
 
-Acteur principal: utilisatrice Android qui dicte depuis le clavier WinGlowz.
+Acteur principal: utilisatrice Android qui dicte depuis le clavier WinGlows.
 
-Acteurs secondaires: fondatrice WinGlowz, futur support client, utilisateur LTD international, moteur ASR local choisi, fallback Android SpeechRecognizer, fallback cloud explicite.
+Acteurs secondaires: fondatrice WinGlows, futur support client, utilisateur LTD international, moteur ASR local choisi, fallback Android SpeechRecognizer, fallback cloud explicite.
 
 Déclencheurs principaux:
 
@@ -77,20 +77,20 @@ Déclencheurs principaux:
 - un pack devient obsolète, incompatible, corrompu ou trop lourd pour l'appareil;
 - le marketing veut publier une promesse de support langue pour le lancement LTD.
 
-Résultat observable attendu: WinGlowz liste des packs de langue installables avec métadonnées fiables, permet de télécharger/supprimer/mettre à jour un pack, choisit un moteur local compatible quand il existe, et montre un fallback explicite quand le local n'est pas disponible.
+Résultat observable attendu: WinGlows liste des packs de langue installables avec métadonnées fiables, permet de télécharger/supprimer/mettre à jour un pack, choisit un moteur local compatible quand il existe, et montre un fallback explicite quand le local n'est pas disponible.
 
 # Minimal Behavior Contract
 
-Quand l'utilisatrice veut dicter depuis le clavier, WinGlowz doit pouvoir lui proposer un pack vocal local compatible avec sa langue, le télécharger et l'utiliser sur l'appareil sans passer par un worker WinGlowz par défaut; si aucun pack local compatible n'existe, n'est pas installé, échoue au chargement ou n'est pas supporté par l'appareil, l'app doit afficher un fallback explicite et récupérable plutôt qu'un échec silencieux. Le résultat observable est soit une dictée locale active avec moteur et langue identifiés, soit un statut clair indiquant l'installation, l'incompatibilité ou le mode fallback. L'edge case le plus facile à rater est le cas où la langue système semble supportée mais le pack choisi est trop lourd ou incompatible avec l'ABI/RAM de l'appareil: l'app doit alors refuser proprement le mode local au lieu de promettre une langue "supportée" qui ne marche pas sur le terminal réel.
+Quand l'utilisatrice veut dicter depuis le clavier, WinGlows doit pouvoir lui proposer un pack vocal local compatible avec sa langue, le télécharger et l'utiliser sur l'appareil sans passer par un worker WinGlows par défaut; si aucun pack local compatible n'existe, n'est pas installé, échoue au chargement ou n'est pas supporté par l'appareil, l'app doit afficher un fallback explicite et récupérable plutôt qu'un échec silencieux. Le résultat observable est soit une dictée locale active avec moteur et langue identifiés, soit un statut clair indiquant l'installation, l'incompatibilité ou le mode fallback. L'edge case le plus facile à rater est le cas où la langue système semble supportée mais le pack choisi est trop lourd ou incompatible avec l'ABI/RAM de l'appareil: l'app doit alors refuser proprement le mode local au lieu de promettre une langue "supportée" qui ne marche pas sur le terminal réel.
 
 # Success Behavior
 
 - Given l'utilisatrice ouvre la section "On-device speech" dans Settings, when le catalogue est chargé, then elle voit les packs classés par langue avec moteur, taille, licence, niveau qualité, statut offline et politique fallback.
-- Given aucun pack local n'est installé pour la langue active, when l'utilisatrice touche le micro clavier, then WinGlowz propose soit l'installation du pack recommandé, soit un fallback explicite si aucun pack local recommandé n'existe.
+- Given aucun pack local n'est installé pour la langue active, when l'utilisatrice touche le micro clavier, then WinGlows propose soit l'installation du pack recommandé, soit un fallback explicite si aucun pack local recommandé n'existe.
 - Given un pack compatible est installé et vérifié, when l'utilisatrice dicte depuis le clavier, then le moteur local démarre sans ouvrir l'overlay ni une UI Flutter intermédiaire et le diagnostic identifie le pack, le moteur et la source `keyboard`.
 - Given un pack téléchargé à 100% avec checksum valide, when l'installation se termine, then le pack apparaît comme `installed` avec taille disque, version et date d'installation persistantes.
 - Given une mise à jour de pack est publiée dans le catalogue, when l'utilisatrice consulte Settings, then l'UI signale qu'une update existe sans forcer l'installation immédiate.
-- Given plusieurs packs existent pour une même langue, when WinGlowz choisit le pack par défaut, then le choix suit un ordre déterministe basé sur compatibilité appareil, niveau qualité et politique produit.
+- Given plusieurs packs existent pour une même langue, when WinGlows choisit le pack par défaut, then le choix suit un ordre déterministe basé sur compatibilité appareil, niveau qualité et politique produit.
 - Given une langue n'a pas de pack local prêt à recommander, when le support produit ou le GTM consulte la matrice des langues, then la langue est marquée `experimental` ou `fallbackOnly` et non vendue comme offline vérifiée.
 
 # Error Behavior
@@ -100,10 +100,10 @@ Quand l'utilisatrice veut dicter depuis le clavier, WinGlowz doit pouvoir lui pr
 - Si le checksum ou la signature d'un pack échoue, le fichier doit être rejeté, le statut doit passer à `failed_verification`, et aucun chargement moteur ne doit être tenté.
 - Si l'appareil ne satisfait pas `minAndroidSdk`, `supportedAbis` ou `minRamMb`, l'installation doit être bloquée avec explication visible et fallback proposé.
 - Si le preflight de capacite disque echoue, l'installation doit etre refusee avant download avec un message explicite (`required_mb`, `available_mb`) et un fallback propose.
-- Si le moteur local ne peut pas charger le modèle installé, WinGlowz doit journaliser l'échec, marquer la cause dans l'état natif persistant, puis proposer Android SpeechRecognizer ou le fallback configuré.
-- Si le démarrage runtime local dépasse le timeout de chargement (`10s`), WinGlowz doit basculer vers fallback explicite, persister `fallback_reason=runtime_timeout`, et ne pas boucler en retry infini.
+- Si le moteur local ne peut pas charger le modèle installé, WinGlows doit journaliser l'échec, marquer la cause dans l'état natif persistant, puis proposer Android SpeechRecognizer ou le fallback configuré.
+- Si le démarrage runtime local dépasse le timeout de chargement (`10s`), WinGlows doit basculer vers fallback explicite, persister `fallback_reason=runtime_timeout`, et ne pas boucler en retry infini.
 - Si l'utilisatrice soumet plusieurs actions concurrentes (tap répété micro ou install), les commandes doivent être idempotentes: une seule transaction active par `pack_id`, les autres sont ignorées ou fusionnées avec feedback UI.
-- Ce qui ne doit jamais arriver: lancement silencieux d'un worker WinGlowz alors que l'utilisatrice pense etre en local, pack marque `recommended` sans licence commerciale verifiee, ou texte marketing annonçant un support langue offline non benchmarke.
+- Ce qui ne doit jamais arriver: lancement silencieux d'un worker WinGlows alors que l'utilisatrice pense etre en local, pack marque `recommended` sans licence commerciale verifiee, ou texte marketing annonçant un support langue offline non benchmarke.
 
 # Problem
 
@@ -177,7 +177,7 @@ Introduire un catalogue de packs de langue ASR versionne, telechargeable et grat
 - Le catalogue est gratuit et ne doit pas utiliser de vocabulaire "marketplace" dans l'UI actuelle.
 - Une langue ne peut etre marquee `recommended` que si le pack associe a passe benchmark qualite/perf/licence sur au moins un appareil representatif.
 - Le clavier ne doit jamais perdre sa reactivite parce qu'un chargement modele bloque le thread UI.
-- Le produit doit utiliser les ressources du telephone avant tout worker WinGlowz quand un pack local compatible est installe.
+- Le produit doit utiliser les ressources du telephone avant tout worker WinGlows quand un pack local compatible est installe.
 - Aucun fallback cloud ne doit etre silencieux; l'utilisatrice doit comprendre quel mode elle utilise.
 - Le fallback cloud est autorise en mode auto apres echec local ou indisponibilite locale, mais seulement si l'utilisatrice a active le parametre `allow_cloud_fallback`.
 - Avant toute capture susceptible d'utiliser le cloud, l'UI doit afficher le mode actif `cloud_fallback`; apres capture, les diagnostics doivent conserver `runtime_mode=cloud_fallback` et `fallback_reason=cloud_auto_policy`.
@@ -323,7 +323,7 @@ Fresh external docs:
 # Acceptance Criteria
 
 - [ ] CA 1 : Given Settings charge le catalogue, when au moins un pack est disponible, then chaque entree affiche langue, moteur, taille de telechargement, taille installee, licence, niveau qualite et fallback.
-- [ ] CA 2 : Given aucun pack n'est installe pour la langue active, when l'utilisatrice touche le micro clavier, then WinGlowz propose un pack recommande ou un fallback explicite, jamais un simple echec silencieux.
+- [ ] CA 2 : Given aucun pack n'est installe pour la langue active, when l'utilisatrice touche le micro clavier, then WinGlows propose un pack recommande ou un fallback explicite, jamais un simple echec silencieux.
 - [ ] CA 3 : Given un pack compatible est installe et valide, when la dictee commence depuis le clavier, then le runtime effectif est `local` et les diagnostics incluent `pack_id` et `engine`.
 - [ ] CA 4 : Given un pack est incompatible avec l'appareil, when l'utilisatrice tente l'installation, then l'installation est refusee avec raison visible et fallback propose.
 - [ ] CA 5 : Given un telechargement est interrompu, when l'app revient au premier plan ou relance l'installation, then l'etat reste recuperable et le pack n'apparait pas comme installe tant que la verification n'est pas finie.
@@ -337,7 +337,7 @@ Fresh external docs:
 - [ ] CA 13 : Given le local est indisponible ou echoue, when le fallback cloud auto est active, then l'UI affiche explicitement le mode `cloud_fallback`.
 - [ ] CA 14 : Given `pack_size_mb > 5%` de la capacite totale OU `free_space_mb < max(3 * download_size_mb, installed_size_mb + 1536)`, when l'utilisatrice lance l'installation d'un pack, then le systeme refuse le demarrage avec `blocked_insufficient_storage`, affiche `required_mb` et `available_mb`, et n'ecrit aucun etat `downloading`.
 - [ ] CA 15 : Given une entree catalogue manque un champ obligatoire du `Data Contract` ou contient un enum invalide, when le catalogue est charge, then cette entree est rejetee avec `catalog_invalid_entry` et n'apparait ni comme installable ni comme `recommended`.
-- [ ] CA 16 : Given `allow_cloud_fallback=false`, when aucun runtime local ou Android fallback ne peut transcrire, then WinGlowz affiche `unavailable` avec action de recuperation et n'envoie aucune donnee cloud.
+- [ ] CA 16 : Given `allow_cloud_fallback=false`, when aucun runtime local ou Android fallback ne peut transcrire, then WinGlows affiche `unavailable` avec action de recuperation et n'envoie aucune donnee cloud.
 - [ ] CA 17 : Given `allow_cloud_fallback=true` et le local est indisponible ou echoue, when le fallback cloud auto est utilise, then l'UI affiche `cloud_fallback`, les diagnostics exposent `fallback_reason=cloud_auto_policy`, et les logs excluent audio brut, transcription brute, secrets, tokens et chemins locaux complets.
 
 # Test Strategy

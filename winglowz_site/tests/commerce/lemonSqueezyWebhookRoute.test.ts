@@ -41,7 +41,7 @@ describe('lemon squeezy webhook route', () => {
     ['control', 'winglowz_app/control'],
     ['command', 'winglowz_app/command'],
   ])(
-    'forwards signed WinGlowz %s events to the generic suite commerce processor',
+    'forwards signed WinGlows %s events to the generic suite commerce processor',
     async (plan, offerId) => {
       const { POST } = await import('@/pages/api/commerce/webhooks/lemon-squeezy')
       mockMutation.mockResolvedValueOnce({

@@ -1,4 +1,4 @@
-# WinGlowz - Classes de Composants Globales
+# WinGlows - Classes de Composants Globales
 
 Ce fichier documente toutes les classes CSS réutilisables définies dans `src/assets/styles/global.css`.
 
@@ -166,7 +166,7 @@ Texte avec gradient rainbow (effet transparent).
 
 **Usage :**
 ```html
-<h1 class="text-rainbow">WinGlowz</h1>
+<h1 class="text-rainbow">WinGlows</h1>
 ```
 
 **Styles :**

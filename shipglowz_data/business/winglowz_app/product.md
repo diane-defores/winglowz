@@ -2,7 +2,7 @@
 artifact: product_context
 metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-04-26"
 updated: "2026-06-10"
 status: "reviewed"
@@ -41,7 +41,7 @@ next_review: "2026-05-26"
 next_step: "$sf-docs update"
 ---
 
-# Product — WinGlowz
+# Product — WinGlows
 
 ## Cadre de référence
 
@@ -49,15 +49,15 @@ Ce document décrit la cible `target-reviewed` actuelle: Flutter partagé, contr
 
 ## Problème utilisateur
 
-Les utilisateurs produisent souvent du texte dans des contextes où taper est lent, peu pratique ou interrompt le flux de travail. WinGlowz vise à transformer rapidement la parole en texte copiable, modifiable, synchronisé et réutilisable.
+Les utilisateurs produisent souvent du texte dans des contextes où taper est lent, peu pratique ou interrompt le flux de travail. WinGlows vise à transformer rapidement la parole en texte copiable, modifiable, synchronisé et réutilisable.
 
 ## Utilisateurs cibles
 
 - Professionnels qui rédigent notes, emails ou comptes-rendus sur mobile et desktop.
 - Power users qui acceptent de configurer leurs propres clés API pour obtenir une meilleure transcription.
 - Utilisateurs Android qui veulent déclencher la dictée hors application via overlay.
-- Utilisateurs Android qui veulent écrire et dicter depuis un clavier WinGlowz dans n'importe quel champ compatible.
-- Utilisateurs desktop ou iOS/web qui veulent retrouver le concept WinGlowz par overlay, raccourci, partage, clipboard ou autre adaptation native honnête.
+- Utilisateurs Android qui veulent écrire et dicter depuis un clavier WinGlows dans n'importe quel champ compatible.
+- Utilisateurs desktop ou iOS/web qui veulent retrouver le concept WinGlows par overlay, raccourci, partage, clipboard ou autre adaptation native honnête.
 
 ## Workflows cœur
 
@@ -66,7 +66,7 @@ Les utilisateurs produisent souvent du texte dans des contextes où taper est le
 1. L'utilisateur se connecte via l'adaptateur auth actif, Firebase Auth pour le premier MVP Android.
 2. Il ouvre l'écran Voice et choisit mode local ou avancé.
 3. Il enregistre sa voix.
-4. WinGlowz affiche le texte brut puis le texte nettoyé si applicable.
+4. WinGlows affiche le texte brut puis le texte nettoyé si applicable.
 5. L'utilisateur copie, modifie, sauvegarde, ou envoie le texte vers le clipboard.
 
 ### Mode avancé
@@ -87,14 +87,14 @@ Les utilisateurs produisent souvent du texte dans des contextes où taper est le
 ### Overlay et quick actions par plateforme
 
 1. Sur Android, l'utilisateur active les permissions overlay/accessibilité dans Settings.
-2. Sur desktop, l'utilisateur déclenche WinGlowz via l'hôte natif disponible: raccourci, fenêtre flottante, clipboard et livraison best-effort quand l'OS l'autorise.
+2. Sur desktop, l'utilisateur déclenche WinGlows via l'hôte natif disponible: raccourci, fenêtre flottante, clipboard et livraison best-effort quand l'OS l'autorise.
 3. Sur iOS et web, le même concept doit être adapté par un chantier dédié: app principale, partage, raccourcis, clipboard ou expérience navigateur selon les limites de la plateforme.
 4. Le résultat reste récupérable: livraison directe quand possible, fallback clipboard ou retour explicite sinon.
 5. Les plateformes ne doivent pas afficher de contrôle trompeur: chaque surface montre uniquement les capacités réellement disponibles ou documentées comme dégradées.
 
-### Clavier Android WinGlowz
+### Clavier Android WinGlows
 
-1. L'utilisateur active WinGlowz keyboard dans les réglages de méthode de saisie Android.
+1. L'utilisateur active WinGlows keyboard dans les réglages de méthode de saisie Android.
 2. Il bascule sur ce clavier depuis un champ texte compatible.
 3. Il peut taper, dicter localement, coller/copier explicitement, ouvrir les snippets, et envoyer play/pause au média courant.
 4. Les champs password, OTP ou privés désactivent dictée, capture clipboard, snippets enrichis et sync.
@@ -138,6 +138,6 @@ Mitigations obligatoires:
 
 - Pas de billing/entitlements dans la migration.
 - Pas de promesse d'overlay système identique sur toutes les plateformes; chaque OS doit avoir un hôte natif, une adaptation meilleure ou une limite documentée.
-- Pas de clavier système WinGlowz hors Android dans cette phase.
+- Pas de clavier système WinGlows hors Android dans cette phase.
 - Pas de promesse de chiffrement bout-en-bout.
 - Pas de code applicatif JS/TS dans le repo final.

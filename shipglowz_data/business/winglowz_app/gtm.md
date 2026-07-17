@@ -2,7 +2,7 @@
 artifact: gtm_context
 metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-04-26"
 updated: "2026-06-10"
 status: "reviewed"
@@ -24,7 +24,7 @@ target_segment:
 offer: "A voice-first cross-platform workflow with Android-native entrypoints first, platform quick actions where available, downloadable local voice packs for supported languages, and optional advanced AI cleanup via user-provided keys"
 channels:
   - "Internal APK distribution and direct demos"
-  - "Cross-promotion to adjacent WinGlowz users"
+  - "Cross-promotion to adjacent WinGlows users"
   - "Workflow-led product content and demos"
 proof_points:
   - "Flutter multi-platform shell exists"
@@ -40,11 +40,11 @@ next_review: "2026-05-26"
 next_step: "$sf-docs update"
 ---
 
-# GTM — WinGlowz
+# GTM — WinGlows
 
 ## Positionnement
 
-WinGlowz est un produit sibling de WinGlowz dans le même écosystème. WinGlowz porte l'axe voice-first (dictée, transcription, nettoyage, clipboard), tandis que WinGlowz porte d'autres workflows de productivité.
+WinGlows est un produit sibling de WinGlows dans le même écosystème. WinGlows porte l'axe voice-first (dictée, transcription, nettoyage, clipboard), tandis que WinGlows porte d'autres workflows de productivité.
 
 ## Segment prioritaire
 
@@ -52,12 +52,12 @@ Utilisateurs orientés productivité, en priorité :
 
 - professionnels indépendants et power users qui dictent des notes/messages ;
 - utilisateurs Android qui veulent capturer du texte hors application via overlay ;
-- utilisateurs desktop qui veulent déclencher WinGlowz par raccourci, fenêtre flottante, clipboard ou livraison best-effort selon l'OS ;
+- utilisateurs desktop qui veulent déclencher WinGlows par raccourci, fenêtre flottante, clipboard ou livraison best-effort selon l'OS ;
 - early adopters capables de configurer des clés BYO pour les modes IA avancés.
 
 ## Promesse publique sûre
 
-"WinGlowz transforme la voix en texte réutilisable avec une base Flutter commune, des entrées Android natives avancées, et des quick actions adaptées aux plateformes où elles sont vérifiées. Les packs vocaux locaux existent uniquement pour les langues et plateformes supportées, avec fallback explicite quand un pack local n'est pas disponible."
+"WinGlows transforme la voix en texte réutilisable avec une base Flutter commune, des entrées Android natives avancées, et des quick actions adaptées aux plateformes où elles sont vérifiées. Les packs vocaux locaux existent uniquement pour les langues et plateformes supportées, avec fallback explicite quand un pack local n'est pas disponible."
 
 ## Promesses à éviter
 
@@ -88,7 +88,7 @@ Formulation à éviter:
 
 ## Canaux de distribution pragmatiques
 
-- Cross-promotion vers la base utilisateur WinGlowz.
+- Cross-promotion vers la base utilisateur WinGlows.
 - Distribution interne Android APK pour premiers tests.
 - Contenu orienté workflow (notes de reunion, email rapide, pensee captee en deplacement).
 - Demos produit courtes centrees sur le gain de vitesse de saisie.

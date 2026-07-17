@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-08"
 created_at: "2026-05-08 17:48:07 UTC"
 updated: "2026-05-24"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "clipboard-backend-agnostic-api"
 owner: "Diane"
 confidence: high
-user_story: "En tant que builder de WinGlowz, je veux que l'historique clipboard et les captures Android/IME passent par une API produit indépendante du backend, afin de pouvoir garder l'app local-first et remplacer Supabase sans réécrire l'UI, le natif Android ou la logique de sécurité."
+user_story: "En tant que builder de WinGlows, je veux que l'historique clipboard et les captures Android/IME passent par une API produit indépendante du backend, afin de pouvoir garder l'app local-first et remplacer Supabase sans réécrire l'UI, le natif Android ou la logique de sécurité."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -59,9 +59,9 @@ Ready as of 2026-05-08. The spec captures the current architectural decision: cl
 
 # User Story
 
-En tant que builder de WinGlowz, je veux que l'historique clipboard et les captures Android/IME passent par une API produit indépendante du backend, afin de pouvoir garder l'app local-first et remplacer Supabase sans réécrire l'UI, le natif Android ou la logique de sécurité.
+En tant que builder de WinGlows, je veux que l'historique clipboard et les captures Android/IME passent par une API produit indépendante du backend, afin de pouvoir garder l'app local-first et remplacer Supabase sans réécrire l'UI, le natif Android ou la logique de sécurité.
 
-Acteur principal: builder de WinGlowz.
+Acteur principal: builder de WinGlows.
 
 Acteurs secondaires: utilisateur Android, utilisateur non connecté, futur backend provider, adaptateur local/offline.
 
@@ -76,7 +76,7 @@ Résultat observable attendu: l'UI et Android/IME appellent une API produit stab
 
 # Minimal Behavior Contract
 
-WinGlowz expose une API clipboard produit qui accepte des actions métier explicites: lister, ajouter manuellement, capturer automatiquement, mettre à jour, pin/unpin, supprimer, marquer un état de sync et demander une confirmation quand un contenu semble risqué. L'API produit délègue la persistance à un `ClipboardHistoryStore` interchangeable et ne connaît ni table Supabase, ni schéma SQL, ni provider concret. Si aucun store n'est disponible, l'utilisateur voit un état récupérable et aucune donnée sensible n'est envoyée. L'edge case facile à rater est Android/IME: le natif ne doit jamais appeler directement Supabase ni contourner la confirmation/sensibilité; il doit produire des événements ou appels qui passent par l'API produit ou par un store local compatible avec le même contrat.
+WinGlows expose une API clipboard produit qui accepte des actions métier explicites: lister, ajouter manuellement, capturer automatiquement, mettre à jour, pin/unpin, supprimer, marquer un état de sync et demander une confirmation quand un contenu semble risqué. L'API produit délègue la persistance à un `ClipboardHistoryStore` interchangeable et ne connaît ni table Supabase, ni schéma SQL, ni provider concret. Si aucun store n'est disponible, l'utilisateur voit un état récupérable et aucune donnée sensible n'est envoyée. L'edge case facile à rater est Android/IME: le natif ne doit jamais appeler directement Supabase ni contourner la confirmation/sensibilité; il doit produire des événements ou appels qui passent par l'API produit ou par un store local compatible avec le même contrat.
 
 # Success Behavior
 

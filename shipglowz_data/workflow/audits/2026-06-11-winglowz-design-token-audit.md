@@ -2,7 +2,7 @@
 artifact: audit
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-11"
 updated: "2026-06-11"
 status: "draft"
@@ -34,11 +34,11 @@ evidence:
 next_step: "run remediation spec for design-token migration"
 ---
 
-# WinGlowz Design Tokens Audit
+# WinGlows Design Tokens Audit
 
 ## Verdict
 
-WinGlowz has a usable token base on both app and site, but migration is not yet
+WinGlows has a usable token base on both app and site, but migration is not yet
 centralized. The project still has substantial direct visual literals that
 short-circuit the token layer.
 
@@ -99,10 +99,10 @@ short-circuit the token layer.
 
 Chantier potentiel: **oui**
 
-Titre proposé: WinGlowz token hardening and visual standardization
+Titre proposé: WinGlows token hardening and visual standardization
 
 Reason: high volume of direct literals in production UI files blocks coherent mobile-first,
 app/site coherence and future scaling.
 
-Recommended route: `/100-sf-spec WinGlowz token hardening and visual standardization`
+Recommended route: `/100-sf-spec WinGlows token hardening and visual standardization`
 

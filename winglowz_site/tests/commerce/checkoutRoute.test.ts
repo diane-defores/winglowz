@@ -110,7 +110,7 @@ describe('commerce checkout route', () => {
     expect(body).not.toContain('api-key')
   })
 
-  test('redirects WinGlowz founder checkout to Lemon Squeezy', async () => {
+  test('redirects WinGlows founder checkout to Lemon Squeezy', async () => {
     resetCommerceEnv()
     process.env.LEMONSQUEEZY_API_KEY = 'api-key'
     process.env.LEMONSQUEEZY_STORE_ID = 'store-id'

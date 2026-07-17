@@ -27,7 +27,7 @@ You get used to working against your environment.
 
 You stop noticing how expensive it really is.
 
-WinGlowz starts from exactly that observation:
+WinGlows starts from exactly that observation:
 
 instead of layering more motivation on top, reduce the hidden cost of computer work.
 

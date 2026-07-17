@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-12"
 created_at: "2026-06-12 12:57:00 UTC"
 updated: "2026-06-12"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "android voice pipeline hardening"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant qu'utilisatrice Android de WinGlowz, je veux que les fonctions micro et transcription produisent un resultat fiable et sur sans fuite vers le presse-papiers ni faux etat actif, afin de pouvoir dicter depuis le clavier ou l'overlay sans ambiguite."
+user_story: "En tant qu'utilisatrice Android de WinGlows, je veux que les fonctions micro et transcription produisent un resultat fiable et sur sans fuite vers le presse-papiers ni faux etat actif, afin de pouvoir dicter depuis le clavier ou l'overlay sans ambiguite."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -59,15 +59,15 @@ Ready. Cette spec transverse couvre les trous fonctionnels restants entre les ch
 
 # User Story
 
-En tant qu'utilisatrice Android de WinGlowz, je veux que les fonctions micro et transcription produisent un resultat fiable et sur sans fuite vers le presse-papiers ni faux etat actif, afin de pouvoir dicter depuis le clavier ou l'overlay sans ambiguite.
+En tant qu'utilisatrice Android de WinGlows, je veux que les fonctions micro et transcription produisent un resultat fiable et sur sans fuite vers le presse-papiers ni faux etat actif, afin de pouvoir dicter depuis le clavier ou l'overlay sans ambiguite.
 
-Actrice principale: utilisatrice Android WinGlowz qui dicte via l'IME ou l'overlay.
+Actrice principale: utilisatrice Android WinGlows qui dicte via l'IME ou l'overlay.
 
 Acteurs secondaires: support, produit, QA Android, observabilite runtime.
 
 Declencheurs principaux:
 
-- l'utilisatrice lance une dictee depuis le clavier Android WinGlowz;
+- l'utilisatrice lance une dictee depuis le clavier Android WinGlows;
 - l'utilisatrice lance une dictee depuis l'overlay Android;
 - l'app tente d'utiliser un pack local, un fallback Android, ou une livraison accessibility/clipboard;
 - une permission micro, overlay, foreground service ou accessibility manque, change, ou est revoquee.
@@ -123,8 +123,8 @@ Le principe directeur est: aucune surface Android ne peut annoncer un etat de ca
 
 Decisions explicites confirmees pour cette spec:
 
-- tant que le moteur local Android n'est pas prouve end-to-end, WinGlowz doit se declarer explicitement `android_fallback` ou `unavailable`, jamais `local` actif;
-- si le champ cible est sensible, WinGlowz ne doit ni injecter ni copier automatiquement le texte; une recuperation manuelle explicite peut etre proposee plus tard, mais elle n'appartient pas a ce chantier;
+- tant que le moteur local Android n'est pas prouve end-to-end, WinGlows doit se declarer explicitement `android_fallback` ou `unavailable`, jamais `local` actif;
+- si le champ cible est sensible, WinGlows ne doit ni injecter ni copier automatiquement le texte; une recuperation manuelle explicite peut etre proposee plus tard, mais elle n'appartient pas a ce chantier;
 - si une session micro est deja active, toute seconde tentative de demarrage doit etre refusee proprement; ce chantier ne retient pas la preemption automatique;
 - la preuve Android manuelle doit passer par une checklist dediee couvrant overlay hors app, IME dictation, champ sensible, permission micro refusee, et concurrence IME/overlay;
 - l'ordre d'implementation impose est: fuite clipboard -> faux etats micro -> raccordement overlay store -> clarification runtime local -> arbitrage de session -> diagnostics.
@@ -218,7 +218,7 @@ exception_without_proof: none
 - Le chantier local-runtime devra soit prouver un moteur local Android fonctionnel end-to-end, soit declasser explicitement toute promesse locale tant que cette preuve manque.
 - Le chantier overlay devra etre considere incomplet tant que les evenements natifs ne creent pas de transcription `source=overlay` dans Flutter.
 - Les flux Settings et Voice peuvent conserver leur UI actuelle, mais leurs messages devront refleter des etats fonctionnels veridiques.
-- La politique de clipboard peut impacter le support utilisateur: il faudra documenter quand WinGlowz copie encore un texte et quand il bloque volontairement.
+- La politique de clipboard peut impacter le support utilisateur: il faudra documenter quand WinGlows copie encore un texte et quand il bloque volontairement.
 - La matrice de verification Android doit inclure au minimum password/OTP, permission micro refusee, et concurrence IME/overlay.
 
 # Documentation Coherence

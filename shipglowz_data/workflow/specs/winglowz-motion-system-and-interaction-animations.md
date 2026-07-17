@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-10"
 created_at: "2026-06-10 20:12:43 UTC"
 updated: "2026-06-10"
@@ -13,12 +13,12 @@ source_model: "GPT-5 Codex"
 scope: "motion-system-and-interaction-animations"
 owner: "Diane"
 confidence: medium
-user_story: "En tant qu'utilisatrice WinGlowz Android et web, je veux que les animations des pages, composants et surfaces clavier rendent les interactions plus lisibles, physiques et professionnelles, afin de comprendre immédiatement ce qui change sans avoir l'impression que des effets sont simplement collés par-dessus l'interface."
+user_story: "En tant qu'utilisatrice WinGlows Android et web, je veux que les animations des pages, composants et surfaces clavier rendent les interactions plus lisibles, physiques et professionnelles, afin de comprendre immédiatement ce qui change sans avoir l'impression que des effets sont simplement collés par-dessus l'interface."
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
+  - "WinGlows Flutter app"
   - "Flutter Material shared widgets"
   - "App shell bottom navigation"
   - "Product pages"
@@ -54,13 +54,13 @@ evidence:
 next_step: "/sf-start shipglowz_data/workflow/specs/winglowz-motion-system-and-interaction-animations.md"
 ---
 
-# Spec: WinGlowz Motion System and Interaction Animations
+# Spec: WinGlows Motion System and Interaction Animations
 
-🟢 [WinGlowzApp] spec: WinGlowz Motion System and Interaction Animations | status: ready | path: shipglowz_data/workflow/specs/winglowz-motion-system-and-interaction-animations.md | next: /sf-start shipglowz_data/workflow/specs/winglowz-motion-system-and-interaction-animations.md | id: wfz-motion-system
+🟢 [WinGlowsApp] spec: WinGlows Motion System and Interaction Animations | status: ready | path: shipglowz_data/workflow/specs/winglowz-motion-system-and-interaction-animations.md | next: /sf-start shipglowz_data/workflow/specs/winglowz-motion-system-and-interaction-animations.md | id: wfz-motion-system
 
 ## Title
 
-WinGlowz Motion System and Interaction Animations
+WinGlows Motion System and Interaction Animations
 
 ## Status
 
@@ -68,11 +68,11 @@ Ready for implementation. Created on 2026-06-10 after the product-pages remaster
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz Android et web, je veux que les animations des pages, composants et surfaces clavier rendent les interactions plus lisibles, physiques et professionnelles, afin de comprendre immédiatement ce qui change sans avoir l'impression que des effets sont simplement collés par-dessus l'interface.
+En tant qu'utilisatrice WinGlows Android et web, je veux que les animations des pages, composants et surfaces clavier rendent les interactions plus lisibles, physiques et professionnelles, afin de comprendre immédiatement ce qui change sans avoir l'impression que des effets sont simplement collés par-dessus l'interface.
 
 ## Minimal Behavior Contract
 
-When the user taps, saves, syncs, changes page, edits content, opens a panel, presses a keyboard key, or completes an onboarding step, WinGlowz should use short, purposeful motion that visually belongs to the affected surface. The animation must communicate state, feedback, continuity, or physicality without changing the underlying data behavior, blocking the user, causing layout shifts, creating infinite motion, or hiding errors. If animation is disabled or not supported, the same state changes must remain understandable through static layout, labels, color, and status. The easy edge case to miss is the keyboard: glow, shake, relief, and special effects must transform the actual key surface/cube, not a detached decorative layer above it.
+When the user taps, saves, syncs, changes page, edits content, opens a panel, presses a keyboard key, or completes an onboarding step, WinGlows should use short, purposeful motion that visually belongs to the affected surface. The animation must communicate state, feedback, continuity, or physicality without changing the underlying data behavior, blocking the user, causing layout shifts, creating infinite motion, or hiding errors. If animation is disabled or not supported, the same state changes must remain understandable through static layout, labels, color, and status. The easy edge case to miss is the keyboard: glow, shake, relief, and special effects must transform the actual key surface/cube, not a detached decorative layer above it.
 
 ## Success Behavior
 
@@ -100,7 +100,7 @@ When the user taps, saves, syncs, changes page, edits content, opens a panel, pr
 
 ## Problem
 
-WinGlowz is gaining more visual polish, but the animations are not yet organized as a product language. Some surfaces now have motion, others are static, and keyboard effects risk feeling like low-quality overlays when the animated effect is not integrated into the surface that users interact with. The app needs a shared motion contract so future animations support clarity, physicality, and trust instead of becoming scattered decoration.
+WinGlows is gaining more visual polish, but the animations are not yet organized as a product language. Some surfaces now have motion, others are static, and keyboard effects risk feeling like low-quality overlays when the animated effect is not integrated into the surface that users interact with. The app needs a shared motion contract so future animations support clarity, physicality, and trust instead of becoming scattered decoration.
 
 ## Solution
 
@@ -132,7 +132,7 @@ Create a lightweight motion system for the Flutter app: shared timing/easing tok
 
 ## Constraints
 
-- Follow WinGlowz guardrails: local validation is limited to `flutter analyze`, `flutter test`, and targeted `flutter test ...`.
+- Follow WinGlows guardrails: local validation is limited to `flutter analyze`, `flutter test`, and targeted `flutter test ...`.
 - Use Flutter built-ins first: `AnimatedSwitcher`, `AnimatedContainer`, `TweenAnimationBuilder`, `AnimationController`, `AnimatedBuilder`, `AnimatedOpacity`, `AnimatedScale`, and `AnimatedSlide` where appropriate.
 - Keep all animated containers at stable dimensions when they live in toolbars, bottom bars, summary strips, keyboard rows, or fixed grids.
 - Animations must be short by default: navigation and tap feedback under 300ms, state transitions generally under 400ms, active progress loops only while a real progress state is active.
@@ -183,7 +183,7 @@ Create a lightweight motion system for the Flutter app: shared timing/easing tok
 
 ## Readiness Decisions
 
-- Reduced motion v1 relies on platform/media accessibility state and app-level motion gating in the shared primitives. Do not add a new user-facing WinGlowz reduced-motion setting in this chantier.
+- Reduced motion v1 relies on platform/media accessibility state and app-level motion gating in the shared primitives. Do not add a new user-facing WinGlows reduced-motion setting in this chantier.
 - Keyboard electric/spark effects are optional implementation details, not a required user-selectable Keyboard Studio feature in this chantier. If included, they must be finite, restrained, physically attached to the key body, and covered by keyboard preview tests.
 - Bottom-tab page transitions should stay instant or extremely short. Prefer component-local transitions and feedback over a global decorative tab-slide system.
 - Fresh external docs verdict: `fresh-docs not needed` for the ready gate because this spec uses local Flutter built-ins and existing app architecture. If a third-party animation package, native Android API change, or platform-specific accessibility API is introduced, the implementation must stop and run the Documentation Freshness Gate before adoption.
@@ -384,7 +384,7 @@ None.
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-06-10 20:12:43 UTC | sf-spec | GPT-5 Codex | Created motion-system spec from user request and current Flutter UI context. | Draft saved. | `/sf-ready WinGlowz Motion System and Interaction Animations` |
+| 2026-06-10 20:12:43 UTC | sf-spec | GPT-5 Codex | Created motion-system spec from user request and current Flutter UI context. | Draft saved. | `/sf-ready WinGlows Motion System and Interaction Animations` |
 | 2026-06-10 20:18:30 UTC | sf-ready | GPT-5 Codex | Reviewed readiness, resolved open motion-priority questions, tightened proof contract, and versioned dependent specs. | Ready. | `/sf-start shipglowz_data/workflow/specs/winglowz-motion-system-and-interaction-animations.md` |
 
 ## Current Chantier Flow

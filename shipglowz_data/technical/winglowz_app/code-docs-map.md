@@ -2,7 +2,7 @@
 artifact: technical_module_context
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-04"
 updated: "2026-06-11"
 status: draft
@@ -30,7 +30,7 @@ next_review: "2026-06-04"
 next_step: "/sf-docs technical audit"
 ---
 
-# Code Docs Map — WinGlowz
+# Code Docs Map — WinGlows
 
 | Code path / pattern | Subsystem | Primary technical doc | Validation | Docs update trigger |
 | --- | --- | --- | --- | --- |

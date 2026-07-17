@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-12"
 created_at: "2026-06-12 12:52:39 UTC"
 updated: "2026-06-12"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "site-copy-positioning-and-claims-hardening"
 owner: "Diane"
 confidence: medium
-user_story: "En tant que visiteur WinGlowz qui découvre l'offre, je veux comprendre immédiatement que Windows Mastery est l'offre centrale, pourquoi elle m'est utile, et quels claims sont réellement prouvés, afin de décider en confiance si je poursuis vers la page de vente, le catalogue ou l'inscription."
+user_story: "En tant que visiteur WinGlows qui découvre l'offre, je veux comprendre immédiatement que Windows Mastery est l'offre centrale, pourquoi elle m'est utile, et quels claims sont réellement prouvés, afin de décider en confiance si je poursuis vers la page de vente, le catalogue ou l'inscription."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -67,13 +67,13 @@ evidence:
 next_step: "Operator review before optional /005-sf-ship winglowz-site-copy-positioning-and-claims-hardening"
 ---
 
-# Spec: WinGlowz Site Copy Positioning And Claims Hardening
+# Spec: WinGlows Site Copy Positioning And Claims Hardening
 
-🟠 [WinGlowz] spec: WinGlowz Site Copy Positioning And Claims Hardening | status: implemented-verified-not-shipped | path: shipglowz_data/workflow/specs/winglowz-site-copy-positioning-and-claims-hardening.md | next: operator review before optional /005-sf-ship | id: wfz-site-copy-positioning-hardening
+🟠 [WinGlows] spec: WinGlows Site Copy Positioning And Claims Hardening | status: implemented-verified-not-shipped | path: shipglowz_data/workflow/specs/winglowz-site-copy-positioning-and-claims-hardening.md | next: operator review before optional /005-sf-ship | id: wfz-site-copy-positioning-hardening
 
 ## Title
 
-WinGlowz Site Copy Positioning And Claims Hardening
+WinGlows Site Copy Positioning And Claims Hardening
 
 ## Status
 
@@ -82,7 +82,7 @@ Implementation is complete for the in-scope copy and claim-hardening work. Verif
 
 ## User Story
 
-En tant que visiteur WinGlowz qui découvre l'offre, je veux comprendre immédiatement que Windows Mastery est l'offre centrale, pourquoi elle m'est utile, et quels claims sont réellement prouvés, afin de décider en confiance si je poursuis vers la page de vente, le catalogue ou l'inscription.
+En tant que visiteur WinGlows qui découvre l'offre, je veux comprendre immédiatement que Windows Mastery est l'offre centrale, pourquoi elle m'est utile, et quels claims sont réellement prouvés, afin de décider en confiance si je poursuis vers la page de vente, le catalogue ou l'inscription.
 
 ## Minimal Behavior Contract
 
@@ -90,7 +90,7 @@ When a visitor lands on the homepage, landing page, navigation, footer, product 
 
 ## Success Behavior
 
-- The homepage and landing page pass the five-second test for the primary job-to-be-done: a cold visitor can identify WinGlowz as a Windows-first productivity training offer led by Windows Mastery, not as a generic plugin bundle or SaaS subscription.
+- The homepage and landing page pass the five-second test for the primary job-to-be-done: a cold visitor can identify WinGlows as a Windows-first productivity training offer led by Windows Mastery, not as a generic plugin bundle or SaaS subscription.
 - Global navigation, hero CTAs, final CTAs, and footer links route the highest-intent visitor toward `Windows Mastery` first, while keeping `Products/Produits` available as a secondary ecosystem path.
 - The landing pricing section no longer presents fictional subscription tiers and instead reflects the actual commercial structure supported by the repository and governance corpus.
 - The Windows Mastery page keeps a clear sales story, but every sensitive claim is either backed by canonical proof or softened to the verified boundary.
@@ -240,7 +240,7 @@ Rebuild the public copy hierarchy around one explicit commercial rule: `Windows 
 
 - [x] Task 2: Remove fictional pricing and rebuild truthful landing conversion framing
   - Fichier : `src/components/astro/landing/Pricing.astro`
-  - Action : Replace the current Free/Pro/Enterprise subscription grid with a truthful offer framing aligned to actual WinGlowz commercial surfaces.
+  - Action : Replace the current Free/Pro/Enterprise subscription grid with a truthful offer framing aligned to actual WinGlows commercial surfaces.
   - User story link : Prevents false expectations and restores trust during evaluation.
   - Depends on : Task 1
   - Validate with : `WFZ-COPY-002`, browser review on landing EN/FR
@@ -296,7 +296,7 @@ Rebuild the public copy hierarchy around one explicit commercial rule: `Windows 
 
 ## Acceptance Criteria
 
-- [ ] CA 1: Given a first-time visitor on `/` or `/fr`, when they read the first viewport, then the page clearly frames WinGlowz around a Windows-first flagship training path rather than a generic tool bundle.
+- [ ] CA 1: Given a first-time visitor on `/` or `/fr`, when they read the first viewport, then the page clearly frames WinGlows around a Windows-first flagship training path rather than a generic tool bundle.
 - [ ] CA 2: Given a qualified visitor on the landing page, when they inspect the pricing/conversion section, then they do not see fictional monthly or annual subscription tiers unsupported by the repository.
 - [ ] CA 3: Given any changed flagship or landing surface, when a sensitive claim appears, then that claim matches a `verified` boundary or a safely downgraded wording justified by `claim-register.md`.
 - [ ] CA 4: Given the global navbar, footer, hero CTAs, and final CTA, when a high-intent user chooses the primary path, then the destination is `Windows Mastery` or its localized equivalent rather than an ecosystem catalog by default.

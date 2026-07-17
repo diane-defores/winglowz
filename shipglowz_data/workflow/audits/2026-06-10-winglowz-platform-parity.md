@@ -2,7 +2,7 @@
 artifact: audit
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-10"
 updated: "2026-06-10"
 status: "draft"
@@ -35,17 +35,17 @@ depends_on:
     required_status: "reviewed"
 supersedes: []
 evidence:
-  - "User request 2026-06-10: /sf-platform-parity WinGlowz platforms=android,ios,windows,macos,linux,web"
+  - "User request 2026-06-10: /sf-platform-parity WinGlows platforms=android,ios,windows,macos,linux,web"
   - "Platform direction in winglowz_app/README.md targets near-complete parity across Android, iOS, macOS, Windows, Linux, and web."
   - "Desktop overlay specs and checklists exist for Windows, macOS, and Linux; native runner QA is still pending."
-next_step: "/sf-spec WinGlowz iOS app parity and quick actions"
+next_step: "/sf-spec WinGlows iOS app parity and quick actions"
 ---
 
-# WinGlowz Platform Parity Audit
+# WinGlows Platform Parity Audit
 
 ## Verdict
 
-WinGlowz has a strong shared Flutter product base and the right native-host
+WinGlows has a strong shared Flutter product base and the right native-host
 direction, but platform parity is not yet complete enough for a broad public
 "supported everywhere" claim.
 
@@ -80,12 +80,12 @@ The current state is:
 | Voice capture and transcription | Record/dictate text, preserve recoverable text, and save/copy result | macOS | `unknown` | macOS microphone/speech plist, Flutter plugins | `manual-qa` | `sf-test` | Needs runner permission and recording proof. |
 | Voice capture and transcription | Record/dictate text, preserve recoverable text, and save/copy result | Linux | `adapted-required` | `PlatformCapabilities.localSpeechSupported == false` on Linux; advanced recording remains possible | `docs-claim` | `sf-spec` | Local speech unavailable; advanced recording/Whisper should be the parity path. |
 | Voice capture and transcription | Record/dictate text, preserve recoverable text, and save/copy result | Web | `adapted-required` | `PlatformCapabilities.localSpeechSupported == false` on web | `implementation` | `sf-spec` | Browser path needs explicit safe recording/proxy/direct contract. |
-| Overlay / quick action | Trigger WinGlowz from outside the main app and return usable text | Android | `same` | `AndroidManifest.xml`, `OverlayForegroundService`, `OverlayAccessibilityService`, Android overlay docs | `manual-qa` | `sf-test` | Native implementation exists; physical-device QA still required. |
-| Overlay / quick action | Trigger WinGlowz from outside the main app and return usable text | iOS | `adapted-required` | Docs mark native host/recovery model still to spec; no iOS host code | `implementation` | `sf-spec` | Likely Share Sheet, Shortcuts/App Intents, clipboard, and main-app workflows rather than overlay. |
-| Overlay / quick action | Trigger WinGlowz from outside the main app and return usable text | Windows | `unknown` | `windows/runner/flutter_window.cpp`, `WindowsOverlayBridge`, Windows checklist | `manual-qa` | `sf-test` | First implementation exists; Windows machine proof not run. |
-| Overlay / quick action | Trigger WinGlowz from outside the main app and return usable text | macOS | `unknown` | `macos/Runner/MainFlutterWindow.swift`, `DesktopOverlayBridge`, macOS/Linux checklist | `manual-qa` | `sf-test` | First implementation exists; permissions/focus/Spaces proof pending. |
-| Overlay / quick action | Trigger WinGlowz from outside the main app and return usable text | Linux | `degraded-accepted` | `linux/runner/my_application.cc`, explicit GTK-scoped hotkey and clipboard-only delivery | `manual-qa` | `sf-test` | Degradation is honest and OS/compositor-driven, but still needs native proof and follow-up decision. |
-| Overlay / quick action | Trigger WinGlowz from outside the main app and return usable text | Web | `adapted-required` | Docs: no OS overlay/IME in browser | `implementation` | `sf-spec` | Browser alternatives need a contract, e.g. in-app quick actions/import/share. |
+| Overlay / quick action | Trigger WinGlows from outside the main app and return usable text | Android | `same` | `AndroidManifest.xml`, `OverlayForegroundService`, `OverlayAccessibilityService`, Android overlay docs | `manual-qa` | `sf-test` | Native implementation exists; physical-device QA still required. |
+| Overlay / quick action | Trigger WinGlows from outside the main app and return usable text | iOS | `adapted-required` | Docs mark native host/recovery model still to spec; no iOS host code | `implementation` | `sf-spec` | Likely Share Sheet, Shortcuts/App Intents, clipboard, and main-app workflows rather than overlay. |
+| Overlay / quick action | Trigger WinGlows from outside the main app and return usable text | Windows | `unknown` | `windows/runner/flutter_window.cpp`, `WindowsOverlayBridge`, Windows checklist | `manual-qa` | `sf-test` | First implementation exists; Windows machine proof not run. |
+| Overlay / quick action | Trigger WinGlows from outside the main app and return usable text | macOS | `unknown` | `macos/Runner/MainFlutterWindow.swift`, `DesktopOverlayBridge`, macOS/Linux checklist | `manual-qa` | `sf-test` | First implementation exists; permissions/focus/Spaces proof pending. |
+| Overlay / quick action | Trigger WinGlows from outside the main app and return usable text | Linux | `degraded-accepted` | `linux/runner/my_application.cc`, explicit GTK-scoped hotkey and clipboard-only delivery | `manual-qa` | `sf-test` | Degradation is honest and OS/compositor-driven, but still needs native proof and follow-up decision. |
+| Overlay / quick action | Trigger WinGlows from outside the main app and return usable text | Web | `adapted-required` | Docs: no OS overlay/IME in browser | `implementation` | `sf-spec` | Browser alternatives need a contract, e.g. in-app quick actions/import/share. |
 | Android IME keyboard | Type/dictate/copy/snippet/media from a system keyboard | Android | `same` | `InputMethodService`, keyboard bridge, large IME manual matrix, keyboard tests | `manual-qa` | `sf-test` | Android-only by OS role; still has device QA items. |
 | Android IME keyboard | Type/dictate/copy/snippet/media from a system keyboard | iOS | `not-supported` | Platform docs: IME unavailable | `none` | `sf-docs` | Correct as OS/product adaptation; should offer iOS alternatives instead. |
 | Android IME keyboard | Type/dictate/copy/snippet/media from a system keyboard | Windows | `not-supported` | Windows spec: no IME promise | `none` | `sf-docs` | Desktop overlay/quick actions are the equivalent. |
@@ -119,18 +119,18 @@ That wording is now partly stale. It should be updated to say:
 
 ## Recommended Routes
 
-1. `/sf-spec WinGlowz iOS app parity and quick actions`
+1. `/sf-spec WinGlows iOS app parity and quick actions`
    - Covers app shell smoke, voice permissions, share sheet, Shortcuts/App
      Intents, clipboard behavior, auth/secure storage, snippets, and no-IME
      alternatives.
-2. `/sf-spec WinGlowz web degraded parity contract`
+2. `/sf-spec WinGlows web degraded parity contract`
    - Covers browser clipboard, recording/AI proxy posture, auth smoke, no OS
      overlay/IME, and honest Settings states.
 3. `/sf-test --local shipglowz_data/workflow/verification/windows-desktop-overlay-hotkeys-parity-checklist.md`
    - Required before Windows parity claim.
 4. `/sf-test --local shipglowz_data/workflow/verification/macos-linux-desktop-overlay-hotkeys-parity-checklist.md`
    - Required before macOS/Linux parity claim.
-5. `/sf-docs align WinGlowz business and architecture platform wording`
+5. `/sf-docs align WinGlows business and architecture platform wording`
    - Removes stale Android-only overlay language while preserving Android-only
      IME truth.
 
@@ -138,7 +138,7 @@ That wording is now partly stale. It should be updated to say:
 
 Chantier potentiel: oui
 
-Titre proposé: WinGlowz iOS app parity and quick actions
+Titre proposé: WinGlows iOS app parity and quick actions
 
 Raison: iOS is in the declared target platform list and has only scaffold plus
 microphone/speech permission evidence. It needs product decisions and native
@@ -150,4 +150,4 @@ Sévérité: P2
 Scope: `winglowz_app/ios`, shared Flutter features, platform capabilities,
 Settings copy, verification docs, public platform claims.
 
-Spec recommandée: `/sf-spec WinGlowz iOS app parity and quick actions`
+Spec recommandée: `/sf-spec WinGlows iOS app parity and quick actions`

@@ -48,7 +48,7 @@ describe('commerce offer configuration', () => {
     expect(allowed).toEqual(candidates)
   })
 
-  test('returns WinGlowz founder offer configs', () => {
+  test('returns WinGlows founder offer configs', () => {
     expect(getCommerceOffer(WINGLOWZ_APP_FOCUS_LTD_OFFER_ID)).toMatchObject({
       productId: 'winglowz_app',
       plan: 'focus',

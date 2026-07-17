@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-10"
 created_at: "2026-05-10 09:52:03 UTC"
 updated: "2026-05-10"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "android-overlay-bugfix"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisateur Android de WinGlowz, je veux retrouver l'overlay flottant fonctionnel de la version Expo dans l'application Flutter, afin de dicter, arreter, annuler et livrer du texte depuis n'importe quelle app sans ouvrir WinGlowz."
+user_story: "En tant qu'utilisateur Android de WinGlows, je veux retrouver l'overlay flottant fonctionnel de la version Expo dans l'application Flutter, afin de dicter, arreter, annuler et livrer du texte depuis n'importe quelle app sans ouvrir WinGlows."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -25,7 +25,7 @@ linked_systems:
   - "Android accessibility service"
   - "Clipboard fallback"
   - "Voice recording pipeline"
-  - "WinGlowz keyboard IME"
+  - "WinGlows keyboard IME"
   - "Firebase/backend-agnostic stores"
 depends_on:
   - artifact: "docs/OVERLAY_ANDROID.md"
@@ -65,9 +65,9 @@ Draft spec created after comparing the current Flutter Android implementation wi
 
 # User Story
 
-En tant qu'utilisateur Android de WinGlowz, je veux retrouver l'overlay flottant fonctionnel de la version Expo dans l'application Flutter, afin de dicter, arreter, annuler et livrer du texte depuis n'importe quelle app sans ouvrir WinGlowz.
+En tant qu'utilisateur Android de WinGlows, je veux retrouver l'overlay flottant fonctionnel de la version Expo dans l'application Flutter, afin de dicter, arreter, annuler et livrer du texte depuis n'importe quelle app sans ouvrir WinGlows.
 
-Acteur principal: utilisateur Android de WinGlowz, connecte ou en fallback local.
+Acteur principal: utilisateur Android de WinGlows, connecte ou en fallback local.
 
 Declencheurs principaux:
 
@@ -79,18 +79,18 @@ Resultat observable attendu: une vraie bulle flottante apparait au-dessus des au
 
 # Minimal Behavior Contract
 
-Quand l'overlay est active sur Android avec la permission systeme, WinGlowz doit afficher une bulle native draggable, visible hors de l'application. Une action explicite sur la bulle lance une session voix unique; stop produit le texte final, cancel jette la session, et chaque etat est reflechi dans la bulle et la notification. Si l'overlay, le micro, l'accessibilite, le champ cible, le backend ou le recorder n'est pas disponible, l'app doit refuser proprement ou tomber sur clipboard/local fallback sans session fantome. L'edge case facile a rater est que l'ancienne version Expo avait deux pieces indispensables que Flutter n'a pas encore: la vue `WindowManager` interactive et le canal d'evenements natif vers la logique voix.
+Quand l'overlay est active sur Android avec la permission systeme, WinGlows doit afficher une bulle native draggable, visible hors de l'application. Une action explicite sur la bulle lance une session voix unique; stop produit le texte final, cancel jette la session, et chaque etat est reflechi dans la bulle et la notification. Si l'overlay, le micro, l'accessibilite, le champ cible, le backend ou le recorder n'est pas disponible, l'app doit refuser proprement ou tomber sur clipboard/local fallback sans session fantome. L'edge case facile a rater est que l'ancienne version Expo avait deux pieces indispensables que Flutter n'a pas encore: la vue `WindowManager` interactive et le canal d'evenements natif vers la logique voix.
 
 # Success Behavior
 
-- Given l'utilisateur active l'overlay et `Settings.canDrawOverlays` est vrai, when il quitte l'app, then une bulle WinGlowz native reste visible au-dessus des autres apps.
-- Given la bulle est visible et l'utilisateur appuie dessus, when aucune session voix n'est active, then WinGlowz demarre une session overlay et passe la bulle en etat `recording`.
+- Given l'utilisateur active l'overlay et `Settings.canDrawOverlays` est vrai, when il quitte l'app, then une bulle WinGlows native reste visible au-dessus des autres apps.
+- Given la bulle est visible et l'utilisateur appuie dessus, when aucune session voix n'est active, then WinGlows demarre une session overlay et passe la bulle en etat `recording`.
 - Given l'utilisateur maintient la bulle, when il relache apres le delai hold-to-record, then la session s'arrete et le traitement commence.
 - Given l'utilisateur appuie sur stop dans l'etat recording, when le recorder retourne du texte, then le texte est enregistre comme transcription source `overlay`, copie au clipboard, et injecte dans le champ actif si l'accessibilite le permet.
 - Given l'utilisateur appuie sur cancel, when une session est active, then l'audio/resultat partiel est abandonne, aucun item vide n'est cree, et la bulle revient en collapsed.
 - Given l'accessibilite est desactivee ou aucun champ editable n'est cible, when un texte final existe, then le texte est copie au clipboard et l'utilisateur voit un feedback recuperable.
 - Given l'utilisateur revoke l'overlay permission ou desactive l'overlay dans Settings, when le statut est rafraichi, then la vue overlay et le service foreground sont arretes.
-- Given WinGlowz keyboard est en train d'enregistrer, when l'overlay tente de demarrer, then la nouvelle session est refusee ou attend une arbitration explicite; aucun double micro ne demarre.
+- Given WinGlows keyboard est en train d'enregistrer, when l'overlay tente de demarrer, then la nouvelle session est refusee ou attend une arbitration explicite; aucun double micro ne demarre.
 
 # Error Behavior
 
@@ -123,7 +123,7 @@ Porter la logique utile du module Expo vers l'app Android Flutter native en gard
 - Reglages Settings pour ajuster la taille et l'opacite de l'unique bulle overlay Android.
 - Foreground service conforme Android 14+ avec `foregroundServiceType="microphone"` et permissions deja declarees.
 - Injection accessibility best-effort avec clipboard fallback obligatoire.
-- Arbitration avec l'IME WinGlowz keyboard et toute session voix app/overlay existante.
+- Arbitration avec l'IME WinGlows keyboard et toute session voix app/overlay existante.
 - Settings/Voice UI pour afficher les statuts reels overlay, accessibilite, notification/micro et erreurs recuperables.
 - Logs techniques non sensibles pour diagnostiquer permissions, lifecycle service, evenements overlay et delivery mode.
 - Tests unitaires Dart pour le bridge/status et tests manuels Android reels pour la bulle.

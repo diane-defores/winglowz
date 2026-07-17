@@ -2,7 +2,7 @@
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-31"
 created_at: "2026-05-31 01:48:26 UTC"
 updated: "2026-05-31"
@@ -37,7 +37,7 @@ supersedes: []
 evidence:
   - "2026-05-30 local-to-cloud promotion chantier exposed recurring mistakes: spec questions left open, secrets almost included for convenience, no proof contract at first readiness, no Flutter-specific wiring doc, and subagent handoff unavailable."
   - "SocialGlowz reference doctrine: seed empty cloud only when safe, keep local queue durable, clear stale queues on user change, and show post-auth stages before claiming readiness."
-  - "WinGlowz keyboard sync controller already implements account-safe seed, hydrate, conflict, queue and account-switch patterns."
+  - "WinGlows keyboard sync controller already implements account-safe seed, hydrate, conflict, queue and account-switch patterns."
 next_review: "2026-06-30"
 next_step: "/sf-docs technical audit"
 ---
@@ -46,7 +46,7 @@ next_step: "/sf-docs technical audit"
 
 ## Purpose
 
-This playbook is the reusable doctrine for any WinGlowz chantier that turns local-first data into account-backed cloud data.
+This playbook is the reusable doctrine for any WinGlows chantier that turns local-first data into account-backed cloud data.
 
 Use it before implementing sync for a new domain, extending an existing domain, changing post-auth behavior, or making a public claim that data is recoverable after reinstall.
 
@@ -242,4 +242,4 @@ python3 /home/claude/shipglowz/tools/shipglowz_metadata_lint.py shipglowz_data/t
 
 ## Maintenance Rule
 
-Update this playbook whenever WinGlowz adds a new sync domain, changes account-seeding policy, changes conflict-resolution surfaces, changes secret policy, or changes the proof required for reinstall/relogin recovery.
+Update this playbook whenever WinGlows adds a new sync domain, changes account-seeding policy, changes conflict-resolution surfaces, changes secret policy, or changes the proof required for reinstall/relogin recovery.

@@ -26,7 +26,7 @@ That is not an excuse.
 
 It is a better diagnosis.
 
-And that is exactly where WinGlowz starts: reduce friction, make Windows more supportive, and bring clarity back into a place that currently creates too much noise.
+And that is exactly where WinGlows starts: reduce friction, make Windows more supportive, and bring clarity back into a place that currently creates too much noise.
 
 If that speaks to you, the sales page is here:
 

@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "design-system-hardening"
 owner: "Diane"
 confidence: medium
-user_story: "En tant qu'utilisatrice WinGlowz, je veux une cohérence visuelle stricte entre app, site et composants, sans déviation locale de tokens, afin que l'identité produit soit pro, lisible et maintenable sur mobile et desktop."
+user_story: "En tant qu'utilisatrice WinGlows, je veux une cohérence visuelle stricte entre app, site et composants, sans déviation locale de tokens, afin que l'identité produit soit pro, lisible et maintenable sur mobile et desktop."
 risk_level: "high"
 security_impact: "none"
 docs_impact: "yes"
@@ -43,12 +43,12 @@ evidence:
   - "python3 /home/claude/shipglowz/tools/design_system_drift_check.py --format markdown --warn-only --max-findings 5000"
   - "Excluding generated .vercel/output artifacts: 422 findings still actionable"
   - "Canonique visuel recommandé dans `shipglowz_data/technical/design-system-authority.md`"
-next_step: "/102-sf-start WinGlowz token hardening and visual standardization"
+next_step: "/102-sf-start WinGlows token hardening and visual standardization"
 ---
 
 # Title
 
-WinGlowz Token Hardening and Visual Standardization
+WinGlows Token Hardening and Visual Standardization
 
 ## Status
 
@@ -56,11 +56,11 @@ Ready. The token authority contract is in place, and this spec is now approved a
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz, je veux une cohérence visuelle stricte sur toutes les surfaces (application Android/web, site de présentation, composants partagés), afin d'avoir une expérience professionnelle stable, cohérente, et sans régression de branding, sur mobile et desktop.
+En tant qu'utilisatrice WinGlows, je veux une cohérence visuelle stricte sur toutes les surfaces (application Android/web, site de présentation, composants partagés), afin d'avoir une expérience professionnelle stable, cohérente, et sans régression de branding, sur mobile et desktop.
 
 ## Minimal Behavior Contract
 
-WinGlowz enforces that every production visual decision about color, spacing, typography, motion, radius, elevation, layout sizing, and theme-sensitive branching flows from the canonical token sources per project surface; non-authoritative visual literals are rejected unless explicitly whitelisted as temporary, documented platform-bound exceptions. When a screen or component is rendered, its visual output must be deterministic from token sources and shared component abstractions, and if a visual override is blocked at runtime or by migration, the app/site continues in a safe, branded fallback style rather than rendering ad-hoc constants. The main edge case is cross-surface drift (app/site/integration) where one surface compiles with updated tokens and another silently keeps legacy values.
+WinGlows enforces that every production visual decision about color, spacing, typography, motion, radius, elevation, layout sizing, and theme-sensitive branching flows from the canonical token sources per project surface; non-authoritative visual literals are rejected unless explicitly whitelisted as temporary, documented platform-bound exceptions. When a screen or component is rendered, its visual output must be deterministic from token sources and shared component abstractions, and if a visual override is blocked at runtime or by migration, the app/site continues in a safe, branded fallback style rather than rendering ad-hoc constants. The main edge case is cross-surface drift (app/site/integration) where one surface compiles with updated tokens and another silently keeps legacy values.
 
 ## Success Behavior
 
@@ -145,7 +145,7 @@ Appliquer une migration systémique en 3 couches: (1) verrouiller le contrat d�
 
 ## Invariants
 
-- Le branding WinGlowz reste cohérent entre app et site dans l'espace visuel canonique.
+- Le branding WinGlows reste cohérent entre app et site dans l'espace visuel canonique.
 - Les composants UI applicatifs doivent lire les styles via `WinGlowzThemeTokens`/tokens CSS/aliases.
 - Les tests et la migration suivent un ordre: source token → consommation composant → validation.
 - Aucun changement de logique métier n’est introduit dans ce chantier.
@@ -279,13 +279,13 @@ None.
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-06-11 15:06:43 UTC | 100-sf-spec | GPT-5 Codex | create | draft | /101-sf-ready WinGlowz token hardening and visual standardization |
-| 2026-06-11 15:07:15 UTC | 101-sf-ready | GPT-5 Codex | readiness-check | ready | /102-sf-start WinGlowz token hardening and visual standardization |
-| 2026-06-11 15:47:26 UTC | 102-sf-start | GPT-5 Codex | implementation | partial | /103-sf-verify WinGlowz token hardening and visual standardization |
+| 2026-06-11 15:06:43 UTC | 100-sf-spec | GPT-5 Codex | create | draft | /101-sf-ready WinGlows token hardening and visual standardization |
+| 2026-06-11 15:07:15 UTC | 101-sf-ready | GPT-5 Codex | readiness-check | ready | /102-sf-start WinGlows token hardening and visual standardization |
+| 2026-06-11 15:47:26 UTC | 102-sf-start | GPT-5 Codex | implementation | partial | /103-sf-verify WinGlows token hardening and visual standardization |
 | 2026-06-11 19:46:43 UTC | 006-sf-design | GPT-5 Codex | app-input-token-standardization | partial | Continue field-token sweep or /103-sf-verify after full token scope |
 | 2026-06-11 19:51:04 UTC | 006-sf-design | GPT-5 Codex | app-field-row-standardization | partial | Continue full token scope or /103-sf-verify after remaining surfaces |
-| 2026-06-12 20:46:04 UTC | 001-sf-build | Codex | implementation | partial | Continue WinGlowz site token migration before /103-sf-verify |
-| 2026-06-18 00:00:00 UTC | 001-sf-build | GPT-5 Codex | implementation | done | WinGlowz app/site drift reduced to zero; ready for /103-sf-verify |
+| 2026-06-12 20:46:04 UTC | 001-sf-build | Codex | implementation | partial | Continue WinGlows site token migration before /103-sf-verify |
+| 2026-06-18 00:00:00 UTC | 001-sf-build | GPT-5 Codex | implementation | done | WinGlows app/site drift reduced to zero; ready for /103-sf-verify |
 | 2026-06-22 06:30:00 UTC | 102-sf-start | Claude Code | implementation | partial | Improved token values (spacing, shadows, semantic palette), fixed 5 hardcoded values in Settings, added motion tokens; flutter analyze clean | Complete Tâches 2-4 and 9 before /103-sf-verify |
 | 2026-06-23 07:08:00 UTC | 103-sf-verify | Claude Code | verification | partial | Production UI drift-check clean (0 findings on changed files); residual 4 findings in idees/emails/ (non-production); build:check and flutter analyze pass; bug gate not assessed | Route idees/emails/ cleanup to optional follow-up then launch /104-sf-end |
 

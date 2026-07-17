@@ -15,7 +15,7 @@ title: "Keyboard action-bar voice recording"
 
 ## Summary
 
-WinGlowz should make the Android keyboard the primary day-to-day interface for voice capture. The floating overlay remains available for users who want it, but it is no longer required for the core voice workflow.
+WinGlows should make the Android keyboard the primary day-to-day interface for voice capture. The floating overlay remains available for users who want it, but it is no longer required for the core voice workflow.
 
 Add a voice recording button to the native keyboard action bar. The button starts, stops, and cancels voice capture from inside the IME, then delivers the resulting text into the active input field using the existing keyboard/privacy delivery rules.
 
@@ -23,18 +23,18 @@ The target architecture is local-first: run speech recognition on the user's dev
 
 ## Product Intent
 
-- Primary interface: WinGlowz keyboard.
+- Primary interface: WinGlows keyboard.
 - Optional interface: floating overlay.
 - The keyboard voice button should feel like a built-in keyboard tool, not a shortcut back to the Flutter app.
 - Users should be able to dictate without leaving the target app or opening the overlay.
-- The default path should consume device CPU/NPU/RAM, not WinGlowz server spend.
+- The default path should consume device CPU/NPU/RAM, not WinGlows server spend.
 - Server/worker transcription is a fallback, not the baseline product loop.
 
 ## Engine Strategy
 
-- Default: local WinGlowz ASR engine when a supported model is installed and the device passes a lightweight capability check.
+- Default: local WinGlows ASR engine when a supported model is installed and the device passes a lightweight capability check.
 - Fallback 1: Android platform speech recognition when no local model is installed or the device is too constrained.
-- Fallback 2: WinGlowz cloud/worker quality mode only when explicitly selected or when local/offline paths fail.
+- Fallback 2: WinGlows cloud/worker quality mode only when explicitly selected or when local/offline paths fail.
 - Model downloads should be optional, resumable, and cached on-device.
 - Language packs should be presented as a free downloadable catalog, not as a paid marketplace.
 - Default packaging recommendation: ship the APK with no heavyweight ASR model bundled.
@@ -50,13 +50,13 @@ The target architecture is local-first: run speech recognition on the user's dev
 - The microphone button must not look broken when no pack is installed; it should offer "Install local voice pack" and a configured fallback.
 - Each pack record must include language tag, display name, engine, model id, download size, installed size, license, quality tier, offline support status, and fallback behavior.
 - Quality tiers: `recommended`, `standard`, `experimental`, `fallbackOnly`.
-- WinGlowz public copy must say "local voice packs for supported languages", not "offline voice in every language".
+- WinGlows public copy must say "local voice packs for supported languages", not "offline voice in every language".
 - AppSumo/LTD buyers should be able to install only the languages they need.
 - If no local pack exists for a language, the keyboard should offer Android SpeechRecognizer or explicit cloud/BYO fallback without hiding the tradeoff.
 
 ## User Flow
 
-1. User enables and selects the WinGlowz keyboard.
+1. User enables and selects the WinGlows keyboard.
 2. User taps the microphone/record button in the keyboard action bar.
 3. Keyboard enters recording state and shows an obvious active state.
 4. User taps again to stop, or uses cancel if available.
@@ -146,8 +146,8 @@ Diagnostic output should make these cases distinguishable:
 
 ## Acceptance Criteria
 
-- A user can dictate into a normal text field from the WinGlowz keyboard without enabling the overlay.
-- A user can dictate without using a WinGlowz worker when a supported local model is installed.
+- A user can dictate into a normal text field from the WinGlows keyboard without enabling the overlay.
+- A user can dictate without using a WinGlows worker when a supported local model is installed.
 - The overlay can still be enabled and dragged independently.
 - Keyboard voice capture does not dismiss the keyboard.
 - The copied backend diagnostic identifies keyboard-originated voice actions.

@@ -253,7 +253,7 @@ Based on this cost analysis, here's the complete product pricing:
 
 | Product | Regular | Launch Discount | Type | Your cost/user |
 |---------|---------|----------------|------|---------------|
-| **WinGlowz Training** | ~~$97~~ | **$49** | One-time | ~$0 |
+| **WinGlows Training** | ~~$97~~ | **$49** | One-time | ~$0 |
 | **SocialFlow Lifetime** | ~~$149~~ | **$99** | One-time | ~$0 (local app) |
 | **ReplayGlowz Pro** | $7/mo | — | Subscription | ~$0.14/mo |
 | **ReplayGlowz Power** | $15/mo | — | Subscription | ~$0.50/mo |

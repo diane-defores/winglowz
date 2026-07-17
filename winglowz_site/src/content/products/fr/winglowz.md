@@ -1,16 +1,16 @@
 ---
-title: "WinGlowz"
-description: "Formation Windows pratique, cœur de l'écosystème WinGlowz"
+title: "WinGlows"
+description: "Formation Windows pratique, cœur de l'écosystème WinGlows"
 status: "available"
 main:
   id: 1
-  content: "WinGlowz est un parcours de formation Windows concret, construit autour des raccourcis, de la configuration et des décisions de workflow du quotidien."
+  content: "WinGlows est un parcours de formation Windows concret, construit autour des raccourcis, de la configuration et des décisions de workflow du quotidien."
   imgCard: "/images/WinGlowz.png"
   imgMain: "/images/WinGlowz.png"
-  imgAlt: "WinGlowz product illustration"
+  imgAlt: "WinGlows product illustration"
 longDescription:
   title: "Apprenez des workflows Windows qui font vraiment gagner du temps"
-  subTitle: "WinGlowz est le parcours principal: une formation Windows d'abord, puis les outils Obsidian et navigateur pour prolonger les habitudes."
+  subTitle: "WinGlows est le parcours principal: une formation Windows d'abord, puis les outils Obsidian et navigateur pour prolonger les habitudes."
   btnTitle: "Voir la page de vente"
   btnURL: "/fr/maitrise-windows"
 descriptionList:

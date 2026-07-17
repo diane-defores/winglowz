@@ -26,7 +26,7 @@ Ce n'est pas une excuse.
 
 C'est une meilleure lecture du probleme.
 
-Et c'est precisement sur ce point que WinGlowz intervient : reduire la friction, rendre Windows plus soutenant, et remettre un peu de clarte la ou il y a aujourd'hui trop de bruit.
+Et c'est precisement sur ce point que WinGlows intervient : reduire la friction, rendre Windows plus soutenant, et remettre un peu de clarte la ou il y a aujourd'hui trop de bruit.
 
 Si ce sujet te parle, la page de vente de la formation est ici :
 

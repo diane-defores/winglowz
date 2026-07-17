@@ -8,7 +8,7 @@ your problem is not only lack of time.
 
 Your problem is that part of your energy dissolves every day inside an environment that keeps slowing you down.
 
-WinGlowz was built to answer that concretely.
+WinGlows was built to answer that concretely.
 
 The course includes:
 

@@ -2,7 +2,7 @@
 artifact: research_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-19"
 updated: "2026-06-19"
 status: reviewed
@@ -58,7 +58,7 @@ next_step: "$sf-docs update"
 - Capacité produit : l'API documente la gestion d'items, commandes et webhooks, y compris la création d'articles.
 - Coût côté Pro France : `Vinted Pro` est annoncé comme gratuit à l'inscription et à l'usage de base, sans abonnement ni frais pour mettre en ligne des articles.
 - Frais acheteur : la `Protection acheteurs Pro` s'applique automatiquement, généralement autour de `5 %` du prix plus un montant fixe.
-- Conclusion : intéressant seulement si WinGlowz vise un flux professionnel structuré et peut opérer avec un compte Pro autorisé.
+- Conclusion : intéressant seulement si WinGlows vise un flux professionnel structuré et peut opérer avec un compte Pro autorisé.
 
 ### Etsy
 
@@ -84,7 +84,7 @@ U g## Outils sûrs / officiels
 - Bots navigateur génériques pour Leboncoin ou Vinted hors API officielle.
 - Reverse-engineering d'API privées pour publication d'annonces.
 
-## Recommandation pour WinGlowz
+## Recommandation pour WinGlows
 
 1. Si l'objectif est un pipeline robuste d'ajout d'annonces, commencer par `Etsy`.
 2. Si un flux `Vinted` devient stratégique, vérifier l'éligibilité `Vinted Pro` puis l'accès `allowlist` aux intégrations.

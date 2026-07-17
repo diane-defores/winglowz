@@ -47,7 +47,7 @@ This module covers five complementary areas to help you regain control over your
 | **Relationships & CRM** | Maintain your network without relying on memory |
 | **Social Media** | Keep a useful presence without turning your attention into a public feed |
 
-## The WinGlowz philosophy
+## The WinGlows philosophy
 
 The goal is not to disconnect completely, but to **communicate with intention**. In this module, tools are only useful if they help you:
 
@@ -77,7 +77,7 @@ If you want a simple order, go through the module like this:
 
 If you already know your biggest pain point, start there.
 
-:::tip[WinGlowz Tip]
+:::tip[WinGlows Tip]
 Most people should start with email or messaging, not social media. That is where the biggest daily fragmentation usually happens.
 :::
 

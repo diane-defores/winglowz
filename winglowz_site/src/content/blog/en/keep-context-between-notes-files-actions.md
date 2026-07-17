@@ -1,18 +1,18 @@
 ---
 translationKey: "context-notes-files-actions"
 title: "How to keep context between notes, files, and actions"
-description: "WinGlowz helps reduce the gap between what you think, what you save, and what you do next."
+description: "WinGlows helps reduce the gap between what you think, what you save, and what you do next."
 author: "Diane"
 authorImage: "/images/WinGlowz.png"
 authorImageAlt: "Diane avatar"
 cardImage: "/images/WinGlowz.png"
-cardImageAlt: "WinGlowz context article cover"
+cardImageAlt: "WinGlows context article cover"
 pubDate: 2026-06-18
 readTime: 8
 tags: ["context", "notes", "workflow", "windows"]
 contents: [
   "The hard part is not capturing information. The hard part is using it later without re-reading everything from scratch.",
-  "In real work, context gets split between notes, files, messages, browser tabs, and unfinished tasks. WinGlowz matters because it is built around reducing that split.",
+  "In real work, context gets split between notes, files, messages, browser tabs, and unfinished tasks. WinGlows matters because it is built around reducing that split.",
   "This article explains why context disappears and how a better Windows workflow can keep it in view."
 ]
 ---
@@ -37,9 +37,9 @@ To keep context alive, the system has to connect:
 
 If one of those is missing, the note becomes dead weight.
 
-## What WinGlowz is trying to support
+## What WinGlows is trying to support
 
-WinGlowz is designed for users who want their working context to stay usable across a full day of work. That means less jumping between disconnected fragments and more continuity between capture, review, and execution.
+WinGlows is designed for users who want their working context to stay usable across a full day of work. That means less jumping between disconnected fragments and more continuity between capture, review, and execution.
 
 On Windows, that continuity matters a lot because the environment itself encourages multitasking. Without a system, everything becomes another tab.
 
@@ -58,4 +58,4 @@ That does not require perfect discipline. It requires a workflow that makes the 
 
 The best productivity system is not the one that stores the most information. It is the one that lets you reuse the right information at the right moment.
 
-That is the real job of WinGlowz: keep the work connected enough that you do not have to reconstruct it every time.
+That is the real job of WinGlows: keep the work connected enough that you do not have to reconstruct it every time.

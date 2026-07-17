@@ -2,7 +2,7 @@
 artifact: verification_checklist
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-30"
 updated: "2026-05-30"
 status: draft

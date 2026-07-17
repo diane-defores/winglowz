@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-11"
 created_at: "2026-05-11 00:00:00 UTC"
 updated: "2026-05-13"
@@ -11,7 +11,7 @@ status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
-owner: "WinGlowz Team"
+owner: "WinGlows Team"
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
@@ -76,12 +76,12 @@ Spécification active: créer un onboarding guidé en 1 parcours linéaire et v�
 
 # User Story
 
-En tant qu'utilisateur Android, je veux un onboarding qui m'explique, étape par étape, quelles permissions activer, pourquoi elles sont nécessaires et où les trouver dans les réglages Android, afin de configurer WinGlowz sans erreurs et d'utiliser l'application dans un mode prévisible.
+En tant qu'utilisateur Android, je veux un onboarding qui m'explique, étape par étape, quelles permissions activer, pourquoi elles sont nécessaires et où les trouver dans les réglages Android, afin de configurer WinGlows sans erreurs et d'utiliser l'application dans un mode prévisible.
 Cet onboarding doit s'appliquer aux nouveaux comptes comme aux comptes déjà existants sur le même téléphone.
 
 # Minimal Behavior Contract
 
-Quand l'utilisateur ouvre WinGlowz après installation, mise à jour, réinstallation partielle ou reprise d'un compte déjà existant, le système affiche un pas actif à la fois, lit l'état natif réel, propose le bon écran Android et marque le pas terminé uniquement quand la condition réelle est confirmée.
+Quand l'utilisateur ouvre WinGlows après installation, mise à jour, réinstallation partielle ou reprise d'un compte déjà existant, le système affiche un pas actif à la fois, lit l'état natif réel, propose le bon écran Android et marque le pas terminé uniquement quand la condition réelle est confirmée.
 Le flux distingue clairement:
 - **obligatoire**: overlay et clavier/IME actif (si l'utilisateur veut utiliser ces fonctions dans la session),
 - **recommandé**: accessibilité (injection directe), microphone (dictée).
@@ -94,7 +94,7 @@ Si l'utilisateur revient d'Android sans changement, le flux reste sur le même p
   - état actuel obtenu du bridge,
   - boutons directs vers les écrans Android requis,
   - passage automatique à l'étape suivante seulement si l'état technique attendu est vrai.
-- Given l'étape Clavier/IME, when WinGlowz n'est pas actif comme clavier système, then le flux montre les deux actions: ouvrir `INPUT_METHOD_SETTINGS` puis sélectionner le clavier si nécessaire, et vérifie les deux booléens `enabled` et `active`.
+- Given l'étape Clavier/IME, when WinGlows n'est pas actif comme clavier système, then le flux montre les deux actions: ouvrir `INPUT_METHOD_SETTINGS` puis sélectionner le clavier si nécessaire, et vérifie les deux booléens `enabled` et `active`.
 - Given l'étape Accessibilité, when le service n'est pas actif, then l'écran affiche que cette autorisation est recommandée, explique son bénéfice, et propose une reprise via `ACTION_ACCESSIBILITY_SETTINGS`.
 - Given l'utilisateur active la dictée vocale (clavier ou voix), when le micro est refusé, then onboarding affiche un bloc dédié avec la conséquence fonctionnelle (dictée indisponible), ouvre Android app settings pour la permission audio et ne poursuit la voie voix que si la permission passe en `granted`.
 - Given toutes les étapes définies comme obligatoires pour le mode choisi sont complétées, when l'utilisateur confirme la fin, then l'onboarding se termine sur un écran de récapitulatif, stocke `onboarding_completed=true`, et affiche les recommandations restantes (micro/accessibilité) avec statut et chemins.
@@ -263,8 +263,8 @@ Mettre en place un assistant onboarding Android dédié, piloté par un état ma
 
 - [ ] CA 1 : Given l'application est lancée sur Android pour la première fois, when l'écran principal s'ouvre, then l'onboarding démarre au premier écran d'autorisation requis et ne propose pas la configuration en mode silencieux.
 - [ ] CA 2 : Given l'étape overlay, when l'utilisateur n'a pas la permission, then l'UI indique explicitement le besoin, un bouton ouvre les réglages overlay, et la step avance uniquement si overlay est bien accordé.
-- [ ] CA 3 : Given l'étape accessibilité, when WinGlowz n'est pas actif, then la solution de navigation mène directement aux réglages accessibilité et l'état se met à jour après retour.
-- [ ] CA 4 : Given l'étape clavier, when le clavier WinGlowz n'est pas activé, then l'interface propose les étapes exactes d'activation (services entrée + sélection clavier), et l'étape ne termine pas tant que le service n'est pas actif.
+- [ ] CA 3 : Given l'étape accessibilité, when WinGlows n'est pas actif, then la solution de navigation mène directement aux réglages accessibilité et l'état se met à jour après retour.
+- [ ] CA 4 : Given l'étape clavier, when le clavier WinGlows n'est pas activé, then l'interface propose les étapes exactes d'activation (services entrée + sélection clavier), et l'étape ne termine pas tant que le service n'est pas actif.
 - [ ] CA 5 : Given l'utilisateur active la voix, when la permission microphone est refusée, then onboarding affiche la raison, propose l'écran Android requis, puis continue uniquement après acceptation.
 - [ ] CA 6 : Given l'utilisateur retourne à l'application après un changement dans réglages, when il reste une étape bloquée, then l'onboarding repositionne le step courant sur cette étape.
 - [ ] CA 7 : Given toutes les étapes critiques validées et l'utilisateur finalise, when il confirme, then le flag `onboarding_completed` est persistant et l'overlay ne bloque plus l'usage principal.

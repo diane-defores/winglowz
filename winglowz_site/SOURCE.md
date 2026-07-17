@@ -1,8 +1,8 @@
-# Sources — WinGlowz
+# Sources — WinGlows
 
 ## Recherche sur la productivité
 
-- **Cal Newport** — *Deep Work* : méthodologie de travail concentré, fondement théorique de l'approche WinGlowz
+- **Cal Newport** — *Deep Work* : méthodologie de travail concentré, fondement théorique de l'approche WinGlows
 - **James Clear** — *Atomic Habits* : formation d'habitudes productives, applicable à la gamification
 - **David Allen** — *Getting Things Done (GTD)* : système d'organisation référence pour les professionnels
 

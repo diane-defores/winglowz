@@ -2,7 +2,7 @@
 artifact: business_context
 metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-03-18"
 updated: "2026-06-10"
 status: "reviewed"
@@ -31,7 +31,7 @@ next_review: "2026-05-26"
 next_step: "$sf-docs update"
 ---
 
-# Business — WinGlowz
+# Business — WinGlows
 
 ## Statut de preuve
 
@@ -47,7 +47,7 @@ Libérer les mains des professionnels grâce à la dictée vocale intelligente, 
 
 ## Proposition de valeur
 
-WinGlowz cible une application Flutter multi-plateforme avec contrats backend-agnostiques et Firebase comme premier adaptateur distant. Le produit combine un clavier Android natif comme surface prioritaire sur Android, des overlays ou quick actions adaptés par plateforme, dictée locale par packs de langue téléchargeables quand disponible, fallback de transcription explicite, nettoyage IA Claude optionnel avec clé Anthropic locale BYO, historique synchronisé, snippets et dictionnaire personnel.
+WinGlows cible une application Flutter multi-plateforme avec contrats backend-agnostiques et Firebase comme premier adaptateur distant. Le produit combine un clavier Android natif comme surface prioritaire sur Android, des overlays ou quick actions adaptés par plateforme, dictée locale par packs de langue téléchargeables quand disponible, fallback de transcription explicite, nettoyage IA Claude optionnel avec clé Anthropic locale BYO, historique synchronisé, snippets et dictionnaire personnel.
 
 ## Capacités business de référence
 
@@ -57,7 +57,7 @@ WinGlowz cible une application Flutter multi-plateforme avec contrats backend-ag
 | Backend-agnostic stores + Firebase first adapter | target-reviewed | `docs/DECISIONS.md` |
 | Clés OpenAI/Anthropic BYO stockées localement | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md` |
 | Snippets + dictionnaire comme fonctionnalités produit | target-reviewed | `docs/SPEC_FLUTTER_SUPABASE_MIGRATION.md` |
-| Clavier Android natif WinGlowz | target-reviewed | `shipglowz_data/workflow/specs/android-ime-winglowz_app-keyboard.md` |
+| Clavier Android natif WinGlows | target-reviewed | `shipglowz_data/workflow/specs/android-ime-winglowz_app-keyboard.md` |
 | Overlay / quick actions par plateforme | target-reviewed | `shipglowz_data/workflow/specs/windows-desktop-overlay-hotkeys-parity.md`, `shipglowz_data/workflow/specs/macos-linux-desktop-overlay-hotkeys-parity.md` |
 | Packs vocaux locaux téléchargeables | target-reviewed | `shipglowz_data/workflow/specs/keyboard-action-bar-voice-recording.md` |
 | Expo/Convex/Clerk comme implémentation cible | out-of-scope | explicitement exclu de la cible finale |
@@ -73,7 +73,7 @@ Le modèle reste freemium BYO pour la migration. Les plans payants restent hors 
 - Les données utilisateur sont isolées via les règles de sécurité de l'adaptateur actif.
 - Les clés OpenAI/Anthropic restent locales à l'appareil et ne sont pas stockées dans le backend distant.
 - L'utilisateur gère transcriptions, clipboard, snippets et dictionnaire depuis son compte.
-- Le clavier Android WinGlowz reste disponible uniquement sur Android et sert de surface prioritaire dans les champs texte.
+- Le clavier Android WinGlows reste disponible uniquement sur Android et sert de surface prioritaire dans les champs texte.
 - L'overlay Android reste disponible sur Android avec fallback clipboard; Windows, macOS et Linux utilisent des hôtes desktop natifs avec raccourci/fenêtre/clipboard selon les limites OS; iOS et web doivent passer par des chantiers d'adaptation explicites avant toute promesse publique.
 - La dictée clavier vise un mode local-first par packs de langue installables; les langues non couvertes doivent utiliser un fallback explicite et ne doivent pas être présentées comme offline garanties.
 

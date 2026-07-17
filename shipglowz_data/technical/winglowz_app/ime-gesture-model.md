@@ -2,7 +2,7 @@
 artifact: technical_module_context
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-07-04"
 updated: "2026-07-04"
 status: reviewed
@@ -24,21 +24,21 @@ depends_on:
   - "winglowz_app/docs/technical/android-native.md@0.1.0"
 supersedes: []
 evidence:
-  - "WinGlowz IME swipe investigation across WinGlowzKeyboardView.kt and KeyboardLongPressSwipePolicy.kt."
+  - "WinGlows IME swipe investigation across WinGlowzKeyboardView.kt and KeyboardLongPressSwipePolicy.kt."
   - "Spec shipglowz-code-navigation-and-function-documentation-system.md task 8 pilot."
 next_review: "2026-08-04"
 next_step: "/300-sf-docs technical audit"
 ---
 
-# Technical Behavior Index: WinGlowz IME Gestures
+# Technical Behavior Index: WinGlows IME Gestures
 
 ## Purpose
 
-This file owns term-based recovery for WinGlowz IME gesture behavior. It exists because operator terms such as `swipe` are ambiguous in the IME and otherwise force repeated search across native code, docs, tests, and workflow artifacts.
+This file owns term-based recovery for WinGlows IME gesture behavior. It exists because operator terms such as `swipe` are ambiguous in the IME and otherwise force repeated search across native code, docs, tests, and workflow artifacts.
 
 ## Canonical Role
 
-- `context.md` stays the system overview for WinGlowz technical surfaces.
+- `context.md` stays the system overview for WinGlows technical surfaces.
 - `context-function-tree.md` stays the structural overview.
 - `code-docs-map.md` stays the path-to-doc routing map.
 - This file owns `gesture term -> named IME behavior -> code/tests/specs/docs` recovery.
@@ -68,7 +68,7 @@ This file owns term-based recovery for WinGlowz IME gesture behavior. It exists 
 
 ### `long-press-swipe-dispatch`
 
-- Summary: after the pointer exits the pressed origin key, WinGlowz can switch into dispatch mode, render the visual beam, track a hovered target key, and dispatch on release instead of forcing the user to toggle a separate mode.
+- Summary: after the pointer exits the pressed origin key, WinGlows can switch into dispatch mode, render the visual beam, track a hovered target key, and dispatch on release instead of forcing the user to toggle a separate mode.
 - Entrypoints:
   - `winglowz_app/android/app/src/main/kotlin/com/winglowz_app/winglowz_app/ime/WinGlowzKeyboardView.kt`
   - `tryActivateLongPressSwipeFromExit`

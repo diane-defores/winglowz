@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-04-29"
 created_at: "2026-04-29 16:48:07 UTC"
 updated: "2026-05-09"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "android-ime-keyboard"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisateur Android de WinGlowz, je veux remplacer ou completer mon clavier par un IME WinGlowz keyboard avec dictee, presse-papiers synchronise et controles media, afin de produire, reutiliser et piloter du texte sans quitter l'application active."
+user_story: "En tant qu'utilisateur Android de WinGlows, je veux remplacer ou completer mon clavier par un IME WinGlows keyboard avec dictee, presse-papiers synchronise et controles media, afin de produire, reutiliser et piloter du texte sans quitter l'application active."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -69,7 +69,7 @@ next_step: "/sf-ready shipglowz_data/workflow/specs/proprietary-swipe-corner-and
 
 # Title
 
-Android IME WinGlowz keyboard
+Android IME WinGlows keyboard
 
 # Status
 
@@ -77,13 +77,13 @@ Legacy-ready for the already implemented IME foundation. New keyboard work shoul
 
 # User Story
 
-En tant qu'utilisateur Android de WinGlowz, je veux remplacer ou completer mon clavier par un IME WinGlowz keyboard avec dictee, presse-papiers synchronise et controles media, afin de produire, reutiliser et piloter du texte sans quitter l'application active.
+En tant qu'utilisateur Android de WinGlows, je veux remplacer ou completer mon clavier par un IME WinGlows keyboard avec dictee, presse-papiers synchronise et controles media, afin de produire, reutiliser et piloter du texte sans quitter l'application active.
 
 Acteur principal: utilisateur Android authentifie ou en mode local degrade.
 
 Declencheurs principaux:
 
-- L'utilisateur choisit WinGlowz comme clavier Android actif.
+- L'utilisateur choisit WinGlows comme clavier Android actif.
 - L'utilisateur tape, dicte, colle, copie une selection, insere un snippet ou lance une action depuis la barre d'outils du clavier.
 - L'utilisateur appuie sur play/pause media depuis le clavier.
 
@@ -91,49 +91,49 @@ Resultat observable attendu: le champ actif recoit le texte demande, l'utilisate
 
 # Minimal Behavior Contract
 
-Quand WinGlowz est selectionne comme clavier Android, il affiche un clavier utilisable dans tout champ texte compatible avec une barre d'actions WinGlowz; l'utilisateur peut saisir du texte, lancer/arreter/annuler une dictee, inserer le resultat dans le champ actif, enregistrer ce resultat dans l'historique et le clipboard synchronise si l'option est activee, ouvrir un panneau clipboard/snippets, et envoyer play/pause au media courant. Si une permission, un backend de sync, le micro, le presse-papiers, la session media ou le champ actif n'est pas disponible, le clavier doit afficher une action de recuperation ou tomber sur un mode degrade sans perte du texte deja produit. L'edge case facile a rater est que l'IME fonctionne dans des champs sensibles ou limites: il ne doit jamais capturer, synchroniser, journaliser ou injecter silencieusement du texte dans un champ password/OTP/sensible detecte ou dans un contexte ou Android refuse l'acces.
+Quand WinGlows est selectionne comme clavier Android, il affiche un clavier utilisable dans tout champ texte compatible avec une barre d'actions WinGlows; l'utilisateur peut saisir du texte, lancer/arreter/annuler une dictee, inserer le resultat dans le champ actif, enregistrer ce resultat dans l'historique et le clipboard synchronise si l'option est activee, ouvrir un panneau clipboard/snippets, et envoyer play/pause au media courant. Si une permission, un backend de sync, le micro, le presse-papiers, la session media ou le champ actif n'est pas disponible, le clavier doit afficher une action de recuperation ou tomber sur un mode degrade sans perte du texte deja produit. L'edge case facile a rater est que l'IME fonctionne dans des champs sensibles ou limites: il ne doit jamais capturer, synchroniser, journaliser ou injecter silencieusement du texte dans un champ password/OTP/sensible detecte ou dans un contexte ou Android refuse l'acces.
 
 # Success Behavior
 
-- Given WinGlowz est active comme clavier, when l'utilisateur ouvre un champ texte standard, then le clavier apparait avec les touches essentielles, la barre WinGlowz, un bouton dictee, un bouton clipboard, un bouton snippets/settings, et un bouton play/pause.
+- Given WinGlows est active comme clavier, when l'utilisateur ouvre un champ texte standard, then le clavier apparait avec les touches essentielles, la barre WinGlows, un bouton dictee, un bouton clipboard, un bouton snippets/settings, et un bouton play/pause.
 - Given un champ texte standard est focalise, when l'utilisateur tape, then le texte est insere via `InputConnection.commitText` et les actions retour/arriere/espace/entree suivent le comportement attendu du champ.
 - Given le micro est autorise et aucun enregistrement n'est actif, when l'utilisateur appuie sur dictee, then le clavier affiche un etat recording, une action stop, une action cancel, et une notification foreground si Android l'exige.
 - Given une dictee se termine avec du texte, when le resultat est accepte, then le texte est insere dans le champ actif, cree une transcription source `keyboard`, et cree un item clipboard source `keyboard_voice` seulement si la sync clipboard clavier est activee.
-- Given clipboard sync clavier est activee et l'utilisateur colle depuis le panneau WinGlowz, when le contenu est insere, then l'item est marque avec son origine, dedupe par hash normalise, borne en taille, et remis a `ClipboardHistoryApi`/`ClipboardHistoryStore` pour stockage local puis sync provider.
-- Given un media joue dans une autre app, when l'utilisateur appuie sur play/pause, then WinGlowz envoie un media key event au consommateur media courant et affiche un etat bref de succes ou d'indisponibilite.
+- Given clipboard sync clavier est activee et l'utilisateur colle depuis le panneau WinGlows, when le contenu est insere, then l'item est marque avec son origine, dedupe par hash normalise, borne en taille, et remis a `ClipboardHistoryApi`/`ClipboardHistoryStore` pour stockage local puis sync provider.
+- Given un media joue dans une autre app, when l'utilisateur appuie sur play/pause, then WinGlows envoie un media key event au consommateur media courant et affiche un etat bref de succes ou d'indisponibilite.
 - Given l'utilisateur n'est pas connecte, when il utilise le clavier, then la saisie, la dictee locale et le clipboard local restent utilisables; les sync cloud sont en etat pending ou disabled avec une explication visible dans Settings.
 - Given l'app principale est ouverte, when l'utilisateur consulte Settings, then il voit les statuts: IME actif/inactif, micro, clipboard sync, media controls, overlay, accessibility, backend sync et sync pending/error.
 
 # Error Behavior
 
-- Si WinGlowz n'est pas active comme clavier systeme, Settings doit proposer un lien vers les reglages Android d'input method et ne pas pretendre que le clavier est disponible.
+- Si WinGlows n'est pas active comme clavier systeme, Settings doit proposer un lien vers les reglages Android d'input method et ne pas pretendre que le clavier est disponible.
 - Si le champ actif est password, OTP, noPersonalizedLearning, non-editable, absent ou limite par l'app hote, l'IME doit desactiver capture/sync/injection enrichie et afficher un mode "saisie privee" ou "champ limite".
 - Si le micro est refuse ou revoke, la dictee ne demarre pas, aucun enregistrement fantome ne tourne, et l'utilisateur voit une action vers les permissions.
 - Si la dictee echoue, timeout, retourne vide ou est annulee, aucun item transcription/clipboard vide n'est cree; le texte partiel reste localement visible seulement si l'utilisateur choisit de le conserver.
 - Si le backend de sync est indisponible, les items eligibles restent dans un store/queue local borne et visible; les retries sont bornes; aucune mutation partielle ne peut creer de donnees cross-user.
 - Si la session auth change ou logout arrive pendant que l'IME est ouvert, la sync cloud se coupe immediatement, la queue de l'ancien compte n'est pas exposee au nouveau compte, et le clavier continue en mode local.
-- Si play/pause n'a aucun media consumer, WinGlowz affiche un feedback bref "Aucun media actif" et ne demande pas de permission invasive.
+- Si play/pause n'a aucun media consumer, WinGlows affiche un feedback bref "Aucun media actif" et ne demande pas de permission invasive.
 - Si les permissions notification listener/media session enrichie sont absentes, seul le play/pause generique par media key est disponible; les metadonnees media restent masquees.
 - Si le texte depasse les limites, il est tronque uniquement apres confirmation utilisateur ou rejete avec un message recuperable; aucun secret, audio brut, texte brut sensible ou provider payload n'est loggue dans `client_events`.
 
 # Problem
 
-WinGlowz a deja une base Flutter + Supabase et un debut de pont Android overlay, mais le vrai point d'entree systeme souhaite pour Android est le clavier. L'overlay reste utile, mais il depend de permissions fragiles et d'un modele hors-IME. Un IME donne une surface plus naturelle pour dicter, inserer, reutiliser des snippets, gerer un clipboard WinGlowz et controler le media en cours pendant que l'utilisateur ecrit dans n'importe quelle app. Depuis le 2026-05-08, le clipboard doit rester backend-agnostic: l'IME emet des actions vers `ClipboardHistoryApi`/`ClipboardHistoryStore`, et Supabase n'est qu'un adaptateur de sync possible.
+WinGlows a deja une base Flutter + Supabase et un debut de pont Android overlay, mais le vrai point d'entree systeme souhaite pour Android est le clavier. L'overlay reste utile, mais il depend de permissions fragiles et d'un modele hors-IME. Un IME donne une surface plus naturelle pour dicter, inserer, reutiliser des snippets, gerer un clipboard WinGlows et controler le media en cours pendant que l'utilisateur ecrit dans n'importe quelle app. Depuis le 2026-05-08, le clipboard doit rester backend-agnostic: l'IME emet des actions vers `ClipboardHistoryApi`/`ClipboardHistoryStore`, et Supabase n'est qu'un adaptateur de sync possible.
 
 # Solution
 
-Ajouter un IME Android natif Kotlin `WinGlowzInputMethodService` avec une UI clavier native et une barre d'actions WinGlowz. Le clavier s'integre avec les fondations Flutter via des ponts limites: Settings et historique restent dans Flutter, les operations clavier temps reel restent natives, et les donnees clipboard synchronisables passent par l'API/store backend-agnostic avant tout adaptateur provider. Les capacites sensibles sont progressives: saisie de base sans compte, dictee avec micro, clipboard sync opt-in avec auth/backend configure, play/pause media sans metadata par defaut, metadata/media sessions uniquement apres permission utilisateur explicite.
+Ajouter un IME Android natif Kotlin `WinGlowzInputMethodService` avec une UI clavier native et une barre d'actions WinGlows. Le clavier s'integre avec les fondations Flutter via des ponts limites: Settings et historique restent dans Flutter, les operations clavier temps reel restent natives, et les donnees clipboard synchronisables passent par l'API/store backend-agnostic avant tout adaptateur provider. Les capacites sensibles sont progressives: saisie de base sans compte, dictee avec micro, clipboard sync opt-in avec auth/backend configure, play/pause media sans metadata par defaut, metadata/media sessions uniquement apres permission utilisateur explicite.
 
 # Scope In
 
 - Android uniquement pour l'IME initial.
 - Declaration systeme IME: service, permission `android.permission.BIND_INPUT_METHOD`, intent `android.view.InputMethod`, metadata XML input method, label et settings activity.
-- UI clavier native Kotlin pour layout texte minimal, backspace, enter, space, shift/case, punctuation de base, action row WinGlowz.
-- Barre d'actions: dictee, clipboard WinGlowz, snippets, settings, play/pause media.
+- UI clavier native Kotlin pour layout texte minimal, backspace, enter, space, shift/case, punctuation de base, action row WinGlows.
+- Barre d'actions: dictee, clipboard WinGlows, snippets, settings, play/pause media.
 - Dictee depuis le clavier avec etats idle/recording/processing/result/error/canceled.
 - Insertion directe via `InputConnection` dans le champ actif quand autorise.
 - Detection et mode degrade pour champs sensibles ou limites a partir de `EditorInfo.inputType`, `imeOptions`, `privateImeOptions` quand disponibles, et contraintes `InputConnection`.
-- Clipboard WinGlowz: copier la selection via action explicite, coller depuis clipboard systeme via action explicite, inserer un item WinGlowz, afficher recents, pin/delete, dedupe, queue/store local, sync backend opt-in via `ClipboardHistoryApi`/`ClipboardHistoryStore`.
+- Clipboard WinGlows: copier la selection via action explicite, coller depuis clipboard systeme via action explicite, inserer un item WinGlows, afficher recents, pin/delete, dedupe, queue/store local, sync backend opt-in via `ClipboardHistoryApi`/`ClipboardHistoryStore`.
 - Adapter/schema evolution pour distinguer origines clavier, hashes de dedupe, device id, sync state et preferences clavier; Supabase reste l'adaptateur cloud actuel.
 - Settings Flutter pour activer/configurer: clavier, dictee, clipboard sync clavier, media controls, privacy mode, queue sync.
 - Controle media initial: play/pause generique via media key event; feedback utilisateur.
@@ -147,7 +147,7 @@ Ajouter un IME Android natif Kotlin `WinGlowzInputMethodService` avec une UI cla
 - iOS custom keyboard dans cette phase.
 - Desktop/web keyboard equivalent.
 - Remplacement complet de Gboard avec prediction avancee, autocorrect multilingue, glide typing, emoji/sticker complet, themes publics ou marketplace.
-- Capture globale de tout le presse-papiers Android en arriere-plan. Le scope initial capture uniquement les actions explicites realisees via le clavier WinGlowz ou les elements synchronises depuis le compte.
+- Capture globale de tout le presse-papiers Android en arriere-plan. Le scope initial capture uniquement les actions explicites realisees via le clavier WinGlows ou les elements synchronises depuis le compte.
 - Lecture de metadata media, pochette, file d'attente ou controle par app sans permission notification listener/media session explicite.
 - Synchronisation de secrets BYOK, audio brut, contenu de champs password/OTP/sensibles.
 - Accessibilite comme mecanisme principal d'injection pour le clavier. L'IME utilise `InputConnection`; accessibility reste reservee a l'overlay.
@@ -185,7 +185,7 @@ Ajouter un IME Android natif Kotlin `WinGlowzInputMethodService` avec une UI cla
 
 - User text ownership is per backend auth user and per local account/session boundary.
 - IME operations are explicit user actions; no background recorder, no background clipboard siphon.
-- Sensitive fields disable WinGlowz learning/sync/capture features.
+- Sensitive fields disable WinGlows learning/sync/capture features.
 - Clipboard fallback remains available for voice output, but sync is independent and opt-in.
 - Logout clears account-scoped sync state from active keyboard memory.
 - Dedupe never crosses users.
@@ -227,7 +227,7 @@ Update or create:
 
 # Edge Cases
 
-- WinGlowz IME selected before user ever opens the app.
+- WinGlows IME selected before user ever opens the app.
 - User opens IME while logged out or after session expiry.
 - Device offline during dictation result save.
 - User switches to another keyboard mid-recording.
@@ -237,7 +237,7 @@ Update or create:
 - Host app denies `InputConnection` reads or selected text access.
 - Very long selected text or paste payload.
 - Clipboard system returns null, stale item, non-text content or sensitive flag.
-- Android 13+ clipboard preview reveals content unless sensitive flag is set for WinGlowz-origin sensitive copies.
+- Android 13+ clipboard preview reveals content unless sensitive flag is set for WinGlows-origin sensitive copies.
 - Multiple devices sync same clipboard content in different order.
 - User A logs out and User B logs in on same device before local queue syncs.
 - Supabase realtime delivers stale update after local delete.
@@ -260,9 +260,9 @@ Update or create:
 - [x] Tache 2 : Ajouter la declaration Android IME
   - Fichier : `android/app/src/main/AndroidManifest.xml`
   - Action : Declarer `WinGlowzInputMethodService` avec `android.permission.BIND_INPUT_METHOD`, intent `android.view.InputMethod`, exported true selon contrat Android IME, et metadata `@xml/winglowz_app_input_method`.
-  - User story link : rendre WinGlowz selectable comme clavier Android.
+  - User story link : rendre WinGlows selectable comme clavier Android.
   - Depends on : Tache 1.
-  - Validate with : build Android et verification que WinGlowz apparait dans les reglages clavier.
+  - Validate with : build Android et verification que WinGlows apparait dans les reglages clavier.
   - Notes : ne pas casser les declarations overlay/accessibility existantes.
 
 - [x] Tache 3 : Ajouter metadata et libelles IME
@@ -283,7 +283,7 @@ Update or create:
 
 - [x] Tache 5 : Implementer UI clavier minimale native
   - Fichier : `android/app/src/main/kotlin/com/winglowz_app/winglowz_app/ime/WinGlowzKeyboardView.kt`
-  - Action : Construire layout QWERTY minimal, espace, entree, backspace, shift/case, ponctuation de base, action row WinGlowz.
+  - Action : Construire layout QWERTY minimal, espace, entree, backspace, shift/case, ponctuation de base, action row WinGlows.
   - User story link : permettre la saisie de base sans dependance IA.
   - Depends on : Tache 4.
   - Validate with : saisie dans plusieurs champs, latence acceptable, touches accessibles.
@@ -467,8 +467,8 @@ Update or create:
 
 # Acceptance Criteria
 
-- [ ] CA 1 : Given l'app est installee sur Android, when l'utilisateur ouvre les reglages clavier Android, then WinGlowz apparait comme clavier activable.
-- [ ] CA 2 : Given WinGlowz est le clavier actif, when un champ texte standard est focalise, then le clavier s'affiche sans ouvrir l'app principale.
+- [ ] CA 1 : Given l'app est installee sur Android, when l'utilisateur ouvre les reglages clavier Android, then WinGlows apparait comme clavier activable.
+- [ ] CA 2 : Given WinGlows est le clavier actif, when un champ texte standard est focalise, then le clavier s'affiche sans ouvrir l'app principale.
 - [ ] CA 3 : Given le clavier est affiche, when l'utilisateur tape lettres/espace/backspace/entree, then le champ actif recoit les modifications attendues.
 - [ ] CA 4 : Given un champ password est focalise, when le clavier s'affiche, then dictee persistante, clipboard sync, snippets et apprentissage sont desactives ou en mode prive.
 - [ ] CA 5 : Given le micro est refuse, when l'utilisateur appuie sur dictee, then aucun enregistrement ne demarre et une action de recuperation est affichee.
@@ -489,7 +489,7 @@ Update or create:
 - [ ] CA 20 : Given notification listener est autorise dans une phase enrichie, when Settings affiche les sessions media, then l'utilisateur peut desactiver cette capacite et les metadata cessent d'etre lues.
 - [ ] CA 21 : Given l'utilisateur logout pendant IME ouvert, when il continue a taper, then cloud sync se desactive et l'IME reste en local sans crash.
 - [ ] CA 22 : Given Android tue le process app, when l'utilisateur rouvre un champ texte, then le clavier redemarre dans un etat coherent sans session recording fantome.
-- [ ] CA 23 : Given une app hote refuse `InputConnection` selected text, when l'utilisateur tente copy selection, then WinGlowz affiche une erreur recuperable.
+- [ ] CA 23 : Given une app hote refuse `InputConnection` selected text, when l'utilisateur tente copy selection, then WinGlows affiche une erreur recuperable.
 - [ ] CA 24 : Given l'utilisateur est sur iOS/web/desktop, when il ouvre Settings, then aucune activation IME Android n'est promise.
 - [ ] CA 25 : Given les tests RLS sont executes, when User A tente de lire/modifier les rows clavier User B, then l'acces est refuse.
 - [ ] CA 26 : Given `client_events` recoit metadata avec `token`, `raw_text`, `audio` ou `transcript`, when l'insert est tente, then la contrainte SQL refuse la row.
@@ -543,7 +543,7 @@ Update or create:
 - Prefer native Kotlin for IME UI and lifecycle. Use Flutter for app Settings/history and backend-agnostic clipboard API/store orchestration.
 - Do not add broad permissions before a feature needs them. Base play/pause should not require notification listener.
 - Stop conditions:
-  - If WinGlowz does not appear as an input method after manifest/XML tasks, stop and fix platform registration before UI work.
+  - If WinGlows does not appear as an input method after manifest/XML tasks, stop and fix platform registration before UI work.
   - If sensitive field detection is unreliable, ship a stricter privacy mode rather than broad capture.
   - If IME cannot safely share the existing Flutter voice pipeline, create a separate spec/spike for native Android dictation service before implementing advanced transcription.
   - If sync queue storage cannot guarantee account separation, do not enable cloud sync from IME.
@@ -560,12 +560,12 @@ Update or create:
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-04-29 16:48:07 UTC | sf-spec | GPT-5 Codex | Created Android IME WinGlowz keyboard chantier spec from user request and repo investigation. | Draft saved in `shipglowz_data/workflow/specs/android-ime-winglowz_app-keyboard.md`. | `/sf-ready Android IME WinGlowz keyboard` |
-| 2026-04-30 09:12:44 UTC | sf-ready | GPT-5 Codex | Checked readiness gate for Android IME spec, including structure, metadata, user story alignment, adversarial review, security review, and documentation freshness. | Not ready: core IME dictation/media scope decisions and secure local queue/hash contract need to be fixed in spec. | `/sf-spec Android IME WinGlowz keyboard` |
-| 2026-05-04 00:00:00 UTC | sf-ready | GPT-5 Codex | Rechecked readiness inside sf-build after confirming the spec now contains the missing queue, hash/dedupe, media scope, privacy and implementation-order contracts. | Ready for staged implementation. | `/sf-start Android IME WinGlowz keyboard` |
-| 2026-05-04 21:15:11 UTC | sf-start | GPT-5 Codex | Implemented the native Android IME foundation, Flutter keyboard bridge/Settings card, keyboard schema metadata, source-aware repository hashing, docs and tests. | Partial: local Dart/web/docs checks pass; Android APK proof is blocked by ARM64 AAPT2 tooling and Supabase RLS smoke needs a running/linked database. | `/sf-test Android IME WinGlowz keyboard on Android device and linked Supabase` |
-| 2026-05-04 21:15:11 UTC | sf-verify | GPT-5 Codex | Verified the implemented foundation against the spec with format, analyze, Flutter tests, web build, metadata lint, diff check, Android debug build attempt and Supabase lint attempt. | Partial: Android device/IME visibility, native APK build on x64, and SQL/RLS execution remain unproven. | `/sf-test Android IME WinGlowz keyboard on Android device and linked Supabase` |
-| 2026-05-04 21:15:11 UTC | sf-build | GPT-5 Codex | Orchestrated readiness recovery, governance bootstrap, implementation, docs alignment and verification for the Android IME chantier. | Partial: stopped before sf-end/sf-ship because required Android/Supabase/manual proof is incomplete. | `/sf-test Android IME WinGlowz keyboard on Android device and linked Supabase` |
+| 2026-04-29 16:48:07 UTC | sf-spec | GPT-5 Codex | Created Android IME WinGlows keyboard chantier spec from user request and repo investigation. | Draft saved in `shipglowz_data/workflow/specs/android-ime-winglowz_app-keyboard.md`. | `/sf-ready Android IME WinGlows keyboard` |
+| 2026-04-30 09:12:44 UTC | sf-ready | GPT-5 Codex | Checked readiness gate for Android IME spec, including structure, metadata, user story alignment, adversarial review, security review, and documentation freshness. | Not ready: core IME dictation/media scope decisions and secure local queue/hash contract need to be fixed in spec. | `/sf-spec Android IME WinGlows keyboard` |
+| 2026-05-04 00:00:00 UTC | sf-ready | GPT-5 Codex | Rechecked readiness inside sf-build after confirming the spec now contains the missing queue, hash/dedupe, media scope, privacy and implementation-order contracts. | Ready for staged implementation. | `/sf-start Android IME WinGlows keyboard` |
+| 2026-05-04 21:15:11 UTC | sf-start | GPT-5 Codex | Implemented the native Android IME foundation, Flutter keyboard bridge/Settings card, keyboard schema metadata, source-aware repository hashing, docs and tests. | Partial: local Dart/web/docs checks pass; Android APK proof is blocked by ARM64 AAPT2 tooling and Supabase RLS smoke needs a running/linked database. | `/sf-test Android IME WinGlows keyboard on Android device and linked Supabase` |
+| 2026-05-04 21:15:11 UTC | sf-verify | GPT-5 Codex | Verified the implemented foundation against the spec with format, analyze, Flutter tests, web build, metadata lint, diff check, Android debug build attempt and Supabase lint attempt. | Partial: Android device/IME visibility, native APK build on x64, and SQL/RLS execution remain unproven. | `/sf-test Android IME WinGlows keyboard on Android device and linked Supabase` |
+| 2026-05-04 21:15:11 UTC | sf-build | GPT-5 Codex | Orchestrated readiness recovery, governance bootstrap, implementation, docs alignment and verification for the Android IME chantier. | Partial: stopped before sf-end/sf-ship because required Android/Supabase/manual proof is incomplete. | `/sf-test Android IME WinGlows keyboard on Android device and linked Supabase` |
 | 2026-05-08 17:57:25 UTC | sf-build | GPT-5 Codex | Aligned clipboard sync wording with the backend-agnostic clipboard API chantier. | partial | `/sf-start shipglowz_data/workflow/specs/clipboard-backend-agnostic-api.md task 6` |
 
 # Current Chantier Flow

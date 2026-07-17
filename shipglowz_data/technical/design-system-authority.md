@@ -2,7 +2,7 @@
 artifact: design_system_authority
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-11"
 updated: "2026-06-11"
 status: "draft"
@@ -36,7 +36,7 @@ evidence:
 next_step: "run 503-sf-audit-design-tokens winglowz"
 ---
 
-# WinGlowz Design-System Authority
+# WinGlows Design-System Authority
 
 ## 1) Canonical token sources
 
@@ -98,4 +98,3 @@ For every style-related commit:
 - No new hard-coded visual literals are introduced in production component code.
 - New UI changes are traceable to one of the canonical token files.
 - Any direct visual exception is documented in this artifact before merge.
-

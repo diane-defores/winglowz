@@ -1,21 +1,21 @@
 ---
-title: WinGlowz docs
+title: WinGlows docs
 head:
   - tag: title
-    content: WinGlowz docs
-description: Explore WinGlowz's comprehensive documentation for an in-depth look at our premium tools and services. 
+    content: WinGlows docs
+description: Explore WinGlows's comprehensive documentation for an in-depth look at our premium tools and services.
 ---
 
 
-### Introduction à WinGlowz
+### Introduction à WinGlows
 <div class="video-container">
-  <iframe 
-    width="100%" 
-    height="400" 
-    src="https://www.youtube.com/embed/VIDEO_ID" 
-    title="Introduction à WinGlowz" 
-    frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+  <iframe
+    width="100%"
+    height="400"
+    src="https://www.youtube.com/embed/VIDEO_ID"
+    title="Introduction à WinGlows"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen
   ></iframe>
 </div>
@@ -24,7 +24,7 @@ description: Explore WinGlowz's comprehensive documentation for an in-depth look
 <div class="video-container">
   <img
     src="/images/WinGlowz.png"
-    alt="Aperçu WinGlowz"
+    alt="Aperçu WinGlows"
     loading="lazy"
   />
 </div>

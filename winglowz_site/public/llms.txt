@@ -1,6 +1,6 @@
-# WinGlowz
+# WinGlows
 
-WinGlowz helps Windows-first professionals and independent workers build practical, repeatable productivity systems. The flagship offer is Windows Mastery, supported by bilingual English and French educational content and companion products.
+WinGlows helps Windows-first professionals and independent workers build practical, repeatable productivity systems. The flagship offer is Windows Mastery, supported by bilingual English and French educational content and companion products.
 
 ## Key pages
 
@@ -13,4 +13,4 @@ WinGlowz helps Windows-first professionals and independent workers build practic
 
 ## Trust and scope
 
-WinGlowz publishes practical Windows workflow education, structured learning, and implemented product information. Claims about outcomes, customer volume, pricing, support, or access duration should be verified on the relevant page and canonical project documentation.
+WinGlows publishes practical Windows workflow education, structured learning, and implemented product information. Claims about outcomes, customer volume, pricing, support, or access duration should be verified on the relevant page and canonical project documentation.

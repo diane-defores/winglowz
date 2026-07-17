@@ -14,7 +14,7 @@ risk_level: medium
 target_user: "Windows-based entrepreneurs, freelancers, and professionals who want a practical productivity system without becoming tooling experts"
 user_problem: "General productivity advice and many flagship tools are Mac-first, fragmented, or too tactical for Windows users who need a coherent workflow they can apply immediately"
 desired_outcomes: "Faster daily execution, better focus, lower workflow friction, and a structured path from free content to gated training and companion tools"
-non_goals: "Building a generic cross-platform productivity brand, teaching every possible tool, or positioning WinGlowz as enterprise IT software"
+non_goals: "Building a generic cross-platform productivity brand, teaching every possible tool, or positioning WinGlows as enterprise IT software"
 security_impact: unknown
 docs_impact: yes
 evidence:
@@ -42,7 +42,7 @@ next_step: "/sf-docs update"
 
 ## Target User
 
-WinGlowz targets Windows-first users who need a coherent productivity system:
+WinGlows targets Windows-first users who need a coherent productivity system:
 
 - professionals and independents with workflow complexity
 - learners seeking structured implementation instead of app-list consumption
@@ -89,4 +89,3 @@ WinGlowz targets Windows-first users who need a coherent productivity system:
 - conversion into account and purchase flow
 - activation into gated lessons and docs
 - repeat usage of premium learning surfaces
-

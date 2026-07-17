@@ -8,8 +8,8 @@ const SITE_SOCIAL_IMAGE_HEIGHT = 600
 const SITE_SOCIAL_IMAGE_TYPE = 'image/png'
 
 export const SITE = {
-  name: 'WinGlowz',
-  title: 'WinGlowz - Productivity Apps & Training',
+  name: 'WinGlows',
+  title: 'WinGlows - Productivity Apps & Training',
   description:
     'Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a practical workflow.',
   author: 'Diane Defores',
@@ -65,7 +65,7 @@ export const OG = {
   locale: 'en_US',
   type: 'website',
   url: SITE.url,
-  title: `WinGlowz - Productivity Apps & Training`,
+  title: `WinGlows - Productivity Apps & Training`,
   description:
     'Windows training in 8 modules, Obsidian plugins, and Chrome tools for building a practical workflow.',
   image: ogImageSrc,

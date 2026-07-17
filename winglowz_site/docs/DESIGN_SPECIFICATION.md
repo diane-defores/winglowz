@@ -1,8 +1,8 @@
-# WinGlowz Design Specification
+# WinGlows Design Specification
 
 ## Brand Overview
 
-**WinGlowz** is a productivity ecosystem offering tools and training designed for Windows workflows. The brand targets entrepreneurs, freelancers, and professionals seeking to transform their digital productivity, with a unique perspective from a neurodivergent founder.
+**WinGlows** is a productivity ecosystem offering tools and training designed for Windows workflows. The brand targets entrepreneurs, freelancers, and professionals seeking to transform their digital productivity, with a unique perspective from a neurodivergent founder.
 
 ---
 
@@ -12,7 +12,7 @@
 
 **Rainbow Gradient (Primary Brand Colors)**
 
-These are the ONLY colors used in the WinGlowz brand, taken directly from the logo gradient.
+These are the ONLY colors used in the WinGlows brand, taken directly from the logo gradient.
 
 | Color Name | Hex Value | RGB | Usage |
 |------------|-----------|-----|-------|

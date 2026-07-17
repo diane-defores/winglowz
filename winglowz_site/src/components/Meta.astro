@@ -28,9 +28,10 @@ const metaDescription =
 const metaTitle = metaObject?.title ?? title ?? OG.title
 
 // Define the metadata for your website and individual pages
-const URL = `${Astro.site}`
+const siteUrl = `${Astro.site}`
 const author = SITE.author
-const canonical = metaObject?.canonicalURL ?? `${Astro.url.origin}${Astro.url.pathname}`
+const canonical =
+	metaObject?.canonicalURL ?? new globalThis.URL(Astro.url.pathname, Astro.site).toString()
 const ogTitle = metaTitle
 const ogDescription = metaDescription
 const socialImageRes = await getImage({
@@ -38,14 +39,14 @@ const socialImageRes = await getImage({
 	width: SITE_VISUAL_TOKENS.socialImage.width,
 	height: SITE_VISUAL_TOKENS.socialImage.height,
 })
-const socialImage = Astro.url.origin + socialImageRes.src
+const socialImage = new globalThis.URL(socialImageRes.src, Astro.site).toString()
 
 const localizedPath = Astro.url.pathname.replace(/^\/fr(?=\/|$)/, '') || '/'
 const sourcePath = await getDefaultLocalePath(lang, localizedPath)
 const alternatePaths = await Promise.all(
 	(['en', 'fr'] as const).map(async (targetLang) => ({
 		lang: targetLang,
-		href: `${URL.slice(0, -1)}${await getLocalizedPath(targetLang, sourcePath)}`,
+		href: `${siteUrl.slice(0, -1)}${await getLocalizedPath(targetLang, sourcePath)}`,
 	})),
 )
 const resolvedAlternatePaths = alternateUrls
@@ -114,8 +115,8 @@ const favicon = await getImage({
 	name="twitter:card"
 	content={SITE_VISUAL_TOKENS.themeMeta.twitterCard}
 />
-<meta property="twitter:domain" content={URL} />
-<meta property="twitter:url" content={URL} />
+<meta property="twitter:domain" content={new globalThis.URL(siteUrl).hostname} />
+<meta property="twitter:url" content={canonical} />
 <meta name="twitter:title" content={ogTitle} />
 <meta name="twitter:description" content={ogDescription} />
 <meta name="twitter:image" content={socialImage} />

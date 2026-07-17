@@ -20,7 +20,7 @@ Autrement dit :
 - les raccourcis servent le travail au lieu de devenir un hobby
 - l'environnement retire du bruit avant de demander plus d'effort
 
-C'est cette logique que j'ai essaye de rendre explicite dans WinGlowz.
+C'est cette logique que j'ai essaye de rendre explicite dans WinGlows.
 
 La formation ne te demande pas de devenir une machine.
 

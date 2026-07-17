@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-12"
 created_at: "2026-06-12 03:47:50 UTC"
 updated: "2026-06-12"
@@ -13,12 +13,12 @@ source_model: "GPT-5 Codex"
 scope: "custom-action-bar-ime-surface"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz, je veux configurer une barre d'action unique et scrollable dans une page dédiée, puis l'activer dans le clavier Android IME, afin d'utiliser mes commandes personnalisées directement pendant la saisie."
+user_story: "En tant qu'utilisatrice WinGlows, je veux configurer une barre d'action unique et scrollable dans une page dédiée, puis l'activer dans le clavier Android IME, afin d'utiliser mes commandes personnalisées directement pendant la saisie."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
+  - "WinGlows Flutter app"
   - "Android IME"
   - "Custom action buttons"
   - "Keyboard settings"
@@ -62,13 +62,13 @@ Android IME.
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz, je veux configurer une barre d'action unique
+En tant qu'utilisatrice WinGlows, je veux configurer une barre d'action unique
 et scrollable dans une page dédiée, puis l'activer dans le clavier Android IME,
 afin d'utiliser mes commandes personnalisées directement pendant la saisie.
 
 ## Minimal Behavior Contract
 
-WinGlowz doit offrir une page dédiée aux actions qui permet de créer,
+WinGlows doit offrir une page dédiée aux actions qui permet de créer,
 ordonner, tester et configurer une seule barre d'action globale. Quand la barre
 est activée, le clavier Android IME affiche cette barre comme une rangée
 horizontale scrollable au-dessus ou dans la zone d'action existante du clavier.
@@ -86,7 +86,7 @@ texte utilisateur privé.
   then elle voit la barre globale, ses boutons, leur ordre, leur disponibilité
   IME, et les commandes pour créer, modifier, supprimer et réordonner.
 - Given elle active la barre depuis la page Actions ou Settings > Keyboard,
-  when elle ouvre le clavier Android WinGlowz dans un champ standard, then une
+  when elle ouvre le clavier Android WinGlows dans un champ standard, then une
   rangée d'actions scrollable affiche les boutons compatibles dans l'ordre
   configuré.
 - Given elle désactive la barre depuis l'app ou les préférences clavier, when

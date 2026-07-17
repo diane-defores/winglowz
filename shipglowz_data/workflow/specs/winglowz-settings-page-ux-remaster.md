@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-10"
 created_at: "2026-06-10 20:45:30 UTC"
 updated: "2026-06-11"
@@ -13,12 +13,12 @@ source_model: "GPT-5 Codex"
 scope: "settings-page-ux-remaster"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz, je veux une page Réglages claire, compacte et cohérente, afin de configurer mon compte, mon clavier, la voix, l'overlay et les diagnostics sans lire du jargon technique ni subir des répétitions visuelles."
+user_story: "En tant qu'utilisatrice WinGlows, je veux une page Réglages claire, compacte et cohérente, afin de configurer mon compte, mon clavier, la voix, l'overlay et les diagnostics sans lire du jargon technique ni subir des répétitions visuelles."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
+  - "WinGlows Flutter app"
   - "Settings screen"
   - "Account and cloud sync overview"
   - "Keyboard settings"
@@ -43,7 +43,7 @@ depends_on:
     required_status: "draft"
 supersedes: []
 evidence:
-  - "User feedback 2026-06-10: Settings account section repeated Compte WinGlowz and Accès WinGlowz in separate cards with duplicated icon and detached connect button."
+  - "User feedback 2026-06-10: Settings account section repeated Compte WinGlows and Accès WinGlows in separate cards with duplicated icon and detached connect button."
   - "Audit 2026-06-10: collapsible section titles are repeated inside AppSectionCard titles in lib/features/settings/presentation/settings_screen.dart:1485 and lib/features/settings/presentation/settings_screen_sections.dart:86."
   - "Audit 2026-06-10: Keyboard settings expose raw debug strings such as enabled=false, active=false, layout=qwerty, recoveries=0, sentry=disabled in lib/features/settings/presentation/settings_screen_sections.dart:730."
   - "Audit 2026-06-10: Local voice recognition exposes runtime=, language=, pack=, engine=, fallback= and pack checksum/retry/debug actions in lib/features/settings/presentation/settings_screen_sections.dart:1459 and :1543."
@@ -55,7 +55,7 @@ next_step: "/005-sf-ship -> /405-sf-prod -> /108-sf-browser settings-web-smoke"
 
 # Title
 
-WinGlowz Settings Page UX Remaster
+WinGlows Settings Page UX Remaster
 
 ## Status
 
@@ -63,7 +63,7 @@ Ready. Validated for staged Settings UX implementation after a focused audit fou
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz, je veux une page Réglages claire, compacte et cohérente, afin de configurer mon compte, mon clavier, la voix, l'overlay et les diagnostics sans lire du jargon technique ni subir des répétitions visuelles.
+En tant qu'utilisatrice WinGlows, je veux une page Réglages claire, compacte et cohérente, afin de configurer mon compte, mon clavier, la voix, l'overlay et les diagnostics sans lire du jargon technique ni subir des répétitions visuelles.
 
 ## Minimal Behavior Contract
 
@@ -72,7 +72,7 @@ The Settings page must present regular user settings as concise, product-languag
 ## Success Behavior
 
 - Opening Réglages shows one expanded section at a time as today, but section content no longer repeats the section title in an inner card header.
-- Account/cloud state is shown as one coherent account/sync summary with contextual connect/sign-out action and without duplicated "WinGlowz" labels.
+- Account/cloud state is shown as one coherent account/sync summary with contextual connect/sign-out action and without duplicated "WinGlows" labels.
 - When no data is synchronized yet, the Account & cloud section does not render seven large category cards; it uses compact local category chips/rows and a short explanation.
 - Sync category cards are reserved for states with user value or attention: active sync, pending, error, conflict, unavailable because of platform/permission, or required action.
 - Appearance focuses on global app appearance and destructive-action confirmation; keyboard theme entry points are not duplicated unless a clear hierarchy explains the relationship.
@@ -206,7 +206,7 @@ Remaster the Settings information architecture without changing underlying featu
 
 - [x] Task 2: Finalize account/cloud summary UX
   - Files: `lib/features/settings/presentation/settings_screen_sections.dart`, optionally `lib/core/sync/cloud_sync_overview.dart`
-  - Action: Keep one account/sync summary with contextual connect/sign-out actions, concise inactive/active/checking states, and no duplicated "Compte WinGlowz" / "Accès WinGlowz" cards.
+  - Action: Keep one account/sync summary with contextual connect/sign-out actions, concise inactive/active/checking states, and no duplicated "Compte WinGlows" / "Accès WinGlows" cards.
   - User story link: makes account and access understandable as one concept for users.
   - Validate with: local fallback, remote signed-in active, remote signed-in inactive, checking, and error widget tests.
 
@@ -274,7 +274,7 @@ Remaster the Settings information architecture without changing underlying featu
 
 - [x] CA 1: Given a Settings section is expanded, when the parent accordion title is visible, then the expanded content does not repeat the same title as a second card/header.
 - [x] CA 2: Given local fallback account mode, when Account & cloud is expanded, then the user sees one account/sync summary and one contextual connect action.
-- [x] CA 3: Given a remote signed-in account with inactive suite access, when Account & cloud is expanded, then the UI explains that data remains local without showing separate "Compte WinGlowz" and "Accès WinGlowz" cards.
+- [x] CA 3: Given a remote signed-in account with inactive suite access, when Account & cloud is expanded, then the UI explains that data remains local without showing separate "Compte WinGlows" and "Accès WinGlows" cards.
 - [x] CA 4: Given no data category is synchronized yet, when Account & cloud is expanded, then local domains such as Apparence et paramètres, Clipboard, Snippets, Dictionnaire, Transcriptions, Profil clavier and Clés IA locales appear as compact pills/rows rather than seven large cards.
 - [x] CA 5: Given at least one sync category is synced, pending, failed, conflicted, or needs attention, when Account & cloud is expanded, then only those meaningful states receive card-level visual weight.
 - [x] CA 6: Given Appearance is expanded, when Keyboard section also exists, then keyboard theme customization has one clear primary home or a clearly secondary cross-link, not two equivalent buttons.
@@ -327,7 +327,7 @@ Remaster the Settings information architecture without changing underlying featu
 |----------|-------|-------|--------|--------|-----------|
 | 2026-06-10 20:45:30 UTC | sf-spec | GPT-5 Codex | Created Settings page UX remaster spec from Diane's direct request and focused audit evidence | Draft spec created | `/sf-ready shipglowz_data/workflow/specs/winglowz-settings-page-ux-remaster.md` |
 | 2026-06-10 20:50:30 UTC | sf-spec | GPT-5 Codex | Added explicit Account & cloud sync/local category compaction requirement after Diane clarified that seven large local-only cards are excessive | Draft spec updated | `/sf-ready shipglowz_data/workflow/specs/winglowz-settings-page-ux-remaster.md` |
-| 2026-06-10 21:10:22 UTC | sf-ready | GPT-5 Codex | Validated structure, user-story fit, proof contract, adversarial gaps, security posture, language doctrine, and dependency alignment | ready | `/sf-start WinGlowz Settings Page UX Remaster` |
+| 2026-06-10 21:10:22 UTC | sf-ready | GPT-5 Codex | Validated structure, user-story fit, proof contract, adversarial gaps, security posture, language doctrine, and dependency alignment | ready | `/sf-start WinGlows Settings Page UX Remaster` |
 | 2026-06-11 01:30:00 UTC | sf-start | GPT-5 Codex | Implemented Settings UX remaster in Flutter: de-duplicated inner section titles, kept account/cloud compact work, moved keyboard/voice/overlay raw diagnostics behind disclosures, clarified maintenance labels, and added focused widget tests | implemented | `/sf-verify shipglowz_data/workflow/specs/winglowz-settings-page-ux-remaster.md` |
 | 2026-06-11 01:33:48 UTC | 103-sf-verify | GPT-5 Codex | Verified local implementation evidence: `flutter analyze`, targeted Settings widget tests, and targeted spec metadata lint passed; hosted Flutter web smoke remains missing because changes are not deployed yet | partial | `/005-sf-ship -> /405-sf-prod -> /108-sf-browser settings-web-smoke` |
 

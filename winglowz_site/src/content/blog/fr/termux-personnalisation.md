@@ -266,7 +266,7 @@ terminal-cursor-style = underline
 
 ## 🎯 Formation : Coder sur mobile
 
-Tu veux aller plus loin ? [Module IX de la formation WinGlowz](/fr/formations/module-9-mobile-coder/) t'apprend à :
+Tu veux aller plus loin ? [Module IX de la formation WinGlows](/fr/formations/module-9-mobile-coder/) t'apprend à :
 
 - Configurer Termux pour un accès serveur optimisé
 - Comprendre pourquoi SSH ≠ Mosh pour coder avec les outils IA

@@ -1,11 +1,11 @@
 {
-  "title": "Produits | WinGlowz",
+  "title": "Produits | WinGlows",
   "description": "Découvrez d'abord l'offre cœur: la formation Maîtrise Windows, puis les outils compatibles.",
-  "siteDescription": "WinGlowz se concentre sur une formation Windows pratique, des plugins Obsidian et des outils navigateur pour la prise de notes, les médias et YouTube.",
-  "subtitle": "Parcourez l'écosystème WinGlowz: la formation Windows en premier, puis les outils Obsidian, YouTube et la veille de contenu.",
+  "siteDescription": "WinGlows se concentre sur une formation Windows pratique, des plugins Obsidian et des outils navigateur pour la prise de notes, les médias et YouTube.",
+  "subtitle": "Parcourez l'écosystème WinGlows: la formation Windows en premier, puis les outils Obsidian, YouTube et la veille de contenu.",
   "customerStories": "Témoignages Clients",
   "features": {
-    "title": "Pourquoi WinGlowz ?",
+    "title": "Pourquoi WinGlows ?",
     "subtitle": "L'offre est pensée pour les besoins déjà présents dans le site: focus, configuration Windows, capture d'information et réutilisation des connaissances.",
     "benefits": [
       "Une formation Windows orientée pratique, pas des conseils génériques",
@@ -54,8 +54,8 @@
       "link": "/fr/maitrise-windows"
     },
     "productivitysuite": {
-      "title": "Pack WinGlowz",
-      "description": "L'écosystème WinGlowz complet: formation et outils principaux",
+      "title": "Pack WinGlows",
+      "description": "L'écosystème WinGlows complet: formation et outils principaux",
       "features": [
         "Formation Windows et contenu du cours",
         "Plugins Obsidian et outils navigateur réunis",

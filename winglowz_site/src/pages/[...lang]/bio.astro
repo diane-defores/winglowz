@@ -25,7 +25,7 @@ interface Props {
 const { lang } = Astro.props
 const isEn = lang === 'en'
 
-const title = isEn ? 'WinGlowz | Links' : 'WinGlowz | Liens'
+const title = isEn ? 'WinGlows | Links' : 'WinGlows | Liens'
 const description = isEn
 	? 'Chrome extensions, Obsidian plugins & Windows productivity guide with 200+ tested tips.'
 	: 'Extensions Chrome, plugins Obsidian et guide de productivité Windows avec 200+ astuces testées.'
@@ -50,7 +50,7 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 	<meta property="og:description" content={description} />
 	<meta property="og:url" content={canonical} />
 	<meta property="og:type" content="website" />
-	<meta property="og:site_name" content="WinGlowz" />
+	<meta property="og:site_name" content="WinGlows" />
 	<meta property="og:locale" content={isEn ? 'en_US' : 'fr_FR'} />
 
 	<meta name="twitter:card" content="summary" />
@@ -67,13 +67,13 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 		<div class="bio-avatar">
 			<img
 				src="/images/WinGlowz.png"
-				alt="WinGlowz"
+				alt="WinGlows"
 				width={SITE_VISUAL_TOKENS.bio.avatarSize}
 				height={SITE_VISUAL_TOKENS.bio.avatarSize}
 			/>
 		</div>
 
-		<h1 class="bio-name">WinGlowz</h1>
+		<h1 class="bio-name">WinGlows</h1>
 
 		<p class="bio-tagline">
 			{isEn
@@ -115,7 +115,7 @@ const canonical = getLocalizedSiteUrl(lang, '/bio')
 		</div>
 
 		<p class="bio-footer">
-			&copy; {SITE_VISUAL_TOKENS.bio.footerYear} WinGlowz
+			&copy; {SITE_VISUAL_TOKENS.bio.footerYear} WinGlows
 		</p>
 	</div>
 </body>

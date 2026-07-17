@@ -2,7 +2,7 @@
 artifact: competitive_intelligence
 metadata_schema_version: "1.0"
 artifact_version: "0.3.2"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-03-18"
 updated: "2026-07-07"
 status: "draft"
@@ -15,7 +15,7 @@ security_impact: "none"
 docs_impact: "yes"
 linked_systems: []
 target_projects:
-  - "WinGlowz"
+  - "WinGlows"
 reference_categories:
   - "transcription_ai"
   - "native_dictation"
@@ -37,7 +37,7 @@ next_review: "2026-06-11"
 next_step: "$sf-docs update"
 ---
 
-# Inspiration — WinGlowz
+# Inspiration — WinGlows
 
 ## Transcription IA
 
@@ -45,7 +45,7 @@ next_step: "$sf-docs update"
 Référence produit pour les fonctionnalités de transcription en temps réel, la gestion de l'historique et l'intégration avec les outils de visioconférence.
 
 ### OpenAI Whisper
-Moteur de transcription utilisé dans WinGlowz pour le pipeline de transcription avancée.
+Moteur de transcription utilisé dans WinGlows pour le pipeline de transcription avancée.
 
 ### Notta
 Inspiration potentielle pour le post-traitement du texte transcrit et la présentation des résultats.
@@ -62,16 +62,16 @@ Benchmark de dictée native Android pour la latence et l'expérience de dictée 
 Benchmark de dictée native iOS pour l'intégration système et la fluidité d'usage.
 
 ### Blip AI
-Concurrent/inspiration pour la dictée IA cross-platform: raccourci global, parole vers texte propre, insertion dans n'importe quelle app, limites d'usage mensuelles et acquisition via AppSumo. À benchmarker contre WinGlowz App sur déclenchement clavier/overlay, nettoyage IA, historique, confidentialité et mode local-first.
+Concurrent/inspiration pour la dictée IA cross-platform: raccourci global, parole vers texte propre, insertion dans n'importe quelle app, limites d'usage mensuelles et acquisition via AppSumo. À benchmarker contre WinGlows App sur déclenchement clavier/overlay, nettoyage IA, historique, confidentialité et mode local-first.
 
 ### [Amical](https://amical.ai/) + [page AppSumo](https://appsumo.com/products/amical/)
-Concurrent direct/inspiration forte pour la dictée IA cross-platform: hotkey global, texte injecté dans n'importe quelle app, formatage selon le contexte de l'app, vocabulaire personnalisé, mode local ou cloud, et angle open-source/local-first. La page AppSumo ajoute un signal précieux sur les attentes réelles des utilisateurs finaux: annulation d'une dictée en cours, transcription de réunion en temps réel, stabilité de la fenêtre flottante, et arbitrage confidentialité/vitesse. À benchmarker contre WinGlowz App sur overlay/hotkey, dictée context-aware, mode offline/local-first, commandes vocales, et UX de capture/annulation sans casser le flux.
+Concurrent direct/inspiration forte pour la dictée IA cross-platform: hotkey global, texte injecté dans n'importe quelle app, formatage selon le contexte de l'app, vocabulaire personnalisé, mode local ou cloud, et angle open-source/local-first. La page AppSumo ajoute un signal précieux sur les attentes réelles des utilisateurs finaux: annulation d'une dictée en cours, transcription de réunion en temps réel, stabilité de la fenêtre flottante, et arbitrage confidentialité/vitesse. À benchmarker contre WinGlows App sur overlay/hotkey, dictée context-aware, mode offline/local-first, commandes vocales, et UX de capture/annulation sans casser le flux.
 
 ### Typing Hero
-Concurrent/inspiration pour le text expansion Android: snippets, templates, insertion de date/heure, calculs simples, transformation de texte, historique presse-papiers et automatisation via accessibilité. À benchmarker contre WinGlowz App sur les snippets, les variantes de template, les actions texte et le positionnement freemium/premium.
+Concurrent/inspiration pour le text expansion Android: snippets, templates, insertion de date/heure, calculs simples, transformation de texte, historique presse-papiers et automatisation via accessibilité. À benchmarker contre WinGlows App sur les snippets, les variantes de template, les actions texte et le positionnement freemium/premium.
 
 ### [InsertKit](https://insertkit.com/) + [lifetime deal](https://insertkit.com/lifetime-deal)
-Concurrent/inspiration pour une surface de productivite multi-plateforme orientee saisie repetitive: text expansion, snippets dynamiques, variations, historique presse-papiers, voice typing IA, commandes vocales et application Android en plus du desktop et de l'extension Chrome. Le site officiel le positionne aussi explicitement contre TextExpander, TypeDesk et Wispr Flow, avec un angle valeur/free plan qui peut parler a notre audience. Le faible volume actuel de reviews publiques visibles invite a rester prudent sur la traction reelle, mais le packaging produit est tres pertinent a benchmarker contre WinGlowz App sur la combinaison snippets + clipboard + voix, la clarte du positionnement cross-platform, la promesse "type less, insert more", et l'articulation entre plan gratuit, offre lifetime et cas d'usage business.
+Concurrent/inspiration pour une surface de productivite multi-plateforme orientee saisie repetitive: text expansion, snippets dynamiques, variations, historique presse-papiers, voice typing IA, commandes vocales et application Android en plus du desktop et de l'extension Chrome. Le site officiel le positionne aussi explicitement contre TextExpander, TypeDesk et Wispr Flow, avec un angle valeur/free plan qui peut parler a notre audience. Le faible volume actuel de reviews publiques visibles invite a rester prudent sur la traction reelle, mais le packaging produit est tres pertinent a benchmarker contre WinGlows App sur la combinaison snippets + clipboard + voix, la clarte du positionnement cross-platform, la promesse "type less, insert more", et l'articulation entre plan gratuit, offre lifetime et cas d'usage business.
 
 ## Audio et voix
 
@@ -90,7 +90,7 @@ Inspiration pour le traitement audio en amont de la transcription.
 Référence de positionnement pour la voix comme interface de productivité.
 
 ### Trigr
-Concurrent indirect/inspiration pour les workflows Windows sans scripting: hotkeys visuels, macros et text expansion. Pertinent pour l'app WinGlowz si les raccourcis, snippets, overlays et actions rapides deviennent une surface de productivité desktop au-delà de la dictée.
+Concurrent indirect/inspiration pour les workflows Windows sans scripting: hotkeys visuels, macros et text expansion. Pertinent pour l'app WinGlows si les raccourcis, snippets, overlays et actions rapides deviennent une surface de productivité desktop au-delà de la dictée.
 
 ## Veille productivité IA — 2026-05-11
 

@@ -183,7 +183,7 @@ describe('suiteBridge helpers', () => {
     ).toBe(false)
   })
 
-  test('treats WinGlowz free plan as active sync access and prefers paid plan metadata', () => {
+  test('treats WinGlows free plan as active sync access and prefers paid plan metadata', () => {
     expect(
       buildFirestoreSuiteAccessMirror({
         globalUserId: 'gu_123',

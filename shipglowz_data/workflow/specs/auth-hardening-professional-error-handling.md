@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-14"
 created_at: "2026-05-14 17:27:52 UTC"
 updated: "2026-05-14"
@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "auth-hardening-professional-error-handling"
 owner: "Diane"
-user_story: "En tant que builder de WinGlowz, je veux une authentification Firebase/Google robuste, observable et sûre, afin de pouvoir vendre un produit Android professionnel sans fuite de secrets, sans accès non autorisé et sans erreurs auth silencieuses."
+user_story: "En tant que builder de WinGlows, je veux une authentification Firebase/Google robuste, observable et sûre, afin de pouvoir vendre un produit Android professionnel sans fuite de secrets, sans accès non autorisé et sans erreurs auth silencieuses."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -72,9 +72,9 @@ Ready for implementation. This spec intentionally expands beyond a one-screen er
 
 # User Story
 
-En tant que builder de WinGlowz, je veux une authentification Firebase/Google robuste, observable et sûre, afin de pouvoir vendre un produit Android professionnel sans fuite de secrets, sans accès non autorisé et sans erreurs auth silencieuses.
+En tant que builder de WinGlows, je veux une authentification Firebase/Google robuste, observable et sûre, afin de pouvoir vendre un produit Android professionnel sans fuite de secrets, sans accès non autorisé et sans erreurs auth silencieuses.
 
-Acteur principal: builder WinGlowz.
+Acteur principal: builder WinGlows.
 
 Acteurs secondaires:
 
@@ -97,7 +97,7 @@ Résultat observable attendu: l'app laisse accéder aux surfaces autorisées seu
 
 # Minimal Behavior Contract
 
-WinGlowz accepte trois chemins d'entrée: mode local explicite, session Firebase email/password, et session Firebase Google. Une tentative réussie met l'utilisateur dans l'état d'accès correspondant et rend l'app utilisable; une tentative échouée affiche une erreur claire, récupérable et sans secret, tout en enregistrant un diagnostic redigé pour support/Sentry. Les routes produit ne doivent pas être accessibles par deep link ou navigation directe quand aucune session valide ou aucun mode local explicite n'est actif. L'edge case facile à rater est Google Sign-In Android: certaines erreurs de configuration peuvent remonter comme `canceled`, donc l'app ne doit pas traiter toutes les annulations apparentes comme un simple abandon utilisateur sans signal diagnostic exploitable.
+WinGlows accepte trois chemins d'entrée: mode local explicite, session Firebase email/password, et session Firebase Google. Une tentative réussie met l'utilisateur dans l'état d'accès correspondant et rend l'app utilisable; une tentative échouée affiche une erreur claire, récupérable et sans secret, tout en enregistrant un diagnostic redigé pour support/Sentry. Les routes produit ne doivent pas être accessibles par deep link ou navigation directe quand aucune session valide ou aucun mode local explicite n'est actif. L'edge case facile à rater est Google Sign-In Android: certaines erreurs de configuration peuvent remonter comme `canceled`, donc l'app ne doit pas traiter toutes les annulations apparentes comme un simple abandon utilisateur sans signal diagnostic exploitable.
 
 # Success Behavior
 

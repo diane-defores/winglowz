@@ -5,15 +5,15 @@ created: "2026-05-11"
 updated: "2026-05-11"
 status: reviewed
 source_skill: sf-veille
-scope: "inspirations formation, productivité et workflows IA pour WinGlowz"
+scope: "inspirations formation, productivité et workflows IA pour WinGlows"
 confidence: medium
 ---
 
-# Concurrents et inspirations — WinGlowz
+# Concurrents et inspirations — WinGlows
 
 ## Lecture projet
 
-WinGlowz est orienté formation/productivité/workflows. Les liens utiles sont surtout des inspirations de contenu, modules de formation et promesses de productivité assistée.
+WinGlows est orienté formation/productivité/workflows. Les liens utiles sont surtout des inspirations de contenu, modules de formation et promesses de productivité assistée.
 
 ## Liens retenus
 

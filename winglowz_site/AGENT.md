@@ -37,7 +37,7 @@ next_step: "pnpm build:check"
 
 ## Mission
 
-WinGlowz is a bilingual Astro application for Windows-focused productivity content, products, docs, and training sales. The repo combines:
+WinGlows is a bilingual Astro application for Windows-focused productivity content, products, docs, and training sales. The repo combines:
 
 - marketing and editorial pages
 - gated training purchase flows

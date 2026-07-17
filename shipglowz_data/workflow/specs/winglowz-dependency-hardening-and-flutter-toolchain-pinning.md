@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-12"
 created_at: "2026-06-12 12:53:08 UTC"
 updated: "2026-06-12"
@@ -13,12 +13,12 @@ source_model: "GPT-5 Codex"
 scope: "dependency-hardening-and-flutter-toolchain-pinning"
 owner: "Diane"
 confidence: high
-user_story: "En tant que mainteneuse de WinGlowz App, je veux une politique de dependances Flutter et de pinning d'outillage explicite, afin de garder des builds reproductibles, limiter la dette Supabase legacy, et reduire le risque de derive ou d'upgrade casse en local comme en CI."
+user_story: "En tant que mainteneuse de WinGlows App, je veux une politique de dependances Flutter et de pinning d'outillage explicite, afin de garder des builds reproductibles, limiter la dette Supabase legacy, et reduire le risque de derive ou d'upgrade casse en local comme en CI."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
+  - "WinGlows Flutter app"
   - "pubspec.yaml"
   - "pubspec.lock"
   - "Flox environment"
@@ -57,13 +57,13 @@ evidence:
 next_step: "/102-sf-start shipglowz_data/workflow/specs/winglowz-dependency-hardening-and-flutter-toolchain-pinning.md"
 ---
 
-# Spec: WinGlowz Dependency Hardening and Flutter Toolchain Pinning
+# Spec: WinGlows Dependency Hardening and Flutter Toolchain Pinning
 
-🟢 [WinGlowzApp] spec: WinGlowz Dependency Hardening and Flutter Toolchain Pinning | status: ready | path: shipglowz_data/workflow/specs/winglowz-dependency-hardening-and-flutter-toolchain-pinning.md | next: /102-sf-start shipglowz_data/workflow/specs/winglowz-dependency-hardening-and-flutter-toolchain-pinning.md | id: wfz-dependency-hardening
+🟢 [WinGlowsApp] spec: WinGlows Dependency Hardening and Flutter Toolchain Pinning | status: ready | path: shipglowz_data/workflow/specs/winglowz-dependency-hardening-and-flutter-toolchain-pinning.md | next: /102-sf-start shipglowz_data/workflow/specs/winglowz-dependency-hardening-and-flutter-toolchain-pinning.md | id: wfz-dependency-hardening
 
 ## Title
 
-WinGlowz Dependency Hardening and Flutter Toolchain Pinning
+WinGlows Dependency Hardening and Flutter Toolchain Pinning
 
 ## Status
 
@@ -71,11 +71,11 @@ Ready. Created on 2026-06-12 from the dependency audit chantier potential after 
 
 ## User Story
 
-En tant que mainteneuse de WinGlowz App, je veux une politique de dependances Flutter et de pinning d'outillage explicite, afin de garder des builds reproductibles, limiter la dette Supabase legacy, et reduire le risque de derive ou d'upgrade casse en local comme en CI.
+En tant que mainteneuse de WinGlows App, je veux une politique de dependances Flutter et de pinning d'outillage explicite, afin de garder des builds reproductibles, limiter la dette Supabase legacy, et reduire le risque de derive ou d'upgrade casse en local comme en CI.
 
 ## Minimal Behavior Contract
 
-When WinGlowz App dependencies are refreshed, the project must upgrade only the safe non-major Flutter or Dart packages that support the active app contract, keep the lockfile committed, rerun the allowed Flutter validation path, and document any dependency that stays intentionally stale because it is legacy-only, major-breaking, or blocked by another spec. Contributors and CI must resolve the same intended Flutter toolchain version from an explicit source of truth instead of floating on whichever `stable` release is current. If a dependency cannot be upgraded safely, the app must remain on the previous version with the block reason documented rather than silently drifting or mixing unsupported toolchains. The easy edge case to miss is the retained Supabase compile-compat layer: it must not keep upgrading casually like active runtime code if the product intends to retire it.
+When WinGlows App dependencies are refreshed, the project must upgrade only the safe non-major Flutter or Dart packages that support the active app contract, keep the lockfile committed, rerun the allowed Flutter validation path, and document any dependency that stays intentionally stale because it is legacy-only, major-breaking, or blocked by another spec. Contributors and CI must resolve the same intended Flutter toolchain version from an explicit source of truth instead of floating on whichever `stable` release is current. If a dependency cannot be upgraded safely, the app must remain on the previous version with the block reason documented rather than silently drifting or mixing unsupported toolchains. The easy edge case to miss is the retained Supabase compile-compat layer: it must not keep upgrading casually like active runtime code if the product intends to retire it.
 
 ## Success Behavior
 
@@ -97,7 +97,7 @@ When WinGlowz App dependencies are refreshed, the project must upgrade only the 
 
 ## Problem
 
-WinGlowz App is in a middling dependency-health state. The direct Flutter pub packages currently show no known OSV advisories at the audited locked versions, but the active runtime graph is stale across Firebase and several supporting packages, the CI Flutter setup floats on `stable` while Flox pins a concrete version, the repo still carries Supabase legacy code after the Firebase-first migration, and the project lacks clear license inventory discipline for pub packages. None of these issues alone blocks the app today, but together they create drift, fragile upgrades, unclear ownership of legacy dependencies, and preventable supply-chain uncertainty.
+WinGlows App is in a middling dependency-health state. The direct Flutter pub packages currently show no known OSV advisories at the audited locked versions, but the active runtime graph is stale across Firebase and several supporting packages, the CI Flutter setup floats on `stable` while Flox pins a concrete version, the repo still carries Supabase legacy code after the Firebase-first migration, and the project lacks clear license inventory discipline for pub packages. None of these issues alone blocks the app today, but together they create drift, fragile upgrades, unclear ownership of legacy dependencies, and preventable supply-chain uncertainty.
 
 ## Solution
 

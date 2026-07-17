@@ -8,7 +8,7 @@ ton probleme n'est pas seulement le manque de temps.
 
 Ton probleme, c'est qu'une partie de ton energie se dissout chaque jour dans un environnement qui te ralentit.
 
-WinGlowz a ete construit pour repondre a ca de maniere concrete.
+WinGlows a ete construit pour repondre a ca de maniere concrete.
 
 La formation comprend :
 

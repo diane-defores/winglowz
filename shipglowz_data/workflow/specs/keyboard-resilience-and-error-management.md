@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisatrice du clavier WinGlowz sur Android, je veux que les actions du clavier, les réglages et les diagnostics restent récupérables même quand une action native échoue, afin de ne plus perdre le clavier ou l'application sans information exploitable."
+user_story: "En tant qu'utilisatrice du clavier WinGlows sur Android, je veux que les actions du clavier, les réglages et les diagnostics restent récupérables même quand une action native échoue, afin de ne plus perdre le clavier ou l'application sans information exploitable."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -39,7 +39,7 @@ depends_on:
 supersedes: []
 evidence:
   - "User report 2026-05-16: tapping the Android keyboard action-bar symbol '#+=' crashes the real IME while preview works."
-  - "User report 2026-05-16: Android OS terminates the app/keyboard before WinGlowz can offer logs."
+  - "User report 2026-05-16: Android OS terminates the app/keyboard before WinGlows can offer logs."
   - "Local code: lib/core/bootstrap/sentry_bootstrap.dart configures sentry_flutter 9.20.0 and redacted breadcrumbs."
   - "Local code: android/app/src/main/kotlin/com/winglowz_app/winglowz_app/ime/WinGlowzKeyboardView.kt centralizes drawing, touch dispatch, panel switching and layout snapshot rebuilds."
   - "Official docs checked 2026-05-16: Sentry Flutter docs state the Flutter SDK supports automatic error reporting; Flutter error-reporting docs state Sentry can capture Dart and native Android layers, including Java/Kotlin/C/C++."
@@ -53,13 +53,13 @@ Keyboard Resilience and Error Management
 Ready. Validated by `/sf-ready` on 2026-05-16; ready for `/sf-start Keyboard Resilience and Error Management`.
 
 ## User Story
-En tant qu'utilisatrice du clavier WinGlowz sur Android, je veux que les actions du clavier, les réglages et les diagnostics restent récupérables même quand une action native échoue, afin de ne plus perdre le clavier ou l'application sans information exploitable.
+En tant qu'utilisatrice du clavier WinGlows sur Android, je veux que les actions du clavier, les réglages et les diagnostics restent récupérables même quand une action native échoue, afin de ne plus perdre le clavier ou l'application sans information exploitable.
 
 ## Minimal Behavior Contract
-Quand l'utilisateur interagit avec le clavier Android ou ses réglages, WinGlowz accepte les taps, gestes, changements de panel, changements de thème, réglages de hauteur/compact, imports et actions média/navigation sans laisser une exception non gérée tuer le clavier. En cas de panne locale, le système doit annuler uniquement l'action fautive, afficher un message court dans le clavier ou les settings, enregistrer un diagnostic redigé et, si Sentry est configuré, envoyer un contexte technique sans texte saisi, presse-papiers, secrets ni contenu utilisateur. L'edge case facile à rater est une exception pendant le rendu ou la reconstruction du layout: elle ne peut pas dépendre du layout cassé pour afficher l'erreur, donc le clavier doit basculer vers un fallback minimal sûr.
+Quand l'utilisateur interagit avec le clavier Android ou ses réglages, WinGlows accepte les taps, gestes, changements de panel, changements de thème, réglages de hauteur/compact, imports et actions média/navigation sans laisser une exception non gérée tuer le clavier. En cas de panne locale, le système doit annuler uniquement l'action fautive, afficher un message court dans le clavier ou les settings, enregistrer un diagnostic redigé et, si Sentry est configuré, envoyer un contexte technique sans texte saisi, presse-papiers, secrets ni contenu utilisateur. L'edge case facile à rater est une exception pendant le rendu ou la reconstruction du layout: elle ne peut pas dépendre du layout cassé pour afficher l'erreur, donc le clavier doit basculer vers un fallback minimal sûr.
 
 ## Success Behavior
-- Précondition: le clavier WinGlowz est actif dans une app Android, avec thème, hauteur, mode compact, panels et raccourcis potentiellement configurés.
+- Précondition: le clavier WinGlows est actif dans une app Android, avec thème, hauteur, mode compact, panels et raccourcis potentiellement configurés.
 - Action: l'utilisateur tape sur une action sensible (`#+=`, `Prefs`, `Clip`, `Media`, `Theme`, hauteur, compact), utilise un appui long, scrolle un panel ou applique un thème custom.
 - Résultat visible: l'action réussit normalement, ou en cas d'erreur le clavier reste affiché avec un statut court du type `Keyboard recovered` / `Action failed` et un fallback minimal si nécessaire.
 - Effet système attendu: un événement diagnostic redigé est conservé localement, le dernier état d'erreur clavier est exposé au pont Flutter, et Sentry reçoit l'erreur native/Flutter quand `SENTRY_DSN` est configuré.

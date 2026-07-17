@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-06-10"
 created_at: "2026-06-10 15:32:15 UTC"
 updated: "2026-06-10"
@@ -13,12 +13,12 @@ source_model: "GPT-5 Codex"
 scope: "product-pages-ux-remaster"
 owner: "Diane"
 confidence: medium
-user_story: "En tant qu'utilisatrice WinGlowz Android et web, je veux que les pages Voix, Papier, Snippets et Dico utilisent une structure compacte, cohérente et fiable, afin de comprendre immédiatement l'état de mes contenus, l'état de synchronisation, et l'action utile suivante sans bruit ni répétition."
+user_story: "En tant qu'utilisatrice WinGlows Android et web, je veux que les pages Voix, Papier, Snippets et Dico utilisent une structure compacte, cohérente et fiable, afin de comprendre immédiatement l'état de mes contenus, l'état de synchronisation, et l'action utile suivante sans bruit ni répétition."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
-  - "WinGlowz Flutter app"
+  - "WinGlows Flutter app"
   - "Flutter Material shared widgets"
   - "Voice page"
   - "Clipboard/Papier page"
@@ -66,13 +66,13 @@ evidence:
 next_step: "Diane product-feel review on https://app.winglowz.com/ for page density, labels, and sync/status clarity"
 ---
 
-# Spec: WinGlowz Product Pages UX Remaster
+# Spec: WinGlows Product Pages UX Remaster
 
-🟢 [WinGlowzApp] spec: WinGlowz Product Pages UX Remaster | status: shipped-prod-browser-smoke-partial | path: shipglowz_data/workflow/specs/winglowz-product-pages-ux-remaster.md | next: Diane product-feel review on https://app.winglowz.com/ | id: wfz-product-pages-ux-remaster
+🟢 [WinGlowsApp] spec: WinGlows Product Pages UX Remaster | status: shipped-prod-browser-smoke-partial | path: shipglowz_data/workflow/specs/winglowz-product-pages-ux-remaster.md | next: Diane product-feel review on https://app.winglowz.com/ | id: wfz-product-pages-ux-remaster
 
 ## Title
 
-WinGlowz Product Pages UX Remaster
+WinGlows Product Pages UX Remaster
 
 ## Status
 
@@ -80,7 +80,7 @@ Shipped and deployed to the active Flutter web URL. Created on 2026-06-10 from u
 
 ## User Story
 
-En tant qu'utilisatrice WinGlowz Android et web, je veux que les pages Voix, Papier, Snippets et Dico utilisent une structure compacte, cohérente et fiable, afin de comprendre immédiatement l'état de mes contenus, l'état de synchronisation, et l'action utile suivante sans bruit ni répétition.
+En tant qu'utilisatrice WinGlows Android et web, je veux que les pages Voix, Papier, Snippets et Dico utilisent une structure compacte, cohérente et fiable, afin de comprendre immédiatement l'état de mes contenus, l'état de synchronisation, et l'action utile suivante sans bruit ni répétition.
 
 ## Minimal Behavior Contract
 
@@ -147,7 +147,7 @@ This is not a visual-only cleanup. It is a bounded UX and component remaster tha
 ## Constraints
 
 - Follow the repository guardrails: allowed local checks are `flutter analyze`, `flutter test`, and targeted `flutter test ...`; do not run local Android builds, installs, packaging, Gradle tasks, or `flutter run -d android`.
-- Use existing Flutter Material patterns, WinGlowz theme tokens, and shared app components unless a new primitive is justified by repeated page structure.
+- Use existing Flutter Material patterns, WinGlows theme tokens, and shared app components unless a new primitive is justified by repeated page structure.
 - Preserve all current user-facing capabilities and data semantics.
 - Keep user-facing French natural, accented, and concise.
 - Preserve accessibility fundamentals: labels, semantics where present, keyboard/focus behavior, contrast intent, and practical mobile touch targets.

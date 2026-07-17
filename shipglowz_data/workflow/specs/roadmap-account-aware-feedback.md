@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "roadmap-account-aware-feedback"
 owner: "Diane"
 confidence: high
-user_story: "En tant que visiteuse ou cliente WinGlowz, je veux consulter la roadmap publique, voter une fois par fonctionnalité avec mon compte, et proposer une idée liée à un produit afin que la roadmap reflète un feedback réel sans casser les garde-fous auth et anti-abus du produit actuel."
+user_story: "En tant que visiteuse ou cliente WinGlows, je veux consulter la roadmap publique, voter une fois par fonctionnalité avec mon compte, et proposer une idée liée à un produit afin que la roadmap reflète un feedback réel sans casser les garde-fous auth et anti-abus du produit actuel."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
@@ -48,7 +48,7 @@ supersedes: []
 evidence:
   - "Audit 2026-06-12: `src/components/roadmap/FeatureCard.astro` posted to `/api/features/{id}/vote` but no endpoint existed."
   - "Audit 2026-06-12: `src/components/roadmap/AddFeatureModal.astro` had no submit handler or backend action."
-  - "Audit 2026-06-12: `src/pages/[...lang]/[roadmap].astro` rendered hardcoded roadmap data while WinGlowz now runs Clerk + Convex + product entitlement flows."
+  - "Audit 2026-06-12: `src/pages/[...lang]/[roadmap].astro` rendered hardcoded roadmap data while WinGlows now runs Clerk + Convex + product entitlement flows."
   - "Existing runtime docs show Astro SSR + Clerk middleware + Convex state as the current canonical stack."
 next_step: "/103-sf-verify roadmap-account-aware-feedback"
 ---
@@ -63,11 +63,11 @@ ready
 
 # User Story
 
-En tant que visiteuse ou cliente WinGlowz, je veux consulter la roadmap publique, voter une fois par fonctionnalité avec mon compte, et proposer une idée liée à un produit afin que la roadmap reflète un feedback réel sans casser les garde-fous auth et anti-abus du produit actuel.
+En tant que visiteuse ou cliente WinGlows, je veux consulter la roadmap publique, voter une fois par fonctionnalité avec mon compte, et proposer une idée liée à un produit afin que la roadmap reflète un feedback réel sans casser les garde-fous auth et anti-abus du produit actuel.
 
 # Minimal Behavior Contract
 
-La page roadmap reste publiquement lisible et affiche les fonctionnalités actives depuis Convex quand elles existent, avec un fallback lisible sur le catalogue historique si la base est vide. Un vote n'est accepté que pour une session Clerk reconnue et déjà reliée à une identité produit WinGlowz; la même personne ne peut voter qu'une fois par fonctionnalité et l'état retourné au navigateur est explicite. Une suggestion n'est jamais publiée automatiquement: une session reconnue peut soumettre une idée liée à un produit, elle est persistée en `pending` pour revue, les doublons évidents par même compte sont refusés proprement, et un compte non encore synchronisé ne doit jamais produire un vote ou une suggestion orpheline.
+La page roadmap reste publiquement lisible et affiche les fonctionnalités actives depuis Convex quand elles existent, avec un fallback lisible sur le catalogue historique si la base est vide. Un vote n'est accepté que pour une session Clerk reconnue et déjà reliée à une identité produit WinGlows; la même personne ne peut voter qu'une fois par fonctionnalité et l'état retourné au navigateur est explicite. Une suggestion n'est jamais publiée automatiquement: une session reconnue peut soumettre une idée liée à un produit, elle est persistée en `pending` pour revue, les doublons évidents par même compte sont refusés proprement, et un compte non encore synchronisé ne doit jamais produire un vote ou une suggestion orpheline.
 
 # Success Behavior
 
@@ -87,7 +87,7 @@ Si l'utilisatrice n'est pas connectée, le vote et la suggestion ne doivent prod
 
 # Problem
 
-La page roadmap existante appartenait à un ancien état du site: données hardcodées, bouton de vote relié à aucune route réelle, modale de suggestion purement décorative, types divergents, et aucune connexion avec le système moderne Clerk + Convex + identités/entitlements WinGlowz. Dans cet état, la page donne une promesse interactive fausse et fragilise la confiance produit.
+La page roadmap existante appartenait à un ancien état du site: données hardcodées, bouton de vote relié à aucune route réelle, modale de suggestion purement décorative, types divergents, et aucune connexion avec le système moderne Clerk + Convex + identités/entitlements WinGlows. Dans cet état, la page donne une promesse interactive fausse et fragilise la confiance produit.
 
 # Solution
 
@@ -277,7 +277,7 @@ None
 | 2026-06-12 17:35:00 UTC | 100-sf-spec | GPT-5 Codex | Created roadmap feedback spec from roadmap audit findings and current Clerk/Convex runtime | updated | /101-sf-ready roadmap-account-aware-feedback |
 | 2026-06-12 17:35:30 UTC | 101-sf-ready | GPT-5 Codex | Validated structure, behavior contract, auth/data/security scope, and implementation autonomy | ready | /102-sf-start roadmap-account-aware-feedback |
 | 2026-06-12 15:11:00 UTC | 001-sf-build | GPT-5 Codex | Implemented roadmap Convex/API/UI wiring and ran `pnpm build:check`; verification blocked by pre-existing syntax error in `src/pages/[...lang]/[testimonials].astro` | partial | /103-sf-verify roadmap-account-aware-feedback |
-| 2026-06-12 15:26:00 UTC | 300-sf-docs | GPT-5 Codex | Refreshed fallback roadmap card content to better match current product docs and active WinGlowz app chantiers | updated | /103-sf-verify roadmap-account-aware-feedback |
+| 2026-06-12 15:26:00 UTC | 300-sf-docs | GPT-5 Codex | Refreshed fallback roadmap card content to better match current product docs and active WinGlows app chantiers | updated | /103-sf-verify roadmap-account-aware-feedback |
 | 2026-06-12 17:56:00 UTC | 001-sf-build | GPT-5 Codex | Improved roadmap mobile responsiveness by removing project-filter overflow and turning kanban mobile into a snap-scannable horizontal rail | partial | /103-sf-verify roadmap-account-aware-feedback |
 
 # Current Chantier Flow

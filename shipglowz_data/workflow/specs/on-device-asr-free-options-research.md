@@ -15,13 +15,13 @@ title: "Free on-device ASR options for Android keyboard dictation"
 
 ## Position
 
-WinGlowz should treat local/on-device ASR as the default keyboard dictation path. The server worker should be reserved for explicit high-quality fallback, not normal keyboard input.
+WinGlows should treat local/on-device ASR as the default keyboard dictation path. The server worker should be reserved for explicit high-quality fallback, not normal keyboard input.
 
 The strongest first implementation candidate is `sherpa-onnx` as the runtime wrapper, because it already supports Android, Kotlin/Java, Dart, streaming and non-streaming ASR, VAD, Whisper exports, Moonshine exports, SenseVoice exports, and multiple model families behind one deployment shape.
 
 ## Shortlist
 
-| Option | Fit for WinGlowz | License posture | Strength | Risk |
+| Option | Fit for WinGlows | License posture | Strength | Risk |
 | --- | --- | --- | --- | --- |
 | `sherpa-onnx` | Best runtime candidate | Apache-2.0 code | Android, Kotlin/Java/Dart APIs, streaming/non-streaming, many model families | Model choice still needs benchmarking |
 | Whisper via `sherpa-onnx` | Best French-capable baseline | Whisper is MIT; converted model license should be tracked | Multilingual, known quality, works with French | Tiny/base may be weak; small may be heavy |
@@ -62,7 +62,7 @@ Android exposes offline preference flags, but the platform documentation says re
 - Vosk core is Apache-2.0; its model catalog includes `vosk-model-small-fr-0.22`, a 41MB French model for Android/iOS/Raspberry Pi, and an Apache-2.0 license for that model.
 - FunASR code is MIT and includes ASR, VAD, punctuation restoration, and model deployment tooling; its models use a separate model license agreement that needs review before commercial shipping.
 - SenseVoice advertises high-accuracy multilingual ASR and ONNX export, with third-party sherpa-onnx deployment on Android/iOS/Raspberry Pi.
-- Moonshine code and English models are MIT, but non-English models use a community license with a commercial revenue threshold; French fit is not currently clear enough for default WinGlowz usage.
+- Moonshine code and English models are MIT, but non-English models use a community license with a commercial revenue threshold; French fit is not currently clear enough for default WinGlows usage.
 - WeNet and PaddleSpeech are Apache-2.0 production/toolkit options, but not the shortest path for an Android IME integration.
 
 ## Source Links

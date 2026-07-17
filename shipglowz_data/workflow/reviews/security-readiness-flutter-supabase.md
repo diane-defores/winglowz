@@ -2,7 +2,7 @@
 artifact: review_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-04-27"
 updated: "2026-05-11"
 status: "reviewed"
@@ -59,7 +59,7 @@ The blockers below were used as the integration checklist for the ready spec and
    The spec says `auth.uid() = user_id`, but does not require concrete SQL contracts: `user_id uuid not null default auth.uid()`, authenticated-only grants, RLS enabled on every user table, `using` and `with check` policies for insert/update/delete, unique constraints scoped by `user_id`, ownership checks for deletes by ID, realtime authorization behavior, and tests proving cross-user read/write/delete denial. This is a hard blocker because the current app's Convex functions accept client-provided `userId`.
 
 3. Direct OpenAI/Anthropic client calls need a platform threat model.
-   BYOK can be acceptable for native apps, but the spec must explicitly state that client-side keys are visible to a compromised device/app/browser environment, that WinGlowz cannot enforce central spend limits for user-owned keys, and that web builds may need different behavior if direct browser calls are blocked or too exposing. If a proxy is introduced for web, the spec must define whether keys ever touch the proxy, how they are redacted, and what rate/cost controls exist.
+   BYOK can be acceptable for native apps, but the spec must explicitly state that client-side keys are visible to a compromised device/app/browser environment, that WinGlows cannot enforce central spend limits for user-owned keys, and that web builds may need different behavior if direct browser calls are blocked or too exposing. If a proxy is introduced for web, the spec must define whether keys ever touch the proxy, how they are redacted, and what rate/cost controls exist.
 
 4. Secure storage is not defined per platform.
    `flutter_secure_storage` is named, but the spec must define platform behavior for Android, iOS, macOS, Windows, Linux, and web, including unavailable/degraded secure storage, deletion/revocation of keys, biometric/keychain backup expectations if any, and whether cloud AI modes are disabled when secure storage is not acceptable. Web storage must be documented as materially weaker than mobile keychain/keystore storage.

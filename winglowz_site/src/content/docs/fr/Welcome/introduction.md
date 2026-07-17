@@ -1,14 +1,14 @@
 ---
-title: Bienvenue dans la Documentation WinGlowz
-description: Commencez avec WinGlowz et découvrez notre écosystème d'outils de productivité.
+title: Bienvenue dans la Documentation WinGlows
+description: Commencez avec WinGlows et découvrez notre écosystème d'outils de productivité.
 
 ---
 
-Bienvenue dans la documentation WinGlowz ! Vous trouverez ici tout ce dont vous avez besoin pour démarrer avec notre suite d'outils de productivité.
+Bienvenue dans la documentation WinGlows ! Vous trouverez ici tout ce dont vous avez besoin pour démarrer avec notre suite d'outils de productivité.
 
-## Qu'est-ce que WinGlowz ?
+## Qu'est-ce que WinGlows ?
 
-WinGlowz est un écosystème complet d'outils de productivité conçu pour vous aider à travailler plus intelligemment. Nos outils sont construits avec des technologies modernes et les meilleures pratiques pour garantir une expérience fluide.
+WinGlows est un écosystème complet d'outils de productivité conçu pour vous aider à travailler plus intelligemment. Nos outils sont construits avec des technologies modernes et les meilleures pratiques pour garantir une expérience fluide.
 
 ## Pour Commencer
 

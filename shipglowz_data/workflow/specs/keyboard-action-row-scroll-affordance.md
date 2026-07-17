@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisatrice du clavier WinGlowz sur Android, je veux que les lignes d'action scrollables indiquent clairement quand le scroll commence, où il reste du contenu et sur quelle page la ligne va se repositionner, afin de comprendre le geste sans ambiguïté visuelle."
+user_story: "En tant qu'utilisatrice du clavier WinGlows sur Android, je veux que les lignes d'action scrollables indiquent clairement quand le scroll commence, où il reste du contenu et sur quelle page la ligne va se repositionner, afin de comprendre le geste sans ambiguïté visuelle."
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
@@ -49,13 +49,13 @@ Keyboard Action Row Scroll Affordance
 Implemented locally. Flutter analyzer passed on 2026-05-19. Android IME validation still requires Blacksmith/GitHub Actions and Diane physical-device QA because local Android builds, Gradle tasks, installs and APK validation are forbidden on this VM.
 
 ## User Story
-En tant qu'utilisatrice du clavier WinGlowz sur Android, je veux que les lignes d'action scrollables indiquent clairement quand le scroll commence, où il reste du contenu et sur quelle page la ligne va se repositionner, afin de comprendre le geste sans ambiguïté visuelle.
+En tant qu'utilisatrice du clavier WinGlows sur Android, je veux que les lignes d'action scrollables indiquent clairement quand le scroll commence, où il reste du contenu et sur quelle page la ligne va se repositionner, afin de comprendre le geste sans ambiguïté visuelle.
 
 ## Minimal Behavior Contract
-Quand l'utilisateur démarre un geste horizontal sur une ligne d'action scrollable du clavier Android, WinGlowz doit accepter le drag, entrer rapidement dans un état visuel de scroll, réduire la ligne et ses touches, afficher les indications de contenu restant à gauche et/ou à droite, puis revenir à la taille normale au relâchement en snappant vers la page actuelle, précédente ou suivante selon le seuil franchi. Si la ligne n'a pas de contenu scrollable ou si le geste reste sous le seuil horizontal, aucun état de scroll ne doit être affiché et le tap normal doit rester possible. L'edge case facile à rater est le geste paged qui ne déplace qu'un peu la row: la réduction visuelle doit signaler le scroll, mais le relâchement doit revenir sur la même page sans donner l'impression d'un changement de page.
+Quand l'utilisateur démarre un geste horizontal sur une ligne d'action scrollable du clavier Android, WinGlows doit accepter le drag, entrer rapidement dans un état visuel de scroll, réduire la ligne et ses touches, afficher les indications de contenu restant à gauche et/ou à droite, puis revenir à la taille normale au relâchement en snappant vers la page actuelle, précédente ou suivante selon le seuil franchi. Si la ligne n'a pas de contenu scrollable ou si le geste reste sous le seuil horizontal, aucun état de scroll ne doit être affiché et le tap normal doit rester possible. L'edge case facile à rater est le geste paged qui ne déplace qu'un peu la row: la réduction visuelle doit signaler le scroll, mais le relâchement doit revenir sur la même page sans donner l'impression d'un changement de page.
 
 ## Success Behavior
-- Précondition: le clavier WinGlowz Android est actif et une ligne horizontale paged est visible, par exemple une action row attachée `123`, `Nav`, `Emoji`, `Media`, `Clip`, `Snip`, ou une row panel compatible.
+- Précondition: le clavier WinGlows Android est actif et une ligne horizontale paged est visible, par exemple une action row attachée `123`, `Nav`, `Emoji`, `Media`, `Clip`, `Snip`, ou une row panel compatible.
 - Action: l'utilisateur pose le doigt sur une touche de la ligne scrollable et glisse horizontalement au-delà du seuil de scroll.
 - Résultat visible immédiat: la ligne passe en état réduit en moins de 120 ms; les touches sont plus petites en largeur, hauteur, rayon et texte, sans devenir illisibles.
 - Résultat visible pendant le drag: des fades ou ombres de bord indiquent s'il reste du contenu à gauche, à droite, ou des deux côtés; l'indicateur disparaît ou s'affaiblit au bord atteint.

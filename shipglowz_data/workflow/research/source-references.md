@@ -2,7 +2,7 @@
 artifact: documentation
 metadata_schema_version: "1.0"
 artifact_version: "0.2.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-03-18"
 updated: "2026-04-27"
 status: "draft"
@@ -30,7 +30,7 @@ evidence:
 next_step: "$sf-docs update"
 ---
 
-# Sources — WinGlowz
+# Sources — WinGlows
 
 ## APIs et services (observés dans le repo)
 
@@ -55,5 +55,5 @@ next_step: "$sf-docs update"
 
 ## Questions ouvertes
 
-- Quelles 3 sources externes "marché" sont validées officiellement pour les docs WinGlowz ?
+- Quelles 3 sources externes "marché" sont validées officiellement pour les docs WinGlows ?
 - Faut-il maintenir une section "Communautés" ici, ou la déplacer dans `shipglowz_data/business/gtm.md` ?

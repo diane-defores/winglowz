@@ -5,7 +5,7 @@ author: "Diane"
 authorImage: "/images/WinGlowz.png"
 authorImageAlt: "Avatar de Diane"
 cardImage: "/images/WinGlowz.png"
-cardImageAlt: "Couverture d'article WinGlowz sur la navigation dans une codebase"
+cardImageAlt: "Couverture d'article WinGlows sur la navigation dans une codebase"
 pubDate: 2026-06-29
 readTime: 10
 tags: ["codebase", "documentation", "architecture", "workflow", "developpement"]

@@ -2,7 +2,7 @@
 artifact: architecture_context
 metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-04-26"
 updated: "2026-06-10"
 status: "reviewed"
@@ -44,7 +44,7 @@ next_review: "2026-05-27"
 next_step: "$sf-docs update"
 ---
 
-# Architecture — WinGlowz
+# Architecture — WinGlows
 
 ## Purpose
 

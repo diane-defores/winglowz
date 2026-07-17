@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-30"
 created_at: "2026-05-30 20:40:38 UTC"
 updated: "2026-05-30"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "cross-surface-send-to-actions"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu'utilisatrice WinGlowz, je veux envoyer un élément Voix ou Clipboard vers Snippets ou Clipboard via une icône Send to, afin de transformer rapidement un texte capturé en raccourci réutilisable ou en élément clipboard sans copier-coller manuel."
+user_story: "En tant qu'utilisatrice WinGlows, je veux envoyer un élément Voix ou Clipboard vers Snippets ou Clipboard via une icône Send to, afin de transformer rapidement un texte capturé en raccourci réutilisable ou en élément clipboard sans copier-coller manuel."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
@@ -57,7 +57,7 @@ existing stores, search/status components, and sensitive-content rules.
 
 # User Story
 
-En tant qu'utilisatrice WinGlowz, je veux envoyer un élément Voix ou Clipboard
+En tant qu'utilisatrice WinGlows, je veux envoyer un élément Voix ou Clipboard
 vers Snippets ou Clipboard via une icône Send to, afin de transformer rapidement
 un texte capturé en raccourci réutilisable ou en élément clipboard sans
 copier-coller manuel.
@@ -66,7 +66,7 @@ copier-coller manuel.
 
 Chaque carte Voice et Clipboard qui contient un texte réutilisable doit exposer
 une action icône `Envoyer vers`. Depuis Voice, l'utilisatrice peut créer un
-snippet ou ajouter le texte nettoyé au Clipboard WinGlowz. Depuis Clipboard, elle
+snippet ou ajouter le texte nettoyé au Clipboard WinGlows. Depuis Clipboard, elle
 peut créer un snippet à partir du contenu. La création de snippet demande un
 déclencheur explicite et laisse le contenu éditable avant création. L'envoi vers
 Clipboard respecte la classification de contenu sensible et demande confirmation
@@ -76,9 +76,9 @@ utile sans dupliquer, supprimer ou exposer de contenu sensible.
 
 # Success Behavior
 
-- Given une transcription Voice contient du texte nettoyé, when l'utilisatrice choisit `Envoyer vers -> Clipboard`, then WinGlowz ajoute un item Clipboard source `voice` et affiche un feedback de réussite.
-- Given une transcription Voice contient du texte nettoyé, when l'utilisatrice choisit `Envoyer vers -> Snippet`, then WinGlowz ouvre un dialogue avec contenu prérempli, demande un déclencheur, puis crée un snippet.
-- Given un item Clipboard contient du texte, when l'utilisatrice choisit `Envoyer vers -> Snippet`, then WinGlowz ouvre le même dialogue et crée un snippet avec ce contenu.
+- Given une transcription Voice contient du texte nettoyé, when l'utilisatrice choisit `Envoyer vers -> Clipboard`, then WinGlows ajoute un item Clipboard source `voice` et affiche un feedback de réussite.
+- Given une transcription Voice contient du texte nettoyé, when l'utilisatrice choisit `Envoyer vers -> Snippet`, then WinGlows ouvre un dialogue avec contenu prérempli, demande un déclencheur, puis crée un snippet.
+- Given un item Clipboard contient du texte, when l'utilisatrice choisit `Envoyer vers -> Snippet`, then WinGlows ouvre le même dialogue et crée un snippet avec ce contenu.
 - Given le texte envoyé au Clipboard semble sensible, when l'utilisatrice confirme, then l'item est ajouté; when elle annule, then rien n'est écrit.
 - Given une action réussit, when la page cible est ouverte ou rafraîchie, then l'élément créé apparaît sans redémarrer l'app.
 - Given le store actif est local ou Firebase, when l'action écrit, then elle passe par le provider courant sans couplage direct à un backend.
@@ -96,7 +96,7 @@ utile sans dupliquer, supprimer ou exposer de contenu sensible.
 - Menu `Envoyer vers` réutilisable avec icône.
 - Dialogue commun de création de snippet depuis un texte source.
 - Voice -> Snippet.
-- Voice -> Clipboard WinGlowz.
+- Voice -> Clipboard WinGlows.
 - Clipboard -> Snippet.
 - Refresh signal snippets pour mettre à jour l'écran Snippets quand une création arrive depuis Voice ou Clipboard.
 - Widget tests pour au moins Voice -> Clipboard et Clipboard -> Snippet.

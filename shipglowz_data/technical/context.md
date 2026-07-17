@@ -63,7 +63,7 @@ Provide a compact mental model of the repository layout and runtime surfaces bef
 
 ## What This Repo Is
 
-WinGlowz is an Astro server-rendered site with bilingual marketing pages, documentation content, product pages, a training sales path, a lightweight dashboard, and backend integrations for auth, billing, and email.
+WinGlows is an Astro server-rendered site with bilingual marketing pages, documentation content, product pages, a training sales path, a lightweight dashboard, and backend integrations for auth, billing, and email.
 
 ## Top-Level Mental Model
 

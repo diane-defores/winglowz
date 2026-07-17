@@ -564,7 +564,7 @@
   }
 
   .text-logo .text::before {
-    content: 'WinGlowz';
+    content: 'WinGlows';
     position: absolute;
     inset: 0;
     background-image:
@@ -581,7 +581,7 @@
   }
 
   .text-logo .text::after {
-    content: 'WinGlowz';
+    content: 'WinGlows';
     position: absolute;
     left: 0;
     top: 0;

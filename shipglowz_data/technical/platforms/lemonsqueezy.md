@@ -26,9 +26,9 @@ depends_on:
     required_status: "draft"
 supersedes: []
 evidence:
-  - "WinGlowz suite owns the processor-agnostic commerce API and SocialGlowz entitlement ledger fulfillment."
+  - "WinGlows suite owns the processor-agnostic commerce API and SocialGlowz entitlement ledger fulfillment."
   - "Fresh Lemon Squeezy docs checked on 2026-05-30; no official CLI or MCP was identified."
-  - "WinGlowz App founder plans are represented by internal offers `winglowz_app/focus`, `winglowz_app/power`, `winglowz_app/control`, and `winglowz_app/command`."
+  - "WinGlows App founder plans are represented by internal offers `winglowz_app/focus`, `winglowz_app/power`, `winglowz_app/control`, and `winglowz_app/command`."
 next_review: "2026-06-30"
 next_step: "/sf-verify socialglowz-processor-agnostic-ltd-commerce after Lemon Squeezy test-mode and hosted Convex refund/replay smoke"
 ---
@@ -37,7 +37,7 @@ next_step: "/sf-verify socialglowz-processor-agnostic-ltd-commerce after Lemon S
 
 ## Purpose
 
-Document how WinGlowz uses Lemon Squeezy for suite-owned direct Lifetime Deal checkout paths, including SocialGlowz and WinGlowz App founder offers.
+Document how WinGlows uses Lemon Squeezy for suite-owned direct Lifetime Deal checkout paths, including SocialGlowz and WinGlows App founder offers.
 
 Use the global provider note for source links and tool availability:
 
@@ -52,7 +52,7 @@ This file is the local usage contract for architecture, validation, and automati
 ## Usage Summary
 
 - Provider role: first payment provider adapter for direct suite Lifetime Deal sales.
-- Product access owner: WinGlowz suite entitlement ledger, not Lemon Squeezy.
+- Product access owner: WinGlows suite entitlement ledger, not Lemon Squeezy.
 - Canonical product sales pages stay product-specific even when the checkout route is shared.
 - Applies to paths:
   - `winglowz_site/src/lib/commerce/**`
@@ -69,7 +69,7 @@ This file is the local usage contract for architecture, validation, and automati
 ## Sales Surface Rule
 
 - `socialglowz.com/lifetime-deal` is the canonical SocialGlowz sales page.
-- `winglowz.com/winglowz-founder` is the canonical WinGlowz App sales page.
+- `winglowz.com/winglowz-founder` is the canonical WinGlows App sales page.
 - Both products may call the same `/api/commerce/checkout` route.
 - Shared checkout infrastructure must not imply that `winglowz.com` becomes the canonical marketing home for SocialGlowz.
 - Product source attribution must stay explicit through `offerId`, `productId`, `source`, and `source_ref`.
@@ -83,11 +83,11 @@ This file is the local usage contract for architecture, validation, and automati
 | Store id | `LEMONSQUEEZY_STORE_ID` | sensitive-ish | Record key name only in docs; do not record real value. |
 | SocialGlowz product id | `LEMONSQUEEZY_SOCIALGLOWZ_PRODUCT_ID` | sensitive-ish | Provider reference only; never replaces internal `productId=socialglowz`. |
 | SocialGlowz LTD variant id | `LEMONSQUEEZY_SOCIALGLOWZ_LIFETIME_DEAL_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `socialglowz/lifetime_deal`. |
-| WinGlowz App product id | `LEMONSQUEEZY_WINGLOWZ_APP_PRODUCT_ID` | sensitive-ish | Provider reference only; internal product remains `winglowz_app`. |
-| WinGlowz Focus variant id | `LEMONSQUEEZY_WINGLOWZ_APP_FOCUS_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/focus`. |
-| WinGlowz Power variant id | `LEMONSQUEEZY_WINGLOWZ_APP_POWER_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/power`. |
-| WinGlowz Control variant id | `LEMONSQUEEZY_WINGLOWZ_APP_CONTROL_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/control`. |
-| WinGlowz Command variant id | `LEMONSQUEEZY_WINGLOWZ_APP_COMMAND_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/command`. |
+| WinGlows App product id | `LEMONSQUEEZY_WINGLOWZ_APP_PRODUCT_ID` | sensitive-ish | Provider reference only; internal product remains `winglowz_app`. |
+| WinGlows Focus variant id | `LEMONSQUEEZY_WINGLOWZ_APP_FOCUS_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/focus`. |
+| WinGlows Power variant id | `LEMONSQUEEZY_WINGLOWZ_APP_POWER_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/power`. |
+| WinGlows Control variant id | `LEMONSQUEEZY_WINGLOWZ_APP_CONTROL_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/control`. |
+| WinGlows Command variant id | `LEMONSQUEEZY_WINGLOWZ_APP_COMMAND_VARIANT_ID` | sensitive-ish | Provider reference only; mapped from internal offer `winglowz_app/command`. |
 | Webhook secret | `LEMONSQUEEZY_WEBHOOK_SECRET` | yes | Server-only; used to verify `X-Signature`. |
 | Provider order preference | `COMMERCE_PROVIDER_ORDER` | no | Current default: `lemonsqueezy,polar`. |
 | Checkout route | `/api/commerce/checkout` | no | Creates hosted checkout server-side. |
@@ -103,7 +103,7 @@ This file is the local usage contract for architecture, validation, and automati
 - `order_refunded` maps to a normalized refunded event.
 - Unsupported or incomplete signed events must be `pending_review`, not an access grant.
 - Fulfillment runs through `bridge:processCommerceEvent` and writes to suite-owned `productEntitlements` / `productAccessEvents`. The legacy SocialGlowz bridge mutation remains for compatibility.
-- Checkout success pages are not payment proof. Access changes come from signed webhooks and idempotent suite fulfillment. Lemon Squeezy owns payment receipt emails; WinGlowz access state must come from the signed webhook and suite ledger.
+- Checkout success pages are not payment proof. Access changes come from signed webhooks and idempotent suite fulfillment. Lemon Squeezy owns payment receipt emails; WinGlows access state must come from the signed webhook and suite ledger.
 - Payment activation and device activation are distinct. The current Lemon Squeezy integration can create a suite product entitlement after a signed paid event, but Focus/Power/Control/Command active-device limits need a separate server-owned activation ledger before they are enforceable.
 - Polar remains a provider adapter/legacy route and must not be deleted as part of Lemon Squeezy adoption.
 
@@ -171,7 +171,7 @@ python3 /home/claude/shipglowz/tools/shipglowz_metadata_lint.py /home/claude/win
 Provider smoke, after test-mode setup:
 
 ```text
-Create checkout from SocialGlowz or each WinGlowz founder plan -> complete test order -> receive signed order_created webhook -> verify suite ledger access/code path -> perform/simulate refund -> verify access becomes non-granting. For WinGlowz founder plans, repeat the smoke for Focus, Power, Control, and Command or document why a provider-level variant is intentionally not public yet.
+Create checkout from SocialGlowz or each WinGlows founder plan -> complete test order -> receive signed order_created webhook -> verify suite ledger access/code path -> perform/simulate refund -> verify access becomes non-granting. For WinGlows founder plans, repeat the smoke for Focus, Power, Control, and Command or document why a provider-level variant is intentionally not public yet.
 ```
 
 ## Reader Checklist

@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "WinGlowz"
+project: "WinGlows"
 created: "2026-05-16"
 created_at: "2026-05-16 13:04:00 UTC"
 updated: "2026-05-16"
@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
-user_story: "En tant qu'utilisatrice du clavier Android WinGlowz, je veux activer un relief physique simple et beau sur les touches, afin d'obtenir un clavier plus tactile et premium sans devoir manipuler des réglages techniques qui peuvent rendre le thème moche."
+user_story: "En tant qu'utilisatrice du clavier Android WinGlows, je veux activer un relief physique simple et beau sur les touches, afin d'obtenir un clavier plus tactile et premium sans devoir manipuler des réglages techniques qui peuvent rendre le thème moche."
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
@@ -56,7 +56,7 @@ Keyboard Physical Key Relief
 Ready for implementation. Validated by `/sf-ready` on 2026-05-16; ready for `/sf-start Keyboard Physical Key Relief`.
 
 ## User Story
-En tant qu'utilisatrice du clavier Android WinGlowz, je veux activer un relief physique simple et beau sur les touches, afin d'obtenir un clavier plus tactile et premium sans devoir manipuler des réglages techniques qui peuvent rendre le thème moche.
+En tant qu'utilisatrice du clavier Android WinGlows, je veux activer un relief physique simple et beau sur les touches, afin d'obtenir un clavier plus tactile et premium sans devoir manipuler des réglages techniques qui peuvent rendre le thème moche.
 
 ## Minimal Behavior Contract
 The Keyboard Theme Studio accepts only two user-facing controls for physical key relief: an enabled toggle and an intensity slider. When enabled, the preview and the Android keyboard render each key with theme-aware depth: a darker lower shadow, a lighter top highlight, subtle edge contrast, and a pressed state that visually compresses the key. The system computes the internal blur, offset, highlight, shadow, and border colors from the theme luminance instead of exposing those raw controls directly. If a theme is too dark, too transparent, too low-contrast, private-mode sensitive, or performance constrained, the renderer degrades to a safe readable relief or disables the effect with visible validation feedback. The easiest edge case to miss is that a raw shadow that looks premium on a light Glass Mint theme can look dirty or invisible on dark themes, so the relief algorithm must adapt per key/background contrast and not reuse one static shadow recipe everywhere.

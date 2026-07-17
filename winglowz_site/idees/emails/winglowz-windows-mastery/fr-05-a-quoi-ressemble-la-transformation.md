@@ -2,7 +2,7 @@ Subject: Ce qui change quand l'environnement arrete de te freiner
 Preview: Moins de fatigue. Plus de continuite. Plus de controle.
 CTA: https://winglowz.com/fr/maitrise-windows
 
-La promesse de WinGlowz n'est pas :
+La promesse de WinGlows n'est pas :
 
 - devenir surhumain
 - faire 10 fois plus
