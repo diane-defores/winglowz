@@ -8,8 +8,10 @@ function readProjectFile(path: string) {
 describe('Homepage testimonial proof', () => {
   test('keeps the testimonial widget on the homepage', () => {
     const homepage = readProjectFile('src/pages/[...lang]/index.astro')
+    const hero = readProjectFile('src/components/astro/landing/Hero.astro')
 
-    expect(homepage).toContain('<LogoMarquee />')
+    expect(homepage).not.toContain('<LogoMarquee />')
+    expect(hero).toContain('<LogoMarquee embedded />')
   })
 
   test('keeps /fr on the homepage instead of treating it as a roadmap segment', () => {
@@ -17,28 +19,65 @@ describe('Homepage testimonial proof', () => {
     expect(existsSync(resolve(process.cwd(), 'src/pages/[...lang]/[roadmap].astro'))).toBe(false)
 
     const homepage = readProjectFile('src/pages/[...lang]/index.astro')
-    expect(homepage).toContain('<LogoMarquee />')
+    const hero = readProjectFile('src/components/astro/landing/Hero.astro')
+    expect(homepage).not.toContain('<LogoMarquee />')
+    expect(hero).toContain('<LogoMarquee embedded />')
   })
 
   test('declares both localized homepage routes without changing roadmap routes', () => {
     const homepage = readProjectFile('src/pages/[...lang]/index.astro')
     const roadmap = readProjectFile('src/pages/[...lang]/roadmap.astro')
+    const hero = readProjectFile('src/components/astro/landing/Hero.astro')
 
     expect(homepage).toContain("{ params: { lang: 'en' }, props: { lang: 'en' as Language } }")
     expect(homepage).toContain("{ params: { lang: 'fr' }, props: { lang: 'fr' as Language } }")
-    expect(homepage).toContain('<LogoMarquee />')
+    expect(homepage).not.toContain('<LogoMarquee />')
+    expect(hero).toContain('<LogoMarquee embedded />')
     expect(roadmap).toContain('export const prerender = false')
   })
 
   test('uses only traced public BunnyCDN portraits and allows their origin', () => {
     const carousel = readProjectFile('src/components/react/landing/TestimonialCarousel.tsx')
+    const testimonialPeople = readProjectFile('src/data/testimonialPeople.ts')
     const vercel = readProjectFile('vercel.json')
 
-    expect(carousel).toContain('https://winflowz.b-cdn.net/Florin_muresan.jpg')
-    expect(carousel).toContain('https://winflowz.b-cdn.net/alex-dynapictures.png')
+    expect(carousel).toContain("@/data/testimonialPeople")
+    expect(testimonialPeople).toContain('https://winflowz.b-cdn.net/Florin_muresan.jpg')
+    expect(testimonialPeople).toContain('https://winflowz.b-cdn.net/alex-dynapictures.png')
     expect(carousel).not.toContain('images.unsplash.com')
     expect(carousel).not.toContain('/images/headshots/')
     expect(vercel).toContain('img-src')
     expect(vercel).toContain('https://winflowz.b-cdn.net')
+  })
+
+  test('uses the same authentic portraits for the bilingual hero social proof and links to the widget', () => {
+    const hero = readProjectFile('src/components/astro/landing/Hero.astro')
+    const testimonialPeople = readProjectFile('src/data/testimonialPeople.ts')
+
+    expect(hero).toContain("@/data/testimonialPeople")
+    expect(hero).toContain('testimonialAvatarSources')
+    expect(hero).toContain('href="#testimonials"')
+    expect(hero).toContain('focus-visible:ring')
+    expect(hero).toContain('prefers-reduced-motion: reduce')
+    expect(hero).not.toContain('/images/headshots/')
+    expect(hero).toContain("reviewsLabel: 'Avis'")
+    expect(hero).toContain("reviewsLabel: 'Reviews'")
+    expect(hero).toContain('{heroText.reviewsLabel}')
+    expect(testimonialPeople).toContain('Florin Muresan')
+    expect(testimonialPeople).toContain('Alex')
+  })
+
+  test('keeps one focusable testimonial target for both homepage locales', () => {
+    const marquee = readProjectFile('src/components/astro/landing/LogoMarquee.astro')
+    const homepage = readProjectFile('src/pages/[...lang]/index.astro')
+    const hero = readProjectFile('src/components/astro/landing/Hero.astro')
+
+    expect(marquee.match(/id="testimonials"/g)).toHaveLength(1)
+    expect(marquee).toContain('scroll-mt-20')
+    expect(marquee).toContain("embedded ? 'bg-transparent' : 'bg-neutral-50 dark:bg-black'")
+    expect(hero.indexOf('href="#testimonials"')).toBeLessThan(hero.indexOf('<LogoMarquee embedded />'))
+    expect(hero.indexOf('<LogoMarquee embedded />')).toBeLessThan(hero.indexOf('<!-- Stats -->'))
+    expect(homepage).toContain("{ params: { lang: 'en' }, props: { lang: 'en' as Language } }")
+    expect(homepage).toContain("{ params: { lang: 'fr' }, props: { lang: 'fr' as Language } }")
   })
 })

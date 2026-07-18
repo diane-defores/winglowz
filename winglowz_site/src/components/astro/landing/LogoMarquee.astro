@@ -3,6 +3,11 @@
 import { TestimonialCarousel } from '@components/react/landing/TestimonialCarousel'
 import { getLangFromUrl } from '@/utils/i18n'
 
+interface Props {
+  embedded?: boolean
+}
+
+const { embedded = false } = Astro.props
 const lang = getLangFromUrl(Astro.url)
 
 const tools = [
@@ -21,7 +26,13 @@ const trustText = lang === 'fr'
   : { trust: "Built for people who want a clearer Windows workflow", subtitle: "Community feedback only, no public score claim." }
 ---
 
-<section id="testimonials" class="bg-neutral-50 dark:bg-black py-16 overflow-hidden">
+<section
+  id="testimonials"
+  class:list={[
+    'scroll-mt-20 py-16 overflow-hidden',
+    embedded ? 'bg-transparent' : 'bg-neutral-50 dark:bg-black',
+  ]}
+>
   <div class="reveal text-center mb-6">
     <p class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-zinc-500">
       {trustText.trust}

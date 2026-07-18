@@ -3,7 +3,6 @@ export const prerender = true
 import LandingLayout from '@layouts/LandingLayout.astro'
 import Navbar from '@components/shared/site/Navbar.astro'
 import Hero from '@components/astro/landing/Hero.astro'
-import LogoMarquee from '@components/astro/landing/LogoMarquee.astro'
 import BentoGrid from '@components/astro/landing/BentoGrid.astro'
 import LeadMagnet from '@components/astro/landing/LeadMagnet.astro'
 import Pricing from '@components/astro/landing/Pricing.astro'
@@ -35,7 +34,6 @@ const landingNavItems = [
 	<main class="min-h-screen bg-background pt-20 transition-colors duration-300">
 		<Navbar navItems={landingNavItems} />
 		<Hero />
-		<LogoMarquee />
 		<BentoGrid />
 		<LeadMagnet />
 		<Pricing />
