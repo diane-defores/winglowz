@@ -105,29 +105,29 @@ const mobileTagline =
     : 'Productivity Apps & Training'
 
 const navShellClass = forceDark
-  ? 'relative flex items-center justify-between rounded-full border border-zinc-800 bg-zinc-950/88 px-4 py-3 shadow-none backdrop-blur-md'
-  : 'relative flex items-center justify-between rounded-full border border-neutral-200/60 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80 dark:shadow-none'
+  ? 'relative flex items-center justify-between rounded-full border border-navbar-border bg-navbar-force-shell-bg px-4 py-3 shadow-none backdrop-blur-md'
+  : 'relative flex items-center justify-between rounded-full border border-navbar-border/60 bg-navbar-bg/80 px-4 py-3 shadow-sm backdrop-blur-md dark:border-navbar-border dark:bg-navbar-bg dark:shadow-none'
 
 const navLinkClass =
   'no-hover-animation relative rounded-full px-3 py-2 text-sm font-medium transition-colors'
 const navLinkActiveClass = forceDark
-  ? 'text-white'
-  : 'text-neutral-950 dark:text-white'
+  ? 'text-navbar-textPrimary'
+  : 'text-navbar-textPrimary dark:text-navbar-textPrimary'
 const navLinkInactiveClass = forceDark
-  ? 'text-zinc-400 hover:text-white'
-  : 'text-neutral-600 hover:text-neutral-950 dark:text-zinc-400 dark:hover:text-white'
+  ? 'text-navbar-textSecondary hover:text-navbar-textPrimary'
+  : 'text-navbar-textSecondary hover:text-navbar-textPrimary dark:text-navbar-textSecondary dark:hover:text-navbar-textPrimary'
 
 const langLinkClass = forceDark
-  ? 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white'
-  : 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white'
+  ? 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-navbar-textTertiary transition-colors hover:bg-navbar-bg-hover hover:text-navbar-textPrimary'
+  : 'no-hover-animation rounded-full px-2.5 py-1.5 text-xs font-semibold text-navbar-textQuaternary transition-colors hover:bg-navbar-bg-hover hover:text-navbar-textPrimary dark:text-navbar-textTertiary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary'
 
 const signInButtonClass = forceDark
-  ? 'rounded-full px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white'
-  : 'rounded-full px-3 py-1.5 text-sm font-medium text-neutral-800 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white'
+  ? 'rounded-full px-3 py-1.5 text-sm text-navbar-textSecondary transition-colors hover:bg-navbar-bg-hover hover:text-navbar-textPrimary'
+  : 'rounded-full px-3 py-1.5 text-sm font-medium text-navbar-textQuaternary transition-colors hover:bg-navbar-bg-hover hover:text-navbar-textPrimary dark:text-navbar-textSecondary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary'
 
 const ctaButtonClass = forceDark
-  ? 'shimmer-btn rounded-full bg-white px-4 py-1.5 text-sm font-medium text-zinc-950 hover:bg-zinc-200'
-  : 'shimmer-btn rounded-full bg-neutral-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200'
+  ? 'shimmer-btn rounded-full bg-navbar-cta-text px-4 py-1.5 text-sm font-medium text-navbar-cta-textHover hover:bg-navbar-cta-bgHover'
+  : 'shimmer-btn rounded-full bg-navbar-cta-bg px-4 py-1.5 text-sm font-medium text-navbar-cta-text hover:bg-navbar-cta-bgHover dark:bg-navbar-cta-text dark:text-navbar-cta-textHover dark:hover:bg-navbar-cta-bgHover'
 ---
 
 <header
@@ -144,7 +144,7 @@ const ctaButtonClass = forceDark
     </a>
 
     <p
-      class="mx-4 hidden flex-1 text-center text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-zinc-400 max-md:block"
+      class="mx-4 hidden flex-1 text-center text-sm font-semibold uppercase tracking-wider text-navbar-textSecondary max-md:block"
     >
       {mobileTagline}
     </p>
@@ -182,7 +182,7 @@ const ctaButtonClass = forceDark
 
     <details class="mobile-menu relative md:hidden">
       <summary
-        class="mobile-menu-toggle flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full text-neutral-800 transition-colors hover:bg-neutral-100 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white dark:focus-visible:outline-white"
+        class="mobile-menu-toggle flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full text-navbar-textQuaternary transition-colors hover:bg-navbar-bg-hover hover:text-navbar-textPrimary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--navbar-ring)] dark:text-navbar-textSecondary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary dark:focus-visible:outline-[var(--navbar-ring)]"
         aria-label={menuLabel}
         aria-controls="mobile-navigation-menu"
         aria-expanded="false"
@@ -200,34 +200,34 @@ const ctaButtonClass = forceDark
       <div
         id="mobile-navigation-menu"
         class={forceDark
-          ? 'absolute right-0 top-full mt-3 min-w-[var(--navbar-dropdown-min-width)] max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950/96 p-4 shadow-2xl backdrop-blur-md'
-          : 'absolute right-0 top-full mt-3 min-w-[var(--navbar-dropdown-min-width)] max-w-sm rounded-2xl border border-neutral-200/60 bg-white/95 p-4 shadow-lg backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/95 dark:shadow-none'}
+          ? 'absolute right-0 top-full mt-3 min-w-[var(--navbar-dropdown-min-width)] max-w-sm rounded-2xl border border-navbar-drawer-border bg-navbar-force-drawer-bg/96 p-4 shadow-2xl backdrop-blur-md'
+          : 'absolute right-0 top-full mt-3 min-w-[var(--navbar-dropdown-min-width)] max-w-sm rounded-2xl border border-navbar-drawer-border/60 bg-navbar-drawer-bg/95 p-4 shadow-lg backdrop-blur-md dark:border-navbar-drawer-border dark:bg-navbar-drawer-bg dark:shadow-none'}
       >
         <div class="flex flex-col gap-2">
           {
             navItems.map((item) => (
-              <NavLink
-                url={item.href}
-                name={item.label}
-                class="rounded-lg px-4 py-3.5 text-base font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-                activeClass={
-                  forceDark ? 'text-white' : 'text-neutral-950 dark:text-white'
-                }
-                inactiveClass={
-                  forceDark
-                    ? 'text-zinc-400'
-                    : 'text-neutral-800 dark:text-zinc-400'
-                }
-              />
+            <NavLink
+              url={item.href}
+              name={item.label}
+              class="rounded-lg px-4 py-3.5 text-base font-semibold text-navbar-textQuaternary transition-all duration-200 hover:-translate-y-0.5 hover:bg-navbar-bg-hover hover:text-navbar-textPrimary hover:shadow-sm dark:text-navbar-textSecondary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary"
+              activeClass={
+                forceDark ? 'text-navbar-textPrimary' : 'text-navbar-textPrimary dark:text-navbar-textPrimary'
+              }
+              inactiveClass={
+                forceDark
+                  ? 'text-navbar-textSecondary'
+                  : 'text-navbar-textQuaternary dark:text-navbar-textSecondary'
+              }
+            />
             ))
           }
-          <hr class="my-2 border-neutral-200 dark:border-zinc-800" />
+          <hr class="my-2 border-navbar-drawer-border" />
           <div
             class={`grid ${showThemePicker && !forceDark ? 'grid-cols-3' : 'grid-cols-2'} gap-2`}
           >
             <a
               href={altLangUrl}
-              class="rounded-lg px-2 py-3 text-center text-sm font-bold text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white"
+              class="rounded-lg px-2 py-3 text-center text-sm font-bold text-navbar-textTertiary transition-all duration-200 hover:-translate-y-0.5 hover:bg-navbar-bg-hover hover:text-navbar-textPrimary dark:text-navbar-textTertiary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary"
             >
               {altLangLabel}
             </a>
@@ -238,7 +238,7 @@ const ctaButtonClass = forceDark
                     type="button"
                     data-hs-theme-click-value="dark"
                     aria-label={darkModeLabel}
-                    class="flex h-10 w-10 items-center justify-center rounded-lg text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:hidden dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                    class="flex h-10 w-10 items-center justify-center rounded-lg text-navbar-textQuaternary transition-all duration-200 hover:-translate-y-0.5 hover:bg-navbar-bg-hover hover:text-navbar-textPrimary hover:shadow-sm hs-dark-mode-active:hidden dark:text-navbar-textSecondary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary"
                   >
                     <svg class="h-5 w-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
@@ -248,7 +248,7 @@ const ctaButtonClass = forceDark
                     type="button"
                     data-hs-theme-click-value="light"
                     aria-label={lightModeLabel}
-                    class="hidden h-10 w-10 items-center justify-center rounded-lg text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm hs-dark-mode-active:flex dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+                    class="hidden h-10 w-10 items-center justify-center rounded-lg text-navbar-textQuaternary transition-all duration-200 hover:-translate-y-0.5 hover:bg-navbar-bg-hover hover:text-navbar-textPrimary hover:shadow-sm hs-dark-mode-active:flex dark:text-navbar-textSecondary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary"
                   >
                     <svg class="h-5 w-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="4"></circle>
@@ -266,17 +266,17 @@ const ctaButtonClass = forceDark
                 </div>
               )
             }
-            <a href={signInUrl} class="flex items-center">
-              <span
-                class="block w-full rounded-lg px-2 py-3 text-center text-base font-semibold text-neutral-800 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-100 hover:text-neutral-950 hover:shadow-sm dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-              >
+              <a href={signInUrl} class="flex items-center">
+                <span
+                  class="block w-full rounded-lg px-2 py-3 text-center text-base font-semibold text-navbar-textQuaternary transition-all duration-200 hover:-translate-y-0.5 hover:bg-navbar-bg-hover hover:text-navbar-textPrimary hover:shadow-sm dark:text-navbar-textSecondary dark:hover:bg-navbar-bg-hover dark:hover:text-navbar-textPrimary"
+                >
                 {signInLabel}
               </span>
             </a>
           </div>
           <a href={ctaUrl}>
             <span
-              class="shimmer-btn inline-flex w-full items-center justify-center rounded-full bg-neutral-900 px-4 py-2.5 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
+              class="shimmer-btn inline-flex w-full items-center justify-center rounded-full bg-navbar-cta-bg px-4 py-2.5 text-base font-semibold text-navbar-cta-text transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 dark:bg-navbar-cta-text dark:text-navbar-cta-textHover dark:hover:bg-navbar-cta-bgHover"
             >
               {ctaLabel}
             </span>

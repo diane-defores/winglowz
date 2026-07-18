@@ -102,6 +102,23 @@
     --radius: 1rem;
     --navbar-dropdown-min-width: 280px;
 
+    /* Navbar tokens */
+    --navbar-shell-border: 0 0% 90%;
+    --navbar-shell-bg: 0 0% 100%;
+    --navbar-text-primary: 0 0% 9%;
+    --navbar-text-secondary: 0 0% 32%;
+    --navbar-text-tertiary: 0 0% 25%;
+    --navbar-text-quaternary: 0 0% 15%;
+    --navbar-bg-hover: 0 0% 96%;
+    --navbar-cta-bg: 0 0% 9%;
+    --navbar-cta-text: 0 0% 100%;
+    --navbar-cta-bg-hover: 0 0% 21%;
+    --navbar-drawer-border: 0 0% 90%;
+    --navbar-drawer-bg: 0 0% 100%;
+    --navbar-ring: 0 0% 9%;
+    --navbar-force-shell-bg: 0 0% 2%;
+    --navbar-force-drawer-bg: 0 0% 2%;
+
     --ui-button-radius: 999rem;
     --ui-button-gap: 0.5rem;
     --ui-button-padding-y: 0.5rem;
@@ -227,6 +244,21 @@
     --landing-glow: 255 255 255;
     --landing-shadow: 255 255 255;
     --landing-marquee-fade: 0 0 0;
+    --navbar-shell-border: 0 0% 15%;
+    --navbar-shell-bg: 0 0% 10%;
+    --navbar-text-primary: 0 0% 100%;
+    --navbar-text-secondary: 0 0% 66%;
+    --navbar-text-tertiary: 0 0% 47%;
+    --navbar-text-quaternary: 0 0% 66%;
+    --navbar-bg-hover: 0 0% 15%;
+    --navbar-cta-bg: 0 0% 100%;
+    --navbar-cta-text: 0 0% 4%;
+    --navbar-cta-bg-hover: 0 0% 87%;
+    --navbar-drawer-border: 0 0% 15%;
+    --navbar-drawer-bg: 0 0% 10%;
+    --navbar-ring: 0 0% 100%;
+    --navbar-force-shell-bg: 0 0% 2%;
+    --navbar-force-drawer-bg: 0 0% 2%;
     --root-font-size: 16px;
     --text-logo-size-base: 3rem;
     --text-logo-size-sm: 2.25rem;
@@ -417,7 +449,7 @@
     pointer-events: none;
     opacity: 0.5;
   }
-  @media (min-width: 640px) {
+  @media (min-width: var(--breakpoint-sm)) {
     .btn-primary { width: auto; padding: var(--ui-button-padding-y-lg) var(--ui-button-padding-x-lg); font-size: var(--ui-button-font-size-lg); }
   }
   .dark .btn-primary { outline: none; }
@@ -466,7 +498,7 @@
     pointer-events: none;
     opacity: 0.5;
   }
-  @media (min-width: 640px) {
+  @media (min-width: var(--breakpoint-sm)) {
     .btn-secondary { padding: var(--btn-secondary-padding-y) var(--ui-button-padding-x-lg); font-size: var(--btn-secondary-font-size); }
   }
   .dark .btn-secondary {
