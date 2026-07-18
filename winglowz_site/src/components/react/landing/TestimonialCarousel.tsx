@@ -69,12 +69,21 @@ export function TestimonialCarousel() {
             &ldquo;{t.quote}&rdquo;
           </p>
           <div className="flex items-center justify-center gap-2">
-            <img
-              src={t.avatarSrc}
-              alt={`${t.name} avatar`}
-              className="h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-zinc-900"
-              loading="lazy"
-            />
+            {t.avatarRepresentation === "appsumo-generic" ? (
+              <span
+                aria-hidden="true"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-bold text-neutral-700 dark:bg-zinc-800 dark:text-zinc-300"
+              >
+                {t.name[0]}
+              </span>
+            ) : (
+              <img
+                src={t.avatarSrc}
+                alt={`${t.name} avatar`}
+                className="h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-zinc-900"
+                loading="lazy"
+              />
+            )}
             <div className="text-left">
               <p className="text-sm font-medium text-neutral-800 dark:text-zinc-300">{t.name}</p>
               <p className="text-xs text-neutral-500 dark:text-zinc-500">

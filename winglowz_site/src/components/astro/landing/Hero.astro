@@ -2,7 +2,7 @@
 /* Hero section — pure Astro, CSS animations replace framer-motion */
 import Button from '@/components/Button.astro'
 import LogoMarquee from '@/components/astro/landing/LogoMarquee.astro'
-import { testimonialAvatarSources } from '@/data/testimonialPeople'
+import { testimonialPeople } from '@/data/testimonialPeople'
 import { getLangFromUrl } from '@/utils/i18n'
 import { getLocalizedPath } from '@/utils/routing'
 
@@ -95,14 +95,23 @@ const heroText = lang === 'fr'
       class="landing-hero-fade landing-hero-fade--proof mb-12 flex flex-col items-center gap-4 rounded-lg focus-visible:ring focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-black"
     >
       <div class="flex items-center -space-x-3">
-        {testimonialAvatarSources.map((avatar) => (
+        {testimonialPeople.map((person) => (
           <div class="landing-hero-avatar relative">
-            <img
-              src={avatar}
-              alt=""
-              class="h-10 w-10 rounded-full border-2 border-white object-cover dark:border-black"
-              loading="eager"
-            />
+            {person.avatarRepresentation === 'appsumo-generic' ? (
+              <span
+                aria-hidden="true"
+                class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-neutral-200 text-xs font-bold text-neutral-700 dark:border-black dark:bg-zinc-800 dark:text-zinc-300"
+              >
+                {person.name[0]}
+              </span>
+            ) : (
+              <img
+                src={person.avatarSrc}
+                alt=""
+                class="h-10 w-10 rounded-full border-2 border-white object-cover dark:border-black"
+                loading="eager"
+              />
+            )}
           </div>
         ))}
       </div>
