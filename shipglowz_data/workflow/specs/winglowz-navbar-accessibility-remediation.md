@@ -247,6 +247,7 @@ None.
 | 2026-07-18 11:45:00 UTC | 101-sg-ready | unknown | readiness-check | ready | /102-sg-start WingGlows navbar accessibility remediation |
 | 2026-07-18 12:05:00 UTC | 102-sg-start | unknown | implementation | implemented | HTML semantics fixed, contrast tokens adjusted, reduced-motion added, ThemePicker hover tokenized | /103-sg-verify WingGlows navbar accessibility remediation |
 | 2026-07-18 12:10:00 UTC | 103-sg-verify | unknown | verification | partial | Automated checks pass; manual QA gaps pending (keyboard nav, contrast, reduced-motion) | Route to /107-sg-test for manual a11y proof |
+| 2026-07-18 12:15:00 UTC | 005-sg-ship | unknown | ship | shipped | Committed and pushed 5b4490e to origin/main | Manual a11y proof pending via /107-sg-test |
 
 ## Current Chantier Flow
 
@@ -257,4 +258,4 @@ None.
 | 102-sg-start | implemented | HTML semantics fixed, contrast tokens adjusted, reduced-motion added, ThemePicker hover tokenized | Complete |
 | 103-sg-verify | partial | Automated checks pass; manual QA gaps pending (keyboard nav, contrast, reduced-motion) | Route to /107-sg-test for manual a11y proof |
 | 104-sg-end | closed | Navbar a11y remediation closed | Complete |
-| 005-sg-ship | shipped | Committed and pushed | Complete |
+| 005-sg-ship | shipped | Committed and pushed 5b4490e to origin/main | Complete |
