@@ -22,45 +22,6 @@ export const testimonials = [
     rating: 5,
     verified: true,
   },
-  {
-    name: "HoangV",
-    role: "Verified Purchaser",
-    avatarSrc: "https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80",
-    title: "Love it!",
-    quote:
-      "I was skeptical at first. It was not easy to buy truly helpful Notion templates. But I made the right decision. It contains numerous information about various \"handy hacks\" to make me much more productive without having to search too much. I feel lucky that I pulled the trigger — Desktop Enhanced already more than paid off my investment.",
-    rating: 5,
-    verified: true,
-  },
-  {
-    name: "Digital Nomad",
-    role: "Verified Purchaser",
-    avatarSrc: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
-    title: "Must have for Windows user",
-    quote:
-      "Even if one is a Windows geek, one will find golden nuggets on hacks, shortcuts which save time and fasten your work. Very neatly organized in sections. Already got my money's worth. As the name of the product will definitely enhance the way one will use their Windows OS.",
-    rating: 5,
-    verified: true,
-  },
-  {
-    name: "g273",
-    role: "Verified Purchaser",
-    avatarSrc: "/images/headshots/professional-headshot-4.png",
-    title: "Best ROI ever!!!",
-    quote:
-      "This list of useful apps and websites will optimize the crap out of your life \"literally\". Thank you for putting this together.",
-    rating: 5,
-    verified: true,
-  },
-  {
-    name: "lamefusioncake",
-    role: "Verified Purchaser",
-    avatarSrc: "/images/headshots/professional-headshot-5.png",
-    title: "Useful",
-    quote: "Useful. Thank you.",
-    rating: 5,
-    verified: true,
-  },
 ]
 
 function StarRating({ rating }: { rating: number }) {

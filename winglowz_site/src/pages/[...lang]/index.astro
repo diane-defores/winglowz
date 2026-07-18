@@ -14,6 +14,7 @@ import type { Language } from '@/types'
 export async function getStaticPaths() {
 	return [
 		{ params: { lang: undefined }, props: { lang: 'en' as Language } },
+		{ params: { lang: 'en' }, props: { lang: 'en' as Language } },
 		{ params: { lang: 'fr' }, props: { lang: 'fr' as Language } },
 	]
 }
