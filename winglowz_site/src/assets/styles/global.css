@@ -113,7 +113,7 @@
     --navbar-cta-bg: 0 0% 9%;
     --navbar-cta-text: 0 0% 100%;
     --navbar-cta-bg-hover: 0 0% 21%;
-    --navbar-drawer-border: 0 0% 90%;
+    --navbar-drawer-border: 0 0% 30%;
     --navbar-drawer-bg: 0 0% 100%;
     --navbar-ring: 0 0% 9%;
     --navbar-force-shell-bg: 0 0% 2%;
@@ -248,13 +248,13 @@
     --navbar-shell-bg: 0 0% 10%;
     --navbar-text-primary: 0 0% 100%;
     --navbar-text-secondary: 0 0% 66%;
-    --navbar-text-tertiary: 0 0% 47%;
+    --navbar-text-tertiary: 0 0% 62%;
     --navbar-text-quaternary: 0 0% 66%;
     --navbar-bg-hover: 0 0% 15%;
     --navbar-cta-bg: 0 0% 100%;
     --navbar-cta-text: 0 0% 4%;
     --navbar-cta-bg-hover: 0 0% 87%;
-    --navbar-drawer-border: 0 0% 15%;
+    --navbar-drawer-border: 0 0% 40%;
     --navbar-drawer-bg: 0 0% 10%;
     --navbar-ring: 0 0% 100%;
     --navbar-force-shell-bg: 0 0% 2%;
@@ -791,4 +791,16 @@ html.dark {
 /* Style global pour assurer que le défilement est fluide */
 html {
   scroll-behavior: smooth;
+}
+
+/* Accessibility: disable navbar animations when user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-header,
+  .navbar-header *,
+  .mobile-menu,
+  .mobile-menu * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 } 

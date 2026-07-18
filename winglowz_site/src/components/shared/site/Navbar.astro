@@ -168,16 +168,8 @@ const ctaButtonClass = forceDark
         {altLangLabel}
       </a>
       {showThemePicker && !forceDark && <ThemePicker />}
-      <a href={signInUrl} class="no-hover-animation">
-        <button class={signInButtonClass}>
-          {signInLabel}
-        </button>
-      </a>
-      <a href={ctaUrl} class="no-hover-animation">
-        <button class={ctaButtonClass}>
-          {ctaLabel}
-        </button>
-      </a>
+      <a href={signInUrl} class={signInButtonClass}>{signInLabel}</a>
+      <a href={ctaUrl} class={ctaButtonClass}>{ctaLabel}</a>
     </div>
 
     <details class="mobile-menu relative md:hidden">
