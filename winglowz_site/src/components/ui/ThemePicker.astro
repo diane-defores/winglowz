@@ -71,6 +71,15 @@
 		// Mettre à jour l'attribut data-theme pour le thème global
 		root.setAttribute('data-theme', theme)
 
+		// Theme changes can happen while the pointer is over the navbar. Clear
+		// the transient 3D pointer transforms so the logo returns to its stable
+		// initial size/position instead of appearing to resize on toggle.
+		document.querySelectorAll<HTMLElement>('.text-logo').forEach((logo) => {
+			logo.style.transform = ''
+			logo.querySelector<HTMLElement>('.text')?.style.removeProperty('transform')
+			logo.querySelector<HTMLElement>('.glow-effect')?.style.removeProperty('transform')
+		})
+
 		// Sauvegarder le thème
 		localStorage.setItem('hs_theme', theme)
 

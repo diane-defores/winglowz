@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Tailwind v4 does not read the legacy config's darkMode selector. Keep
+   class-driven theme switching in sync with the ThemePicker on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @utility bg-gradient-rainbow {
   background-image: var(--gradient-rainbow);
 }
@@ -686,9 +690,9 @@
 
   .text-logo {
     font-size: clamp(
-      var(--text-logo-size-xs),
+      var(--text-logo-size-xs, 1.75rem),
       2vw + 1rem,
-      var(--text-logo-size-base)
+      var(--text-logo-size-base, 3rem)
     );
   }
 
@@ -791,6 +795,19 @@ html.dark {
 /* Style global pour assurer que le défilement est fluide */
 html {
   scroll-behavior: smooth;
+}
+
+/* Keep the light navbar readable over content while preserving the glass effect. */
+.navbar-shell-glass {
+  background-color: hsl(var(--navbar-shell-bg) / 0.88);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.08);
+}
+
+html.dark .navbar-shell-glass {
+  background-color: hsl(var(--navbar-shell-bg) / 0.9);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.24);
 }
 
 /* Accessibility: disable navbar animations when user prefers reduced motion */
