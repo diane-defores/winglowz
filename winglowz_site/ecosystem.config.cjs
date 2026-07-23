@@ -3,9 +3,9 @@ module.exports = {
     name: "winglowz_site",
     cwd: "/home/claude/winglowz/winglowz_site",
     script: "bash",
-    args: ["-lc", "export PORT=3005 && flox activate -- bash -lc 'pnpm dev -- --port 3005'"],
+    args: ["-lc", "pnpm exec astro dev --port 3001"],
     env: {
-      PORT: 3005
+      PORT: 3001
     },
     autorestart: true,
     max_restarts: 3,

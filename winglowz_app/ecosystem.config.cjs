@@ -3,9 +3,9 @@ module.exports = {
     name: "winglowz_app",
     cwd: "/home/claude/winglowz/winglowz_app",
     script: "bash",
-    args: ["-lc", "export PORT=3004 && flox activate -- bash -lc 'flutter config --enable-web >/dev/null 2>&1 || true && flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3004'"],
+    args: ["-lc", "export PORT=3003 && flox activate -- bash -lc 'flutter config --enable-web >/dev/null 2>&1 || true && flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3003'"],
     env: {
-      PORT: 3004
+      PORT: 3003
     },
     autorestart: true,
     max_restarts: 3,
